@@ -1,0 +1,50 @@
+apply plugin: 'base'
+apply plugin: 'distribution'
+version = '0.2.0-SNAPSHOT'
+
+task wrapper(type: Wrapper, description: 'Creates and deploys the Gradle wrapper to the current directory.') {
+    gradleVersion = '2.1'
+}
+
+subprojects.each { subproject -> evaluationDependsOn(subproject.path) }
+
+distributions {
+    main {
+        contents {
+            duplicatesStrategy = 'exclude'
+
+            from project.rootDir
+            include 'LICENSE-2.0.txt'
+            from 'src/dist'
+            include 'readme.txt'
+
+            into('lib') {
+                from 'lib'
+            }
+            project(':modules').subprojects.each { p ->
+                p.plugins.withType(JavaPlugin) {
+                    into('lib') {
+                        from p.jar.archivePath
+                        include '*'
+                        from p.configurations.runtime
+                        include '*'
+                    }
+                }
+            }
+
+            into('doc') {
+                from 'doc'
+                include '**'
+            }
+            into('resources') {
+                from 'resources'
+                include '**'
+                exclude 'private'
+            }
+            into('bin/help') {
+                from 'tools/xbeditor/help'
+                include '**'
+            }
+        }
+    }
+}

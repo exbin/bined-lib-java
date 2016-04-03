@@ -1,0 +1,3 @@
+rootProject.name = 'deltahex'
+
+apply from: '../modules-settings.gradle'

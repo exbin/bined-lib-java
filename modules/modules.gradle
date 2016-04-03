@@ -1,0 +1,96 @@
+// Shared modules build
+
+apply plugin: 'java'
+apply plugin: 'maven-publish'
+
+sourceCompatibility = '1.7'
+version = '0.1.0-SNAPSHOT'
+def repositoryName = "deltahex-java"
+def libraryUrl = 'http://dhex.exbin.org'
+ext.xbupVersion = '0.2.0-SNAPSHOT'
+ext.frameworkVersion = '0.2.0-SNAPSHOT'
+
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+tasks.withType(JavaCompile) {
+    options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+    doFirst {
+        options.fork = true
+        options.bootClasspath = "${System.properties['java.home']}/lib/rt.jar"
+        options.bootClasspath += "$File.pathSeparator${System.properties['java.home']}/jre/lib/jsse.jar"
+    }
+}
+
+// Disable tests on build
+check.dependsOn.remove(test)
+
+task testJar(type: Jar, dependsOn: testClasses) {
+    classifier "tests"
+    baseName = "test-${project.archivesBaseName}"
+    from sourceSets.test.output
+}
+
+configurations {
+    tests
+}
+
+artifacts {
+    tests testJar
+}
+
+task sourceJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.java
+}
+
+task javadocJar (type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+            artifact sourceJar {
+                classifier "sources"
+            }
+            artifact (javadocJar) {
+                classifier = 'javadoc'
+            }
+
+            pom.withXml {
+                asNode().children().last() + {
+                    resolveStrategy = Closure.DELEGATE_FIRST
+                    name libraryName
+                    description libraryDescription
+                    url libraryUrl
+                    scm {
+                        url "https://github.com/exbin/${repositoryName}"
+                        connection "cm:git:git://github.com/exbin/${repositoryName}.git"
+                        developerConnection "scm:git:git@github.com:exbin/${repositoryName}.git"
+                    }
+                    licenses {
+                        license {
+// TODO                            name 'BSD'
+// TODO                            url 'https://www.gnu.org/licenses/lgpl.txt'
+                            distribution 'repo'
+                        }
+                    }
+                    developers {
+                        developer {
+                            id 'HajdaM'
+                            name 'Miroslav Hajda'
+                            email 'hajdam@users.sf.net'
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    repositories {
+        mavenLocal()
+    }
+}
+

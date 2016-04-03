@@ -1,0 +1,31 @@
+group = 'org.exbin.dhex'
+ext.libraryName = 'Delta Hexadecimal Core Library'
+ext.libraryDescription = 'Library delta hexadecimal editor'
+
+apply from: '../modules.gradle'
+
+if (!hasProperty('mainClass')) {
+    ext.mainClass = ''
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    flatDir {
+        dirs "../../lib"
+    }
+}
+
+dependencies {
+    compile "org.exbin.xbup:xbup-core:${xbupVersion}"
+    compile "org.exbin.framework:exbin-framework:${frameworkVersion}"
+    compile "org.exbin.framework:exbin-framework-api:${frameworkVersion}"
+    compile "org.exbin.framework:exbin-framework-gui-frame-api:${frameworkVersion}"
+    compile "org.exbin.framework:exbin-framework-gui-editor-api:${frameworkVersion}"
+    compile "org.exbin.framework:exbin-framework-gui-file-api:${frameworkVersion}"
+    compile "org.exbin.framework:exbin-framework-gui-undo-api:${frameworkVersion}"
+    compile "org.exbin.framework:exbin-framework-gui-options-api:${frameworkVersion}"
+    compile "org.exbin.framework:exbin-framework-gui-utils:${frameworkVersion}"
+    compile "org.exbin.framework:exbin-framework-editor-text:${frameworkVersion}"
+    testCompile group : 'junit', name: 'junit', version: '4.10'
+}
