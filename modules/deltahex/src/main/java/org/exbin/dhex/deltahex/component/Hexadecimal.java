@@ -54,7 +54,7 @@ public class Hexadecimal extends JComponent {
     private HexadecimalLinePainter linePainter;
 
     private Color textColor;
-    private Color backgroundColor;
+    private Color oddBackgroundColor;
     private Color selectionColor;
     private Color selectionBackgroundColor;
     private Color dualBackgroundColor;
@@ -69,7 +69,8 @@ public class Hexadecimal extends JComponent {
         linePainter = new DefaultHexadecimalLinePainter(this);
 
         textColor = UIManager.getColor("TextArea.foreground");
-        backgroundColor = UIManager.getColor("TextArea.background");
+        super.setBackground(UIManager.getColor("TextArea.background"));
+        oddBackgroundColor = new Color(240, 240, 240);
         selectionColor = UIManager.getColor("TextArea.selectionForeground");
         selectionBackgroundColor = UIManager.getColor("TextArea.selectionBackground");
         dualBackgroundColor = Color.LIGHT_GRAY;
@@ -113,7 +114,6 @@ public class Hexadecimal extends JComponent {
 //                repaint();
                 mouseDown = false;
             }
-
         });
         addMouseMotionListener(new MouseMotionAdapter() {
             @Override
@@ -172,8 +172,6 @@ public class Hexadecimal extends JComponent {
                         if (caretPosition > 0) {
                             if (caretPosition > bytesPerLine * 2) {
                                 caret.setCaretPosition(caretPosition - bytesPerLine * 2);
-                            } else {
-                                caret.setCaretPosition(0);
                             }
                             updateSelection(e.getModifiersEx(), caretPosition);
                         }
@@ -186,8 +184,6 @@ public class Hexadecimal extends JComponent {
                         if (caretPosition < dataSize * 2) {
                             if (caretPosition + bytesPerLine * 2 < dataSize * 2) {
                                 caret.setCaretPosition(caretPosition + bytesPerLine * 2);
-                            } else {
-                                caret.setCaretPosition(dataSize * 2);
                             }
                             updateSelection(e.getModifiersEx(), caretPosition);
                         }
@@ -299,11 +295,11 @@ public class Hexadecimal extends JComponent {
         long dataSize = data.getDataSize();
         do {
             if (byteOnLine == 0) {
-                linePainter.paintBackground(g, positionY, dataPosition, bytesPerLine, metricsCache.lineHeight, metricsCache.charWidth);
+                linePainter.paintBackground(g, line, positionY, dataPosition, bytesPerLine, metricsCache.lineHeight, metricsCache.charWidth);
             }
 
             if (dataPosition < dataSize) {
-                linePainter.paintLine(g, positionY, dataPosition, bytesPerLine, metricsCache.lineHeight, metricsCache.charWidth, byteOnLine);
+                linePainter.paintLine(g, line, positionY, dataPosition, bytesPerLine, metricsCache.lineHeight, metricsCache.charWidth, byteOnLine);
             } else {
                 break;
             }
@@ -468,12 +464,12 @@ public class Hexadecimal extends JComponent {
         this.textColor = textColor;
     }
 
-    public Color getBackgroundColor() {
-        return backgroundColor;
+    public Color getOddBackgroundColor() {
+        return oddBackgroundColor;
     }
 
-    public void setBackgroundColor(Color backgroundColor) {
-        this.backgroundColor = backgroundColor;
+    public void setBackgroundColor(Color oddBackgroundColor) {
+        this.oddBackgroundColor = oddBackgroundColor;
     }
 
     public Color getSelectionColor() {

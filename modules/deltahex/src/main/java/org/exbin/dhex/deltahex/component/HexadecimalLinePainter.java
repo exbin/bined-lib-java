@@ -20,7 +20,7 @@ import java.awt.Graphics;
 /**
  * Hexadecimal editor background painter.
  *
- * @version 0.1.0 2016/04/03
+ * @version 0.1.0 2016/04/04
  * @author ExBin Project (http://exbin.org)
  */
 public interface HexadecimalLinePainter {
@@ -29,6 +29,7 @@ public interface HexadecimalLinePainter {
      * Paints line for given hexadecimal editor line.
      *
      * @param g graphics
+     * @param line line number
      * @param positionY position of the bottom line of current line in pixels
      * @param dataPosition current data position
      * @param bytesPerLine data bytes per line
@@ -36,17 +37,18 @@ public interface HexadecimalLinePainter {
      * @param charWidth font character width
      * @param byteOnLine number of byte on the current line
      */
-    void paintLine(Graphics g, int positionY, long dataPosition, int bytesPerLine, int fontHeight, int charWidth, int byteOnLine);
+    void paintLine(Graphics g, long line, int positionY, long dataPosition, int bytesPerLine, int fontHeight, int charWidth, int byteOnLine);
 
     /**
      * Paints background for given hexadecimal editor line.
      *
      * @param g graphics
+     * @param line line number
      * @param positionY position of the bottom line of current line in pixels
      * @param dataPosition current data position
      * @param bytesPerLine data bytes per line
      * @param fontHeight font character height
      * @param charWidth font character width
      */
-    void paintBackground(Graphics g, int positionY, long dataPosition, int bytesPerLine, int fontHeight, int charWidth);
+    void paintBackground(Graphics g, long line, int positionY, long dataPosition, int bytesPerLine, int fontHeight, int charWidth);
 }

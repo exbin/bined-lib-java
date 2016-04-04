@@ -33,7 +33,8 @@ public class DefaultHexadecimalLinePainter implements HexadecimalLinePainter {
     }
 
     @Override
-    public void paintLine(Graphics g, int positionY, long dataPosition, int bytesPerLine, int fontHeight, int charWidth, int byteOnLine) {
+    public void paintLine(Graphics g, long line, int positionY, long dataPosition, int bytesPerLine, int fontHeight, int charWidth, int byteOnLine) {
+        g.setColor(hexadecimal.getTextColor());
         byte dataByte = hexadecimal.getData().getByte(dataPosition);
         char[] chars = HexadecimalUtils.byteToHexChars(dataByte);
         g.drawChars(chars, 0, 2, hexadecimal.getHexadecimalX() + byteOnLine * charWidth * 3, positionY - hexadecimal.getSubFontSpace());
@@ -48,7 +49,10 @@ public class DefaultHexadecimalLinePainter implements HexadecimalLinePainter {
     }
 
     @Override
-    public void paintBackground(Graphics g, int positionY, long dataPosition, int bytesPerLine, int fontHeight, int charWidth) {
+    public void paintBackground(Graphics g, long line, int positionY, long dataPosition, int bytesPerLine, int fontHeight, int charWidth) {
+        g.setColor((line & 1) == 0 ? hexadecimal.getBackground() : hexadecimal.getOddBackgroundColor());
+        g.fillRect(g.getClipBounds().x, positionY - fontHeight, g.getClipBounds().width, fontHeight);
+
         Hexadecimal.SelectionRange selection = hexadecimal.getSelection();
         if (selection == null) {
             return;
@@ -109,8 +113,6 @@ public class DefaultHexadecimalLinePainter implements HexadecimalLinePainter {
                 g.setColor(previewColor);
                 g.fillRect(selectionPreviewStart, positionY - fontHeight, selectionPreviewEnd - selectionPreviewStart, fontHeight);
             }
-
-            g.setColor(hexadecimal.getTextColor());
         }
     }
 }
