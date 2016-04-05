@@ -22,7 +22,7 @@ import java.awt.Rectangle;
 /**
  * Hexadecimal editor caret.
  *
- * @version 0.2.0 2016/04/03
+ * @version 0.2.0 2016/04/05
  * @author ExBin Project (http://exbin.org)
  */
 public class HexadecimalCaret {
@@ -34,9 +34,7 @@ public class HexadecimalCaret {
     }
 
     private static final int DEFAULT_CURSOR_WIDTH = 2;
-
-    // TODO convert from half-byte step to full byte
-    private long caretPosition = 0;
+    private final CaretPosition caretPosition = new CaretPosition();
 
     public void paint(Graphics g, int bytesPerLine, int fontHeight, int charWidth) {
         Point cursorPoint = getCursorPoint(bytesPerLine, fontHeight, charWidth);
@@ -48,8 +46,7 @@ public class HexadecimalCaret {
     }
 
     private Point getCursorPoint(int bytesPerLine, int fontHeight, int charWidth) {
-        long dataPosition = caretPosition / 2;
-        int bytePosition = (int) (caretPosition & 1);
+        long dataPosition = caretPosition.getDataPosition();
         long line = dataPosition / bytesPerLine;
         int offset = (int) (dataPosition % bytesPerLine);
 
@@ -58,7 +55,7 @@ public class HexadecimalCaret {
         if (hexadecimal.getActiveSection() == Hexadecimal.Section.PREVIEW) {
             caretX = hexadecimal.getPreviewX() + charWidth * offset;
         } else {
-            caretX = hexadecimal.getHexadecimalX() + charWidth * (offset * 3 + bytePosition);
+            caretX = hexadecimal.getHexadecimalX() + charWidth * (offset * 3 + getHalfBytePosition());
         }
 
         return new Point(caretX, caretY);
@@ -73,11 +70,39 @@ public class HexadecimalCaret {
         }
     }
 
-    public long getCaretPosition() {
+    public CaretPosition getCaretPosition() {
         return caretPosition;
     }
 
-    public void setCaretPosition(long caretPosition) {
-        this.caretPosition = caretPosition;
+    public void setCaretPosition(CaretPosition caretPosition) {
+        this.caretPosition.setDataPosition(caretPosition == null ? 0 : caretPosition.getDataPosition());
+        this.caretPosition.setLowerHalf(caretPosition == null ? true : caretPosition.isLowerHalf());
     }
+
+    public long getDataPosition() {
+        return caretPosition.getDataPosition();
+    }
+
+    public void setCaretPosition(long dataPosition) {
+        caretPosition.setDataPosition(dataPosition);
+        caretPosition.setLowerHalf(false);
+    }
+
+    public void setCaretPosition(long dataPosition, boolean lowerHalf) {
+        caretPosition.setDataPosition(dataPosition);
+        caretPosition.setLowerHalf(lowerHalf);
+    }
+
+    public boolean isLowerHalf() {
+        return caretPosition.isLowerHalf();
+    }
+
+    public int getHalfBytePosition() {
+        return caretPosition.isLowerHalf() ? 1 : 0;
+    }
+
+    public void setLowerHalf(boolean lowerHalf) {
+        caretPosition.setLowerHalf(lowerHalf);
+    }
+
 }

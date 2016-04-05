@@ -35,23 +35,27 @@ public class DefaultHexadecimalLinePainter implements HexadecimalLinePainter {
     @Override
     public void paintLine(Graphics g, long line, int positionY, long dataPosition, int bytesPerLine, int fontHeight, int charWidth, int byteOnLine) {
         g.setColor(hexadecimal.getTextColor());
+        if (byteOnLine == 0 && hexadecimal.isShowLineNumbers()) {
+            char[] lineNumberCode = HexadecimalUtils.longToHexChars(line);
+            g.drawChars(lineNumberCode, 0, 8, 0, positionY - hexadecimal.getSubFontSpace());
+        }
         byte dataByte = hexadecimal.getData().getByte(dataPosition);
         char[] chars = HexadecimalUtils.byteToHexChars(dataByte);
         g.drawChars(chars, 0, 2, hexadecimal.getHexadecimalX() + byteOnLine * charWidth * 3, positionY - hexadecimal.getSubFontSpace());
-        
+
         if (hexadecimal.getViewMode() != Hexadecimal.ViewMode.HEXADECIMAL) {
             // TODO don't compute for fonts with fixed width
-            char[] previewChar = new char[] { (char) dataByte };
+            char[] previewChar = new char[]{(char) dataByte};
             int previewCharWidth = g.getFontMetrics().charWidth(previewChar[0]);
             int leftSpace = (charWidth - previewCharWidth) / 2;
-            g.drawChars(previewChar, 0, 1, leftSpace + hexadecimal.getPreviewX() +  byteOnLine * charWidth, positionY - hexadecimal.getSubFontSpace());
+            g.drawChars(previewChar, 0, 1, leftSpace + hexadecimal.getPreviewX() + byteOnLine * charWidth, positionY - hexadecimal.getSubFontSpace());
         }
     }
 
     @Override
     public void paintBackground(Graphics g, long line, int positionY, long dataPosition, int bytesPerLine, int fontHeight, int charWidth) {
         g.setColor((line & 1) == 0 ? hexadecimal.getBackground() : hexadecimal.getOddBackgroundColor());
-        g.fillRect(g.getClipBounds().x, positionY - fontHeight, g.getClipBounds().width, fontHeight);
+        g.fillRect(hexadecimal.getHexadecimalX(), positionY - fontHeight, g.getClipBounds().width - hexadecimal.getHexadecimalX(), fontHeight);
 
         Hexadecimal.SelectionRange selection = hexadecimal.getSelection();
         if (selection == null) {
@@ -63,27 +67,30 @@ public class DefaultHexadecimalLinePainter implements HexadecimalLinePainter {
         int selectionPreviewStart = 0;
         int selectionPreviewEnd = 0;
 
-        long maxLinePosition = ((dataPosition + bytesPerLine) * 2);
-        if (selection.getSelectionFirst() < maxLinePosition) {
-            if (selection.getSelectionFirst() > dataPosition * 2) {
-                int linePosition = (int) (selection.getSelectionFirst() - dataPosition * 2);
-                int bytePosition = linePosition & 1;
-                selectionStart = hexadecimal.getHexadecimalX() + charWidth * ((linePosition >> 1) * 3 + bytePosition);
-                selectionPreviewStart = hexadecimal.getPreviewX() + charWidth * ((linePosition >> 1) + bytePosition);
+        long maxLinePosition = dataPosition + bytesPerLine;
+        CaretPosition selectionFirst = selection.getSelectionFirst();
+        CaretPosition selectionLast = selection.getSelectionLast();
+        if (selectionFirst.getDataPosition() < maxLinePosition) {
+            if (selectionFirst.getDataPosition() > dataPosition) {
+                int linePosition = (int) (selectionFirst.getDataPosition() - dataPosition);
+                int halfPosition = selectionFirst.isLowerHalf() ? 1 : 0;
+                selectionStart = hexadecimal.getHexadecimalX() + charWidth * (linePosition * 3 + halfPosition);
+                selectionPreviewStart = hexadecimal.getPreviewX() + charWidth * linePosition;
             } else {
+                selectionStart = hexadecimal.getHexadecimalX();
                 selectionPreviewStart = hexadecimal.getPreviewX();
             }
         }
 
-        if (selection.getSelectionLast() > dataPosition * 2 && selection.getSelectionFirst() < maxLinePosition) {
-            if (selection.getSelectionLast() > maxLinePosition) {
+        if (selectionLast.getDataPosition() > dataPosition && selectionFirst.getDataPosition() < maxLinePosition) {
+            if (selectionLast.getDataPosition() > maxLinePosition) {
                 selectionEnd = hexadecimal.getHexadecimalX() + bytesPerLine * charWidth * 3;
                 selectionPreviewEnd = hexadecimal.getPreviewX() + bytesPerLine * charWidth;
             } else {
-                int linePosition = (int) (selection.getSelectionLast() - dataPosition * 2);
-                int bytePosition = linePosition & 1;
-                selectionEnd = hexadecimal.getHexadecimalX() + charWidth * ((linePosition >> 1) * 3 + bytePosition);
-                selectionPreviewEnd = hexadecimal.getPreviewX() + charWidth * ((linePosition >> 1) + bytePosition);
+                int linePosition = (int) (selectionLast.getDataPosition() - dataPosition);
+                int halfPosition = selectionLast.isLowerHalf() ? 1 : 0;
+                selectionEnd = hexadecimal.getHexadecimalX() + charWidth * (linePosition * 3 + halfPosition);
+                selectionPreviewEnd = hexadecimal.getPreviewX() + charWidth * linePosition;
             }
         }
 

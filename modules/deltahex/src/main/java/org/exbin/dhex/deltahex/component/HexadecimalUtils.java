@@ -52,4 +52,27 @@ public class HexadecimalUtils {
             return (char) (55 + value);
         }
     }
+
+    /**
+     * Converts long value to sequence of 8 hexadecimal character. No range
+     * checking.
+     *
+     * @param value long value
+     * @return 8 hexadecimal character
+     */
+    public static char[] longToHexChars(long value) {
+        char[] result = new char[8];
+        for (int i = 0; i < 8; i++) {
+            int charValue = (int) (value & 15);
+            if (charValue < 10) {
+                result[7 - i] = (char) (48 + charValue);
+            } else {
+                result[7 - i] = (char) (55 + charValue);
+            }
+            
+            value = value >> 4;
+        }
+
+        return result;
+    }
 }

@@ -48,7 +48,7 @@ public class Hexadecimal extends JComponent {
     private Section activeSection = Section.HEXADECIMAL;
     private EditationMode editationMode = EditationMode.OVERWRITE;
     private boolean showHeader = true;
-    private boolean showLineNumbers = false;
+    private boolean showLineNumbers = true;
     private boolean mouseDown;
 
     private HexadecimalLinePainter linePainter;
@@ -151,60 +151,70 @@ public class Hexadecimal extends JComponent {
             public void keyPressed(KeyEvent e) {
                 switch (e.getKeyCode()) {
                     case KeyEvent.VK_LEFT: {
-                        long caretPosition = caret.getCaretPosition();
-                        if (caretPosition > 0) {
-                            caret.setCaretPosition(caretPosition - 1);
+                        CaretPosition caretPosition = caret.getCaretPosition();
+                        if (activeSection == Section.HEXADECIMAL) {
+                            boolean lowerHalf = caret.isLowerHalf();
+                            if (lowerHalf) {
+                                caret.setLowerHalf(false);
+                                updateSelection(e.getModifiersEx(), caretPosition);
+                            } else if (caretPosition.getDataPosition() > 0) {
+                                caret.setCaretPosition(caretPosition.getDataPosition() - 1, true);
+                                updateSelection(e.getModifiersEx(), caretPosition);
+                            }
+                        } else if (caretPosition.getDataPosition() > 0) {
+                            caret.setCaretPosition(caretPosition.getDataPosition() - 1);
                             updateSelection(e.getModifiersEx(), caretPosition);
                         }
                         break;
                     }
                     case KeyEvent.VK_RIGHT: {
-                        long caretPosition = caret.getCaretPosition();
-                        if (caretPosition < data.getDataSize() * 2) {
-                            caret.setCaretPosition(caretPosition + 1);
-                            updateSelection(e.getModifiersEx(), caretPosition);
-                        }
+                        moveRight(e.getModifiersEx());
                         break;
                     }
                     case KeyEvent.VK_UP: {
-                        long caretPosition = caret.getCaretPosition();
+                        CaretPosition caretPosition = caret.getCaretPosition();
                         int bytesPerLine = getBytesPerLine();
-                        if (caretPosition > 0) {
-                            if (caretPosition > bytesPerLine * 2) {
-                                caret.setCaretPosition(caretPosition - bytesPerLine * 2);
+                        if (caretPosition.getDataPosition() > 0) {
+                            if (caretPosition.getDataPosition() > bytesPerLine) {
+                                caret.setCaretPosition(caretPosition.getDataPosition() - bytesPerLine, caret.isLowerHalf());
                             }
                             updateSelection(e.getModifiersEx(), caretPosition);
                         }
                         break;
                     }
                     case KeyEvent.VK_DOWN: {
-                        long caretPosition = caret.getCaretPosition();
+                        CaretPosition caretPosition = caret.getCaretPosition();
                         int bytesPerLine = getBytesPerLine();
                         long dataSize = data.getDataSize();
-                        if (caretPosition < dataSize * 2) {
-                            if (caretPosition + bytesPerLine * 2 < dataSize * 2) {
-                                caret.setCaretPosition(caretPosition + bytesPerLine * 2);
+                        if (caretPosition.getDataPosition() < dataSize) {
+                            if (caretPosition.getDataPosition() + bytesPerLine < dataSize) {
+                                caret.setCaretPosition(caretPosition.getDataPosition() + bytesPerLine, caret.isLowerHalf());
                             }
                             updateSelection(e.getModifiersEx(), caretPosition);
                         }
                         break;
                     }
                     case KeyEvent.VK_HOME: {
-                        long caretPosition = caret.getCaretPosition();
+                        CaretPosition caretPosition = caret.getCaretPosition();
                         int bytesPerLine = getBytesPerLine();
-                        if (caretPosition > 0) {
-                            caret.setCaretPosition((caretPosition / (bytesPerLine * 2)) * bytesPerLine * 2);
+                        if (caretPosition.getDataPosition() > 0 || caret.isLowerHalf()) {
+                            caret.setCaretPosition((caretPosition.getDataPosition() / bytesPerLine) * bytesPerLine);
                             updateSelection(e.getModifiersEx(), caretPosition);
                         }
                         break;
                     }
                     case KeyEvent.VK_END: {
-                        long caretPosition = caret.getCaretPosition();
+                        CaretPosition caretPosition = caret.getCaretPosition();
                         int bytesPerLine = getBytesPerLine();
                         long dataSize = data.getDataSize();
-                        if (caretPosition < dataSize * 2) {
-                            long newPosition = ((caretPosition / (bytesPerLine * 2)) + 1) * bytesPerLine * 2 - 1;
-                            caret.setCaretPosition(newPosition < dataSize * 2 ? newPosition : dataSize * 2);
+                        if (caretPosition.getDataPosition() < dataSize) {
+                            if (activeSection == Section.HEXADECIMAL) {
+                                long newPosition = ((caretPosition.getDataPosition() / bytesPerLine) + 1) * bytesPerLine - 1;
+                                caret.setCaretPosition(newPosition < dataSize ? newPosition : dataSize, true);
+                            } else {
+                                long newPosition = ((caretPosition.getDataPosition() / bytesPerLine) + 1) * bytesPerLine - 1;
+                                caret.setCaretPosition(newPosition < dataSize ? newPosition : dataSize);
+                            }
                             updateSelection(e.getModifiersEx(), caretPosition);
                         }
                         break;
@@ -218,12 +228,71 @@ public class Hexadecimal extends JComponent {
                     }
                     case KeyEvent.VK_TAB: {
                         activeSection = activeSection == Section.HEXADECIMAL ? Section.PREVIEW : Section.HEXADECIMAL;
+                        if (activeSection == Section.PREVIEW) {
+                            caret.setLowerHalf(false);
+                        }
                         repaint();
                         break;
+                    }
+                    default: {
+                        if (activeSection == Section.HEXADECIMAL) {
+                            if ((e.getKeyChar() >= '0' && e.getKeyChar() <= '9')
+                                    || (e.getKeyChar() >= 'a' && e.getKeyChar() <= 'f')) {
+                                CaretPosition caretPosition = caret.getCaretPosition();
+                                int value;
+                                if (e.getKeyChar() >= '0' && e.getKeyChar() <= '9') {
+                                    value = e.getKeyChar() - '0';
+                                } else {
+                                    value = e.getKeyChar() - 'a' + 10;
+                                }
+                                setHalfByte(value);
+                                moveRight(0);
+                            }
+                        } else {
+                            char keyChar = e.getKeyChar();
+                            if (keyChar > 31 && keyChar < 255) {
+                                CaretPosition caretPosition = caret.getCaretPosition();
+                                long dataPosition = caretPosition.getDataPosition();
+                                data.setByte(dataPosition, (byte) keyChar);
+                                moveRight(0);
+                            }
+                        }
                     }
                 }
             }
         });
+    }
+
+    private void setHalfByte(int value) {
+        CaretPosition caretPosition = caret.getCaretPosition();
+        long dataPosition = caretPosition.getDataPosition();
+
+        byte byteValue = data.getByte(dataPosition);
+
+        if (caretPosition.isLowerHalf()) {
+            byteValue = (byte) ((byteValue & 0xf0) | value);
+        } else {
+            byteValue = (byte) ((byteValue & 0xf) | (value << 4));
+        }
+
+        data.setByte(dataPosition, byteValue);
+    }
+
+    private void moveRight(int modifiers) {
+        CaretPosition caretPosition = caret.getCaretPosition();
+        if (activeSection == Section.HEXADECIMAL) {
+            boolean lowerHalf = caret.isLowerHalf();
+            if (!lowerHalf) {
+                caret.setLowerHalf(true);
+                updateSelection(modifiers, caretPosition);
+            } else if (caretPosition.getDataPosition() < data.getDataSize() * 2) {
+                caret.setCaretPosition(caretPosition.getDataPosition() + 1, false);
+                updateSelection(modifiers, caretPosition);
+            }
+        } else if (caretPosition.getDataPosition() < data.getDataSize() * 2) {
+            caret.setCaretPosition(caretPosition.getDataPosition() + 1);
+            updateSelection(modifiers, caretPosition);
+        }
     }
 
     private void moveCaret(MouseEvent me, int modifiers) {
@@ -235,19 +304,42 @@ public class Hexadecimal extends JComponent {
         } else if (cursorY > 0) {
             cursorY--;
         }
-        int bytePosition = cursorCharX % 3;
-        if (bytePosition > 2) {
-            bytePosition = 1;
+        if (showLineNumbers) {
+            if (cursorCharX < 9) {
+                cursorCharX = 0;
+            } else {
+                cursorCharX -= 9;
+            }
         }
-        int cursorX = cursorCharX / 3;
-        long dataPosition = (cursorX * 2 + bytePosition) + (cursorY * bytesPerLine * 2);
-        if (dataPosition > data.getDataSize() * 2) {
-            dataPosition = data.getDataSize() * 2;
+
+        long dataPosition;
+        boolean lowerHalf = false;
+        if (cursorCharX < bytesPerLine * 3 || viewMode == ViewMode.HEXADECIMAL) {
+            setActiveSection(Section.HEXADECIMAL);
+            int bytePosition = cursorCharX % 3;
+            lowerHalf = bytePosition > 0;
+
+            int cursorX = cursorCharX / 3;
+            int byteOnLine = cursorX;
+            if (byteOnLine >= bytesPerLine) {
+                byteOnLine = bytesPerLine - 1;
+            }
+            dataPosition = byteOnLine + (cursorY * bytesPerLine);
+        } else {
+            setActiveSection(Section.PREVIEW);
+            int byteOnLine = (cursorCharX - (bytesPerLine * 3));
+            if (byteOnLine >= bytesPerLine) {
+                byteOnLine = bytesPerLine - 1;
+            }
+            dataPosition = byteOnLine + (cursorY * bytesPerLine);
+            if (dataPosition > data.getDataSize()) {
+                dataPosition = data.getDataSize();
+            }
         }
-//        Rectangle oldCursorRect = caret.getCursorRect(bytesPerLine, lineHeight, charWidth);
-        long caretPosition = caret.getCaretPosition();
-        caret.setCaretPosition(dataPosition);
-//        Rectangle newCursorRect = caret.getCursorRect(bytesPerLine, lineHeight, charWidth);
+
+        CaretPosition caretPosition = caret.getCaretPosition();
+        caret.setCaretPosition(dataPosition, lowerHalf);
+
         updateSelection(modifiers, caretPosition);
     }
 
@@ -277,14 +369,13 @@ public class Hexadecimal extends JComponent {
 
         int positionY = metricsCache.lineHeight;
         if (showHeader) {
+            int hexadecimalX = getHexadecimalX();
             g.setColor(textColor);
             g.setFont(getFont());
             for (int i = 0; i < bytesPerLine; i++) {
                 char[] chars = HexadecimalUtils.byteToHexChars((byte) i);
-                g.drawChars(chars, 0, 2, i * metricsCache.charWidth * 3, positionY);
+                g.drawChars(chars, 0, 2, hexadecimalX + i * metricsCache.charWidth * 3, positionY);
             }
-
-            // g.drawString("TEST", 0, textFont.getSize());
         }
 
         // Render hexadecimal part
@@ -317,7 +408,7 @@ public class Hexadecimal extends JComponent {
         caret.paint(g, bytesPerLine, metricsCache.lineHeight, metricsCache.charWidth);
     }
 
-    private void updateSelection(int modifiers, long caretPosition) {
+    private void updateSelection(int modifiers, CaretPosition caretPosition) {
         if ((modifiers & KeyEvent.SHIFT_DOWN_MASK) > 0) {
             if (selection != null) {
                 selection.end = caret.getCaretPosition();
@@ -332,7 +423,11 @@ public class Hexadecimal extends JComponent {
 
     private int getBytesPerLine() {
         Rectangle panelBounds = getBounds();
-        int charsPerPanel = panelBounds.width / metricsCache.charWidth;
+        int width = panelBounds.width;
+        if (showLineNumbers) {
+            width -= metricsCache.charWidth * 9;
+        }
+        int charsPerPanel = width / metricsCache.charWidth;
         int charsPerByte;
         switch (viewMode) {
             case HEXADECIMAL: {
@@ -360,7 +455,8 @@ public class Hexadecimal extends JComponent {
     }
 
     public void selectAll() {
-        selection = new SelectionRange(0, data.getDataSize() * 2);
+        CaretPosition endPosition = new CaretPosition(data.getDataSize(), false);
+        selection = new SelectionRange(new CaretPosition(), endPosition);
         if (selectionChangedListener != null) {
             selectionChangedListener.selectionChanged();
         }
@@ -402,12 +498,12 @@ public class Hexadecimal extends JComponent {
         if (viewMode == ViewMode.PREVIEW) {
             return -1;
         }
-        
+
         int hexadecimalX = 0;
         if (showLineNumbers) {
-            hexadecimalX += metricsCache.charWidth * 8;
+            hexadecimalX += metricsCache.charWidth * 9;
         }
-        
+
         return hexadecimalX;
     }
 
@@ -423,7 +519,7 @@ public class Hexadecimal extends JComponent {
 
         int previewX = getBytesPerLine() * metricsCache.charWidth * 3;
         if (showLineNumbers) {
-            previewX += metricsCache.charWidth * 8;
+            previewX += metricsCache.charWidth * 9;
         }
 
         return previewX;
@@ -536,47 +632,55 @@ public class Hexadecimal extends JComponent {
         this.editationMode = editationMode;
     }
 
+    public boolean isShowLineNumbers() {
+        return showLineNumbers;
+    }
+
+    public void setShowLineNumbers(boolean showLineNumbers) {
+        this.showLineNumbers = showLineNumbers;
+    }
+
     /**
      * Selection range is selection between two points where begin represents
      * originating point. End of the selection can be before or after begin.
      */
     public static class SelectionRange {
 
-        private long begin;
-        private long end;
+        private CaretPosition begin = new CaretPosition();
+        private CaretPosition end = new CaretPosition();
 
         public SelectionRange() {
-            begin = 0;
-            end = 0;
         }
 
-        public SelectionRange(long begin, long end) {
-            this.begin = begin;
-            this.end = end;
+        public SelectionRange(CaretPosition begin, CaretPosition end) {
+            this.begin.setPosition(begin);
+            this.end.setPosition(end);
         }
 
-        public long getBegin() {
+        public CaretPosition getBegin() {
             return begin;
         }
 
-        public void setBegin(long begin) {
+        public void setBegin(CaretPosition begin) {
             this.begin = begin;
         }
 
-        public long getEnd() {
+        public CaretPosition getEnd() {
             return end;
         }
 
-        public void setEnd(long end) {
+        public void setEnd(CaretPosition end) {
             this.end = end;
         }
 
-        public long getSelectionFirst() {
-            return end > begin ? begin : end;
+        public CaretPosition getSelectionFirst() {
+            return (end.getDataPosition() > begin.getDataPosition())
+                    || (end.getDataPosition() == begin.getDataPosition() && !begin.isLowerHalf()) ? begin : end;
         }
 
-        public long getSelectionLast() {
-            return end > begin ? end : begin;
+        public CaretPosition getSelectionLast() {
+            return (end.getDataPosition() > begin.getDataPosition())
+                    || (end.getDataPosition() == begin.getDataPosition() && !begin.isLowerHalf()) ? end : begin;
         }
     }
 
