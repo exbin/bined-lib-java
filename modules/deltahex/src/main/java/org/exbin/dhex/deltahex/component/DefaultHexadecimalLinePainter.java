@@ -15,6 +15,8 @@
  */
 package org.exbin.dhex.deltahex.component;
 
+import org.exbin.dhex.deltahex.HexadecimalUtils;
+import org.exbin.dhex.deltahex.CaretPosition;
 import java.awt.Color;
 import java.awt.Graphics;
 

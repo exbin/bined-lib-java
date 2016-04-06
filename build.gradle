@@ -31,6 +31,21 @@ distributions {
                     }
                 }
             }
+            project(':tools').subprojects.each { p ->
+                p.plugins.withType(JavaPlugin) {
+                    into('lib') {
+                        from p.configurations.runtime
+                        include '*'
+                    }
+
+                    into('bin') {
+                        from p.jar.archivePath
+                        include '*'
+                        rename { filename -> p.name + ".jar" }
+                    }
+                }
+            }
+
 
             into('doc') {
                 from 'doc'

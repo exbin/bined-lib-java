@@ -15,6 +15,7 @@
  */
 package org.exbin.dhex.deltahex.component;
 
+import org.exbin.dhex.deltahex.CaretPosition;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;

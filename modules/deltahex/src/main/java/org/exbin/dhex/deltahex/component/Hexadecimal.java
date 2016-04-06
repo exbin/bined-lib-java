@@ -15,6 +15,8 @@
  */
 package org.exbin.dhex.deltahex.component;
 
+import org.exbin.dhex.deltahex.HexadecimalUtils;
+import org.exbin.dhex.deltahex.CaretPosition;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -25,11 +27,10 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
-import javax.swing.JDialog;
 import javax.swing.JComponent;
 import javax.swing.UIManager;
-import org.exbin.framework.gui.utils.WindowUtils;
-import org.exbin.xbup.core.type.XBData;
+import org.exbin.dhex.deltahex.EditableHexadecimalData;
+import org.exbin.dhex.deltahex.HexadecimalData;
 
 /**
  * Hex editor component.
@@ -39,7 +40,7 @@ import org.exbin.xbup.core.type.XBData;
  */
 public class Hexadecimal extends JComponent {
 
-    private XBData data;
+    private HexadecimalData data;
 
     private HexadecimalCaret caret;
     private SelectionRange selection;
@@ -175,7 +176,7 @@ public class Hexadecimal extends JComponent {
                         CaretPosition caretPosition = caret.getCaretPosition();
                         int bytesPerLine = getBytesPerLine();
                         if (caretPosition.getDataPosition() > 0) {
-                            if (caretPosition.getDataPosition() > bytesPerLine) {
+                            if (caretPosition.getDataPosition() >= bytesPerLine) {
                                 caret.setCaretPosition(caretPosition.getDataPosition() - bytesPerLine, caret.isLowerHalf());
                             }
                             updateSelection(e.getModifiersEx(), caretPosition);
@@ -253,7 +254,7 @@ public class Hexadecimal extends JComponent {
                             if (keyChar > 31 && keyChar < 255) {
                                 CaretPosition caretPosition = caret.getCaretPosition();
                                 long dataPosition = caretPosition.getDataPosition();
-                                data.setByte(dataPosition, (byte) keyChar);
+                                ((EditableHexadecimalData) data).setByte(dataPosition, (byte) keyChar);
                                 moveRight(0);
                             }
                         }
@@ -275,7 +276,7 @@ public class Hexadecimal extends JComponent {
             byteValue = (byte) ((byteValue & 0xf) | (value << 4));
         }
 
-        data.setByte(dataPosition, byteValue);
+        ((EditableHexadecimalData) data).setByte(dataPosition, byteValue);
     }
 
     private void moveRight(int modifiers) {
@@ -285,11 +286,11 @@ public class Hexadecimal extends JComponent {
             if (!lowerHalf) {
                 caret.setLowerHalf(true);
                 updateSelection(modifiers, caretPosition);
-            } else if (caretPosition.getDataPosition() < data.getDataSize() * 2) {
+            } else if (caretPosition.getDataPosition() < data.getDataSize()) {
                 caret.setCaretPosition(caretPosition.getDataPosition() + 1, false);
                 updateSelection(modifiers, caretPosition);
             }
-        } else if (caretPosition.getDataPosition() < data.getDataSize() * 2) {
+        } else if (caretPosition.getDataPosition() < data.getDataSize()) {
             caret.setCaretPosition(caretPosition.getDataPosition() + 1);
             updateSelection(modifiers, caretPosition);
         }
@@ -341,19 +342,6 @@ public class Hexadecimal extends JComponent {
         caret.setCaretPosition(dataPosition, lowerHalf);
 
         updateSelection(modifiers, caretPosition);
-    }
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        JDialog dialog = WindowUtils.createBasicDialog();
-        Hexadecimal hexPanel = new Hexadecimal();
-        XBData data = new XBData();
-        data.loadFromStream(hexPanel.getClass().getResourceAsStream("/org/exbin/dhex/deltahex/resources/DeltaHexModule.properties"));
-        hexPanel.setData(data);
-        dialog.add(hexPanel);
-        WindowUtils.invokeWindow(dialog);
     }
 
     @Override
@@ -525,11 +513,11 @@ public class Hexadecimal extends JComponent {
         return previewX;
     }
 
-    public XBData getData() {
+    public HexadecimalData getData() {
         return data;
     }
 
-    public void setData(XBData data) {
+    public void setData(HexadecimalData data) {
         this.data = data;
         repaint();
     }

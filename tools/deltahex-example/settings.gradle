@@ -1,0 +1,5 @@
+rootProject.name = 'deltahex-example'
+
+include ":modules:deltahex"
+
+apply from: '../tools-settings.gradle'
