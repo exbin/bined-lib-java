@@ -26,31 +26,33 @@ import java.awt.Graphics;
  * @version 0.1.0 2016/04/03
  * @author ExBin Project (http://exbin.org)
  */
-public class DefaultHexadecimalLinePainter implements HexadecimalLinePainter {
+public class DefaultHexadecimalTextPainter implements HexadecimalTextPainter {
 
     private final Hexadecimal hexadecimal;
 
-    public DefaultHexadecimalLinePainter(Hexadecimal hexadecimal) {
+    public DefaultHexadecimalTextPainter(Hexadecimal hexadecimal) {
         this.hexadecimal = hexadecimal;
     }
 
     @Override
-    public void paintLine(Graphics g, long line, int positionY, long dataPosition, int bytesPerLine, int fontHeight, int charWidth, int byteOnLine) {
+    public void paintText(Graphics g, long line, int positionY, long dataPosition, int bytesPerLine, int fontHeight, int charWidth, int byteOnLine) {
         g.setColor(hexadecimal.getTextColor());
         if (byteOnLine == 0 && hexadecimal.isShowLineNumbers()) {
             char[] lineNumberCode = HexadecimalUtils.longToHexChars(line);
             g.drawChars(lineNumberCode, 0, 8, 0, positionY - hexadecimal.getSubFontSpace());
         }
-        byte dataByte = hexadecimal.getData().getByte(dataPosition);
-        char[] chars = HexadecimalUtils.byteToHexChars(dataByte);
-        g.drawChars(chars, 0, 2, hexadecimal.getHexadecimalX() + byteOnLine * charWidth * 3, positionY - hexadecimal.getSubFontSpace());
+        if (dataPosition < hexadecimal.getData().getDataSize()) {
+            byte dataByte = hexadecimal.getData().getByte(dataPosition);
+            char[] chars = HexadecimalUtils.byteToHexChars(dataByte);
+            g.drawChars(chars, 0, 2, hexadecimal.getHexadecimalX() + byteOnLine * charWidth * 3, positionY - hexadecimal.getSubFontSpace());
 
-        if (hexadecimal.getViewMode() != Hexadecimal.ViewMode.HEXADECIMAL) {
-            // TODO don't compute for fonts with fixed width
-            char[] previewChar = new char[]{(char) dataByte};
-            int previewCharWidth = g.getFontMetrics().charWidth(previewChar[0]);
-            int leftSpace = (charWidth - previewCharWidth) / 2;
-            g.drawChars(previewChar, 0, 1, leftSpace + hexadecimal.getPreviewX() + byteOnLine * charWidth, positionY - hexadecimal.getSubFontSpace());
+            if (hexadecimal.getViewMode() != Hexadecimal.ViewMode.HEXADECIMAL) {
+                // TODO don't compute for fonts with fixed width
+                char[] previewChar = new char[]{(char) dataByte};
+                int previewCharWidth = g.getFontMetrics().charWidth(previewChar[0]);
+                int leftSpace = (charWidth - previewCharWidth) / 2;
+                g.drawChars(previewChar, 0, 1, leftSpace + hexadecimal.getPreviewX() + byteOnLine * charWidth, positionY - hexadecimal.getSubFontSpace());
+            }
         }
     }
 

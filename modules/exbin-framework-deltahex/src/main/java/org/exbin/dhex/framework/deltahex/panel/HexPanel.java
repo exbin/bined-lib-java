@@ -36,6 +36,7 @@ import javax.swing.event.ChangeListener;
 import javax.swing.text.Document;
 import javax.swing.undo.UndoableEdit;
 import org.exbin.dhex.deltahex.EditableHexadecimalData;
+import org.exbin.dhex.deltahex.HexadecimalData;
 import org.exbin.xbup.core.block.declaration.local.XBLFormatDecl;
 import org.exbin.xbup.core.parser.XBProcessingException;
 import org.exbin.xbup.core.serial.XBPSerialReader;
@@ -381,7 +382,9 @@ public class HexPanel extends javax.swing.JPanel implements XBEditorProvider, Cl
 //            case DeltaHexModule.TXT_FILE_TYPE: {
                 try {
                     FileInputStream fileStream = new FileInputStream(file);
-                    ((EditableHexadecimalData) hexadecimal.getData()).loadFromStream(fileStream);
+                    HexadecimalData data = hexadecimal.getData();
+                    ((EditableHexadecimalData) data).loadFromStream(fileStream);
+                    hexadecimal.setData(data);
                     fileStream.close();
                 } catch (IOException ex) {
                     Logger.getLogger(HexPanel.class.getName()).log(Level.SEVERE, null, ex);

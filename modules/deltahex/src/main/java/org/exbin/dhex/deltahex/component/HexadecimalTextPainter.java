@@ -23,7 +23,7 @@ import java.awt.Graphics;
  * @version 0.1.0 2016/04/04
  * @author ExBin Project (http://exbin.org)
  */
-public interface HexadecimalLinePainter {
+public interface HexadecimalTextPainter {
 
     /**
      * Paints line for given hexadecimal editor line.
@@ -37,7 +37,7 @@ public interface HexadecimalLinePainter {
      * @param charWidth font character width
      * @param byteOnLine number of byte on the current line
      */
-    void paintLine(Graphics g, long line, int positionY, long dataPosition, int bytesPerLine, int fontHeight, int charWidth, int byteOnLine);
+    void paintText(Graphics g, long line, int positionY, long dataPosition, int bytesPerLine, int fontHeight, int charWidth, int byteOnLine);
 
     /**
      * Paints background for given hexadecimal editor line.

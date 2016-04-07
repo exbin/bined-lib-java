@@ -15,6 +15,10 @@
  */
 package org.exbin.dhex.example;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JDialog;
 import org.exbin.dhex.deltahex.component.Hexadecimal;
 import org.exbin.dhex.framework.deltahex.XBHexadecimalData;
@@ -39,7 +43,12 @@ public class DeltaHexExample {
         dialog.setLocationByPlatform(true);
         Hexadecimal hexPanel = new Hexadecimal();
         XBData data = new XBData();
-        data.loadFromStream(hexPanel.getClass().getResourceAsStream("/org/exbin/dhex/example/resources/example.txt"));
+            //        data.loadFromStream(hexPanel.getClass().getResourceAsStream("/org/exbin/dhex/example/resources/example.txt"));
+        try {
+            data.loadFromStream(new FileInputStream("/home/hajdam/.dhexrc"));
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(DeltaHexExample.class.getName()).log(Level.SEVERE, null, ex);
+        }
         hexPanel.setData(new XBHexadecimalData(data));
         dialog.add(hexPanel);
 
