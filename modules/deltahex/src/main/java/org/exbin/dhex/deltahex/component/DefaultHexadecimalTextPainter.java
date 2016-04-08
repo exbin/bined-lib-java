@@ -43,8 +43,10 @@ public class DefaultHexadecimalTextPainter implements HexadecimalTextPainter {
         }
         if (dataPosition < hexadecimal.getData().getDataSize()) {
             byte dataByte = hexadecimal.getData().getByte(dataPosition);
-            char[] chars = HexadecimalUtils.byteToHexChars(dataByte);
-            g.drawChars(chars, 0, 2, hexadecimal.getHexadecimalX() + byteOnLine * charWidth * 3, positionY - hexadecimal.getSubFontSpace());
+            if (hexadecimal.getViewMode() != Hexadecimal.ViewMode.PREVIEW) {
+                char[] chars = HexadecimalUtils.byteToHexChars(dataByte);
+                g.drawChars(chars, 0, 2, hexadecimal.getHexadecimalX() + byteOnLine * charWidth * 3, positionY - hexadecimal.getSubFontSpace());
+            }
 
             if (hexadecimal.getViewMode() != Hexadecimal.ViewMode.HEXADECIMAL) {
                 // TODO don't compute for fonts with fixed width
@@ -59,7 +61,7 @@ public class DefaultHexadecimalTextPainter implements HexadecimalTextPainter {
     @Override
     public void paintBackground(Graphics g, long line, int positionY, long dataPosition, int bytesPerLine, int fontHeight, int charWidth) {
         g.setColor((line & 1) == 0 ? hexadecimal.getBackground() : hexadecimal.getOddBackgroundColor());
-        g.fillRect(hexadecimal.getHexadecimalX(), positionY - fontHeight, g.getClipBounds().width - hexadecimal.getHexadecimalX(), fontHeight);
+        g.fillRect(0, positionY - fontHeight, g.getClipBounds().width, fontHeight);
 
         Hexadecimal.SelectionRange selection = hexadecimal.getSelection();
         if (selection == null) {

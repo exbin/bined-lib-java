@@ -27,7 +27,7 @@ import org.exbin.xbup.core.type.XBData;
 /**
  * Hexadecimal editor examples.
  *
- * @version 0.1.0 2016/04/06
+ * @version 0.1.0 2016/04/08
  * @author ExBin Project (http://exbin.org)
  */
 public class DeltaHexExample {
@@ -38,19 +38,13 @@ public class DeltaHexExample {
      * @param args arguments
      */
     public static void main(String[] args) {
-        final JDialog dialog = new JDialog(new javax.swing.JFrame(), true);
-        dialog.setSize(640, 480);
-        dialog.setLocationByPlatform(true);
+        final DeltaHexExampleDialog dialog = new DeltaHexExampleDialog(new javax.swing.JFrame(), true);
         Hexadecimal hexPanel = new Hexadecimal();
         XBData data = new XBData();
-            //        data.loadFromStream(hexPanel.getClass().getResourceAsStream("/org/exbin/dhex/example/resources/example.txt"));
-        try {
-            data.loadFromStream(new FileInputStream("/home/hajdam/.dhexrc"));
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(DeltaHexExample.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        data.loadFromStream(hexPanel.getClass().getResourceAsStream("/org/exbin/dhex/example/resources/lorem_1.txt"));
         hexPanel.setData(new XBHexadecimalData(data));
-        dialog.add(hexPanel);
+        dialog.setHexadecimal(hexPanel);
+        hexPanel.requestFocus();
 
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override

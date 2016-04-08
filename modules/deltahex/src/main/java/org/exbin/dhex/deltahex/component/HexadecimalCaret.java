@@ -38,20 +38,21 @@ public class HexadecimalCaret {
     private final CaretPosition caretPosition = new CaretPosition();
 
     public void paint(Graphics g, int bytesPerLine, int fontHeight, int charWidth) {
+        Point scrollPoint = hexadecimal.getScrollPoint();
         Point cursorPoint = getCursorPoint(bytesPerLine, fontHeight, charWidth);
         if (hexadecimal.getEditationMode() == Hexadecimal.EditationMode.OVERWRITE) {
-            g.drawRect(cursorPoint.x, cursorPoint.y, charWidth, fontHeight);
+            g.drawRect(cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y, charWidth, fontHeight);
         } else {
-            g.fillRect(cursorPoint.x, cursorPoint.y, DEFAULT_CURSOR_WIDTH, fontHeight);
+            g.fillRect(cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y, DEFAULT_CURSOR_WIDTH, fontHeight);
         }
     }
 
-    private Point getCursorPoint(int bytesPerLine, int fontHeight, int charWidth) {
+    private Point getCursorPoint(int bytesPerLine, int lineHeight, int charWidth) {
         long dataPosition = caretPosition.getDataPosition();
         long line = dataPosition / bytesPerLine;
         int offset = (int) (dataPosition % bytesPerLine);
 
-        int caretY = (int) ((line + 2) * fontHeight);
+        int caretY = (int) (hexadecimal.getHexadecimalY() + line * lineHeight);
         int caretX;
         if (hexadecimal.getActiveSection() == Hexadecimal.Section.PREVIEW) {
             caretX = hexadecimal.getPreviewX() + charWidth * offset;
