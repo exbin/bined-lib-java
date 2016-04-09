@@ -15,11 +15,7 @@
  */
 package org.exbin.dhex.example;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JDialog;
+import javax.swing.JFrame;
 import org.exbin.dhex.deltahex.component.Hexadecimal;
 import org.exbin.dhex.framework.deltahex.XBHexadecimalData;
 import org.exbin.xbup.core.type.XBData;
@@ -27,7 +23,7 @@ import org.exbin.xbup.core.type.XBData;
 /**
  * Hexadecimal editor examples.
  *
- * @version 0.1.0 2016/04/08
+ * @version 0.1.0 2016/04/09
  * @author ExBin Project (http://exbin.org)
  */
 public class DeltaHexExample {
@@ -38,28 +34,31 @@ public class DeltaHexExample {
      * @param args arguments
      */
     public static void main(String[] args) {
-        final DeltaHexExampleDialog dialog = new DeltaHexExampleDialog(new javax.swing.JFrame(), true);
-        Hexadecimal hexPanel = new Hexadecimal();
+        final JFrame frame = new JFrame("DHex Library Example");
+        frame.setLocationByPlatform(true);
+        frame.setSize(1000, 600);
+        frame.setLocationRelativeTo(null);
+        final DeltaHexExamplePanel panel = new DeltaHexExamplePanel();
+        frame.add(panel);
+        Hexadecimal hexadecimal = new Hexadecimal();
         XBData data = new XBData();
-        data.loadFromStream(hexPanel.getClass().getResourceAsStream("/org/exbin/dhex/example/resources/lorem_1.txt"));
-        hexPanel.setData(new XBHexadecimalData(data));
-        dialog.setHexadecimal(hexPanel);
-        hexPanel.requestFocus();
+        data.loadFromStream(hexadecimal.getClass().getResourceAsStream("/org/exbin/dhex/example/resources/lorem_1.txt"));
+        hexadecimal.setData(new XBHexadecimalData(data));
+        panel.setHexadecimal(hexadecimal);
+        hexadecimal.requestFocus();
 
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
-                if (dialog instanceof JDialog) {
-                    dialog.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-                }
+                frame.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                frame.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
                         System.exit(0);
                     }
                 });
-                dialog.setVisible(true);
+                frame.setVisible(true);
             }
         });
     }

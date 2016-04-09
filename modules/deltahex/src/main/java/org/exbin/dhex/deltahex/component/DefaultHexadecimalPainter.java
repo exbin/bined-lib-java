@@ -23,37 +23,32 @@ import java.awt.Graphics;
 /**
  * Hex editor line painter.
  *
- * @version 0.1.0 2016/04/03
+ * @version 0.1.0 2016/04/09
  * @author ExBin Project (http://exbin.org)
  */
-public class DefaultHexadecimalTextPainter implements HexadecimalTextPainter {
+public class DefaultHexadecimalPainter implements HexadecimalPainter {
 
     private final Hexadecimal hexadecimal;
 
-    public DefaultHexadecimalTextPainter(Hexadecimal hexadecimal) {
+    public DefaultHexadecimalPainter(Hexadecimal hexadecimal) {
         this.hexadecimal = hexadecimal;
     }
 
     @Override
-    public void paintText(Graphics g, long line, int positionY, long dataPosition, int bytesPerLine, int fontHeight, int charWidth, int byteOnLine) {
-        g.setColor(hexadecimal.getTextColor());
-        if (byteOnLine == 0 && hexadecimal.isShowLineNumbers()) {
-            char[] lineNumberCode = HexadecimalUtils.longToHexChars(line);
-            g.drawChars(lineNumberCode, 0, 8, 0, positionY - hexadecimal.getSubFontSpace());
-        }
-        if (dataPosition < hexadecimal.getData().getDataSize()) {
-            byte dataByte = hexadecimal.getData().getByte(dataPosition);
-            if (hexadecimal.getViewMode() != Hexadecimal.ViewMode.PREVIEW) {
-                char[] chars = HexadecimalUtils.byteToHexChars(dataByte);
-                g.drawChars(chars, 0, 2, hexadecimal.getHexadecimalX() + byteOnLine * charWidth * 3, positionY - hexadecimal.getSubFontSpace());
+    public void paintHeader(Graphics g, int positionY, int bytesPerLine, int charWidth) {
+        int hexadecimalX = hexadecimal.getHexadecimalX();
+        g.setColor(hexadecimal.getForeground());
+        if (hexadecimal.isCharFixedMode()) {
+            for (int i = 0; i < bytesPerLine; i++) {
+                char[] chars = HexadecimalUtils.byteToHexChars((byte) i);
+                g.drawChars(chars, 0, 2, hexadecimalX + i * charWidth * 3, positionY);
             }
-
-            if (hexadecimal.getViewMode() != Hexadecimal.ViewMode.HEXADECIMAL) {
-                // TODO don't compute for fonts with fixed width
-                char[] previewChar = new char[]{(char) dataByte};
-                int previewCharWidth = g.getFontMetrics().charWidth(previewChar[0]);
-                int leftSpace = (charWidth - previewCharWidth) / 2;
-                g.drawChars(previewChar, 0, 1, leftSpace + hexadecimal.getPreviewX() + byteOnLine * charWidth, positionY - hexadecimal.getSubFontSpace());
+        } else {
+            for (int i = 0; i < bytesPerLine; i++) {
+                char[] chars = HexadecimalUtils.byteToHexChars((byte) i);
+                int startX = hexadecimalX + i * charWidth * 3;
+                drawCenteredChar(g, chars, 0, charWidth, startX, positionY);
+                drawCenteredChar(g, chars, 1, charWidth, startX, positionY);
             }
         }
     }
@@ -127,5 +122,54 @@ public class DefaultHexadecimalTextPainter implements HexadecimalTextPainter {
                 g.fillRect(selectionPreviewStart, positionY - fontHeight, selectionPreviewEnd - selectionPreviewStart, fontHeight);
             }
         }
+    }
+
+    @Override
+    public void paintText(Graphics g, long line, int linePositionY, long dataPosition, int bytesPerLine, int fontHeight, int charWidth, int byteOnLine) {
+        int positionY = linePositionY - hexadecimal.getSubFontSpace();
+        g.setColor(hexadecimal.getForeground());
+        if (byteOnLine == 0 && hexadecimal.isShowLineNumbers()) {
+            char[] lineNumberCode = HexadecimalUtils.longToHexChars(line);
+            g.drawChars(lineNumberCode, 0, 8, 0, positionY);
+        }
+        if (dataPosition < hexadecimal.getData().getDataSize()) {
+            byte dataByte = hexadecimal.getData().getByte(dataPosition);
+            if (hexadecimal.getViewMode() != Hexadecimal.ViewMode.PREVIEW) {
+                int startX = hexadecimal.getHexadecimalX() + byteOnLine * charWidth * 3;
+                char[] chars = HexadecimalUtils.byteToHexChars(dataByte);
+                if (hexadecimal.isCharFixedMode()) {
+                    g.drawChars(chars, 0, 2, startX, positionY);
+                } else {
+                    drawCenteredChar(g, chars, 0, charWidth, startX, positionY);
+                    drawCenteredChar(g, chars, 1, charWidth, startX, positionY);
+                }
+            }
+
+            if (hexadecimal.getViewMode() != Hexadecimal.ViewMode.HEXADECIMAL) {
+                int startX = hexadecimal.getPreviewX() + byteOnLine * charWidth;
+                char[] previewChar = new char[]{(char) dataByte};
+                if (hexadecimal.isCharFixedMode()) {
+                    g.drawChars(previewChar, 0, 1, startX, positionY);
+                } else {
+                    drawCenteredChar(g, previewChar, 0, charWidth, startX, positionY);
+                }
+            }
+        }
+    }
+
+    /**
+     * Draws char in array centering it in precomputed space.
+     *
+     * @param g graphics
+     * @param drawnChars
+     * @param charOffset
+     * @param charWidthSpace
+     * @param startX
+     * @param positionY
+     */
+    protected void drawCenteredChar(Graphics g, char[] drawnChars, int charOffset, int charWidthSpace, int startX, int positionY) {
+        int charWidth = g.getFontMetrics().charWidth(drawnChars[charOffset]);
+        int leftSpace = (charWidthSpace - charWidth) / 2;
+        g.drawChars(drawnChars, charOffset, 1, startX + charWidthSpace * charOffset + leftSpace, positionY);
     }
 }

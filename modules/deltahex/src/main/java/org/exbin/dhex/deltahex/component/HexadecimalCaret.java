@@ -106,5 +106,4 @@ public class HexadecimalCaret {
     public void setLowerHalf(boolean lowerHalf) {
         caretPosition.setLowerHalf(lowerHalf);
     }
-
 }

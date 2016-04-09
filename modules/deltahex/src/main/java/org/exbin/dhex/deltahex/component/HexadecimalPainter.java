@@ -18,12 +18,22 @@ package org.exbin.dhex.deltahex.component;
 import java.awt.Graphics;
 
 /**
- * Hexadecimal editor background painter.
+ * Hexadecimal editor painter.
  *
- * @version 0.1.0 2016/04/04
+ * @version 0.1.0 2016/04/09
  * @author ExBin Project (http://exbin.org)
  */
-public interface HexadecimalTextPainter {
+public interface HexadecimalPainter {
+
+    /**
+     * Paints header for hexadecimal editor.
+     *
+     * @param g graphics
+     * @param positionY position of the bottom line of current line in pixels
+     * @param bytesPerLine data bytes per line
+     * @param charWidth font character width
+     */
+    void paintHeader(Graphics g, int positionY, int bytesPerLine, int charWidth);
 
     /**
      * Paints line for given hexadecimal editor line.
