@@ -40,14 +40,16 @@ public interface HexadecimalPainter {
      *
      * @param g graphics
      * @param line line number
-     * @param positionY position of the bottom line of current line in pixels
+     * @param linePositionX position of left side
+     * @param byteOnLine number of byte on the current line
+     * @param linePositionY position of the bottom line of current line in
+     * pixels
      * @param dataPosition current data position
      * @param bytesPerLine data bytes per line
      * @param fontHeight font character height
      * @param charWidth font character width
-     * @param byteOnLine number of byte on the current line
      */
-    void paintText(Graphics g, long line, int positionY, long dataPosition, int bytesPerLine, int fontHeight, int charWidth, int byteOnLine);
+    void paintText(Graphics g, long line, int linePositionX, int byteOnLine, int linePositionY, long dataPosition, int bytesPerLine, int fontHeight, int charWidth);
 
     /**
      * Paints background for given hexadecimal editor line.

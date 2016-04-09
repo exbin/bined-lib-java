@@ -55,8 +55,16 @@ public class DefaultHexadecimalPainter implements HexadecimalPainter {
 
     @Override
     public void paintBackground(Graphics g, long line, int positionY, long dataPosition, int bytesPerLine, int fontHeight, int charWidth) {
-        g.setColor((line & 1) == 0 ? hexadecimal.getBackground() : hexadecimal.getOddBackgroundColor());
+        Hexadecimal.BackgroundMode backgroundMode = hexadecimal.getBackgroundMode();
+        g.setColor((line & 1) == 0 && backgroundMode != Hexadecimal.BackgroundMode.PLAIN
+                ? hexadecimal.getBackground() : hexadecimal.getOddBackgroundColor());
         g.fillRect(0, positionY - fontHeight, g.getClipBounds().width, fontHeight);
+        if (backgroundMode == Hexadecimal.BackgroundMode.GRIDDED && (line & 1) == 0) {
+            g.setColor(hexadecimal.getOddBackgroundColor());
+            for (int i = 0; i < bytesPerLine / 2; i++) {
+                g.fillRect(hexadecimal.getHexadecimalX() + charWidth * (3 + i * 6), positionY - fontHeight, charWidth * 2, fontHeight);
+            }
+        }
 
         Hexadecimal.SelectionRange selection = hexadecimal.getSelection();
         if (selection == null) {
@@ -125,17 +133,17 @@ public class DefaultHexadecimalPainter implements HexadecimalPainter {
     }
 
     @Override
-    public void paintText(Graphics g, long line, int linePositionY, long dataPosition, int bytesPerLine, int fontHeight, int charWidth, int byteOnLine) {
+    public void paintText(Graphics g, long line, int linePositionX, int byteOnLine, int linePositionY, long dataPosition, int bytesPerLine, int fontHeight, int charWidth) {
         int positionY = linePositionY - hexadecimal.getSubFontSpace();
         g.setColor(hexadecimal.getForeground());
         if (byteOnLine == 0 && hexadecimal.isShowLineNumbers()) {
-            char[] lineNumberCode = HexadecimalUtils.longToHexChars(line);
+            char[] lineNumberCode = HexadecimalUtils.longToHexChars(dataPosition);
             g.drawChars(lineNumberCode, 0, 8, 0, positionY);
         }
         if (dataPosition < hexadecimal.getData().getDataSize()) {
             byte dataByte = hexadecimal.getData().getByte(dataPosition);
             if (hexadecimal.getViewMode() != Hexadecimal.ViewMode.PREVIEW) {
-                int startX = hexadecimal.getHexadecimalX() + byteOnLine * charWidth * 3;
+                int startX = linePositionX + byteOnLine * charWidth * 3;
                 char[] chars = HexadecimalUtils.byteToHexChars(dataByte);
                 if (hexadecimal.isCharFixedMode()) {
                     g.drawChars(chars, 0, 2, startX, positionY);
@@ -161,11 +169,11 @@ public class DefaultHexadecimalPainter implements HexadecimalPainter {
      * Draws char in array centering it in precomputed space.
      *
      * @param g graphics
-     * @param drawnChars
-     * @param charOffset
-     * @param charWidthSpace
-     * @param startX
-     * @param positionY
+     * @param drawnChars array of chars
+     * @param charOffset index of target character in array
+     * @param charWidthSpace default character width
+     * @param startX X position of drawing area start
+     * @param positionY Y position of drawing area start
      */
     protected void drawCenteredChar(Graphics g, char[] drawnChars, int charOffset, int charWidthSpace, int startX, int positionY) {
         int charWidth = g.getFontMetrics().charWidth(drawnChars[charOffset]);

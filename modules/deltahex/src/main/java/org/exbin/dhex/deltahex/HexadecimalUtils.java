@@ -26,8 +26,8 @@ public class HexadecimalUtils {
     /**
      * Converts byte value to sequence of hexadecimal characters.
      *
-     * @param value
-     * @return
+     * @param value byte value
+     * @return sequence of two hexadecimal chars with upper case
      */
     public static char[] byteToHexChars(byte value) {
         int firstChar = (value >> 4) & 15;
@@ -69,7 +69,7 @@ public class HexadecimalUtils {
             } else {
                 result[7 - i] = (char) (55 + charValue);
             }
-            
+
             value = value >> 4;
         }
 

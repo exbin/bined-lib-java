@@ -22,7 +22,7 @@ import org.exbin.dhex.deltahex.component.Hexadecimal;
 /**
  * Hexadecimal editor example panel.
  *
- * @version 0.1.0 2016/04/09
+ * @version 0.1.0 2016/04/10
  * @author ExBin Project (http://exbin.org)
  */
 public class DeltaHexExamplePanel extends javax.swing.JPanel {
@@ -40,6 +40,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
         charRenderingComboBox.setSelectedIndex(hexadecimal.getCharRenderingMode().ordinal());
         verticalScrollModeComboBox.setSelectedIndex(hexadecimal.getVerticalScrollMode().ordinal());
         horizontalScrollModeComboBox.setSelectedIndex(hexadecimal.getHorizontalScrollMode().ordinal());
+        backgroundModeComboBox.setSelectedIndex(hexadecimal.getBackgroundMode().ordinal());
         showLineNumbersCheckBox.setSelected(hexadecimal.isShowLineNumbers());
         showHeaderCheckBox.setSelected(hexadecimal.isShowHeader());
         editableCheckBox.setSelected(hexadecimal.isEditable());
@@ -104,6 +105,8 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
         selectionFirstCheckBox = new javax.swing.JCheckBox();
         selectionLastTextField = new javax.swing.JTextField();
         selectionLastCheckBox = new javax.swing.JCheckBox();
+        backgroundModeLabel = new javax.swing.JLabel();
+        backgroundModeComboBox = new javax.swing.JComboBox<>();
 
         setLayout(new java.awt.BorderLayout());
 
@@ -177,7 +180,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
         horizontalScrollModeLabel.setText("Horizontal Scroll Mode");
 
         horizontalScrollModeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "NONE", "PER_CHAR", "PIXEL" }));
-        horizontalScrollModeComboBox.setEnabled(false);
+        horizontalScrollModeComboBox.setSelectedIndex(2);
         horizontalScrollModeComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 horizontalScrollModeComboBoxActionPerformed(evt);
@@ -202,6 +205,15 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
 
         selectionLastCheckBox.setText("Half");
         selectionLastCheckBox.setEnabled(false);
+
+        backgroundModeLabel.setText("Background Mode");
+
+        backgroundModeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "PLAIN", "STRIPPED", "GRIDDED" }));
+        backgroundModeComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                backgroundModeComboBoxActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout settingsPanelLayout = new javax.swing.GroupLayout(settingsPanel);
         settingsPanel.setLayout(settingsPanelLayout);
@@ -248,7 +260,9 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
                                 .addGap(18, 18, 18)
                                 .addComponent(selectionLastTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(selectionLastCheckBox)))
+                                .addComponent(selectionLastCheckBox))
+                            .addComponent(backgroundModeLabel)
+                            .addComponent(backgroundModeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -289,10 +303,13 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
                 .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(selectionFirstTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(selectionFirstCheckBox)
-                    .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(selectionLastTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(selectionLastCheckBox)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 46, Short.MAX_VALUE)
+                    .addComponent(selectionLastTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(selectionLastCheckBox))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(backgroundModeLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(backgroundModeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 48, Short.MAX_VALUE)
                 .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(settingsPanelLayout.createSequentialGroup()
                         .addComponent(horizontalScrollModeLabel)
@@ -347,8 +364,14 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
         hexadecimal.setCharRenderingMode(Hexadecimal.CharRenderingMode.values()[charRenderingComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_charRenderingComboBoxActionPerformed
 
+    private void backgroundModeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backgroundModeComboBoxActionPerformed
+        hexadecimal.setBackgroundMode(Hexadecimal.BackgroundMode.values()[backgroundModeComboBox.getSelectedIndex()]);
+    }//GEN-LAST:event_backgroundModeComboBoxActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox<String> backgroundModeComboBox;
+    private javax.swing.JLabel backgroundModeLabel;
     private javax.swing.JLabel bytesPerLineLabel;
     private javax.swing.JSpinner bytesPerLineSpinner;
     private javax.swing.JComboBox<String> charRenderingComboBox;
