@@ -40,12 +40,12 @@ public class DeltaHexExample {
         frame.setLocationRelativeTo(null);
         final DeltaHexExamplePanel panel = new DeltaHexExamplePanel();
         frame.add(panel);
-        Hexadecimal hexadecimal = new Hexadecimal();
+        final Hexadecimal hexadecimal = new Hexadecimal();
+//        hexadecimal.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         XBData data = new XBData();
         data.loadFromStream(hexadecimal.getClass().getResourceAsStream("/org/exbin/dhex/example/resources/lorem_1.txt"));
         hexadecimal.setData(new XBHexadecimalData(data));
         panel.setHexadecimal(hexadecimal);
-        hexadecimal.requestFocus();
 
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
@@ -59,6 +59,7 @@ public class DeltaHexExample {
                     }
                 });
                 frame.setVisible(true);
+                hexadecimal.requestFocus();
             }
         });
     }

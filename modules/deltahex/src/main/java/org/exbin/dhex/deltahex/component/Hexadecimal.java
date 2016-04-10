@@ -21,8 +21,11 @@ import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.GraphicsDevice;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.Scrollbar;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
@@ -44,7 +47,7 @@ import org.exbin.dhex.deltahex.HexadecimalData;
 /**
  * Hex editor component.
  *
- * @version 0.1.0 2016/04/09
+ * @version 0.1.0 2016/04/10
  * @author ExBin Project (http://exbin.org)
  */
 public class Hexadecimal extends JComponent {
@@ -61,6 +64,7 @@ public class Hexadecimal extends JComponent {
     private Section activeSection = Section.HEXADECIMAL;
     private EditationMode editationMode = EditationMode.OVERWRITE;
     private CharRenderingMode charRenderingMode = CharRenderingMode.AUTO;
+    private CharAntialiasingMode charAntialiasingMode = CharAntialiasingMode.AUTO;
     private int defaultBytesPerLine = 16;
     private boolean showHeader = true;
     private boolean showLineNumbers = true;
@@ -222,6 +226,55 @@ public class Hexadecimal extends JComponent {
 
     @Override
     public void paintComponent(Graphics g) {
+        if (charAntialiasingMode != CharAntialiasingMode.OFF && g instanceof Graphics2D) {
+            Object antialiasingHint;
+            switch (charAntialiasingMode) {
+                case AUTO: {
+                    // TODO detect if display is LCD?
+                    if (((Graphics2D) g).getDeviceConfiguration().getDevice().getType() == GraphicsDevice.TYPE_RASTER_SCREEN) {
+                        antialiasingHint = RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB;
+                    } else {
+                        antialiasingHint = RenderingHints.VALUE_TEXT_ANTIALIAS_GASP;
+                    }
+                    break;
+                }
+                case BASIC: {
+                    antialiasingHint = RenderingHints.VALUE_TEXT_ANTIALIAS_ON;
+                    break;
+                }
+                case GASP: {
+                    antialiasingHint = RenderingHints.VALUE_TEXT_ANTIALIAS_GASP;
+                    break;
+                }
+                case DEFAULT: {
+                    antialiasingHint = RenderingHints.VALUE_TEXT_ANTIALIAS_DEFAULT;
+                    break;
+                }
+                case LCD_HRGB: {
+                    antialiasingHint = RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB;
+                    break;
+                }
+                case LCD_HBGR: {
+                    antialiasingHint = RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HBGR;
+                    break;
+                }
+                case LCD_VRGB: {
+                    antialiasingHint = RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_VRGB;
+                    break;
+                }
+                case LCD_VBGR: {
+                    antialiasingHint = RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_VBGR;
+                    break;
+                }
+                default: {
+                    throw new IllegalStateException("Unexpected antialiasing type " + charAntialiasingMode.name());
+                }
+            }
+            ((Graphics2D) g).setRenderingHint(
+                    RenderingHints.KEY_TEXT_ANTIALIASING,
+                    antialiasingHint);
+        }
+
         super.paintComponent(g);
         g.setFont(getFont());
 
@@ -702,6 +755,15 @@ public class Hexadecimal extends JComponent {
         repaint();
     }
 
+    public CharAntialiasingMode getCharAntialiasingMode() {
+        return charAntialiasingMode;
+    }
+
+    public void setCharAntialiasingMode(CharAntialiasingMode charAntialiasingMode) {
+        this.charAntialiasingMode = charAntialiasingMode;
+        repaint();
+    }
+
     public VerticalScrollMode getVerticalScrollMode() {
         return verticalScrollMode;
     }
@@ -813,6 +875,10 @@ public class Hexadecimal extends JComponent {
 
     public static enum CharRenderingMode {
         AUTO, DYNAMIC, FIXED
+    }
+
+    public static enum CharAntialiasingMode {
+        OFF, AUTO, DEFAULT, BASIC, GASP, LCD_HRGB, LCD_HBGR, LCD_VRGB, LCD_VBGR
     }
 
     /**
