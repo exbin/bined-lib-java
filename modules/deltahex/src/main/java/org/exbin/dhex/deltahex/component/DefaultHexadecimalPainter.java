@@ -16,14 +16,14 @@
 package org.exbin.dhex.deltahex.component;
 
 import org.exbin.dhex.deltahex.HexadecimalUtils;
-import org.exbin.dhex.deltahex.CaretPosition;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Rectangle;
 
 /**
- * Hex editor line painter.
+ * Hex editor painter.
  *
- * @version 0.1.0 2016/04/09
+ * @version 0.1.0 2016/04/11
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultHexadecimalPainter implements HexadecimalPainter {
@@ -54,6 +54,16 @@ public class DefaultHexadecimalPainter implements HexadecimalPainter {
     }
 
     @Override
+    public void paintLineNumber(Graphics g, int linePositionY, long dataPosition, int bytesPerLine, int charWidth) {
+        int positionY = linePositionY - hexadecimal.getSubFontSpace();
+        g.setColor(hexadecimal.getForeground());
+        if (bytesPerLine == 0 && hexadecimal.isShowLineNumbers()) {
+            char[] lineNumberCode = HexadecimalUtils.longToHexChars(dataPosition);
+            g.drawChars(lineNumberCode, 0, 8, 0, positionY);
+        }
+    }
+
+    @Override
     public void paintBackground(Graphics g, long line, int positionY, long dataPosition, int bytesPerLine, int fontHeight, int charWidth) {
         Hexadecimal.BackgroundMode backgroundMode = hexadecimal.getBackgroundMode();
         g.setColor((line & 1) == 0 && backgroundMode != Hexadecimal.BackgroundMode.PLAIN
@@ -77,13 +87,12 @@ public class DefaultHexadecimalPainter implements HexadecimalPainter {
         int selectionPreviewEnd = 0;
 
         long maxLinePosition = dataPosition + bytesPerLine;
-        CaretPosition selectionFirst = selection.getSelectionFirst();
-        CaretPosition selectionLast = selection.getSelectionLast();
-        if (selectionFirst.getDataPosition() < maxLinePosition) {
-            if (selectionFirst.getDataPosition() > dataPosition) {
-                int linePosition = (int) (selectionFirst.getDataPosition() - dataPosition);
-                int halfPosition = selectionFirst.isLowerHalf() ? 1 : 0;
-                selectionStart = hexadecimal.getHexadecimalX() + charWidth * (linePosition * 3 + halfPosition);
+        long selectionFirst = selection.getSelectionFirst();
+        long selectionLast = selection.getSelectionLast();
+        if (selectionFirst < maxLinePosition) {
+            if (selectionFirst > dataPosition) {
+                int linePosition = (int) (selectionFirst - dataPosition);
+                selectionStart = hexadecimal.getHexadecimalX() + charWidth * (linePosition * 3);
                 selectionPreviewStart = hexadecimal.getPreviewX() + charWidth * linePosition;
             } else {
                 selectionStart = hexadecimal.getHexadecimalX();
@@ -91,14 +100,13 @@ public class DefaultHexadecimalPainter implements HexadecimalPainter {
             }
         }
 
-        if (selectionLast.getDataPosition() > dataPosition && selectionFirst.getDataPosition() < maxLinePosition) {
-            if (selectionLast.getDataPosition() > maxLinePosition) {
+        if (selectionLast > dataPosition && selectionFirst < maxLinePosition) {
+            if (selectionLast > maxLinePosition) {
                 selectionEnd = hexadecimal.getHexadecimalX() + bytesPerLine * charWidth * 3;
                 selectionPreviewEnd = hexadecimal.getPreviewX() + bytesPerLine * charWidth;
             } else {
-                int linePosition = (int) (selectionLast.getDataPosition() - dataPosition);
-                int halfPosition = selectionLast.isLowerHalf() ? 1 : 0;
-                selectionEnd = hexadecimal.getHexadecimalX() + charWidth * (linePosition * 3 + halfPosition);
+                int linePosition = (int) (selectionLast - dataPosition);
+                selectionEnd = hexadecimal.getHexadecimalX() + charWidth * (linePosition * 3);
                 selectionPreviewEnd = hexadecimal.getPreviewX() + charWidth * linePosition;
             }
         }
@@ -130,6 +138,38 @@ public class DefaultHexadecimalPainter implements HexadecimalPainter {
                 g.fillRect(selectionPreviewStart, positionY - fontHeight, selectionPreviewEnd - selectionPreviewStart, fontHeight);
             }
         }
+    }
+
+    @Override
+    public void paintHexadecimal(Graphics g, int linePositionX, int linePositionY, int bytesPerLine, int lineHeight, int charWidth) {
+        Rectangle clipBounds = g.getClipBounds();
+
+        Hexadecimal.ScrollPosition scrollPosition = hexadecimal.getScrollPosition();
+        int positionY = linePositionY - scrollPosition.scrollLineOffset;
+        long line = scrollPosition.scrollLinePosition;
+        int byteOnLine = 0;
+        long dataPosition = line * bytesPerLine;
+        long dataSize = hexadecimal.getData().getDataSize();
+        do {
+            if (byteOnLine == 0) {
+                paintBackground(g, line, positionY, dataPosition, bytesPerLine, lineHeight, charWidth);
+            }
+
+            if (dataPosition < dataSize || (dataPosition == dataSize && byteOnLine == 0)) {
+                paintText(g, line, linePositionX, byteOnLine, positionY, dataPosition, bytesPerLine, lineHeight, charWidth);
+            } else {
+                break;
+            }
+
+            byteOnLine++;
+            dataPosition++;
+
+            if (byteOnLine == bytesPerLine) {
+                byteOnLine = 0;
+                positionY += lineHeight;
+                line++;
+            }
+        } while (positionY - lineHeight < clipBounds.y + clipBounds.height);
     }
 
     @Override

@@ -61,6 +61,7 @@ public class Hexadecimal extends JComponent {
 
     private ViewMode viewMode = ViewMode.DUAL;
     private BackgroundMode backgroundMode = BackgroundMode.STRIPPED;
+    private DecorationMode decorationMode = DecorationMode.NONE;
     private Section activeSection = Section.HEXADECIMAL;
     private EditationMode editationMode = EditationMode.OVERWRITE;
     private CharRenderingMode charRenderingMode = CharRenderingMode.AUTO;
@@ -76,10 +77,7 @@ public class Hexadecimal extends JComponent {
     private HorizontalScrollMode horizontalScrollMode = HorizontalScrollMode.NONE;
     private JScrollBar horizontalScrollBar;
     private JScrollBar verticalScrollBar;
-    private long scrollLinePosition = 0;
-    private int scrollLineOffset = 0;
-    private int scrollBytePosition = 0;
-    private int scrollByteOffset = 0;
+    private ScrollPosition scrollPosition = new ScrollPosition();
 
     private HexadecimalPainter painter;
 
@@ -115,11 +113,11 @@ public class Hexadecimal extends JComponent {
     private void init() {
         verticalScrollBar = new JScrollBar(Scrollbar.VERTICAL);
         verticalScrollBar.setVisible(false);
-        verticalScrollBar.setIgnoreRepaint(true);
+//        verticalScrollBar.setIgnoreRepaint(true);
         verticalScrollBar.addAdjustmentListener(new VerticalAdjustmentListener());
         add(verticalScrollBar);
         horizontalScrollBar = new JScrollBar(Scrollbar.HORIZONTAL);
-        horizontalScrollBar.setIgnoreRepaint(true);
+//        horizontalScrollBar.setIgnoreRepaint(true);
         horizontalScrollBar.setVisible(false);
         horizontalScrollBar.addAdjustmentListener(new HorizontalAdjustmentListener());
         add(horizontalScrollBar);
@@ -221,7 +219,11 @@ public class Hexadecimal extends JComponent {
     }
 
     public Point getScrollPoint() {
-        return new Point((int) scrollBytePosition * dimensionsCache.charWidth + scrollByteOffset, (int) scrollLinePosition * dimensionsCache.lineHeight + scrollLineOffset);
+        return new Point((int) scrollPosition.scrollBytePosition * dimensionsCache.charWidth + scrollPosition.scrollByteOffset, (int) scrollPosition.scrollLinePosition * dimensionsCache.lineHeight + scrollPosition.scrollLineOffset);
+    }
+
+    public ScrollPosition getScrollPosition() {
+        return scrollPosition;
     }
 
     @Override
@@ -286,42 +288,47 @@ public class Hexadecimal extends JComponent {
         Rectangle clipBounds = g.getClipBounds();
 
         int positionY = dimensionsCache.lineHeight;
-        int linePositionX = dimensionsCache.hexadecimalX - scrollByteOffset;
+//        int linePositionX = dimensionsCache.hexadecimalX - scrollByteOffset;
         if (showHeader) {
             if (viewMode != ViewMode.PREVIEW && clipBounds.y < dimensionsCache.hexadecimalY) {
                 painter.paintHeader(g, positionY, bytesPerLine, dimensionsCache.charWidth);
             }
-            if (clipBounds.y < dimensionsCache.hexadecimalY) {
-                g.setClip(clipBounds.x, dimensionsCache.hexadecimalY, clipBounds.width, clipBounds.height + clipBounds.y + dimensionsCache.hexadecimalY);
-            }
         }
 
+        if (isShowLineNumbers()) {
+            painter.paintLineNumber(g, positionY, 0, bytesPerLine, WIDTH);
+        }
+
+        g.setClip(dimensionsCache.hexadecimalX, dimensionsCache.hexadecimalY, clipBounds.width, clipBounds.height);
+//        clipBounds.x, dimensionsCache.hexadecimalY, clipBounds.width, clipBounds.height + clipBounds.y + dimensionsCache.hexadecimalY);
+
+        painter.paintHexadecimal(g, dimensionsCache.hexadecimalX, dimensionsCache.hexadecimalY, bytesPerLine, dimensionsCache.lineHeight, dimensionsCache.charWidth);
         // Render hexadecimal part
-        positionY += dimensionsCache.hexadecimalY - scrollLineOffset;
-        long line = scrollLinePosition;
-        int byteOnLine = 0;
-        long dataPosition = line * bytesPerLine;
-        long dataSize = data.getDataSize();
-        do {
-            if (byteOnLine == 0) {
-                painter.paintBackground(g, line, positionY, dataPosition, bytesPerLine, dimensionsCache.lineHeight, dimensionsCache.charWidth);
-            }
-
-            if (dataPosition < dataSize || (dataPosition == dataSize && byteOnLine == 0)) {
-                painter.paintText(g, line, linePositionX, byteOnLine, positionY, dataPosition, bytesPerLine, dimensionsCache.lineHeight, dimensionsCache.charWidth);
-            } else {
-                break;
-            }
-
-            byteOnLine++;
-            dataPosition++;
-
-            if (byteOnLine == bytesPerLine) {
-                byteOnLine = 0;
-                positionY += dimensionsCache.lineHeight;
-                line++;
-            }
-        } while (positionY - dimensionsCache.lineHeight < clipBounds.y + clipBounds.height);
+//        positionY += dimensionsCache.hexadecimalY - scrollLineOffset;
+//        long line = scrollLinePosition;
+//        int byteOnLine = 0;
+//        long dataPosition = line * bytesPerLine;
+//        long dataSize = data.getDataSize();
+//        do {
+//            if (byteOnLine == 0) {
+//                painter.paintBackground(g, line, positionY, dataPosition, bytesPerLine, dimensionsCache.lineHeight, dimensionsCache.charWidth);
+//            }
+//
+//            if (dataPosition < dataSize || (dataPosition == dataSize && byteOnLine == 0)) {
+//                painter.paintText(g, line, linePositionX, byteOnLine, positionY, dataPosition, bytesPerLine, dimensionsCache.lineHeight, dimensionsCache.charWidth);
+//            } else {
+//                break;
+//            }
+//
+//            byteOnLine++;
+//            dataPosition++;
+//
+//            if (byteOnLine == bytesPerLine) {
+//                byteOnLine = 0;
+//                positionY += dimensionsCache.lineHeight;
+//                line++;
+//            }
+//        } while (positionY - dimensionsCache.lineHeight < clipBounds.y + clipBounds.height);
 
         caret.paint(g, bytesPerLine, dimensionsCache.lineHeight, dimensionsCache.charWidth);
     }
@@ -332,22 +339,22 @@ public class Hexadecimal extends JComponent {
         long caretLine = caretPosition.getDataPosition() / dimensionsCache.bytesPerLine;
         int caretByte = (int) (caretPosition.getDataPosition() % dimensionsCache.bytesPerLine);
 
-        if (caretLine <= scrollLinePosition) {
-            scrollLinePosition = caretLine;
-            scrollLineOffset = 0;
+        if (caretLine <= scrollPosition.scrollLinePosition) {
+            scrollPosition.scrollLinePosition = caretLine;
+            scrollPosition.scrollLineOffset = 0;
             scrolled = true;
-        } else if (caretLine >= scrollLinePosition + dimensionsCache.linesPerBounds) {
-            scrollLinePosition = caretLine - dimensionsCache.linesPerBounds + 1;
-            scrollLineOffset = 0; // TODO
+        } else if (caretLine >= scrollPosition.scrollLinePosition + dimensionsCache.linesPerBounds) {
+            scrollPosition.scrollLinePosition = caretLine - dimensionsCache.linesPerBounds + 1;
+            scrollPosition.scrollLineOffset = 0; // TODO
             scrolled = true;
         }
-        if (caretByte <= scrollBytePosition) {
-            scrollBytePosition = caretByte;
-            scrollByteOffset = 0;
+        if (caretByte <= scrollPosition.scrollBytePosition) {
+            scrollPosition.scrollBytePosition = caretByte;
+            scrollPosition.scrollByteOffset = 0;
             scrolled = true;
-        } else if (caretByte >= scrollBytePosition + dimensionsCache.bytesPerLine) {
-            scrollBytePosition = caretByte - dimensionsCache.bytesPerLine;
-            scrollByteOffset = 0; // TODO
+        } else if (caretByte >= scrollPosition.scrollBytePosition + dimensionsCache.bytesPerLine) {
+            scrollPosition.scrollBytePosition = caretByte - dimensionsCache.bytesPerLine;
+            scrollPosition.scrollByteOffset = 0; // TODO
             scrolled = true;
         }
 
@@ -358,15 +365,15 @@ public class Hexadecimal extends JComponent {
 
     private void updateScrollBars() {
         if (verticalScrollMode == VerticalScrollMode.PER_LINE) {
-            verticalScrollBar.setValue((int) scrollLinePosition);
+            verticalScrollBar.setValue((int) scrollPosition.scrollLinePosition);
         } else {
-            verticalScrollBar.setValue((int) (scrollLinePosition * dimensionsCache.lineHeight + scrollLineOffset));
+            verticalScrollBar.setValue((int) (scrollPosition.scrollLinePosition * dimensionsCache.lineHeight + scrollPosition.scrollLineOffset));
         }
 
         if (horizontalScrollMode == HorizontalScrollMode.PER_CHAR) {
-            horizontalScrollBar.setValue((int) scrollBytePosition);
+            horizontalScrollBar.setValue((int) scrollPosition.scrollBytePosition);
         } else {
-            horizontalScrollBar.setValue((int) (scrollBytePosition * dimensionsCache.charWidth * 3 + scrollByteOffset));
+            horizontalScrollBar.setValue((int) (scrollPosition.scrollBytePosition * dimensionsCache.charWidth * 3 + scrollPosition.scrollByteOffset));
         }
         repaint();
     }
@@ -374,9 +381,9 @@ public class Hexadecimal extends JComponent {
     private void updateSelection(int modifiers, CaretPosition caretPosition) {
         if ((modifiers & KeyEvent.SHIFT_DOWN_MASK) > 0) {
             if (selection != null) {
-                selection.end = caret.getCaretPosition();
+                selection.end = caret.getDataPosition();
             } else {
-                selection = new SelectionRange(caretPosition, caret.getCaretPosition());
+                selection = new SelectionRange(caretPosition.getDataPosition(), caret.getDataPosition());
             }
             notifySelectionChanged();
         } else {
@@ -390,8 +397,7 @@ public class Hexadecimal extends JComponent {
     }
 
     public void selectAll() {
-        CaretPosition endPosition = new CaretPosition(data.getDataSize(), false);
-        selection = new SelectionRange(new CaretPosition(), endPosition);
+        selection = new SelectionRange(0, data.getDataSize());
         notifySelectionChanged();
         repaint();
     }
@@ -665,6 +671,15 @@ public class Hexadecimal extends JComponent {
         repaint();
     }
 
+    public DecorationMode getDecorationMode() {
+        return decorationMode;
+    }
+
+    public void setDecorationMode(DecorationMode decorationMode) {
+        this.decorationMode = decorationMode;
+        repaint();
+    }
+
     public int getSubFontSpace() {
         return subFontSpace;
     }
@@ -790,41 +805,39 @@ public class Hexadecimal extends JComponent {
      */
     public static class SelectionRange {
 
-        private CaretPosition begin = new CaretPosition();
-        private CaretPosition end = new CaretPosition();
+        private long begin;
+        private long end;
 
         public SelectionRange() {
         }
 
-        public SelectionRange(CaretPosition begin, CaretPosition end) {
-            this.begin.setPosition(begin);
-            this.end.setPosition(end);
-        }
-
-        public CaretPosition getBegin() {
-            return begin;
-        }
-
-        public void setBegin(CaretPosition begin) {
+        public SelectionRange(long begin, long end) {
             this.begin = begin;
-        }
-
-        public CaretPosition getEnd() {
-            return end;
-        }
-
-        public void setEnd(CaretPosition end) {
             this.end = end;
         }
 
-        public CaretPosition getSelectionFirst() {
-            return (end.getDataPosition() > begin.getDataPosition())
-                    || (end.getDataPosition() == begin.getDataPosition() && !begin.isLowerHalf()) ? begin : end;
+        public long getBegin() {
+            return begin;
         }
 
-        public CaretPosition getSelectionLast() {
-            return (end.getDataPosition() > begin.getDataPosition())
-                    || (end.getDataPosition() == begin.getDataPosition() && !begin.isLowerHalf()) ? end : begin;
+        public void setBegin(long begin) {
+            this.begin = begin;
+        }
+
+        public long getEnd() {
+            return end;
+        }
+
+        public void setEnd(long end) {
+            this.end = end;
+        }
+
+        public long getSelectionFirst() {
+            return end > begin ? begin : end;
+        }
+
+        public long getSelectionLast() {
+            return end > begin ? end : begin;
         }
     }
 
@@ -857,6 +870,10 @@ public class Hexadecimal extends JComponent {
         PLAIN, STRIPPED, GRIDDED
     }
 
+    public static enum DecorationMode {
+        NONE, LINES, BOX
+    }
+
     public static enum Section {
         HEXADECIMAL, PREVIEW
     }
@@ -884,7 +901,7 @@ public class Hexadecimal extends JComponent {
     /**
      * Precomputed dimensions for the hexadecimal editor.
      */
-    private class DimensionsCache {
+    private static class DimensionsCache {
 
         FontMetrics fontMetrics = null;
         int charWidth;
@@ -897,6 +914,14 @@ public class Hexadecimal extends JComponent {
         int bytesPerLine;
         int linesPerBounds;
         int scrollBarThickness = 17;
+    }
+
+    public static class ScrollPosition {
+
+        long scrollLinePosition = 0;
+        int scrollLineOffset = 0;
+        int scrollBytePosition = 0;
+        int scrollByteOffset = 0;
     }
 
     private class HexMouseListener extends MouseAdapter implements MouseMotionListener {
@@ -1080,8 +1105,8 @@ public class Hexadecimal extends JComponent {
                         notifyCaretMoved();
                         updateSelection(e.getModifiersEx(), caretPosition);
                     }
-                    if (scrollLinePosition > dimensionsCache.linesPerBounds) {
-                        scrollLinePosition -= dimensionsCache.linesPerBounds;
+                    if (scrollPosition.scrollLinePosition > dimensionsCache.linesPerBounds) {
+                        scrollPosition.scrollLinePosition -= dimensionsCache.linesPerBounds;
                     }
                     revealCursor();
                     updateScrollBars();
@@ -1102,8 +1127,8 @@ public class Hexadecimal extends JComponent {
                         notifyCaretMoved();
                         updateSelection(e.getModifiersEx(), caretPosition);
                     }
-                    if (scrollLinePosition < data.getDataSize() / dimensionsCache.bytesPerLine - dimensionsCache.linesPerBounds * 2) {
-                        scrollLinePosition += dimensionsCache.linesPerBounds;
+                    if (scrollPosition.scrollLinePosition < data.getDataSize() / dimensionsCache.bytesPerLine - dimensionsCache.linesPerBounds * 2) {
+                        scrollPosition.scrollLinePosition += dimensionsCache.linesPerBounds;
                     }
                     revealCursor();
                     updateScrollBars();
@@ -1184,10 +1209,10 @@ public class Hexadecimal extends JComponent {
         @Override
         public void adjustmentValueChanged(AdjustmentEvent e) {
             if (verticalScrollMode == VerticalScrollMode.PER_LINE) {
-                scrollLinePosition = verticalScrollBar.getValue();
+                scrollPosition.scrollLinePosition = verticalScrollBar.getValue();
             } else {
-                scrollLinePosition = verticalScrollBar.getValue() / dimensionsCache.lineHeight;
-                scrollLineOffset = verticalScrollBar.getValue() % dimensionsCache.lineHeight;
+                scrollPosition.scrollLinePosition = verticalScrollBar.getValue() / dimensionsCache.lineHeight;
+                scrollPosition.scrollLineOffset = verticalScrollBar.getValue() % dimensionsCache.lineHeight;
             }
             repaint();
         }
@@ -1201,10 +1226,10 @@ public class Hexadecimal extends JComponent {
         @Override
         public void adjustmentValueChanged(AdjustmentEvent e) {
             if (horizontalScrollMode == HorizontalScrollMode.PER_CHAR) {
-                scrollBytePosition = horizontalScrollBar.getValue();
+                scrollPosition.scrollBytePosition = horizontalScrollBar.getValue();
             } else {
-                scrollBytePosition = horizontalScrollBar.getValue() / dimensionsCache.charWidth;
-                scrollByteOffset = horizontalScrollBar.getValue() % dimensionsCache.charWidth;
+                scrollPosition.scrollBytePosition = horizontalScrollBar.getValue() / dimensionsCache.charWidth;
+                scrollPosition.scrollByteOffset = horizontalScrollBar.getValue() % dimensionsCache.charWidth;
             }
             repaint();
         }

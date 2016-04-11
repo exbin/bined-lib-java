@@ -67,25 +67,20 @@
                                   <Component id="cursorPositionCheckBox" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <Component id="cursorPositionLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                              <Component id="selectionPositionsLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                               <Group type="102" alignment="0" attributes="0">
-                                  <Component id="selectionFirstTextField" min="-2" pref="92" max="-2" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="selectionFirstCheckBox" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace type="separate" max="-2" attributes="0"/>
-                                  <Component id="selectionLastTextField" min="-2" pref="92" max="-2" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="selectionLastCheckBox" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <Group type="102" attributes="0">
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Component id="charRenderingScrollModeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                                       <Component id="charRenderingComboBox" alignment="0" min="-2" pref="133" max="-2" attributes="0"/>
+                                      <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
+                                          <Component id="selectionFirstTextField" max="32767" attributes="0"/>
+                                          <Component id="selectionPositionsLabel" alignment="1" max="32767" attributes="0"/>
+                                      </Group>
                                   </Group>
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Component id="charAntialiasingScrollModeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                                       <Component id="charAntialiasingComboBox" alignment="0" min="-2" pref="133" max="-2" attributes="0"/>
+                                      <Component id="selectionLastTextField" alignment="0" min="-2" pref="132" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
                           </Group>
@@ -136,9 +131,7 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="selectionFirstTextField" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="selectionFirstCheckBox" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="selectionLastTextField" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="selectionLastCheckBox" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
@@ -334,21 +327,9 @@
             <Property name="editable" type="boolean" value="false"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JCheckBox" name="selectionFirstCheckBox">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Half"/>
-            <Property name="enabled" type="boolean" value="false"/>
-          </Properties>
-        </Component>
         <Component class="javax.swing.JTextField" name="selectionLastTextField">
           <Properties>
             <Property name="editable" type="boolean" value="false"/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JCheckBox" name="selectionLastCheckBox">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Half"/>
-            <Property name="enabled" type="boolean" value="false"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="backgroundModeLabel">

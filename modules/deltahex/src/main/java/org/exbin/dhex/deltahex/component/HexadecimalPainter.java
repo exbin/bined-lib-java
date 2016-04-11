@@ -20,7 +20,7 @@ import java.awt.Graphics;
 /**
  * Hexadecimal editor painter.
  *
- * @version 0.1.0 2016/04/09
+ * @version 0.1.0 2016/04/10
  * @author ExBin Project (http://exbin.org)
  */
 public interface HexadecimalPainter {
@@ -35,6 +35,19 @@ public interface HexadecimalPainter {
      */
     void paintHeader(Graphics g, int positionY, int bytesPerLine, int charWidth);
 
+    /**
+     * Paints line number.
+     *
+     * @param g graphics
+     * @param positionY position of the bottom line of current line in pixels
+     * @param dataPosition data position
+     * @param bytesPerLine data bytes per line
+     * @param charWidth font character width
+     */
+    void paintLineNumber(Graphics g, int positionY, long dataPosition, int bytesPerLine, int charWidth);
+
+    void paintHexadecimal(Graphics g, int linePositionX, int linePositionY, int bytesPerLine, int fontHeight, int charWidth);
+    
     /**
      * Paints line for given hexadecimal editor line.
      *
