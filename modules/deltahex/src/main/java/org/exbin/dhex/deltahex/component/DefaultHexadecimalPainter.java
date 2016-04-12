@@ -23,7 +23,7 @@ import java.awt.Rectangle;
 /**
  * Hex editor painter.
  *
- * @version 0.1.0 2016/04/11
+ * @version 0.1.0 2016/04/12
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultHexadecimalPainter implements HexadecimalPainter {
@@ -54,12 +54,27 @@ public class DefaultHexadecimalPainter implements HexadecimalPainter {
     }
 
     @Override
-    public void paintLineNumber(Graphics g, int linePositionY, long dataPosition, int bytesPerLine, int charWidth) {
+    public void paintLineNumbers(Graphics g, int bytesPerLine, int charWidth) {
+        Rectangle clipBounds = g.getClipBounds();
+        if (hexadecimal.isOpaque()) {
+            g.setColor(hexadecimal.getBackground());
+            g.fillRect(0, 0, hexadecimal.getHexadecimalX(), clipBounds.height);
+        }
+        
+        if (hexadecimal.getBackgroundMode() != Hexadecimal.BackgroundMode.PLAIN) {
+            // TODO loop
+        }
+
+        long line = hexadecimal.getScrollPosition().scrollLinePosition;
+        long dataPosition = 0;
+        int linePositionY = hexadecimal.getHexadecimalY();
         int positionY = linePositionY - hexadecimal.getSubFontSpace();
+        int maxY = clipBounds.y + clipBounds.height;
         g.setColor(hexadecimal.getForeground());
-        if (bytesPerLine == 0 && hexadecimal.isShowLineNumbers()) {
+        while (positionY <= maxY) {
             char[] lineNumberCode = HexadecimalUtils.longToHexChars(dataPosition);
             g.drawChars(lineNumberCode, 0, 8, 0, positionY);
+            positionY += 12;
         }
     }
 
@@ -117,11 +132,11 @@ public class DefaultHexadecimalPainter implements HexadecimalPainter {
             switch (hexadecimal.getActiveSection()) {
                 case HEXADECIMAL: {
                     hexadecimalColor = hexadecimal.getSelectionBackgroundColor();
-                    previewColor = hexadecimal.getDualBackgroundColor();
+                    previewColor = hexadecimal.getDualSelectionBackgroundColor();
                     break;
                 }
                 case PREVIEW: {
-                    hexadecimalColor = hexadecimal.getDualBackgroundColor();
+                    hexadecimalColor = hexadecimal.getDualSelectionBackgroundColor();
                     previewColor = hexadecimal.getSelectionBackgroundColor();
                     break;
                 }

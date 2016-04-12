@@ -295,8 +295,9 @@ public class Hexadecimal extends JComponent {
             }
         }
 
-        if (isShowLineNumbers()) {
-            painter.paintLineNumber(g, positionY, 0, bytesPerLine, WIDTH);
+        if (showLineNumbers) {
+            g.setClip(0, dimensionsCache.hexadecimalY, clipBounds.width, clipBounds.height);
+            painter.paintLineNumbers(g, bytesPerLine, WIDTH);
         }
 
         g.setClip(dimensionsCache.hexadecimalX, dimensionsCache.hexadecimalY, clipBounds.width, clipBounds.height);
@@ -636,12 +637,12 @@ public class Hexadecimal extends JComponent {
         this.selectionBackgroundColor = selectionBackgroundColor;
     }
 
-    public Color getDualBackgroundColor() {
+    public Color getDualSelectionBackgroundColor() {
         return dualSelectionBackgroundColor;
     }
 
-    public void setDualBackgroundColor(Color dualBackgroundColor) {
-        this.dualSelectionBackgroundColor = dualBackgroundColor;
+    public void setDualSelectionBackgroundColor(Color dualSelectionBackgroundColor) {
+        this.dualSelectionBackgroundColor = dualSelectionBackgroundColor;
     }
 
     public Color getCursorColor() {

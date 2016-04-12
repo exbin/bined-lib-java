@@ -39,12 +39,10 @@ public interface HexadecimalPainter {
      * Paints line number.
      *
      * @param g graphics
-     * @param positionY position of the bottom line of current line in pixels
-     * @param dataPosition data position
      * @param bytesPerLine data bytes per line
      * @param charWidth font character width
      */
-    void paintLineNumber(Graphics g, int positionY, long dataPosition, int bytesPerLine, int charWidth);
+    void paintLineNumbers(Graphics g, int bytesPerLine, int charWidth);
 
     void paintHexadecimal(Graphics g, int linePositionX, int linePositionY, int bytesPerLine, int fontHeight, int charWidth);
     
