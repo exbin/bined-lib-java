@@ -52,12 +52,13 @@ public class HexadecimalCaret {
         long line = dataPosition / bytesPerLine;
         int offset = (int) (dataPosition % bytesPerLine);
 
-        int caretY = (int) (hexadecimal.getHexadecimalY() + line * lineHeight);
+        Rectangle rect = hexadecimal.getHexadecimalRectangle();
+        int caretY = (int) (rect.y + line * lineHeight);
         int caretX;
         if (hexadecimal.getActiveSection() == Hexadecimal.Section.PREVIEW) {
             caretX = hexadecimal.getPreviewX() + charWidth * offset;
         } else {
-            caretX = hexadecimal.getHexadecimalX() + charWidth * (offset * 3 + getHalfBytePosition());
+            caretX = rect.x + charWidth * (offset * 3 + getHalfBytePosition());
         }
 
         return new Point(caretX, caretY);
