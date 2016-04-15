@@ -23,7 +23,7 @@ import java.awt.Rectangle;
 /**
  * Hexadecimal editor caret.
  *
- * @version 0.2.0 2016/04/05
+ * @version 0.2.0 2016/04/15
  * @author ExBin Project (http://exbin.org)
  */
 public class HexadecimalCaret {
@@ -37,13 +37,16 @@ public class HexadecimalCaret {
     private static final int DEFAULT_CURSOR_WIDTH = 2;
     private final CaretPosition caretPosition = new CaretPosition();
 
-    public void paint(Graphics g, int bytesPerLine, int fontHeight, int charWidth) {
+    public void paint(Graphics g) {
+        int bytesPerBounds = hexadecimal.getBytesPerBounds();
+        int lineHeight = hexadecimal.getLineHeight();
+        int charWidth = hexadecimal.getCharWidth();
         Point scrollPoint = hexadecimal.getScrollPoint();
-        Point cursorPoint = getCursorPoint(bytesPerLine, fontHeight, charWidth);
+        Point cursorPoint = getCursorPoint(bytesPerBounds, lineHeight, charWidth);
         if (hexadecimal.getEditationMode() == Hexadecimal.EditationMode.OVERWRITE) {
-            g.drawRect(cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y, charWidth, fontHeight);
+            g.drawRect(cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y, charWidth, lineHeight);
         } else {
-            g.fillRect(cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y, DEFAULT_CURSOR_WIDTH, fontHeight);
+            g.fillRect(cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y, DEFAULT_CURSOR_WIDTH, lineHeight);
         }
     }
 

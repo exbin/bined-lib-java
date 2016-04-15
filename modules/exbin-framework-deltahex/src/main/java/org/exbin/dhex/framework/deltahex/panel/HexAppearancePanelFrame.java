@@ -26,14 +26,14 @@ public interface HexAppearancePanelFrame {
     /**
      * Returns text word wrapping mode.
      *
-     * @return font
+     * @return wrapping mode
      */
     public boolean getWordWrapMode();
 
     /**
-     * Sets text word wrapping mode..
+     * Sets text word wrapping mode.
      *
-     * @param mode
+     * @param mode word wrapping mode
      */
     public void setWordWrapMode(boolean mode);
 }

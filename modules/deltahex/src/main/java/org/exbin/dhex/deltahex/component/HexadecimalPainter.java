@@ -20,7 +20,7 @@ import java.awt.Graphics;
 /**
  * Hexadecimal editor painter.
  *
- * @version 0.1.0 2016/04/10
+ * @version 0.1.0 2016/04/15
  * @author ExBin Project (http://exbin.org)
  */
 public interface HexadecimalPainter {
@@ -29,49 +29,20 @@ public interface HexadecimalPainter {
      * Paints header for hexadecimal editor.
      *
      * @param g graphics
-     * @param positionY position of the bottom line of current line in pixels
-     * @param bytesPerLine data bytes per line
-     * @param charWidth font character width
      */
-    void paintHeader(Graphics g, int positionY, int bytesPerLine, int charWidth);
+    void paintHeader(Graphics g);
 
     /**
      * Paints line number.
      *
      * @param g graphics
-     * @param bytesPerLine data bytes per line
-     * @param charWidth font character width
      */
-    void paintLineNumbers(Graphics g, int bytesPerLine, int charWidth);
-
-    void paintHexadecimal(Graphics g, int linePositionX, int linePositionY, int bytesPerLine, int fontHeight, int charWidth);
-    
-    /**
-     * Paints line for given hexadecimal editor line.
-     *
-     * @param g graphics
-     * @param line line number
-     * @param linePositionX position of left side
-     * @param byteOnLine number of byte on the current line
-     * @param linePositionY position of the bottom line of current line in
-     * pixels
-     * @param dataPosition current data position
-     * @param bytesPerLine data bytes per line
-     * @param fontHeight font character height
-     * @param charWidth font character width
-     */
-    void paintText(Graphics g, long line, int linePositionX, int byteOnLine, int linePositionY, long dataPosition, int bytesPerLine, int fontHeight, int charWidth);
+    void paintLineNumbers(Graphics g);
 
     /**
-     * Paints background for given hexadecimal editor line.
+     * Paints main hexadecimal data section of the component.
      *
      * @param g graphics
-     * @param line line number
-     * @param positionY position of the bottom line of current line in pixels
-     * @param dataPosition current data position
-     * @param bytesPerLine data bytes per line
-     * @param fontHeight font character height
-     * @param charWidth font character width
      */
-    void paintBackground(Graphics g, long line, int positionY, long dataPosition, int bytesPerLine, int fontHeight, int charWidth);
+    void paintHexadecimal(Graphics g);
 }
