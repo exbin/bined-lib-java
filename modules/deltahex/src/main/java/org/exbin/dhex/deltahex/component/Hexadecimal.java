@@ -47,7 +47,7 @@ import org.exbin.dhex.deltahex.HexadecimalData;
 /**
  * Hex editor component.
  *
- * @version 0.1.0 2016/04/14
+ * @version 0.1.0 2016/04/16
  * @author ExBin Project (http://exbin.org)
  */
 public class Hexadecimal extends JComponent {
@@ -1192,8 +1192,14 @@ public class Hexadecimal extends JComponent {
                             } else {
                                 value = e.getKeyChar() - 'a' + 10;
                             }
-                            setHalfByte(value);
-                            moveRight(0);
+                            if (editationMode == EditationMode.OVERWRITE) {
+                                setHalfByte(value);
+                                moveRight(0);
+                            } else {
+                                long dataPosition = caret.getDataPosition();
+                                ((EditableHexadecimalData) data).insert(dataPosition, 1);
+                                setHalfByte(value);
+                            }
                             revealCursor();
                         }
                     } else {
@@ -1201,8 +1207,13 @@ public class Hexadecimal extends JComponent {
                         if (keyChar > 31 && keyChar < 255) {
                             CaretPosition caretPosition = caret.getCaretPosition();
                             long dataPosition = caretPosition.getDataPosition();
-                            ((EditableHexadecimalData) data).setByte(dataPosition, (byte) keyChar);
-                            moveRight(0);
+                            if (editationMode == EditationMode.OVERWRITE) {
+                                ((EditableHexadecimalData) data).setByte(dataPosition, (byte) keyChar);
+                                moveRight(0);
+                            } else {
+                                ((EditableHexadecimalData) data).insert(dataPosition, 1);
+                                ((EditableHexadecimalData) data).setByte(dataPosition, (byte) keyChar);
+                            }
                             revealCursor();
                         }
                     }
