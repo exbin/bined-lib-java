@@ -53,6 +53,14 @@ public interface EditableHexadecimalData extends HexadecimalData {
     public void insert(long startFrom, long length);
 
     /**
+     * Removes area of data.
+     *
+     * @param startFrom position to start removal from
+     * @param length length of area
+     */
+    public void remove(long startFrom, long length);
+
+    /**
      * Loads data from given stream.
      *
      * @param inputStream input stream

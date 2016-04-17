@@ -42,17 +42,19 @@ import javax.swing.JComponent;
 import javax.swing.JScrollBar;
 import javax.swing.UIManager;
 import org.exbin.dhex.deltahex.EditableHexadecimalData;
+import org.exbin.dhex.deltahex.HexadecimalCommandHandler;
 import org.exbin.dhex.deltahex.HexadecimalData;
 
 /**
  * Hex editor component.
  *
- * @version 0.1.0 2016/04/16
+ * @version 0.1.0 2016/04/17
  * @author ExBin Project (http://exbin.org)
  */
 public class Hexadecimal extends JComponent {
 
     private HexadecimalData data;
+    private static int NO_MODIFIER = 0;
 
     private HexadecimalCaret caret;
     private SelectionRange selection;
@@ -80,6 +82,7 @@ public class Hexadecimal extends JComponent {
     private ScrollPosition scrollPosition = new ScrollPosition();
 
     private HexadecimalPainter painter;
+    private HexadecimalCommandHandler commandHandler;
 
     private Color oddForegroundColor;
     private Color oddBackgroundColor;
@@ -98,6 +101,7 @@ public class Hexadecimal extends JComponent {
         super();
         caret = new HexadecimalCaret(this);
         painter = new DefaultHexadecimalPainter(this);
+        commandHandler = new DefaultCommandHandler(this);
 
         super.setForeground(UIManager.getColor("TextArea.foreground"));
         super.setBackground(UIManager.getColor("TextArea.background"));
@@ -135,10 +139,13 @@ public class Hexadecimal extends JComponent {
     private void setHalfByte(int value) {
         CaretPosition caretPosition = caret.getCaretPosition();
         long dataPosition = caretPosition.getDataPosition();
+        setHalfByte(dataPosition, value, caretPosition.isLowerHalf());
+    }
 
+    private void setHalfByte(long dataPosition, int value, boolean lowerHalf) {
         byte byteValue = data.getByte(dataPosition);
 
-        if (caretPosition.isLowerHalf()) {
+        if (lowerHalf) {
             byteValue = (byte) ((byteValue & 0xf0) | value);
         } else {
             byteValue = (byte) ((byteValue & 0xf) | (value << 4));
@@ -168,6 +175,24 @@ public class Hexadecimal extends JComponent {
                 notifyCaretMoved();
             }
         }
+    }
+
+    private void moveLeft(int modifiers) {
+        CaretPosition caretPosition = caret.getCaretPosition();
+        if (activeSection == Section.HEXADECIMAL) {
+            boolean lowerHalf = caret.isLowerHalf();
+            if (lowerHalf) {
+                caret.setLowerHalf(false);
+                updateSelection(modifiers, caretPosition);
+            } else if (caretPosition.getDataPosition() > 0) {
+                caret.setCaretPosition(caretPosition.getDataPosition() - 1, true);
+                updateSelection(modifiers, caretPosition);
+            }
+        } else if (caretPosition.getDataPosition() > 0) {
+            caret.setCaretPosition(caretPosition.getDataPosition() - 1);
+            updateSelection(modifiers, caretPosition);
+        }
+        notifyCaretMoved();
     }
 
     private void moveCaret(MouseEvent me, int modifiers) {
@@ -329,7 +354,9 @@ public class Hexadecimal extends JComponent {
             scrollPosition.scrollByteOffset = 0;
             scrolled = true;
         } else {
-// TODO            int visibleChars = dimensionsCache.hexadecimalRectangle.width / (dimensionsCache.charWidth * 3)
+            scrolled |= scrolled; // TODO remove
+            // TODO int visibleChars = dimensionsCache.hexadecimalRectangle.width / (dimensionsCache.charWidth * 3)
+
             if (caretByte >= scrollPosition.scrollBytePosition + dimensionsCache.bytesPerBounds) {
                 scrollPosition.scrollBytePosition = caretByte - dimensionsCache.bytesPerBounds;
                 scrollPosition.scrollByteOffset = 0; // TODO
@@ -401,7 +428,7 @@ public class Hexadecimal extends JComponent {
     }
 
     public boolean hasSelection() {
-        return selection != null && (selection.begin != selection.end);
+        return selection != null;
     }
 
     public void setSelection(SelectionRange selection) {
@@ -788,7 +815,7 @@ public class Hexadecimal extends JComponent {
             repaint();
         }
     }
-    
+
     public CharRenderingMode getCharRenderingMode() {
         return charRenderingMode;
     }
@@ -1038,21 +1065,7 @@ public class Hexadecimal extends JComponent {
         public void keyPressed(KeyEvent e) {
             switch (e.getKeyCode()) {
                 case KeyEvent.VK_LEFT: {
-                    CaretPosition caretPosition = caret.getCaretPosition();
-                    if (activeSection == Section.HEXADECIMAL) {
-                        boolean lowerHalf = caret.isLowerHalf();
-                        if (lowerHalf) {
-                            caret.setLowerHalf(false);
-                            updateSelection(e.getModifiersEx(), caretPosition);
-                        } else if (caretPosition.getDataPosition() > 0) {
-                            caret.setCaretPosition(caretPosition.getDataPosition() - 1, true);
-                            updateSelection(e.getModifiersEx(), caretPosition);
-                        }
-                    } else if (caretPosition.getDataPosition() > 0) {
-                        caret.setCaretPosition(caretPosition.getDataPosition() - 1);
-                        updateSelection(e.getModifiersEx(), caretPosition);
-                    }
-                    notifyCaretMoved();
+                    moveLeft(e.getModifiersEx());
                     revealCursor();
                     break;
                 }
@@ -1182,6 +1195,42 @@ public class Hexadecimal extends JComponent {
                     repaint();
                     break;
                 }
+                case KeyEvent.VK_DELETE: {
+                    if (hasSelection()) {
+                        // TODO
+                    } else {
+                        long dataPosition = caret.getDataPosition();
+                        if (dataPosition < data.getDataSize()) {
+                            ((EditableHexadecimalData) data).remove(dataPosition, 1);
+                            if (caret.isLowerHalf()) {
+                                caret.setLowerHalf(false);
+                            }
+                            repaint();
+                        }
+                    }
+                    break;
+                }
+                case KeyEvent.VK_BACK_SPACE: {
+                    if (hasSelection()) {
+                        // TODO
+                    } else {
+                        long dataPosition = caret.getDataPosition();
+                        if (dataPosition > 0 && dataPosition < data.getDataSize()) {
+                            ((EditableHexadecimalData) data).remove(dataPosition - 1, 1);
+                            caret.setLowerHalf(false);
+                            moveLeft(NO_MODIFIER);
+                            caret.setLowerHalf(false);
+                            revealCursor();
+                            repaint();
+                        }
+                    }
+                    break;
+                }
+                case KeyEvent.VK_ESCAPE: {
+                    if (hasSelection()) {
+                        clearSelection();
+                    }
+                }
                 default: {
                     if (activeSection == Section.HEXADECIMAL) {
                         if ((e.getKeyChar() >= '0' && e.getKeyChar() <= '9')
@@ -1192,14 +1241,24 @@ public class Hexadecimal extends JComponent {
                             } else {
                                 value = e.getKeyChar() - 'a' + 10;
                             }
-                            if (editationMode == EditationMode.OVERWRITE) {
+
+//                            commandHandler.keyPressed(value);
+                            if (editationMode == Hexadecimal.EditationMode.OVERWRITE) {
                                 setHalfByte(value);
-                                moveRight(0);
                             } else {
                                 long dataPosition = caret.getDataPosition();
-                                ((EditableHexadecimalData) data).insert(dataPosition, 1);
+                                if (caret.isLowerHalf()) {
+                                    byte lowerHalf = (byte) (data.getByte(dataPosition) & 0xf);
+                                    if (lowerHalf > 0) {
+                                        ((EditableHexadecimalData) data).insert(dataPosition + 1, 1);
+                                        ((EditableHexadecimalData) data).setByte(dataPosition + 1, lowerHalf);
+                                    }
+                                } else {
+                                    ((EditableHexadecimalData) data).insert(dataPosition, 1);
+                                }
                                 setHalfByte(value);
                             }
+                            moveRight(NO_MODIFIER);
                             revealCursor();
                         }
                     } else {
@@ -1209,11 +1268,11 @@ public class Hexadecimal extends JComponent {
                             long dataPosition = caretPosition.getDataPosition();
                             if (editationMode == EditationMode.OVERWRITE) {
                                 ((EditableHexadecimalData) data).setByte(dataPosition, (byte) keyChar);
-                                moveRight(0);
                             } else {
                                 ((EditableHexadecimalData) data).insert(dataPosition, 1);
                                 ((EditableHexadecimalData) data).setByte(dataPosition, (byte) keyChar);
                             }
+                            moveRight(NO_MODIFIER);
                             revealCursor();
                         }
                     }

@@ -147,7 +147,7 @@ public class DefaultHexadecimalPainter implements HexadecimalPainter {
                 selectionEnd = startX + bytesPerBounds * charWidth * 3;
                 selectionPreviewEnd = previewX + bytesPerBounds * charWidth;
             } else {
-                int linePosition = (int) (selectionLast - dataPosition);
+                int linePosition = (int) (selectionLast - dataPosition + 1);
                 selectionEnd = startX + charWidth * (linePosition * 3);
                 selectionPreviewEnd = previewX + charWidth * linePosition;
             }
