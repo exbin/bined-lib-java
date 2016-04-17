@@ -23,7 +23,7 @@ import java.awt.Rectangle;
 /**
  * Hex editor painter.
  *
- * @version 0.1.0 2016/04/14
+ * @version 0.1.0 2016/04/17
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultHexadecimalPainter implements HexadecimalPainter {
@@ -59,7 +59,7 @@ public class DefaultHexadecimalPainter implements HexadecimalPainter {
     }
 
     @Override
-    public void paintLineNumbers(Graphics g) {
+    public void paintBackground(Graphics g) {
         Rectangle clipBounds = g.getClipBounds();
         Rectangle rect = hexadecimal.getHexadecimalRectangle();
         int charWidth = hexadecimal.getCharWidth();
@@ -67,7 +67,7 @@ public class DefaultHexadecimalPainter implements HexadecimalPainter {
         int lineHeight = hexadecimal.getLineHeight();
         if (hexadecimal.getBackgroundMode() != Hexadecimal.BackgroundMode.NONE) {
             g.setColor(hexadecimal.getBackground());
-            g.fillRect(0, 0, clipBounds.width, clipBounds.height);
+            g.fillRect(clipBounds.x, clipBounds.y, clipBounds.width, clipBounds.height);
         }
 
         Hexadecimal.ScrollPosition scrollPosition = hexadecimal.getScrollPosition();
@@ -97,12 +97,24 @@ public class DefaultHexadecimalPainter implements HexadecimalPainter {
                     g.fillRect(rect.x + charWidth * (3 + i * 6), clipBounds.y, charWidth * 2, clipBounds.height);
                 }
             }
-
-            dataPosition = line * bytesPerBounds;
         }
+    }
 
-        positionY = rect.y - hexadecimal.getSubFontSpace() - scrollPosition.scrollLineOffset;
-        maxY += lineHeight;
+    @Override
+    public void paintLineNumbers(Graphics g) {
+        Rectangle clipBounds = g.getClipBounds();
+        Rectangle rect = hexadecimal.getHexadecimalRectangle();
+        int charWidth = hexadecimal.getCharWidth();
+        int bytesPerBounds = hexadecimal.getBytesPerBounds();
+        int lineHeight = hexadecimal.getLineHeight();
+
+        Hexadecimal.ScrollPosition scrollPosition = hexadecimal.getScrollPosition();
+        long line = scrollPosition.scrollLinePosition;
+        long maxDataPosition = hexadecimal.getData().getDataSize();
+        int maxY = clipBounds.y + clipBounds.height + lineHeight;
+        long dataPosition = line * bytesPerBounds;
+        int positionY = rect.y - hexadecimal.getSubFontSpace() - scrollPosition.scrollLineOffset + hexadecimal.getLineHeight();
+
         g.setColor(hexadecimal.getForeground());
         while (positionY <= maxY && dataPosition < maxDataPosition) {
             char[] lineNumberCode = HexadecimalUtils.longToHexChars(dataPosition);

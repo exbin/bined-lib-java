@@ -33,6 +33,13 @@ public interface HexadecimalPainter {
     void paintHeader(Graphics g);
 
     /**
+     * Paints background.
+     *
+     * @param g graphics
+     */
+    void paintBackground(Graphics g);
+
+    /**
      * Paints line number.
      *
      * @param g graphics

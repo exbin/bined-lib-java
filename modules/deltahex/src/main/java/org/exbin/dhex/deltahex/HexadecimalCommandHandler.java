@@ -35,5 +35,5 @@ public interface HexadecimalCommandHandler {
      *
      * @param keyValue key value
      */
-    void keyPressed(int keyValue);
+    void keyPressed(char keyValue);
 }

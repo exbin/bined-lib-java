@@ -36,6 +36,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JComponent;
@@ -54,7 +56,8 @@ import org.exbin.dhex.deltahex.HexadecimalData;
 public class Hexadecimal extends JComponent {
 
     private HexadecimalData data;
-    private static int NO_MODIFIER = 0;
+    public static final int NO_MODIFIER = 0;
+    private static final int MOUSE_SCROLL_LINES = 3;
 
     private HexadecimalCaret caret;
     private SelectionRange selection;
@@ -133,28 +136,11 @@ public class Hexadecimal extends JComponent {
         HexMouseListener hexMouseListener = new HexMouseListener();
         addMouseListener(hexMouseListener);
         addMouseMotionListener(hexMouseListener);
+        addMouseWheelListener(hexMouseListener);
         addKeyListener(new HexKeyListener());
     }
 
-    private void setHalfByte(int value) {
-        CaretPosition caretPosition = caret.getCaretPosition();
-        long dataPosition = caretPosition.getDataPosition();
-        setHalfByte(dataPosition, value, caretPosition.isLowerHalf());
-    }
-
-    private void setHalfByte(long dataPosition, int value, boolean lowerHalf) {
-        byte byteValue = data.getByte(dataPosition);
-
-        if (lowerHalf) {
-            byteValue = (byte) ((byteValue & 0xf0) | value);
-        } else {
-            byteValue = (byte) ((byteValue & 0xf) | (value << 4));
-        }
-
-        ((EditableHexadecimalData) data).setByte(dataPosition, byteValue);
-    }
-
-    private void moveRight(int modifiers) {
+    void moveRight(int modifiers) {
         CaretPosition caretPosition = caret.getCaretPosition();
         if (caretPosition.getDataPosition() < data.getDataSize()) {
             if (activeSection == Section.HEXADECIMAL) {
@@ -177,7 +163,7 @@ public class Hexadecimal extends JComponent {
         }
     }
 
-    private void moveLeft(int modifiers) {
+    void moveLeft(int modifiers) {
         CaretPosition caretPosition = caret.getCaretPosition();
         if (activeSection == Section.HEXADECIMAL) {
             boolean lowerHalf = caret.isLowerHalf();
@@ -240,6 +226,7 @@ public class Hexadecimal extends JComponent {
         CaretPosition caretPosition = caret.getCaretPosition();
         caret.setCaretPosition(dataPosition, lowerHalf);
         notifyCaretMoved();
+        commandHandler.caretMoved();
 
         updateSelection(modifiers, caretPosition);
     }
@@ -323,6 +310,7 @@ public class Hexadecimal extends JComponent {
         }
 
         g.setClip(0, rect.y, rect.x + rect.width, rect.height);
+        painter.paintBackground(g);
         if (showLineNumbers) {
             painter.paintLineNumbers(g);
             g.setClip(rect.x, rect.y, rect.width, rect.height);
@@ -859,6 +847,18 @@ public class Hexadecimal extends JComponent {
         updateScrollBars();
     }
 
+    public boolean isLowerHalf() {
+        return caret.isLowerHalf();
+    }
+
+    public long getDataPosition() {
+        return caret.getDataPosition();
+    }
+
+    public CaretPosition getCaretPosition() {
+        return caret.getCaretPosition();
+    }
+
     /**
      * Selection range is selection between two points where begin represents
      * originating point. End of the selection can be before or after begin.
@@ -983,7 +983,7 @@ public class Hexadecimal extends JComponent {
         int scrollByteOffset = 0;
     }
 
-    private class HexMouseListener extends MouseAdapter implements MouseMotionListener {
+    private class HexMouseListener extends MouseAdapter implements MouseMotionListener, MouseWheelListener {
 
         private Cursor currentCursor = getCursor();
         private final Cursor defaultCursor = Cursor.getDefaultCursor();
@@ -993,7 +993,7 @@ public class Hexadecimal extends JComponent {
         public void mousePressed(MouseEvent me) {
             requestFocus();
             if (me.getButton() == MouseEvent.BUTTON1) {
-                moveCaret(me, 0);
+                moveCaret(me, NO_MODIFIER);
                 revealCursor();
             }
             mouseDown = true;
@@ -1044,6 +1044,31 @@ public class Hexadecimal extends JComponent {
                 revealCursor();
             }
         }
+
+        @Override
+        public void mouseWheelMoved(MouseWheelEvent e) {
+            if (e.getWheelRotation() > 0) {
+                long lines = (int) (data.getDataSize() / dimensionsCache.bytesPerBounds) - dimensionsCache.linesPerBounds;
+                if (isShowHeader()) {
+                    lines += 2;
+                }
+                if (scrollPosition.scrollLinePosition < lines) {
+                    if (scrollPosition.scrollLinePosition < lines - MOUSE_SCROLL_LINES) {
+                        scrollPosition.scrollLinePosition += MOUSE_SCROLL_LINES;
+                    } else {
+                        scrollPosition.scrollLinePosition = lines;
+                    }
+                    updateScrollBars();
+                }
+            } else if (scrollPosition.scrollLinePosition > 0) {
+                if (scrollPosition.scrollLinePosition > MOUSE_SCROLL_LINES) {
+                    scrollPosition.scrollLinePosition -= MOUSE_SCROLL_LINES;
+                } else {
+                    scrollPosition.scrollLinePosition = 0;
+                }
+                updateScrollBars();
+            }
+        }
     }
 
     private class HexKeyListener extends KeyAdapter {
@@ -1066,11 +1091,13 @@ public class Hexadecimal extends JComponent {
             switch (e.getKeyCode()) {
                 case KeyEvent.VK_LEFT: {
                     moveLeft(e.getModifiersEx());
+                    commandHandler.caretMoved();
                     revealCursor();
                     break;
                 }
                 case KeyEvent.VK_RIGHT: {
                     moveRight(e.getModifiersEx());
+                    commandHandler.caretMoved();
                     revealCursor();
                     break;
                 }
@@ -1232,50 +1259,7 @@ public class Hexadecimal extends JComponent {
                     }
                 }
                 default: {
-                    if (activeSection == Section.HEXADECIMAL) {
-                        if ((e.getKeyChar() >= '0' && e.getKeyChar() <= '9')
-                                || (e.getKeyChar() >= 'a' && e.getKeyChar() <= 'f')) {
-                            int value;
-                            if (e.getKeyChar() >= '0' && e.getKeyChar() <= '9') {
-                                value = e.getKeyChar() - '0';
-                            } else {
-                                value = e.getKeyChar() - 'a' + 10;
-                            }
-
-//                            commandHandler.keyPressed(value);
-                            if (editationMode == Hexadecimal.EditationMode.OVERWRITE) {
-                                setHalfByte(value);
-                            } else {
-                                long dataPosition = caret.getDataPosition();
-                                if (caret.isLowerHalf()) {
-                                    byte lowerHalf = (byte) (data.getByte(dataPosition) & 0xf);
-                                    if (lowerHalf > 0) {
-                                        ((EditableHexadecimalData) data).insert(dataPosition + 1, 1);
-                                        ((EditableHexadecimalData) data).setByte(dataPosition + 1, lowerHalf);
-                                    }
-                                } else {
-                                    ((EditableHexadecimalData) data).insert(dataPosition, 1);
-                                }
-                                setHalfByte(value);
-                            }
-                            moveRight(NO_MODIFIER);
-                            revealCursor();
-                        }
-                    } else {
-                        char keyChar = e.getKeyChar();
-                        if (keyChar > 31 && keyChar < 255) {
-                            CaretPosition caretPosition = caret.getCaretPosition();
-                            long dataPosition = caretPosition.getDataPosition();
-                            if (editationMode == EditationMode.OVERWRITE) {
-                                ((EditableHexadecimalData) data).setByte(dataPosition, (byte) keyChar);
-                            } else {
-                                ((EditableHexadecimalData) data).insert(dataPosition, 1);
-                                ((EditableHexadecimalData) data).setByte(dataPosition, (byte) keyChar);
-                            }
-                            moveRight(NO_MODIFIER);
-                            revealCursor();
-                        }
-                    }
+                    commandHandler.keyPressed(e.getKeyChar());
                 }
             }
         }
