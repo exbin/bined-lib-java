@@ -23,7 +23,7 @@ import java.awt.Rectangle;
 /**
  * Hex editor painter.
  *
- * @version 0.1.0 2016/04/17
+ * @version 0.1.0 2016/04/18
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultHexadecimalPainter implements HexadecimalPainter {
@@ -32,6 +32,25 @@ public class DefaultHexadecimalPainter implements HexadecimalPainter {
 
     public DefaultHexadecimalPainter(Hexadecimal hexadecimal) {
         this.hexadecimal = hexadecimal;
+    }
+
+    @Override
+    public void paintOverall(Graphics g) {
+        Rectangle rect = hexadecimal.getHexadecimalRectangle();
+        switch (hexadecimal.getDecorationMode()) {
+            case LINES: {
+                g.setColor(Color.GRAY);
+                int lineX = rect.x - hexadecimal.getCharWidth() / 2;
+                g.drawLine(lineX, 0, lineX, rect.y);
+                break;
+            }
+            case BOX: {
+                break;
+            }
+            default: {
+                // Do nothing
+            }
+        }
     }
 
     @Override
@@ -54,6 +73,14 @@ public class DefaultHexadecimalPainter implements HexadecimalPainter {
                 int startX = headerX + i * charWidth * 3;
                 drawCenteredChar(g, chars, 0, charWidth, startX, headerY);
                 drawCenteredChar(g, chars, 1, charWidth, startX, headerY);
+            }
+        }
+
+        if (hexadecimal.getDecorationMode() == Hexadecimal.DecorationMode.LINES) {
+            int lineX = hexadecimal.getPreviewX() - scrollPosition.scrollBytePosition * hexadecimal.getCharWidth() - scrollPosition.scrollByteOffset - hexadecimal.getCharWidth() / 2;
+            if (lineX >= rect.x) {
+                g.setColor(Color.GRAY);
+                g.drawLine(lineX, 0, lineX, rect.y);
             }
         }
     }
@@ -81,7 +108,7 @@ public class DefaultHexadecimalPainter implements HexadecimalPainter {
             g.setColor(hexadecimal.getOddBackgroundColor());
 
             positionY = rect.y - scrollPosition.scrollLineOffset;
-            if ((line & 1) > 0) {
+            if ((line & 1) == 0) {
                 positionY += lineHeight;
                 dataPosition += bytesPerBounds;
             }
@@ -121,6 +148,21 @@ public class DefaultHexadecimalPainter implements HexadecimalPainter {
             g.drawChars(lineNumberCode, 0, 8, 0, positionY);
             positionY += lineHeight;
             dataPosition += bytesPerBounds;
+        }
+
+        switch (hexadecimal.getDecorationMode()) {
+            case LINES: {
+                g.setColor(Color.GRAY);
+                int lineX = rect.x - hexadecimal.getCharWidth() / 2;
+                g.drawLine(lineX, 0, lineX, rect.y + rect.height);
+                break;
+            }
+            case BOX: {
+                break;
+            }
+            default: {
+                // Do nothing
+            }
         }
     }
 
@@ -228,6 +270,24 @@ public class DefaultHexadecimalPainter implements HexadecimalPainter {
                 line++;
             }
         } while (positionY - lineHeight < rect.y + rect.height);
+
+        switch (hexadecimal.getDecorationMode()) {
+            case LINES: {
+                int lineX = hexadecimal.getPreviewX() - scrollPosition.scrollBytePosition * hexadecimal.getCharWidth() - scrollPosition.scrollByteOffset - hexadecimal.getCharWidth() / 2;
+                if (lineX >= rect.x) {
+                    g.setColor(Color.GRAY);
+                    g.drawLine(lineX, rect.y, lineX, rect.y + rect.height);
+                }
+
+                break;
+            }
+            case BOX: {
+                break;
+            }
+            default: {
+                // Do nothing
+            }
+        }
     }
 
     public void paintText(Graphics g, long line, int linePositionX, int byteOnLine, int linePositionY, long dataPosition, int bytesPerBounds, int fontHeight, int charWidth) {

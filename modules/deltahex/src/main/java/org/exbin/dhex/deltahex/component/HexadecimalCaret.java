@@ -77,7 +77,7 @@ public class HexadecimalCaret {
     }
 
     public CaretPosition getCaretPosition() {
-        return caretPosition;
+        return new CaretPosition(caretPosition.getDataPosition(), caretPosition.isLowerHalf());
     }
 
     public void setCaretPosition(CaretPosition caretPosition) {

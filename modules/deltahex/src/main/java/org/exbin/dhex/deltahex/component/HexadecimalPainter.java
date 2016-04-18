@@ -20,10 +20,17 @@ import java.awt.Graphics;
 /**
  * Hexadecimal editor painter.
  *
- * @version 0.1.0 2016/04/15
+ * @version 0.1.0 2016/04/18
  * @author ExBin Project (http://exbin.org)
  */
 public interface HexadecimalPainter {
+
+    /**
+     * Paints overall hexadecimal editor parts.
+     *
+     * @param g graphics
+     */
+    void paintOverall(Graphics g);
 
     /**
      * Paints header for hexadecimal editor.

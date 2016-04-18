@@ -66,7 +66,7 @@ public class Hexadecimal extends JComponent {
 
     private ViewMode viewMode = ViewMode.DUAL;
     private BackgroundMode backgroundMode = BackgroundMode.STRIPPED;
-    private DecorationMode decorationMode = DecorationMode.NONE;
+    private DecorationMode decorationMode = DecorationMode.LINES;
     private Section activeSection = Section.HEXADECIMAL;
     private EditationMode editationMode = EditationMode.OVERWRITE;
     private CharRenderingMode charRenderingMode = CharRenderingMode.AUTO;
@@ -120,11 +120,11 @@ public class Hexadecimal extends JComponent {
     private void init() {
         verticalScrollBar = new JScrollBar(Scrollbar.VERTICAL);
         verticalScrollBar.setVisible(false);
-//        verticalScrollBar.setIgnoreRepaint(true);
+        verticalScrollBar.setIgnoreRepaint(true);
         verticalScrollBar.addAdjustmentListener(new VerticalAdjustmentListener());
         add(verticalScrollBar);
         horizontalScrollBar = new JScrollBar(Scrollbar.HORIZONTAL);
-//        horizontalScrollBar.setIgnoreRepaint(true);
+        horizontalScrollBar.setIgnoreRepaint(true);
         horizontalScrollBar.setVisible(false);
         horizontalScrollBar.addAdjustmentListener(new HorizontalAdjustmentListener());
         add(horizontalScrollBar);
@@ -200,27 +200,27 @@ public class Hexadecimal extends JComponent {
 
         long dataPosition;
         boolean lowerHalf = false;
+        int byteOnLine;
         if (cursorCharX < bytesPerBounds * 3 || viewMode == ViewMode.HEXADECIMAL) {
             setActiveSection(Section.HEXADECIMAL);
             int bytePosition = cursorCharX % 3;
             lowerHalf = bytePosition > 0;
 
             int cursorX = cursorCharX / 3;
-            int byteOnLine = cursorX;
-            if (byteOnLine >= bytesPerBounds) {
-                byteOnLine = bytesPerBounds - 1;
-            }
-            dataPosition = byteOnLine + (cursorY * bytesPerBounds);
+            byteOnLine = cursorX;
         } else {
             setActiveSection(Section.PREVIEW);
-            int byteOnLine = (cursorCharX - (bytesPerBounds * 3));
-            if (byteOnLine >= bytesPerBounds) {
-                byteOnLine = bytesPerBounds - 1;
-            }
-            dataPosition = byteOnLine + (cursorY * bytesPerBounds);
-            if (dataPosition > data.getDataSize()) {
-                dataPosition = data.getDataSize();
-            }
+            byteOnLine = (cursorCharX - (bytesPerBounds * 3));
+        }
+
+        if (byteOnLine >= bytesPerBounds) {
+            byteOnLine = bytesPerBounds - 1;
+        }
+        dataPosition = byteOnLine + (cursorY * bytesPerBounds);
+        long dataSize = data.getDataSize();
+        if (dataPosition > dataSize) {
+            dataPosition = dataSize;
+            lowerHalf = false;
         }
 
         CaretPosition caretPosition = caret.getCaretPosition();
@@ -301,6 +301,7 @@ public class Hexadecimal extends JComponent {
             computeFontMetrics();
         }
 
+        painter.paintOverall(g);
         Rectangle rect = dimensionsCache.hexadecimalRectangle;
         if (showHeader) {
             if (viewMode != ViewMode.PREVIEW && clipBounds.y < rect.y) {
@@ -381,10 +382,15 @@ public class Hexadecimal extends JComponent {
 
     private void updateSelection(int modifiers, CaretPosition caretPosition) {
         if ((modifiers & KeyEvent.SHIFT_DOWN_MASK) > 0) {
+            long currentPosition = caret.getDataPosition() - 1 + caret.getHalfBytePosition();
             if (selection != null) {
-                selection.end = caret.getDataPosition();
+                selection.end = currentPosition;
             } else {
-                selection = new SelectionRange(caretPosition.getDataPosition(), caret.getDataPosition());
+                long startPosition = caretPosition.getDataPosition();
+                if (caretPosition.isLowerHalf()) {
+                    startPosition++;
+                }
+                selection = new SelectionRange(startPosition, currentPosition);
             }
             notifySelectionChanged();
         } else {
@@ -581,6 +587,9 @@ public class Hexadecimal extends JComponent {
         if (horizontalScrollBarVisible) {
             charsPerPanel = computeCharsPerPanel(panelBounds, dimensionsCache.scrollBarThickness);
             bytesPerBounds = charsPerPanel / charsPerByte;
+            if (bytesPerBounds < 1) {
+                bytesPerBounds = 1;
+            }
             lines = (int) (data.getDataSize() / bytesPerBounds);
         }
 
@@ -1111,6 +1120,7 @@ public class Hexadecimal extends JComponent {
                         }
                         updateSelection(e.getModifiersEx(), caretPosition);
                     }
+                    commandHandler.caretMoved();
                     revealCursor();
                     break;
                 }
@@ -1126,6 +1136,7 @@ public class Hexadecimal extends JComponent {
                         }
                         updateSelection(e.getModifiersEx(), caretPosition);
                     }
+                    commandHandler.caretMoved();
                     revealCursor();
                     break;
                 }

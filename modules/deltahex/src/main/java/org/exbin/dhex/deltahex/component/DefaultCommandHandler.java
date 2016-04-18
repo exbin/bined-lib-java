@@ -55,11 +55,14 @@ public class DefaultCommandHandler implements HexadecimalCommandHandler {
                     value = keyValue - 'a' + 10;
                 }
 
+                HexadecimalData data = hexadecimal.getData();
+                long dataPosition = hexadecimal.getDataPosition();
                 if (hexadecimal.getEditationMode() == Hexadecimal.EditationMode.OVERWRITE) {
+                    if (dataPosition == hexadecimal.getData().getDataSize()) {
+                        ((EditableHexadecimalData) data).insert(dataPosition, 1);
+                    }
                     setHalfByte(value);
                 } else {
-                    HexadecimalData data = hexadecimal.getData();
-                    long dataPosition = hexadecimal.getDataPosition();
                     if (hexadecimal.isLowerHalf()) {
                         byte lowerHalf = (byte) (data.getByte(dataPosition) & 0xf);
                         if (lowerHalf > 0) {
