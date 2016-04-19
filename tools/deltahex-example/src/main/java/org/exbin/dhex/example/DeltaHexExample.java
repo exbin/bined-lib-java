@@ -34,7 +34,7 @@ public class DeltaHexExample {
      * @param args arguments
      */
     public static void main(String[] args) {
-        final JFrame frame = new JFrame("DHex Library Example");
+        final JFrame frame = new JFrame("DeltaHex Library Example");
         frame.setLocationByPlatform(true);
         frame.setSize(1000, 600);
         frame.setLocationRelativeTo(null);

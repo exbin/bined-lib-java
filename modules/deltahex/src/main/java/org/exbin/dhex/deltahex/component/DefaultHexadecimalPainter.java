@@ -131,7 +131,6 @@ public class DefaultHexadecimalPainter implements HexadecimalPainter {
     public void paintLineNumbers(Graphics g) {
         Rectangle clipBounds = g.getClipBounds();
         Rectangle rect = hexadecimal.getHexadecimalRectangle();
-        int charWidth = hexadecimal.getCharWidth();
         int bytesPerBounds = hexadecimal.getBytesPerBounds();
         int lineHeight = hexadecimal.getLineHeight();
 
@@ -186,7 +185,7 @@ public class DefaultHexadecimalPainter implements HexadecimalPainter {
         long selectionFirst = selection.getSelectionFirst();
         long selectionLast = selection.getSelectionLast();
         if (selectionFirst < maxLinePosition) {
-            if (selectionFirst > dataPosition) {
+            if (selectionFirst >= dataPosition) {
                 int linePosition = (int) (selectionFirst - dataPosition);
                 selectionStart = startX + charWidth * (linePosition * 3);
                 selectionPreviewStart = previewX + charWidth * linePosition;
@@ -196,7 +195,7 @@ public class DefaultHexadecimalPainter implements HexadecimalPainter {
             }
         }
 
-        if (selectionLast > dataPosition && selectionFirst < maxLinePosition) {
+        if (selectionLast >= dataPosition && selectionFirst < maxLinePosition) {
             if (selectionLast > maxLinePosition) {
                 selectionEnd = startX + bytesPerBounds * charWidth * 3;
                 selectionPreviewEnd = previewX + bytesPerBounds * charWidth;

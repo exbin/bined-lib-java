@@ -43,6 +43,7 @@ import java.util.List;
 import javax.swing.JComponent;
 import javax.swing.JScrollBar;
 import javax.swing.UIManager;
+import jdk.nashorn.internal.runtime.Scope;
 import org.exbin.dhex.deltahex.EditableHexadecimalData;
 import org.exbin.dhex.deltahex.HexadecimalCommandHandler;
 import org.exbin.dhex.deltahex.HexadecimalData;
@@ -50,7 +51,7 @@ import org.exbin.dhex.deltahex.HexadecimalData;
 /**
  * Hex editor component.
  *
- * @version 0.1.0 2016/04/17
+ * @version 0.1.0 2016/04/19
  * @author ExBin Project (http://exbin.org)
  */
 public class Hexadecimal extends JComponent {
@@ -366,15 +367,8 @@ public class Hexadecimal extends JComponent {
         }
 
         if (horizontalScrollMode == HorizontalScrollMode.PER_CHAR) {
-            if (scrollPosition.scrollBytePosition > horizontalScrollBar.getMaximum() - horizontalScrollBar.getVisibleAmount()) {
-                scrollPosition.scrollBytePosition = horizontalScrollBar.getMaximum() - horizontalScrollBar.getVisibleAmount();
-            }
             horizontalScrollBar.setValue((int) scrollPosition.scrollBytePosition);
         } else {
-//            if (scrollPosition.scrollBytePosition > horizontalScrollBar.getMaximum() - horizontalScrollBar.getVisibleAmount()) {
-//                scrollPosition.scrollBytePosition = horizontalScrollBar.getMaximum() - horizontalScrollBar.getVisibleAmount();
-//            }
-
             horizontalScrollBar.setValue((int) (scrollPosition.scrollBytePosition * dimensionsCache.charWidth * 3 + scrollPosition.scrollByteOffset));
         }
         repaint();
@@ -382,16 +376,25 @@ public class Hexadecimal extends JComponent {
 
     private void updateSelection(int modifiers, CaretPosition caretPosition) {
         if ((modifiers & KeyEvent.SHIFT_DOWN_MASK) > 0) {
-            long currentPosition = caret.getDataPosition() - 1 + caret.getHalfBytePosition();
+            long currentPosition = caret.getDataPosition();
+            long end = currentPosition;
+            long begin;
             if (selection != null) {
-                selection.end = currentPosition;
-            } else {
-                long startPosition = caretPosition.getDataPosition();
-                if (caretPosition.isLowerHalf()) {
-                    startPosition++;
+                begin = selection.begin;
+                if (begin == currentPosition) {
+                    clearSelection();
+                } else {
+                    selection.end = begin < currentPosition ? end - 1 : end;
                 }
-                selection = new SelectionRange(startPosition, currentPosition);
+            } else {
+                begin = caretPosition.getDataPosition();
+                if (begin == currentPosition) {
+                    clearSelection();
+                } else {
+                    selection = new SelectionRange(begin, begin < currentPosition ? end - 1 : end);
+                }
             }
+
             notifySelectionChanged();
         } else {
             clearSelection();
@@ -615,6 +618,7 @@ public class Hexadecimal extends JComponent {
             }
         }
 
+        int lineScroll = (int) (scrollPosition.scrollLinePosition * dimensionsCache.lineHeight + scrollPosition.scrollLineOffset);
         Rectangle bounds = getBounds();
         verticalScrollBar.setVisible(verticalScrollBarVisible);
         if (verticalScrollBarVisible) {
@@ -629,8 +633,13 @@ public class Hexadecimal extends JComponent {
                 verticalMaximum *= dimensionsCache.lineHeight;
             }
             verticalScrollBar.setMaximum(verticalMaximum);
+        } else if (lineScroll > 0) {
+            scrollPosition.scrollLinePosition = 0;
+            scrollPosition.scrollLineOffset = 0;
+            updateScrollBars();
         }
 
+        int byteScroll = (int) (scrollPosition.scrollBytePosition * dimensionsCache.charWidth + scrollPosition.scrollByteOffset);
         horizontalScrollBar.setVisible(horizontalScrollBarVisible);
         if (horizontalScrollBarVisible) {
             int horizontalScrollBarWidth = bounds.width - rect.x;
@@ -649,6 +658,17 @@ public class Hexadecimal extends JComponent {
             }
             horizontalScrollBar.setMaximum(horizontalMaximum);
             horizontalScrollBar.setVisibleAmount(horizontalVisibleAmount);
+
+            int maxByteScroll = horizontalMaximum - horizontalVisibleAmount;
+            if (byteScroll > maxByteScroll) {
+                scrollPosition.scrollBytePosition = maxByteScroll / dimensionsCache.charWidth;
+                scrollPosition.scrollByteOffset = maxByteScroll % dimensionsCache.charWidth;
+                updateScrollBars();
+            }
+        } else if (byteScroll > 0) {
+            scrollPosition.scrollBytePosition = 0;
+            scrollPosition.scrollByteOffset = 0;
+            updateScrollBars();
         }
     }
 
@@ -902,11 +922,11 @@ public class Hexadecimal extends JComponent {
         }
 
         public long getSelectionFirst() {
-            return end > begin ? begin : end;
+            return end >= begin ? begin : end;
         }
 
         public long getSelectionLast() {
-            return end > begin ? end : begin;
+            return end >= begin ? end : begin - 1;
         }
     }
 

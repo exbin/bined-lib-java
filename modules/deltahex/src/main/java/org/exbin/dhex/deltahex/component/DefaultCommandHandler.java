@@ -42,17 +42,17 @@ public class DefaultCommandHandler implements HexadecimalCommandHandler {
     @Override
     public void keyPressed(char keyValue) {
         if (hexadecimal.hasSelection()) {
-            // TODO delete selection
+            deleteSelection();
         }
 
         if (hexadecimal.getActiveSection() == Hexadecimal.Section.HEXADECIMAL) {
             if ((keyValue >= '0' && keyValue <= '9')
-                    || (keyValue >= 'a' && keyValue <= 'f')) {
+                    || (keyValue >= 'a' && keyValue <= 'f') || (keyValue >= 'A' && keyValue <= 'F')) {
                 int value;
                 if (keyValue >= '0' && keyValue <= '9') {
                     value = keyValue - '0';
                 } else {
-                    value = keyValue - 'a' + 10;
+                    value = Character.toLowerCase(keyValue) - 'a' + 10;
                 }
 
                 HexadecimalData data = hexadecimal.getData();
@@ -112,5 +112,9 @@ public class DefaultCommandHandler implements HexadecimalCommandHandler {
         }
 
         ((EditableHexadecimalData) data).setByte(dataPosition, byteValue);
+    }
+    
+    private void deleteSelection() {
+        
     }
 }
