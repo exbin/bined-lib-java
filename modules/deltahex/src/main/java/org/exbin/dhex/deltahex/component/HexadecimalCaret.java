@@ -44,9 +44,9 @@ public class HexadecimalCaret {
         Point scrollPoint = hexadecimal.getScrollPoint();
         Point cursorPoint = getCursorPoint(bytesPerBounds, lineHeight, charWidth);
         if (hexadecimal.getEditationMode() == Hexadecimal.EditationMode.OVERWRITE) {
-            g.drawRect(cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y, charWidth, lineHeight);
+            g.drawRect(cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y, charWidth, lineHeight - 1);
         } else {
-            g.fillRect(cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y, DEFAULT_CURSOR_WIDTH, lineHeight);
+            g.fillRect(cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y, DEFAULT_CURSOR_WIDTH, lineHeight - 1);
         }
     }
 
