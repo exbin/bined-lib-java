@@ -56,12 +56,12 @@ public class DefaultCommandHandler implements HexadecimalCommandHandler {
                 canPaste = clipboard.isDataFlavorAvailable(binaryDataFlavor) || clipboard.isDataFlavorAvailable(DataFlavor.stringFlavor);
             }
         });
-
         try {
             binaryDataFlavor = new DataFlavor("application/octet-stream");
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(DefaultCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
+        canPaste = clipboard.isDataFlavorAvailable(binaryDataFlavor) || clipboard.isDataFlavorAvailable(DataFlavor.stringFlavor);
     }
 
     @Override

@@ -19,6 +19,10 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Point;
 import java.awt.SystemColor;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.FlavorEvent;
+import java.awt.datatransfer.FlavorListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -86,6 +90,26 @@ public class HexPanel extends javax.swing.JPanel implements XBEditorProvider, Cl
     private void init() {
         hexadecimal = new Hexadecimal();
         hexadecimal.setData(new XBHexadecimalData(new XBData()));
+        hexadecimal.addSelectionChangedListener(new Hexadecimal.SelectionChangedListener() {
+            @Override
+            public void selectionChanged(Hexadecimal.SelectionRange selection) {
+                if (clipboardActionsUpdateListener != null) {
+                    clipboardActionsUpdateListener.stateChanged();
+                }
+            }
+        });
+        // TODO use listener in hexadecimal instead
+        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        clipboard.addFlavorListener(new FlavorListener() {
+            @Override
+            public void flavorsChanged(FlavorEvent e) {
+                if (clipboardActionsUpdateListener != null) {
+                    clipboardActionsUpdateListener.stateChanged();
+                }
+            }
+        });
+        clipboardActionsUpdateListener.stateChanged();
+        
         textAreaScrollPane.setViewportView(hexadecimal);
         fileName = "";
         highlight = null;
@@ -253,22 +277,22 @@ public class HexPanel extends javax.swing.JPanel implements XBEditorProvider, Cl
 
     @Override
     public void performCopy() {
-//        textArea.copy();
+        hexadecimal.copy();
     }
 
     @Override
     public void performCut() {
-//        textArea.cut();
+        hexadecimal.cut();
     }
 
     @Override
     public void performDelete() {
-//        textArea.getInputContext().dispatchEvent(new KeyEvent(this, KeyEvent.KEY_PRESSED, 0, 0, KeyEvent.VK_DELETE, KeyEvent.CHAR_UNDEFINED));
+        hexadecimal.delete();
     }
 
     @Override
     public void performPaste() {
-//        textArea.paste();
+        hexadecimal.paste();
     }
 
     @Override
@@ -620,7 +644,7 @@ public class HexPanel extends javax.swing.JPanel implements XBEditorProvider, Cl
 
     @Override
     public boolean isEditable() {
-        return false; //hexadecimal.isEditable();
+        return hexadecimal.isEditable();
     }
 
     @Override
@@ -630,8 +654,7 @@ public class HexPanel extends javax.swing.JPanel implements XBEditorProvider, Cl
 
     @Override
     public boolean canPaste() {
-        // TODO
-        return false;
+        return hexadecimal.canPaste();
     }
 
     public interface CharsetChangeListener {

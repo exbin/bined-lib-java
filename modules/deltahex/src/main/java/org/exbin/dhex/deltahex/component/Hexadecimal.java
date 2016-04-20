@@ -898,6 +898,26 @@ public class Hexadecimal extends JComponent {
         return caret.getCaretPosition();
     }
 
+    public void copy() {
+        commandHandler.copy();
+    }
+
+    public void cut() {
+        commandHandler.cut();
+    }
+
+    public void paste() {
+        commandHandler.paste();
+    }
+
+    public void delete() {
+        commandHandler.delete();
+    }
+
+    public boolean canPaste() {
+        return commandHandler.canPaste();
+    }
+
     /**
      * Selection range is selection between two points where begin represents
      * originating point. End of the selection can be before or after begin.
