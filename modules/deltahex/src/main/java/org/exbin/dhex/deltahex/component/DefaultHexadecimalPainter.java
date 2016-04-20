@@ -182,8 +182,8 @@ public class DefaultHexadecimalPainter implements HexadecimalPainter {
         int previewX = hexadecimal.getPreviewX() - scrollPosition.scrollBytePosition * charWidth - scrollPosition.scrollByteOffset;
 
         long maxLinePosition = dataPosition + bytesPerBounds;
-        long selectionFirst = selection.getSelectionFirst();
-        long selectionLast = selection.getSelectionLast();
+        long selectionFirst = selection.getFirst();
+        long selectionLast = selection.getLast();
         if (selectionFirst < maxLinePosition) {
             if (selectionFirst >= dataPosition) {
                 int linePosition = (int) (selectionFirst - dataPosition);

@@ -21,7 +21,7 @@ import java.io.OutputStream;
 /**
  * Interface for hexadecimal data.
  *
- * @version 0.1.0 2016/04/06
+ * @version 0.1.0 2016/04/20
  * @author ExBin Project (http://exbin.org)
  */
 public interface HexadecimalData {
@@ -55,4 +55,20 @@ public interface HexadecimalData {
      * @throws java.io.IOException if input/output error
      */
     public void saveToStream(OutputStream outputStream) throws IOException;
+
+    /**
+     * Creates copy of all data.
+     *
+     * @return copy of data
+     */
+    public HexadecimalData copy();
+
+    /**
+     * Creates copy of given area.
+     *
+     * @param startFrom position to start copy from
+     * @param length length of area
+     * @return copy of data
+     */
+    public HexadecimalData copy(long startFrom, long length);
 }

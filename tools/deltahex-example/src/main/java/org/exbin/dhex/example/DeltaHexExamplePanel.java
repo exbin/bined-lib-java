@@ -59,13 +59,13 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
             @Override
             public void selectionChanged(Hexadecimal.SelectionRange selection) {
                 if (selection != null) {
-                    long selectionFirst = hexadecimal.getSelection().getSelectionFirst();
-                    selectionFirstTextField.setText(String.valueOf(selectionFirst));
-                    long selectionLast = hexadecimal.getSelection().getSelectionLast();
-                    selectionLastTextField.setText(String.valueOf(selectionLast));
+                    long first = hexadecimal.getSelection().getFirst();
+                    selectionBeginTextField.setText(String.valueOf(first));
+                    long last = hexadecimal.getSelection().getLast();
+                    selectionEndTextField.setText(String.valueOf(last));
                 } else {
-                    selectionFirstTextField.setText("");
-                    selectionLastTextField.setText("");
+                    selectionBeginTextField.setText("");
+                    selectionEndTextField.setText("");
                 }
             }
         });
@@ -99,8 +99,8 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
         cursorPositionTextField = new javax.swing.JTextField();
         cursorPositionCheckBox = new javax.swing.JCheckBox();
         selectionPositionsLabel = new javax.swing.JLabel();
-        selectionFirstTextField = new javax.swing.JTextField();
-        selectionLastTextField = new javax.swing.JTextField();
+        selectionBeginTextField = new javax.swing.JTextField();
+        selectionEndTextField = new javax.swing.JTextField();
         backgroundModeLabel = new javax.swing.JLabel();
         backgroundModeComboBox = new javax.swing.JComboBox<>();
         charAntialiasingScrollModeLabel = new javax.swing.JLabel();
@@ -196,9 +196,9 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
 
         selectionPositionsLabel.setText("Selection Start/End");
 
-        selectionFirstTextField.setEditable(false);
+        selectionBeginTextField.setEditable(false);
 
-        selectionLastTextField.setEditable(false);
+        selectionEndTextField.setEditable(false);
 
         backgroundModeLabel.setText("Background Mode");
 
@@ -259,13 +259,13 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
                                     .addComponent(charRenderingScrollModeLabel)
                                     .addComponent(charRenderingComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                        .addComponent(selectionFirstTextField)
+                                        .addComponent(selectionBeginTextField)
                                         .addComponent(selectionPositionsLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(charAntialiasingScrollModeLabel)
                                     .addComponent(charAntialiasingComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(selectionLastTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addComponent(selectionEndTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                 .addComponent(showHeaderCheckBox, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(viewModeScrollModeLabel, javax.swing.GroupLayout.Alignment.LEADING)
@@ -320,8 +320,8 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
                 .addComponent(selectionPositionsLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(selectionFirstTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(selectionLastTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(selectionBeginTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(selectionEndTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(settingsPanelLayout.createSequentialGroup()
@@ -416,8 +416,8 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
     private javax.swing.JCheckBox editableCheckBox;
     private javax.swing.JComboBox<String> horizontalScrollModeComboBox;
     private javax.swing.JLabel horizontalScrollModeLabel;
-    private javax.swing.JTextField selectionFirstTextField;
-    private javax.swing.JTextField selectionLastTextField;
+    private javax.swing.JTextField selectionBeginTextField;
+    private javax.swing.JTextField selectionEndTextField;
     private javax.swing.JLabel selectionPositionsLabel;
     private javax.swing.JPanel settingsPanel;
     private javax.swing.JCheckBox showHeaderCheckBox;

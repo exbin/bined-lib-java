@@ -43,14 +43,13 @@ import java.util.List;
 import javax.swing.JComponent;
 import javax.swing.JScrollBar;
 import javax.swing.UIManager;
-import org.exbin.dhex.deltahex.EditableHexadecimalData;
 import org.exbin.dhex.deltahex.HexadecimalCommandHandler;
 import org.exbin.dhex.deltahex.HexadecimalData;
 
 /**
  * Hex editor component.
  *
- * @version 0.1.0 2016/04/19
+ * @version 0.1.0 2016/04/20
  * @author ExBin Project (http://exbin.org)
  */
 public class Hexadecimal extends JComponent {
@@ -179,6 +178,10 @@ public class Hexadecimal extends JComponent {
             updateSelection(modifiers, caretPosition);
         }
         notifyCaretMoved();
+    }
+
+    HexadecimalCaret getCaret() {
+        return caret;
     }
 
     private void moveCaret(MouseEvent me, int modifiers) {
@@ -358,7 +361,7 @@ public class Hexadecimal extends JComponent {
         }
     }
 
-    private void updateScrollBars() {
+    void updateScrollBars() {
         if (verticalScrollMode == VerticalScrollMode.PER_LINE) {
             verticalScrollBar.setValue((int) scrollPosition.scrollLinePosition);
         } else {
@@ -377,20 +380,20 @@ public class Hexadecimal extends JComponent {
         if ((modifiers & KeyEvent.SHIFT_DOWN_MASK) > 0) {
             long currentPosition = caret.getDataPosition();
             long end = currentPosition;
-            long begin;
+            long start;
             if (selection != null) {
-                begin = selection.begin;
-                if (begin == currentPosition) {
+                start = selection.start;
+                if (start == currentPosition) {
                     clearSelection();
                 } else {
-                    selection.end = begin < currentPosition ? end - 1 : end;
+                    selection.end = start < currentPosition ? end - 1 : end;
                 }
             } else {
-                begin = caretPosition.getDataPosition();
-                if (begin == currentPosition) {
+                start = caretPosition.getDataPosition();
+                if (start == currentPosition) {
                     clearSelection();
                 } else {
-                    selection = new SelectionRange(begin, begin < currentPosition ? end - 1 : end);
+                    selection = new SelectionRange(start, start < currentPosition ? end - 1 : end);
                 }
             }
 
@@ -406,9 +409,12 @@ public class Hexadecimal extends JComponent {
     }
 
     public void selectAll() {
-        selection = new SelectionRange(0, data.getDataSize());
-        notifySelectionChanged();
-        repaint();
+        long dataSize = data.getDataSize();
+        if (dataSize > 0) {
+            selection = new SelectionRange(0, dataSize - 1);
+            notifySelectionChanged();
+            repaint();
+        }
     }
 
     public void clearSelection() {
@@ -521,7 +527,7 @@ public class Hexadecimal extends JComponent {
         }
     }
 
-    private void computeDimensions() {
+    void computeDimensions() {
         if (dimensionsCache.fontMetrics == null) {
             return;
         }
@@ -898,23 +904,23 @@ public class Hexadecimal extends JComponent {
      */
     public static class SelectionRange {
 
-        private long begin;
+        private long start;
         private long end;
 
         public SelectionRange() {
         }
 
-        public SelectionRange(long begin, long end) {
-            this.begin = begin;
+        public SelectionRange(long start, long end) {
+            this.start = start;
             this.end = end;
         }
 
-        public long getBegin() {
-            return begin;
+        public long getStart() {
+            return start;
         }
 
-        public void setBegin(long begin) {
-            this.begin = begin;
+        public void setStart(long start) {
+            this.start = start;
         }
 
         public long getEnd() {
@@ -925,12 +931,12 @@ public class Hexadecimal extends JComponent {
             this.end = end;
         }
 
-        public long getSelectionFirst() {
-            return end >= begin ? begin : end;
+        public long getFirst() {
+            return end >= start ? start : end;
         }
 
-        public long getSelectionLast() {
-            return end >= begin ? end : begin - 1;
+        public long getLast() {
+            return end >= start ? end : start - 1;
         }
     }
 
@@ -1279,43 +1285,31 @@ public class Hexadecimal extends JComponent {
                     break;
                 }
                 case KeyEvent.VK_DELETE: {
-                    if (hasSelection()) {
-                        // TODO
-                    } else {
-                        long dataPosition = caret.getDataPosition();
-                        if (dataPosition < data.getDataSize()) {
-                            ((EditableHexadecimalData) data).remove(dataPosition, 1);
-                            if (caret.isLowerHalf()) {
-                                caret.setLowerHalf(false);
-                            }
-                            repaint();
-                        }
-                    }
+                    commandHandler.deletePressed();
                     break;
                 }
                 case KeyEvent.VK_BACK_SPACE: {
-                    if (hasSelection()) {
-                        // TODO
-                    } else {
-                        long dataPosition = caret.getDataPosition();
-                        if (dataPosition > 0 && dataPosition < data.getDataSize()) {
-                            ((EditableHexadecimalData) data).remove(dataPosition - 1, 1);
-                            caret.setLowerHalf(false);
-                            moveLeft(NO_MODIFIER);
-                            caret.setLowerHalf(false);
-                            revealCursor();
-                            repaint();
-                        }
-                    }
+                    commandHandler.backSpacePressed();
                     break;
                 }
                 case KeyEvent.VK_ESCAPE: {
                     if (hasSelection()) {
                         clearSelection();
                     }
+                    break;
                 }
                 default: {
-                    commandHandler.keyPressed(e.getKeyChar());
+                    if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_C) {
+                        commandHandler.copy();
+                    } else if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_X) {
+                        commandHandler.cut();
+                    } else if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_V) {
+                        commandHandler.paste();
+                    } else if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_A) {
+                        selectAll();
+                    } else {
+                        commandHandler.keyPressed(e.getKeyChar());
+                    }
                 }
             }
         }

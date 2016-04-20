@@ -15,10 +15,13 @@
  */
 package org.exbin.dhex.deltahex;
 
+import org.exbin.dhex.deltahex.component.DefaultCommandHandler;
+import org.exbin.dhex.deltahex.component.Hexadecimal;
+
 /**
  * Interface for hexadecimal data manipulation.
  *
- * @version 0.1.0 2016/04/17
+ * @version 0.1.0 2016/04/20
  * @author ExBin Project (http://exbin.org)
  */
 public interface HexadecimalCommandHandler {
@@ -36,4 +39,41 @@ public interface HexadecimalCommandHandler {
      * @param keyValue key value
      */
     void keyPressed(char keyValue);
+
+    /**
+     * Backspace key was pressed.
+     */
+    void backSpacePressed();
+
+    /**
+     * Delete key was pressed.
+     */
+    void deletePressed();
+
+    /**
+     * Deletes selection.
+     */
+    void delete();
+
+    /**
+     * Copies selection to clipboard.
+     */
+    void copy();
+
+    /**
+     * Cuts selection to clipboard.
+     */
+    void cut();
+
+    /**
+     * Pastes content of clipboard to cursor area.
+     */
+    void paste();
+
+    /**
+     * Returns true if paste action is possible.
+     *
+     * @return true if paste is possible
+     */
+    boolean canPaste();
 }

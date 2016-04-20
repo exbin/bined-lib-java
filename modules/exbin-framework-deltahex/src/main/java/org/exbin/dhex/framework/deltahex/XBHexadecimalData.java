@@ -19,12 +19,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import org.exbin.dhex.deltahex.EditableHexadecimalData;
+import org.exbin.dhex.deltahex.HexadecimalData;
 import org.exbin.xbup.core.type.XBData;
 
 /**
  * Encapsulation of XBData for hexadecimal editor.
  *
- * @version 0.1.0 2016/04/17
+ * @version 0.1.0 2016/04/20
  * @author ExBin Project (http://exbin.org)
  */
 public class XBHexadecimalData implements EditableHexadecimalData {
@@ -48,6 +49,11 @@ public class XBHexadecimalData implements EditableHexadecimalData {
     @Override
     public void insert(long startFrom, long length) {
         data.insert(startFrom, length);
+    }
+
+    @Override
+    public void insert(long startFrom, byte[] insertedData) {
+        data.insert(startFrom, insertedData);
     }
 
     @Override
@@ -78,5 +84,15 @@ public class XBHexadecimalData implements EditableHexadecimalData {
     @Override
     public void saveToStream(OutputStream outputStream) throws IOException {
         data.saveToStream(outputStream);
+    }
+
+    @Override
+    public HexadecimalData copy() {
+        return new XBHexadecimalData(data.copy());
+    }
+
+    @Override
+    public HexadecimalData copy(long startFrom, long length) {
+        return new XBHexadecimalData(data.copy(startFrom, length));
     }
 }

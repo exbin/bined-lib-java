@@ -58,7 +58,7 @@
                                       <Component id="charRenderingScrollModeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                                       <Component id="charRenderingComboBox" alignment="0" min="-2" pref="133" max="-2" attributes="0"/>
                                       <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
-                                          <Component id="selectionFirstTextField" max="32767" attributes="0"/>
+                                          <Component id="selectionBeginTextField" max="32767" attributes="0"/>
                                           <Component id="selectionPositionsLabel" alignment="1" max="32767" attributes="0"/>
                                       </Group>
                                   </Group>
@@ -66,7 +66,7 @@
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Component id="charAntialiasingScrollModeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                                       <Component id="charAntialiasingComboBox" alignment="0" min="-2" pref="133" max="-2" attributes="0"/>
-                                      <Component id="selectionLastTextField" alignment="0" min="-2" pref="132" max="-2" attributes="0"/>
+                                      <Component id="selectionEndTextField" alignment="0" min="-2" pref="132" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
                               <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
@@ -136,8 +136,8 @@
                   <Component id="selectionPositionsLabel" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="selectionFirstTextField" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="selectionLastTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="selectionBeginTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="selectionEndTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
@@ -327,12 +327,12 @@
             <Property name="text" type="java.lang.String" value="Selection Start/End"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JTextField" name="selectionFirstTextField">
+        <Component class="javax.swing.JTextField" name="selectionBeginTextField">
           <Properties>
             <Property name="editable" type="boolean" value="false"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JTextField" name="selectionLastTextField">
+        <Component class="javax.swing.JTextField" name="selectionEndTextField">
           <Properties>
             <Property name="editable" type="boolean" value="false"/>
           </Properties>
