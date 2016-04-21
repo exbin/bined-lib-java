@@ -3,9 +3,9 @@
 apply plugin: 'java'
 
 sourceCompatibility = '1.7'
-version = '0.2.0-SNAPSHOT'
-def repositoryName = "xbup-tools-java"
-def libraryUrl = 'http://xbup.exbin.org'
+version = '0.1.0-SNAPSHOT'
+def repositoryName = "deltahex-java"
+def libraryUrl = 'http://deltahex.exbin.org'
 ext.xbupVersion = '0.2.0-SNAPSHOT'
 ext.frameworkVersion = '0.2.0-SNAPSHOT'
 
@@ -46,5 +46,3 @@ task javadocJar (type: Jar, dependsOn: javadoc) {
     classifier = 'javadoc'
     from javadoc.destinationDir
 }
-
-

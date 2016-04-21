@@ -3,7 +3,7 @@ Delta Hexadecimal Library
 
 TODO
 
-Homepage: http://dhex.exbin.org  
+Homepage: http://deltahex.exbin.org  
 
 Compiling
 ---------

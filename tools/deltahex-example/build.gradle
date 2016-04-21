@@ -1,7 +1,7 @@
 apply from: '../tools.gradle'
 
 if (!hasProperty('mainClass')) {
-    ext.mainClass = 'org.exbin.dhex.example.DeltaHexExample'
+    ext.mainClass = 'org.exbin.deltahex.example.DeltaHexExample'
     ext.appArgs = '-dev'
 }
 

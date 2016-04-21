@@ -1,4 +1,4 @@
-group = 'org.exbin.dhex'
+group = 'org.exbin.deltahex'
 ext.libraryName = 'Delta Hexadecimal Core Library'
 ext.libraryDescription = 'Library delta hexadecimal editor'
 
