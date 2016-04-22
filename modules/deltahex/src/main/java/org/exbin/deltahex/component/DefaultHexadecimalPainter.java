@@ -141,12 +141,19 @@ public class DefaultHexadecimalPainter implements HexadecimalPainter {
         long maxDataPosition = hexadecimal.getData().getDataSize();
         int maxY = clipBounds.y + clipBounds.height + lineHeight;
         long dataPosition = line * bytesPerBounds;
+        int charWidth = hexadecimal.getCharWidth();
         int positionY = rect.y - hexadecimal.getSubFontSpace() - scrollPosition.scrollLineOffset + hexadecimal.getLineHeight();
 
         g.setColor(hexadecimal.getForeground());
         while (positionY <= maxY && dataPosition < maxDataPosition) {
             char[] lineNumberCode = HexadecimalUtils.longToHexChars(dataPosition);
-            g.drawChars(lineNumberCode, 0, 8, 0, positionY);
+            if (hexadecimal.isCharFixedMode()) {
+                g.drawChars(lineNumberCode, 0, 8, 0, positionY);
+            } else {
+                for (int i = 0; i < 8; i++) {
+                    drawCenteredChar(g, lineNumberCode, i, charWidth, 0, positionY);
+                }
+            }
             positionY += lineHeight;
             dataPosition += bytesPerBounds;
         }
