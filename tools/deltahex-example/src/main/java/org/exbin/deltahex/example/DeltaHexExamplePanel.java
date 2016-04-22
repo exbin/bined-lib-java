@@ -22,7 +22,7 @@ import org.exbin.deltahex.component.Hexadecimal;
 /**
  * Hexadecimal editor example panel.
  *
- * @version 0.1.0 2016/04/18
+ * @version 0.1.0 2016/04/22
  * @author ExBin Project (http://exbin.org)
  */
 public class DeltaHexExamplePanel extends javax.swing.JPanel {
@@ -47,7 +47,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
         showHeaderCheckBox.setSelected(hexadecimal.isShowHeader());
         editableCheckBox.setSelected(hexadecimal.isEditable());
         wrapModeCheckBox.setSelected(hexadecimal.isWrapMode());
-        bytesPerLineSpinner.setValue(hexadecimal.getBytesPerLine());
+        lineLengthSpinner.setValue(hexadecimal.getLineLength());
         hexadecimal.addCaretMovedListener(new Hexadecimal.CaretMovedListener() {
             @Override
             public void caretMoved(CaretPosition caretPosition, Hexadecimal.Section section) {
@@ -89,8 +89,8 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
         showLineNumbersCheckBox = new javax.swing.JCheckBox();
         editableCheckBox = new javax.swing.JCheckBox();
         wrapModeCheckBox = new javax.swing.JCheckBox();
-        bytesPerLineLabel = new javax.swing.JLabel();
-        bytesPerLineSpinner = new javax.swing.JSpinner();
+        lineLengthLabel = new javax.swing.JLabel();
+        lineLengthSpinner = new javax.swing.JSpinner();
         verticalScrollModeLabel = new javax.swing.JLabel();
         verticalScrollModeComboBox = new javax.swing.JComboBox<>();
         horizontalScrollModeLabel = new javax.swing.JLabel();
@@ -145,7 +145,6 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
 
         editableCheckBox.setSelected(true);
         editableCheckBox.setText("Editable");
-        editableCheckBox.setEnabled(false);
         editableCheckBox.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 editableCheckBoxStateChanged(evt);
@@ -159,11 +158,11 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
             }
         });
 
-        bytesPerLineLabel.setText("Bytes Per Line");
+        lineLengthLabel.setText("Bytes Per Line");
 
-        bytesPerLineSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
+        lineLengthSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                bytesPerLineSpinnerStateChanged(evt);
+                lineLengthSpinnerStateChanged(evt);
             }
         });
 
@@ -218,7 +217,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
             }
         });
 
-        decorationModeLabel.setText("Decoration Mode");
+        decorationModeLabel.setText("Decoration Type");
 
         decorationModeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "NONE", "LINES", "BOX" }));
         decorationModeComboBox.addActionListener(new java.awt.event.ActionListener() {
@@ -247,8 +246,8 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
                                 .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(horizontalScrollModeLabel)
                                     .addComponent(horizontalScrollModeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addComponent(bytesPerLineLabel)
-                            .addComponent(bytesPerLineSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lineLengthLabel)
+                            .addComponent(lineLengthSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(settingsPanelLayout.createSequentialGroup()
                                 .addComponent(cursorPositionTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -307,9 +306,9 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(wrapModeCheckBox)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(bytesPerLineLabel)
+                .addComponent(lineLengthLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(bytesPerLineSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(lineLengthSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(cursorPositionLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -332,7 +331,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
                         .addComponent(charAntialiasingScrollModeLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(charAntialiasingComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 48, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(settingsPanelLayout.createSequentialGroup()
                         .addComponent(horizontalScrollModeLabel)
@@ -368,12 +367,12 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
         hexadecimal.setWrapMode(wrapModeCheckBox.isSelected());
     }//GEN-LAST:event_wrapModeCheckBoxStateChanged
 
-    private void bytesPerLineSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_bytesPerLineSpinnerStateChanged
-        int value = (Integer) bytesPerLineSpinner.getValue();
+    private void lineLengthSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_lineLengthSpinnerStateChanged
+        int value = (Integer) lineLengthSpinner.getValue();
         if (value > 0) {
-            hexadecimal.setBytesPerLine(value);
+            hexadecimal.setLineLength(value);
         }
-    }//GEN-LAST:event_bytesPerLineSpinnerStateChanged
+    }//GEN-LAST:event_lineLengthSpinnerStateChanged
 
     private void verticalScrollModeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_verticalScrollModeComboBoxActionPerformed
         hexadecimal.setVerticalScrollMode(Hexadecimal.VerticalScrollMode.values()[verticalScrollModeComboBox.getSelectedIndex()]);
@@ -402,8 +401,6 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<String> backgroundModeComboBox;
     private javax.swing.JLabel backgroundModeLabel;
-    private javax.swing.JLabel bytesPerLineLabel;
-    private javax.swing.JSpinner bytesPerLineSpinner;
     private javax.swing.JComboBox<String> charAntialiasingComboBox;
     private javax.swing.JLabel charAntialiasingScrollModeLabel;
     private javax.swing.JComboBox<String> charRenderingComboBox;
@@ -416,6 +413,8 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
     private javax.swing.JCheckBox editableCheckBox;
     private javax.swing.JComboBox<String> horizontalScrollModeComboBox;
     private javax.swing.JLabel horizontalScrollModeLabel;
+    private javax.swing.JLabel lineLengthLabel;
+    private javax.swing.JSpinner lineLengthSpinner;
     private javax.swing.JTextField selectionBeginTextField;
     private javax.swing.JTextField selectionEndTextField;
     private javax.swing.JLabel selectionPositionsLabel;

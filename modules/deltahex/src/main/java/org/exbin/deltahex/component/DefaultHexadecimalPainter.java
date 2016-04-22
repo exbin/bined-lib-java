@@ -57,22 +57,24 @@ public class DefaultHexadecimalPainter implements HexadecimalPainter {
     public void paintHeader(Graphics g) {
         Hexadecimal.ScrollPosition scrollPosition = hexadecimal.getScrollPosition();
         Rectangle rect = hexadecimal.getHexadecimalRectangle();
-        g.setColor(hexadecimal.getForeground());
-        int charWidth = hexadecimal.getCharWidth();
-        int bytesPerBounds = hexadecimal.getBytesPerBounds();
-        int headerX = rect.x - scrollPosition.scrollBytePosition * charWidth - scrollPosition.scrollByteOffset;
-        int headerY = hexadecimal.getLineHeight();
-        if (hexadecimal.isCharFixedMode()) {
-            for (int i = 0; i < bytesPerBounds; i++) {
-                char[] chars = HexadecimalUtils.byteToHexChars((byte) i);
-                g.drawChars(chars, 0, 2, headerX + i * charWidth * 3, headerY);
-            }
-        } else {
-            for (int i = 0; i < bytesPerBounds; i++) {
-                char[] chars = HexadecimalUtils.byteToHexChars((byte) i);
-                int startX = headerX + i * charWidth * 3;
-                drawCenteredChar(g, chars, 0, charWidth, startX, headerY);
-                drawCenteredChar(g, chars, 1, charWidth, startX, headerY);
+        if (hexadecimal.getViewMode() != Hexadecimal.ViewMode.PREVIEW) {
+            g.setColor(hexadecimal.getForeground());
+            int charWidth = hexadecimal.getCharWidth();
+            int bytesPerBounds = hexadecimal.getBytesPerBounds();
+            int headerX = rect.x - scrollPosition.scrollBytePosition * charWidth - scrollPosition.scrollByteOffset;
+            int headerY = hexadecimal.getLineHeight();
+            if (hexadecimal.isCharFixedMode()) {
+                for (int i = 0; i < bytesPerBounds; i++) {
+                    char[] chars = HexadecimalUtils.byteToHexChars((byte) i);
+                    g.drawChars(chars, 0, 2, headerX + i * charWidth * 3, headerY);
+                }
+            } else {
+                for (int i = 0; i < bytesPerBounds; i++) {
+                    char[] chars = HexadecimalUtils.byteToHexChars((byte) i);
+                    int startX = headerX + i * charWidth * 3;
+                    drawCenteredChar(g, chars, 0, charWidth, startX, headerY);
+                    drawCenteredChar(g, chars, 1, charWidth, startX, headerY);
+                }
             }
         }
 
@@ -225,10 +227,12 @@ public class DefaultHexadecimalPainter implements HexadecimalPainter {
                 }
             }
 
-            g.setColor(hexadecimalColor);
-            g.fillRect(selectionStart, positionY - fontHeight, selectionEnd - selectionStart, fontHeight);
+            if (hexadecimal.getViewMode() != Hexadecimal.ViewMode.PREVIEW) {
+                g.setColor(hexadecimalColor);
+                g.fillRect(selectionStart, positionY - fontHeight, selectionEnd - selectionStart, fontHeight);
+            }
 
-            if (hexadecimal.getViewMode() == Hexadecimal.ViewMode.DUAL) {
+            if (hexadecimal.getViewMode() != Hexadecimal.ViewMode.HEXADECIMAL) {
                 g.setColor(previewColor);
                 g.fillRect(selectionPreviewStart, positionY - fontHeight, selectionPreviewEnd - selectionPreviewStart, fontHeight);
             }
