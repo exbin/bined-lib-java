@@ -39,6 +39,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.text.Document;
 import javax.swing.undo.UndoableEdit;
+import org.exbin.deltahex.CaretPosition;
 import org.exbin.deltahex.EditableHexadecimalData;
 import org.exbin.deltahex.HexadecimalData;
 import org.exbin.xbup.core.block.declaration.local.XBLFormatDecl;
@@ -108,7 +109,7 @@ public class HexPanel extends javax.swing.JPanel implements XBEditorProvider, Cl
                 }
             }
         });
-        
+
         textAreaScrollPane.setViewportView(hexadecimal);
         fileName = "";
         highlight = null;
@@ -139,7 +140,6 @@ public class HexPanel extends javax.swing.JPanel implements XBEditorProvider, Cl
 //                setModified(true);
 //            }
 //        });
-
         // Listener for undoManagement and redo events
 //        textArea.getDocument().addUndoableEditListener(new UndoableEditListener() {
 //            @Override
@@ -151,7 +151,6 @@ public class HexPanel extends javax.swing.JPanel implements XBEditorProvider, Cl
 //                }
 //            }
 //        });
-
         addPropertyChangeListener(new PropertyChangeListener() {
 
             @Override
@@ -403,15 +402,15 @@ public class HexPanel extends javax.swing.JPanel implements XBEditorProvider, Cl
 //                break;
 //            }
 //            case DeltaHexModule.TXT_FILE_TYPE: {
-                try {
-                    FileInputStream fileStream = new FileInputStream(file);
-                    HexadecimalData data = hexadecimal.getData();
-                    ((EditableHexadecimalData) data).loadFromStream(fileStream);
-                    hexadecimal.setData(data);
-                    fileStream.close();
-                } catch (IOException ex) {
-                    Logger.getLogger(HexPanel.class.getName()).log(Level.SEVERE, null, ex);
-                }
+        try {
+            FileInputStream fileStream = new FileInputStream(file);
+            HexadecimalData data = hexadecimal.getData();
+            ((EditableHexadecimalData) data).loadFromStream(fileStream);
+            hexadecimal.setData(data);
+            fileStream.close();
+        } catch (IOException ex) {
+            Logger.getLogger(HexPanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
 //                break;
 //            }
 //        }
@@ -447,11 +446,11 @@ public class HexPanel extends javax.swing.JPanel implements XBEditorProvider, Cl
 //            }
 //            default: // TODO detect extension
 //            case DeltaHexModule.TXT_FILE_TYPE: {
-                try {
-                    hexadecimal.getData().saveToStream(new FileOutputStream(file));
-                } catch (IOException ex) {
-                    Logger.getLogger(HexPanel.class.getName()).log(Level.SEVERE, null, ex);
-                }
+        try {
+            hexadecimal.getData().saveToStream(new FileOutputStream(file));
+        } catch (IOException ex) {
+            Logger.getLogger(HexPanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
 //                break;
 //            }
 //        }
@@ -536,8 +535,12 @@ public class HexPanel extends javax.swing.JPanel implements XBEditorProvider, Cl
         return new Point();
     }
 
-    public void attachCaretListener(ChangeListener listener) {
-//        textArea.getCaret().addChangeListener(listener);
+    public void attachCaretListener(Hexadecimal.CaretMovedListener listener) {
+        hexadecimal.addCaretMovedListener(listener);
+    }
+
+    public void attachSelectionListener(Hexadecimal.SelectionChangedListener listener) {
+        hexadecimal.addSelectionChangedListener(listener);
     }
 
     public Charset getCharset() {
@@ -619,14 +622,30 @@ public class HexPanel extends javax.swing.JPanel implements XBEditorProvider, Cl
 
     public void registerTextStatus(HexStatusApi textStatusApi) {
         this.textStatus = textStatusApi;
-        attachCaretListener(new ChangeListener() {
+        attachCaretListener(new Hexadecimal.CaretMovedListener() {
             @Override
-            public void stateChanged(ChangeEvent e) {
-                Point pos = getCaretPosition();
-                String textPosition = Long.toString((long) pos.getX()) + ":" + Long.toString((long) pos.getY());
-                textStatus.setTextPosition(textPosition);
+            public void caretMoved(CaretPosition caretPosition, Hexadecimal.Section section) {
+                String position = String.valueOf(caretPosition.getDataPosition());
+                if (caretPosition.isLowerHalf()) {
+                    position += ".5";
+                }
+                textStatus.setCursorPosition(position);
             }
         });
+
+        attachSelectionListener(new Hexadecimal.SelectionChangedListener() {
+            @Override
+            public void selectionChanged(Hexadecimal.SelectionRange selection) {
+                if (selection == null) {
+                    textStatus.setSelectionPosition("", "");
+                } else {
+                    String start = String.valueOf(selection.getFirst());
+                    String end = String.valueOf(selection.getLast());
+                    textStatus.setSelectionPosition(start, end);
+                }
+            }
+        });
+
         setCharsetChangeListener(new HexPanel.CharsetChangeListener() {
 
             @Override
