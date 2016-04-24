@@ -1,34 +1,51 @@
-XBUP: eXtensible Binary Universal Protocol
-==========================================
+Delta Hexadecimal Library
+=========================
 
-The goal of this project is to design and to provide an open-source support for unified general binary data representation format.
+Hexadecimal viewer/editor component library for Java / Swing.
 
-This should provide following advantages:
+Homepage: http://deltahex.exbin.org  
 
- * Advanced Data Structures - Unified structure should allow to combine various types of data together
- * Efficiency - Optional compression and encryption on multiple levels should allow effective representation of binary data
- * Flexibility - General framework should provide data transformations/processing and compatibility issues solving capability
- * Comprehensibility - Catalog of data types, metadata, relations and abstraction should allow better understanding of data
+Features
+--------
 
-Homepage: http://xbup.exbin.org
-Version: 0.2.0-SNAPSHOT
+- Hexadecimal representation of data and ascii preview
+- Insertion and overwrite editation mode
+- Support for selection and clipboard
+- Optional scrollbars
 
-This repository contains Java implementation of the protocol and support tools and sample files.
+Todo
+----
 
-Structure
+- Support for text encodings
+- Support for huge files
+- Delta mode - Changes are stored only in memory till save
+- Overview side ruler / modification's indicator
+
+Compiling
 ---------
 
-As the project is currently in alpha stage, repository contains complete resources for distribution package with following folders:
+Java Development Kit (JDK) version 7 or later is required to build this project.
 
- * bin - Executable applications
- * doc - Documentation
- * lib - Library files
- * resources - Related resource files, like sample files, images, etc.
+For project compiling Gradle 2.0 build system is used. You can either download and install gradle and run
+
+  gradle build
+
+command in project folder or gradlew or gradlew.bat scripts to download separate copy of gradle to perform the project build.
+
+Build system website: http://gradle.org
+
+Development
+-----------
+
+The Gradle build system provides support for various IDEs. See gradle website for more information.
+
+There is gradle support plugin, which can be used to some degree, but some projects need other way of handling as described in their readme files.
+
+Gradle support plugin website: http://plugins.netbeans.org/plugin/44510/gradle-support
 
 License
 -------
 
-Project uses various libraries with specific licenses and some tools are licensed with multiple licenses with exceptions for specific modules to cover license requirements for used libraries.
+Apache License, Version 2.0
+see LICENSE-2.0.txt
 
-Main license is: GNU/LGPL (see gpl-3.0.txt AND lgpl-3.0.txt)
-License for documentation: GNU/FDL (see doc/fdl-1.3.txt)

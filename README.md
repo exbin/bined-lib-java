@@ -21,9 +21,9 @@ Features
 Todo
 ----
 
-- Delta mode - Only changes are stored in memory
 - Support for text encodings
 - Support for huge files
+- Delta mode - Changes are stored only in memory till save
 - Overview side ruler / modification's indicator
 
 Compiling

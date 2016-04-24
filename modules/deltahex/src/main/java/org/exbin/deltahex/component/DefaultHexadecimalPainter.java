@@ -304,10 +304,6 @@ public class DefaultHexadecimalPainter implements HexadecimalPainter {
         Hexadecimal.ScrollPosition scrollPosition = hexadecimal.getScrollPosition();
         int positionY = linePositionY - hexadecimal.getSubFontSpace();
         g.setColor(hexadecimal.getForeground());
-        if (byteOnLine == 0 && hexadecimal.isShowLineNumbers()) {
-            char[] lineNumberCode = HexadecimalUtils.longToHexChars(dataPosition);
-            g.drawChars(lineNumberCode, 0, 8, 0, positionY);
-        }
         if (dataPosition < hexadecimal.getData().getDataSize()) {
             byte dataByte = hexadecimal.getData().getByte(dataPosition);
             if (hexadecimal.getViewMode() != Hexadecimal.ViewMode.PREVIEW) {

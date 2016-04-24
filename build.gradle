@@ -23,34 +23,18 @@ distributions {
             from 'src/dist'
             include 'readme.txt'
 
-            into('lib') {
-                from 'lib'
-            }
             project(':modules').subprojects.each { p ->
                 p.plugins.withType(JavaPlugin) {
-                    into('lib') {
-                        from p.jar.archivePath
+                    into('') {
+                        from p.jar
                         include '*'
-                        from p.configurations.runtime
+                        from p.sourceJar
+                        include '*'
+                        from p.javadocJar
                         include '*'
                     }
                 }
             }
-            project(':tools').subprojects.each { p ->
-                p.plugins.withType(JavaPlugin) {
-                    into('lib') {
-                        from p.configurations.runtime
-                        include '*'
-                    }
-
-                    into('bin') {
-                        from p.jar.archivePath
-                        include '*'
-                        rename { filename -> p.name + ".jar" }
-                    }
-                }
-            }
-
 
             into('doc') {
                 from 'doc'
@@ -60,10 +44,6 @@ distributions {
                 from 'resources'
                 include '**'
                 exclude 'private'
-            }
-            into('bin/help') {
-                from 'tools/xbeditor/help'
-                include '**'
             }
         }
     }
