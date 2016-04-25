@@ -18,6 +18,7 @@ package org.exbin.deltahex.component;
 import org.exbin.deltahex.CaretPosition;
 import java.awt.Color;
 import java.awt.Cursor;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
@@ -185,20 +186,17 @@ public class Hexadecimal extends JComponent {
     }
 
     private void moveCaret(MouseEvent me, int modifiers) {
+        Rectangle rect = dimensionsCache.hexadecimalRectangle;
+
         Point scrollPoint = getScrollPoint();
         int bytesPerLine = dimensionsCache.bytesPerLine;
-        int cursorCharX = (me.getX() + scrollPoint.x) / dimensionsCache.charWidth;
-        Rectangle rect = dimensionsCache.hexadecimalRectangle;
+        int cursorCharX = (me.getX() - rect.x + scrollPoint.x) / dimensionsCache.charWidth;
         int cursorLineY = (me.getY() - rect.y + scrollPoint.y) / dimensionsCache.lineHeight;
         if (cursorLineY < 0) {
             cursorLineY = 0;
         }
-        if (showLineNumbers) {
-            if (cursorCharX < 9) {
-                cursorCharX = 0;
-            } else {
-                cursorCharX -= 9;
-            }
+        if (cursorCharX < 0) {
+            cursorCharX = 0;
         }
 
         long dataPosition;
@@ -332,6 +330,7 @@ public class Hexadecimal extends JComponent {
 
     public void revealCursor() {
         boolean scrolled = false;
+        Rectangle rect = dimensionsCache.hexadecimalRectangle;
         CaretPosition caretPosition = caret.getCaretPosition();
         long caretLine = caretPosition.getDataPosition() / dimensionsCache.bytesPerLine;
         int caretByte = (int) (caretPosition.getDataPosition() % dimensionsCache.bytesPerLine);
@@ -342,7 +341,7 @@ public class Hexadecimal extends JComponent {
             scrolled = true;
         } else if (caretLine >= scrollPosition.scrollLinePosition + dimensionsCache.linesPerRect) {
             scrollPosition.scrollLinePosition = caretLine - dimensionsCache.linesPerRect + 1;
-            scrollPosition.scrollLineOffset = 0; // TODO
+            scrollPosition.scrollLineOffset = rect.height % dimensionsCache.lineHeight;
             scrolled = true;
         }
         if (caretByte <= scrollPosition.scrollBytePosition) {
@@ -355,7 +354,7 @@ public class Hexadecimal extends JComponent {
 
             if (caretByte >= scrollPosition.scrollBytePosition + dimensionsCache.bytesPerLine) {
                 scrollPosition.scrollBytePosition = caretByte - dimensionsCache.bytesPerLine;
-                scrollPosition.scrollByteOffset = 0; // TODO
+                scrollPosition.scrollByteOffset = rect.width % dimensionsCache.charWidth;
                 scrolled = true;
             }
         }
@@ -540,8 +539,8 @@ public class Hexadecimal extends JComponent {
         boolean verticalScrollBarVisible;
         boolean horizontalScrollBarVisible;
 
-        Rectangle panelBounds = getBounds();
-        int charsPerRect = computeCharsPerRect(panelBounds.width);
+        Dimension size = getSize();
+        int charsPerRect = computeCharsPerRect(size.width);
         int bytesPerLine;
         if (wrapMode) {
             bytesPerLine = charsPerRect / dimensionsCache.charsPerByte;
@@ -560,7 +559,7 @@ public class Hexadecimal extends JComponent {
         dimensionsCache.linesPerRect = rect.height / dimensionsCache.lineHeight;
         verticalScrollBarVisible = verticalScrollMode != VerticalScrollMode.NONE && lines > dimensionsCache.linesPerRect;
         if (verticalScrollBarVisible) {
-            charsPerRect = computeCharsPerRect(panelBounds.width - dimensionsCache.scrollBarThickness);
+            charsPerRect = computeCharsPerRect(size.width - dimensionsCache.scrollBarThickness);
             if (wrapMode) {
                 bytesPerLine = charsPerRect / dimensionsCache.charsPerByte;
                 if (bytesPerLine <= 0) {
@@ -578,7 +577,7 @@ public class Hexadecimal extends JComponent {
             }
         }
 
-        int maxWidth = panelBounds.width - rect.x;
+        int maxWidth = size.width - rect.x;
         if (verticalScrollBarVisible) {
             maxWidth -= dimensionsCache.scrollBarThickness;
         }
@@ -587,11 +586,11 @@ public class Hexadecimal extends JComponent {
             dimensionsCache.linesPerRect = (rect.height - dimensionsCache.scrollBarThickness) / dimensionsCache.lineHeight;
         }
 
-        rect.width = panelBounds.width - rect.x;
+        rect.width = size.width - rect.x;
         if (verticalScrollBarVisible) {
             rect.width -= dimensionsCache.scrollBarThickness;
         }
-        rect.height = panelBounds.height - rect.y;
+        rect.height = size.height - rect.y;
         if (horizontalScrollBarVisible) {
             rect.height -= dimensionsCache.scrollBarThickness;
         }
@@ -610,15 +609,16 @@ public class Hexadecimal extends JComponent {
             }
         }
 
+        // Compute scrollbar positions
+        boolean scrolled = false;
         int lineScroll = (int) (scrollPosition.scrollLinePosition * dimensionsCache.lineHeight + scrollPosition.scrollLineOffset);
-        Rectangle bounds = getBounds();
         verticalScrollBar.setVisible(verticalScrollBarVisible);
         if (verticalScrollBarVisible) {
-            int verticalScrollBarHeight = bounds.height - rect.y;
+            int verticalScrollBarHeight = size.height - rect.y;
             if (horizontalScrollBarVisible) {
                 verticalScrollBarHeight -= dimensionsCache.scrollBarThickness - 2;
             }
-            verticalScrollBar.setBounds(bounds.width - dimensionsCache.scrollBarThickness, rect.y, dimensionsCache.scrollBarThickness, verticalScrollBarHeight);
+            verticalScrollBar.setBounds(size.width - dimensionsCache.scrollBarThickness, rect.y, dimensionsCache.scrollBarThickness, verticalScrollBarHeight);
 
             int verticalVisibleAmount;
             int verticalMaximum = lines;
@@ -631,26 +631,30 @@ public class Hexadecimal extends JComponent {
             verticalScrollBar.setMaximum(verticalMaximum);
             verticalScrollBar.setVisibleAmount(verticalVisibleAmount);
 
-            int maxLineScroll = verticalMaximum - verticalVisibleAmount;
-            if (lineScroll > maxLineScroll) {
-                scrollPosition.scrollLinePosition = maxLineScroll / dimensionsCache.lineHeight;
-                scrollPosition.scrollLineOffset = maxLineScroll % dimensionsCache.lineHeight;
-                updateScrollBars();
+            if (verticalVisibleAmount < verticalMaximum) {
+                int maxLineScroll = verticalMaximum - verticalVisibleAmount;
+                if (lineScroll > maxLineScroll) {
+                    scrollPosition.scrollLinePosition = maxLineScroll / dimensionsCache.lineHeight;
+                    if (verticalScrollMode == VerticalScrollMode.PIXEL) {
+                        scrollPosition.scrollLineOffset = maxLineScroll % dimensionsCache.lineHeight;
+                    }
+                    scrolled = true;
+                }
             }
         } else if (lineScroll > 0) {
             scrollPosition.scrollLinePosition = 0;
             scrollPosition.scrollLineOffset = 0;
-            updateScrollBars();
+            scrolled = true;
         }
 
         int byteScroll = (int) (scrollPosition.scrollBytePosition * dimensionsCache.charWidth + scrollPosition.scrollByteOffset);
         horizontalScrollBar.setVisible(horizontalScrollBarVisible);
         if (horizontalScrollBarVisible) {
-            int horizontalScrollBarWidth = bounds.width - rect.x;
+            int horizontalScrollBarWidth = size.width - rect.x;
             if (verticalScrollBarVisible) {
                 horizontalScrollBarWidth -= dimensionsCache.scrollBarThickness - 2;
             }
-            horizontalScrollBar.setBounds(rect.x, bounds.height - dimensionsCache.scrollBarThickness, horizontalScrollBarWidth, dimensionsCache.scrollBarThickness);
+            horizontalScrollBar.setBounds(rect.x, size.height - dimensionsCache.scrollBarThickness, horizontalScrollBarWidth, dimensionsCache.scrollBarThickness);
 
             int horizontalVisibleAmount;
             int horizontalMaximum = dimensionsCache.bytesPerLine * dimensionsCache.charsPerByte;
@@ -664,14 +668,22 @@ public class Hexadecimal extends JComponent {
             horizontalScrollBar.setVisibleAmount(horizontalVisibleAmount);
 
             int maxByteScroll = horizontalMaximum - horizontalVisibleAmount;
-            if (byteScroll > maxByteScroll) {
-                scrollPosition.scrollBytePosition = maxByteScroll / dimensionsCache.charWidth;
-                scrollPosition.scrollByteOffset = maxByteScroll % dimensionsCache.charWidth;
-                updateScrollBars();
+            if (horizontalVisibleAmount < horizontalMaximum) {
+                if (byteScroll > maxByteScroll) {
+                    scrollPosition.scrollBytePosition = maxByteScroll / dimensionsCache.charWidth;
+                    if (horizontalScrollMode == HorizontalScrollMode.PIXEL) {
+                        scrollPosition.scrollByteOffset = maxByteScroll % dimensionsCache.charWidth;
+                    }
+                    scrolled = true;
+                }
             }
         } else if (byteScroll > 0) {
             scrollPosition.scrollBytePosition = 0;
             scrollPosition.scrollByteOffset = 0;
+            scrolled = true;
+        }
+
+        if (scrolled) {
             updateScrollBars();
         }
     }
