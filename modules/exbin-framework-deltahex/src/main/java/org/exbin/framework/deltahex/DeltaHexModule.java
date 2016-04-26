@@ -16,8 +16,7 @@
 package org.exbin.framework.deltahex;
 
 import java.awt.Color;
-import java.io.File;
-import javax.swing.filechooser.FileFilter;
+import javax.swing.JPopupMenu;
 import org.exbin.framework.api.XBApplication;
 import org.exbin.framework.api.XBModuleRepositoryUtils;
 import org.exbin.framework.deltahex.panel.HexAppearanceOptionsPanel;
@@ -25,8 +24,6 @@ import org.exbin.framework.deltahex.panel.HexColorOptionsPanel;
 import org.exbin.framework.deltahex.panel.HexPanel;
 import org.exbin.framework.deltahex.panel.HexStatusPanel;
 import org.exbin.framework.gui.editor.api.XBEditorProvider;
-import org.exbin.framework.gui.file.api.FileType;
-import org.exbin.framework.gui.file.api.GuiFileModuleApi;
 import org.exbin.framework.gui.frame.api.GuiFrameModuleApi;
 import org.exbin.framework.gui.menu.api.GuiMenuModuleApi;
 import org.exbin.framework.gui.menu.api.MenuGroup;
@@ -44,12 +41,13 @@ import org.exbin.framework.deltahex.panel.HexColorPanelApi;
 /**
  * Hexadecimal editor module.
  *
- * @version 0.1.0 2016/04/03
+ * @version 0.1.0 2016/04/26
  * @author ExBin Project (http://exbin.org)
  */
 public class DeltaHexModule implements XBApplicationModule {
 
     public static final String MODULE_ID = XBModuleRepositoryUtils.getModuleIdByApi(DeltaHexModule.class);
+    public static final String HEX_POPUP_MENU_ID = MODULE_ID + ".audioPopupMenu";
 
     private static final String EDIT_FIND_MENU_GROUP_ID = MODULE_ID + ".editFindMenuGroup";
     private static final String EDIT_FIND_TOOL_BAR_GROUP_ID = MODULE_ID + ".editFindToolBarGroup";
@@ -85,15 +83,10 @@ public class DeltaHexModule implements XBApplicationModule {
     public XBEditorProvider getEditorProvider() {
         if (editorProvider == null) {
             editorProvider = new HexPanel();
+            ((HexPanel) editorProvider).setPopupMenu(createPopupMenu());
         }
 
         return editorProvider;
-    }
-
-    public void registerFileTypes() {
-        GuiFileModuleApi fileModule = application.getModuleRepository().getModuleByInterface(GuiFileModuleApi.class);
-        fileModule.addFileType(new TXTFileType());
-        fileModule.addFileType(new XBTFileType());
     }
 
     public void registerStatusBar() {
@@ -249,73 +242,14 @@ public class DeltaHexModule implements XBApplicationModule {
         menuModule.registerMenuItem(GuiFrameModuleApi.FILE_MENU_ID, MODULE_ID, printHandler.getPrintAction(), new MenuPosition(PositionMode.BOTTOM));
     }
 
-    public class XBTFileType extends FileFilter implements FileType {
+    private JPopupMenu createPopupMenu() {
+        GuiMenuModuleApi menuModule = application.getModuleRepository().getModuleByInterface(GuiMenuModuleApi.class);
+        menuModule.registerMenu(HEX_POPUP_MENU_ID, MODULE_ID);
+        menuModule.registerClipboardMenuItems(HEX_POPUP_MENU_ID, MODULE_ID, SeparationMode.AROUND);
 
-        @Override
-        public boolean accept(File f) {
-            if (f.isDirectory()) {
-                return true;
-            }
-            String extension = getExtension(f);
-            if (extension != null) {
-                if (extension.length() < 3) {
-                    return false;
-                }
-                return "xbt".contains(extension.substring(0, 3));
-            }
-            return false;
-        }
-
-        @Override
-        public String getDescription() {
-            return "XBUP Text Files (*.xbt*)";
-        }
-
-        @Override
-        public String getFileTypeId() {
-            return XBT_FILE_TYPE;
-        }
+        JPopupMenu popupMenu = new JPopupMenu();
+        menuModule.buildMenu(popupMenu, HEX_POPUP_MENU_ID);
+        return popupMenu;
     }
 
-    public class TXTFileType extends FileFilter implements FileType {
-
-        @Override
-        public boolean accept(File f) {
-            if (f.isDirectory()) {
-                return true;
-            }
-            String extension = getExtension(f);
-            if (extension != null) {
-                return "txt".equals(extension);
-            }
-            return false;
-        }
-
-        @Override
-        public String getDescription() {
-            return "Text Files (*.txt)";
-        }
-
-        @Override
-        public String getFileTypeId() {
-            return TXT_FILE_TYPE;
-        }
-    }
-
-    /**
-     * Gets the extension part of file name.
-     *
-     * @param file Source file
-     * @return extension part of file name
-     */
-    public static String getExtension(File file) {
-        String ext = null;
-        String str = file.getName();
-        int i = str.lastIndexOf('.');
-
-        if (i > 0 && i < str.length() - 1) {
-            ext = str.substring(i + 1).toLowerCase();
-        }
-        return ext;
-    }
 }
