@@ -348,13 +348,10 @@ public class Hexadecimal extends JComponent {
         } else if (caretLine >= scrollPosition.scrollLinePosition + dimensionsCache.linesPerRect) {
             scrollPosition.scrollLinePosition = caretLine - dimensionsCache.linesPerRect + 1;
             if (verticalScrollMode == VerticalScrollMode.PIXEL) {
-                scrollPosition.scrollLineOffset = rect.height % dimensionsCache.lineHeight;
+                scrollPosition.scrollLineOffset = dimensionsCache.lineHeight - rect.height % dimensionsCache.lineHeight;
             }
             scrolled = true;
         }
-        System.out.println("CaretByte " + caretByte);
-        System.out.println("scrollX " + scrollPosition.scrollBytePosition);
-        System.out.println("bytesPerRect " + dimensionsCache.bytesPerRect);
         if (caretByte <= scrollPosition.scrollBytePosition) {
             scrollPosition.scrollBytePosition = caretByte;
             scrollPosition.scrollByteOffset = 0;
@@ -382,7 +379,7 @@ public class Hexadecimal extends JComponent {
         if (horizontalScrollMode == HorizontalScrollMode.PER_CHAR) {
             horizontalScrollBar.setValue((int) scrollPosition.scrollBytePosition);
         } else {
-            horizontalScrollBar.setValue((int) (scrollPosition.scrollBytePosition * dimensionsCache.charWidth * 3 + scrollPosition.scrollByteOffset));
+            horizontalScrollBar.setValue((int) (scrollPosition.scrollBytePosition * dimensionsCache.charWidth + scrollPosition.scrollByteOffset));
         }
         repaint();
     }
@@ -641,6 +638,7 @@ public class Hexadecimal extends JComponent {
             verticalScrollBar.setMaximum(verticalMaximum);
             verticalScrollBar.setVisibleAmount(verticalVisibleAmount);
 
+            // Cap vertical scrolling
             if (verticalVisibleAmount < verticalMaximum) {
                 int maxLineScroll = verticalMaximum - verticalVisibleAmount;
                 if (lineScroll > maxLineScroll) {
@@ -677,6 +675,7 @@ public class Hexadecimal extends JComponent {
             horizontalScrollBar.setMaximum(horizontalMaximum);
             horizontalScrollBar.setVisibleAmount(horizontalVisibleAmount);
 
+            // Cap horizontal scrolling
             int maxByteScroll = horizontalMaximum - horizontalVisibleAmount;
             if (horizontalVisibleAmount < horizontalMaximum) {
                 if (byteScroll > maxByteScroll) {
