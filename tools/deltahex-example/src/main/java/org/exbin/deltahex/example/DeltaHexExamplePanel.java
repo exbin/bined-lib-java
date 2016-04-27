@@ -18,11 +18,12 @@ package org.exbin.deltahex.example;
 import java.awt.BorderLayout;
 import org.exbin.deltahex.CaretPosition;
 import org.exbin.deltahex.component.Hexadecimal;
+import org.exbin.deltahex.component.HexadecimalCaret;
 
 /**
  * Hexadecimal editor example panel.
  *
- * @version 0.1.0 2016/04/22
+ * @version 0.1.0 2016/04/27
  * @author ExBin Project (http://exbin.org)
  */
 public class DeltaHexExamplePanel extends javax.swing.JPanel {
@@ -50,7 +51,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
         lineLengthSpinner.setValue(hexadecimal.getLineLength());
         hexadecimal.addCaretMovedListener(new Hexadecimal.CaretMovedListener() {
             @Override
-            public void caretMoved(CaretPosition caretPosition, Hexadecimal.Section section) {
+            public void caretMoved(CaretPosition caretPosition, HexadecimalCaret.Section section) {
                 cursorPositionTextField.setText(String.valueOf(caretPosition.getDataPosition()));
                 cursorPositionCheckBox.setSelected(caretPosition.isLowerHalf());
             }

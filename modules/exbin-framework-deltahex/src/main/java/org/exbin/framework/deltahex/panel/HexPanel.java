@@ -35,8 +35,6 @@ import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.text.Document;
 import javax.swing.undo.UndoableEdit;
 import org.exbin.deltahex.CaretPosition;
@@ -46,6 +44,7 @@ import org.exbin.xbup.core.block.declaration.local.XBLFormatDecl;
 import org.exbin.xbup.core.parser.XBProcessingException;
 import org.exbin.xbup.core.serial.XBPSerialReader;
 import org.exbin.deltahex.component.Hexadecimal;
+import org.exbin.deltahex.component.HexadecimalCaret;
 import org.exbin.framework.deltahex.dialog.FindHexDialog;
 import org.exbin.framework.editor.text.dialog.TextFontDialog;
 import org.exbin.framework.editor.text.panel.TextEncodingPanel;
@@ -62,7 +61,7 @@ import org.exbin.xbup.core.type.XBData;
 /**
  * Hexadecimal editor panel.
  *
- * @version 0.1.0 2016/04/03
+ * @version 0.1.0 2016/04/27
  * @author ExBin Project (http://exbin.org)
  */
 public class HexPanel extends javax.swing.JPanel implements XBEditorProvider, ClipboardActionsHandler, UndoActionsHandler {
@@ -403,11 +402,11 @@ public class HexPanel extends javax.swing.JPanel implements XBEditorProvider, Cl
 //            }
 //            case DeltaHexModule.TXT_FILE_TYPE: {
         try {
-            FileInputStream fileStream = new FileInputStream(file);
-            HexadecimalData data = hexadecimal.getData();
-            ((EditableHexadecimalData) data).loadFromStream(fileStream);
-            hexadecimal.setData(data);
-            fileStream.close();
+            try (FileInputStream fileStream = new FileInputStream(file)) {
+                HexadecimalData data = hexadecimal.getData();
+                ((EditableHexadecimalData) data).loadFromStream(fileStream);
+                hexadecimal.setData(data);
+            }
         } catch (IOException ex) {
             Logger.getLogger(HexPanel.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -624,7 +623,7 @@ public class HexPanel extends javax.swing.JPanel implements XBEditorProvider, Cl
         this.textStatus = textStatusApi;
         attachCaretListener(new Hexadecimal.CaretMovedListener() {
             @Override
-            public void caretMoved(CaretPosition caretPosition, Hexadecimal.Section section) {
+            public void caretMoved(CaretPosition caretPosition, HexadecimalCaret.Section section) {
                 String position = String.valueOf(caretPosition.getDataPosition());
                 if (caretPosition.isLowerHalf()) {
                     position += ".5";

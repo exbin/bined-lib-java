@@ -23,19 +23,21 @@ import java.awt.Rectangle;
 /**
  * Hexadecimal editor caret.
  *
- * @version 0.2.0 2016/04/15
+ * @version 0.2.0 2016/04/27
  * @author ExBin Project (http://exbin.org)
  */
 public class HexadecimalCaret {
 
+    private static final int DEFAULT_CURSOR_WIDTH = 2;
+
     private final Hexadecimal hexadecimal;
+
+    private final CaretPosition caretPosition = new CaretPosition();
+    private Section section = Section.HEXADECIMAL;
 
     public HexadecimalCaret(Hexadecimal hexadecimal) {
         this.hexadecimal = hexadecimal;
     }
-
-    private static final int DEFAULT_CURSOR_WIDTH = 2;
-    private final CaretPosition caretPosition = new CaretPosition();
 
     public void paint(Graphics g) {
         int bytesPerBounds = hexadecimal.getBytesPerBounds();
@@ -58,7 +60,7 @@ public class HexadecimalCaret {
         Rectangle rect = hexadecimal.getHexadecimalRectangle();
         int caretY = (int) (rect.y + line * lineHeight);
         int caretX;
-        if (hexadecimal.getActiveSection() == Hexadecimal.Section.PREVIEW) {
+        if (section == Section.PREVIEW) {
             caretX = hexadecimal.getPreviewX() + charWidth * offset;
         } else {
             caretX = rect.x + charWidth * (offset * 3 + getHalfBytePosition());
@@ -109,5 +111,17 @@ public class HexadecimalCaret {
 
     public void setLowerHalf(boolean lowerHalf) {
         caretPosition.setLowerHalf(lowerHalf);
+    }
+
+    public Section getSection() {
+        return section;
+    }
+
+    public void setSection(Section section) {
+        this.section = section;
+    }
+
+    public static enum Section {
+        HEXADECIMAL, PREVIEW
     }
 }

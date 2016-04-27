@@ -46,11 +46,12 @@ import javax.swing.JScrollBar;
 import javax.swing.UIManager;
 import org.exbin.deltahex.HexadecimalCommandHandler;
 import org.exbin.deltahex.HexadecimalData;
+import org.exbin.deltahex.component.HexadecimalCaret.Section;
 
 /**
  * Hex editor component.
  *
- * @version 0.1.0 2016/04/20
+ * @version 0.1.0 2016/04/27
  * @author ExBin Project (http://exbin.org)
  */
 public class Hexadecimal extends JComponent {
@@ -67,7 +68,6 @@ public class Hexadecimal extends JComponent {
     private ViewMode viewMode = ViewMode.DUAL;
     private BackgroundMode backgroundMode = BackgroundMode.STRIPPED;
     private DecorationMode decorationMode = DecorationMode.LINES;
-    private Section activeSection = Section.HEXADECIMAL;
     private EditationMode editationMode = EditationMode.OVERWRITE;
     private CharRenderingMode charRenderingMode = CharRenderingMode.AUTO;
     private CharAntialiasingMode charAntialiasingMode = CharAntialiasingMode.AUTO;
@@ -143,7 +143,7 @@ public class Hexadecimal extends JComponent {
     void moveRight(int modifiers) {
         CaretPosition caretPosition = caret.getCaretPosition();
         if (caretPosition.getDataPosition() < data.getDataSize()) {
-            if (activeSection == Section.HEXADECIMAL) {
+            if (caret.getSection() == Section.HEXADECIMAL) {
                 boolean lowerHalf = caret.isLowerHalf();
                 if (caretPosition.getDataPosition() < data.getDataSize()) {
                     if (!lowerHalf) {
@@ -165,7 +165,7 @@ public class Hexadecimal extends JComponent {
 
     void moveLeft(int modifiers) {
         CaretPosition caretPosition = caret.getCaretPosition();
-        if (activeSection == Section.HEXADECIMAL) {
+        if (caret.getSection() == Section.HEXADECIMAL) {
             boolean lowerHalf = caret.isLowerHalf();
             if (lowerHalf) {
                 caret.setLowerHalf(false);
@@ -203,7 +203,7 @@ public class Hexadecimal extends JComponent {
         boolean lowerHalf = false;
         int byteOnLine;
         if ((viewMode == ViewMode.DUAL && cursorCharX < bytesPerLine * 3) || viewMode == ViewMode.HEXADECIMAL) {
-            activeSection = Section.HEXADECIMAL;
+            caret.setSection(Section.HEXADECIMAL);
             int bytePosition = cursorCharX % 3;
             lowerHalf = bytePosition > 0;
 
@@ -212,7 +212,7 @@ public class Hexadecimal extends JComponent {
                 lowerHalf = true;
             }
         } else {
-            activeSection = Section.PREVIEW;
+            caret.setSection(Section.PREVIEW);
             byteOnLine = cursorCharX;
             if (viewMode == ViewMode.DUAL) {
                 byteOnLine -= bytesPerLine * 3;
@@ -333,7 +333,13 @@ public class Hexadecimal extends JComponent {
         Rectangle rect = dimensionsCache.hexadecimalRectangle;
         CaretPosition caretPosition = caret.getCaretPosition();
         long caretLine = caretPosition.getDataPosition() / dimensionsCache.bytesPerLine;
-        int caretByte = (int) (caretPosition.getDataPosition() % dimensionsCache.bytesPerLine);
+
+        int caretByte;
+        if (caret.getSection() == Section.HEXADECIMAL) {
+            caretByte = (int) (caretPosition.getDataPosition() % dimensionsCache.bytesPerLine) * 3 + caret.getHalfBytePosition();
+        } else {
+            caretByte = dimensionsCache.bytesPerLine * 3 + (int) (caretPosition.getDataPosition() % dimensionsCache.bytesPerLine);
+        }
 
         if (caretLine <= scrollPosition.scrollLinePosition) {
             scrollPosition.scrollLinePosition = caretLine;
@@ -341,22 +347,24 @@ public class Hexadecimal extends JComponent {
             scrolled = true;
         } else if (caretLine >= scrollPosition.scrollLinePosition + dimensionsCache.linesPerRect) {
             scrollPosition.scrollLinePosition = caretLine - dimensionsCache.linesPerRect + 1;
-            scrollPosition.scrollLineOffset = rect.height % dimensionsCache.lineHeight;
+            if (verticalScrollMode == VerticalScrollMode.PIXEL) {
+                scrollPosition.scrollLineOffset = rect.height % dimensionsCache.lineHeight;
+            }
             scrolled = true;
         }
+        System.out.println("CaretByte " + caretByte);
+        System.out.println("scrollX " + scrollPosition.scrollBytePosition);
+        System.out.println("bytesPerRect " + dimensionsCache.bytesPerRect);
         if (caretByte <= scrollPosition.scrollBytePosition) {
             scrollPosition.scrollBytePosition = caretByte;
             scrollPosition.scrollByteOffset = 0;
             scrolled = true;
-        } else {
-            scrolled |= scrolled; // TODO remove
-            // TODO int visibleChars = dimensionsCache.hexadecimalRectangle.width / (dimensionsCache.charWidth * 3)
-
-            if (caretByte >= scrollPosition.scrollBytePosition + dimensionsCache.bytesPerLine) {
-                scrollPosition.scrollBytePosition = caretByte - dimensionsCache.bytesPerLine;
+        } else if (caretByte >= scrollPosition.scrollBytePosition + dimensionsCache.bytesPerRect) {
+            scrollPosition.scrollBytePosition = caretByte - dimensionsCache.bytesPerRect + 1;
+            if (horizontalScrollMode == HorizontalScrollMode.PIXEL) {
                 scrollPosition.scrollByteOffset = rect.width % dimensionsCache.charWidth;
-                scrolled = true;
             }
+            scrolled = true;
         }
 
         if (scrolled) {
@@ -451,7 +459,7 @@ public class Hexadecimal extends JComponent {
 
     private void notifyCaretMoved() {
         for (CaretMovedListener caretMovedListener : caretMovedListeners) {
-            caretMovedListener.caretMoved(caret.getCaretPosition(), activeSection);
+            caretMovedListener.caretMoved(caret.getCaretPosition(), caret.getSection());
         }
     }
 
@@ -556,7 +564,6 @@ public class Hexadecimal extends JComponent {
         rect.y = showHeader ? dimensionsCache.lineHeight * 2 : 0;
         rect.x = 0;
 
-        dimensionsCache.linesPerRect = rect.height / dimensionsCache.lineHeight;
         verticalScrollBarVisible = verticalScrollMode != VerticalScrollMode.NONE && lines > dimensionsCache.linesPerRect;
         if (verticalScrollBarVisible) {
             charsPerRect = computeCharsPerRect(size.width - dimensionsCache.scrollBarThickness);
@@ -594,6 +601,9 @@ public class Hexadecimal extends JComponent {
         if (horizontalScrollBarVisible) {
             rect.height -= dimensionsCache.scrollBarThickness;
         }
+
+        dimensionsCache.bytesPerRect = rect.width / dimensionsCache.charWidth;
+        dimensionsCache.linesPerRect = rect.height / dimensionsCache.lineHeight;
 
         // Compute sections positions
         if (viewMode == ViewMode.HEXADECIMAL) {
@@ -751,9 +761,9 @@ public class Hexadecimal extends JComponent {
     public void setViewMode(ViewMode viewMode) {
         this.viewMode = viewMode;
         if (viewMode == ViewMode.HEXADECIMAL) {
-            activeSection = Section.HEXADECIMAL;
+            caret.setSection(Section.HEXADECIMAL);
         } else if (viewMode == ViewMode.PREVIEW) {
-            activeSection = Section.PREVIEW;
+            caret.setSection(Section.PREVIEW);
         }
         computeDimensions();
         repaint();
@@ -786,11 +796,12 @@ public class Hexadecimal extends JComponent {
     }
 
     public Section getActiveSection() {
-        return activeSection;
+        return caret.getSection();
     }
 
     public void setActiveSection(Section activeSection) {
-        this.activeSection = activeSection;
+        caret.setSection(activeSection);
+        revealCursor();
         repaint();
     }
 
@@ -1013,10 +1024,6 @@ public class Hexadecimal extends JComponent {
 
     public static enum DecorationMode {
         NONE, LINES, BOX
-    }
-
-    public static enum Section {
-        HEXADECIMAL, PREVIEW
     }
 
     public static enum EditationMode {
@@ -1258,7 +1265,7 @@ public class Hexadecimal extends JComponent {
                     if (caretPosition.getDataPosition() < dataSize) {
                         if ((e.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) > 0) {
                             caret.setCaretPosition(data.getDataSize());
-                        } else if (activeSection == Section.HEXADECIMAL) {
+                        } else if (caret.getSection() == Section.HEXADECIMAL) {
                             long newPosition = ((caretPosition.getDataPosition() / bytesPerLine) + 1) * bytesPerLine - 1;
                             caret.setCaretPosition(newPosition < dataSize ? newPosition : dataSize, true);
                         } else {
@@ -1321,10 +1328,12 @@ public class Hexadecimal extends JComponent {
                 }
                 case KeyEvent.VK_TAB: {
                     if (viewMode == ViewMode.DUAL) {
-                        activeSection = activeSection == Section.HEXADECIMAL ? Section.PREVIEW : Section.HEXADECIMAL;
+                        Section activeSection = caret.getSection() == Section.HEXADECIMAL ? Section.PREVIEW : Section.HEXADECIMAL;
                         if (activeSection == Section.PREVIEW) {
                             caret.setLowerHalf(false);
                         }
+                        caret.setSection(activeSection);
+                        revealCursor();
                         repaint();
                     }
                     break;

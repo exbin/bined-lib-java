@@ -75,7 +75,7 @@ public class DefaultCommandHandler implements HexadecimalCommandHandler {
             return;
         }
 
-        if (hexadecimal.getActiveSection() == Hexadecimal.Section.HEXADECIMAL) {
+        if (hexadecimal.getActiveSection() == HexadecimalCaret.Section.HEXADECIMAL) {
             if ((keyValue >= '0' && keyValue <= '9')
                     || (keyValue >= 'a' && keyValue <= 'f') || (keyValue >= 'A' && keyValue <= 'F')) {
                 if (hexadecimal.hasSelection()) {
