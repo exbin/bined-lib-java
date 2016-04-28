@@ -346,9 +346,11 @@ public class Hexadecimal extends JComponent {
             scrollPosition.scrollLineOffset = 0;
             scrolled = true;
         } else if (caretLine >= scrollPosition.scrollLinePosition + dimensionsCache.linesPerRect) {
-            scrollPosition.scrollLinePosition = caretLine - dimensionsCache.linesPerRect + 1;
+            scrollPosition.scrollLinePosition = caretLine - dimensionsCache.linesPerRect;
             if (verticalScrollMode == VerticalScrollMode.PIXEL) {
-                scrollPosition.scrollLineOffset = dimensionsCache.lineHeight - rect.height % dimensionsCache.lineHeight;
+                scrollPosition.scrollLineOffset = dimensionsCache.lineHeight - (rect.height % dimensionsCache.lineHeight);
+            } else {
+                scrollPosition.scrollLinePosition++;
             }
             scrolled = true;
         }
@@ -357,9 +359,11 @@ public class Hexadecimal extends JComponent {
             scrollPosition.scrollByteOffset = 0;
             scrolled = true;
         } else if (caretByte >= scrollPosition.scrollBytePosition + dimensionsCache.bytesPerRect) {
-            scrollPosition.scrollBytePosition = caretByte - dimensionsCache.bytesPerRect + 1;
+            scrollPosition.scrollBytePosition = caretByte - dimensionsCache.bytesPerRect;
             if (horizontalScrollMode == HorizontalScrollMode.PIXEL) {
-                scrollPosition.scrollByteOffset = rect.width % dimensionsCache.charWidth;
+                scrollPosition.scrollByteOffset = dimensionsCache.charWidth - (rect.width % dimensionsCache.charWidth);
+            } else {
+                scrollPosition.scrollBytePosition++;
             }
             scrolled = true;
         }
@@ -618,7 +622,6 @@ public class Hexadecimal extends JComponent {
 
         // Compute scrollbar positions
         boolean scrolled = false;
-        int lineScroll = (int) (scrollPosition.scrollLinePosition * dimensionsCache.lineHeight + scrollPosition.scrollLineOffset);
         verticalScrollBar.setVisible(verticalScrollBarVisible);
         if (verticalScrollBarVisible) {
             int verticalScrollBarHeight = size.height - rect.y;
@@ -640,22 +643,28 @@ public class Hexadecimal extends JComponent {
 
             // Cap vertical scrolling
             if (verticalVisibleAmount < verticalMaximum) {
-                int maxLineScroll = verticalMaximum - verticalVisibleAmount;
-                if (lineScroll > maxLineScroll) {
-                    scrollPosition.scrollLinePosition = maxLineScroll / dimensionsCache.lineHeight;
-                    if (verticalScrollMode == VerticalScrollMode.PIXEL) {
-                        scrollPosition.scrollLineOffset = maxLineScroll % dimensionsCache.lineHeight;
+                long maxLineScroll = verticalMaximum - verticalVisibleAmount;
+                if (verticalScrollMode == VerticalScrollMode.PIXEL) {
+                    long lineScroll = (long) (scrollPosition.scrollLinePosition * dimensionsCache.lineHeight + scrollPosition.scrollLineOffset);
+                    if (lineScroll > maxLineScroll) {
+                        scrollPosition.scrollLinePosition = maxLineScroll / dimensionsCache.lineHeight;
+                        scrollPosition.scrollLineOffset = (int) (maxLineScroll % dimensionsCache.lineHeight);
+                        scrolled = true;
                     }
-                    scrolled = true;
+                } else {
+                    long lineScroll = scrollPosition.scrollLinePosition;
+                    if (lineScroll > maxLineScroll) {
+                        scrollPosition.scrollLinePosition = maxLineScroll;
+                        scrolled = true;
+                    }
                 }
             }
-        } else if (lineScroll > 0) {
+        } else if (scrollPosition.scrollLinePosition > 0 || scrollPosition.scrollLineOffset > 0) {
             scrollPosition.scrollLinePosition = 0;
             scrollPosition.scrollLineOffset = 0;
             scrolled = true;
         }
 
-        int byteScroll = (int) (scrollPosition.scrollBytePosition * dimensionsCache.charWidth + scrollPosition.scrollByteOffset);
         horizontalScrollBar.setVisible(horizontalScrollBarVisible);
         if (horizontalScrollBarVisible) {
             int horizontalScrollBarWidth = size.width - rect.x;
@@ -678,15 +687,22 @@ public class Hexadecimal extends JComponent {
             // Cap horizontal scrolling
             int maxByteScroll = horizontalMaximum - horizontalVisibleAmount;
             if (horizontalVisibleAmount < horizontalMaximum) {
-                if (byteScroll > maxByteScroll) {
-                    scrollPosition.scrollBytePosition = maxByteScroll / dimensionsCache.charWidth;
-                    if (horizontalScrollMode == HorizontalScrollMode.PIXEL) {
+                if (horizontalScrollMode == HorizontalScrollMode.PIXEL) {
+                    int byteScroll = (int) (scrollPosition.scrollBytePosition * dimensionsCache.charWidth + scrollPosition.scrollByteOffset);
+                    if (byteScroll > maxByteScroll) {
+                        scrollPosition.scrollBytePosition = maxByteScroll / dimensionsCache.charWidth;
                         scrollPosition.scrollByteOffset = maxByteScroll % dimensionsCache.charWidth;
+                        scrolled = true;
                     }
-                    scrolled = true;
+                } else {
+                    int byteScroll = scrollPosition.scrollBytePosition;
+                    if (byteScroll > maxByteScroll) {
+                        scrollPosition.scrollBytePosition = maxByteScroll;
+                        scrolled = true;
+                    }
                 }
             }
-        } else if (byteScroll > 0) {
+        } else if (scrollPosition.scrollBytePosition > 0 || scrollPosition.scrollByteOffset > 0) {
             scrollPosition.scrollBytePosition = 0;
             scrollPosition.scrollByteOffset = 0;
             scrolled = true;
@@ -892,10 +908,12 @@ public class Hexadecimal extends JComponent {
 
     public void setVerticalScrollMode(VerticalScrollMode verticalScrollMode) {
         this.verticalScrollMode = verticalScrollMode;
+        long linePosition = scrollPosition.scrollLinePosition;
         if (verticalScrollMode == VerticalScrollMode.PER_LINE) {
             scrollPosition.scrollLineOffset = 0;
         }
         computeDimensions();
+        scrollPosition.scrollLinePosition = linePosition;
         updateScrollBars();
     }
 
@@ -905,10 +923,12 @@ public class Hexadecimal extends JComponent {
 
     public void setHorizontalScrollMode(HorizontalScrollMode horizontalScrollMode) {
         this.horizontalScrollMode = horizontalScrollMode;
+        int bytePosition = scrollPosition.scrollBytePosition;
         if (horizontalScrollMode == HorizontalScrollMode.PER_CHAR) {
             scrollPosition.scrollByteOffset = 0;
         }
         computeDimensions();
+        scrollPosition.scrollBytePosition = bytePosition;
         updateScrollBars();
     }
 
