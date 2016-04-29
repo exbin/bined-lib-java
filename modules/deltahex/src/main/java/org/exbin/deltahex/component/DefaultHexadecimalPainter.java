@@ -23,7 +23,7 @@ import java.awt.Rectangle;
 /**
  * Hex editor painter.
  *
- * @version 0.1.0 2016/04/18
+ * @version 0.1.0 2016/04/29
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultHexadecimalPainter implements HexadecimalPainter {
@@ -37,19 +37,15 @@ public class DefaultHexadecimalPainter implements HexadecimalPainter {
     @Override
     public void paintOverall(Graphics g) {
         Rectangle rect = hexadecimal.getHexadecimalRectangle();
-        switch (hexadecimal.getDecorationMode()) {
-            case LINES: {
-                g.setColor(Color.GRAY);
-                int lineX = rect.x - hexadecimal.getCharWidth() / 2;
-                g.drawLine(lineX, 0, lineX, rect.y);
-                break;
-            }
-            case BOX: {
-                break;
-            }
-            default: {
-                // Do nothing
-            }
+        int decorationMode = hexadecimal.getDecorationMode();
+        if ((decorationMode & Hexadecimal.DECORATION_LINENUM_HEX_LINE) > 0) {
+            g.setColor(Color.GRAY);
+            int lineX = rect.x - hexadecimal.getCharWidth() / 2;
+            g.drawLine(lineX, 0, lineX, rect.y);
+        }
+        if ((decorationMode & Hexadecimal.DECORATION_BOX) > 0) {
+            g.setColor(Color.GRAY);
+            g.drawLine(rect.x - 1, rect.y - 1, rect.x + rect.width, rect.y - 1);
         }
     }
 
@@ -78,7 +74,8 @@ public class DefaultHexadecimalPainter implements HexadecimalPainter {
             }
         }
 
-        if (hexadecimal.getDecorationMode() == Hexadecimal.DecorationMode.LINES) {
+        int decorationMode = hexadecimal.getDecorationMode();
+        if ((decorationMode & Hexadecimal.DECORATION_HEX_PREVIEW_LINE) > 0) {
             int lineX = hexadecimal.getPreviewX() - scrollPosition.scrollBytePosition * hexadecimal.getCharWidth() - scrollPosition.scrollByteOffset - hexadecimal.getCharWidth() / 2;
             if (lineX >= rect.x) {
                 g.setColor(Color.GRAY);
@@ -158,19 +155,15 @@ public class DefaultHexadecimalPainter implements HexadecimalPainter {
             dataPosition += bytesPerBounds;
         }
 
-        switch (hexadecimal.getDecorationMode()) {
-            case LINES: {
-                g.setColor(Color.GRAY);
-                int lineX = rect.x - hexadecimal.getCharWidth() / 2;
-                g.drawLine(lineX, 0, lineX, rect.y + rect.height);
-                break;
-            }
-            case BOX: {
-                break;
-            }
-            default: {
-                // Do nothing
-            }
+        int decorationMode = hexadecimal.getDecorationMode();
+        if ((decorationMode & Hexadecimal.DECORATION_LINENUM_HEX_LINE) > 0) {
+            g.setColor(Color.GRAY);
+            int lineX = rect.x - hexadecimal.getCharWidth() / 2;
+            g.drawLine(lineX, 0, lineX, rect.y + rect.height);
+        }
+        if ((decorationMode & Hexadecimal.DECORATION_BOX) > 0) {
+            g.setColor(Color.GRAY);
+            g.drawLine(rect.x - 1, rect.y - 1, rect.x - 1, rect.y + rect.height);
         }
     }
 
@@ -281,22 +274,16 @@ public class DefaultHexadecimalPainter implements HexadecimalPainter {
             }
         } while (positionY - lineHeight < rect.y + rect.height);
 
-        switch (hexadecimal.getDecorationMode()) {
-            case LINES: {
-                int lineX = hexadecimal.getPreviewX() - scrollPosition.scrollBytePosition * hexadecimal.getCharWidth() - scrollPosition.scrollByteOffset - hexadecimal.getCharWidth() / 2;
-                if (lineX >= rect.x) {
-                    g.setColor(Color.GRAY);
-                    g.drawLine(lineX, rect.y, lineX, rect.y + rect.height);
-                }
-
-                break;
+        int decorationMode = hexadecimal.getDecorationMode();
+        if ((decorationMode & Hexadecimal.DECORATION_HEX_PREVIEW_LINE) > 0) {
+            int lineX = hexadecimal.getPreviewX() - scrollPosition.scrollBytePosition * hexadecimal.getCharWidth() - scrollPosition.scrollByteOffset - hexadecimal.getCharWidth() / 2;
+            if (lineX >= rect.x) {
+                g.setColor(Color.GRAY);
+                g.drawLine(lineX, rect.y, lineX, rect.y + rect.height);
             }
-            case BOX: {
-                break;
-            }
-            default: {
-                // Do nothing
-            }
+        }
+        if ((decorationMode & Hexadecimal.DECORATION_BOX) > 0) {
+            // TODO
         }
     }
 

@@ -51,14 +51,22 @@ import org.exbin.deltahex.component.HexadecimalCaret.Section;
 /**
  * Hex editor component.
  *
- * @version 0.1.0 2016/04/27
+ * @version 0.1.0 2016/04/29
  * @author ExBin Project (http://exbin.org)
  */
 public class Hexadecimal extends JComponent {
 
-    private HexadecimalData data;
     public static final int NO_MODIFIER = 0;
+
+    public static final int DECORATION_LINENUM_HEX_LINE = 1;
+    public static final int DECORATION_HEX_PREVIEW_LINE = 2;
+    public static final int DECORATION_BOX = 4;
+    public static final int DECORATION_DEFAULT = DECORATION_HEX_PREVIEW_LINE | DECORATION_LINENUM_HEX_LINE;
+
+    private final int metaMask = java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
     private static final int MOUSE_SCROLL_LINES = 3;
+
+    private HexadecimalData data;
 
     private HexadecimalCaret caret;
     private SelectionRange selection;
@@ -67,7 +75,7 @@ public class Hexadecimal extends JComponent {
 
     private ViewMode viewMode = ViewMode.DUAL;
     private BackgroundMode backgroundMode = BackgroundMode.STRIPPED;
-    private DecorationMode decorationMode = DecorationMode.LINES;
+    private int decorationMode = DECORATION_DEFAULT;
     private EditationMode editationMode = EditationMode.OVERWRITE;
     private CharRenderingMode charRenderingMode = CharRenderingMode.AUTO;
     private CharAntialiasingMode charAntialiasingMode = CharAntialiasingMode.AUTO;
@@ -78,7 +86,9 @@ public class Hexadecimal extends JComponent {
     private boolean editable = true;
     private boolean wrapMode = false;
 
+    private ScrollBarVisibility verticalScrollBarVisibility = ScrollBarVisibility.IF_NEEDED;
     private VerticalScrollMode verticalScrollMode = VerticalScrollMode.PER_LINE;
+    private ScrollBarVisibility horizontalScrollBarVisibility = ScrollBarVisibility.IF_NEEDED;
     private HorizontalScrollMode horizontalScrollMode = HorizontalScrollMode.PIXEL;
     private JScrollBar horizontalScrollBar;
     private JScrollBar verticalScrollBar;
@@ -565,7 +575,11 @@ public class Hexadecimal extends JComponent {
         rect.y = showHeader ? dimensionsCache.lineHeight * 2 : 0;
         rect.x = 0;
 
-        verticalScrollBarVisible = verticalScrollMode != VerticalScrollMode.NONE && lines > dimensionsCache.linesPerRect;
+        if (verticalScrollBarVisibility == ScrollBarVisibility.IF_NEEDED) {
+            verticalScrollBarVisible = lines > dimensionsCache.linesPerRect;
+        } else {
+            verticalScrollBarVisible = verticalScrollBarVisibility == ScrollBarVisibility.ALWAYS;
+        }
         if (verticalScrollBarVisible) {
             charsPerRect = computeCharsPerRect(size.width - dimensionsCache.scrollBarThickness);
             if (wrapMode) {
@@ -589,7 +603,12 @@ public class Hexadecimal extends JComponent {
         if (verticalScrollBarVisible) {
             maxWidth -= dimensionsCache.scrollBarThickness;
         }
-        horizontalScrollBarVisible = horizontalScrollMode != HorizontalScrollMode.NONE && dimensionsCache.bytesPerLine * dimensionsCache.charWidth * dimensionsCache.charsPerByte > maxWidth;
+
+        if (horizontalScrollBarVisibility == ScrollBarVisibility.IF_NEEDED) {
+            horizontalScrollBarVisible = dimensionsCache.bytesPerLine * dimensionsCache.charWidth * dimensionsCache.charsPerByte > maxWidth;
+        } else {
+            horizontalScrollBarVisible = horizontalScrollBarVisibility == ScrollBarVisibility.ALWAYS;
+        }
         if (horizontalScrollBarVisible) {
             dimensionsCache.linesPerRect = (rect.height - dimensionsCache.scrollBarThickness) / dimensionsCache.lineHeight;
         }
@@ -793,11 +812,11 @@ public class Hexadecimal extends JComponent {
         repaint();
     }
 
-    public DecorationMode getDecorationMode() {
+    public int getDecorationMode() {
         return decorationMode;
     }
 
-    public void setDecorationMode(DecorationMode decorationMode) {
+    public void setDecorationMode(int decorationMode) {
         this.decorationMode = decorationMode;
         repaint();
     }
@@ -902,6 +921,16 @@ public class Hexadecimal extends JComponent {
         repaint();
     }
 
+    public ScrollBarVisibility getVerticalScrollBarVisibility() {
+        return verticalScrollBarVisibility;
+    }
+
+    public void setVerticalScrollBarVisibility(ScrollBarVisibility verticalScrollBarVisibility) {
+        this.verticalScrollBarVisibility = verticalScrollBarVisibility;
+        computeDimensions();
+        updateScrollBars();
+    }
+
     public VerticalScrollMode getVerticalScrollMode() {
         return verticalScrollMode;
     }
@@ -914,6 +943,16 @@ public class Hexadecimal extends JComponent {
         }
         computeDimensions();
         scrollPosition.scrollLinePosition = linePosition;
+        updateScrollBars();
+    }
+
+    public ScrollBarVisibility getHorizontalScrollBarVisibility() {
+        return horizontalScrollBarVisibility;
+    }
+
+    public void setHorizontalScrollBarVisibility(ScrollBarVisibility horizontalScrollBarVisibility) {
+        this.horizontalScrollBarVisibility = horizontalScrollBarVisibility;
+        computeDimensions();
         updateScrollBars();
     }
 
@@ -1050,11 +1089,15 @@ public class Hexadecimal extends JComponent {
     }
 
     public static enum VerticalScrollMode {
-        NONE, PER_LINE, PIXEL
+        PER_LINE, PIXEL
     }
 
     public static enum HorizontalScrollMode {
-        NONE, PER_CHAR, PIXEL
+        PER_CHAR, PIXEL
+    }
+
+    public static enum ScrollBarVisibility {
+        NEVER, IF_NEEDED, ALWAYS
     }
 
     public static enum CharRenderingMode {
@@ -1372,13 +1415,13 @@ public class Hexadecimal extends JComponent {
                     break;
                 }
                 default: {
-                    if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_C) {
+                    if ((e.getModifiers() & metaMask) > 0 && e.getKeyCode() == KeyEvent.VK_C) {
                         commandHandler.copy();
-                    } else if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_X) {
+                    } else if ((e.getModifiers() & metaMask) > 0 && e.getKeyCode() == KeyEvent.VK_X) {
                         commandHandler.cut();
-                    } else if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_V) {
+                    } else if ((e.getModifiers() & metaMask) > 0 && e.getKeyCode() == KeyEvent.VK_V) {
                         commandHandler.paste();
-                    } else if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_A) {
+                    } else if ((e.getModifiers() & metaMask) > 0 && e.getKeyCode() == KeyEvent.VK_A) {
                         selectAll();
                     } else {
                         commandHandler.keyPressed(e.getKeyChar());

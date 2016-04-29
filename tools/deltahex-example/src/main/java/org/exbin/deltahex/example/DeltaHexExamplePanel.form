@@ -11,7 +11,7 @@
     <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
     <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
     <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
-    <AuxValue name="designerSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,1,-18,0,0,2,87"/>
+    <AuxValue name="designerSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,2,74,0,0,2,87"/>
   </AuxValues>
 
   <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
@@ -26,25 +26,25 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" attributes="0">
+              <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="showLineNumbersCheckBox" alignment="1" max="32767" attributes="0"/>
-                      <Component id="editableCheckBox" alignment="0" max="32767" attributes="0"/>
-                      <Component id="wrapModeCheckBox" alignment="0" max="32767" attributes="0"/>
+                      <Group type="102" alignment="0" attributes="0">
+                          <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                              <Component id="wrapModeCheckBox" alignment="0" max="32767" attributes="0"/>
+                              <Component id="editableCheckBox" alignment="0" max="32767" attributes="0"/>
+                              <Component id="showLineNumbersCheckBox" alignment="0" max="32767" attributes="0"/>
+                              <Component id="showHeaderCheckBox" alignment="0" max="32767" attributes="0"/>
+                          </Group>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="decoratorLineNumLineCheckBox" max="32767" attributes="0"/>
+                              <Component id="decoratorSplitLineCheckBox" alignment="1" max="32767" attributes="0"/>
+                              <Component id="decoratorBoxCheckBox" alignment="1" max="32767" attributes="0"/>
+                          </Group>
+                      </Group>
                       <Group type="102" attributes="0">
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Group type="102" alignment="0" attributes="0">
-                                  <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="verticalScrollModeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                                      <Component id="verticalScrollModeComboBox" alignment="0" min="-2" pref="133" max="-2" attributes="0"/>
-                                  </Group>
-                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                  <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="horizontalScrollModeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                                      <Component id="horizontalScrollModeComboBox" alignment="0" min="-2" pref="133" max="-2" attributes="0"/>
-                                  </Group>
-                              </Group>
                               <Component id="lineLengthLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                               <Component id="lineLengthSpinner" alignment="0" min="-2" pref="140" max="-2" attributes="0"/>
                               <Group type="102" alignment="0" attributes="0">
@@ -69,15 +69,10 @@
                                       <Component id="selectionEndTextField" alignment="0" min="-2" pref="132" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
-                              <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
-                                  <Component id="showHeaderCheckBox" alignment="0" max="32767" attributes="0"/>
-                                  <Component id="viewModeScrollModeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Component id="viewModeComboBox" alignment="0" pref="133" max="32767" attributes="0"/>
-                              </Group>
-                              <Group type="102" attributes="0">
-                                  <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="decorationModeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                                      <Component id="decorationModeComboBox" alignment="0" min="-2" pref="133" max="-2" attributes="0"/>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Group type="103" groupAlignment="1" attributes="0">
+                                      <Component id="viewModeScrollModeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="viewModeComboBox" alignment="0" min="-2" pref="133" max="-2" attributes="0"/>
                                   </Group>
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
@@ -85,8 +80,23 @@
                                       <Component id="backgroundModeComboBox" alignment="0" min="-2" pref="133" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="verticalScrollModeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="verticalScrollModeComboBox" alignment="0" min="-2" pref="133" max="-2" attributes="0"/>
+                                      <Component id="verticalScrollBarVisibilityModeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="verticalScrollBarVisibilityComboBox" alignment="0" min="-2" pref="133" max="-2" attributes="0"/>
+                                  </Group>
+                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="horizontalScrollBarVisibilityLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="horizontalScrollBarVisibilityComboBox" alignment="0" min="-2" pref="133" max="-2" attributes="0"/>
+                                      <Component id="horizontalScrollModeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="horizontalScrollModeComboBox" alignment="0" min="-2" pref="133" max="-2" attributes="0"/>
+                                  </Group>
+                              </Group>
                           </Group>
-                          <EmptySpace min="0" pref="43" max="32767" attributes="0"/>
+                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
@@ -97,15 +107,11 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="viewModeScrollModeLabel" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Component id="viewModeComboBox" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="1" attributes="0">
                       <Group type="102" attributes="0">
-                          <Component id="decorationModeLabel" min="-2" max="-2" attributes="0"/>
+                          <Component id="viewModeScrollModeLabel" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="decorationModeComboBox" min="-2" max="-2" attributes="0"/>
+                          <Component id="viewModeComboBox" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <Group type="102" attributes="0">
                           <Component id="backgroundModeLabel" min="-2" max="-2" attributes="0"/>
@@ -114,11 +120,20 @@
                       </Group>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="showHeaderCheckBox" min="-2" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="showHeaderCheckBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="decoratorLineNumLineCheckBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="showLineNumbersCheckBox" min="-2" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="showLineNumbersCheckBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="decoratorSplitLineCheckBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="editableCheckBox" min="-2" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="editableCheckBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="decoratorBoxCheckBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="wrapModeCheckBox" min="-2" max="-2" attributes="0"/>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
@@ -152,7 +167,20 @@
                           <Component id="charAntialiasingComboBox" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
-                  <EmptySpace max="32767" attributes="0"/>
+                  <EmptySpace pref="98" max="32767" attributes="0"/>
+                  <Group type="103" groupAlignment="1" attributes="0">
+                      <Group type="102" alignment="1" attributes="0">
+                          <Component id="horizontalScrollBarVisibilityLabel" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="horizontalScrollBarVisibilityComboBox" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <Group type="102" alignment="1" attributes="0">
+                          <Component id="verticalScrollBarVisibilityModeLabel" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="verticalScrollBarVisibilityComboBox" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                  </Group>
+                  <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="1" attributes="0">
                       <Group type="102" alignment="1" attributes="0">
                           <Component id="horizontalScrollModeLabel" min="-2" max="-2" attributes="0"/>
@@ -221,7 +249,7 @@
             <Property name="text" type="java.lang.String" value="Show Header"/>
           </Properties>
           <Events>
-            <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="showHeaderCheckBoxStateChanged"/>
+            <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="showHeaderCheckBoxItemStateChanged"/>
           </Events>
         </Component>
         <Component class="javax.swing.JCheckBox" name="showLineNumbersCheckBox">
@@ -229,7 +257,7 @@
             <Property name="text" type="java.lang.String" value="Show Line Numbers"/>
           </Properties>
           <Events>
-            <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="showLineNumbersCheckBoxStateChanged"/>
+            <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="showLineNumbersCheckBoxItemStateChanged"/>
           </Events>
         </Component>
         <Component class="javax.swing.JCheckBox" name="editableCheckBox">
@@ -238,7 +266,7 @@
             <Property name="text" type="java.lang.String" value="Editable"/>
           </Properties>
           <Events>
-            <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="editableCheckBoxStateChanged"/>
+            <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="editableCheckBoxItemStateChanged"/>
           </Events>
         </Component>
         <Component class="javax.swing.JCheckBox" name="wrapModeCheckBox">
@@ -246,7 +274,7 @@
             <Property name="text" type="java.lang.String" value="Wrap Mode"/>
           </Properties>
           <Events>
-            <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="wrapModeCheckBoxStateChanged"/>
+            <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="wrapModeCheckBoxItemStateChanged"/>
           </Events>
         </Component>
         <Component class="javax.swing.JLabel" name="lineLengthLabel">
@@ -267,13 +295,11 @@
         <Component class="javax.swing.JComboBox" name="verticalScrollModeComboBox">
           <Properties>
             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-              <StringArray count="3">
-                <StringItem index="0" value="NONE"/>
-                <StringItem index="1" value="PER_LINE"/>
-                <StringItem index="2" value="PIXEL"/>
+              <StringArray count="2">
+                <StringItem index="0" value="PER_LINE"/>
+                <StringItem index="1" value="PIXEL"/>
               </StringArray>
             </Property>
-            <Property name="selectedIndex" type="int" value="1"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="verticalScrollModeComboBoxActionPerformed"/>
@@ -290,13 +316,11 @@
         <Component class="javax.swing.JComboBox" name="horizontalScrollModeComboBox">
           <Properties>
             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-              <StringArray count="3">
-                <StringItem index="0" value="NONE"/>
-                <StringItem index="1" value="PER_CHAR"/>
-                <StringItem index="2" value="PIXEL"/>
+              <StringArray count="2">
+                <StringItem index="0" value="PER_CHAR"/>
+                <StringItem index="1" value="PIXEL"/>
               </StringArray>
             </Property>
-            <Property name="selectedIndex" type="int" value="2"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="horizontalScrollModeComboBoxActionPerformed"/>
@@ -387,27 +411,73 @@
             <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
           </AuxValues>
         </Component>
-        <Component class="javax.swing.JLabel" name="decorationModeLabel">
+        <Component class="javax.swing.JLabel" name="verticalScrollBarVisibilityModeLabel">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Decoration Type"/>
+            <Property name="text" type="java.lang.String" value="Vertical Scrollbar"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JComboBox" name="decorationModeComboBox">
+        <Component class="javax.swing.JComboBox" name="verticalScrollBarVisibilityComboBox">
           <Properties>
             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
               <StringArray count="3">
-                <StringItem index="0" value="NONE"/>
-                <StringItem index="1" value="LINES"/>
-                <StringItem index="2" value="BOX"/>
+                <StringItem index="0" value="NEVER"/>
+                <StringItem index="1" value="IF_NEEDED"/>
+                <StringItem index="2" value="ALWAYS"/>
               </StringArray>
             </Property>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="decorationModeComboBoxActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="verticalScrollBarVisibilityComboBoxActionPerformed"/>
           </Events>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
           </AuxValues>
+        </Component>
+        <Component class="javax.swing.JLabel" name="horizontalScrollBarVisibilityLabel">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Horizontal Scrollbar"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JComboBox" name="horizontalScrollBarVisibilityComboBox">
+          <Properties>
+            <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+              <StringArray count="3">
+                <StringItem index="0" value="NEVER"/>
+                <StringItem index="1" value="IF_NEEDED"/>
+                <StringItem index="2" value="ALWAYS"/>
+              </StringArray>
+            </Property>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="horizontalScrollBarVisibilityComboBoxActionPerformed"/>
+          </Events>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+          </AuxValues>
+        </Component>
+        <Component class="javax.swing.JCheckBox" name="decoratorLineNumLineCheckBox">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="LineNum Line"/>
+          </Properties>
+          <Events>
+            <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="decoratorLineNumLineCheckBoxItemStateChanged"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JCheckBox" name="decoratorSplitLineCheckBox">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Split Line"/>
+          </Properties>
+          <Events>
+            <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="decoratorSplitLineCheckBoxItemStateChanged"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JCheckBox" name="decoratorBoxCheckBox">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Area Box"/>
+          </Properties>
+          <Events>
+            <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="decoratorBoxCheckBoxItemStateChanged"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>
