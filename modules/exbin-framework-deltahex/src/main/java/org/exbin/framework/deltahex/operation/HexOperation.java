@@ -60,7 +60,7 @@ public abstract class HexOperation implements Operation {
      *
      * Default dispose is empty.
      *
-     * @throws Exception
+     * @throws Exception if not successful
      */
     @Override
     public void dispose() throws Exception {

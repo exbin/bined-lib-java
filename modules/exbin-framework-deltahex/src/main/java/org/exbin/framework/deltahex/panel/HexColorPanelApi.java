@@ -42,7 +42,7 @@ public interface HexColorPanelApi {
     /**
      * Sets current colors used in application frame.
      *
-     * @param colors
+     * @param colors array of 5 colors
      */
     public void setCurrentTextColors(Color[] colors);
 }

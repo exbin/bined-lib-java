@@ -26,22 +26,22 @@ public interface HexStatusApi {
     /**
      * Reports cursor position.
      *
-     * @param cursorPosition
+     * @param cursorPosition cursor position
      */
     void setCursorPosition(String cursorPosition);
 
     /**
      * Reports selection position.
      *
-     * @param startPosition
-     * @param endPosition
+     * @param startPosition start position
+     * @param endPosition end position
      */
     void setSelectionPosition(String startPosition, String endPosition);
 
     /**
      * Reports currently active encoding.
      *
-     * @param encodingName
+     * @param encodingName encoding name
      */
     void setEncoding(String encodingName);
 }

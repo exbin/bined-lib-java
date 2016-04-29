@@ -282,9 +282,6 @@ public class DefaultHexadecimalPainter implements HexadecimalPainter {
                 g.drawLine(lineX, rect.y, lineX, rect.y + rect.height);
             }
         }
-        if ((decorationMode & Hexadecimal.DECORATION_BOX) > 0) {
-            // TODO
-        }
     }
 
     public void paintText(Graphics g, long line, int linePositionX, int byteOnLine, int linePositionY, long dataPosition, int bytesPerBounds, int fontHeight, int charWidth) {
