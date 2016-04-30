@@ -181,30 +181,30 @@ public class DefaultHexadecimalPainter implements HexadecimalPainter {
         int selectionPreviewStart = 0;
         int selectionPreviewEnd = 0;
         int startX = rect.x - scrollPosition.scrollBytePosition * charWidth - scrollPosition.scrollByteOffset;
-        int previewX = hexadecimal.getPreviewX() - scrollPosition.scrollBytePosition * charWidth - scrollPosition.scrollByteOffset;
+        int previewStartX = hexadecimal.getPreviewX() - scrollPosition.scrollBytePosition * charWidth - scrollPosition.scrollByteOffset;
 
-        long maxLinePosition = dataPosition + bytesPerBounds;
+        long maxLinePosition = dataPosition + bytesPerBounds - 1;
         long selectionFirst = selection.getFirst();
         long selectionLast = selection.getLast();
-        if (selectionFirst < maxLinePosition) {
+        if (selectionFirst <= maxLinePosition) {
             if (selectionFirst >= dataPosition) {
                 int linePosition = (int) (selectionFirst - dataPosition);
                 selectionStart = startX + charWidth * (linePosition * 3);
-                selectionPreviewStart = previewX + charWidth * linePosition;
+                selectionPreviewStart = previewStartX + charWidth * linePosition;
             } else {
                 selectionStart = startX;
-                selectionPreviewStart = previewX;
+                selectionPreviewStart = previewStartX;
             }
         }
 
-        if (selectionLast >= dataPosition && selectionFirst < maxLinePosition) {
-            if (selectionLast > maxLinePosition) {
-                selectionEnd = startX + bytesPerBounds * charWidth * 3;
-                selectionPreviewEnd = previewX + bytesPerBounds * charWidth;
+        if (selectionLast >= dataPosition && selectionFirst <= maxLinePosition) {
+            if (selectionLast >= maxLinePosition) {
+                selectionEnd = startX + (bytesPerBounds * 3 - 1) * charWidth;
+                selectionPreviewEnd = previewStartX + bytesPerBounds * charWidth;
             } else {
                 int linePosition = (int) (selectionLast - dataPosition + 1);
                 selectionEnd = startX + charWidth * (linePosition * 3);
-                selectionPreviewEnd = previewX + charWidth * linePosition;
+                selectionPreviewEnd = previewStartX + charWidth * linePosition;
             }
         }
 

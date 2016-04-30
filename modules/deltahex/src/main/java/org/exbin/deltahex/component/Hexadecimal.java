@@ -348,7 +348,10 @@ public class Hexadecimal extends JComponent {
         if (caret.getSection() == Section.HEXADECIMAL) {
             caretByte = (int) (caretPosition.getDataPosition() % dimensionsCache.bytesPerLine) * 3 + caret.getHalfBytePosition();
         } else {
-            caretByte = dimensionsCache.bytesPerLine * 3 + (int) (caretPosition.getDataPosition() % dimensionsCache.bytesPerLine);
+            caretByte = (int) (caretPosition.getDataPosition() % dimensionsCache.bytesPerLine);
+            if (viewMode == ViewMode.DUAL) {
+                caretByte += dimensionsCache.bytesPerLine * 3;
+            }
         }
 
         if (caretLine <= scrollPosition.scrollLinePosition) {
@@ -573,7 +576,7 @@ public class Hexadecimal extends JComponent {
 
         Rectangle rect = dimensionsCache.hexadecimalRectangle;
         rect.y = showHeader ? dimensionsCache.lineHeight * 2 : 0;
-        rect.x = 0;
+        rect.x = showLineNumbers ? dimensionsCache.charWidth * 9 : 0;
 
         if (verticalScrollBarVisibility == ScrollBarVisibility.IF_NEEDED) {
             verticalScrollBarVisible = lines > dimensionsCache.linesPerRect;
@@ -592,12 +595,6 @@ public class Hexadecimal extends JComponent {
         }
 
         dimensionsCache.bytesPerLine = bytesPerLine;
-
-        if (viewMode != ViewMode.PREVIEW) {
-            if (showLineNumbers) {
-                rect.x += dimensionsCache.charWidth * 9;
-            }
-        }
 
         int maxWidth = size.width - rect.x;
         if (verticalScrollBarVisible) {
@@ -629,13 +626,9 @@ public class Hexadecimal extends JComponent {
         if (viewMode == ViewMode.HEXADECIMAL) {
             dimensionsCache.previewX = -1;
         } else {
-            if (viewMode == ViewMode.PREVIEW) {
-                dimensionsCache.previewX = 0;
-            } else {
-                dimensionsCache.previewX = dimensionsCache.bytesPerLine * dimensionsCache.charWidth * 3;
-            }
-            if (showLineNumbers) {
-                dimensionsCache.previewX += dimensionsCache.charWidth * 9;
+            dimensionsCache.previewX = rect.x;
+            if (viewMode == ViewMode.DUAL) {
+                dimensionsCache.previewX += dimensionsCache.bytesPerLine * dimensionsCache.charWidth * 3;
             }
         }
 
