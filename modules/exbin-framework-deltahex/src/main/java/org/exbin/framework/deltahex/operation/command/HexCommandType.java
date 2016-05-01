@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.framework.deltahex.operation;
+package org.exbin.framework.deltahex.command.command;
+
+import org.exbin.framework.deltahex.command.*;
 
 /**
  * Operation type enumeration.
@@ -21,28 +23,28 @@ package org.exbin.framework.deltahex.operation;
  * @version 0.1.0 2016/04/30
  * @author ExBin Project (http://exbin.org)
  */
-public enum HexOperationType {
+public enum HexCommandType {
 
     /**
-     * Insert data operation.
+     * Insert data command.
      */
-    INSERT_DATA("Insert data"),
+    DATA_INSERTED("Data inserted"),
     /**
-     * Remove data operation.
+     * Remove data command.
      */
-    REMOVE_DATA("Remove data"),
+    DATA_REMOVED("Data removed"),
     /**
-     * Modify data operation.
+     * Modify data command.
      */
-    MODIFY_DATA("Modify data"),
+    DATA_MODIFIED("Data modified"),
     /**
-     * Move data operation.
+     * Move data command.
      */
-    MOVE_DATA("Move data");
+    DATA_MOVED("Data moved");
 
     private final String caption;
 
-    private HexOperationType(String caption) {
+    private HexCommandType(String caption) {
         this.caption = caption;
     }
 

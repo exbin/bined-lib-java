@@ -34,6 +34,7 @@ import org.exbin.framework.gui.menu.api.ToolBarGroup;
 import org.exbin.framework.gui.menu.api.ToolBarPosition;
 import org.exbin.framework.gui.options.api.GuiOptionsModuleApi;
 import org.exbin.framework.api.XBApplicationModule;
+import org.exbin.framework.deltahex.operation.HexUndoHandler;
 import org.exbin.xbup.plugin.XBModuleHandler;
 import org.exbin.framework.deltahex.panel.HexAppearancePanelFrame;
 import org.exbin.framework.deltahex.panel.HexColorPanelApi;
@@ -41,7 +42,7 @@ import org.exbin.framework.deltahex.panel.HexColorPanelApi;
 /**
  * Hexadecimal editor module.
  *
- * @version 0.1.0 2016/04/26
+ * @version 0.1.0 2016/04/30
  * @author ExBin Project (http://exbin.org)
  */
 public class DeltaHexModule implements XBApplicationModule {

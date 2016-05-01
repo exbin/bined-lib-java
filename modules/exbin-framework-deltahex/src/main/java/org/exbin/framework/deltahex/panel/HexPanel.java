@@ -56,6 +56,8 @@ import org.exbin.framework.gui.menu.api.ClipboardActionsHandler;
 import org.exbin.framework.gui.undo.api.UndoActionsHandler;
 import org.exbin.framework.deltahex.HexStatusApi;
 import org.exbin.framework.deltahex.XBHexadecimalData;
+import org.exbin.framework.deltahex.operation.HexCommandHandler;
+import org.exbin.framework.deltahex.operation.HexUndoHandler;
 import org.exbin.xbup.core.type.XBData;
 
 /**
@@ -69,6 +71,7 @@ public class HexPanel extends javax.swing.JPanel implements XBEditorProvider, Cl
     private Hexadecimal hexadecimal;
     private final HexPanelCompoundUndoManager undoManagement = new HexPanelCompoundUndoManager();
     private UndoUpdateListener undoUpdateListener = null;
+    private HexUndoHandler hexUndoHandler;
     private String fileName;
     private FileType fileType;
     private boolean modified = false;
@@ -83,6 +86,7 @@ public class HexPanel extends javax.swing.JPanel implements XBEditorProvider, Cl
     private ClipboardActionsUpdateListener clipboardActionsUpdateListener;
 
     public HexPanel() {
+        hexUndoHandler = new HexUndoHandler(hexadecimal);
         initComponents();
         init();
     }
@@ -98,6 +102,8 @@ public class HexPanel extends javax.swing.JPanel implements XBEditorProvider, Cl
                 }
             }
         });
+        HexCommandHandler commandHandler = new HexCommandHandler(hexadecimal, hexUndoHandler);
+        hexadecimal.setCommandHandler(commandHandler);
         // TODO use listener in hexadecimal instead
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         clipboard.addFlavorListener(new FlavorListener() {
@@ -161,21 +167,23 @@ public class HexPanel extends javax.swing.JPanel implements XBEditorProvider, Cl
         });
     }
 
+    public Hexadecimal getHexadecimal() {
+        return hexadecimal;
+    }
+
     public boolean changeLineWrap() {
-        return false;
-//        textArea.setLineWrap(!textArea.getLineWrap());
-//        return textArea.getLineWrap();
+        hexadecimal.setWrapMode(!hexadecimal.isWrapMode());
+        return hexadecimal.isWrapMode();
     }
 
     public boolean getWordWrapMode() {
-        return false;
-//        return textArea.getLineWrap();
+        return hexadecimal.isWrapMode();
     }
 
     public void setWordWrapMode(boolean mode) {
-//        if (textArea.getLineWrap() != mode) {
-//            changeLineWrap();
-//        }
+        if (hexadecimal.isWrapMode() != mode) {
+            changeLineWrap();
+        }
     }
 
     public void findText(FindHexDialog dialog) {
@@ -376,6 +384,14 @@ public class HexPanel extends javax.swing.JPanel implements XBEditorProvider, Cl
         boolean oldValue = this.modified;
         this.modified = modified;
         firePropertyChange("modified", oldValue, this.modified);
+    }
+
+    public HexUndoHandler getHexUndoHandler() {
+        return hexUndoHandler;
+    }
+
+    public void setHexUndoHandler(HexUndoHandler hexUndoHandler) {
+        this.hexUndoHandler = hexUndoHandler;
     }
 
     @Override

@@ -51,7 +51,7 @@ import org.exbin.deltahex.component.HexadecimalCaret.Section;
 /**
  * Hex editor component.
  *
- * @version 0.1.0 2016/04/29
+ * @version 0.1.0 2016/04/30
  * @author ExBin Project (http://exbin.org)
  */
 public class Hexadecimal extends JComponent {
@@ -150,7 +150,7 @@ public class Hexadecimal extends JComponent {
         addKeyListener(new HexKeyListener());
     }
 
-    void moveRight(int modifiers) {
+    public void moveRight(int modifiers) {
         CaretPosition caretPosition = caret.getCaretPosition();
         if (caretPosition.getDataPosition() < data.getDataSize()) {
             if (caret.getSection() == Section.HEXADECIMAL) {
@@ -173,7 +173,7 @@ public class Hexadecimal extends JComponent {
         }
     }
 
-    void moveLeft(int modifiers) {
+    public void moveLeft(int modifiers) {
         CaretPosition caretPosition = caret.getCaretPosition();
         if (caret.getSection() == Section.HEXADECIMAL) {
             boolean lowerHalf = caret.isLowerHalf();
@@ -974,6 +974,14 @@ public class Hexadecimal extends JComponent {
 
     public CaretPosition getCaretPosition() {
         return caret.getCaretPosition();
+    }
+
+    public HexadecimalCommandHandler getCommandHandler() {
+        return commandHandler;
+    }
+
+    public void setCommandHandler(HexadecimalCommandHandler commandHandler) {
+        this.commandHandler = commandHandler;
     }
 
     public void copy() {

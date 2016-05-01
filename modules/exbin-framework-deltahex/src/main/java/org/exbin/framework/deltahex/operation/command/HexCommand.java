@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.framework.deltahex.operation;
+package org.exbin.framework.deltahex.operation.command;
 
 import org.exbin.deltahex.component.Hexadecimal;
-import org.exbin.xbup.operation.Operation;
+import org.exbin.framework.deltahex.command.command.HexCommandType;
+import org.exbin.xbup.operation.AbstractCommand;
 
 /**
  * Abstract class for operation on hexadecimal document.
@@ -24,35 +25,20 @@ import org.exbin.xbup.operation.Operation;
  * @version 0.1.0 2016/04/30
  * @author ExBin Project (http://exbin.org)
  */
-public abstract class HexOperation implements Operation {
+public abstract class HexCommand extends AbstractCommand {
 
     protected final Hexadecimal hexadecimal;
 
-    public HexOperation(Hexadecimal hexadecimal) {
+    public HexCommand(Hexadecimal hexadecimal) {
         this.hexadecimal = hexadecimal;
     }
 
     /**
-     * Returns type of the operation.
+     * Returns type of the command.
      *
-     * @return operation type
+     * @return command type
      */
-    public abstract HexOperationType getType();
-
-    public Hexadecimal getHexadecimal() {
-        return hexadecimal;
-    }
-
-    /**
-     * Performs dispose of the operation.
-     *
-     * Default dispose is empty.
-     *
-     * @throws Exception if not successful
-     */
-    @Override
-    public void dispose() throws Exception {
-    }
+    public abstract HexCommandType getType();
 
     @Override
     public String getCaption() {
