@@ -191,7 +191,7 @@ public class Hexadecimal extends JComponent {
         notifyCaretMoved();
     }
 
-    HexadecimalCaret getCaret() {
+    public HexadecimalCaret getCaret() {
         return caret;
     }
 
@@ -386,7 +386,7 @@ public class Hexadecimal extends JComponent {
         }
     }
 
-    void updateScrollBars() {
+    public void updateScrollBars() {
         if (verticalScrollMode == VerticalScrollMode.PER_LINE) {
             verticalScrollBar.setValue((int) scrollPosition.scrollLinePosition);
         } else {
@@ -552,7 +552,7 @@ public class Hexadecimal extends JComponent {
         }
     }
 
-    void computeDimensions() {
+    public void computeDimensions() {
         if (dimensionsCache.fontMetrics == null) {
             return;
         }

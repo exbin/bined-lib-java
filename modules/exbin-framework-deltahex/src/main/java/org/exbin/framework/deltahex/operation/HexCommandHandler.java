@@ -15,11 +15,26 @@
  */
 package org.exbin.framework.deltahex.operation;
 
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.ClipboardOwner;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.FlavorEvent;
+import java.awt.datatransfer.FlavorListener;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.exbin.deltahex.CaretPosition;
 import org.exbin.deltahex.EditableHexadecimalData;
 import org.exbin.deltahex.HexadecimalCommandHandler;
 import org.exbin.deltahex.HexadecimalData;
+import org.exbin.deltahex.component.DefaultCommandHandler;
 import org.exbin.deltahex.component.Hexadecimal;
+import static org.exbin.deltahex.component.Hexadecimal.NO_MODIFIER;
 import org.exbin.deltahex.component.HexadecimalCaret;
 import org.exbin.xbup.operation.Command;
 import org.exbin.xbup.operation.undo.XBUndoHandler;
@@ -27,18 +42,36 @@ import org.exbin.xbup.operation.undo.XBUndoHandler;
 /**
  * Command handler for undo/redo aware hexadecimal editor editing.
  *
- * @version 0.1.0 2016/05/01
+ * @version 0.1.0 2016/05/02
  * @author ExBin Project (http://exbin.org)
  */
 public class HexCommandHandler implements HexadecimalCommandHandler {
 
     private final Hexadecimal hexadecimal;
+    private Clipboard clipboard;
+    private boolean canPaste = false;
+    private DataFlavor binaryDataFlavor;
+
     private final XBUndoHandler undoHandler;
     private Command continousEditing = null;
 
     public HexCommandHandler(Hexadecimal hexadecimal, XBUndoHandler undoHandler) {
         this.hexadecimal = hexadecimal;
         this.undoHandler = undoHandler;
+
+        clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        clipboard.addFlavorListener(new FlavorListener() {
+            @Override
+            public void flavorsChanged(FlavorEvent e) {
+                canPaste = clipboard.isDataFlavorAvailable(binaryDataFlavor) || clipboard.isDataFlavorAvailable(DataFlavor.stringFlavor);
+            }
+        });
+        try {
+            binaryDataFlavor = new DataFlavor("application/octet-stream");
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(DefaultCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        canPaste = clipboard.isDataFlavorAvailable(binaryDataFlavor) || clipboard.isDataFlavorAvailable(DataFlavor.stringFlavor);
     }
 
     @Override
@@ -119,37 +152,169 @@ public class HexCommandHandler implements HexadecimalCommandHandler {
 
     @Override
     public void backSpacePressed() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if (!hexadecimal.isEditable()) {
+            return;
+        }
+
+        if (hexadecimal.hasSelection()) {
+            deleteSelection();
+        } else {
+            HexadecimalCaret caret = hexadecimal.getCaret();
+            long dataPosition = caret.getDataPosition();
+            if (dataPosition > 0 && dataPosition <= hexadecimal.getData().getDataSize()) {
+                ((EditableHexadecimalData) hexadecimal.getData()).remove(dataPosition - 1, 1);
+                caret.setLowerHalf(false);
+                hexadecimal.moveLeft(NO_MODIFIER);
+                caret.setLowerHalf(false);
+                hexadecimal.revealCursor();
+                hexadecimal.repaint();
+            }
+        }
     }
 
     @Override
     public void deletePressed() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if (!hexadecimal.isEditable()) {
+            return;
+        }
+
+        if (hexadecimal.hasSelection()) {
+            deleteSelection();
+        } else {
+            HexadecimalCaret caret = hexadecimal.getCaret();
+            long dataPosition = caret.getDataPosition();
+            if (dataPosition < hexadecimal.getData().getDataSize()) {
+                ((EditableHexadecimalData) hexadecimal.getData()).remove(dataPosition, 1);
+                if (caret.isLowerHalf()) {
+                    caret.setLowerHalf(false);
+                }
+                hexadecimal.repaint();
+            }
+        }
+    }
+
+    private void deleteSelection() {
+        Hexadecimal.SelectionRange selection = hexadecimal.getSelection();
+        long first = selection.getFirst();
+        long last = selection.getLast();
+        ((EditableHexadecimalData) hexadecimal.getData()).remove(first, last - first + 1);
+        hexadecimal.clearSelection();
+        HexadecimalCaret caret = hexadecimal.getCaret();
+        caret.setCaretPosition(first);
+        hexadecimal.revealCursor();
+        hexadecimal.computeDimensions();
+        hexadecimal.updateScrollBars();
     }
 
     @Override
     public void delete() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if (!hexadecimal.isEditable()) {
+            return;
+        }
+
+        deleteSelection();
     }
 
     @Override
     public void copy() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        Hexadecimal.SelectionRange selection = hexadecimal.getSelection();
+        if (selection != null) {
+            long first = selection.getFirst();
+            long last = selection.getLast();
+
+            HexadecimalData copy = ((EditableHexadecimalData) hexadecimal.getData()).copy(first, last - first + 1);
+
+            BinaryDataClipboardData binaryData = new BinaryDataClipboardData(copy);
+            clipboard.setContents(binaryData, binaryData);
+        }
     }
 
     @Override
     public void cut() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if (!hexadecimal.isEditable()) {
+            return;
+        }
+
+        Hexadecimal.SelectionRange selection = hexadecimal.getSelection();
+        if (selection != null) {
+            copy();
+            deleteSelection();
+        }
     }
 
     @Override
     public void paste() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if (!hexadecimal.isEditable()) {
+            return;
+        }
+
+        if (clipboard.isDataFlavorAvailable(binaryDataFlavor)) {
+            if (hexadecimal.hasSelection()) {
+                deleteSelection();
+            }
+
+            try {
+                Object object = clipboard.getData(binaryDataFlavor);
+                if (object instanceof HexadecimalData) {
+                    HexadecimalCaret caret = hexadecimal.getCaret();
+                    long dataPosition = caret.getDataPosition();
+
+                    HexadecimalData data = (HexadecimalData) object;
+                    long dataSize = data.getDataSize();
+                    if (hexadecimal.getEditationMode() == Hexadecimal.EditationMode.OVERWRITE) {
+                        long toRemove = dataSize;
+                        if (dataPosition + toRemove > hexadecimal.getData().getDataSize()) {
+                            toRemove = hexadecimal.getData().getDataSize() - dataPosition;
+                        }
+                        ((EditableHexadecimalData) hexadecimal.getData()).remove(dataPosition, toRemove);
+                    }
+                    ((EditableHexadecimalData) hexadecimal.getData()).insert(hexadecimal.getDataPosition(), data);
+
+                    caret.setCaretPosition(caret.getDataPosition() + dataSize);
+                    caret.setLowerHalf(false);
+                    hexadecimal.computeDimensions();
+                    hexadecimal.updateScrollBars();
+                }
+            } catch (UnsupportedFlavorException | IOException ex) {
+                Logger.getLogger(DefaultCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else if (clipboard.isDataFlavorAvailable(DataFlavor.stringFlavor)) {
+            if (hexadecimal.hasSelection()) {
+                deleteSelection();
+            }
+
+            Object insertedData;
+            try {
+                insertedData = clipboard.getData(DataFlavor.stringFlavor);
+                if (insertedData instanceof String) {
+                    HexadecimalCaret caret = hexadecimal.getCaret();
+                    long dataPosition = caret.getDataPosition();
+
+                    byte[] bytes = ((String) insertedData).getBytes(Charset.forName("UTF-8"));
+                    int length = bytes.length;
+                    if (hexadecimal.getEditationMode() == Hexadecimal.EditationMode.OVERWRITE) {
+                        long toRemove = length;
+                        if (dataPosition + toRemove > hexadecimal.getData().getDataSize()) {
+                            toRemove = hexadecimal.getData().getDataSize() - dataPosition;
+                        }
+                        ((EditableHexadecimalData) hexadecimal.getData()).remove(dataPosition, toRemove);
+                    }
+                    ((EditableHexadecimalData) hexadecimal.getData()).insert(hexadecimal.getDataPosition(), bytes);
+
+                    caret.setCaretPosition(caret.getDataPosition() + length);
+                    caret.setLowerHalf(false);
+                    hexadecimal.computeDimensions();
+                    hexadecimal.updateScrollBars();
+                }
+            } catch (UnsupportedFlavorException | IOException ex) {
+                Logger.getLogger(DefaultCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
 
     @Override
     public boolean canPaste() {
-        return false;
+        return canPaste;
     }
 
     private void setHalfByte(int value) {
@@ -169,5 +334,40 @@ public class HexCommandHandler implements HexadecimalCommandHandler {
         }
 
         ((EditableHexadecimalData) data).setByte(dataPosition, byteValue);
+    }
+
+    public class BinaryDataClipboardData implements Transferable, ClipboardOwner {
+
+        private final HexadecimalData data;
+
+        public BinaryDataClipboardData(HexadecimalData data) {
+            this.data = data;
+        }
+
+        @Override
+        public DataFlavor[] getTransferDataFlavors() {
+            return new DataFlavor[]{binaryDataFlavor, DataFlavor.stringFlavor};
+        }
+
+        @Override
+        public boolean isDataFlavorSupported(DataFlavor flavor) {
+            return flavor.equals(binaryDataFlavor) || flavor.equals(DataFlavor.stringFlavor);
+        }
+
+        @Override
+        public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
+            if (flavor.equals(binaryDataFlavor)) {
+                return data;
+            } else {
+                ByteArrayOutputStream byteArrayStream = new ByteArrayOutputStream();
+                data.saveToStream(byteArrayStream);
+                return byteArrayStream.toString("UTF-8");
+            }
+        }
+
+        @Override
+        public void lostOwnership(Clipboard clipboard, Transferable contents) {
+            // do nothing
+        }
     }
 }

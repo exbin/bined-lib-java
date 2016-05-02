@@ -21,7 +21,7 @@ import java.io.InputStream;
 /**
  * Interface for editable hexadecimal data.
  *
- * @version 0.1.0 2016/04/20
+ * @version 0.1.0 2016/05/02
  * @author ExBin Project (http://exbin.org)
  */
 public interface EditableHexadecimalData extends HexadecimalData {
@@ -59,6 +59,14 @@ public interface EditableHexadecimalData extends HexadecimalData {
      * @param insertedData data to insert
      */
     public void insert(long startFrom, byte[] insertedData);
+
+    /**
+     * Inserts given data to given position.
+     *
+     * @param startFrom position to insert to
+     * @param insertedData data to insert
+     */
+    public void insert(long startFrom, HexadecimalData insertedData);
 
     /**
      * Removes area of data.

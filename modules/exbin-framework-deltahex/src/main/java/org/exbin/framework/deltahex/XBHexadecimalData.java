@@ -23,9 +23,9 @@ import org.exbin.deltahex.HexadecimalData;
 import org.exbin.xbup.core.type.XBData;
 
 /**
- * Encapsulation of XBData for hexadecimal editor.
+ * Encapsulation of data for hexadecimal editor.
  *
- * @version 0.1.0 2016/04/20
+ * @version 0.1.0 2016/05/02
  * @author ExBin Project (http://exbin.org)
  */
 public class XBHexadecimalData implements EditableHexadecimalData {
@@ -54,6 +54,12 @@ public class XBHexadecimalData implements EditableHexadecimalData {
     @Override
     public void insert(long startFrom, byte[] insertedData) {
         data.insert(startFrom, insertedData);
+    }
+
+    @Override
+    public void insert(long startFrom, HexadecimalData insertedData) {
+        // TODO general support for HexadecimalData
+        data.insert(startFrom, ((XBHexadecimalData) insertedData).data);
     }
 
     @Override

@@ -37,7 +37,7 @@ import static org.exbin.deltahex.component.Hexadecimal.NO_MODIFIER;
 /**
  * Default hexadecimal editor command handler.
  *
- * @version 0.1.0 2016/04/20
+ * @version 0.1.0 2016/05/02
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCommandHandler implements HexadecimalCommandHandler {
@@ -249,24 +249,37 @@ public class DefaultCommandHandler implements HexadecimalCommandHandler {
             return;
         }
 
-//        DataFlavor[] availableDataFlavors = clipboard.getAvailableDataFlavors();
-//        if (clipboard.isDataFlavorAvailable(binaryDataFlavor)) {
-//            if (hexadecimal.hasSelection()) {
-//                deleteSelection();
-//            }
-//
-//            try {
-//                Object object = clipboard.getData(binaryDataFlavor);
-//
-//                hexadecimal.computeDimensions();
-//                hexadecimal.updateScrollBars();
-//            } catch (UnsupportedFlavorException ex) {
-//                Logger.getLogger(DefaultCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
-//            } catch (IOException ex) {
-//                Logger.getLogger(DefaultCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
-//            }
-//        } else
-        if (clipboard.isDataFlavorAvailable(DataFlavor.stringFlavor)) {
+        if (clipboard.isDataFlavorAvailable(binaryDataFlavor)) {
+            if (hexadecimal.hasSelection()) {
+                deleteSelection();
+            }
+
+            try {
+                Object object = clipboard.getData(binaryDataFlavor);
+                if (object instanceof HexadecimalData) {
+                    HexadecimalCaret caret = hexadecimal.getCaret();
+                    long dataPosition = caret.getDataPosition();
+
+                    HexadecimalData data = (HexadecimalData) object;
+                    long dataSize = data.getDataSize();
+                    if (hexadecimal.getEditationMode() == Hexadecimal.EditationMode.OVERWRITE) {
+                        long toRemove = dataSize;
+                        if (dataPosition + toRemove > hexadecimal.getData().getDataSize()) {
+                            toRemove = hexadecimal.getData().getDataSize() - dataPosition;
+                        }
+                        ((EditableHexadecimalData) hexadecimal.getData()).remove(dataPosition, toRemove);
+                    }
+                    ((EditableHexadecimalData) hexadecimal.getData()).insert(hexadecimal.getDataPosition(), data);
+
+                    caret.setCaretPosition(caret.getDataPosition() + dataSize);
+                    caret.setLowerHalf(false);
+                    hexadecimal.computeDimensions();
+                    hexadecimal.updateScrollBars();
+                }
+            } catch (UnsupportedFlavorException | IOException ex) {
+                Logger.getLogger(DefaultCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else if (clipboard.isDataFlavorAvailable(DataFlavor.stringFlavor)) {
             if (hexadecimal.hasSelection()) {
                 deleteSelection();
             }
@@ -294,9 +307,7 @@ public class DefaultCommandHandler implements HexadecimalCommandHandler {
                     hexadecimal.computeDimensions();
                     hexadecimal.updateScrollBars();
                 }
-            } catch (UnsupportedFlavorException ex) {
-                Logger.getLogger(DefaultCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IOException ex) {
+            } catch (UnsupportedFlavorException | IOException ex) {
                 Logger.getLogger(DefaultCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
@@ -309,7 +320,7 @@ public class DefaultCommandHandler implements HexadecimalCommandHandler {
 
     public class BinaryDataClipboardData implements Transferable, ClipboardOwner {
 
-        private HexadecimalData data;
+        private final HexadecimalData data;
 
         public BinaryDataClipboardData(HexadecimalData data) {
             this.data = data;

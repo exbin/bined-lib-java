@@ -19,7 +19,6 @@ import org.exbin.deltahex.component.Hexadecimal;
 import org.exbin.framework.deltahex.operation.HexOperation;
 import org.exbin.xbup.operation.OperationEvent;
 import org.exbin.xbup.operation.OperationListener;
-import org.exbin.xbup.operation.XBTDocOperation;
 
 /**
  * Abstract class for operation on hexadecimal document.

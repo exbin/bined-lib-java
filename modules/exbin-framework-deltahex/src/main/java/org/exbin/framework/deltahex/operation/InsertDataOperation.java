@@ -16,11 +16,7 @@
 package org.exbin.framework.deltahex.operation;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.exbin.deltahex.component.Hexadecimal;
-import org.exbin.xbup.core.block.XBTBlock;
 import org.exbin.xbup.core.block.XBTEditableBlock;
 import org.exbin.xbup.core.parser.XBParserMode;
 import org.exbin.xbup.core.parser.XBProcessingException;
@@ -28,7 +24,6 @@ import org.exbin.xbup.core.parser.token.event.XBEventReader;
 import org.exbin.xbup.core.parser.token.event.XBEventWriter;
 import org.exbin.xbup.core.parser.token.event.convert.XBEventListenerToListener;
 import org.exbin.xbup.core.parser.token.event.convert.XBListenerToEventListener;
-import org.exbin.xbup.core.serial.XBPSerialReader;
 import org.exbin.xbup.core.serial.param.XBPSequenceSerialHandler;
 import org.exbin.xbup.core.serial.param.XBPSequenceSerializable;
 import org.exbin.xbup.core.serial.param.XBSerializationMode;
