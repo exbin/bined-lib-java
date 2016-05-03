@@ -16,6 +16,7 @@
 package org.exbin.framework.deltahex.operation;
 
 import java.io.IOException;
+import org.exbin.deltahex.HexadecimalData;
 import org.exbin.deltahex.component.Hexadecimal;
 import org.exbin.xbup.core.block.XBTEditableBlock;
 import org.exbin.xbup.core.parser.XBParserMode;
@@ -35,15 +36,20 @@ import org.exbin.xbup.parser_tree.XBTreeReader;
 import org.exbin.xbup.parser_tree.XBTreeWriter;
 
 /**
- * Operation for adding child block.
+ * Operation for modifying data.
  *
- * @version 0.1.0 2016/04/22
+ * @version 0.1.0 2016/05/03
  * @author ExBin Project (http://exbin.org)
  */
 public class ModifyDataOperation extends HexOperation {
+    
+    private long position;
+    private HexadecimalData data;
 
-    public ModifyDataOperation(Hexadecimal hexadecimal) {
+    public ModifyDataOperation(Hexadecimal hexadecimal, long position, HexadecimalData data) {
         super(hexadecimal);
+        this.position = position;
+        this.data = data;
     }
 
     @Override

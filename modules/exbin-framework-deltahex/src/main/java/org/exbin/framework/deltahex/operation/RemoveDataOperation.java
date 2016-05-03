@@ -16,6 +16,7 @@
 package org.exbin.framework.deltahex.operation;
 
 import java.io.IOException;
+import org.exbin.deltahex.HexadecimalData;
 import org.exbin.deltahex.component.Hexadecimal;
 import org.exbin.xbup.core.parser.XBProcessingException;
 import org.exbin.xbup.core.serial.param.XBPSequenceSerialHandler;
@@ -26,13 +27,18 @@ import org.exbin.xbup.operation.Operation;
 /**
  * Operation for deleting child block.
  *
- * @version 0.1.0 2016/04/22
+ * @version 0.1.0 2016/05/03
  * @author ExBin Project (http://exbin.org)
  */
 public class RemoveDataOperation extends HexOperation {
 
-    public RemoveDataOperation(Hexadecimal hexadecimal) {
+    private long position;
+    private long size;
+
+    public RemoveDataOperation(Hexadecimal hexadecimal, long position, long size) {
         super(hexadecimal);
+        this.position = position;
+        this.size = size;
     }
 
     @Override
@@ -51,7 +57,12 @@ public class RemoveDataOperation extends HexOperation {
     }
 
     private Operation execute(boolean withUndo) {
-        return null;
+        Operation undoOperation = null;
+        if (withUndo) {
+            HexadecimalData removedData = hexadecimal.getData().copy(position, size);
+            undoOperation = new InsertDataOperation(hexadecimal, position, removedData);
+        }
+        return undoOperation;
     }
 
     private class Serializator implements XBPSequenceSerializable {
