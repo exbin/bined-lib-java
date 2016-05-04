@@ -16,6 +16,7 @@
 package org.exbin.framework.deltahex.operation;
 
 import java.io.IOException;
+import org.exbin.deltahex.EditableHexadecimalData;
 import org.exbin.deltahex.HexadecimalData;
 import org.exbin.deltahex.component.Hexadecimal;
 import org.exbin.xbup.core.parser.XBProcessingException;
@@ -27,7 +28,7 @@ import org.exbin.xbup.operation.Operation;
 /**
  * Operation for deleting child block.
  *
- * @version 0.1.0 2016/05/03
+ * @version 0.1.0 2016/05/04
  * @author ExBin Project (http://exbin.org)
  */
 public class RemoveDataOperation extends HexOperation {
@@ -59,8 +60,9 @@ public class RemoveDataOperation extends HexOperation {
     private Operation execute(boolean withUndo) {
         Operation undoOperation = null;
         if (withUndo) {
-            HexadecimalData removedData = hexadecimal.getData().copy(position, size);
-            undoOperation = new InsertDataOperation(hexadecimal, position, removedData);
+            HexadecimalData undoData = hexadecimal.getData().copy(position, size);
+            ((EditableHexadecimalData) hexadecimal.getData()).remove(position, size);
+            undoOperation = new InsertDataOperation(hexadecimal, position, undoData);
         }
         return undoOperation;
     }

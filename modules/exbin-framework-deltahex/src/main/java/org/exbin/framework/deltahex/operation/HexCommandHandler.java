@@ -36,13 +36,16 @@ import org.exbin.deltahex.component.DefaultCommandHandler;
 import org.exbin.deltahex.component.Hexadecimal;
 import static org.exbin.deltahex.component.Hexadecimal.NO_MODIFIER;
 import org.exbin.deltahex.component.HexadecimalCaret;
+import org.exbin.framework.deltahex.command.command.HexCommandType;
+import org.exbin.framework.deltahex.operation.command.HexCommand;
+import org.exbin.framework.deltahex.operation.command.RemoveDataCommand;
 import org.exbin.xbup.operation.Command;
 import org.exbin.xbup.operation.undo.XBUndoHandler;
 
 /**
  * Command handler for undo/redo aware hexadecimal editor editing.
  *
- * @version 0.1.0 2016/05/02
+ * @version 0.1.0 2016/05/04
  * @author ExBin Project (http://exbin.org)
  */
 public class HexCommandHandler implements HexadecimalCommandHandler {
@@ -157,7 +160,11 @@ public class HexCommandHandler implements HexadecimalCommandHandler {
         }
 
         if (hexadecimal.hasSelection()) {
-            deleteSelection();
+            try {
+                undoHandler.execute(new DeleteSelectionCommand(hexadecimal));
+            } catch (Exception ex) {
+                Logger.getLogger(HexCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } else {
             HexadecimalCaret caret = hexadecimal.getCaret();
             long dataPosition = caret.getDataPosition();
@@ -179,7 +186,11 @@ public class HexCommandHandler implements HexadecimalCommandHandler {
         }
 
         if (hexadecimal.hasSelection()) {
-            deleteSelection();
+            try {
+                undoHandler.execute(new DeleteSelectionCommand(hexadecimal));
+            } catch (Exception ex) {
+                Logger.getLogger(HexCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } else {
             HexadecimalCaret caret = hexadecimal.getCaret();
             long dataPosition = caret.getDataPosition();
@@ -193,26 +204,17 @@ public class HexCommandHandler implements HexadecimalCommandHandler {
         }
     }
 
-    private void deleteSelection() {
-        Hexadecimal.SelectionRange selection = hexadecimal.getSelection();
-        long first = selection.getFirst();
-        long last = selection.getLast();
-        ((EditableHexadecimalData) hexadecimal.getData()).remove(first, last - first + 1);
-        hexadecimal.clearSelection();
-        HexadecimalCaret caret = hexadecimal.getCaret();
-        caret.setCaretPosition(first);
-        hexadecimal.revealCursor();
-        hexadecimal.computeDimensions();
-        hexadecimal.updateScrollBars();
-    }
-
     @Override
     public void delete() {
         if (!hexadecimal.isEditable()) {
             return;
         }
 
-        deleteSelection();
+        try {
+            undoHandler.execute(new DeleteSelectionCommand(hexadecimal));
+        } catch (Exception ex) {
+            Logger.getLogger(HexCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @Override
@@ -237,8 +239,13 @@ public class HexCommandHandler implements HexadecimalCommandHandler {
 
         Hexadecimal.SelectionRange selection = hexadecimal.getSelection();
         if (selection != null) {
-            copy();
-            deleteSelection();
+            // TODO compound command
+            // copy();
+            try {
+                undoHandler.execute(new DeleteSelectionCommand(hexadecimal));
+            } catch (Exception ex) {
+                Logger.getLogger(HexCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 
@@ -250,7 +257,12 @@ public class HexCommandHandler implements HexadecimalCommandHandler {
 
         if (clipboard.isDataFlavorAvailable(binaryDataFlavor)) {
             if (hexadecimal.hasSelection()) {
-                deleteSelection();
+                try {
+                    undoHandler.execute(new DeleteSelectionCommand(hexadecimal));
+                } catch (Exception ex) {
+                    Logger.getLogger(HexCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                // TODO compound command
             }
 
             try {
@@ -280,7 +292,12 @@ public class HexCommandHandler implements HexadecimalCommandHandler {
             }
         } else if (clipboard.isDataFlavorAvailable(DataFlavor.stringFlavor)) {
             if (hexadecimal.hasSelection()) {
-                deleteSelection();
+                try {
+                    undoHandler.execute(new DeleteSelectionCommand(hexadecimal));
+                } catch (Exception ex) {
+                    Logger.getLogger(HexCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                // TODO compound command
             }
 
             Object insertedData;
@@ -368,6 +385,58 @@ public class HexCommandHandler implements HexadecimalCommandHandler {
         @Override
         public void lostOwnership(Clipboard clipboard, Transferable contents) {
             // do nothing
+        }
+    }
+
+    private static class DeleteSelectionCommand extends HexCommand {
+
+        private final RemoveDataCommand removeCommand;
+        private final long position;
+        private final long size;
+
+        public DeleteSelectionCommand(Hexadecimal hexadecimal) {
+            super(hexadecimal);
+            Hexadecimal.SelectionRange selection = hexadecimal.getSelection();
+            position = selection.getFirst();
+            size = selection.getLast() - position + 1;
+            removeCommand = new RemoveDataCommand(hexadecimal, position, size);
+        }
+
+        @Override
+        public void execute() throws Exception {
+            super.execute();
+        }
+
+        @Override
+        public void redo() throws Exception {
+            removeCommand.redo();
+            hexadecimal.clearSelection();
+            HexadecimalCaret caret = hexadecimal.getCaret();
+            caret.setCaretPosition(position);
+            hexadecimal.revealCursor();
+            hexadecimal.computeDimensions();
+            hexadecimal.updateScrollBars();
+        }
+
+        @Override
+        public void undo() throws Exception {
+            removeCommand.undo();
+            hexadecimal.clearSelection();
+            HexadecimalCaret caret = hexadecimal.getCaret();
+            caret.setCaretPosition(size);
+            hexadecimal.revealCursor();
+            hexadecimal.computeDimensions();
+            hexadecimal.updateScrollBars();
+        }
+
+        @Override
+        public HexCommandType getType() {
+            return HexCommandType.DATA_REMOVED;
+        }
+
+        @Override
+        public boolean canUndo() {
+            return true;
         }
     }
 }

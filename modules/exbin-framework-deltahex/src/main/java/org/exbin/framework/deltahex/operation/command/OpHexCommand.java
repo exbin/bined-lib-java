@@ -23,13 +23,13 @@ import org.exbin.xbup.operation.OperationListener;
 /**
  * Abstract class for operation on hexadecimal document.
  *
- * @version 0.1.0 2016/04/30
+ * @version 0.1.0 2016/05/04
  * @author ExBin Project (http://exbin.org)
  */
 public abstract class OpHexCommand extends HexCommand {
 
     protected HexOperation operation;
-    private boolean isUndoMode = false;
+    private boolean operationPerformed = false;
 
     public OpHexCommand(Hexadecimal hexadecimal) {
         super(hexadecimal);
@@ -50,14 +50,14 @@ public abstract class OpHexCommand extends HexCommand {
 
     @Override
     public void undo() throws Exception {
-        if (isUndoMode) {
+        if (operationPerformed) {
             HexOperation redoOperation = (HexOperation) operation.executeWithUndo();
             if (hexadecimal instanceof OperationListener) {
                 ((OperationListener) hexadecimal).notifyChange(new OperationEvent(operation));
             }
 
             operation = redoOperation;
-            isUndoMode = false;
+            operationPerformed = false;
         } else {
             throw new UnsupportedOperationException("Not supported yet.");
         }
@@ -65,14 +65,14 @@ public abstract class OpHexCommand extends HexCommand {
 
     @Override
     public void redo() throws Exception {
-        if (!isUndoMode) {
+        if (!operationPerformed) {
             HexOperation undoOperation = (HexOperation) operation.executeWithUndo();
             if (hexadecimal instanceof OperationListener) {
                 ((OperationListener) hexadecimal).notifyChange(new OperationEvent(operation));
             }
 
             operation = undoOperation;
-            isUndoMode = true;
+            operationPerformed = true;
         } else {
             throw new UnsupportedOperationException("Not supported yet.");
         }
