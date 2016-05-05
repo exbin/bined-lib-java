@@ -20,7 +20,7 @@ import org.exbin.framework.deltahex.command.*;
 /**
  * Operation type enumeration.
  *
- * @version 0.1.0 2016/04/30
+ * @version 0.1.0 2016/05/05
  * @author ExBin Project (http://exbin.org)
  */
 public enum HexCommandType {
@@ -40,7 +40,11 @@ public enum HexCommandType {
     /**
      * Move data command.
      */
-    DATA_MOVED("Data moved");
+    DATA_MOVED("Data moved"),
+    /**
+     * Compound command.
+     */
+    COMPOUND("Compound");
 
     private final String caption;
 

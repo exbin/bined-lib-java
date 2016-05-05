@@ -61,9 +61,9 @@ public class RemoveDataOperation extends HexOperation {
         Operation undoOperation = null;
         if (withUndo) {
             HexadecimalData undoData = hexadecimal.getData().copy(position, size);
-            ((EditableHexadecimalData) hexadecimal.getData()).remove(position, size);
             undoOperation = new InsertDataOperation(hexadecimal, position, undoData);
         }
+        ((EditableHexadecimalData) hexadecimal.getData()).remove(position, size);
         return undoOperation;
     }
 

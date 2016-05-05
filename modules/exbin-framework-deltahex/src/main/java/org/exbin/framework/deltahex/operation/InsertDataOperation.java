@@ -70,8 +70,8 @@ public class InsertDataOperation extends HexOperation {
 
     private Operation execute(boolean withUndo) {
         Operation undoOperation = null;
+        ((EditableHexadecimalData) hexadecimal.getData()).insert(position, data);
         if (withUndo) {
-            ((EditableHexadecimalData) hexadecimal.getData()).insert(position, data);
             undoOperation = new RemoveDataOperation(hexadecimal, position, data.getDataSize());
         }
         return undoOperation;

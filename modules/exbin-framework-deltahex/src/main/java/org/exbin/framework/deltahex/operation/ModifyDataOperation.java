@@ -16,6 +16,7 @@
 package org.exbin.framework.deltahex.operation;
 
 import java.io.IOException;
+import org.exbin.deltahex.EditableHexadecimalData;
 import org.exbin.deltahex.HexadecimalData;
 import org.exbin.deltahex.component.Hexadecimal;
 import org.exbin.xbup.core.block.XBTEditableBlock;
@@ -38,11 +39,11 @@ import org.exbin.xbup.parser_tree.XBTreeWriter;
 /**
  * Operation for modifying data.
  *
- * @version 0.1.0 2016/05/03
+ * @version 0.1.0 2016/05/05
  * @author ExBin Project (http://exbin.org)
  */
 public class ModifyDataOperation extends HexOperation {
-    
+
     private long position;
     private HexadecimalData data;
 
@@ -68,7 +69,14 @@ public class ModifyDataOperation extends HexOperation {
     }
 
     private Operation execute(boolean withUndo) {
-        return null;
+        Operation undoOperation = null;
+        if (withUndo) {
+            HexadecimalData undoData = hexadecimal.getData().copy(position, data.getDataSize());
+            undoOperation = new ModifyDataOperation(hexadecimal, position, undoData);
+        }
+        ((EditableHexadecimalData) hexadecimal.getData()).remove(position, data.getDataSize());
+        ((EditableHexadecimalData) hexadecimal.getData()).insert(position, data);
+        return undoOperation;
     }
 
     private class Serializator implements XBPSequenceSerializable {

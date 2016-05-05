@@ -36,8 +36,11 @@ import org.exbin.deltahex.component.DefaultCommandHandler;
 import org.exbin.deltahex.component.Hexadecimal;
 import static org.exbin.deltahex.component.Hexadecimal.NO_MODIFIER;
 import org.exbin.deltahex.component.HexadecimalCaret;
+import org.exbin.framework.deltahex.XBHexadecimalData;
 import org.exbin.framework.deltahex.command.command.HexCommandType;
 import org.exbin.framework.deltahex.operation.command.HexCommand;
+import org.exbin.framework.deltahex.operation.command.HexCompoundCommand;
+import org.exbin.framework.deltahex.operation.command.InsertDataCommand;
 import org.exbin.framework.deltahex.operation.command.RemoveDataCommand;
 import org.exbin.xbup.operation.Command;
 import org.exbin.xbup.operation.undo.XBUndoHandler;
@@ -239,8 +242,7 @@ public class HexCommandHandler implements HexadecimalCommandHandler {
 
         Hexadecimal.SelectionRange selection = hexadecimal.getSelection();
         if (selection != null) {
-            // TODO compound command
-            // copy();
+            copy();
             try {
                 undoHandler.execute(new DeleteSelectionCommand(hexadecimal));
             } catch (Exception ex) {
@@ -255,32 +257,55 @@ public class HexCommandHandler implements HexadecimalCommandHandler {
             return;
         }
 
-        if (clipboard.isDataFlavorAvailable(binaryDataFlavor)) {
-            if (hexadecimal.hasSelection()) {
-                try {
-                    undoHandler.execute(new DeleteSelectionCommand(hexadecimal));
-                } catch (Exception ex) {
-                    Logger.getLogger(HexCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                // TODO compound command
+        DeleteSelectionCommand deleteSelectionCommand = null;
+        if (hexadecimal.hasSelection()) {
+            try {
+                deleteSelectionCommand = new DeleteSelectionCommand(hexadecimal);
+            } catch (Exception ex) {
+                Logger.getLogger(HexCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
             }
+        }
 
+        if (clipboard.isDataFlavorAvailable(binaryDataFlavor)) {
             try {
                 Object object = clipboard.getData(binaryDataFlavor);
                 if (object instanceof HexadecimalData) {
                     HexadecimalCaret caret = hexadecimal.getCaret();
                     long dataPosition = caret.getDataPosition();
 
+                    HexCommand removeCommand = null;
                     HexadecimalData data = (HexadecimalData) object;
                     long dataSize = data.getDataSize();
+                    long insertionPosition = dataPosition;
                     if (hexadecimal.getEditationMode() == Hexadecimal.EditationMode.OVERWRITE) {
                         long toRemove = dataSize;
                         if (dataPosition + toRemove > hexadecimal.getData().getDataSize()) {
                             toRemove = hexadecimal.getData().getDataSize() - dataPosition;
                         }
-                        ((EditableHexadecimalData) hexadecimal.getData()).remove(dataPosition, toRemove);
+                        removeCommand = new RemoveDataCommand(hexadecimal, dataPosition, toRemove);
+                        data = data.copy(toRemove, data.getDataSize() - toRemove);
+                        insertionPosition += toRemove;
                     }
-                    ((EditableHexadecimalData) hexadecimal.getData()).insert(hexadecimal.getDataPosition(), data);
+
+                    HexCommand insertCommand = new InsertDataCommand(hexadecimal, insertionPosition, data);
+                    HexCommand pasteCommand = insertCommand;
+                    if (deleteSelectionCommand != null || removeCommand != null) {
+                        HexCompoundCommand compoundCommand = new HexCompoundCommand(hexadecimal);
+                        if (deleteSelectionCommand != null) {
+                            compoundCommand.appendCommand(deleteSelectionCommand);
+                        }
+                        if (removeCommand != null) {
+                            compoundCommand.appendCommand(removeCommand);
+                        }
+                        compoundCommand.appendCommand(pasteCommand);
+                        pasteCommand = compoundCommand;
+                    }
+
+                    try {
+                        undoHandler.execute(pasteCommand);
+                    } catch (Exception ex) {
+                        Logger.getLogger(HexCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
+                    }
 
                     caret.setCaretPosition(caret.getDataPosition() + dataSize);
                     caret.setLowerHalf(false);
@@ -291,15 +316,6 @@ public class HexCommandHandler implements HexadecimalCommandHandler {
                 Logger.getLogger(DefaultCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else if (clipboard.isDataFlavorAvailable(DataFlavor.stringFlavor)) {
-            if (hexadecimal.hasSelection()) {
-                try {
-                    undoHandler.execute(new DeleteSelectionCommand(hexadecimal));
-                } catch (Exception ex) {
-                    Logger.getLogger(HexCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                // TODO compound command
-            }
-
             Object insertedData;
             try {
                 insertedData = clipboard.getData(DataFlavor.stringFlavor);
@@ -307,16 +323,40 @@ public class HexCommandHandler implements HexadecimalCommandHandler {
                     HexadecimalCaret caret = hexadecimal.getCaret();
                     long dataPosition = caret.getDataPosition();
 
+                    HexCommand removeCommand = null;
                     byte[] bytes = ((String) insertedData).getBytes(Charset.forName("UTF-8"));
                     int length = bytes.length;
+                    HexadecimalData data = new XBHexadecimalData(bytes);
+                    long insertionPosition = dataPosition;
                     if (hexadecimal.getEditationMode() == Hexadecimal.EditationMode.OVERWRITE) {
                         long toRemove = length;
                         if (dataPosition + toRemove > hexadecimal.getData().getDataSize()) {
                             toRemove = hexadecimal.getData().getDataSize() - dataPosition;
                         }
-                        ((EditableHexadecimalData) hexadecimal.getData()).remove(dataPosition, toRemove);
+                        removeCommand = new RemoveDataCommand(hexadecimal, dataPosition, toRemove);
+                        data = data.copy(toRemove, data.getDataSize() - toRemove);
+                        insertionPosition += toRemove;
                     }
-                    ((EditableHexadecimalData) hexadecimal.getData()).insert(hexadecimal.getDataPosition(), bytes);
+
+                    HexCommand insertCommand = new InsertDataCommand(hexadecimal, insertionPosition, data);
+                    HexCommand pasteCommand = insertCommand;
+                    if (deleteSelectionCommand != null || removeCommand != null) {
+                        HexCompoundCommand compoundCommand = new HexCompoundCommand(hexadecimal);
+                        if (deleteSelectionCommand != null) {
+                            compoundCommand.appendCommand(deleteSelectionCommand);
+                        }
+                        if (removeCommand != null) {
+                            compoundCommand.appendCommand(removeCommand);
+                        }
+                        compoundCommand.appendCommand(pasteCommand);
+                        pasteCommand = compoundCommand;
+                    }
+
+                    try {
+                        undoHandler.execute(pasteCommand);
+                    } catch (Exception ex) {
+                        Logger.getLogger(HexCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
+                    }
 
                     caret.setCaretPosition(caret.getDataPosition() + length);
                     caret.setLowerHalf(false);
