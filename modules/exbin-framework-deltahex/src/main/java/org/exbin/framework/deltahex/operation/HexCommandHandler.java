@@ -172,7 +172,11 @@ public class HexCommandHandler implements HexadecimalCommandHandler {
             HexadecimalCaret caret = hexadecimal.getCaret();
             long dataPosition = caret.getDataPosition();
             if (dataPosition > 0 && dataPosition <= hexadecimal.getData().getDataSize()) {
-                ((EditableHexadecimalData) hexadecimal.getData()).remove(dataPosition - 1, 1);
+                try {
+                    undoHandler.execute(new RemoveDataCommand(hexadecimal, dataPosition - 1, 1));
+                } catch (Exception ex) {
+                    Logger.getLogger(HexCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 caret.setLowerHalf(false);
                 hexadecimal.moveLeft(NO_MODIFIER);
                 caret.setLowerHalf(false);
@@ -198,7 +202,11 @@ public class HexCommandHandler implements HexadecimalCommandHandler {
             HexadecimalCaret caret = hexadecimal.getCaret();
             long dataPosition = caret.getDataPosition();
             if (dataPosition < hexadecimal.getData().getDataSize()) {
-                ((EditableHexadecimalData) hexadecimal.getData()).remove(dataPosition, 1);
+                try {
+                    undoHandler.execute(new RemoveDataCommand(hexadecimal, dataPosition, 1));
+                } catch (Exception ex) {
+                    Logger.getLogger(HexCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 if (caret.isLowerHalf()) {
                     caret.setLowerHalf(false);
                 }
