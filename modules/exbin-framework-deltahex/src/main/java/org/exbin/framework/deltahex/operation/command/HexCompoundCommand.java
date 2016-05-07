@@ -26,7 +26,7 @@ import org.exbin.xbup.operation.CompoundCommand;
 /**
  * Class for compound command on hexadecimal document.
  *
- * @version 0.1.0 2016/05/05
+ * @version 0.1.0 2016/05/07
  * @author ExBin Project (http://exbin.org)
  */
 public class HexCompoundCommand extends HexCommand implements CompoundCommand {
@@ -35,6 +35,26 @@ public class HexCompoundCommand extends HexCommand implements CompoundCommand {
 
     public HexCompoundCommand(Hexadecimal hexadecimal) {
         super(hexadecimal);
+    }
+
+    public static HexCommand buildCompoundCommand(Hexadecimal hexadecimal, HexCommand... commands) {
+        HexCommand resultCommand = null;
+        for (HexCommand command : commands) {
+            if (command != null) {
+                if (resultCommand == null) {
+                    resultCommand = command;
+                } else if (resultCommand instanceof HexCompoundCommand) {
+                    ((HexCompoundCommand) resultCommand).appendCommand(command);
+                } else {
+                    HexCompoundCommand compoundCommand = new HexCompoundCommand(hexadecimal);
+                    compoundCommand.appendCommand(resultCommand);
+                    compoundCommand.appendCommand(command);
+                    resultCommand = compoundCommand;
+                }
+            }
+        }
+
+        return resultCommand;
     }
 
     @Override
