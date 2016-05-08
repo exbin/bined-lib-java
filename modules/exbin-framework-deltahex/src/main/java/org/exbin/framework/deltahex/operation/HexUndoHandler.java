@@ -62,8 +62,8 @@ public class HexUndoHandler implements XBUndoHandler {
     /**
      * Adds new step into revert list.
      *
-     * @param command
-     * @throws java.lang.Exception
+     * @param command command
+     * @throws java.lang.Exception if commands throws it
      */
     @Override
     public void execute(Command command) throws Exception {
@@ -87,7 +87,7 @@ public class HexUndoHandler implements XBUndoHandler {
     /**
      * Performs single undo step.
      *
-     * @throws java.lang.Exception
+     * @throws java.lang.Exception if commands throws it
      */
     @Override
     public void performUndo() throws Exception {
@@ -104,7 +104,7 @@ public class HexUndoHandler implements XBUndoHandler {
     /**
      * Performs single redo step.
      *
-     * @throws java.lang.Exception
+     * @throws java.lang.Exception if commands throws it
      */
     @Override
     public void performRedo() throws Exception {
@@ -122,7 +122,7 @@ public class HexUndoHandler implements XBUndoHandler {
      * Performs multiple undo step.
      *
      * @param count count of steps
-     * @throws Exception
+     * @throws Exception if commands throws it
      */
     @Override
     public void performUndo(int count) throws Exception {
@@ -140,7 +140,7 @@ public class HexUndoHandler implements XBUndoHandler {
      * Performs multiple redo step.
      *
      * @param count count of steps
-     * @throws Exception
+     * @throws Exception if commands throws it
      */
     @Override
     public void performRedo(int count) throws Exception {
@@ -182,7 +182,7 @@ public class HexUndoHandler implements XBUndoHandler {
     /**
      * Performs revert to sync point.
      *
-     * @throws java.lang.Exception
+     * @throws java.lang.Exception if commands throws it
      */
     @Override
     public void doSync() throws Exception {
@@ -231,7 +231,7 @@ public class HexUndoHandler implements XBUndoHandler {
      * Performs undo or redo operation to reach given position.
      *
      * @param targetPosition desired position
-     * @throws java.lang.Exception
+     * @throws java.lang.Exception if commands throws it
      */
     @Override
     public void setCommandPosition(long targetPosition) throws Exception {
