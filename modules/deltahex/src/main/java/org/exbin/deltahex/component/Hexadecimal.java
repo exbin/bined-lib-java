@@ -51,7 +51,7 @@ import org.exbin.deltahex.component.HexadecimalCaret.Section;
 /**
  * Hex editor component.
  *
- * @version 0.1.0 2016/04/30
+ * @version 0.1.0 2016/05/09
  * @author ExBin Project (http://exbin.org)
  */
 public class Hexadecimal extends JComponent {
@@ -85,6 +85,7 @@ public class Hexadecimal extends JComponent {
     private boolean mouseDown;
     private boolean editable = true;
     private boolean wrapMode = false;
+    private boolean handleClipboard = true;
 
     private ScrollBarVisibility verticalScrollBarVisibility = ScrollBarVisibility.IF_NEEDED;
     private VerticalScrollMode verticalScrollMode = VerticalScrollMode.PER_LINE;
@@ -879,6 +880,14 @@ public class Hexadecimal extends JComponent {
         repaint();
     }
 
+    public boolean isHandleClipboard() {
+        return handleClipboard;
+    }
+
+    public void setHandleClipboard(boolean handleClipboard) {
+        this.handleClipboard = handleClipboard;
+    }
+
     public int getLineLength() {
         return lineLength;
     }
@@ -1330,7 +1339,7 @@ public class Hexadecimal extends JComponent {
                             caret.setCaretPosition(data.getDataSize());
                         } else if (caret.getSection() == Section.HEXADECIMAL) {
                             long newPosition = ((caretPosition.getDataPosition() / bytesPerLine) + 1) * bytesPerLine - 1;
-                            caret.setCaretPosition(newPosition < dataSize ? newPosition : dataSize, true);
+                            caret.setCaretPosition(newPosition < dataSize ? newPosition : dataSize, newPosition < dataSize);
                         } else {
                             long newPosition = ((caretPosition.getDataPosition() / bytesPerLine) + 1) * bytesPerLine - 1;
                             caret.setCaretPosition(newPosition < dataSize ? newPosition : dataSize);
@@ -1416,17 +1425,22 @@ public class Hexadecimal extends JComponent {
                     break;
                 }
                 default: {
-                    if ((e.getModifiers() & metaMask) > 0 && e.getKeyCode() == KeyEvent.VK_C) {
-                        commandHandler.copy();
-                    } else if ((e.getModifiers() & metaMask) > 0 && e.getKeyCode() == KeyEvent.VK_X) {
-                        commandHandler.cut();
-                    } else if ((e.getModifiers() & metaMask) > 0 && e.getKeyCode() == KeyEvent.VK_V) {
-                        commandHandler.paste();
-                    } else if ((e.getModifiers() & metaMask) > 0 && e.getKeyCode() == KeyEvent.VK_A) {
-                        selectAll();
-                    } else {
-                        commandHandler.keyPressed(e.getKeyChar());
+                    if (handleClipboard) {
+                        if ((e.getModifiers() & metaMask) > 0 && e.getKeyCode() == KeyEvent.VK_C) {
+                            commandHandler.copy();
+                            break;
+                        } else if ((e.getModifiers() & metaMask) > 0 && e.getKeyCode() == KeyEvent.VK_X) {
+                            commandHandler.cut();
+                            break;
+                        } else if ((e.getModifiers() & metaMask) > 0 && e.getKeyCode() == KeyEvent.VK_V) {
+                            commandHandler.paste();
+                            break;
+                        } else if ((e.getModifiers() & metaMask) > 0 && e.getKeyCode() == KeyEvent.VK_A) {
+                            selectAll();
+                            break;
+                        }
                     }
+                    commandHandler.keyPressed(e.getKeyChar());
                 }
             }
         }

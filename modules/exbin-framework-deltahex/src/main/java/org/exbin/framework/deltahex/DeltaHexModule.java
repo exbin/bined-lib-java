@@ -34,7 +34,6 @@ import org.exbin.framework.gui.menu.api.ToolBarGroup;
 import org.exbin.framework.gui.menu.api.ToolBarPosition;
 import org.exbin.framework.gui.options.api.GuiOptionsModuleApi;
 import org.exbin.framework.api.XBApplicationModule;
-import org.exbin.framework.deltahex.operation.HexUndoHandler;
 import org.exbin.xbup.plugin.XBModuleHandler;
 import org.exbin.framework.deltahex.panel.HexAppearancePanelFrame;
 import org.exbin.framework.deltahex.panel.HexColorPanelApi;
@@ -52,9 +51,6 @@ public class DeltaHexModule implements XBApplicationModule {
 
     private static final String EDIT_FIND_MENU_GROUP_ID = MODULE_ID + ".editFindMenuGroup";
     private static final String EDIT_FIND_TOOL_BAR_GROUP_ID = MODULE_ID + ".editFindToolBarGroup";
-
-    public static final String XBT_FILE_TYPE = "XBTextEditor.XBTFileType";
-    public static final String TXT_FILE_TYPE = "XBTextEditor.TXTFileType";
 
     public static final String TEXT_STATUS_BAR_ID = "textStatusBar";
 

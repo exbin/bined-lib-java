@@ -59,11 +59,12 @@ import org.exbin.framework.deltahex.XBHexadecimalData;
 import org.exbin.framework.deltahex.operation.HexCommandHandler;
 import org.exbin.framework.deltahex.operation.HexUndoHandler;
 import org.exbin.xbup.core.type.XBData;
+import org.exbin.xbup.operation.undo.XBUndoUpdateListener;
 
 /**
  * Hexadecimal editor panel.
  *
- * @version 0.1.0 2016/04/27
+ * @version 0.1.0 2016/05/09
  * @author ExBin Project (http://exbin.org)
  */
 public class HexPanel extends javax.swing.JPanel implements XBEditorProvider, ClipboardActionsHandler, UndoActionsHandler {
@@ -87,6 +88,12 @@ public class HexPanel extends javax.swing.JPanel implements XBEditorProvider, Cl
 
     public HexPanel() {
         hexUndoHandler = new HexUndoHandler(hexadecimal);
+        hexUndoHandler.addUndoUpdateListener(new XBUndoUpdateListener() {
+            @Override
+            public void undoChanged() {
+                hexadecimal.repaint();
+            }
+        });
         initComponents();
         init();
     }
@@ -94,6 +101,7 @@ public class HexPanel extends javax.swing.JPanel implements XBEditorProvider, Cl
     private void init() {
         hexadecimal = new Hexadecimal();
         hexadecimal.setData(new XBHexadecimalData(new XBData()));
+        hexadecimal.setHandleClipboard(false);
         hexadecimal.addSelectionChangedListener(new Hexadecimal.SelectionChangedListener() {
             @Override
             public void selectionChanged(Hexadecimal.SelectionRange selection) {
