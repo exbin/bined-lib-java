@@ -109,21 +109,52 @@ public class HexCommandHandler implements HexadecimalCommandHandler {
                 HexadecimalData data = hexadecimal.getData();
                 long dataPosition = hexadecimal.getDataPosition();
                 if (hexadecimal.getEditationMode() == Hexadecimal.EditationMode.OVERWRITE) {
+                    byte byteValue = processHalfByte(value);
                     if (dataPosition == hexadecimal.getData().getDataSize()) {
-                        ((EditableHexadecimalData) data).insert(dataPosition, 1);
-                    }
-                    setHalfByte(value);
-                } else {
-                    if (hexadecimal.isLowerHalf()) {
-                        byte lowerHalf = (byte) (data.getByte(dataPosition) & 0xf);
-                        if (lowerHalf > 0) {
-                            ((EditableHexadecimalData) data).insert(dataPosition + 1, 1);
-                            ((EditableHexadecimalData) data).setByte(dataPosition + 1, lowerHalf);
+                        HexadecimalData insertData = new XBHexadecimalData(new byte[]{byteValue});
+                        InsertDataCommand insertCommand = new InsertDataCommand(hexadecimal, dataPosition, insertData);
+                        try {
+                            undoHandler.execute(insertCommand);
+                        } catch (Exception ex) {
+                            Logger.getLogger(HexCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     } else {
-                        ((EditableHexadecimalData) data).insert(dataPosition, 1);
+                        HexadecimalData modifyData = new XBHexadecimalData(new byte[]{byteValue});
+                        ModifyDataCommand modifyCommand = new ModifyDataCommand(hexadecimal, dataPosition, modifyData);
+                        try {
+                            undoHandler.execute(modifyCommand);
+                        } catch (Exception ex) {
+                            Logger.getLogger(HexCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                     }
-                    setHalfByte(value);
+                } else if (hexadecimal.isLowerHalf()) {
+                    byte lowerHalf = (byte) (data.getByte(dataPosition) & 0xf);
+                    if (lowerHalf > 0) {
+                        HexadecimalData insertData = new XBHexadecimalData(new byte[]{lowerHalf});
+                        InsertDataCommand insertCommand = new InsertDataCommand(hexadecimal, dataPosition + 1, insertData);
+                        try {
+                            undoHandler.execute(insertCommand);
+                        } catch (Exception ex) {
+                            Logger.getLogger(HexCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+
+                    byte byteValue = processHalfByte(value);
+                    HexadecimalData modifyData = new XBHexadecimalData(new byte[]{byteValue});
+                    ModifyDataCommand insertCommand = new ModifyDataCommand(hexadecimal, dataPosition, modifyData);
+                    try {
+                        undoHandler.execute(insertCommand);
+                    } catch (Exception ex) {
+                        Logger.getLogger(HexCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                } else {
+                    HexadecimalData insertData = new XBHexadecimalData(new byte[]{(byte) (value << 4)});
+                    InsertDataCommand insertCommand = new InsertDataCommand(hexadecimal, dataPosition, insertData);
+                    try {
+                        undoHandler.execute(insertCommand);
+                    } catch (Exception ex) {
+                        Logger.getLogger(HexCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
                 hexadecimal.moveRight(Hexadecimal.NO_MODIFIER);
                 hexadecimal.revealCursor();
@@ -369,15 +400,15 @@ public class HexCommandHandler implements HexadecimalCommandHandler {
         return canPaste;
     }
 
-    private void setHalfByte(int value) {
+    private byte processHalfByte(int value) {
         CaretPosition caretPosition = hexadecimal.getCaretPosition();
         long dataPosition = caretPosition.getDataPosition();
-        setHalfByte(dataPosition, value, caretPosition.isLowerHalf());
+        return processHalfByte(dataPosition, value, caretPosition.isLowerHalf());
     }
 
-    private void setHalfByte(long dataPosition, int value, boolean lowerHalf) {
+    private byte processHalfByte(long dataPosition, int value, boolean lowerHalf) {
         HexadecimalData data = hexadecimal.getData();
-        byte byteValue = data.getByte(dataPosition);
+        byte byteValue = dataPosition >= hexadecimal.getData().getDataSize() ? 0 : data.getByte(dataPosition);
 
         if (lowerHalf) {
             byteValue = (byte) ((byteValue & 0xf0) | value);
@@ -385,7 +416,7 @@ public class HexCommandHandler implements HexadecimalCommandHandler {
             byteValue = (byte) ((byteValue & 0xf) | (value << 4));
         }
 
-        ((EditableHexadecimalData) data).setByte(dataPosition, byteValue);
+        return byteValue;
     }
 
     public class BinaryDataClipboardData implements Transferable, ClipboardOwner {
