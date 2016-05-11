@@ -96,7 +96,11 @@ public class HexCommandHandler implements HexadecimalCommandHandler {
             if ((keyValue >= '0' && keyValue <= '9')
                     || (keyValue >= 'a' && keyValue <= 'f') || (keyValue >= 'A' && keyValue <= 'F')) {
                 if (hexadecimal.hasSelection()) {
-                    // deleteSelection();
+                    try {
+                        undoHandler.execute(new DeleteSelectionCommand(hexadecimal));
+                    } catch (Exception ex) {
+                        Logger.getLogger(HexCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
 
                 int value;
