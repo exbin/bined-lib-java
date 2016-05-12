@@ -49,15 +49,18 @@ import org.exbin.xbup.operation.undo.XBUndoHandler;
 /**
  * Command handler for undo/redo aware hexadecimal editor editing.
  *
- * @version 0.1.0 2016/05/04
+ * @version 0.1.0 2016/05/12
  * @author ExBin Project (http://exbin.org)
  */
 public class HexCommandHandler implements HexadecimalCommandHandler {
 
+    public static final String MIME_CLIPBOARD_HEXADECIMAL = "application/x-deltahex";
+    public static final String MIME_CLIPBOARD_BINARY = "application/octet-stream";
+
     private final Hexadecimal hexadecimal;
     private Clipboard clipboard;
     private boolean canPaste = false;
-    private DataFlavor binaryDataFlavor;
+    private DataFlavor appDataFlavor;
 
     private final XBUndoHandler undoHandler;
     private Command continousEditing = null;
@@ -70,15 +73,15 @@ public class HexCommandHandler implements HexadecimalCommandHandler {
         clipboard.addFlavorListener(new FlavorListener() {
             @Override
             public void flavorsChanged(FlavorEvent e) {
-                canPaste = clipboard.isDataFlavorAvailable(binaryDataFlavor) || clipboard.isDataFlavorAvailable(DataFlavor.stringFlavor);
+                canPaste = clipboard.isDataFlavorAvailable(appDataFlavor) || clipboard.isDataFlavorAvailable(DataFlavor.stringFlavor);
             }
         });
         try {
-            binaryDataFlavor = new DataFlavor("application/octet-stream");
+            appDataFlavor = new DataFlavor(MIME_CLIPBOARD_HEXADECIMAL);
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(DefaultCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
-        canPaste = clipboard.isDataFlavorAvailable(binaryDataFlavor) || clipboard.isDataFlavorAvailable(DataFlavor.stringFlavor);
+        canPaste = clipboard.isDataFlavorAvailable(appDataFlavor) || clipboard.isDataFlavorAvailable(DataFlavor.stringFlavor);
     }
 
     @Override
@@ -145,9 +148,9 @@ public class HexCommandHandler implements HexadecimalCommandHandler {
 
                     byte byteValue = processHalfByte(value);
                     HexadecimalData modifyData = new XBHexadecimalData(new byte[]{byteValue});
-                    ModifyDataCommand insertCommand = new ModifyDataCommand(hexadecimal, dataPosition, modifyData);
+                    ModifyDataCommand modifyCommand = new ModifyDataCommand(hexadecimal, dataPosition, modifyData);
                     try {
-                        undoHandler.execute(insertCommand);
+                        undoHandler.execute(modifyCommand);
                     } catch (Exception ex) {
                         Logger.getLogger(HexCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -174,17 +177,34 @@ public class HexCommandHandler implements HexadecimalCommandHandler {
         } else {
             char keyChar = keyValue;
             if (keyChar > 31 && keyChar < 255) {
-                HexadecimalData data = hexadecimal.getData();
                 CaretPosition caretPosition = hexadecimal.getCaretPosition();
                 long dataPosition = caretPosition.getDataPosition();
                 if (hexadecimal.getEditationMode() == Hexadecimal.EditationMode.OVERWRITE) {
                     if (dataPosition == hexadecimal.getData().getDataSize()) {
-                        ((EditableHexadecimalData) data).insert(dataPosition, 1);
+                        HexadecimalData insertData = new XBHexadecimalData(new byte[]{(byte) keyChar});
+                        InsertDataCommand insertCommand = new InsertDataCommand(hexadecimal, dataPosition, insertData);
+                        try {
+                            undoHandler.execute(insertCommand);
+                        } catch (Exception ex) {
+                            Logger.getLogger(HexCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    } else {
+                        HexadecimalData modifyData = new XBHexadecimalData(new byte[]{(byte) keyChar});
+                        ModifyDataCommand insertCommand = new ModifyDataCommand(hexadecimal, dataPosition, modifyData);
+                        try {
+                            undoHandler.execute(insertCommand);
+                        } catch (Exception ex) {
+                            Logger.getLogger(HexCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                     }
-                    ((EditableHexadecimalData) data).setByte(dataPosition, (byte) keyChar);
                 } else {
-                    ((EditableHexadecimalData) data).insert(dataPosition, 1);
-                    ((EditableHexadecimalData) data).setByte(dataPosition, (byte) keyChar);
+                    HexadecimalData insertData = new XBHexadecimalData(new byte[]{(byte) keyChar});
+                    InsertDataCommand insertCommand = new InsertDataCommand(hexadecimal, dataPosition, insertData);
+                    try {
+                        undoHandler.execute(insertCommand);
+                    } catch (Exception ex) {
+                        Logger.getLogger(HexCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
                 hexadecimal.moveRight(Hexadecimal.NO_MODIFIER);
                 hexadecimal.revealCursor();
@@ -310,9 +330,9 @@ public class HexCommandHandler implements HexadecimalCommandHandler {
             }
         }
 
-        if (clipboard.isDataFlavorAvailable(binaryDataFlavor)) {
+        if (clipboard.isDataFlavorAvailable(appDataFlavor)) {
             try {
-                Object object = clipboard.getData(binaryDataFlavor);
+                Object object = clipboard.getData(appDataFlavor);
                 if (object instanceof HexadecimalData) {
                     HexadecimalCaret caret = hexadecimal.getCaret();
                     long dataPosition = caret.getDataPosition();
@@ -433,17 +453,17 @@ public class HexCommandHandler implements HexadecimalCommandHandler {
 
         @Override
         public DataFlavor[] getTransferDataFlavors() {
-            return new DataFlavor[]{binaryDataFlavor, DataFlavor.stringFlavor};
+            return new DataFlavor[]{appDataFlavor, DataFlavor.stringFlavor};
         }
 
         @Override
         public boolean isDataFlavorSupported(DataFlavor flavor) {
-            return flavor.equals(binaryDataFlavor) || flavor.equals(DataFlavor.stringFlavor);
+            return flavor.equals(appDataFlavor) || flavor.equals(DataFlavor.stringFlavor);
         }
 
         @Override
         public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
-            if (flavor.equals(binaryDataFlavor)) {
+            if (flavor.equals(appDataFlavor)) {
                 return data;
             } else {
                 ByteArrayOutputStream byteArrayStream = new ByteArrayOutputStream();

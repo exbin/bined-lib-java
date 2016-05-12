@@ -39,7 +39,7 @@ import org.exbin.xbup.parser_tree.XBTreeWriter;
 /**
  * Operation for modifying data.
  *
- * @version 0.1.0 2016/05/05
+ * @version 0.1.0 2016/05/12
  * @author ExBin Project (http://exbin.org)
  */
 public class ModifyDataOperation extends HexOperation {
@@ -77,6 +77,10 @@ public class ModifyDataOperation extends HexOperation {
         ((EditableHexadecimalData) hexadecimal.getData()).remove(position, data.getDataSize());
         ((EditableHexadecimalData) hexadecimal.getData()).insert(position, data);
         return undoOperation;
+    }
+
+    public void appendData(HexadecimalData appendData) {
+        ((EditableHexadecimalData) data).insert(data.getDataSize(), appendData);
     }
 
     private class Serializator implements XBPSequenceSerializable {
