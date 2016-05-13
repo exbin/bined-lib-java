@@ -38,18 +38,18 @@ import static org.exbin.deltahex.component.Hexadecimal.NO_MODIFIER;
 import org.exbin.deltahex.component.HexadecimalCaret;
 import org.exbin.framework.deltahex.XBHexadecimalData;
 import org.exbin.framework.deltahex.command.command.HexCommandType;
+import org.exbin.framework.deltahex.operation.command.EditDataCommand;
 import org.exbin.framework.deltahex.operation.command.HexCommand;
 import org.exbin.framework.deltahex.operation.command.HexCompoundCommand;
 import org.exbin.framework.deltahex.operation.command.InsertDataCommand;
 import org.exbin.framework.deltahex.operation.command.ModifyDataCommand;
 import org.exbin.framework.deltahex.operation.command.RemoveDataCommand;
-import org.exbin.xbup.operation.Command;
 import org.exbin.xbup.operation.undo.XBUndoHandler;
 
 /**
  * Command handler for undo/redo aware hexadecimal editor editing.
  *
- * @version 0.1.0 2016/05/12
+ * @version 0.1.0 2016/05/13
  * @author ExBin Project (http://exbin.org)
  */
 public class HexCommandHandler implements HexadecimalCommandHandler {
@@ -63,7 +63,7 @@ public class HexCommandHandler implements HexadecimalCommandHandler {
     private DataFlavor appDataFlavor;
 
     private final XBUndoHandler undoHandler;
-    private Command continousEditing = null;
+    private EditDataCommand editCommand = null;
 
     public HexCommandHandler(Hexadecimal hexadecimal, XBUndoHandler undoHandler) {
         this.hexadecimal = hexadecimal;
@@ -86,7 +86,7 @@ public class HexCommandHandler implements HexadecimalCommandHandler {
 
     @Override
     public void caretMoved() {
-        continousEditing = null;
+        editCommand = null;
     }
 
     @Override
@@ -134,34 +134,13 @@ public class HexCommandHandler implements HexadecimalCommandHandler {
                             Logger.getLogger(HexCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     }
-                } else if (hexadecimal.isLowerHalf()) {
-                    byte lowerHalf = (byte) (data.getByte(dataPosition) & 0xf);
-                    if (lowerHalf > 0) {
-                        HexadecimalData insertData = new XBHexadecimalData(new byte[]{lowerHalf});
-                        InsertDataCommand insertCommand = new InsertDataCommand(hexadecimal, dataPosition + 1, insertData);
-                        try {
-                            undoHandler.execute(insertCommand);
-                        } catch (Exception ex) {
-                            Logger.getLogger(HexCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
-                        }
+                } else {
+                    if (editCommand == null || editCommand.getCommandType() != EditDataCommand.EditCommandType.INSERT) {
+                        editCommand = new EditDataCommand(hexadecimal, EditDataCommand.EditCommandType.INSERT, dataPosition, hexadecimal.isLowerHalf());
+                        undoHandler.addCommand(editCommand);
                     }
 
-                    byte byteValue = processHalfByte(value);
-                    HexadecimalData modifyData = new XBHexadecimalData(new byte[]{byteValue});
-                    ModifyDataCommand modifyCommand = new ModifyDataCommand(hexadecimal, dataPosition, modifyData);
-                    try {
-                        undoHandler.execute(modifyCommand);
-                    } catch (Exception ex) {
-                        Logger.getLogger(HexCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                } else {
-                    HexadecimalData insertData = new XBHexadecimalData(new byte[]{(byte) (value << 4)});
-                    InsertDataCommand insertCommand = new InsertDataCommand(hexadecimal, dataPosition, insertData);
-                    try {
-                        undoHandler.execute(insertCommand);
-                    } catch (Exception ex) {
-                        Logger.getLogger(HexCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+                    editCommand.appendEdit((char) value);
                 }
                 hexadecimal.moveRight(Hexadecimal.NO_MODIFIER);
                 hexadecimal.revealCursor();

@@ -38,7 +38,11 @@ public enum HexOperationType {
     /**
      * Move data operation.
      */
-    MOVE_DATA("Move data");
+    MOVE_DATA("Move data"),
+    /**
+     * Edit data operation.
+     */
+    EDIT_DATA("Edit data");
 
     private final String caption;
 

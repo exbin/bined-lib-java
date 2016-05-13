@@ -44,7 +44,11 @@ public enum HexCommandType {
     /**
      * Compound command.
      */
-    COMPOUND("Compound");
+    COMPOUND("Compound"),
+    /**
+     * Edit data command.
+     */
+    DATA_EDITED("Data edited");
 
     private final String caption;
 

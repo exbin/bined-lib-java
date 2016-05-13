@@ -25,12 +25,16 @@ import org.exbin.xbup.core.type.XBData;
 /**
  * Encapsulation of data for hexadecimal editor.
  *
- * @version 0.1.0 2016/05/05
+ * @version 0.1.0 2016/05/13
  * @author ExBin Project (http://exbin.org)
  */
 public class XBHexadecimalData implements EditableHexadecimalData {
 
     private final XBData data;
+
+    public XBHexadecimalData() {
+        data = new XBData();
+    }
 
     public XBHexadecimalData(XBData data) {
         this.data = data;
