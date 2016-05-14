@@ -24,18 +24,35 @@ import org.exbin.framework.deltahex.operation.InsertDataOperation;
 /**
  * Command for inserting data.
  *
- * @version 0.1.0 2016/05/03
+ * @version 0.1.0 2016/05/14
  * @author ExBin Project (http://exbin.org)
  */
 public class InsertDataCommand extends OpHexCommand {
 
+    private long position;
+    private long dataLength;
+
     public InsertDataCommand(Hexadecimal hexadecimal, long position, HexadecimalData data) {
         super(hexadecimal);
-        super.setOperation(new InsertDataOperation(hexadecimal, position, data));
+        this.position = position;
+        dataLength = data.getDataSize();
+        super.setOperation(new InsertDataOperation(hexadecimal, position, hexadecimal.getCaretPosition().isLowerHalf(), data));
     }
 
     @Override
     public HexCommandType getType() {
         return HexCommandType.DATA_INSERTED;
+    }
+
+    @Override
+    public void redo() throws Exception {
+        super.redo();
+        hexadecimal.getCaretPosition().setDataPosition(position + dataLength);
+    }
+
+    @Override
+    public void undo() throws Exception {
+        super.undo();
+        hexadecimal.getCaretPosition().setDataPosition(position);
     }
 }

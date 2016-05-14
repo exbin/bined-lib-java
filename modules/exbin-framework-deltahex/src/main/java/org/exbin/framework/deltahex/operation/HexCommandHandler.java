@@ -34,11 +34,10 @@ import org.exbin.deltahex.HexadecimalCommandHandler;
 import org.exbin.deltahex.HexadecimalData;
 import org.exbin.deltahex.component.DefaultCommandHandler;
 import org.exbin.deltahex.component.Hexadecimal;
-import static org.exbin.deltahex.component.Hexadecimal.NO_MODIFIER;
 import org.exbin.deltahex.component.HexadecimalCaret;
 import org.exbin.framework.deltahex.XBHexadecimalData;
 import org.exbin.framework.deltahex.command.command.HexCommandType;
-import org.exbin.framework.deltahex.operation.command.EditDataCommand;
+import org.exbin.framework.deltahex.operation.command.EditHexDataCommand;
 import org.exbin.framework.deltahex.operation.command.HexCommand;
 import org.exbin.framework.deltahex.operation.command.HexCompoundCommand;
 import org.exbin.framework.deltahex.operation.command.InsertDataCommand;
@@ -63,7 +62,7 @@ public class HexCommandHandler implements HexadecimalCommandHandler {
     private DataFlavor appDataFlavor;
 
     private final XBUndoHandler undoHandler;
-    private EditDataCommand editCommand = null;
+    private EditHexDataCommand editCommand = null;
 
     public HexCommandHandler(Hexadecimal hexadecimal, XBUndoHandler undoHandler) {
         this.hexadecimal = hexadecimal;
@@ -113,45 +112,27 @@ public class HexCommandHandler implements HexadecimalCommandHandler {
                     value = Character.toLowerCase(keyValue) - 'a' + 10;
                 }
 
-                HexadecimalData data = hexadecimal.getData();
+                if (editCommand != null && editCommand.wasReverted()) {
+                    editCommand = null;
+                }
                 long dataPosition = hexadecimal.getDataPosition();
                 if (hexadecimal.getEditationMode() == Hexadecimal.EditationMode.OVERWRITE) {
-                    byte byteValue = processHalfByte(value);
-                    if (dataPosition == hexadecimal.getData().getDataSize()) {
-                        HexadecimalData insertData = new XBHexadecimalData(new byte[]{byteValue});
-                        InsertDataCommand insertCommand = new InsertDataCommand(hexadecimal, dataPosition, insertData);
-                        try {
-                            undoHandler.execute(insertCommand);
-                        } catch (Exception ex) {
-                            Logger.getLogger(HexCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                    } else {
-                        HexadecimalData modifyData = new XBHexadecimalData(new byte[]{byteValue});
-                        ModifyDataCommand modifyCommand = new ModifyDataCommand(hexadecimal, dataPosition, modifyData);
-                        try {
-                            undoHandler.execute(modifyCommand);
-                        } catch (Exception ex) {
-                            Logger.getLogger(HexCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                    }
-                } else {
-                    if (editCommand == null || editCommand.getCommandType() != EditDataCommand.EditCommandType.INSERT) {
-                        editCommand = new EditDataCommand(hexadecimal, EditDataCommand.EditCommandType.INSERT, dataPosition, hexadecimal.isLowerHalf());
+                    if (editCommand == null || editCommand.getCommandType() != EditHexDataCommand.EditHexCommandType.OVERWRITE) {
+                        editCommand = new EditHexDataCommand(hexadecimal, EditHexDataCommand.EditHexCommandType.OVERWRITE, dataPosition, hexadecimal.isLowerHalf());
                         undoHandler.addCommand(editCommand);
                     }
 
-                    editCommand.appendEdit((char) value);
+                    editCommand.appendEdit((byte) value);
+                } else {
+                    if (editCommand == null || editCommand.getCommandType() != EditHexDataCommand.EditHexCommandType.INSERT) {
+                        editCommand = new EditHexDataCommand(hexadecimal, EditHexDataCommand.EditHexCommandType.INSERT, dataPosition, hexadecimal.isLowerHalf());
+                        undoHandler.addCommand(editCommand);
+                    }
+
+                    editCommand.appendEdit((byte) value);
                 }
                 hexadecimal.moveRight(Hexadecimal.NO_MODIFIER);
                 hexadecimal.revealCursor();
-
-//                if (continousEditing != null && continousEditing.getEditationMode() == hexadecimal.getEditationMode()) {
-//                    continousEditing.addKey(value);
-//                } else {
-//                    continousEditing = new CharWritingCommand(hexadecimal, hexadecimal.getEditationMode());
-//                    undoHandler.addCommand(continousEditing);
-//                    continousEditing.addKey(value);
-//                }
             }
         } else {
             char keyChar = keyValue;
@@ -185,7 +166,6 @@ public class HexCommandHandler implements HexadecimalCommandHandler {
                         Logger.getLogger(HexCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
-                hexadecimal.moveRight(Hexadecimal.NO_MODIFIER);
                 hexadecimal.revealCursor();
             }
         }
@@ -208,13 +188,11 @@ public class HexCommandHandler implements HexadecimalCommandHandler {
             long dataPosition = caret.getDataPosition();
             if (dataPosition > 0 && dataPosition <= hexadecimal.getData().getDataSize()) {
                 try {
-                    undoHandler.execute(new RemoveDataCommand(hexadecimal, dataPosition - 1, 1));
+                    undoHandler.execute(new RemoveDataCommand(hexadecimal, dataPosition - 1, false, 1));
                 } catch (Exception ex) {
                     Logger.getLogger(HexCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                caret.setLowerHalf(false);
-                hexadecimal.moveLeft(NO_MODIFIER);
-                caret.setLowerHalf(false);
+                caretMoved();
                 hexadecimal.revealCursor();
                 hexadecimal.repaint();
             }
@@ -238,13 +216,11 @@ public class HexCommandHandler implements HexadecimalCommandHandler {
             long dataPosition = caret.getDataPosition();
             if (dataPosition < hexadecimal.getData().getDataSize()) {
                 try {
-                    undoHandler.execute(new RemoveDataCommand(hexadecimal, dataPosition, 1));
+                    undoHandler.execute(new RemoveDataCommand(hexadecimal, dataPosition, false, 1));
                 } catch (Exception ex) {
                     Logger.getLogger(HexCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                if (caret.isLowerHalf()) {
-                    caret.setLowerHalf(false);
-                }
+                caretMoved();
                 hexadecimal.repaint();
             }
         }
@@ -343,8 +319,6 @@ public class HexCommandHandler implements HexadecimalCommandHandler {
                         Logger.getLogger(HexCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
                     }
 
-                    caret.setCaretPosition(caret.getDataPosition() + dataSize);
-                    caret.setLowerHalf(false);
                     hexadecimal.computeDimensions();
                     hexadecimal.updateScrollBars();
                 }
@@ -387,8 +361,6 @@ public class HexCommandHandler implements HexadecimalCommandHandler {
                         Logger.getLogger(HexCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
                     }
 
-                    caret.setCaretPosition(caret.getDataPosition() + dataSize);
-                    caret.setLowerHalf(false);
                     hexadecimal.computeDimensions();
                     hexadecimal.updateScrollBars();
                 }
@@ -401,25 +373,6 @@ public class HexCommandHandler implements HexadecimalCommandHandler {
     @Override
     public boolean canPaste() {
         return canPaste;
-    }
-
-    private byte processHalfByte(int value) {
-        CaretPosition caretPosition = hexadecimal.getCaretPosition();
-        long dataPosition = caretPosition.getDataPosition();
-        return processHalfByte(dataPosition, value, caretPosition.isLowerHalf());
-    }
-
-    private byte processHalfByte(long dataPosition, int value, boolean lowerHalf) {
-        HexadecimalData data = hexadecimal.getData();
-        byte byteValue = dataPosition >= hexadecimal.getData().getDataSize() ? 0 : data.getByte(dataPosition);
-
-        if (lowerHalf) {
-            byteValue = (byte) ((byteValue & 0xf0) | value);
-        } else {
-            byteValue = (byte) ((byteValue & 0xf) | (value << 4));
-        }
-
-        return byteValue;
     }
 
     public class BinaryDataClipboardData implements Transferable, ClipboardOwner {
@@ -468,7 +421,7 @@ public class HexCommandHandler implements HexadecimalCommandHandler {
             Hexadecimal.SelectionRange selection = hexadecimal.getSelection();
             position = selection.getFirst();
             size = selection.getLast() - position + 1;
-            removeCommand = new RemoveDataCommand(hexadecimal, position, size);
+            removeCommand = new RemoveDataCommand(hexadecimal, position, false, size);
         }
 
         @Override

@@ -23,13 +23,13 @@ import org.exbin.xbup.operation.OperationListener;
 /**
  * Abstract class for operation on hexadecimal document.
  *
- * @version 0.1.0 2016/05/04
+ * @version 0.1.0 2016/05/14
  * @author ExBin Project (http://exbin.org)
  */
 public abstract class OpHexCommand extends HexCommand {
 
     protected HexOperation operation;
-    private boolean operationPerformed = false;
+    protected boolean operationPerformed = false;
 
     public OpHexCommand(Hexadecimal hexadecimal) {
         super(hexadecimal);

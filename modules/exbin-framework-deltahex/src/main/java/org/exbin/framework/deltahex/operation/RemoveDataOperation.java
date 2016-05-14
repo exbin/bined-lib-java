@@ -28,17 +28,19 @@ import org.exbin.xbup.operation.Operation;
 /**
  * Operation for deleting child block.
  *
- * @version 0.1.0 2016/05/04
+ * @version 0.1.0 2016/05/14
  * @author ExBin Project (http://exbin.org)
  */
 public class RemoveDataOperation extends HexOperation {
 
     private long position;
+    private boolean lowerHalf;
     private long size;
 
-    public RemoveDataOperation(Hexadecimal hexadecimal, long position, long size) {
+    public RemoveDataOperation(Hexadecimal hexadecimal, long position, boolean lowerHalf, long size) {
         super(hexadecimal);
         this.position = position;
+        this.lowerHalf = lowerHalf;
         this.size = size;
     }
 
@@ -61,9 +63,10 @@ public class RemoveDataOperation extends HexOperation {
         Operation undoOperation = null;
         if (withUndo) {
             HexadecimalData undoData = hexadecimal.getData().copy(position, size);
-            undoOperation = new InsertDataOperation(hexadecimal, position, undoData);
+            undoOperation = new InsertDataOperation(hexadecimal, position, lowerHalf, undoData);
         }
         ((EditableHexadecimalData) hexadecimal.getData()).remove(position, size);
+        hexadecimal.getCaret().setCaretPosition(position, lowerHalf);
         return undoOperation;
     }
 

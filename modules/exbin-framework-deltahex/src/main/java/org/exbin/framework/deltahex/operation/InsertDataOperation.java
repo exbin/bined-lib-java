@@ -39,17 +39,19 @@ import org.exbin.xbup.parser_tree.XBTreeWriter;
 /**
  * Operation for inserting data.
  *
- * @version 0.1.0 2015/05/12
+ * @version 0.1.0 2015/05/14
  * @author ExBin Project (http://exbin.org)
  */
 public class InsertDataOperation extends HexOperation {
 
     private long position;
+    private boolean lowerHalf;
     private HexadecimalData data;
 
-    public InsertDataOperation(Hexadecimal hexadecimal, long position, HexadecimalData data) {
+    public InsertDataOperation(Hexadecimal hexadecimal, long position, boolean lowerHalf, HexadecimalData data) {
         super(hexadecimal);
         this.position = position;
+        this.lowerHalf = lowerHalf;
         this.data = data;
     }
 
@@ -72,11 +74,12 @@ public class InsertDataOperation extends HexOperation {
         Operation undoOperation = null;
         ((EditableHexadecimalData) hexadecimal.getData()).insert(position, data);
         if (withUndo) {
-            undoOperation = new RemoveDataOperation(hexadecimal, position, data.getDataSize());
+            undoOperation = new RemoveDataOperation(hexadecimal, position, lowerHalf, data.getDataSize());
         }
+        hexadecimal.getCaret().setCaretPosition(position + data.getDataSize(), lowerHalf);
         return undoOperation;
     }
-    
+
     public void appendData(HexadecimalData appendData) {
         ((EditableHexadecimalData) data).insert(data.getDataSize(), appendData);
     }

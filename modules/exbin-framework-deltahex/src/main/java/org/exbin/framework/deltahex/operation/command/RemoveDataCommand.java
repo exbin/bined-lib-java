@@ -23,14 +23,14 @@ import org.exbin.framework.deltahex.operation.RemoveDataOperation;
 /**
  * Command for deleting data.
  *
- * @version 0.1.0 2016/05/03
+ * @version 0.1.0 2016/05/14
  * @author ExBin Project (http://exbin.org)
  */
 public class RemoveDataCommand extends OpHexCommand {
 
-    public RemoveDataCommand(Hexadecimal hexadecimal, long position, long size) {
+    public RemoveDataCommand(Hexadecimal hexadecimal, long position, boolean lowerHalf, long size) {
         super(hexadecimal);
-        super.setOperation(new RemoveDataOperation(hexadecimal, position, size));
+        super.setOperation(new RemoveDataOperation(hexadecimal, position, lowerHalf, size));
     }
 
     @Override

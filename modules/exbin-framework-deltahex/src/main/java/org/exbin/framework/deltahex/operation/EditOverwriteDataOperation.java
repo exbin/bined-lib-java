@@ -15,36 +15,34 @@
  */
 package org.exbin.framework.deltahex.operation;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.exbin.deltahex.EditableHexadecimalData;
-import org.exbin.deltahex.HexadecimalData;
 import org.exbin.deltahex.component.Hexadecimal;
 import org.exbin.framework.deltahex.XBHexadecimalData;
 import org.exbin.xbup.operation.Operation;
 
 /**
- * Operation for editing data unsing insert mode.
+ * Operation for editing data using overwrite mode.
  *
  * @version 0.1.0 2015/05/14
  * @author ExBin Project (http://exbin.org)
  */
-public class EditInsertDataOperation extends EditHexDataOperation {
+public class EditOverwriteDataOperation extends EditHexDataOperation {
 
     private final long startPosition;
     private final boolean startLowerHalf;
-    private boolean trailing = false;
+    private long length = 0;
+    private final XBHexadecimalData undoData = new XBHexadecimalData();
 
-    private long length;
     private boolean lowerHalf = false;
 
-    public EditInsertDataOperation(Hexadecimal hexadecimal, long startPosition, boolean startLowerHalf) {
+    public EditOverwriteDataOperation(Hexadecimal hexadecimal, long startPosition, boolean startLowerHalf) {
         super(hexadecimal);
         this.startPosition = startPosition;
         this.startLowerHalf = startLowerHalf;
         this.lowerHalf = startLowerHalf;
-        if (lowerHalf) {
-            length = 1;
+        if (startLowerHalf && hexadecimal.getData().getDataSize() > startPosition) {
+            undoData.insert(0, new byte[]{hexadecimal.getData().getByte(startPosition)});
+            length++;
         }
     }
 
@@ -73,19 +71,22 @@ public class EditInsertDataOperation extends EditHexDataOperation {
         long editedDataPosition = startPosition + length;
 
         if (lowerHalf) {
-            byte lowerPart = (byte) (data.getByte(editedDataPosition - 1) & 0xf);
-            if (lowerPart > 0) {
-                data.insert(editedDataPosition, 1);
-                data.setByte(editedDataPosition, lowerPart);
-                trailing = true;
+            byte dataValue = 0;
+            if (editedDataPosition <= data.getDataSize()) {
+                dataValue = data.getByte(editedDataPosition - 1);
             }
 
-            byte byteValue = (byte) (data.getByte(editedDataPosition - 1) & 0xf0);
-            data.setByte(editedDataPosition - 1, (byte) (byteValue | value));
+            data.setByte(editedDataPosition - 1, (byte) ((dataValue & 0xf0) | value));
         } else {
-            byte byteValue = (byte) (value << 4);
-            data.insert(editedDataPosition, 1);
-            data.setByte(editedDataPosition, byteValue);
+            byte dataValue = 0;
+            if (editedDataPosition < data.getDataSize()) {
+                dataValue = data.getByte(editedDataPosition);
+                undoData.insert(undoData.getDataSize(), new byte[]{dataValue});
+            } else {
+                data.insert(editedDataPosition, 1);
+            }
+
+            data.setByte(editedDataPosition, (byte) ((dataValue & 0xf) | (value << 4)));
             length++;
         }
         lowerHalf = !lowerHalf;
@@ -93,20 +94,16 @@ public class EditInsertDataOperation extends EditHexDataOperation {
 
     @Override
     public HexOperation[] generateUndo() {
-        List<String> testList = new ArrayList<String>();
-        testList.add("");
-        ((List) testList).add(new Long(1));
-
-        if (trailing) {
-            XBHexadecimalData undoData = new XBHexadecimalData();
-            HexadecimalData data = hexadecimal.getData();
-            byte value = (byte) ((data.getByte(startPosition) & 0xf0) | (data.getByte(startPosition + length) & 0xf));
-            undoData.insert(0, new byte[]{value});
-            ModifyDataOperation modifyDataOperation = new ModifyDataOperation(hexadecimal, startPosition, undoData);
-            return new HexOperation[]{modifyDataOperation, new RemoveDataOperation(hexadecimal, startPosition, startLowerHalf, length)};
+        ModifyDataOperation modifyOperation = null;
+        if (!undoData.isEmpty()) {
+            modifyOperation = new ModifyDataOperation(hexadecimal, startPosition, undoData);
         }
+        RemoveDataOperation removeOperation = new RemoveDataOperation(hexadecimal, startPosition + undoData.getDataSize(), startLowerHalf, length - undoData.getDataSize());
 
-        return new HexOperation[]{new RemoveDataOperation(hexadecimal, startPosition, startLowerHalf, length)};
+        if (modifyOperation != null) {
+            return new HexOperation[]{modifyOperation, removeOperation};
+        }
+        return new HexOperation[]{removeOperation};
     }
 
     public long getStartPosition() {
