@@ -97,12 +97,9 @@ public class HexCommandHandler implements HexadecimalCommandHandler {
         if (hexadecimal.getActiveSection() == HexadecimalCaret.Section.HEXADECIMAL) {
             if ((keyValue >= '0' && keyValue <= '9')
                     || (keyValue >= 'a' && keyValue <= 'f') || (keyValue >= 'A' && keyValue <= 'F')) {
+                DeleteSelectionCommand deleteCommand = null;
                 if (hexadecimal.hasSelection()) {
-                    try {
-                        undoHandler.execute(new DeleteSelectionCommand(hexadecimal));
-                    } catch (Exception ex) {
-                        Logger.getLogger(HexCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+                    deleteCommand = new DeleteSelectionCommand(hexadecimal);
                 }
 
                 int value;
@@ -119,14 +116,36 @@ public class HexCommandHandler implements HexadecimalCommandHandler {
                 if (hexadecimal.getEditationMode() == Hexadecimal.EditationMode.OVERWRITE) {
                     if (editCommand == null || editCommand.getCommandType() != EditHexDataCommand.EditHexCommandType.OVERWRITE) {
                         editCommand = new EditHexDataCommand(hexadecimal, EditHexDataCommand.EditHexCommandType.OVERWRITE, dataPosition, hexadecimal.isLowerHalf());
-                        undoHandler.addCommand(editCommand);
+                        if (deleteCommand != null) {
+                            HexCompoundCommand compoundCommand = new HexCompoundCommand(hexadecimal);
+                            compoundCommand.appendCommand(deleteCommand);
+                            try {
+                                undoHandler.execute(compoundCommand);
+                            } catch (Exception ex) {
+                                Logger.getLogger(HexCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                            compoundCommand.appendCommand(editCommand);
+                        } else {
+                            undoHandler.addCommand(editCommand);
+                        }
                     }
 
                     editCommand.appendEdit((byte) value);
                 } else {
                     if (editCommand == null || editCommand.getCommandType() != EditHexDataCommand.EditHexCommandType.INSERT) {
                         editCommand = new EditHexDataCommand(hexadecimal, EditHexDataCommand.EditHexCommandType.INSERT, dataPosition, hexadecimal.isLowerHalf());
-                        undoHandler.addCommand(editCommand);
+                        if (deleteCommand != null) {
+                            HexCompoundCommand compoundCommand = new HexCompoundCommand(hexadecimal);
+                            compoundCommand.appendCommand(deleteCommand);
+                            try {
+                                undoHandler.execute(compoundCommand);
+                            } catch (Exception ex) {
+                                Logger.getLogger(HexCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                            compoundCommand.appendCommand(editCommand);
+                        } else {
+                            undoHandler.addCommand(editCommand);
+                        }
                     }
 
                     editCommand.appendEdit((byte) value);
