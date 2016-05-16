@@ -26,7 +26,7 @@ import org.exbin.xbup.operation.Operation;
  * @version 0.1.0 2015/05/14
  * @author ExBin Project (http://exbin.org)
  */
-public class EditOverwriteDataOperation extends EditHexDataOperation {
+public class OverwriteHexEditDataOperation extends HexEditDataOperation {
 
     private final long startPosition;
     private final boolean startLowerHalf;
@@ -35,7 +35,7 @@ public class EditOverwriteDataOperation extends EditHexDataOperation {
 
     private boolean lowerHalf = false;
 
-    public EditOverwriteDataOperation(Hexadecimal hexadecimal, long startPosition, boolean startLowerHalf) {
+    public OverwriteHexEditDataOperation(Hexadecimal hexadecimal, long startPosition, boolean startLowerHalf) {
         super(hexadecimal);
         this.startPosition = startPosition;
         this.startLowerHalf = startLowerHalf;

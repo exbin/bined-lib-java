@@ -18,9 +18,9 @@ package org.exbin.framework.deltahex.operation.command;
 
 import org.exbin.deltahex.component.Hexadecimal;
 import org.exbin.framework.deltahex.command.command.HexCommandType;
-import org.exbin.framework.deltahex.operation.EditHexDataOperation;
-import org.exbin.framework.deltahex.operation.EditInsertDataOperation;
-import org.exbin.framework.deltahex.operation.EditOverwriteDataOperation;
+import org.exbin.framework.deltahex.operation.HexEditDataOperation;
+import org.exbin.framework.deltahex.operation.InsertHexEditDataOperation;
+import org.exbin.framework.deltahex.operation.OverwriteHexEditDataOperation;
 import org.exbin.framework.deltahex.operation.HexOperation;
 import org.exbin.xbup.operation.OperationEvent;
 import org.exbin.xbup.operation.OperationListener;
@@ -43,15 +43,15 @@ public class EditCharDataCommand extends HexCommand {
         HexOperation operation;
         switch (commandType) {
             case INSERT: {
-                operation = new EditInsertDataOperation(hexadecimal, position, positionLowerHalf);
+                operation = new InsertHexEditDataOperation(hexadecimal, position, positionLowerHalf);
                 break;
             }
             case OVERWRITE: {
-                operation = new EditOverwriteDataOperation(hexadecimal, position, positionLowerHalf);
+                operation = new OverwriteHexEditDataOperation(hexadecimal, position, positionLowerHalf);
                 break;
             }
             case DELETE: {
-                operation = new EditInsertDataOperation(hexadecimal, position, positionLowerHalf);
+                operation = new InsertHexEditDataOperation(hexadecimal, position, positionLowerHalf);
                 break;
             }
             default: {
@@ -64,9 +64,9 @@ public class EditCharDataCommand extends HexCommand {
 
     @Override
     public void undo() throws Exception {
-        if (operations.length == 1 && operations[0] instanceof EditHexDataOperation) {
+        if (operations.length == 1 && operations[0] instanceof HexEditDataOperation) {
             HexOperation operation = operations[0];
-            operations = ((EditHexDataOperation) operation).generateUndo();
+            operations = ((HexEditDataOperation) operation).generateUndo();
         }
 
         if (operationPerformed) {
@@ -111,8 +111,8 @@ public class EditCharDataCommand extends HexCommand {
     }
 
     public void appendEdit(byte value) {
-        if (operations.length == 1 && operations[0] instanceof EditHexDataOperation) {
-            ((EditHexDataOperation) operations[0]).appendEdit(value);
+        if (operations.length == 1 && operations[0] instanceof HexEditDataOperation) {
+            ((HexEditDataOperation) operations[0]).appendEdit(value);
         } else {
             throw new IllegalStateException("Cannot append edit on reverted command");
         }

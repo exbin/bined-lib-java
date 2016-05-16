@@ -24,9 +24,9 @@ import org.exbin.xbup.operation.CompoundCommand;
  * @version 0.1.0 2015/05/14
  * @author ExBin Project (http://exbin.org)
  */
-public abstract class EditHexDataOperation extends HexOperation {
+public abstract class HexEditDataOperation extends HexOperation {
 
-    public EditHexDataOperation(Hexadecimal hexadecimal) {
+    public HexEditDataOperation(Hexadecimal hexadecimal) {
         super(hexadecimal);
     }
 

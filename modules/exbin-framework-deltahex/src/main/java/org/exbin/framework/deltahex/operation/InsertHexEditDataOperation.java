@@ -15,8 +15,6 @@
  */
 package org.exbin.framework.deltahex.operation;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.exbin.deltahex.EditableHexadecimalData;
 import org.exbin.deltahex.HexadecimalData;
 import org.exbin.deltahex.component.Hexadecimal;
@@ -29,7 +27,7 @@ import org.exbin.xbup.operation.Operation;
  * @version 0.1.0 2015/05/14
  * @author ExBin Project (http://exbin.org)
  */
-public class EditInsertDataOperation extends EditHexDataOperation {
+public class InsertHexEditDataOperation extends HexEditDataOperation {
 
     private final long startPosition;
     private final boolean startLowerHalf;
@@ -38,7 +36,7 @@ public class EditInsertDataOperation extends EditHexDataOperation {
     private long length;
     private boolean lowerHalf = false;
 
-    public EditInsertDataOperation(Hexadecimal hexadecimal, long startPosition, boolean startLowerHalf) {
+    public InsertHexEditDataOperation(Hexadecimal hexadecimal, long startPosition, boolean startLowerHalf) {
         super(hexadecimal);
         this.startPosition = startPosition;
         this.startLowerHalf = startLowerHalf;
@@ -93,10 +91,6 @@ public class EditInsertDataOperation extends EditHexDataOperation {
 
     @Override
     public HexOperation[] generateUndo() {
-        List<String> testList = new ArrayList<String>();
-        testList.add("");
-        ((List) testList).add(new Long(1));
-
         if (trailing) {
             XBHexadecimalData undoData = new XBHexadecimalData();
             HexadecimalData data = hexadecimal.getData();
