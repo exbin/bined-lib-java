@@ -22,6 +22,8 @@ distributions {
             include 'LICENSE-2.0.txt'
             from 'src/dist'
             include 'readme.txt'
+            include 'deltahex-example.sh'
+            include 'deltahex-example.bat'
 
             project(':modules').subprojects.each { p ->
                 p.plugins.withType(JavaPlugin) {
@@ -32,6 +34,16 @@ distributions {
                         include '*'
                         from p.javadocJar
                         include '*'
+                    }
+                }
+            }
+
+            project(':tools').subprojects.each { p ->
+                p.plugins.withType(JavaPlugin) {
+                    into('') {
+                        from p.jar
+                        include '*'
+                        rename { filename -> p.name + ".jar" }
                     }
                 }
             }
