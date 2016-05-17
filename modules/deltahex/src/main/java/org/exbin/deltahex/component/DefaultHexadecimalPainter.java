@@ -214,11 +214,11 @@ public class DefaultHexadecimalPainter implements HexadecimalPainter {
             switch (hexadecimal.getActiveSection()) {
                 case HEXADECIMAL: {
                     hexadecimalColor = hexadecimal.getSelectionBackgroundColor();
-                    previewColor = hexadecimal.getDualSelectionBackgroundColor();
+                    previewColor = hexadecimal.getMirrorSelectionBackgroundColor();
                     break;
                 }
                 case PREVIEW: {
-                    hexadecimalColor = hexadecimal.getDualSelectionBackgroundColor();
+                    hexadecimalColor = hexadecimal.getMirrorSelectionBackgroundColor();
                     previewColor = hexadecimal.getSelectionBackgroundColor();
                     break;
                 }

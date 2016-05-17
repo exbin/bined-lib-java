@@ -18,40 +18,40 @@ package org.exbin.framework.deltahex.operation.command;
 
 import org.exbin.deltahex.component.Hexadecimal;
 import org.exbin.framework.deltahex.command.command.HexCommandType;
-import org.exbin.framework.deltahex.operation.HexEditDataOperation;
-import org.exbin.framework.deltahex.operation.InsertHexEditDataOperation;
-import org.exbin.framework.deltahex.operation.OverwriteHexEditDataOperation;
+import org.exbin.framework.deltahex.operation.CharEditDataOperation;
 import org.exbin.framework.deltahex.operation.HexOperation;
+import org.exbin.framework.deltahex.operation.InsertCharEditDataOperation;
+import org.exbin.framework.deltahex.operation.OverwriteCharEditDataOperation;
 import org.exbin.xbup.operation.OperationEvent;
 import org.exbin.xbup.operation.OperationListener;
 
 /**
  * Command for editing data in text mode.
  *
- * @version 0.1.0 2016/05/14
+ * @version 0.1.0 2016/05/17
  * @author ExBin Project (http://exbin.org)
  */
-public class EditCharDataCommand extends HexCommand {
+public class EditCharDataCommand extends EditDataCommand {
 
-    private final EditHexCommandType commandType;
+    private final EditCommandType commandType;
     protected boolean operationPerformed = false;
     private HexOperation[] operations = null;
 
-    public EditCharDataCommand(Hexadecimal hexadecimal, EditHexCommandType commandType, long position, boolean positionLowerHalf) {
+    public EditCharDataCommand(Hexadecimal hexadecimal, EditCommandType commandType, long position) {
         super(hexadecimal);
         this.commandType = commandType;
         HexOperation operation;
         switch (commandType) {
             case INSERT: {
-                operation = new InsertHexEditDataOperation(hexadecimal, position, positionLowerHalf);
+                operation = new InsertCharEditDataOperation(hexadecimal, position);
                 break;
             }
             case OVERWRITE: {
-                operation = new OverwriteHexEditDataOperation(hexadecimal, position, positionLowerHalf);
+                operation = new OverwriteCharEditDataOperation(hexadecimal, position);
                 break;
             }
             case DELETE: {
-                operation = new InsertHexEditDataOperation(hexadecimal, position, positionLowerHalf);
+                operation = new InsertCharEditDataOperation(hexadecimal, position);
                 break;
             }
             default: {
@@ -64,9 +64,9 @@ public class EditCharDataCommand extends HexCommand {
 
     @Override
     public void undo() throws Exception {
-        if (operations.length == 1 && operations[0] instanceof HexEditDataOperation) {
+        if (operations.length == 1 && operations[0] instanceof CharEditDataOperation) {
             HexOperation operation = operations[0];
-            operations = ((HexEditDataOperation) operation).generateUndo();
+            operations = ((CharEditDataOperation) operation).generateUndo();
         }
 
         if (operationPerformed) {
@@ -110,19 +110,21 @@ public class EditCharDataCommand extends HexCommand {
         return true;
     }
 
-    public void appendEdit(byte value) {
-        if (operations.length == 1 && operations[0] instanceof HexEditDataOperation) {
-            ((HexEditDataOperation) operations[0]).appendEdit(value);
+    public void appendEdit(char value) {
+        if (operations.length == 1 && operations[0] instanceof CharEditDataOperation) {
+            ((CharEditDataOperation) operations[0]).appendEdit(value);
         } else {
             throw new IllegalStateException("Cannot append edit on reverted command");
         }
     }
 
-    public EditHexCommandType getCommandType() {
+    @Override
+    public EditCommandType getCommandType() {
         return commandType;
     }
 
-    public enum EditHexCommandType {
-        INSERT, OVERWRITE, DELETE
+    @Override
+    public boolean wasReverted() {
+        return !(operations.length == 1 && operations[0] instanceof CharEditDataOperation);
     }
 }

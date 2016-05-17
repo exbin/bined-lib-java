@@ -39,6 +39,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JComponent;
@@ -51,7 +53,7 @@ import org.exbin.deltahex.component.HexadecimalCaret.Section;
 /**
  * Hex editor component.
  *
- * @version 0.1.0 2016/05/09
+ * @version 0.1.0 2016/05/17
  * @author ExBin Project (http://exbin.org)
  */
 public class Hexadecimal extends JComponent {
@@ -62,16 +64,17 @@ public class Hexadecimal extends JComponent {
     public static final int DECORATION_HEX_PREVIEW_LINE = 2;
     public static final int DECORATION_BOX = 4;
     public static final int DECORATION_DEFAULT = DECORATION_HEX_PREVIEW_LINE | DECORATION_LINENUM_HEX_LINE;
+    public static final int MOUSE_SCROLL_LINES = 3;
 
     private final int metaMask = java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
-    private static final int MOUSE_SCROLL_LINES = 3;
 
     private HexadecimalData data;
+    private Charset charset = Charset.defaultCharset();
 
+    private HexadecimalPainter painter;
+    private HexadecimalCommandHandler commandHandler;
     private HexadecimalCaret caret;
     private SelectionRange selection;
-    private final List<SelectionChangedListener> selectionChangedListeners = new ArrayList<>();
-    private final List<CaretMovedListener> caretMovedListeners = new ArrayList<>();
 
     private ViewMode viewMode = ViewMode.DUAL;
     private BackgroundMode backgroundMode = BackgroundMode.STRIPPED;
@@ -80,6 +83,7 @@ public class Hexadecimal extends JComponent {
     private CharRenderingMode charRenderingMode = CharRenderingMode.AUTO;
     private CharAntialiasingMode charAntialiasingMode = CharAntialiasingMode.AUTO;
     private int lineLength = 16;
+    private int subFontSpace = 3;
     private boolean showHeader = true;
     private boolean showLineNumbers = true;
     private boolean mouseDown;
@@ -95,19 +99,16 @@ public class Hexadecimal extends JComponent {
     private JScrollBar verticalScrollBar;
     private ScrollPosition scrollPosition = new ScrollPosition();
 
-    private HexadecimalPainter painter;
-    private HexadecimalCommandHandler commandHandler;
-
     private Color oddForegroundColor;
     private Color oddBackgroundColor;
     private Color selectionColor;
     private Color selectionBackgroundColor;
-    /**
-     * Selection background color for selection in currently not active section.
-     */
-    private Color dualSelectionBackgroundColor;
+    private Color mirrorSelectionColor;
+    private Color mirrorSelectionBackgroundColor;
     private Color cursorColor;
-    private int subFontSpace = 3;
+
+    private final List<SelectionChangedListener> selectionChangedListeners = new ArrayList<>();
+    private final List<CaretMovedListener> caretMovedListeners = new ArrayList<>();
 
     private final DimensionsCache dimensionsCache = new DimensionsCache();
 
@@ -122,7 +123,8 @@ public class Hexadecimal extends JComponent {
         oddBackgroundColor = new Color(240, 240, 240);
         selectionColor = UIManager.getColor("TextArea.selectionForeground");
         selectionBackgroundColor = UIManager.getColor("TextArea.selectionBackground");
-        dualSelectionBackgroundColor = Color.LIGHT_GRAY;
+        mirrorSelectionColor = UIManager.getColor("TextArea.selectionForeground");
+        mirrorSelectionBackgroundColor = Color.LIGHT_GRAY;
         cursorColor = UIManager.getColor("TextArea.caretForeground");
 
         init();
@@ -151,45 +153,88 @@ public class Hexadecimal extends JComponent {
         addKeyListener(new HexKeyListener());
     }
 
-    public void moveRight(int modifiers) {
-        CaretPosition caretPosition = caret.getCaretPosition();
-        if (caretPosition.getDataPosition() < data.getDataSize()) {
-            if (caret.getSection() == Section.HEXADECIMAL) {
-                boolean lowerHalf = caret.isLowerHalf();
-                if (caretPosition.getDataPosition() < data.getDataSize()) {
-                    if (!lowerHalf) {
-                        caret.setLowerHalf(true);
-                        updateSelection(modifiers, caretPosition);
-                    } else {
-                        caret.setCaretPosition(caretPosition.getDataPosition() + 1, false);
-                        updateSelection(modifiers, caretPosition);
-                    }
-                    notifyCaretMoved();
-                }
-            } else {
-                caret.setCaretPosition(caretPosition.getDataPosition() + 1);
-                updateSelection(modifiers, caretPosition);
-                notifyCaretMoved();
-            }
+    @Override
+    public void paintComponent(Graphics g) {
+        Rectangle clipBounds = g.getClipBounds();
+        if (charAntialiasingMode != CharAntialiasingMode.OFF && g instanceof Graphics2D) {
+            Object antialiasingHint = getAntialiasingHint((Graphics2D) g);
+            ((Graphics2D) g).setRenderingHint(
+                    RenderingHints.KEY_TEXT_ANTIALIASING,
+                    antialiasingHint);
         }
+
+        g.setFont(getFont());
+
+        if (dimensionsCache.fontMetrics == null) {
+            computeFontMetrics();
+        }
+
+        painter.paintOverall(g);
+        Rectangle rect = dimensionsCache.hexadecimalRectangle;
+        if (showHeader) {
+            g.setClip(rect.x, 0, rect.width, rect.y);
+            painter.paintHeader(g);
+        }
+
+        g.setClip(0, rect.y, rect.x + rect.width, rect.height);
+        painter.paintBackground(g);
+        if (showLineNumbers) {
+            painter.paintLineNumbers(g);
+            g.setClip(rect.x, rect.y, rect.width, rect.height);
+        }
+
+        painter.paintHexadecimal(g);
+
+        caret.paint(g);
+        g.setClip(clipBounds);
     }
 
-    public void moveLeft(int modifiers) {
-        CaretPosition caretPosition = caret.getCaretPosition();
-        if (caret.getSection() == Section.HEXADECIMAL) {
-            boolean lowerHalf = caret.isLowerHalf();
-            if (lowerHalf) {
-                caret.setLowerHalf(false);
-                updateSelection(modifiers, caretPosition);
-            } else if (caretPosition.getDataPosition() > 0) {
-                caret.setCaretPosition(caretPosition.getDataPosition() - 1, true);
-                updateSelection(modifiers, caretPosition);
+    private Object getAntialiasingHint(Graphics2D g) {
+        Object antialiasingHint;
+        switch (charAntialiasingMode) {
+            case AUTO: {
+                // TODO detect if display is LCD?
+                if (g.getDeviceConfiguration().getDevice().getType() == GraphicsDevice.TYPE_RASTER_SCREEN) {
+                    antialiasingHint = RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB;
+                } else {
+                    antialiasingHint = RenderingHints.VALUE_TEXT_ANTIALIAS_GASP;
+                }
+                break;
             }
-        } else if (caretPosition.getDataPosition() > 0) {
-            caret.setCaretPosition(caretPosition.getDataPosition() - 1);
-            updateSelection(modifiers, caretPosition);
+            case BASIC: {
+                antialiasingHint = RenderingHints.VALUE_TEXT_ANTIALIAS_ON;
+                break;
+            }
+            case GASP: {
+                antialiasingHint = RenderingHints.VALUE_TEXT_ANTIALIAS_GASP;
+                break;
+            }
+            case DEFAULT: {
+                antialiasingHint = RenderingHints.VALUE_TEXT_ANTIALIAS_DEFAULT;
+                break;
+            }
+            case LCD_HRGB: {
+                antialiasingHint = RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB;
+                break;
+            }
+            case LCD_HBGR: {
+                antialiasingHint = RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HBGR;
+                break;
+            }
+            case LCD_VRGB: {
+                antialiasingHint = RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_VRGB;
+                break;
+            }
+            case LCD_VBGR: {
+                antialiasingHint = RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_VBGR;
+                break;
+            }
+            default: {
+                throw new IllegalStateException("Unexpected antialiasing type " + charAntialiasingMode.name());
+            }
         }
-        notifyCaretMoved();
+
+        return antialiasingHint;
     }
 
     public HexadecimalCaret getCaret() {
@@ -249,94 +294,18 @@ public class Hexadecimal extends JComponent {
         updateSelection(modifiers, caretPosition);
     }
 
+    private void notifyCaretMoved() {
+        for (CaretMovedListener caretMovedListener : caretMovedListeners) {
+            caretMovedListener.caretMoved(caret.getCaretPosition(), caret.getSection());
+        }
+    }
+
     public Point getScrollPoint() {
         return new Point((int) scrollPosition.scrollBytePosition * dimensionsCache.charWidth + scrollPosition.scrollByteOffset, (int) scrollPosition.scrollLinePosition * dimensionsCache.lineHeight + scrollPosition.scrollLineOffset);
     }
 
     public ScrollPosition getScrollPosition() {
         return scrollPosition;
-    }
-
-    @Override
-    public void paintComponent(Graphics g) {
-        Rectangle clipBounds = g.getClipBounds();
-//        super.paintComponent(g);
-//        horizontalScrollBar.paint(g);
-//        verticalScrollBar.repaint();
-
-        if (charAntialiasingMode != CharAntialiasingMode.OFF && g instanceof Graphics2D) {
-            Object antialiasingHint;
-            switch (charAntialiasingMode) {
-                case AUTO: {
-                    // TODO detect if display is LCD?
-                    if (((Graphics2D) g).getDeviceConfiguration().getDevice().getType() == GraphicsDevice.TYPE_RASTER_SCREEN) {
-                        antialiasingHint = RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB;
-                    } else {
-                        antialiasingHint = RenderingHints.VALUE_TEXT_ANTIALIAS_GASP;
-                    }
-                    break;
-                }
-                case BASIC: {
-                    antialiasingHint = RenderingHints.VALUE_TEXT_ANTIALIAS_ON;
-                    break;
-                }
-                case GASP: {
-                    antialiasingHint = RenderingHints.VALUE_TEXT_ANTIALIAS_GASP;
-                    break;
-                }
-                case DEFAULT: {
-                    antialiasingHint = RenderingHints.VALUE_TEXT_ANTIALIAS_DEFAULT;
-                    break;
-                }
-                case LCD_HRGB: {
-                    antialiasingHint = RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB;
-                    break;
-                }
-                case LCD_HBGR: {
-                    antialiasingHint = RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HBGR;
-                    break;
-                }
-                case LCD_VRGB: {
-                    antialiasingHint = RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_VRGB;
-                    break;
-                }
-                case LCD_VBGR: {
-                    antialiasingHint = RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_VBGR;
-                    break;
-                }
-                default: {
-                    throw new IllegalStateException("Unexpected antialiasing type " + charAntialiasingMode.name());
-                }
-            }
-            ((Graphics2D) g).setRenderingHint(
-                    RenderingHints.KEY_TEXT_ANTIALIASING,
-                    antialiasingHint);
-        }
-
-        g.setFont(getFont());
-
-        if (dimensionsCache.fontMetrics == null) {
-            computeFontMetrics();
-        }
-
-        painter.paintOverall(g);
-        Rectangle rect = dimensionsCache.hexadecimalRectangle;
-        if (showHeader) {
-            g.setClip(rect.x, 0, rect.width, rect.y);
-            painter.paintHeader(g);
-        }
-
-        g.setClip(0, rect.y, rect.x + rect.width, rect.height);
-        painter.paintBackground(g);
-        if (showLineNumbers) {
-            painter.paintLineNumbers(g);
-            g.setClip(rect.x, rect.y, rect.width, rect.height);
-        }
-
-        painter.paintHexadecimal(g);
-
-        caret.paint(g);
-        g.setClip(clipBounds);
     }
 
     public void revealCursor() {
@@ -430,6 +399,47 @@ public class Hexadecimal extends JComponent {
         repaint();
     }
 
+    public void moveRight(int modifiers) {
+        CaretPosition caretPosition = caret.getCaretPosition();
+        if (caretPosition.getDataPosition() < data.getDataSize()) {
+            if (caret.getSection() == Section.HEXADECIMAL) {
+                boolean lowerHalf = caret.isLowerHalf();
+                if (caretPosition.getDataPosition() < data.getDataSize()) {
+                    if (!lowerHalf) {
+                        caret.setLowerHalf(true);
+                        updateSelection(modifiers, caretPosition);
+                    } else {
+                        caret.setCaretPosition(caretPosition.getDataPosition() + 1, false);
+                        updateSelection(modifiers, caretPosition);
+                    }
+                    notifyCaretMoved();
+                }
+            } else {
+                caret.setCaretPosition(caretPosition.getDataPosition() + 1);
+                updateSelection(modifiers, caretPosition);
+                notifyCaretMoved();
+            }
+        }
+    }
+
+    public void moveLeft(int modifiers) {
+        CaretPosition caretPosition = caret.getCaretPosition();
+        if (caret.getSection() == Section.HEXADECIMAL) {
+            boolean lowerHalf = caret.isLowerHalf();
+            if (lowerHalf) {
+                caret.setLowerHalf(false);
+                updateSelection(modifiers, caretPosition);
+            } else if (caretPosition.getDataPosition() > 0) {
+                caret.setCaretPosition(caretPosition.getDataPosition() - 1, true);
+                updateSelection(modifiers, caretPosition);
+            }
+        } else if (caretPosition.getDataPosition() > 0) {
+            caret.setCaretPosition(caretPosition.getDataPosition() - 1);
+            updateSelection(modifiers, caretPosition);
+        }
+        notifyCaretMoved();
+    }
+
     public SelectionRange getSelection() {
         return selection;
     }
@@ -470,12 +480,6 @@ public class Hexadecimal extends JComponent {
 
     public void removeSelectionChangedListener(SelectionChangedListener selectionChangedListener) {
         selectionChangedListeners.remove(selectionChangedListener);
-    }
-
-    private void notifyCaretMoved() {
-        for (CaretMovedListener caretMovedListener : caretMovedListeners) {
-            caretMovedListener.caretMoved(caret.getCaretPosition(), caret.getSection());
-        }
     }
 
     public void addCaretMovedListener(CaretMovedListener caretMovedListener) {
@@ -524,6 +528,24 @@ public class Hexadecimal extends JComponent {
         this.data = data;
         computeDimensions();
         repaint();
+    }
+
+    public Charset getCharset() {
+        return charset;
+    }
+
+    public void setCharset(Charset charset) {
+        this.charset = charset;
+        repaint();
+    }
+
+    public boolean isValidChar(char value) {
+        return charset.canEncode();
+    }
+
+    public byte[] charToBytes(char value) {
+        ByteBuffer buffer = charset.encode(Character.toString(value));
+        return buffer.array();
     }
 
     @Override
@@ -766,12 +788,20 @@ public class Hexadecimal extends JComponent {
         this.selectionBackgroundColor = selectionBackgroundColor;
     }
 
-    public Color getDualSelectionBackgroundColor() {
-        return dualSelectionBackgroundColor;
+    public Color getMirrorSelectionColor() {
+        return mirrorSelectionColor;
     }
 
-    public void setDualSelectionBackgroundColor(Color dualSelectionBackgroundColor) {
-        this.dualSelectionBackgroundColor = dualSelectionBackgroundColor;
+    public void setMirrorSelectionColor(Color mirrorSelectionColor) {
+        this.mirrorSelectionColor = mirrorSelectionColor;
+    }
+
+    public Color getMirrorSelectionBackgroundColor() {
+        return mirrorSelectionBackgroundColor;
+    }
+
+    public void setMirrorSelectionBackgroundColor(Color mirrorSelectionBackgroundColor) {
+        this.mirrorSelectionBackgroundColor = mirrorSelectionBackgroundColor;
     }
 
     public Color getCursorColor() {
@@ -1440,7 +1470,9 @@ public class Hexadecimal extends JComponent {
                             break;
                         }
                     }
-                    commandHandler.keyPressed(e.getKeyChar());
+                    if (e.getKeyChar() != 0xffff) {
+                        commandHandler.keyPressed(e.getKeyChar());
+                    }
                 }
             }
         }

@@ -15,7 +15,9 @@
  */
 package org.exbin.framework.deltahex.operation;
 
+import java.util.Arrays;
 import org.exbin.deltahex.EditableHexadecimalData;
+import org.exbin.deltahex.HexadecimalData;
 import org.exbin.deltahex.component.Hexadecimal;
 import org.exbin.framework.deltahex.XBHexadecimalData;
 import org.exbin.xbup.operation.Operation;
@@ -61,16 +63,33 @@ public class OverwriteCharEditDataOperation extends CharEditDataOperation {
         EditableHexadecimalData data = (EditableHexadecimalData) hexadecimal.getData();
         long editedDataPosition = startPosition + length;
 
-        byte dataValue;
+        byte[] bytes = hexadecimal.charToBytes(value);
         if (editedDataPosition < data.getDataSize()) {
-            dataValue = data.getByte(editedDataPosition);
-            undoData.insert(undoData.getDataSize(), new byte[]{dataValue});
-        } else {
-            data.insert(editedDataPosition, 1);
+            long overwritten = data.getDataSize() - editedDataPosition;
+            if (overwritten > bytes.length) {
+                overwritten = bytes.length;
+            }
+            HexadecimalData overwrittenData = data.copy(editedDataPosition, overwritten);
+            undoData.insert(undoData.getDataSize(), overwrittenData);
+            for (int i = 0; i < overwritten; i++) {
+                data.setByte(editedDataPosition + i, bytes[i]);
+            }
+        }
+        if (editedDataPosition + bytes.length > data.getDataSize()) {
+            if (editedDataPosition == data.getDataSize()) {
+                data.insert(editedDataPosition, bytes);
+            } else {
+                int inserted = (int) (editedDataPosition + bytes.length - data.getDataSize());
+                long insertPosition = editedDataPosition + bytes.length - inserted;
+                data.insert(insertPosition, inserted);
+                for (int i = 0; i < inserted; i++) {
+                    data.setByte(insertPosition + i, bytes[bytes.length - inserted + i]);
+                }
+            }
         }
 
-        data.setByte(editedDataPosition, (byte) value);
-        length++;
+        length += bytes.length;
+        hexadecimal.getCaret().setCaretPosition(startPosition + length);
     }
 
     @Override

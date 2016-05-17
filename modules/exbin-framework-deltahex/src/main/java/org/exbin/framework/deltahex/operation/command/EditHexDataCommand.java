@@ -28,16 +28,16 @@ import org.exbin.xbup.operation.OperationListener;
 /**
  * Command for editing data in hexadecimal mode.
  *
- * @version 0.1.0 2016/05/14
+ * @version 0.1.0 2016/05/17
  * @author ExBin Project (http://exbin.org)
  */
-public class EditHexDataCommand extends HexCommand {
+public class EditHexDataCommand extends EditDataCommand {
 
-    private final EditHexCommandType commandType;
+    private final EditCommandType commandType;
     protected boolean operationPerformed = false;
     private HexOperation[] operations = null;
 
-    public EditHexDataCommand(Hexadecimal hexadecimal, EditHexCommandType commandType, long position, boolean positionLowerHalf) {
+    public EditHexDataCommand(Hexadecimal hexadecimal, EditCommandType commandType, long position, boolean positionLowerHalf) {
         super(hexadecimal);
         this.commandType = commandType;
         HexOperation operation;
@@ -123,15 +123,13 @@ public class EditHexDataCommand extends HexCommand {
         }
     }
 
-    public EditHexCommandType getCommandType() {
+    @Override
+    public EditCommandType getCommandType() {
         return commandType;
     }
 
+    @Override
     public boolean wasReverted() {
         return !(operations.length == 1 && operations[0] instanceof HexEditDataOperation);
-    }
-
-    public enum EditHexCommandType {
-        INSERT, OVERWRITE, DELETE
     }
 }

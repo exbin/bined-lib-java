@@ -22,7 +22,7 @@ import org.exbin.xbup.operation.Operation;
 /**
  * Operation for editing data unsing insert mode.
  *
- * @version 0.1.0 2015/05/16
+ * @version 0.1.0 2015/05/17
  * @author ExBin Project (http://exbin.org)
  */
 public class InsertCharEditDataOperation extends CharEditDataOperation {
@@ -30,7 +30,7 @@ public class InsertCharEditDataOperation extends CharEditDataOperation {
     private final long startPosition;
     private long length;
 
-    public InsertCharEditDataOperation(Hexadecimal hexadecimal, long startPosition, boolean startLowerHalf) {
+    public InsertCharEditDataOperation(Hexadecimal hexadecimal, long startPosition) {
         super(hexadecimal);
         this.startPosition = startPosition;
     }
@@ -59,10 +59,10 @@ public class InsertCharEditDataOperation extends CharEditDataOperation {
         EditableHexadecimalData data = (EditableHexadecimalData) hexadecimal.getData();
         long editedDataPosition = startPosition + length;
 
-        byte byteValue = (byte) (value << 4);
-        data.insert(editedDataPosition, 1);
-        data.setByte(editedDataPosition, byteValue);
-        length++;
+        byte[] bytes = hexadecimal.charToBytes(value);
+        data.insert(editedDataPosition, bytes);
+        length += bytes.length;
+        hexadecimal.getCaret().setCaretPosition(startPosition + length);
     }
 
     @Override
