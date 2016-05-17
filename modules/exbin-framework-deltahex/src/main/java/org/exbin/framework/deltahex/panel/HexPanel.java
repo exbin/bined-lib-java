@@ -36,7 +36,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.text.Document;
-import javax.swing.undo.UndoableEdit;
 import org.exbin.deltahex.CaretPosition;
 import org.exbin.deltahex.EditableHexadecimalData;
 import org.exbin.deltahex.HexadecimalData;
@@ -51,9 +50,7 @@ import org.exbin.framework.editor.text.panel.TextEncodingPanel;
 import org.exbin.framework.gui.editor.api.XBEditorProvider;
 import org.exbin.framework.gui.file.api.FileType;
 import org.exbin.framework.gui.menu.api.ClipboardActionsUpdateListener;
-import org.exbin.framework.gui.undo.api.UndoUpdateListener;
 import org.exbin.framework.gui.menu.api.ClipboardActionsHandler;
-import org.exbin.framework.gui.undo.api.UndoActionsHandler;
 import org.exbin.framework.deltahex.HexStatusApi;
 import org.exbin.framework.deltahex.XBHexadecimalData;
 import org.exbin.framework.deltahex.operation.HexCommandHandler;
@@ -64,18 +61,15 @@ import org.exbin.xbup.operation.undo.XBUndoUpdateListener;
 /**
  * Hexadecimal editor panel.
  *
- * @version 0.1.0 2016/05/09
+ * @version 0.1.0 2016/05/17
  * @author ExBin Project (http://exbin.org)
  */
-public class HexPanel extends javax.swing.JPanel implements XBEditorProvider, ClipboardActionsHandler, UndoActionsHandler {
+public class HexPanel extends javax.swing.JPanel implements XBEditorProvider, ClipboardActionsHandler {
 
     private Hexadecimal hexadecimal;
-    private final HexPanelCompoundUndoManager undoManagement = new HexPanelCompoundUndoManager();
-    private UndoUpdateListener undoUpdateListener = null;
-    private HexUndoHandler hexUndoHandler;
+    private HexUndoHandler undoHandler;
     private String fileName;
     private FileType fileType;
-    private boolean modified = false;
     private Object highlight;
     private Color foundTextBackgroundColor;
     private Charset charset;
@@ -87,8 +81,8 @@ public class HexPanel extends javax.swing.JPanel implements XBEditorProvider, Cl
     private ClipboardActionsUpdateListener clipboardActionsUpdateListener;
 
     public HexPanel() {
-        hexUndoHandler = new HexUndoHandler(hexadecimal);
-        hexUndoHandler.addUndoUpdateListener(new XBUndoUpdateListener() {
+        undoHandler = new HexUndoHandler(hexadecimal);
+        undoHandler.addUndoUpdateListener(new XBUndoUpdateListener() {
             @Override
             public void undoChanged() {
                 hexadecimal.repaint();
@@ -110,7 +104,7 @@ public class HexPanel extends javax.swing.JPanel implements XBEditorProvider, Cl
                 }
             }
         });
-        HexCommandHandler commandHandler = new HexCommandHandler(hexadecimal, hexUndoHandler);
+        HexCommandHandler commandHandler = new HexCommandHandler(hexadecimal, undoHandler);
         hexadecimal.setCommandHandler(commandHandler);
         // TODO use listener in hexadecimal instead
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
@@ -136,23 +130,6 @@ public class HexPanel extends javax.swing.JPanel implements XBEditorProvider, Cl
         defaultColors[3] = new Color(hexadecimal.getSelectionBackgroundColor().getRGB());
         defaultColors[4] = foundTextBackgroundColor;
 
-        // if the document is ever edited, assume that it needs to be saved
-//        textArea.getDocument().addDocumentListener(new DocumentListener() {
-//            @Override
-//            public void changedUpdate(DocumentEvent e) {
-//                setModified(true);
-//            }
-//
-//            @Override
-//            public void insertUpdate(DocumentEvent e) {
-//                setModified(true);
-//            }
-//
-//            @Override
-//            public void removeUpdate(DocumentEvent e) {
-//                setModified(true);
-//            }
-//        });
         // Listener for undoManagement and redo events
 //        textArea.getDocument().addUndoableEditListener(new UndoableEditListener() {
 //            @Override
@@ -314,11 +291,6 @@ public class HexPanel extends javax.swing.JPanel implements XBEditorProvider, Cl
     }
 
     @Override
-    public void performUndoManager() {
-        // TODO
-    }
-
-    @Override
     public boolean isSelection() {
         return hexadecimal.hasSelection();
     }
@@ -381,50 +353,20 @@ public class HexPanel extends javax.swing.JPanel implements XBEditorProvider, Cl
 
     @Override
     public boolean isModified() {
-        return modified;
-    }
-
-    public void setModified(boolean modified) {
-        if (highlight != null) {
-//            textArea.getHighlighter().removeHighlight(highlight);
-            highlight = null;
-        }
-        boolean oldValue = this.modified;
-        this.modified = modified;
-        firePropertyChange("modified", oldValue, this.modified);
+        return undoHandler.getCommandPosition() != undoHandler.getSyncPoint();
     }
 
     public HexUndoHandler getHexUndoHandler() {
-        return hexUndoHandler;
+        return undoHandler;
     }
 
     public void setHexUndoHandler(HexUndoHandler hexUndoHandler) {
-        this.hexUndoHandler = hexUndoHandler;
+        this.undoHandler = hexUndoHandler;
     }
 
     @Override
     public void loadFromFile() {
         File file = new File(getFileName());
-//        switch (fileType.getFileTypeId()) {
-//            case DeltaHexModule.XBT_FILE_TYPE: {
-//                try {
-//                    XBPCatalog catalog = new XBPCatalog();
-//                    catalog.addFormatDecl(getContextFormatDecl());
-//                    XBLFormatDecl formatDecl = new XBLFormatDecl(XBEncodingText.XBUP_FORMATREV_CATALOGPATH);
-//                    XBEncodingText encodingText = new XBEncodingText();
-//                    XBDeclaration declaration = new XBDeclaration(formatDecl, encodingText);
-//                    XBTPullTypeDeclaringFilter typeProcessing = new XBTPullTypeDeclaringFilter(catalog);
-//                    typeProcessing.attachXBTPullProvider(new XBToXBTPullConvertor(new XBPullReader(new FileInputStream(getFileName()))));
-//                    XBPSerialReader reader = new XBPSerialReader(typeProcessing);
-//                    reader.read(declaration);
-//                    changeCharset(encodingText.getCharset());
-//                    textArea.setText(encodingText.getValue());
-//                } catch (XBProcessingException | IOException ex) {
-//                    Logger.getLogger(HexPanel.class.getName()).log(Level.SEVERE, null, ex);
-//                }
-//                break;
-//            }
-//            case DeltaHexModule.TXT_FILE_TYPE: {
         try {
             try (FileInputStream fileStream = new FileInputStream(file)) {
                 HexadecimalData data = hexadecimal.getData();
@@ -434,51 +376,20 @@ public class HexPanel extends javax.swing.JPanel implements XBEditorProvider, Cl
         } catch (IOException ex) {
             Logger.getLogger(HexPanel.class.getName()).log(Level.SEVERE, null, ex);
         }
-//                break;
-//            }
-//        }
 
-        setModified(false);
+        undoHandler.clear();
     }
 
     @Override
     public void saveToFile() {
         File file = new File(getFileName());
-//        switch (fileType.getFileTypeId()) {
-//            case DeltaHexModule.XBT_FILE_TYPE: {
-//                try {
-//                    XBEncodingText encodingString = new XBEncodingText();
-//                    encodingString.setValue(textArea.getText());
-//                    encodingString.setCharset(charset);
-//
-//                    try (FileOutputStream output = new FileOutputStream(file)) {
-//                        XBPCatalog catalog = new XBPCatalog();
-//                        catalog.addFormatDecl(getContextFormatDecl());
-//                        XBLFormatDecl formatDecl = new XBLFormatDecl(XBEncodingText.XBUP_FORMATREV_CATALOGPATH);
-//                        XBDeclaration declaration = new XBDeclaration(formatDecl, encodingString);
-//                        declaration.realignReservation(catalog);
-//                        XBTTypeUndeclaringFilter typeProcessing = new XBTTypeUndeclaringFilter(catalog);
-//                        typeProcessing.attachXBTListener(new XBTEventListenerToListener(new XBTToXBEventConvertor(new XBEventWriter(output))));
-//                        XBPSerialWriter writer = new XBPSerialWriter(new XBTListenerToEventListener(typeProcessing));
-//                        writer.write(declaration);
-//                    }
-//                } catch (XBProcessingException | IOException ex) {
-//                    Logger.getLogger(HexPanel.class.getName()).log(Level.SEVERE, null, ex);
-//                }
-//                break;
-//            }
-//            default: // TODO detect extension
-//            case DeltaHexModule.TXT_FILE_TYPE: {
         try {
             hexadecimal.getData().saveToStream(new FileOutputStream(file));
         } catch (IOException ex) {
             Logger.getLogger(HexPanel.class.getName()).log(Level.SEVERE, null, ex);
         }
-//                break;
-//            }
-//        }
 
-        setModified(false);
+        undoHandler.setSyncPoint();
     }
 
     /**
@@ -518,7 +429,9 @@ public class HexPanel extends javax.swing.JPanel implements XBEditorProvider, Cl
     @Override
     public void newFile() {
         ((EditableHexadecimalData) hexadecimal.getData()).setDataSize(0);
-        setModified(false);
+        hexadecimal.setData(hexadecimal.getData());
+        hexadecimal.repaint();
+        undoHandler.clear();
     }
 
     @Override
@@ -531,17 +444,8 @@ public class HexPanel extends javax.swing.JPanel implements XBEditorProvider, Cl
         this.fileName = fileName;
     }
 
-    public UndoableEdit getUndo() {
-        return undoManagement;
-    }
-
     public void setPopupMenu(JPopupMenu menu) {
         hexadecimal.setComponentPopupMenu(menu);
-    }
-
-    @Override
-    public void setUndoUpdateListener(UndoUpdateListener undoUpdateListener) {
-        this.undoUpdateListener = undoUpdateListener;
     }
 
     public Point getCaretPosition() {
@@ -588,28 +492,8 @@ public class HexPanel extends javax.swing.JPanel implements XBEditorProvider, Cl
     }
 
     @Override
-    public Boolean canUndo() {
-        return getUndo().canUndo();
-    }
-
-    @Override
-    public Boolean canRedo() {
-        return getUndo().canRedo();
-    }
-
-    @Override
     public void setPropertyChangeListener(PropertyChangeListener propertyChangeListener) {
         this.propertyChangeListener = propertyChangeListener;
-    }
-
-    @Override
-    public void performUndo() {
-        getUndo().undo();
-    }
-
-    @Override
-    public void performRedo() {
-        getUndo().redo();
     }
 
     @Override

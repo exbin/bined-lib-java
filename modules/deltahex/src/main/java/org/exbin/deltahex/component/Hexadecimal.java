@@ -526,6 +526,9 @@ public class Hexadecimal extends JComponent {
 
     public void setData(HexadecimalData data) {
         this.data = data;
+        if (caret.getDataPosition() > data.getDataSize()) {
+            caret.setCaretPosition(0);
+        }
         computeDimensions();
         repaint();
     }
