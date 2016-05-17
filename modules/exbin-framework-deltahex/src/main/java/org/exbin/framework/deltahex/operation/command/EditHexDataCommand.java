@@ -18,6 +18,7 @@ package org.exbin.framework.deltahex.operation.command;
 
 import org.exbin.deltahex.component.Hexadecimal;
 import org.exbin.framework.deltahex.command.command.HexCommandType;
+import org.exbin.framework.deltahex.operation.DeleteHexEditDataOperation;
 import org.exbin.framework.deltahex.operation.HexEditDataOperation;
 import org.exbin.framework.deltahex.operation.InsertHexEditDataOperation;
 import org.exbin.framework.deltahex.operation.OverwriteHexEditDataOperation;
@@ -51,7 +52,7 @@ public class EditHexDataCommand extends EditDataCommand {
                 break;
             }
             case DELETE: {
-                operation = new InsertHexEditDataOperation(hexadecimal, position, positionLowerHalf);
+                operation = new DeleteHexEditDataOperation(hexadecimal, position);
                 break;
             }
             default: {

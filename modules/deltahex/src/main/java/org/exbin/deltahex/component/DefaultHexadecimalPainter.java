@@ -23,7 +23,7 @@ import java.awt.Rectangle;
 /**
  * Hex editor painter.
  *
- * @version 0.1.0 2016/04/29
+ * @version 0.1.0 2016/05/17
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultHexadecimalPainter implements HexadecimalPainter {
@@ -142,7 +142,7 @@ public class DefaultHexadecimalPainter implements HexadecimalPainter {
         int positionY = rect.y - hexadecimal.getSubFontSpace() - scrollPosition.scrollLineOffset + hexadecimal.getLineHeight();
 
         g.setColor(hexadecimal.getForeground());
-        while (positionY <= maxY && dataPosition < maxDataPosition) {
+        while (positionY <= maxY && dataPosition <= maxDataPosition) {
             char[] lineNumberCode = HexadecimalUtils.longToHexChars(dataPosition);
             if (hexadecimal.isCharFixedMode()) {
                 g.drawChars(lineNumberCode, 0, 8, 0, positionY);

@@ -1291,6 +1291,24 @@ public class Hexadecimal extends JComponent {
         @Override
         public void keyTyped(KeyEvent e) {
             super.keyTyped(e);
+            if (handleClipboard) {
+                if ((e.getModifiers() & metaMask) > 0 && e.getKeyCode() == KeyEvent.VK_C) {
+                    commandHandler.copy();
+                    return;
+                } else if ((e.getModifiers() & metaMask) > 0 && e.getKeyCode() == KeyEvent.VK_X) {
+                    commandHandler.cut();
+                    return;
+                } else if ((e.getModifiers() & metaMask) > 0 && e.getKeyCode() == KeyEvent.VK_V) {
+                    commandHandler.paste();
+                    return;
+                } else if ((e.getModifiers() & metaMask) > 0 && e.getKeyCode() == KeyEvent.VK_A) {
+                    selectAll();
+                    return;
+                }
+            }
+            if (e.getKeyChar() != 0xffff) {
+                commandHandler.keyPressed(e.getKeyChar());
+            }
         }
 
         @Override
@@ -1453,26 +1471,6 @@ public class Hexadecimal extends JComponent {
                         clearSelection();
                     }
                     break;
-                }
-                default: {
-                    if (handleClipboard) {
-                        if ((e.getModifiers() & metaMask) > 0 && e.getKeyCode() == KeyEvent.VK_C) {
-                            commandHandler.copy();
-                            break;
-                        } else if ((e.getModifiers() & metaMask) > 0 && e.getKeyCode() == KeyEvent.VK_X) {
-                            commandHandler.cut();
-                            break;
-                        } else if ((e.getModifiers() & metaMask) > 0 && e.getKeyCode() == KeyEvent.VK_V) {
-                            commandHandler.paste();
-                            break;
-                        } else if ((e.getModifiers() & metaMask) > 0 && e.getKeyCode() == KeyEvent.VK_A) {
-                            selectAll();
-                            break;
-                        }
-                    }
-                    if (e.getKeyChar() != 0xffff) {
-                        commandHandler.keyPressed(e.getKeyChar());
-                    }
                 }
             }
         }

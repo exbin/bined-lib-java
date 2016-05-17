@@ -26,7 +26,7 @@ import org.exbin.xbup.operation.Operation;
  * @version 0.1.0 2015/05/17
  * @author ExBin Project (http://exbin.org)
  */
-public class DeleteCharEditDataOperation extends CharEditDataOperation {
+public class DeleteHexEditDataOperation extends HexEditDataOperation {
 
     private static final char BACKSPACE_CHAR = '\b';
     private static final char DELETE_CHAR = (char) 0x7f;
@@ -34,7 +34,7 @@ public class DeleteCharEditDataOperation extends CharEditDataOperation {
     private long position;
     private final XBHexadecimalData undoData = new XBHexadecimalData();
 
-    public DeleteCharEditDataOperation(Hexadecimal hexadecimal, long startPosition) {
+    public DeleteHexEditDataOperation(Hexadecimal hexadecimal, long startPosition) {
         super(hexadecimal);
         this.position = startPosition;
     }
@@ -59,7 +59,7 @@ public class DeleteCharEditDataOperation extends CharEditDataOperation {
     }
 
     @Override
-    public void appendEdit(char value) {
+    public void appendEdit(byte value) {
         EditableHexadecimalData data = (EditableHexadecimalData) hexadecimal.getData();
         switch (value) {
             case BACKSPACE_CHAR: {

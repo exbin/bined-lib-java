@@ -69,11 +69,16 @@ public class HexUndoHandler implements XBUndoHandler {
     public void execute(Command command) throws Exception {
         command.execute();
 
-        addCommand(command);
+        commandAdded(command);
     }
 
     @Override
     public void addCommand(Command command) {
+        command.use();
+        commandAdded(command);
+    }
+    
+    private void commandAdded(Command command) {
         // TODO: Check for undoOperationsMaximumCount & size
         while (commandList.size() > commandPosition) {
             commandList.remove((int) commandPosition);

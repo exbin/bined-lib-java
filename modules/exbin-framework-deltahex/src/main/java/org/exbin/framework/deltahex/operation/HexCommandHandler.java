@@ -50,13 +50,15 @@ import org.exbin.xbup.operation.undo.XBUndoHandler;
 /**
  * Command handler for undo/redo aware hexadecimal editor editing.
  *
- * @version 0.1.0 2016/05/13
+ * @version 0.1.0 2016/05/17
  * @author ExBin Project (http://exbin.org)
  */
 public class HexCommandHandler implements HexadecimalCommandHandler {
 
     public static final String MIME_CLIPBOARD_HEXADECIMAL = "application/x-deltahex";
     public static final String MIME_CLIPBOARD_BINARY = "application/octet-stream";
+    private static final char BACKSPACE_CHAR = '\b';
+    private static final char DELETE_CHAR = (char) 0x7f;
 
     private final Hexadecimal hexadecimal;
     private Clipboard clipboard;
@@ -116,7 +118,7 @@ public class HexCommandHandler implements HexadecimalCommandHandler {
                 }
                 long dataPosition = hexadecimal.getDataPosition();
                 if (hexadecimal.getEditationMode() == Hexadecimal.EditationMode.OVERWRITE) {
-                    if (editCommand == null || (editCommand instanceof EditHexDataCommand && editCommand.getCommandType() != EditDataCommand.EditCommandType.OVERWRITE)) {
+                    if (editCommand == null || !(editCommand instanceof EditHexDataCommand) || editCommand.getCommandType() != EditDataCommand.EditCommandType.OVERWRITE) {
                         editCommand = new EditHexDataCommand(hexadecimal, EditHexDataCommand.EditCommandType.OVERWRITE, dataPosition, hexadecimal.isLowerHalf());
                         if (deleteCommand != null) {
                             HexCompoundCommand compoundCommand = new HexCompoundCommand(hexadecimal);
@@ -134,7 +136,7 @@ public class HexCommandHandler implements HexadecimalCommandHandler {
 
                     ((EditHexDataCommand) editCommand).appendEdit((byte) value);
                 } else {
-                    if (editCommand == null || (editCommand instanceof EditHexDataCommand && editCommand.getCommandType() != EditHexDataCommand.EditCommandType.INSERT)) {
+                    if (editCommand == null || !(editCommand instanceof EditHexDataCommand) || editCommand.getCommandType() != EditHexDataCommand.EditCommandType.INSERT) {
                         editCommand = new EditHexDataCommand(hexadecimal, EditCharDataCommand.EditCommandType.INSERT, dataPosition, hexadecimal.isLowerHalf());
                         if (deleteCommand != null) {
                             HexCompoundCommand compoundCommand = new HexCompoundCommand(hexadecimal);
@@ -170,7 +172,7 @@ public class HexCommandHandler implements HexadecimalCommandHandler {
                 }
 
                 if (hexadecimal.getEditationMode() == Hexadecimal.EditationMode.OVERWRITE) {
-                    if (editCommand == null || (editCommand instanceof EditCharDataCommand && editCommand.getCommandType() != EditHexDataCommand.EditCommandType.OVERWRITE)) {
+                    if (editCommand == null || !(editCommand instanceof EditCharDataCommand) || editCommand.getCommandType() != EditHexDataCommand.EditCommandType.OVERWRITE) {
                         editCommand = new EditCharDataCommand(hexadecimal, EditHexDataCommand.EditCommandType.OVERWRITE, dataPosition);
                         if (deleteCommand != null) {
                             HexCompoundCommand compoundCommand = new HexCompoundCommand(hexadecimal);
@@ -187,25 +189,8 @@ public class HexCommandHandler implements HexadecimalCommandHandler {
                     }
 
                     ((EditCharDataCommand) editCommand).appendEdit(keyChar);
-//                    if (dataPosition == hexadecimal.getData().getDataSize()) {
-//                        HexadecimalData insertData = new XBHexadecimalData(new byte[]{(byte) keyChar});
-//                        InsertDataCommand insertCommand = new InsertDataCommand(hexadecimal, dataPosition, insertData);
-//                        try {
-//                            undoHandler.execute(insertCommand);
-//                        } catch (Exception ex) {
-//                            Logger.getLogger(HexCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
-//                        }
-//                    } else {
-//                        HexadecimalData modifyData = new XBHexadecimalData(new byte[]{(byte) keyChar});
-//                        ModifyDataCommand insertCommand = new ModifyDataCommand(hexadecimal, dataPosition, modifyData);
-//                        try {
-//                            undoHandler.execute(insertCommand);
-//                        } catch (Exception ex) {
-//                            Logger.getLogger(HexCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
-//                        }
-//                    }
                 } else {
-                    if (editCommand == null || (editCommand instanceof EditCharDataCommand && editCommand.getCommandType() != EditHexDataCommand.EditCommandType.INSERT)) {
+                    if (editCommand == null || !(editCommand instanceof EditCharDataCommand) || editCommand.getCommandType() != EditHexDataCommand.EditCommandType.INSERT) {
                         editCommand = new EditCharDataCommand(hexadecimal, EditHexDataCommand.EditCommandType.INSERT, dataPosition);
                         if (deleteCommand != null) {
                             HexCompoundCommand compoundCommand = new HexCompoundCommand(hexadecimal);
@@ -223,13 +208,6 @@ public class HexCommandHandler implements HexadecimalCommandHandler {
 
                     ((EditCharDataCommand) editCommand).appendEdit(keyChar);
                 }
-//                    HexadecimalData insertData = new XBHexadecimalData(new byte[]{(byte) keyChar});
-//                    InsertDataCommand insertCommand = new InsertDataCommand(hexadecimal, dataPosition, insertData);
-//                    try {
-//                        undoHandler.execute(insertCommand);
-//                    } catch (Exception ex) {
-//                        Logger.getLogger(HexCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
-//                    }
                 hexadecimal.revealCursor();
                 hexadecimal.repaint();
             }
@@ -242,26 +220,7 @@ public class HexCommandHandler implements HexadecimalCommandHandler {
             return;
         }
 
-        if (hexadecimal.hasSelection()) {
-            try {
-                undoHandler.execute(new DeleteSelectionCommand(hexadecimal));
-            } catch (Exception ex) {
-                Logger.getLogger(HexCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        } else {
-            HexadecimalCaret caret = hexadecimal.getCaret();
-            long dataPosition = caret.getDataPosition();
-            if (dataPosition > 0 && dataPosition <= hexadecimal.getData().getDataSize()) {
-                try {
-                    undoHandler.execute(new RemoveDataCommand(hexadecimal, dataPosition - 1, false, 1));
-                } catch (Exception ex) {
-                    Logger.getLogger(HexCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                caretMoved();
-                hexadecimal.revealCursor();
-                hexadecimal.repaint();
-            }
-        }
+        deletingAction(BACKSPACE_CHAR);
     }
 
     @Override
@@ -270,23 +229,37 @@ public class HexCommandHandler implements HexadecimalCommandHandler {
             return;
         }
 
+        deletingAction(DELETE_CHAR);
+    }
+
+    private void deletingAction(char keyChar) {
         if (hexadecimal.hasSelection()) {
+            DeleteSelectionCommand deleteCommand = new DeleteSelectionCommand(hexadecimal);
             try {
-                undoHandler.execute(new DeleteSelectionCommand(hexadecimal));
+                undoHandler.execute(deleteCommand);
             } catch (Exception ex) {
                 Logger.getLogger(HexCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
-            HexadecimalCaret caret = hexadecimal.getCaret();
-            long dataPosition = caret.getDataPosition();
-            if (dataPosition < hexadecimal.getData().getDataSize()) {
-                try {
-                    undoHandler.execute(new RemoveDataCommand(hexadecimal, dataPosition, false, 1));
-                } catch (Exception ex) {
-                    Logger.getLogger(HexCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
+            if (editCommand != null && editCommand.wasReverted()) {
+                editCommand = null;
+            }
+
+            long dataPosition = hexadecimal.getDataPosition();
+            if (hexadecimal.getActiveSection() == HexadecimalCaret.Section.HEXADECIMAL) {
+                if (editCommand == null || !(editCommand instanceof EditHexDataCommand) || editCommand.getCommandType() != EditHexDataCommand.EditCommandType.DELETE) {
+                    editCommand = new EditHexDataCommand(hexadecimal, EditHexDataCommand.EditCommandType.DELETE, dataPosition, false);
+                    undoHandler.addCommand(editCommand);
                 }
-                caretMoved();
-                hexadecimal.repaint();
+
+                ((EditHexDataCommand) editCommand).appendEdit((byte) keyChar);
+            } else {
+                if (editCommand == null || !(editCommand instanceof EditCharDataCommand) || editCommand.getCommandType() != EditHexDataCommand.EditCommandType.DELETE) {
+                    editCommand = new EditCharDataCommand(hexadecimal, EditCharDataCommand.EditCommandType.DELETE, dataPosition);
+                    undoHandler.addCommand(editCommand);
+                }
+
+                ((EditCharDataCommand) editCommand).appendEdit(keyChar);
             }
         }
     }
@@ -358,23 +331,26 @@ public class HexCommandHandler implements HexadecimalCommandHandler {
                     long dataPosition = caret.getDataPosition();
 
                     HexCommand modifyCommand = null;
-                    HexadecimalData data = (HexadecimalData) object;
-                    long dataSize = data.getDataSize();
+                    HexadecimalData pastedData = (HexadecimalData) object;
+                    long dataSize = pastedData.getDataSize();
                     long insertionPosition = dataPosition;
                     if (hexadecimal.getEditationMode() == Hexadecimal.EditationMode.OVERWRITE) {
-                        HexadecimalData modifiedData = data;
-                        long toRemove = dataSize;
-                        if (dataPosition + toRemove > hexadecimal.getData().getDataSize()) {
-                            modifiedData = data.copy(0, toRemove);
+                        HexadecimalData modifiedData = pastedData;
+                        long toReplace = dataSize;
+                        if (insertionPosition + toReplace > hexadecimal.getData().getDataSize()) {
+                            toReplace = hexadecimal.getData().getDataSize() - insertionPosition;
+                            modifiedData = pastedData.copy(0, toReplace);
                         }
-                        modifyCommand = new ModifyDataCommand(hexadecimal, dataPosition, modifiedData);
-                        data = data.copy(toRemove, data.getDataSize() - toRemove);
-                        insertionPosition += toRemove;
+                        if (toReplace > 0) {
+                            modifyCommand = new ModifyDataCommand(hexadecimal, dataPosition, modifiedData);
+                            pastedData = pastedData.copy(toReplace, pastedData.getDataSize() - toReplace);
+                            insertionPosition += toReplace;
+                        }
                     }
 
                     HexCommand insertCommand = null;
-                    if (data.getDataSize() > 0) {
-                        insertCommand = new InsertDataCommand(hexadecimal, insertionPosition, data);
+                    if (pastedData.getDataSize() > 0) {
+                        insertCommand = new InsertDataCommand(hexadecimal, insertionPosition, pastedData);
                     }
 
                     HexCommand pasteCommand = HexCompoundCommand.buildCompoundCommand(hexadecimal, deleteSelectionCommand, modifyCommand, insertCommand);
@@ -401,22 +377,25 @@ public class HexCommandHandler implements HexadecimalCommandHandler {
                     HexCommand modifyCommand = null;
                     byte[] bytes = ((String) insertedData).getBytes(Charset.forName("UTF-8"));
                     int dataSize = bytes.length;
-                    HexadecimalData data = new XBHexadecimalData(bytes);
+                    HexadecimalData pastedData = new XBHexadecimalData(bytes);
                     long insertionPosition = dataPosition;
                     if (hexadecimal.getEditationMode() == Hexadecimal.EditationMode.OVERWRITE) {
-                        HexadecimalData modifiedData = data;
-                        long toRemove = dataSize;
-                        if (dataPosition + toRemove > hexadecimal.getData().getDataSize()) {
-                            modifiedData = data.copy(0, toRemove);
+                        HexadecimalData modifiedData = pastedData;
+                        long toReplace = dataSize;
+                        if (insertionPosition + toReplace > hexadecimal.getData().getDataSize()) {
+                            toReplace = hexadecimal.getData().getDataSize() - insertionPosition;
+                            modifiedData = pastedData.copy(0, toReplace);
                         }
-                        modifyCommand = new ModifyDataCommand(hexadecimal, dataPosition, modifiedData);
-                        data = data.copy(toRemove, data.getDataSize() - toRemove);
-                        insertionPosition += toRemove;
+                        if (toReplace > 0) {
+                            modifyCommand = new ModifyDataCommand(hexadecimal, dataPosition, modifiedData);
+                            pastedData = pastedData.copy(toReplace, pastedData.getDataSize() - toReplace);
+                            insertionPosition += toReplace;
+                        }
                     }
 
                     HexCommand insertCommand = null;
-                    if (data.getDataSize() > 0) {
-                        insertCommand = new InsertDataCommand(hexadecimal, insertionPosition, data);
+                    if (pastedData.getDataSize() > 0) {
+                        insertCommand = new InsertDataCommand(hexadecimal, insertionPosition, pastedData);
                     }
 
                     HexCommand pasteCommand = HexCompoundCommand.buildCompoundCommand(hexadecimal, deleteSelectionCommand, modifyCommand, insertCommand);
