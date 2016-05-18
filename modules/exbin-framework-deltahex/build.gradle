@@ -29,4 +29,5 @@ dependencies {
     compile "org.exbin.framework:exbin-framework-gui-utils:${frameworkVersion}"
     compile "org.exbin.framework:exbin-framework-editor-text:${frameworkVersion}"
     testCompile group : 'junit', name: 'junit', version: '4.10'
+    testCompile project(path: ':modules:deltahex', configuration: 'tests')
 }

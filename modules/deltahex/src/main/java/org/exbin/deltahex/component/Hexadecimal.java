@@ -530,9 +530,6 @@ public class Hexadecimal extends JComponent {
         if (caret.getDataPosition() > data.getDataSize()) {
             caret.setCaretPosition(0);
         }
-        for (int i = 0; i < 256; i++) {
-            ((EditableHexadecimalData) data).insert(i, new byte[]{(byte) i});
-        }
         computeDimensions();
         repaint();
     }
