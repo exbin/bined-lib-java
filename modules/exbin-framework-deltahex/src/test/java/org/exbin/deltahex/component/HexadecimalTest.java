@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.exbin.deltahex.EditableHexadecimalData;
 import org.exbin.framework.deltahex.XBHexadecimalData;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -40,7 +39,7 @@ public class HexadecimalTest {
     }
 
     @Test
-    public void testPaintComponent() {
+    public void testDataLoadFromStream() {
         XBHexadecimalData instance = new XBHexadecimalData();
         try (InputStream stream = HexadecimalTest.class.getResourceAsStream(SAMPLE_5BYTES)) {
             instance.loadFromStream(stream);

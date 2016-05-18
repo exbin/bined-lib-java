@@ -46,7 +46,6 @@ import java.util.List;
 import javax.swing.JComponent;
 import javax.swing.JScrollBar;
 import javax.swing.UIManager;
-import org.exbin.deltahex.EditableHexadecimalData;
 import org.exbin.deltahex.HexadecimalCommandHandler;
 import org.exbin.deltahex.HexadecimalData;
 import org.exbin.deltahex.component.HexadecimalCaret.Section;
@@ -54,7 +53,7 @@ import org.exbin.deltahex.component.HexadecimalCaret.Section;
 /**
  * Hex editor component.
  *
- * @version 0.1.0 2016/05/17
+ * @version 0.1.0 2016/05/18
  * @author ExBin Project (http://exbin.org)
  */
 public class Hexadecimal extends JComponent {
@@ -91,6 +90,7 @@ public class Hexadecimal extends JComponent {
     private boolean editable = true;
     private boolean wrapMode = false;
     private boolean handleClipboard = true;
+    private boolean showNonprintingCharacters = false;
 
     private ScrollBarVisibility verticalScrollBarVisibility = ScrollBarVisibility.IF_NEEDED;
     private VerticalScrollMode verticalScrollMode = VerticalScrollMode.PER_LINE;
@@ -107,6 +107,7 @@ public class Hexadecimal extends JComponent {
     private Color mirrorSelectionColor;
     private Color mirrorSelectionBackgroundColor;
     private Color cursorColor;
+    private Color whiteSpaceColor;
 
     private final List<SelectionChangedListener> selectionChangedListeners = new ArrayList<>();
     private final List<CaretMovedListener> caretMovedListeners = new ArrayList<>();
@@ -127,6 +128,7 @@ public class Hexadecimal extends JComponent {
         mirrorSelectionColor = UIManager.getColor("TextArea.selectionForeground");
         mirrorSelectionBackgroundColor = Color.LIGHT_GRAY;
         cursorColor = UIManager.getColor("TextArea.caretForeground");
+        whiteSpaceColor = UIManager.getColor("TextArea.inactiveForeground");
 
         init();
     }
@@ -549,7 +551,9 @@ public class Hexadecimal extends JComponent {
 
     public byte[] charToBytes(char value) {
         ByteBuffer buffer = charset.encode(Character.toString(value));
-        return buffer.array();
+        byte[] bytes = new byte[buffer.remaining()];
+        buffer.get(bytes, 0, bytes.length);
+        return bytes;
     }
 
     @Override
@@ -816,6 +820,14 @@ public class Hexadecimal extends JComponent {
         this.cursorColor = cursorColor;
     }
 
+    public Color getWhiteSpaceColor() {
+        return whiteSpaceColor;
+    }
+
+    public void setWhiteSpaceColor(Color whiteSpaceColor) {
+        this.whiteSpaceColor = whiteSpaceColor;
+    }
+
     public ViewMode getViewMode() {
         return viewMode;
     }
@@ -920,6 +932,15 @@ public class Hexadecimal extends JComponent {
 
     public void setHandleClipboard(boolean handleClipboard) {
         this.handleClipboard = handleClipboard;
+    }
+
+    public boolean isShowNonprintingCharacters() {
+        return showNonprintingCharacters;
+    }
+
+    public void setShowNonprintingCharacters(boolean showNonprintingCharacters) {
+        this.showNonprintingCharacters = showNonprintingCharacters;
+        repaint();
     }
 
     public int getLineLength() {
@@ -1295,21 +1316,6 @@ public class Hexadecimal extends JComponent {
         @Override
         public void keyTyped(KeyEvent e) {
             super.keyTyped(e);
-            if (handleClipboard) {
-                if ((e.getModifiers() & metaMask) > 0 && e.getKeyCode() == KeyEvent.VK_C) {
-                    commandHandler.copy();
-                    return;
-                } else if ((e.getModifiers() & metaMask) > 0 && e.getKeyCode() == KeyEvent.VK_X) {
-                    commandHandler.cut();
-                    return;
-                } else if ((e.getModifiers() & metaMask) > 0 && e.getKeyCode() == KeyEvent.VK_V) {
-                    commandHandler.paste();
-                    return;
-                } else if ((e.getModifiers() & metaMask) > 0 && e.getKeyCode() == KeyEvent.VK_A) {
-                    selectAll();
-                    return;
-                }
-            }
             if (e.getKeyChar() != 0xffff) {
                 commandHandler.keyPressed(e.getKeyChar());
             }
@@ -1475,6 +1481,23 @@ public class Hexadecimal extends JComponent {
                         clearSelection();
                     }
                     break;
+                }
+                default: {
+                    if (handleClipboard) {
+                        if ((e.getModifiers() & metaMask) > 0 && e.getKeyCode() == KeyEvent.VK_C) {
+                            commandHandler.copy();
+                            break;
+                        } else if ((e.getModifiers() & metaMask) > 0 && e.getKeyCode() == KeyEvent.VK_X) {
+                            commandHandler.cut();
+                            break;
+                        } else if ((e.getModifiers() & metaMask) > 0 && e.getKeyCode() == KeyEvent.VK_V) {
+                            commandHandler.paste();
+                            break;
+                        } else if ((e.getModifiers() & metaMask) > 0 && e.getKeyCode() == KeyEvent.VK_A) {
+                            selectAll();
+                            break;
+                        }
+                    }
                 }
             }
         }

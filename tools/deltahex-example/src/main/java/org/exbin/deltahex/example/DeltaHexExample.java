@@ -16,6 +16,7 @@
 package org.exbin.deltahex.example;
 
 import javax.swing.JFrame;
+import javax.swing.border.Border;
 import org.exbin.deltahex.component.Hexadecimal;
 import org.exbin.framework.deltahex.XBHexadecimalData;
 import org.exbin.xbup.core.type.XBData;
@@ -41,7 +42,7 @@ public class DeltaHexExample {
         final DeltaHexExamplePanel panel = new DeltaHexExamplePanel();
         frame.add(panel);
         final Hexadecimal hexadecimal = new Hexadecimal();
-//        hexadecimal.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        hexadecimal.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         XBData data = new XBData();
         data.loadFromStream(hexadecimal.getClass().getResourceAsStream("/org/exbin/deltahex/example/resources/lorem_1.txt"));
         hexadecimal.setData(new XBHexadecimalData(data));

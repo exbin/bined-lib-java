@@ -113,19 +113,22 @@ public class DefaultCommandHandler implements HexadecimalCommandHandler {
             }
         } else {
             char keyChar = keyValue;
-            if (keyChar > 31 && keyChar < 255) {
+            if (keyChar > 31 && hexadecimal.isValidChar(keyValue)) {
                 HexadecimalData data = hexadecimal.getData();
                 CaretPosition caretPosition = hexadecimal.getCaretPosition();
                 long dataPosition = caretPosition.getDataPosition();
+                byte[] bytes = hexadecimal.charToBytes(keyChar);
                 if (hexadecimal.getEditationMode() == Hexadecimal.EditationMode.OVERWRITE) {
-                    if (dataPosition == hexadecimal.getData().getDataSize()) {
-                        ((EditableHexadecimalData) data).insert(dataPosition, 1);
+                    if (dataPosition < hexadecimal.getData().getDataSize()) {
+                        int length = bytes.length;
+                        if (dataPosition + length > hexadecimal.getData().getDataSize()) {
+                            length = (int) (hexadecimal.getData().getDataSize() - dataPosition);
+                        }
+                        ((EditableHexadecimalData) data).remove(dataPosition, length);
                     }
-                    ((EditableHexadecimalData) data).setByte(dataPosition, (byte) keyChar);
-                } else {
-                    ((EditableHexadecimalData) data).insert(dataPosition, 1);
-                    ((EditableHexadecimalData) data).setByte(dataPosition, (byte) keyChar);
                 }
+                ((EditableHexadecimalData) data).insert(dataPosition, bytes);
+                hexadecimal.getCaret().setCaretPosition(dataPosition + bytes.length - 1);
                 hexadecimal.moveRight(Hexadecimal.NO_MODIFIER);
                 hexadecimal.revealCursor();
             }

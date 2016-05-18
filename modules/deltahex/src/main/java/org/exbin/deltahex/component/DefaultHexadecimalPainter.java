@@ -20,6 +20,8 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.nio.charset.Charset;
+import java.util.HashMap;
+import java.util.Map;
 import org.exbin.deltahex.HexadecimalData;
 
 /**
@@ -34,10 +36,10 @@ public class DefaultHexadecimalPainter implements HexadecimalPainter {
 
     private Charset charMappingCharset = null;
     private final char[] charMapping = new char[256];
+    private Map<Character, Character> nonprintingMapping = null;
 
     public DefaultHexadecimalPainter(Hexadecimal hexadecimal) {
         this.hexadecimal = hexadecimal;
-
     }
 
     @Override
@@ -352,10 +354,41 @@ public class DefaultHexadecimalPainter implements HexadecimalPainter {
                     previewChar[0] = (char) charMapping[dataByte & 0xFF];
                 }
 
+                Character replacement = null;
+                if (hexadecimal.isShowNonprintingCharacters()) {
+                    if (nonprintingMapping == null) {
+                        nonprintingMapping = new HashMap<>();
+                        // Unicode control characters, might not be supported by font
+                        for (int i = 0; i < 32; i++) {
+                            nonprintingMapping.put((char) i, Character.toChars(9216 + i)[0]);
+                        }
+                        // Space -> Middle Dot
+                        nonprintingMapping.put(' ', Character.toChars(183)[0]);
+                        // Tab -> Right-Pointing Double Angle Quotation Mark
+                        nonprintingMapping.put('\t', Character.toChars(187)[0]);
+                        // Line Feed -> Currency Sign
+                        nonprintingMapping.put('\r', Character.toChars(164)[0]);
+                        // Carriage Return -> Pilcrow Sign
+                        nonprintingMapping.put('\n', Character.toChars(182)[0]);
+                        // Ideographic Space -> Degree Sign
+                        nonprintingMapping.put(Character.toChars(127)[0], Character.toChars(176)[0]);
+                    }
+                    replacement = nonprintingMapping.get(previewChar[0]);
+                    if (replacement != null) {
+                        previewChar[0] = replacement.charValue();
+                    }
+                }
+
+                if (replacement != null) {
+                    g.setColor(hexadecimal.getWhiteSpaceColor());
+                }
                 if (hexadecimal.isCharFixedMode()) {
                     g.drawChars(previewChar, 0, 1, startX, positionY);
                 } else {
                     drawCenteredChar(g, previewChar, 0, charWidth, startX, positionY);
+                }
+                if (replacement != null) {
+                    g.setColor(hexadecimal.getForeground());
                 }
             }
         }
