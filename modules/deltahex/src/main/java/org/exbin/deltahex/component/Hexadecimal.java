@@ -46,6 +46,7 @@ import java.util.List;
 import javax.swing.JComponent;
 import javax.swing.JScrollBar;
 import javax.swing.UIManager;
+import org.exbin.deltahex.EditableHexadecimalData;
 import org.exbin.deltahex.HexadecimalCommandHandler;
 import org.exbin.deltahex.HexadecimalData;
 import org.exbin.deltahex.component.HexadecimalCaret.Section;
@@ -528,6 +529,9 @@ public class Hexadecimal extends JComponent {
         this.data = data;
         if (caret.getDataPosition() > data.getDataSize()) {
             caret.setCaretPosition(0);
+        }
+        for (int i = 0; i < 256; i++) {
+            ((EditableHexadecimalData) data).insert(i, new byte[]{(byte) i});
         }
         computeDimensions();
         repaint();

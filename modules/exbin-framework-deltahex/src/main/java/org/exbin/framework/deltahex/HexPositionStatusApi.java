@@ -18,10 +18,10 @@ package org.exbin.framework.deltahex;
 /**
  * Hexadecimal editor status interface.
  *
- * @version 0.2.0 2016/04/22
+ * @version 0.2.0 2016/05/18
  * @author ExBin Project (http://exbin.org)
  */
-public interface HexStatusApi {
+public interface HexPositionStatusApi {
 
     /**
      * Reports cursor position.
@@ -37,11 +37,4 @@ public interface HexStatusApi {
      * @param endPosition end position
      */
     void setSelectionPosition(String startPosition, String endPosition);
-
-    /**
-     * Reports currently active encoding.
-     *
-     * @param encodingName encoding name
-     */
-    void setEncoding(String encodingName);
 }

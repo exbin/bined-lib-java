@@ -16,6 +16,8 @@
 package org.exbin.framework.deltahex;
 
 import java.awt.Color;
+import java.nio.charset.Charset;
+import java.util.List;
 import javax.swing.JPopupMenu;
 import org.exbin.framework.api.XBApplication;
 import org.exbin.framework.api.XBModuleRepositoryUtils;
@@ -37,11 +39,14 @@ import org.exbin.framework.api.XBApplicationModule;
 import org.exbin.xbup.plugin.XBModuleHandler;
 import org.exbin.framework.deltahex.panel.HexAppearancePanelFrame;
 import org.exbin.framework.deltahex.panel.HexColorPanelApi;
+import org.exbin.framework.editor.text.EncodingsHandler;
+import org.exbin.framework.editor.text.panel.TextEncodingOptionsPanel;
+import org.exbin.framework.editor.text.panel.TextEncodingPanelApi;
 
 /**
  * Hexadecimal editor module.
  *
- * @version 0.1.0 2016/04/30
+ * @version 0.1.0 2016/05/18
  * @author ExBin Project (http://exbin.org)
  */
 public class DeltaHexModule implements XBApplicationModule {
@@ -61,6 +66,7 @@ public class DeltaHexModule implements XBApplicationModule {
     private FindReplaceHandler findReplaceHandler;
     private ToolsOptionsHandler toolsOptionsHandler;
     private WordWrappingHandler wordWrappingHandler;
+    private EncodingsHandler encodingsHandler;
     private GoToLineHandler goToLineHandler;
     private PropertiesHandler propertiesHandler;
     private PrintHandler printHandler;
@@ -92,9 +98,17 @@ public class DeltaHexModule implements XBApplicationModule {
         frameModule.registerStatusBar(MODULE_ID, TEXT_STATUS_BAR_ID, textStatusPanel);
         frameModule.switchStatusBar(TEXT_STATUS_BAR_ID);
         ((HexPanel) getEditorProvider()).registerTextStatus(textStatusPanel);
+        if (encodingsHandler != null) {
+            encodingsHandler.setTextEncodingStatus(textStatusPanel);
+        }
     }
 
     public void registerOptionsMenuPanels() {
+        getEncodingsHandler();
+        encodingsHandler.encodingsRebuild();
+
+        GuiMenuModuleApi menuModule = application.getModuleRepository().getModuleByInterface(GuiMenuModuleApi.class);
+        menuModule.registerMenuItem(GuiFrameModuleApi.TOOLS_MENU_ID, MODULE_ID, encodingsHandler.getToolsEncodingMenu(), new MenuPosition(PositionMode.TOP_LAST));
     }
 
     public void registerOptionsPanels() {
@@ -132,6 +146,32 @@ public class DeltaHexModule implements XBApplicationModule {
         };
 
         optionsModule.extendAppearanceOptionsPanel(new HexAppearanceOptionsPanel(textAppearancePanelFrame));
+
+        TextEncodingPanelApi textEncodingPanelFrame = new TextEncodingPanelApi() {
+            @Override
+            public List<String> getEncodings() {
+                return getEncodingsHandler().getEncodings();
+            }
+
+            @Override
+            public String getSelectedEncoding() {
+                return ((HexPanel) getEditorProvider()).getCharset().name();
+            }
+
+            @Override
+            public void setEncodings(List<String> encodings) {
+                getEncodingsHandler().setEncodings(encodings);
+                getEncodingsHandler().encodingsRebuild();
+            }
+
+            @Override
+            public void setSelectedEncoding(String encoding) {
+                if (encoding != null) {
+                    ((HexPanel) getEditorProvider()).setCharset(Charset.forName(encoding));
+                }
+            }
+        };
+        optionsModule.addOptionsPanel(new TextEncodingOptionsPanel(textEncodingPanelFrame));
     }
 
     public void registerWordWrapping() {
@@ -195,6 +235,15 @@ public class DeltaHexModule implements XBApplicationModule {
         return propertiesHandler;
     }
 
+    private EncodingsHandler getEncodingsHandler() {
+        if (encodingsHandler == null) {
+            encodingsHandler = new EncodingsHandler(application, (HexPanel) getEditorProvider(), getTextStatusPanel());
+            encodingsHandler.init();
+        }
+
+        return encodingsHandler;
+    }
+
     private PrintHandler getPrintHandler() {
         if (printHandler == null) {
             printHandler = new PrintHandler(application, (HexPanel) getEditorProvider());
@@ -248,5 +297,4 @@ public class DeltaHexModule implements XBApplicationModule {
         menuModule.buildMenu(popupMenu, HEX_POPUP_MENU_ID);
         return popupMenu;
     }
-
 }

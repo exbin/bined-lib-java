@@ -25,7 +25,6 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.exbin.deltahex.CaretPosition;
@@ -375,7 +374,7 @@ public class HexCommandHandler implements HexadecimalCommandHandler {
                     long dataPosition = caret.getDataPosition();
 
                     HexCommand modifyCommand = null;
-                    byte[] bytes = ((String) insertedData).getBytes(Charset.forName("UTF-8"));
+                    byte[] bytes = ((String) insertedData).getBytes(hexadecimal.getCharset());
                     int dataSize = bytes.length;
                     HexadecimalData pastedData = new XBHexadecimalData(bytes);
                     long insertionPosition = dataPosition;

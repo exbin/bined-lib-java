@@ -15,7 +15,8 @@
  */
 package org.exbin.framework.deltahex.panel;
 
-import org.exbin.framework.deltahex.HexStatusApi;
+import org.exbin.framework.deltahex.HexPositionStatusApi;
+import org.exbin.framework.editor.text.TextEncodingStatusApi;
 
 /**
  * Hexadecimal editor status panel.
@@ -23,7 +24,7 @@ import org.exbin.framework.deltahex.HexStatusApi;
  * @version 0.1.0 2016/04/22
  * @author ExBin Project (http://exbin.org)
  */
-public class HexStatusPanel extends javax.swing.JPanel implements HexStatusApi {
+public class HexStatusPanel extends javax.swing.JPanel implements HexPositionStatusApi, TextEncodingStatusApi {
 
     public HexStatusPanel() {
         initComponents();

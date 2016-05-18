@@ -15,9 +15,6 @@
  */
 package org.exbin.deltahex;
 
-import org.exbin.deltahex.component.DefaultCommandHandler;
-import org.exbin.deltahex.component.Hexadecimal;
-
 /**
  * Interface for hexadecimal data manipulation.
  *

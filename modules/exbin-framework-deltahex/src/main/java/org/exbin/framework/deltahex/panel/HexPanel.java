@@ -51,20 +51,20 @@ import org.exbin.framework.gui.editor.api.XBEditorProvider;
 import org.exbin.framework.gui.file.api.FileType;
 import org.exbin.framework.gui.menu.api.ClipboardActionsUpdateListener;
 import org.exbin.framework.gui.menu.api.ClipboardActionsHandler;
-import org.exbin.framework.deltahex.HexStatusApi;
 import org.exbin.framework.deltahex.XBHexadecimalData;
 import org.exbin.framework.deltahex.operation.HexCommandHandler;
 import org.exbin.framework.deltahex.operation.HexUndoHandler;
+import org.exbin.framework.editor.text.TextCharsetApi;
 import org.exbin.xbup.core.type.XBData;
 import org.exbin.xbup.operation.undo.XBUndoUpdateListener;
 
 /**
  * Hexadecimal editor panel.
  *
- * @version 0.1.0 2016/05/17
+ * @version 0.1.0 2016/05/18
  * @author ExBin Project (http://exbin.org)
  */
-public class HexPanel extends javax.swing.JPanel implements XBEditorProvider, ClipboardActionsHandler {
+public class HexPanel extends javax.swing.JPanel implements XBEditorProvider, ClipboardActionsHandler, TextCharsetApi {
 
     private Hexadecimal hexadecimal;
     private HexUndoHandler undoHandler;
@@ -72,12 +72,11 @@ public class HexPanel extends javax.swing.JPanel implements XBEditorProvider, Cl
     private FileType fileType;
     private Object highlight;
     private Color foundTextBackgroundColor;
-    private Charset charset;
     private Font defaultFont;
     private Color[] defaultColors;
     private PropertyChangeListener propertyChangeListener;
     private CharsetChangeListener charsetChangeListener = null;
-    private HexStatusApi textStatus = null;
+    private HexStatusPanel statusPanel = null;
     private ClipboardActionsUpdateListener clipboardActionsUpdateListener;
 
     public HexPanel() {
@@ -121,7 +120,7 @@ public class HexPanel extends javax.swing.JPanel implements XBEditorProvider, Cl
         fileName = "";
         highlight = null;
         foundTextBackgroundColor = Color.YELLOW;
-        charset = Charset.forName(TextEncodingPanel.ENCODING_UTF8);
+        hexadecimal.setCharset(Charset.forName(TextEncodingPanel.ENCODING_UTF8));
         defaultFont = hexadecimal.getFont();
         defaultColors = new Color[5];
         defaultColors[0] = new Color(hexadecimal.getForeground().getRGB());
@@ -470,12 +469,14 @@ public class HexPanel extends javax.swing.JPanel implements XBEditorProvider, Cl
         hexadecimal.addSelectionChangedListener(listener);
     }
 
+    @Override
     public Charset getCharset() {
-        return charset;
+        return hexadecimal.getCharset();
     }
 
+    @Override
     public void setCharset(Charset charset) {
-        this.charset = charset;
+        hexadecimal.setCharset(charset);
     }
 
     public Font getDefaultFont() {
@@ -516,7 +517,7 @@ public class HexPanel extends javax.swing.JPanel implements XBEditorProvider, Cl
     }
 
     private void changeCharset(Charset charset) {
-        this.charset = charset;
+        hexadecimal.setCharset(charset);
         if (charsetChangeListener != null) {
             charsetChangeListener.charsetChanged();
         }
@@ -527,8 +528,8 @@ public class HexPanel extends javax.swing.JPanel implements XBEditorProvider, Cl
         return this;
     }
 
-    public void registerTextStatus(HexStatusApi textStatusApi) {
-        this.textStatus = textStatusApi;
+    public void registerTextStatus(HexStatusPanel hexStatusPanel) {
+        this.statusPanel = hexStatusPanel;
         attachCaretListener(new Hexadecimal.CaretMovedListener() {
             @Override
             public void caretMoved(CaretPosition caretPosition, HexadecimalCaret.Section section) {
@@ -536,7 +537,7 @@ public class HexPanel extends javax.swing.JPanel implements XBEditorProvider, Cl
                 if (caretPosition.isLowerHalf()) {
                     position += ".5";
                 }
-                textStatus.setCursorPosition(position);
+                statusPanel.setCursorPosition(position);
             }
         });
 
@@ -544,20 +545,19 @@ public class HexPanel extends javax.swing.JPanel implements XBEditorProvider, Cl
             @Override
             public void selectionChanged(Hexadecimal.SelectionRange selection) {
                 if (selection == null) {
-                    textStatus.setSelectionPosition("", "");
+                    statusPanel.setSelectionPosition("", "");
                 } else {
                     String start = String.valueOf(selection.getFirst());
                     String end = String.valueOf(selection.getLast());
-                    textStatus.setSelectionPosition(start, end);
+                    statusPanel.setSelectionPosition(start, end);
                 }
             }
         });
 
         setCharsetChangeListener(new HexPanel.CharsetChangeListener() {
-
             @Override
             public void charsetChanged() {
-                textStatus.setEncoding(getCharset().name());
+                statusPanel.setEncoding(getCharset().name());
             }
         });
     }
