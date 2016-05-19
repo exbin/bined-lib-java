@@ -15,9 +15,9 @@
  */
 package org.exbin.framework.deltahex.operation;
 
-import org.exbin.deltahex.EditableHexadecimalData;
-import org.exbin.deltahex.component.Hexadecimal;
-import org.exbin.framework.deltahex.XBHexadecimalData;
+import org.exbin.deltahex.data.EditableHexadecimalData;
+import org.exbin.deltahex.Hexadecimal;
+import org.exbin.deltahex.delta.MemoryHexadecimalData;
 import org.exbin.xbup.operation.Operation;
 
 /**
@@ -32,7 +32,7 @@ public class DeleteCharEditDataOperation extends CharEditDataOperation {
     private static final char DELETE_CHAR = (char) 0x7f;
 
     private long position;
-    private final XBHexadecimalData undoData = new XBHexadecimalData();
+    private final MemoryHexadecimalData undoData = new MemoryHexadecimalData();
 
     public DeleteCharEditDataOperation(Hexadecimal hexadecimal, long startPosition) {
         super(hexadecimal);

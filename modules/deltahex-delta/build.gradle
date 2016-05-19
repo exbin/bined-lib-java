@@ -1,0 +1,24 @@
+group = 'org.exbin.deltahex'
+ext.libraryName = 'Delta Hexadecimal Delta-Support Library'
+ext.libraryDescription = 'Library for delta data source'
+
+apply from: '../modules.gradle'
+
+if (!hasProperty('mainClass')) {
+    ext.mainClass = ''
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    flatDir {
+        dirs "../../lib"
+    }
+}
+
+dependencies {
+    compile(project(':modules:deltahex'))
+    compile "org.exbin.xbup:xbup-core:${xbupVersion}"
+    testCompile group : 'junit', name: 'junit', version: '4.10'
+    testCompile project(path: ':modules:deltahex', configuration: 'tests')
+}

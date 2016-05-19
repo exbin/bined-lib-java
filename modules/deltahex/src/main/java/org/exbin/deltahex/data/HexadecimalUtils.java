@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.deltahex;
+package org.exbin.deltahex.data;
 
 /**
  * Hexadecimal editor component utilities.
@@ -58,7 +58,7 @@ public class HexadecimalUtils {
      * checking.
      *
      * @param value long value
-     * @return 8 hexadecimal character
+     * @return 8 hexadecimal characters
      */
     public static char[] longToHexChars(long value) {
         char[] result = new char[8];

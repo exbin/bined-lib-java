@@ -1,6 +1,5 @@
 rootProject.name = 'deltahex-example'
 
 include ":modules:deltahex"
-include ":modules:exbin-framework-deltahex"
 
 apply from: '../tools-settings.gradle'

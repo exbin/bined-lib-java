@@ -13,34 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.framework.deltahex;
+package org.exbin.deltahex.delta;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import org.exbin.deltahex.EditableHexadecimalData;
-import org.exbin.deltahex.HexadecimalData;
+import org.exbin.deltahex.data.EditableHexadecimalData;
+import org.exbin.deltahex.data.HexadecimalData;
 import org.exbin.xbup.core.type.XBData;
 
 /**
  * Encapsulation of data for hexadecimal editor.
  *
- * @version 0.1.0 2016/05/13
+ * @version 0.1.0 2016/05/19
  * @author ExBin Project (http://exbin.org)
  */
-public class XBHexadecimalData implements EditableHexadecimalData {
+public class MemoryHexadecimalData implements EditableHexadecimalData {
 
     private final XBData data;
 
-    public XBHexadecimalData() {
+    public MemoryHexadecimalData() {
         data = new XBData();
     }
 
-    public XBHexadecimalData(XBData data) {
+    public MemoryHexadecimalData(XBData data) {
         this.data = data;
     }
 
-    public XBHexadecimalData(byte[] data) {
+    public MemoryHexadecimalData(byte[] data) {
         this.data = new XBData();
         this.data.insert(0, data);
     }
@@ -68,7 +68,7 @@ public class XBHexadecimalData implements EditableHexadecimalData {
     @Override
     public void insert(long startFrom, HexadecimalData insertedData) {
         // TODO general support for HexadecimalData
-        data.insert(startFrom, ((XBHexadecimalData) insertedData).data);
+        data.insert(startFrom, ((MemoryHexadecimalData) insertedData).data);
     }
 
     @Override
@@ -103,11 +103,11 @@ public class XBHexadecimalData implements EditableHexadecimalData {
 
     @Override
     public HexadecimalData copy() {
-        return new XBHexadecimalData(data.copy());
+        return new MemoryHexadecimalData(data.copy());
     }
 
     @Override
     public HexadecimalData copy(long startFrom, long length) {
-        return new XBHexadecimalData(data.copy(startFrom, length));
+        return new MemoryHexadecimalData(data.copy(startFrom, length));
     }
 }

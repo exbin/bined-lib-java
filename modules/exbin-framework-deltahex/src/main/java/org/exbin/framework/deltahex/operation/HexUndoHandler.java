@@ -17,7 +17,7 @@ package org.exbin.framework.deltahex.operation;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.exbin.deltahex.component.Hexadecimal;
+import org.exbin.deltahex.Hexadecimal;
 import org.exbin.xbup.operation.Command;
 import org.exbin.xbup.operation.undo.XBUndoHandler;
 import org.exbin.xbup.operation.undo.XBUndoUpdateListener;

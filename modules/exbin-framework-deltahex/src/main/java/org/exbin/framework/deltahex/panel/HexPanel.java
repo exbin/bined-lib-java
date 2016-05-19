@@ -37,13 +37,14 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.text.Document;
 import org.exbin.deltahex.CaretPosition;
-import org.exbin.deltahex.EditableHexadecimalData;
-import org.exbin.deltahex.HexadecimalData;
+import org.exbin.deltahex.data.EditableHexadecimalData;
+import org.exbin.deltahex.data.HexadecimalData;
 import org.exbin.xbup.core.block.declaration.local.XBLFormatDecl;
 import org.exbin.xbup.core.parser.XBProcessingException;
 import org.exbin.xbup.core.serial.XBPSerialReader;
-import org.exbin.deltahex.component.Hexadecimal;
-import org.exbin.deltahex.component.HexadecimalCaret;
+import org.exbin.deltahex.Hexadecimal;
+import org.exbin.deltahex.HexadecimalCaret;
+import org.exbin.deltahex.delta.MemoryHexadecimalData;
 import org.exbin.framework.deltahex.dialog.FindHexDialog;
 import org.exbin.framework.editor.text.dialog.TextFontDialog;
 import org.exbin.framework.editor.text.panel.TextEncodingPanel;
@@ -51,7 +52,6 @@ import org.exbin.framework.gui.editor.api.XBEditorProvider;
 import org.exbin.framework.gui.file.api.FileType;
 import org.exbin.framework.gui.menu.api.ClipboardActionsUpdateListener;
 import org.exbin.framework.gui.menu.api.ClipboardActionsHandler;
-import org.exbin.framework.deltahex.XBHexadecimalData;
 import org.exbin.framework.deltahex.operation.HexCommandHandler;
 import org.exbin.framework.deltahex.operation.HexUndoHandler;
 import org.exbin.framework.editor.text.TextCharsetApi;
@@ -61,7 +61,7 @@ import org.exbin.xbup.operation.undo.XBUndoUpdateListener;
 /**
  * Hexadecimal editor panel.
  *
- * @version 0.1.0 2016/05/18
+ * @version 0.1.0 2016/05/19
  * @author ExBin Project (http://exbin.org)
  */
 public class HexPanel extends javax.swing.JPanel implements XBEditorProvider, ClipboardActionsHandler, TextCharsetApi {
@@ -69,8 +69,6 @@ public class HexPanel extends javax.swing.JPanel implements XBEditorProvider, Cl
     private Hexadecimal hexadecimal;
     private HexUndoHandler undoHandler;
     private String fileName;
-    private FileType fileType;
-    private Object highlight;
     private Color foundTextBackgroundColor;
     private Font defaultFont;
     private Color[] defaultColors;
@@ -93,7 +91,13 @@ public class HexPanel extends javax.swing.JPanel implements XBEditorProvider, Cl
 
     private void init() {
         hexadecimal = new Hexadecimal();
-        hexadecimal.setData(new XBHexadecimalData(new XBData()));
+//        try {
+//            // Testing
+//            hexadecimal.setData(new DeltaHexadecimalData(new DeltaDataSource(new File("/home/hajdam/Projekty/exbin/deltahex-java/modules/deltahex/src/test/resources/org/exbin/deltahex/resources/test/allbytes.dat"))));
+//        } catch (IOException ex) {
+//            Logger.getLogger(HexPanel.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+        hexadecimal.setData(new MemoryHexadecimalData(new XBData()));
         hexadecimal.setHandleClipboard(false);
         hexadecimal.addSelectionChangedListener(new Hexadecimal.SelectionChangedListener() {
             @Override
@@ -118,7 +122,6 @@ public class HexPanel extends javax.swing.JPanel implements XBEditorProvider, Cl
 
         textAreaScrollPane.setViewportView(hexadecimal);
         fileName = "";
-        highlight = null;
         foundTextBackgroundColor = Color.YELLOW;
         hexadecimal.setCharset(Charset.forName(TextEncodingPanel.ENCODING_UTF8));
         defaultFont = hexadecimal.getFont();
@@ -129,19 +132,7 @@ public class HexPanel extends javax.swing.JPanel implements XBEditorProvider, Cl
         defaultColors[3] = new Color(hexadecimal.getSelectionBackgroundColor().getRGB());
         defaultColors[4] = foundTextBackgroundColor;
 
-        // Listener for undoManagement and redo events
-//        textArea.getDocument().addUndoableEditListener(new UndoableEditListener() {
-//            @Override
-//            public void undoableEditHappened(UndoableEditEvent evt) {
-//                undoManagement.undoableEditHappened(evt);
-//
-//                if (undoUpdateListener != null) {
-//                    undoUpdateListener.undoChanged();
-//                }
-//            }
-//        });
         addPropertyChangeListener(new PropertyChangeListener() {
-
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 if (propertyChangeListener != null) {
@@ -483,13 +474,8 @@ public class HexPanel extends javax.swing.JPanel implements XBEditorProvider, Cl
         return defaultFont;
     }
 
-    public void setText(String text) {
-//        textArea.setText(text);
-    }
-
     @Override
     public void setFileType(FileType fileType) {
-        this.fileType = fileType;
     }
 
     @Override
@@ -575,7 +561,7 @@ public class HexPanel extends javax.swing.JPanel implements XBEditorProvider, Cl
 
     @Override
     public boolean canSelectAll() {
-        return true; // textArea.getSelectionEnd() > textArea.getSelectionStart();
+        return true;
     }
 
     @Override
@@ -584,7 +570,6 @@ public class HexPanel extends javax.swing.JPanel implements XBEditorProvider, Cl
     }
 
     public interface CharsetChangeListener {
-
         public void charsetChanged();
     }
 }

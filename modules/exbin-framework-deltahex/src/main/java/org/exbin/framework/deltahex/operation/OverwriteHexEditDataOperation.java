@@ -15,9 +15,9 @@
  */
 package org.exbin.framework.deltahex.operation;
 
-import org.exbin.deltahex.EditableHexadecimalData;
-import org.exbin.deltahex.component.Hexadecimal;
-import org.exbin.framework.deltahex.XBHexadecimalData;
+import org.exbin.deltahex.data.EditableHexadecimalData;
+import org.exbin.deltahex.Hexadecimal;
+import org.exbin.deltahex.delta.MemoryHexadecimalData;
 import org.exbin.xbup.operation.Operation;
 
 /**
@@ -31,7 +31,7 @@ public class OverwriteHexEditDataOperation extends HexEditDataOperation {
     private final long startPosition;
     private final boolean startLowerHalf;
     private long length = 0;
-    private final XBHexadecimalData undoData = new XBHexadecimalData();
+    private final MemoryHexadecimalData undoData = new MemoryHexadecimalData();
 
     private boolean lowerHalf = false;
 

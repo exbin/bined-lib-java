@@ -15,8 +15,8 @@
  */
 package org.exbin.framework.deltahex.operation;
 
-import org.exbin.deltahex.EditableHexadecimalData;
-import org.exbin.deltahex.component.Hexadecimal;
+import org.exbin.deltahex.data.EditableHexadecimalData;
+import org.exbin.deltahex.Hexadecimal;
 import org.exbin.xbup.operation.Operation;
 
 /**

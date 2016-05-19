@@ -18,6 +18,7 @@ repositories {
 
 dependencies {
     compile(project(':modules:deltahex'))
+    compile(project(':modules:deltahex-delta'))
     compile "org.exbin.xbup:xbup-core:${xbupVersion}"
     compile "org.exbin.framework:exbin-framework:${frameworkVersion}"
     compile "org.exbin.framework:exbin-framework-api:${frameworkVersion}"

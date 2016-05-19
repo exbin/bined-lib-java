@@ -15,10 +15,10 @@
  */
 package org.exbin.framework.deltahex.operation;
 
-import org.exbin.deltahex.EditableHexadecimalData;
-import org.exbin.deltahex.HexadecimalData;
-import org.exbin.deltahex.component.Hexadecimal;
-import org.exbin.framework.deltahex.XBHexadecimalData;
+import org.exbin.deltahex.data.EditableHexadecimalData;
+import org.exbin.deltahex.data.HexadecimalData;
+import org.exbin.deltahex.Hexadecimal;
+import org.exbin.deltahex.delta.MemoryHexadecimalData;
 import org.exbin.xbup.operation.Operation;
 
 /**
@@ -92,7 +92,7 @@ public class InsertHexEditDataOperation extends HexEditDataOperation {
     @Override
     public HexOperation[] generateUndo() {
         if (trailing) {
-            XBHexadecimalData undoData = new XBHexadecimalData();
+            MemoryHexadecimalData undoData = new MemoryHexadecimalData();
             HexadecimalData data = hexadecimal.getData();
             byte value = (byte) ((data.getByte(startPosition) & 0xf0) | (data.getByte(startPosition + length) & 0xf));
             undoData.insert(0, new byte[]{value});

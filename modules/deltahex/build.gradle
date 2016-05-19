@@ -1,6 +1,6 @@
 group = 'org.exbin.deltahex'
 ext.libraryName = 'Delta Hexadecimal Core Library'
-ext.libraryDescription = 'Library delta hexadecimal editor'
+ext.libraryDescription = 'Library for delta hexadecimal editor component'
 
 apply from: '../modules.gradle'
 

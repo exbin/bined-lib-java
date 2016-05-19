@@ -15,8 +15,7 @@
  */
 package org.exbin.framework.deltahex.operation;
 
-import org.exbin.deltahex.component.Hexadecimal;
-import org.exbin.xbup.operation.CompoundCommand;
+import org.exbin.deltahex.Hexadecimal;
 
 /**
  * Abstract operation for editing data.

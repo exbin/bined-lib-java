@@ -16,8 +16,7 @@
  */
 package org.exbin.framework.deltahex.operation.command;
 
-import org.exbin.deltahex.component.Hexadecimal;
-import org.exbin.framework.deltahex.command.command.HexCommandType;
+import org.exbin.deltahex.Hexadecimal;
 import org.exbin.framework.deltahex.operation.RemoveDataOperation;
 
 /**

@@ -15,11 +15,10 @@
  */
 package org.exbin.framework.deltahex.operation;
 
-import java.util.Arrays;
-import org.exbin.deltahex.EditableHexadecimalData;
-import org.exbin.deltahex.HexadecimalData;
-import org.exbin.deltahex.component.Hexadecimal;
-import org.exbin.framework.deltahex.XBHexadecimalData;
+import org.exbin.deltahex.data.EditableHexadecimalData;
+import org.exbin.deltahex.data.HexadecimalData;
+import org.exbin.deltahex.Hexadecimal;
+import org.exbin.deltahex.delta.MemoryHexadecimalData;
 import org.exbin.xbup.operation.Operation;
 
 /**
@@ -32,7 +31,7 @@ public class OverwriteCharEditDataOperation extends CharEditDataOperation {
 
     private final long startPosition;
     private long length = 0;
-    private final XBHexadecimalData undoData = new XBHexadecimalData();
+    private final MemoryHexadecimalData undoData = new MemoryHexadecimalData();
 
     public OverwriteCharEditDataOperation(Hexadecimal hexadecimal, long startPosition) {
         super(hexadecimal);

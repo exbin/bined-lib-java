@@ -15,16 +15,17 @@
  */
 package org.exbin.deltahex.example;
 
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
-import javax.swing.border.Border;
-import org.exbin.deltahex.component.Hexadecimal;
-import org.exbin.framework.deltahex.XBHexadecimalData;
-import org.exbin.xbup.core.type.XBData;
+import org.exbin.deltahex.Hexadecimal;
+import org.exbin.deltahex.data.ByteEditableHexadecimalData;
 
 /**
  * Hexadecimal editor examples.
  *
- * @version 0.1.0 2016/04/09
+ * @version 0.1.0 2016/05/19
  * @author ExBin Project (http://exbin.org)
  */
 public class DeltaHexExample {
@@ -42,10 +43,13 @@ public class DeltaHexExample {
         final DeltaHexExamplePanel panel = new DeltaHexExamplePanel();
         frame.add(panel);
         final Hexadecimal hexadecimal = new Hexadecimal();
-        hexadecimal.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        XBData data = new XBData();
-        data.loadFromStream(hexadecimal.getClass().getResourceAsStream("/org/exbin/deltahex/example/resources/lorem_1.txt"));
-        hexadecimal.setData(new XBHexadecimalData(data));
+        ByteEditableHexadecimalData data = new ByteEditableHexadecimalData();
+        try {
+            data.loadFromStream(hexadecimal.getClass().getResourceAsStream("/org/exbin/deltahex/example/resources/lorem_1.txt"));
+        } catch (IOException ex) {
+            Logger.getLogger(DeltaHexExample.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        hexadecimal.setData(data);
         panel.setHexadecimal(hexadecimal);
 
         java.awt.EventQueue.invokeLater(new Runnable() {

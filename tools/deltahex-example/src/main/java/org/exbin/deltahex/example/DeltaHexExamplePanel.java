@@ -16,10 +16,9 @@
 package org.exbin.deltahex.example;
 
 import java.awt.BorderLayout;
-import javax.swing.event.ChangeEvent;
 import org.exbin.deltahex.CaretPosition;
-import org.exbin.deltahex.component.Hexadecimal;
-import org.exbin.deltahex.component.HexadecimalCaret;
+import org.exbin.deltahex.Hexadecimal;
+import org.exbin.deltahex.HexadecimalCaret;
 
 /**
  * Hexadecimal editor example panel.

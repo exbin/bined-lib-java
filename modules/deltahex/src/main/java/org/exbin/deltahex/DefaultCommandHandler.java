@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.deltahex.component;
+package org.exbin.deltahex;
 
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
@@ -28,11 +28,9 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.exbin.deltahex.CaretPosition;
-import org.exbin.deltahex.EditableHexadecimalData;
-import org.exbin.deltahex.HexadecimalCommandHandler;
-import org.exbin.deltahex.HexadecimalData;
-import static org.exbin.deltahex.component.Hexadecimal.NO_MODIFIER;
+import static org.exbin.deltahex.Hexadecimal.NO_MODIFIER;
+import org.exbin.deltahex.data.EditableHexadecimalData;
+import org.exbin.deltahex.data.HexadecimalData;
 
 /**
  * Default hexadecimal editor command handler.

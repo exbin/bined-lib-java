@@ -13,9 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.framework.deltahex.command.command;
-
-import org.exbin.framework.deltahex.command.*;
+package org.exbin.framework.deltahex.operation.command;
 
 /**
  * Operation type enumeration.

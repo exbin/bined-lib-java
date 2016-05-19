@@ -16,9 +16,9 @@
 package org.exbin.framework.deltahex.operation;
 
 import java.io.IOException;
-import org.exbin.deltahex.EditableHexadecimalData;
-import org.exbin.deltahex.HexadecimalData;
-import org.exbin.deltahex.component.Hexadecimal;
+import org.exbin.deltahex.data.EditableHexadecimalData;
+import org.exbin.deltahex.data.HexadecimalData;
+import org.exbin.deltahex.Hexadecimal;
 import org.exbin.xbup.core.block.XBTEditableBlock;
 import org.exbin.xbup.core.parser.XBParserMode;
 import org.exbin.xbup.core.parser.XBProcessingException;
