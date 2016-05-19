@@ -35,7 +35,7 @@ import org.exbin.deltahex.data.HexadecimalData;
 /**
  * Default hexadecimal editor command handler.
  *
- * @version 0.1.0 2016/05/02
+ * @version 0.1.0 2016/05/19
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCommandHandler implements HexadecimalCommandHandler {
@@ -47,7 +47,12 @@ public class DefaultCommandHandler implements HexadecimalCommandHandler {
 
     public DefaultCommandHandler(Hexadecimal hexadecimal) {
         this.hexadecimal = hexadecimal;
-        clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        try {
+            clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        } catch (java.awt.HeadlessException ex) {
+            // Create clipboard if system one not available
+            clipboard = new Clipboard("test");
+        }
         clipboard.addFlavorListener(new FlavorListener() {
             @Override
             public void flavorsChanged(FlavorEvent e) {
