@@ -65,7 +65,7 @@ public class Hexadecimal extends JComponent {
     public static final int DECORATION_DEFAULT = DECORATION_HEX_PREVIEW_LINE | DECORATION_LINENUM_HEX_LINE;
     public static final int MOUSE_SCROLL_LINES = 3;
 
-    private final int metaMask = java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
+    private int metaMask;
 
     private HexadecimalData data;
     private Charset charset = Charset.defaultCharset();
@@ -129,6 +129,11 @@ public class Hexadecimal extends JComponent {
         cursorColor = UIManager.getColor("TextArea.caretForeground");
         whiteSpaceColor = UIManager.getColor("TextArea.inactiveForeground");
 
+        try {
+            metaMask = java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
+        } catch (java.awt.HeadlessException ex) {
+            metaMask = java.awt.Event.CTRL_MASK;
+        }
         init();
     }
 
