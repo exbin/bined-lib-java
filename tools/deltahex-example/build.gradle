@@ -40,7 +40,7 @@ jar {
     manifest {
         attributes(
             'Main-Class': mainClass,
-            'Class-Path': configurations.runtime.collect {'../lib/' + it.getName() }.join(' ')
+            'Class-Path': configurations.runtime.collect {it.getName() }.join(' ')
         )
     }
 }

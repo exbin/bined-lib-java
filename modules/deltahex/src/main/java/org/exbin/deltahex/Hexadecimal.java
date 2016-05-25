@@ -46,13 +46,13 @@ import java.util.List;
 import javax.swing.JComponent;
 import javax.swing.JScrollBar;
 import javax.swing.UIManager;
-import org.exbin.deltahex.data.HexadecimalData;
 import org.exbin.deltahex.HexadecimalCaret.Section;
+import org.exbin.utils.binary_data.BinaryData;
 
 /**
  * Hex editor component.
  *
- * @version 0.1.0 2016/05/19
+ * @version 0.1.0 2016/05/24
  * @author ExBin Project (http://exbin.org)
  */
 public class Hexadecimal extends JComponent {
@@ -67,7 +67,7 @@ public class Hexadecimal extends JComponent {
 
     private int metaMask;
 
-    private HexadecimalData data;
+    private BinaryData data;
     private Charset charset = Charset.defaultCharset();
 
     private HexadecimalPainter painter;
@@ -127,7 +127,8 @@ public class Hexadecimal extends JComponent {
         mirrorSelectionColor = UIManager.getColor("TextArea.selectionForeground");
         mirrorSelectionBackgroundColor = Color.LIGHT_GRAY;
         cursorColor = UIManager.getColor("TextArea.caretForeground");
-        whiteSpaceColor = UIManager.getColor("TextArea.inactiveForeground");
+        Color foreground = super.getForeground();
+        whiteSpaceColor = new Color(foreground.getRed(), (foreground.getGreen() + 128) % 256, foreground.getBlue());
 
         try {
             metaMask = java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
@@ -542,11 +543,11 @@ public class Hexadecimal extends JComponent {
         return dimensionsCache.charWidth;
     }
 
-    public HexadecimalData getData() {
+    public BinaryData getData() {
         return data;
     }
 
-    public void setData(HexadecimalData data) {
+    public void setData(BinaryData data) {
         this.data = data;
         if (caret.getDataPosition() > data.getDataSize()) {
             caret.setCaretPosition(0);

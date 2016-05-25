@@ -19,15 +19,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.exbin.deltahex.data.ByteEditableHexadecimalData;
-import org.exbin.deltahex.data.EditableHexadecimalData;
+import org.exbin.utils.binary_data.ByteArrayEditableData;
+import org.exbin.utils.binary_data.EditableBinaryData;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
  * Tests for hexadecimal component.
  *
- * @version 0.1.0 2016/05/19
+ * @version 0.1.0 2016/05/24
  * @author ExBin Project (http://exbin.org)
  */
 public class HexadecimalTest {
@@ -52,7 +52,7 @@ public class HexadecimalTest {
     @Test
     public void testCopyPasteInOverwriteMode() {
         Hexadecimal hexadecimal = new Hexadecimal();
-        EditableHexadecimalData sampleData = getSampleData(SAMPLE_ALLBYTES);
+        EditableBinaryData sampleData = getSampleData(SAMPLE_ALLBYTES);
         hexadecimal.setData(sampleData);
         long dataSize = sampleData.getDataSize();
         hexadecimal.selectAll();
@@ -66,7 +66,7 @@ public class HexadecimalTest {
     public void testCopyPasteInInsertMode() {
         Hexadecimal hexadecimal = new Hexadecimal();
         hexadecimal.setEditationMode(Hexadecimal.EditationMode.INSERT);
-        EditableHexadecimalData sampleData = getSampleData(SAMPLE_ALLBYTES);
+        EditableBinaryData sampleData = getSampleData(SAMPLE_ALLBYTES);
         hexadecimal.setData(sampleData);
         long dataSize = sampleData.getDataSize();
         hexadecimal.selectAll();
@@ -79,7 +79,7 @@ public class HexadecimalTest {
     @Test
     public void testCopyPasteAtTheEnd() {
         Hexadecimal hexadecimal = new Hexadecimal();
-        EditableHexadecimalData sampleData = getSampleData(SAMPLE_ALLBYTES);
+        EditableBinaryData sampleData = getSampleData(SAMPLE_ALLBYTES);
         hexadecimal.setData(sampleData);
         long dataSize = sampleData.getDataSize();
         hexadecimal.selectAll();
@@ -90,8 +90,8 @@ public class HexadecimalTest {
         assertTrue(hexadecimal.getData().getDataSize() == (dataSize / 2 + dataSize));
     }
 
-    private EditableHexadecimalData getSampleData(String dataPath) {
-        ByteEditableHexadecimalData data = new ByteEditableHexadecimalData();
+    private EditableBinaryData getSampleData(String dataPath) {
+        ByteArrayEditableData data = new ByteArrayEditableData();
         try (InputStream stream = HexadecimalTest.class.getResourceAsStream(dataPath)) {
             data.loadFromStream(stream);
             stream.close();

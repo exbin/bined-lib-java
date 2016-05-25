@@ -29,13 +29,13 @@ import java.nio.charset.Charset;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import static org.exbin.deltahex.Hexadecimal.NO_MODIFIER;
-import org.exbin.deltahex.data.EditableHexadecimalData;
-import org.exbin.deltahex.data.HexadecimalData;
+import org.exbin.utils.binary_data.BinaryData;
+import org.exbin.utils.binary_data.EditableBinaryData;
 
 /**
  * Default hexadecimal editor command handler.
  *
- * @version 0.1.0 2016/05/19
+ * @version 0.1.0 2016/05/24
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCommandHandler implements HexadecimalCommandHandler {
@@ -92,22 +92,22 @@ public class DefaultCommandHandler implements HexadecimalCommandHandler {
                     value = Character.toLowerCase(keyValue) - 'a' + 10;
                 }
 
-                HexadecimalData data = hexadecimal.getData();
+                BinaryData data = hexadecimal.getData();
                 long dataPosition = hexadecimal.getDataPosition();
                 if (hexadecimal.getEditationMode() == Hexadecimal.EditationMode.OVERWRITE) {
                     if (dataPosition == hexadecimal.getData().getDataSize()) {
-                        ((EditableHexadecimalData) data).insert(dataPosition, 1);
+                        ((EditableBinaryData) data).insert(dataPosition, 1);
                     }
                     setHalfByte(value);
                 } else {
                     if (hexadecimal.isLowerHalf()) {
                         byte lowerHalf = (byte) (data.getByte(dataPosition) & 0xf);
                         if (lowerHalf > 0) {
-                            ((EditableHexadecimalData) data).insert(dataPosition + 1, 1);
-                            ((EditableHexadecimalData) data).setByte(dataPosition + 1, lowerHalf);
+                            ((EditableBinaryData) data).insert(dataPosition + 1, 1);
+                            ((EditableBinaryData) data).setByte(dataPosition + 1, lowerHalf);
                         }
                     } else {
-                        ((EditableHexadecimalData) data).insert(dataPosition, 1);
+                        ((EditableBinaryData) data).insert(dataPosition, 1);
                     }
                     setHalfByte(value);
                 }
@@ -117,7 +117,7 @@ public class DefaultCommandHandler implements HexadecimalCommandHandler {
         } else {
             char keyChar = keyValue;
             if (keyChar > 31 && hexadecimal.isValidChar(keyValue)) {
-                HexadecimalData data = hexadecimal.getData();
+                BinaryData data = hexadecimal.getData();
                 CaretPosition caretPosition = hexadecimal.getCaretPosition();
                 long dataPosition = caretPosition.getDataPosition();
                 byte[] bytes = hexadecimal.charToBytes(keyChar);
@@ -127,10 +127,10 @@ public class DefaultCommandHandler implements HexadecimalCommandHandler {
                         if (dataPosition + length > hexadecimal.getData().getDataSize()) {
                             length = (int) (hexadecimal.getData().getDataSize() - dataPosition);
                         }
-                        ((EditableHexadecimalData) data).remove(dataPosition, length);
+                        ((EditableBinaryData) data).remove(dataPosition, length);
                     }
                 }
-                ((EditableHexadecimalData) data).insert(dataPosition, bytes);
+                ((EditableBinaryData) data).insert(dataPosition, bytes);
                 hexadecimal.getCaret().setCaretPosition(dataPosition + bytes.length - 1);
                 hexadecimal.moveRight(Hexadecimal.NO_MODIFIER);
                 hexadecimal.revealCursor();
@@ -145,7 +145,7 @@ public class DefaultCommandHandler implements HexadecimalCommandHandler {
     }
 
     private void setHalfByte(long dataPosition, int value, boolean lowerHalf) {
-        HexadecimalData data = hexadecimal.getData();
+        BinaryData data = hexadecimal.getData();
         byte byteValue = data.getByte(dataPosition);
 
         if (lowerHalf) {
@@ -154,7 +154,7 @@ public class DefaultCommandHandler implements HexadecimalCommandHandler {
             byteValue = (byte) ((byteValue & 0xf) | (value << 4));
         }
 
-        ((EditableHexadecimalData) data).setByte(dataPosition, byteValue);
+        ((EditableBinaryData) data).setByte(dataPosition, byteValue);
     }
 
     @Override
@@ -169,7 +169,7 @@ public class DefaultCommandHandler implements HexadecimalCommandHandler {
             HexadecimalCaret caret = hexadecimal.getCaret();
             long dataPosition = caret.getDataPosition();
             if (dataPosition > 0 && dataPosition <= hexadecimal.getData().getDataSize()) {
-                ((EditableHexadecimalData) hexadecimal.getData()).remove(dataPosition - 1, 1);
+                ((EditableBinaryData) hexadecimal.getData()).remove(dataPosition - 1, 1);
                 caret.setLowerHalf(false);
                 hexadecimal.moveLeft(NO_MODIFIER);
                 caret.setLowerHalf(false);
@@ -191,7 +191,7 @@ public class DefaultCommandHandler implements HexadecimalCommandHandler {
             HexadecimalCaret caret = hexadecimal.getCaret();
             long dataPosition = caret.getDataPosition();
             if (dataPosition < hexadecimal.getData().getDataSize()) {
-                ((EditableHexadecimalData) hexadecimal.getData()).remove(dataPosition, 1);
+                ((EditableBinaryData) hexadecimal.getData()).remove(dataPosition, 1);
                 if (caret.isLowerHalf()) {
                     caret.setLowerHalf(false);
                 }
@@ -204,7 +204,7 @@ public class DefaultCommandHandler implements HexadecimalCommandHandler {
         Hexadecimal.SelectionRange selection = hexadecimal.getSelection();
         long first = selection.getFirst();
         long last = selection.getLast();
-        ((EditableHexadecimalData) hexadecimal.getData()).remove(first, last - first + 1);
+        ((EditableBinaryData) hexadecimal.getData()).remove(first, last - first + 1);
         hexadecimal.clearSelection();
         HexadecimalCaret caret = hexadecimal.getCaret();
         caret.setCaretPosition(first);
@@ -229,7 +229,7 @@ public class DefaultCommandHandler implements HexadecimalCommandHandler {
             long first = selection.getFirst();
             long last = selection.getLast();
 
-            HexadecimalData copy = ((EditableHexadecimalData) hexadecimal.getData()).copy(first, last - first + 1);
+            BinaryData copy = ((EditableBinaryData) hexadecimal.getData()).copy(first, last - first + 1);
 
             BinaryDataClipboardData binaryData = new BinaryDataClipboardData(copy);
             clipboard.setContents(binaryData, binaryData);
@@ -262,20 +262,20 @@ public class DefaultCommandHandler implements HexadecimalCommandHandler {
 
             try {
                 Object object = clipboard.getData(binaryDataFlavor);
-                if (object instanceof HexadecimalData) {
+                if (object instanceof BinaryData) {
                     HexadecimalCaret caret = hexadecimal.getCaret();
                     long dataPosition = caret.getDataPosition();
 
-                    HexadecimalData data = (HexadecimalData) object;
+                    BinaryData data = (BinaryData) object;
                     long dataSize = data.getDataSize();
                     if (hexadecimal.getEditationMode() == Hexadecimal.EditationMode.OVERWRITE) {
                         long toRemove = dataSize;
                         if (dataPosition + toRemove > hexadecimal.getData().getDataSize()) {
                             toRemove = hexadecimal.getData().getDataSize() - dataPosition;
                         }
-                        ((EditableHexadecimalData) hexadecimal.getData()).remove(dataPosition, toRemove);
+                        ((EditableBinaryData) hexadecimal.getData()).remove(dataPosition, toRemove);
                     }
-                    ((EditableHexadecimalData) hexadecimal.getData()).insert(hexadecimal.getDataPosition(), data);
+                    ((EditableBinaryData) hexadecimal.getData()).insert(hexadecimal.getDataPosition(), data);
 
                     caret.setCaretPosition(caret.getDataPosition() + dataSize);
                     caret.setLowerHalf(false);
@@ -304,9 +304,9 @@ public class DefaultCommandHandler implements HexadecimalCommandHandler {
                         if (dataPosition + toRemove > hexadecimal.getData().getDataSize()) {
                             toRemove = hexadecimal.getData().getDataSize() - dataPosition;
                         }
-                        ((EditableHexadecimalData) hexadecimal.getData()).remove(dataPosition, toRemove);
+                        ((EditableBinaryData) hexadecimal.getData()).remove(dataPosition, toRemove);
                     }
-                    ((EditableHexadecimalData) hexadecimal.getData()).insert(hexadecimal.getDataPosition(), bytes);
+                    ((EditableBinaryData) hexadecimal.getData()).insert(hexadecimal.getDataPosition(), bytes);
 
                     caret.setCaretPosition(caret.getDataPosition() + length);
                     caret.setLowerHalf(false);
@@ -326,9 +326,9 @@ public class DefaultCommandHandler implements HexadecimalCommandHandler {
 
     public class BinaryDataClipboardData implements Transferable, ClipboardOwner {
 
-        private final HexadecimalData data;
+        private final BinaryData data;
 
-        public BinaryDataClipboardData(HexadecimalData data) {
+        public BinaryDataClipboardData(BinaryData data) {
             this.data = data;
         }
 

@@ -21,13 +21,12 @@ import java.awt.Rectangle;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
-import org.exbin.deltahex.data.HexadecimalData;
-import org.exbin.deltahex.data.HexadecimalUtils;
+import org.exbin.utils.binary_data.BinaryData;
 
 /**
  * Hex editor painter.
  *
- * @version 0.1.0 2016/05/19
+ * @version 0.1.0 2016/05/24
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultHexadecimalPainter implements HexadecimalPainter {
@@ -305,7 +304,7 @@ public class DefaultHexadecimalPainter implements HexadecimalPainter {
     }
 
     public void paintText(Graphics g, long line, int linePositionX, int byteOnLine, int linePositionY, long dataPosition, int bytesPerBounds, int fontHeight, int charWidth) {
-        HexadecimalData data = hexadecimal.getData();
+        BinaryData data = hexadecimal.getData();
         Hexadecimal.ScrollPosition scrollPosition = hexadecimal.getScrollPosition();
         int positionY = linePositionY - hexadecimal.getSubFontSpace();
         g.setColor(hexadecimal.getForeground());

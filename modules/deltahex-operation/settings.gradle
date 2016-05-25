@@ -1,0 +1,5 @@
+rootProject.name = 'deltahex-operation'
+
+include ":modules:deltahex"
+
+apply from: '../modules-settings.gradle'

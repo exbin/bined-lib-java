@@ -20,18 +20,18 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.exbin.deltahex.data.EditableHexadecimalData;
-import org.exbin.deltahex.data.HexadecimalData;
+import org.exbin.utils.binary_data.BinaryData;
+import org.exbin.utils.binary_data.EditableBinaryData;
 
 /**
  * Basic implementation of hexadecimal data interface using byte array.
  *
- * @version 0.1.0 2016/05/19
+ * @version 0.1.0 2016/05/24
  * @author ExBin Project (http://exbin.org)
  */
-public class DeltaHexadecimalData implements EditableHexadecimalData {
+public class DeltaHexadecimalData implements EditableBinaryData {
 
-    private DeltaDataSource data;
+    private final DeltaDataSource data;
 
     public DeltaHexadecimalData(DeltaDataSource data) {
         this.data = data;
@@ -59,52 +59,122 @@ public class DeltaHexadecimalData implements EditableHexadecimalData {
     }
 
     @Override
-    public void saveToStream(OutputStream outputStream) throws IOException {
+    public void setDataSize(long l) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public HexadecimalData copy() {
+    public void setByte(long l, byte b) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public HexadecimalData copy(long startFrom, long length) {
+    public void insertUninitialized(long l, long l1) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void setDataSize(long size) {
+    public void insert(long l, long l1) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void setByte(long position, byte value) {
+    public void insert(long l, byte[] bytes) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void insert(long startFrom, long length) {
+    public void insert(long l, byte[] bytes, int i, int i1) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void insert(long startFrom, byte[] insertedData) {
+    public void insert(long l, BinaryData bd) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void insert(long startFrom, HexadecimalData insertedData) {
+    public void insert(long l, BinaryData bd, long l1, long l2) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void remove(long startFrom, long length) {
-        data.remove(startFrom, length);
+    public void replace(long l, BinaryData bd) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void loadFromStream(InputStream inputStream) throws IOException {
+    public void replace(long l, BinaryData bd, long l1, long l2) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void replace(long l, byte[] bytes) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void replace(long l, byte[] bytes, int i, int i1) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void fillData(long l, long l1) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void fillData(long l, long l1, byte b) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void remove(long l, long l1) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void clear() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void loadFromStream(InputStream in) throws IOException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public long loadFromStream(InputStream in, long l, long l1) throws IOException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void saveToStream(OutputStream out) throws IOException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public BinaryData copy() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public BinaryData copy(long l, long l1) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void copyToArray(long l, byte[] bytes, int i, int i1) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public OutputStream getDataOutputStream() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public InputStream getDataInputStream() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

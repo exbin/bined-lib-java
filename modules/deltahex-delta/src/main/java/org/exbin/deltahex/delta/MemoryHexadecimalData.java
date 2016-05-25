@@ -18,30 +18,30 @@ package org.exbin.deltahex.delta;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import org.exbin.deltahex.data.EditableHexadecimalData;
-import org.exbin.deltahex.data.HexadecimalData;
-import org.exbin.xbup.core.type.XBData;
+import org.exbin.utils.binary_data.BinaryData;
+import org.exbin.utils.binary_data.EditableBinaryData;
+import org.exbin.utils.binary_data.PagedData;
 
 /**
  * Encapsulation of data for hexadecimal editor.
  *
- * @version 0.1.0 2016/05/19
+ * @version 0.1.0 2016/05/25
  * @author ExBin Project (http://exbin.org)
  */
-public class MemoryHexadecimalData implements EditableHexadecimalData {
+public class MemoryHexadecimalData implements EditableBinaryData {
 
-    private final XBData data;
+    private final PagedData data;
 
     public MemoryHexadecimalData() {
-        data = new XBData();
+        data = new PagedData();
     }
 
-    public MemoryHexadecimalData(XBData data) {
+    public MemoryHexadecimalData(PagedData data) {
         this.data = data;
     }
 
     public MemoryHexadecimalData(byte[] data) {
-        this.data = new XBData();
+        this.data = new PagedData();
         this.data.insert(0, data);
     }
 
@@ -66,19 +66,14 @@ public class MemoryHexadecimalData implements EditableHexadecimalData {
     }
 
     @Override
-    public void insert(long startFrom, HexadecimalData insertedData) {
-        // TODO general support for HexadecimalData
+    public void insert(long startFrom, BinaryData insertedData) {
+        // TODO general support for BinaryData
         data.insert(startFrom, ((MemoryHexadecimalData) insertedData).data);
     }
 
     @Override
     public void remove(long startFrom, long length) {
         data.remove(startFrom, length);
-    }
-
-    @Override
-    public void loadFromStream(InputStream inputStream) throws IOException {
-        data.loadFromStream(inputStream);
     }
 
     @Override
@@ -102,12 +97,87 @@ public class MemoryHexadecimalData implements EditableHexadecimalData {
     }
 
     @Override
-    public HexadecimalData copy() {
-        return new MemoryHexadecimalData(data.copy());
+    public BinaryData copy() {
+        return data.copy();
     }
 
     @Override
-    public HexadecimalData copy(long startFrom, long length) {
-        return new MemoryHexadecimalData(data.copy(startFrom, length));
+    public BinaryData copy(long startFrom, long length) {
+        return data.copy(startFrom, length);
+    }
+
+    @Override
+    public void insertUninitialized(long startFrom, long length) {
+        data.insertUninitialized(startFrom, length);
+    }
+
+    @Override
+    public void insert(long startFrom, byte[] insertedData, int insertedDataOffset, int insertedDataLength) {
+        data.insert(startFrom, insertedData, insertedDataOffset, insertedDataLength);
+    }
+
+    @Override
+    public void insert(long startFrom, BinaryData insertedData, long insertedDataOffset, long insertedDataLength) {
+        data.insert(startFrom, insertedData, insertedDataOffset, insertedDataLength);
+    }
+
+    @Override
+    public void replace(long targetPosition, BinaryData replacingData) {
+        data.replace(targetPosition, replacingData);
+    }
+
+    @Override
+    public void replace(long targetPosition, BinaryData replacingData, long startFrom, long length) {
+        data.replace(targetPosition, replacingData, startFrom, length);
+    }
+
+    @Override
+    public void replace(long targetPosition, byte[] replacingData) {
+        data.replace(targetPosition, replacingData);
+    }
+
+    @Override
+    public void replace(long targetPosition, byte[] replacingData, int replacingDataOffset, int length) {
+        data.replace(targetPosition, replacingData, replacingDataOffset, length);
+    }
+
+    @Override
+    public void fillData(long startFrom, long length) {
+        data.fillData(startFrom, length);
+    }
+
+    @Override
+    public void fillData(long startFrom, long length, byte fill) {
+        data.fillData(startFrom, length, fill);
+    }
+
+    @Override
+    public void clear() {
+        data.clear();
+    }
+
+    @Override
+    public void loadFromStream(InputStream inputStream) throws IOException {
+        data.loadFromStream(inputStream);
+    }
+
+    @Override
+    public long loadFromStream(InputStream inputStream, long startFrom, long length) throws IOException {
+        return data.loadFromStream(inputStream, startFrom, length);
+    }
+
+    @Override
+    public OutputStream getDataOutputStream() {
+        return data.getDataOutputStream();
+    }
+
+    @Override
+    public void copyToArray(long startFrom, byte[] target, int offset, int length) {
+        data.copyToArray(startFrom, target, offset, length);
+    }
+
+    @Override
+    public InputStream getDataInputStream() {
+        return data.getDataInputStream();
     }
 }

@@ -2,6 +2,6 @@ rootProject.name = 'deltahex-java'
 
 include ":modules:deltahex"
 include ":modules:deltahex-delta"
-include ":modules:exbin-framework-deltahex"
+include ":modules:deltahex-operation"
 
 include ":tools:deltahex-example"

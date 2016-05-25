@@ -20,12 +20,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
 import org.exbin.deltahex.Hexadecimal;
-import org.exbin.deltahex.data.ByteEditableHexadecimalData;
+import org.exbin.utils.binary_data.ByteArrayEditableData;
 
 /**
  * Hexadecimal editor examples.
  *
- * @version 0.1.0 2016/05/19
+ * @version 0.1.0 2016/05/24
  * @author ExBin Project (http://exbin.org)
  */
 public class DeltaHexExample {
@@ -43,7 +43,7 @@ public class DeltaHexExample {
         final DeltaHexExamplePanel panel = new DeltaHexExamplePanel();
         frame.add(panel);
         final Hexadecimal hexadecimal = new Hexadecimal();
-        ByteEditableHexadecimalData data = new ByteEditableHexadecimalData();
+        ByteArrayEditableData data = new ByteArrayEditableData();
         try {
             data.loadFromStream(hexadecimal.getClass().getResourceAsStream("/org/exbin/deltahex/example/resources/lorem_1.txt"));
         } catch (IOException ex) {
