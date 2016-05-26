@@ -45,6 +45,10 @@ distributions {
                         include '*'
                         rename { filename -> p.name + ".jar" }
                     }
+                    into('') {
+                        from p.configurations.runtime
+                        include '*'
+                    }
                 }
             }
 
