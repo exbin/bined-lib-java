@@ -26,7 +26,7 @@ import org.exbin.utils.binary_data.BinaryData;
 /**
  * Hex editor painter.
  *
- * @version 0.1.0 2016/05/24
+ * @version 0.1.0 2016/05/25
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultHexadecimalPainter implements HexadecimalPainter {
@@ -77,14 +77,15 @@ public class DefaultHexadecimalPainter implements HexadecimalPainter {
             }
 
             g.setColor(hexadecimal.getForeground());
+            char[] chars = new char[2];
             if (hexadecimal.isCharFixedMode()) {
                 for (int i = 0; i < bytesPerBounds; i++) {
-                    char[] chars = HexadecimalUtils.byteToHexChars((byte) i);
+                    HexadecimalUtils.byteToHexChars(chars, (byte) i);
                     g.drawChars(chars, 0, 2, headerX + i * charWidth * 3, headerY);
                 }
             } else {
                 for (int i = 0; i < bytesPerBounds; i++) {
-                    char[] chars = HexadecimalUtils.byteToHexChars((byte) i);
+                    HexadecimalUtils.byteToHexChars(chars, (byte) i);
                     int startX = headerX + i * charWidth * 3;
                     drawCenteredChar(g, chars, 0, charWidth, startX, headerY);
                     drawCenteredChar(g, chars, 1, charWidth, startX, headerY);
@@ -153,8 +154,9 @@ public class DefaultHexadecimalPainter implements HexadecimalPainter {
         int positionY = hexRect.y - hexadecimal.getSubFontSpace() - scrollPosition.scrollLineOffset + hexadecimal.getLineHeight();
 
         g.setColor(hexadecimal.getForeground());
+        char[] lineNumberCode = new char[8];
         while (positionY <= maxY && dataPosition <= maxDataPosition) {
-            char[] lineNumberCode = HexadecimalUtils.longToHexChars(dataPosition);
+            HexadecimalUtils.longToHexChars(lineNumberCode, dataPosition, 8);
             if (hexadecimal.isCharFixedMode()) {
                 g.drawChars(lineNumberCode, 0, 8, compRect.x, positionY);
             } else {
@@ -258,7 +260,7 @@ public class DefaultHexadecimalPainter implements HexadecimalPainter {
         int bytesPerBounds = hexadecimal.getBytesPerBounds();
         int lineHeight = hexadecimal.getLineHeight();
 
-        if (hexadecimal.getBackgroundMode() == Hexadecimal.BackgroundMode.GRIDDED) {
+        if (hexadecimal.getViewMode() != Hexadecimal.ViewMode.PREVIEW && hexadecimal.getBackgroundMode() == Hexadecimal.BackgroundMode.GRIDDED) {
             g.setColor(hexadecimal.getOddBackgroundColor());
             int positionX = hexRect.x - scrollPosition.scrollByteOffset - scrollPosition.scrollBytePosition * charWidth;
             for (int i = 0; i < bytesPerBounds / 2; i++) {
@@ -272,13 +274,15 @@ public class DefaultHexadecimalPainter implements HexadecimalPainter {
         int byteOnLine = 0;
         long dataPosition = line * bytesPerBounds;
         long dataSize = hexadecimal.getData().getDataSize();
+        // Shared chars
+        char[] chars = new char[2];
         do {
             if (byteOnLine == 0) {
                 paintSelectionBackground(g, line, positionY + lineHeight, dataPosition, bytesPerBounds, lineHeight, charWidth);
             }
 
             if (dataPosition < dataSize || (dataPosition == dataSize && byteOnLine == 0)) {
-                paintText(g, line, positionX, byteOnLine, positionY + lineHeight, dataPosition, bytesPerBounds, lineHeight, charWidth);
+                paintText(g, line, positionX, byteOnLine, positionY + lineHeight, dataPosition, bytesPerBounds, lineHeight, charWidth, chars);
             } else {
                 break;
             }
@@ -303,7 +307,7 @@ public class DefaultHexadecimalPainter implements HexadecimalPainter {
         }
     }
 
-    public void paintText(Graphics g, long line, int linePositionX, int byteOnLine, int linePositionY, long dataPosition, int bytesPerBounds, int fontHeight, int charWidth) {
+    public void paintText(Graphics g, long line, int linePositionX, int byteOnLine, int linePositionY, long dataPosition, int bytesPerBounds, int fontHeight, int charWidth, char[] chars) {
         BinaryData data = hexadecimal.getData();
         Hexadecimal.ScrollPosition scrollPosition = hexadecimal.getScrollPosition();
         int positionY = linePositionY - hexadecimal.getSubFontSpace();
@@ -312,7 +316,7 @@ public class DefaultHexadecimalPainter implements HexadecimalPainter {
             byte dataByte = data.getByte(dataPosition);
             if (hexadecimal.getViewMode() != Hexadecimal.ViewMode.PREVIEW) {
                 int startX = linePositionX + byteOnLine * charWidth * 3;
-                char[] chars = HexadecimalUtils.byteToHexChars(dataByte);
+                HexadecimalUtils.byteToHexChars(chars, dataByte);
                 if (hexadecimal.isCharFixedMode()) {
                     g.drawChars(chars, 0, 2, startX, positionY);
                 } else {

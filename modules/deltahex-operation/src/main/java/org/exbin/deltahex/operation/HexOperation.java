@@ -54,7 +54,7 @@ public abstract class HexOperation {
     /**
      * Performs operation on given document.
      *
-     * @throws java.lang.Exception
+     * @throws java.lang.Exception if thrown during execution
      */
     public abstract void execute() throws Exception;
 
@@ -62,7 +62,7 @@ public abstract class HexOperation {
      * Performs operation on given document and returns undo operation.
      *
      * @return undo operation or null if not available
-     * @throws java.lang.Exception
+     * @throws java.lang.Exception if thrown during execution
      */
     public abstract HexOperation executeWithUndo() throws Exception;
 

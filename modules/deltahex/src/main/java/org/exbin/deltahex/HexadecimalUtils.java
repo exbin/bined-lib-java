@@ -18,10 +18,12 @@ package org.exbin.deltahex;
 /**
  * Hexadecimal editor component utilities.
  *
- * @version 0.1.0 2016/04/03
+ * @version 0.1.0 2016/05/25
  * @author ExBin Project (http://exbin.org)
  */
 public class HexadecimalUtils {
+
+    public static final char[] HEX_CODES = "0123456789ABCDEF".toCharArray();
 
     /**
      * Converts byte value to sequence of hexadecimal characters.
@@ -30,49 +32,48 @@ public class HexadecimalUtils {
      * @return sequence of two hexadecimal chars with upper case
      */
     public static char[] byteToHexChars(byte value) {
-        int firstChar = (value >> 4) & 15;
-        int secondChar = value & 15;
         char[] result = new char[2];
-        result[0] = intToHexChar(firstChar);
-        result[1] = intToHexChar(secondChar);
+        byteToHexChars(result, value);
         return result;
     }
 
     /**
-     * Converts integer value in range 0 to 15 to single hexadecimal character.
-     * No range checking.
+     * Converts byte value to sequence of two hexadecimal characters.
      *
-     * @param value integer value
-     * @return character
+     * @param target target char array
+     * @param value byte value
      */
-    public static char intToHexChar(int value) {
-        if (value < 10) {
-            return (char) (48 + value);
-        } else {
-            return (char) (55 + value);
-        }
+    public static void byteToHexChars(char[] target, byte value) {
+        target[0] = HEX_CODES[(value >> 4) & 15];
+        target[1] = HEX_CODES[value & 15];
     }
 
     /**
-     * Converts long value to sequence of 8 hexadecimal character. No range
+     * Converts long value to sequence of hexadecimal character. No range
      * checking.
      *
      * @param value long value
-     * @return 8 hexadecimal characters
+     * @param length length of the target sequence
+     * @return hexadecimal characters
      */
-    public static char[] longToHexChars(long value) {
-        char[] result = new char[8];
-        for (int i = 0; i < 8; i++) {
-            int charValue = (int) (value & 15);
-            if (charValue < 10) {
-                result[7 - i] = (char) (48 + charValue);
-            } else {
-                result[7 - i] = (char) (55 + charValue);
-            }
+    public static char[] longToHexChars(long value, int length) {
+        char[] result = new char[length];
+        longToHexChars(result, value, length);
+        return result;
+    }
 
+    /**
+     * Converts long value to sequence of hexadecimal character. No range
+     * checking.
+     *
+     * @param target target char array
+     * @param value long value
+     * @param length length of the target sequence
+     */
+    public static void longToHexChars(char[] target, long value, int length) {
+        for (int i = length - 1; i >= 0; i--) {
+            target[i] = HEX_CODES[(int) (value & 15)];
             value = value >> 4;
         }
-
-        return result;
     }
 }
