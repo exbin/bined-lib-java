@@ -34,7 +34,7 @@ public class HighlightHexadecimalPainter extends DefaultHexadecimalPainter {
      * Matches must be ordered by position.
      */
     private final List<SearchMatch> matches = new ArrayList<>();
-    private int currentMatchIndex;
+    private int currentMatchIndex = -1;
     private int matchIndex = 0;
 
     private Color foundMatchesBackgroundColor;
@@ -107,6 +107,14 @@ public class HighlightHexadecimalPainter extends DefaultHexadecimalPainter {
     public void setMatches(List<SearchMatch> matches) {
         this.matches.clear();
         this.matches.addAll(matches);
+    }
+
+    public SearchMatch getCurrentMatch() {
+        if (currentMatchIndex >= 0) {
+            return matches.get(currentMatchIndex);
+        }
+
+        return null;
     }
 
     public int getCurrentMatchIndex() {
