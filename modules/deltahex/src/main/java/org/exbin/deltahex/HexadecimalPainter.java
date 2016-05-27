@@ -58,5 +58,5 @@ public interface HexadecimalPainter {
      *
      * @param g graphics
      */
-    void paintHexadecimal(Graphics g);
+    void paintMainArea(Graphics g);
 }

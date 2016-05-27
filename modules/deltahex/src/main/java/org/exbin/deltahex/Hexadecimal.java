@@ -52,7 +52,7 @@ import org.exbin.utils.binary_data.BinaryData;
 /**
  * Hex editor component.
  *
- * @version 0.1.0 2016/05/24
+ * @version 0.1.0 2016/05/27
  * @author ExBin Project (http://exbin.org)
  */
 public class Hexadecimal extends JComponent {
@@ -191,7 +191,7 @@ public class Hexadecimal extends JComponent {
             g.setClip(hexRect.x, hexRect.y, hexRect.width, hexRect.height);
         }
 
-        painter.paintHexadecimal(g);
+        painter.paintMainArea(g);
 
         caret.paint(g);
         g.setClip(clipBounds);
@@ -535,7 +535,7 @@ public class Hexadecimal extends JComponent {
         return dimensionsCache.lineHeight;
     }
 
-    public int getBytesPerBounds() {
+    public int getBytesPerLine() {
         return dimensionsCache.bytesPerLine;
     }
 
@@ -562,6 +562,19 @@ public class Hexadecimal extends JComponent {
 
     public void setCharset(Charset charset) {
         this.charset = charset;
+        repaint();
+    }
+
+    public HexadecimalPainter getPainter() {
+        return painter;
+    }
+
+    public void setPainter(HexadecimalPainter painter) {
+        if (painter == null) {
+            throw new NullPointerException("Painter cannot be null");
+        }
+
+        this.painter = painter;
         repaint();
     }
 
@@ -1161,8 +1174,12 @@ public class Hexadecimal extends JComponent {
         void caretMoved(CaretPosition caretPosition, Section section);
     }
 
+    /**
+     * Component supports showing hexadecimal codes and textual preview, but you
+     * can view only one of them.
+     */
     public static enum ViewMode {
-        HEXADECIMAL(3), PREVIEW(1), DUAL(4);
+        DUAL(4), HEXADECIMAL(3), PREVIEW(1);
 
         private int charsPerByte;
 
@@ -1173,10 +1190,6 @@ public class Hexadecimal extends JComponent {
 
     public static enum BackgroundMode {
         NONE, PLAIN, STRIPPED, GRIDDED
-    }
-
-    public static enum DecorationMode {
-        NONE, LINES, BOX
     }
 
     public static enum EditationMode {

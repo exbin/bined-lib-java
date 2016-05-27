@@ -20,6 +20,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
 import org.exbin.deltahex.Hexadecimal;
+import org.exbin.deltahex.highlight.HighlightHexadecimalPainter;
 import org.exbin.utils.binary_data.ByteArrayEditableData;
 
 /**

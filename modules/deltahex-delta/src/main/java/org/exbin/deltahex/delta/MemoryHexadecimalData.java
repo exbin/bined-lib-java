@@ -67,8 +67,7 @@ public class MemoryHexadecimalData implements EditableBinaryData {
 
     @Override
     public void insert(long startFrom, BinaryData insertedData) {
-        // TODO general support for BinaryData
-        data.insert(startFrom, ((MemoryHexadecimalData) insertedData).data);
+        data.insert(startFrom, insertedData);
     }
 
     @Override

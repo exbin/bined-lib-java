@@ -40,7 +40,7 @@ public class HexadecimalCaret {
 
     public void paint(Graphics g) {
         g.setColor(hexadecimal.getCursorColor());
-        int bytesPerBounds = hexadecimal.getBytesPerBounds();
+        int bytesPerBounds = hexadecimal.getBytesPerLine();
         int lineHeight = hexadecimal.getLineHeight();
         int charWidth = hexadecimal.getCharWidth();
         Point scrollPoint = hexadecimal.getScrollPoint();
