@@ -15,14 +15,9 @@
  */
 package org.exbin.deltahex.operation;
 
-import java.io.IOException;
 import org.exbin.deltahex.Hexadecimal;
 import org.exbin.utils.binary_data.BinaryData;
 import org.exbin.utils.binary_data.EditableBinaryData;
-import org.exbin.xbup.core.parser.XBProcessingException;
-import org.exbin.xbup.core.serial.param.XBPSequenceSerialHandler;
-import org.exbin.xbup.core.serial.param.XBPSequenceSerializable;
-import org.exbin.xbup.core.serial.param.XBSerializationMode;
 
 /**
  * Operation for deleting child block.
@@ -67,29 +62,5 @@ public class RemoveDataOperation extends HexOperation {
         ((EditableBinaryData) hexadecimal.getData()).remove(position, size);
         hexadecimal.getCaret().setCaretPosition(position, lowerHalf);
         return undoOperation;
-    }
-
-    private class Serializator implements XBPSequenceSerializable {
-
-        private long position;
-
-        private Serializator() {
-        }
-
-        public Serializator(long position) {
-            this.position = position;
-        }
-
-        @Override
-        public void serializeXB(XBPSequenceSerialHandler serializationHandler) throws XBProcessingException, IOException {
-            serializationHandler.begin();
-            serializationHandler.matchType();
-            if (serializationHandler.getSerializationMode() == XBSerializationMode.PULL) {
-                position = serializationHandler.pullLongAttribute();
-            } else {
-                serializationHandler.putAttribute(position);
-            }
-            serializationHandler.end();
-        }
     }
 }

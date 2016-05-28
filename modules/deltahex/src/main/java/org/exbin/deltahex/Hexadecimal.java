@@ -121,7 +121,7 @@ public class Hexadecimal extends JComponent {
 
         super.setForeground(UIManager.getColor("TextArea.foreground"));
         super.setBackground(UIManager.getColor("TextArea.background"));
-        oddBackgroundColor = new Color(240, 240, 240);
+        oddBackgroundColor = createOddColor(UIManager.getColor("TextArea.background"));
         selectionColor = UIManager.getColor("TextArea.selectionForeground");
         selectionBackgroundColor = UIManager.getColor("TextArea.selectionBackground");
         mirrorSelectionColor = UIManager.getColor("TextArea.selectionForeground");
@@ -1111,6 +1111,17 @@ public class Hexadecimal extends JComponent {
         return commandHandler.canPaste();
     }
 
+    private static Color createOddColor(Color color) {
+        return new Color(
+                computeOddColorComponent(color.getRed()),
+                computeOddColorComponent(color.getGreen()),
+                computeOddColorComponent(color.getBlue()));
+    }
+
+    private static int computeOddColorComponent(int colorComponent) {
+        return colorComponent + (colorComponent > 64 ? - 16 : 16);
+    }
+
     /**
      * Selection range is selection between two points where begin represents
      * originating point. End of the selection can be before or after begin.
@@ -1244,6 +1255,9 @@ public class Hexadecimal extends JComponent {
         int scrollBarThickness = 17;
     }
 
+    /**
+     * Scrolling position.
+     */
     public static class ScrollPosition {
 
         long scrollLinePosition = 0;

@@ -15,25 +15,9 @@
  */
 package org.exbin.deltahex.operation;
 
-import java.io.IOException;
 import org.exbin.deltahex.Hexadecimal;
 import org.exbin.utils.binary_data.BinaryData;
 import org.exbin.utils.binary_data.EditableBinaryData;
-import org.exbin.xbup.core.block.XBTEditableBlock;
-import org.exbin.xbup.core.parser.XBParserMode;
-import org.exbin.xbup.core.parser.XBProcessingException;
-import org.exbin.xbup.core.parser.token.event.XBEventReader;
-import org.exbin.xbup.core.parser.token.event.XBEventWriter;
-import org.exbin.xbup.core.parser.token.event.convert.XBEventListenerToListener;
-import org.exbin.xbup.core.parser.token.event.convert.XBListenerToEventListener;
-import org.exbin.xbup.core.serial.param.XBPSequenceSerialHandler;
-import org.exbin.xbup.core.serial.param.XBPSequenceSerializable;
-import org.exbin.xbup.core.serial.param.XBSerializationMode;
-import org.exbin.xbup.core.type.XBData;
-import org.exbin.xbup.parser_tree.XBTBlockToXBBlock;
-import org.exbin.xbup.parser_tree.XBTTreeNode;
-import org.exbin.xbup.parser_tree.XBTreeReader;
-import org.exbin.xbup.parser_tree.XBTreeWriter;
 
 /**
  * Operation for modifying data.
@@ -80,60 +64,5 @@ public class ModifyDataOperation extends HexOperation {
 
     public void appendData(BinaryData appendData) {
         ((EditableBinaryData) data).insert(data.getDataSize(), appendData);
-    }
-
-    private class Serializator implements XBPSequenceSerializable {
-
-        private long position;
-        private XBTEditableBlock newNode;
-
-        private Serializator() {
-        }
-
-        public Serializator(long position, XBTEditableBlock newNode) {
-            this.position = position;
-            this.newNode = newNode;
-        }
-
-        @Override
-        public void serializeXB(XBPSequenceSerialHandler serializationHandler) throws XBProcessingException, IOException {
-            serializationHandler.begin();
-            serializationHandler.matchType();
-            if (serializationHandler.getSerializationMode() == XBSerializationMode.PULL) {
-                position = serializationHandler.pullLongAttribute();
-                newNode = new XBTTreeNode();
-                serializationHandler.consist(new XBPSequenceSerializable() {
-                    @Override
-                    public void serializeXB(XBPSequenceSerialHandler serializationHandler) throws XBProcessingException, IOException {
-                        serializationHandler.begin();
-                        XBData data = new XBData();
-                        data.loadFromStream(serializationHandler.pullData());
-                        serializationHandler.end();
-
-                        XBTreeReader treeReader = new XBTreeReader(new XBTBlockToXBBlock(newNode));
-                        XBEventReader reader = new XBEventReader(data.getDataInputStream(), XBParserMode.SKIP_EXTENDED);
-                        reader.attachXBEventListener(new XBListenerToEventListener(treeReader));
-                        reader.read();
-                        reader.close();
-                    }
-                });
-            } else {
-                serializationHandler.putAttribute(position);
-                serializationHandler.consist(new XBPSequenceSerializable() {
-                    @Override
-                    public void serializeXB(XBPSequenceSerialHandler serializationHandler) throws XBProcessingException, IOException {
-                        XBData data = new XBData();
-                        XBTreeWriter treeWriter = new XBTreeWriter(new XBTBlockToXBBlock(newNode));
-                        XBEventWriter writer = new XBEventWriter(data.getDataOutputStream());
-                        treeWriter.attachXBListener(new XBEventListenerToListener(writer));
-
-                        serializationHandler.begin();
-                        serializationHandler.putData(data.getDataInputStream());
-                        serializationHandler.end();
-                    }
-                });
-            }
-            serializationHandler.end();
-        }
     }
 }
