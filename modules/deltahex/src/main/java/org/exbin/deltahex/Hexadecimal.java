@@ -193,7 +193,9 @@ public class Hexadecimal extends JComponent {
 
         painter.paintMainArea(g);
 
-        caret.paint(g);
+        if (hasFocus()) {
+            caret.paint(g);
+        }
         g.setClip(clipBounds);
     }
 
