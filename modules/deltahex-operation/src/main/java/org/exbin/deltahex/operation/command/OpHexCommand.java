@@ -52,7 +52,7 @@ public abstract class OpHexCommand extends HexCommand {
     @Override
     public void undo() throws Exception {
         if (operationPerformed) {
-            HexOperation redoOperation = (HexOperation) operation.executeWithUndo();
+            HexOperation redoOperation = operation.executeWithUndo();
             if (hexadecimal instanceof OperationListener) {
                 ((HexOperationListener) hexadecimal).notifyChange(new HexOperationEvent(operation));
             }
@@ -67,7 +67,7 @@ public abstract class OpHexCommand extends HexCommand {
     @Override
     public void redo() throws Exception {
         if (!operationPerformed) {
-            HexOperation undoOperation = (HexOperation) operation.executeWithUndo();
+            HexOperation undoOperation = operation.executeWithUndo();
             if (hexadecimal instanceof OperationListener) {
                 ((HexOperationListener) hexadecimal).notifyChange(new HexOperationEvent(operation));
             }

@@ -72,7 +72,7 @@ public class EditHexDataCommand extends EditDataCommand {
 
         if (operationPerformed) {
             for (int i = operations.length - 1; i >= 0; i--) {
-                HexOperation redoOperation = (HexOperation) operations[i].executeWithUndo();
+                HexOperation redoOperation = operations[i].executeWithUndo();
                 if (hexadecimal instanceof OperationListener) {
                     ((HexOperationListener) hexadecimal).notifyChange(new HexOperationEvent(operations[i]));
                 }
@@ -88,7 +88,7 @@ public class EditHexDataCommand extends EditDataCommand {
     public void redo() throws Exception {
         if (!operationPerformed) {
             for (int i = 0; i < operations.length; i++) {
-                HexOperation undoOperation = (HexOperation) operations[i].executeWithUndo();
+                HexOperation undoOperation = operations[i].executeWithUndo();
                 if (hexadecimal instanceof OperationListener) {
                     ((HexOperationListener) hexadecimal).notifyChange(new HexOperationEvent(operations[i]));
                 }

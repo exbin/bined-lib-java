@@ -292,7 +292,7 @@ public class DefaultHexadecimalPainter implements HexadecimalPainter {
                         charMappingCharset = charset;
                     }
 
-                    previewChar[0] = (char) charMapping[dataByte & 0xFF];
+                    previewChar[0] = charMapping[dataByte & 0xFF];
                 }
 
                 Character replacement = null;

@@ -25,7 +25,7 @@ import org.exbin.xbup.operation.undo.XBUndoUpdateListener;
 /**
  * Undo handler for hexadecimal editor.
  *
- * @version 0.1.0 2016/04/30
+ * @version 0.1.0 2016/05/30
  * @author ExBin Project (http://exbin.org)
  */
 public class HexUndoHandler implements XBUndoHandler {
@@ -77,7 +77,7 @@ public class HexUndoHandler implements XBUndoHandler {
         command.use();
         commandAdded(command);
     }
-    
+
     private void commandAdded(Command command) {
         // TODO: Check for undoOperationsMaximumCount & size
         while (commandList.size() > commandPosition) {
@@ -87,6 +87,9 @@ public class HexUndoHandler implements XBUndoHandler {
         commandPosition++;
 
         undoUpdated();
+        for (XBUndoUpdateListener listener : listeners) {
+            listener.undoCommandAdded(command);
+        }
     }
 
     /**
@@ -249,7 +252,7 @@ public class HexUndoHandler implements XBUndoHandler {
 
     private void undoUpdated() {
         for (XBUndoUpdateListener listener : listeners) {
-            listener.undoChanged();
+            listener.undoCommandPositionChanged();
         }
     }
 
