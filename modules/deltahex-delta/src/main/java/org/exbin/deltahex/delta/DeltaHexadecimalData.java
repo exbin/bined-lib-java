@@ -26,7 +26,7 @@ import org.exbin.utils.binary_data.EditableBinaryData;
 /**
  * Basic implementation of hexadecimal data interface using byte array.
  *
- * @version 0.1.0 2016/05/24
+ * @version 0.1.0 2016/06/03
  * @author ExBin Project (http://exbin.org)
  */
 public class DeltaHexadecimalData implements EditableBinaryData {
@@ -59,8 +59,12 @@ public class DeltaHexadecimalData implements EditableBinaryData {
     }
 
     @Override
-    public void setDataSize(long l) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void setDataSize(long dataSize) {
+        try {
+            data.setDataSize(dataSize);
+        } catch (IOException ex) {
+            Logger.getLogger(DeltaHexadecimalData.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @Override

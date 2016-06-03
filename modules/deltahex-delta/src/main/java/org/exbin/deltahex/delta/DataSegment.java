@@ -15,39 +15,41 @@
  */
 package org.exbin.deltahex.delta;
 
+import org.exbin.deltahex.delta.list.DoublyLinkedItem;
+
 /**
- * Insertion page modification.
+ * Abstract data segment of delta data source.
  *
- * @version 0.1.0 2016/05/19
+ * @version 0.1.0 2016/06/03
  * @author ExBin Project (http://exbin.org)
  */
-public class ModifyPageModification implements DataPageModification {
+public abstract class DataSegment implements DoublyLinkedItem {
 
-    private int offset;
-    private byte[] modified;
+    private DataSegment previous;
+    private DataSegment next;
 
-    public ModifyPageModification() {
+    public DataSegment() {
     }
 
-    public ModifyPageModification(int offset, byte[] inserted) {
-        this.offset = offset;
-        this.modified = inserted;
+    public abstract long getLength();
+
+    @Override
+    public DataSegment getNext() {
+        return next;
     }
 
     @Override
-    public int getOffset() {
-        return offset;
+    public void setNext(DoublyLinkedItem next) {
+        this.next = (DataSegment) next;
     }
 
-    public void setOffset(int offset) {
-        this.offset = offset;
+    @Override
+    public DoublyLinkedItem getPrev() {
+        return previous;
     }
 
-    public byte[] getModified() {
-        return modified;
-    }
-
-    public void setModified(byte[] modified) {
-        this.modified = modified;
+    @Override
+    public void setPrev(DoublyLinkedItem previous) {
+        this.previous = (DataSegment) previous;
     }
 }

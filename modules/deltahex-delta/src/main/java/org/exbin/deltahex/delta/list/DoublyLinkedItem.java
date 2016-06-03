@@ -13,20 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.deltahex.delta;
+package org.exbin.deltahex.delta.list;
 
 /**
- * Document modification record.
+ * Interface for item of doubly linked list.
  *
- * @version 0.1.0 2016/05/19
+ * @version 0.1.0 2016/06/03
  * @author ExBin Project (http://exbin.org)
  */
-public interface DataPageModification {
+public interface DoublyLinkedItem {
 
-    /**
-     * Returns modification position page offset.
-     *
-     * @return position offset
-     */
-    int getOffset();
+    DoublyLinkedItem getNext();
+
+    void setNext(DoublyLinkedItem next);
+
+    DoublyLinkedItem getPrev();
+
+    void setPrev(DoublyLinkedItem previous);
 }

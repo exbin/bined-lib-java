@@ -16,21 +16,15 @@
 package org.exbin.deltahex.delta;
 
 /**
- * Data source for access to resource with keeping list of modifications to it.
+ * Data segment pointing to file.
  *
- * Data source is opened in read only mode and there structure keeping all the
- * changes.
- *
- * @version 0.1.0 2016/05/19
+ * @version 0.1.0 2016/06/03
  * @author ExBin Project (http://exbin.org)
  */
-public class DocumentSegment {
+public class DocumentSegment extends DataSegment {
 
     private long startPosition;
     private long length;
-
-    public DocumentSegment() {
-    }
 
     public DocumentSegment(long startPosition, long length) {
         this.startPosition = startPosition;
@@ -45,6 +39,7 @@ public class DocumentSegment {
         this.startPosition = startPosition;
     }
 
+    @Override
     public long getLength() {
         return length;
     }

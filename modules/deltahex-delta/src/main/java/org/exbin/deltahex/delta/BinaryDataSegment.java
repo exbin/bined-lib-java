@@ -15,39 +15,36 @@
  */
 package org.exbin.deltahex.delta;
 
+import org.exbin.utils.binary_data.BinaryData;
+
 /**
- * Insertion page modification.
+ * Data segment with binary data.
  *
- * @version 0.1.0 2016/05/19
+ * @version 0.1.0 2016/06/03
  * @author ExBin Project (http://exbin.org)
  */
-public class DeletePageModification implements DataPageModification {
+public class BinaryDataSegment extends DataSegment {
 
-    private int offset;
-    private int length;
+    private BinaryData binaryData;
 
-    public DeletePageModification() {
-    }
-
-    public DeletePageModification(int offset, int length) {
-        this.offset = offset;
-        this.length = length;
+    public BinaryDataSegment(BinaryData binaryData) {
+        this.binaryData = binaryData;
     }
 
     @Override
-    public int getOffset() {
-        return offset;
+    public long getLength() {
+        return binaryData.getDataSize();
     }
 
-    public void setOffset(int offset) {
-        this.offset = offset;
+    public BinaryData getBinaryData() {
+        return binaryData;
     }
 
-    public int getLength() {
-        return length;
+    public void setBinaryData(BinaryData binaryData) {
+        this.binaryData = binaryData;
     }
 
-    public void setLength(int length) {
-        this.length = length;
+    public byte getByte(long position) {
+        return binaryData.getByte(position);
     }
 }

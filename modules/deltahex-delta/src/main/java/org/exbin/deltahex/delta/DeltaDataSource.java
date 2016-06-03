@@ -19,9 +19,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
+import org.exbin.deltahex.delta.list.DefaultDoublyLinkedList;
+import org.exbin.utils.binary_data.BinaryData;
+import org.exbin.utils.binary_data.EditableBinaryData;
 
 /**
  * Data source for access to resource with keeping list of modifications to it.
@@ -29,77 +29,106 @@ import java.util.Map;
  * Data source is opened in read only mode and there structure keeping all the
  * changes.
  *
- * @version 0.1.0 2016/05/19
+ * @version 0.1.0 2016/06/03
  * @author ExBin Project (http://exbin.org)
  */
 public class DeltaDataSource {
 
-    private RandomAccessFile file;
+    private final RandomAccessFile file;
+    private final DeltaDataPageWindow window;
 
     private long fileLength = 0;
-    private final DataRecordGroup rootGroup;
+    private long pointerPosition;
+    private DataSegment pointerSegment;
 
-    private final LinkedList<DocumentSegment> segments = new LinkedList<>();
-    private final Map<DocumentSegment, DocumentSection> sections = new HashMap<>();
+    private final DefaultDoublyLinkedList<DataSegment> segments = new DefaultDoublyLinkedList<>();
 
     public DeltaDataSource(File sourceFile) throws FileNotFoundException, IOException {
         file = new RandomAccessFile(sourceFile, "rw");
         fileLength = file.length();
-        DocumentSegment rootSegment = new DocumentSegment(0, fileLength);
-        segments.add(rootSegment);
-        DocumentSection rootSection = new DocumentSection(rootSegment, 0);
-        DepthRecord depthRecord = computeDepth();
-        rootGroup = new DataRecordGroup(rootSection, 0, depthRecord.depth, depthRecord.groupSize);
+        DataSegment fullFileSegment = new DocumentSegment(0, fileLength);
+        segments.add(fullFileSegment);
+        pointerPosition = 0;
+        pointerSegment = fullFileSegment;
+        window = new DeltaDataPageWindow(this);
     }
 
     public long getFileLength() {
         return fileLength;
     }
 
+    RandomAccessFile getFile() {
+        return file;
+    }
+
     public byte getByte(long position) throws IOException {
-        DataRecord record = rootGroup.getRecord(position);
-        byte value;
-        if (record instanceof DataRecordPage) {
-            DataRecordPage page = (DataRecordPage) record;
-            value = page.getByte(file, (int) (position % DataRecordPage.PAGE_SIZE), segments, sections);
+        focusSegment(position);
+
+        if (pointerSegment instanceof DocumentSegment) {
+            return window.getByte(((DocumentSegment) pointerSegment).getStartPosition() + (position - pointerPosition));
         } else {
-            DataRecordGroup group = (DataRecordGroup) record;
-            DocumentSection section = group.getSection();
-            long groupPosition = group.getPosition();
-            long bytePosition = section.getSectionPosition() + (position - groupPosition);
-            file.seek(bytePosition);
-            value = file.readByte();
+            return ((BinaryDataSegment) pointerSegment).getByte(position - pointerPosition);
         }
-        return value;
     }
 
-    public void remove(long startFrom, long length) {
-        // TODO throw new UnsupportedOperationException("Not supported yet.");
+    private void focusSegment(long position) throws IOException {
+        if (position < pointerPosition) {
+            while (position < pointerPosition) {
+                pointerSegment = (DataSegment) segments.prevTo(pointerSegment);
+                if (pointerSegment == null) {
+                    throw new IOException("Unable to access previous segment");
+                }
+                pointerPosition -= pointerSegment.getLength();
+            }
+        } else if (position > pointerPosition + pointerSegment.getLength()) {
+            while (position > pointerPosition + pointerSegment.getLength()) {
+                pointerSegment = (DataSegment) segments.nextTo(pointerSegment);
+                if (pointerSegment == null) {
+                    throw new IOException("Unable to access next segment");
+                }
+                pointerPosition += pointerSegment.getLength();
+            }
+        }
     }
 
-    private DepthRecord computeDepth() {
-        if (fileLength < DataRecordPage.PAGE_SIZE) {
-            return new DepthRecord(0, fileLength);
+    public void remove(long startFrom, long length) throws IOException {
+        if (length > 0) {
+            focusSegment(startFrom);
+            if (pointerPosition + pointerSegment.getLength() > startFrom) {
+                splitSegment(startFrom);
+            }
         }
-
-        int depth = 1;
-        long groupSize = DataRecordPage.PAGE_SIZE;
-        if (fileLength > groupSize * DataRecordGroup.GROUP_SIZE) {
-            depth++;
-            groupSize *= DataRecordGroup.GROUP_SIZE;
-        }
-
-        return new DepthRecord(depth, groupSize);
     }
 
-    private static class DepthRecord {
+    public void setDataSize(long dataSize) throws IOException {
+        if (dataSize < fileLength) {
+            remove(fileLength, fileLength - dataSize);
+        } else {
+            // TODO insert()
+        }
+    }
 
-        public DepthRecord(int depth, long groupSize) {
-            this.depth = depth;
-            this.groupSize = groupSize;
+    public void splitSegment(long position) {
+        if (position < pointerPosition || position > pointerPosition + pointerSegment.getLength()) {
+            throw new IllegalStateException("Split position is out of current segment");
         }
 
-        int depth;
-        long groupSize;
+        long firstPartSize = position - pointerPosition;
+        if (pointerSegment instanceof BinaryDataSegment) {
+            BinaryData binaryData = ((BinaryDataSegment) pointerSegment).getBinaryData();
+            BinaryData copy = binaryData.copy(firstPartSize, binaryData.getDataSize() - (firstPartSize));
+            BinaryDataSegment newSegment = new BinaryDataSegment(copy);
+            segments.addAfter(pointerSegment, newSegment);
+            if (binaryData instanceof EditableBinaryData) {
+                ((EditableBinaryData) binaryData).setDataSize(firstPartSize);
+            } else {
+                ((BinaryDataSegment) pointerSegment).setBinaryData(binaryData.copy(0, firstPartSize));
+            }
+        } else {
+            DocumentSegment documentSegment = (DocumentSegment) pointerSegment;
+            DocumentSegment newSegment = new DocumentSegment(documentSegment.getStartPosition() + firstPartSize, documentSegment.getLength() - firstPartSize);
+            segments.addAfter(pointerSegment, newSegment);
+            documentSegment.setLength(firstPartSize);
+        }
     }
 }

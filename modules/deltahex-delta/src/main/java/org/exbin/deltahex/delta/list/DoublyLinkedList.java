@@ -13,27 +13,46 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.deltahex.delta;
+package org.exbin.deltahex.delta.list;
+
+import java.util.List;
 
 /**
- * Data record interface.
+ * Doubly linked list of items.
  *
- * @version 0.1.0 2016/05/19
+ * @version 0.1.0 2016/06/03
  * @author ExBin Project (http://exbin.org)
+ * @param <T> doubly linked list item
  */
-public interface DataRecord {
+public interface DoublyLinkedList<T extends DoublyLinkedItem> extends List<T> {
 
     /**
-     * Returns document position using relative section position.
+     * Returns first item of the list.
      *
-     * @return document section
+     * @return first item
      */
-    DocumentSection getSection();
+    T first();
 
     /**
-     * Sets document position using relative section position.
+     * Returns last item of the list.
      *
-     * @param position document section
+     * @return last item
      */
-    void setSection(DocumentSection position);
+    T last();
+
+    /**
+     * Returns item next to given item.
+     *
+     * @param item item
+     * @return next item or null
+     */
+    T nextTo(T item);
+
+    /**
+     * Returns item previous to given item.
+     *
+     * @param item item
+     * @return previous item or null
+     */
+    T prevTo(T item);
 }
