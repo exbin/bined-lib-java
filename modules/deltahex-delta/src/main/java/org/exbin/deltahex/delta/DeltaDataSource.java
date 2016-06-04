@@ -93,9 +93,16 @@ public class DeltaDataSource {
 
     public void remove(long startFrom, long length) throws IOException {
         if (length > 0) {
+            focusSegment(startFrom + length);
+            splitSegment(startFrom + length);
             focusSegment(startFrom);
-            if (pointerPosition + pointerSegment.getLength() > startFrom) {
-                splitSegment(startFrom);
+            splitSegment(startFrom);
+            focusSegment(startFrom);
+            while (length > 0) {
+                length -= pointerSegment.getLength();
+                DataSegment next = segments.nextTo(pointerSegment);
+                segments.remove(pointerSegment);
+                pointerSegment = next;
             }
         }
     }
@@ -111,6 +118,11 @@ public class DeltaDataSource {
     public void splitSegment(long position) {
         if (position < pointerPosition || position > pointerPosition + pointerSegment.getLength()) {
             throw new IllegalStateException("Split position is out of current segment");
+        }
+
+        if (pointerPosition == position) {
+            // No action needed
+            return;
         }
 
         long firstPartSize = position - pointerPosition;
