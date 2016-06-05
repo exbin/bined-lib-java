@@ -20,7 +20,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import org.exbin.deltahex.delta.list.DefaultDoublyLinkedList;
-import org.exbin.utils.binary_data.BinaryData;
 import org.exbin.utils.binary_data.EditableBinaryData;
 
 /**
@@ -29,7 +28,7 @@ import org.exbin.utils.binary_data.EditableBinaryData;
  * Data source is opened in read only mode and there structure keeping all the
  * changes.
  *
- * @version 0.1.0 2016/06/03
+ * @version 0.1.0 2016/06/05
  * @author ExBin Project (http://exbin.org)
  */
 public class DeltaDataSource {
@@ -68,6 +67,17 @@ public class DeltaDataSource {
             return window.getByte(((DocumentSegment) pointerSegment).getStartPosition() + (position - pointerPosition));
         } else {
             return ((BinaryDataSegment) pointerSegment).getByte(position - pointerPosition);
+        }
+    }
+
+    public void setByte(long position, byte value) throws IOException {
+        focusSegment(position);
+
+        if (pointerSegment instanceof DocumentSegment) {
+            // TODO extend previous binary data segment or split document segment and add binary segment
+            // window.setByte(((DocumentSegment) pointerSegment).getStartPosition() + (position - pointerPosition));
+        } else {
+            ((BinaryDataSegment) pointerSegment).setByte(position - pointerPosition, value);
         }
     }
 
@@ -127,14 +137,14 @@ public class DeltaDataSource {
 
         long firstPartSize = position - pointerPosition;
         if (pointerSegment instanceof BinaryDataSegment) {
-            BinaryData binaryData = ((BinaryDataSegment) pointerSegment).getBinaryData();
-            BinaryData copy = binaryData.copy(firstPartSize, binaryData.getDataSize() - (firstPartSize));
+            EditableBinaryData binaryData = ((BinaryDataSegment) pointerSegment).getBinaryData();
+            EditableBinaryData copy = (EditableBinaryData) binaryData.copy(firstPartSize, binaryData.getDataSize() - (firstPartSize));
             BinaryDataSegment newSegment = new BinaryDataSegment(copy);
             segments.addAfter(pointerSegment, newSegment);
             if (binaryData instanceof EditableBinaryData) {
                 ((EditableBinaryData) binaryData).setDataSize(firstPartSize);
             } else {
-                ((BinaryDataSegment) pointerSegment).setBinaryData(binaryData.copy(0, firstPartSize));
+                ((BinaryDataSegment) pointerSegment).setBinaryData((EditableBinaryData) binaryData.copy(0, firstPartSize));
             }
         } else {
             DocumentSegment documentSegment = (DocumentSegment) pointerSegment;

@@ -16,18 +16,19 @@
 package org.exbin.deltahex.delta;
 
 import org.exbin.utils.binary_data.BinaryData;
+import org.exbin.utils.binary_data.EditableBinaryData;
 
 /**
  * Data segment with binary data.
  *
- * @version 0.1.0 2016/06/03
+ * @version 0.1.0 2016/06/05
  * @author ExBin Project (http://exbin.org)
  */
 public class BinaryDataSegment extends DataSegment {
 
-    private BinaryData binaryData;
+    private EditableBinaryData binaryData;
 
-    public BinaryDataSegment(BinaryData binaryData) {
+    public BinaryDataSegment(EditableBinaryData binaryData) {
         this.binaryData = binaryData;
     }
 
@@ -36,15 +37,19 @@ public class BinaryDataSegment extends DataSegment {
         return binaryData.getDataSize();
     }
 
-    public BinaryData getBinaryData() {
+    public EditableBinaryData getBinaryData() {
         return binaryData;
     }
 
-    public void setBinaryData(BinaryData binaryData) {
+    public void setBinaryData(EditableBinaryData binaryData) {
         this.binaryData = binaryData;
     }
 
     public byte getByte(long position) {
         return binaryData.getByte(position);
+    }
+
+    public void setByte(long position, byte value) {
+        binaryData.setByte(position, value);
     }
 }

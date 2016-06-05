@@ -68,8 +68,12 @@ public class DeltaHexadecimalData implements EditableBinaryData {
     }
 
     @Override
-    public void setByte(long l, byte b) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void setByte(long position, byte value) {
+        try {
+            data.setByte(position, value);
+        } catch (IOException ex) {
+            Logger.getLogger(DeltaHexadecimalData.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @Override
