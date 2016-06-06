@@ -101,6 +101,7 @@
                           <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                       </Group>
                       <Component id="showNonprintableCharactersCheckBox" alignment="0" max="32767" attributes="0"/>
+                      <Component id="showShadowCursorCheckBox" alignment="0" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -140,6 +141,8 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="showNonprintableCharactersCheckBox" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
+                  <Component id="showShadowCursorCheckBox" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
                   <Component id="editableCheckBox" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="lineLengthLabel" min="-2" max="-2" attributes="0"/>
@@ -172,7 +175,7 @@
                           <Component id="charAntialiasingComboBox" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
-                  <EmptySpace pref="74" max="32767" attributes="0"/>
+                  <EmptySpace pref="44" max="32767" attributes="0"/>
                   <Group type="103" groupAlignment="1" attributes="0">
                       <Group type="102" alignment="1" attributes="0">
                           <Component id="horizontalScrollBarVisibilityLabel" min="-2" max="-2" attributes="0"/>
@@ -213,12 +216,11 @@
           <Properties>
             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
               <StringArray count="3">
-                <StringItem index="0" value="HEXADECIMAL"/>
-                <StringItem index="1" value="PREVIEW"/>
-                <StringItem index="2" value="DUAL"/>
+                <StringItem index="0" value="DUAL"/>
+                <StringItem index="1" value="HEXADECIMAL"/>
+                <StringItem index="2" value="PREVIEW"/>
               </StringArray>
             </Property>
-            <Property name="selectedIndex" type="int" value="2"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="viewModeComboBoxActionPerformed"/>
@@ -490,6 +492,14 @@
           </Properties>
           <Events>
             <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="showNonprintableCharactersCheckBoxItemStateChanged"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JCheckBox" name="showShadowCursorCheckBox">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Show Shadow Cursor"/>
+          </Properties>
+          <Events>
+            <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="showShadowCursorCheckBoxItemStateChanged"/>
           </Events>
         </Component>
       </SubComponents>

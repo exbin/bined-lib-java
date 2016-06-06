@@ -23,7 +23,7 @@ import org.exbin.deltahex.HexadecimalCaret;
 /**
  * Hexadecimal editor example panel.
  *
- * @version 0.1.0 2016/05/18
+ * @version 0.1.0 2016/06/06
  * @author ExBin Project (http://exbin.org)
  */
 public class DeltaHexExamplePanel extends javax.swing.JPanel {
@@ -48,6 +48,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
         showLineNumbersCheckBox.setSelected(hexadecimal.isShowLineNumbers());
         showHeaderCheckBox.setSelected(hexadecimal.isShowHeader());
         showNonprintableCharactersCheckBox.setSelected(hexadecimal.isShowNonprintingCharacters());
+        showShadowCursorCheckBox.setSelected(hexadecimal.isShowShadowCursor());
         editableCheckBox.setSelected(hexadecimal.isEditable());
         wrapModeCheckBox.setSelected(hexadecimal.isWrapMode());
         lineLengthSpinner.setValue(hexadecimal.getLineLength());
@@ -121,13 +122,13 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
         decoratorSplitLineCheckBox = new javax.swing.JCheckBox();
         decoratorBoxCheckBox = new javax.swing.JCheckBox();
         showNonprintableCharactersCheckBox = new javax.swing.JCheckBox();
+        showShadowCursorCheckBox = new javax.swing.JCheckBox();
 
         setLayout(new java.awt.BorderLayout());
 
         viewModeScrollModeLabel.setText("View Mode");
 
-        viewModeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "HEXADECIMAL", "PREVIEW", "DUAL" }));
-        viewModeComboBox.setSelectedIndex(2);
+        viewModeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "DUAL", "HEXADECIMAL", "PREVIEW" }));
         viewModeComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 viewModeComboBoxActionPerformed(evt);
@@ -275,6 +276,13 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
             }
         });
 
+        showShadowCursorCheckBox.setText("Show Shadow Cursor");
+        showShadowCursorCheckBox.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                showShadowCursorCheckBoxItemStateChanged(evt);
+            }
+        });
+
         javax.swing.GroupLayout settingsPanelLayout = new javax.swing.GroupLayout(settingsPanel);
         settingsPanel.setLayout(settingsPanelLayout);
         settingsPanelLayout.setHorizontalGroup(
@@ -336,7 +344,8 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
                                     .addComponent(charAntialiasingComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(selectionEndTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE))))
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(showNonprintableCharactersCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(showNonprintableCharactersCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(showShadowCursorCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         settingsPanelLayout.setVerticalGroup(
@@ -367,6 +376,8 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(showNonprintableCharactersCheckBox)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(showShadowCursorCheckBox)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(editableCheckBox)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lineLengthLabel)
@@ -394,7 +405,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
                         .addComponent(charAntialiasingScrollModeLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(charAntialiasingComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 74, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
                 .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(settingsPanelLayout.createSequentialGroup()
                         .addComponent(horizontalScrollBarVisibilityLabel)
@@ -503,6 +514,10 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
         hexadecimal.setShowNonprintingCharacters(showNonprintableCharactersCheckBox.isSelected());
     }//GEN-LAST:event_showNonprintableCharactersCheckBoxItemStateChanged
 
+    private void showShadowCursorCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_showShadowCursorCheckBoxItemStateChanged
+        hexadecimal.setShowShadowCursor(showShadowCursorCheckBox.isSelected());
+    }//GEN-LAST:event_showShadowCursorCheckBoxItemStateChanged
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<String> backgroundModeComboBox;
     private javax.swing.JLabel backgroundModeLabel;
@@ -530,6 +545,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
     private javax.swing.JCheckBox showHeaderCheckBox;
     private javax.swing.JCheckBox showLineNumbersCheckBox;
     private javax.swing.JCheckBox showNonprintableCharactersCheckBox;
+    private javax.swing.JCheckBox showShadowCursorCheckBox;
     private javax.swing.JComboBox<String> verticalScrollBarVisibilityComboBox;
     private javax.swing.JLabel verticalScrollBarVisibilityModeLabel;
     private javax.swing.JComboBox<String> verticalScrollModeComboBox;

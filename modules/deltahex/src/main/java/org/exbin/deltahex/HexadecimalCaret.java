@@ -15,14 +15,17 @@
  */
 package org.exbin.deltahex;
 
+import java.awt.BasicStroke;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.Stroke;
 
 /**
  * Hexadecimal editor caret.
  *
- * @version 0.2.0 2016/04/27
+ * @version 0.2.0 2016/06/06
  * @author ExBin Project (http://exbin.org)
  */
 public class HexadecimalCaret {
@@ -50,6 +53,14 @@ public class HexadecimalCaret {
         } else {
             g.fillRect(cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y, DEFAULT_CURSOR_WIDTH, lineHeight - 1);
         }
+        if (hexadecimal.isShowShadowCursor()) {
+            Point shadowCursorPoint = getShadowCursorPoint(bytesPerBounds, lineHeight, charWidth);
+            Graphics2D g2d = (Graphics2D) g.create();
+            Stroke dashed = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{2}, 0);
+            g2d.setStroke(dashed);
+            g2d.drawRect(shadowCursorPoint.x - scrollPoint.x, shadowCursorPoint.y - scrollPoint.y,
+                    charWidth * (hexadecimal.getActiveSection() == Section.PREVIEW ? 2 : 1), lineHeight - 1);
+        }
     }
 
     private Point getCursorPoint(int bytesPerLine, int lineHeight, int charWidth) {
@@ -64,6 +75,23 @@ public class HexadecimalCaret {
             caretX = hexadecimal.getPreviewX() + charWidth * offset;
         } else {
             caretX = rect.x + charWidth * (offset * 3 + getHalfBytePosition());
+        }
+
+        return new Point(caretX, caretY);
+    }
+
+    private Point getShadowCursorPoint(int bytesPerLine, int lineHeight, int charWidth) {
+        long dataPosition = caretPosition.getDataPosition();
+        long line = dataPosition / bytesPerLine;
+        int offset = (int) (dataPosition % bytesPerLine);
+
+        Rectangle rect = hexadecimal.getHexadecimalRectangle();
+        int caretY = (int) (rect.y + line * lineHeight);
+        int caretX;
+        if (section == Section.PREVIEW) {
+            caretX = rect.x + charWidth * (offset * 3);
+        } else {
+            caretX = hexadecimal.getPreviewX() + charWidth * offset;
         }
 
         return new Point(caretX, caretY);

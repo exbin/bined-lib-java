@@ -19,6 +19,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.nio.charset.Charset;
+import java.nio.charset.CharsetEncoder;
 import java.util.HashMap;
 import java.util.Map;
 import org.exbin.utils.binary_data.BinaryData;
@@ -26,7 +27,7 @@ import org.exbin.utils.binary_data.BinaryData;
 /**
  * Hex editor painter.
  *
- * @version 0.1.0 2016/05/25
+ * @version 0.1.0 2016/06/06
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultHexadecimalPainter implements HexadecimalPainter {
@@ -36,7 +37,6 @@ public class DefaultHexadecimalPainter implements HexadecimalPainter {
     private Charset charMappingCharset = null;
     protected final char[] charMapping = new char[256];
     protected Map<Character, Character> nonprintingMapping = null;
-    protected byte[] lineData;
 
     public DefaultHexadecimalPainter(Hexadecimal hexadecimal) {
         this.hexadecimal = hexadecimal;
@@ -197,18 +197,29 @@ public class DefaultHexadecimalPainter implements HexadecimalPainter {
             }
         }
 
-        lineData = new byte[bytesPerLine];
-
         int positionY = hexRect.y - scrollPosition.scrollLineOffset;
         long line = scrollPosition.scrollLinePosition;
         int positionX = hexRect.x - scrollPosition.scrollBytePosition * charWidth - scrollPosition.scrollByteOffset;
         long dataPosition = line * bytesPerLine;
 
-        // Shared chars
-        char[] chars = new char[2];
+        Charset charset = hexadecimal.getCharset();
+        CharsetEncoder encoder = charset.newEncoder();
+        int charLength = (int) encoder.maxBytesPerChar();
+        LineDataCache lineDataCache = new LineDataCache();
+        lineDataCache.lineData = new byte[bytesPerLine + charLength - 1];
+
         do {
-            paintLineBackground(g, line, positionY + lineHeight, dataPosition, bytesPerLine, lineHeight, charWidth, lineData);
-            paintLineText(g, line, positionX, positionY, dataPosition, bytesPerLine, lineHeight, charWidth, lineData, chars);
+            long dataSize = hexadecimal.getData().getDataSize();
+            if (dataPosition < dataSize) {
+                int lineDataSize = bytesPerLine + charLength - 1;
+                if (dataPosition + lineDataSize > dataSize) {
+                    lineDataSize = (int) (dataSize - dataPosition);
+                }
+                hexadecimal.getData().copyToArray(dataPosition, lineDataCache.lineData, 0, lineDataSize);
+            }
+
+            paintLineBackground(g, line, positionY + lineHeight, dataPosition, bytesPerLine, lineHeight, charWidth);
+            paintLineText(g, line, positionX, positionY, dataPosition, bytesPerLine, lineHeight, charset, charWidth, charLength, lineDataCache);
             dataPosition += bytesPerLine;
             line++;
             positionY += lineHeight;
@@ -224,16 +235,16 @@ public class DefaultHexadecimalPainter implements HexadecimalPainter {
         }
     }
 
-    public void paintLineBackground(Graphics g, long line, int positionY, long dataPosition, int bytesPerBounds, int lineHeight, int charWidth, byte[] lineData) {
+    public void paintLineBackground(Graphics g, long line, int positionY, long dataPosition, int bytesPerBounds, int lineHeight, int charWidth) {
         paintSelectionBackground(g, line, positionY, dataPosition, bytesPerBounds, lineHeight, charWidth);
     }
 
-    public void paintLineText(Graphics g, long line, int linePositionX, int linePositionY, long dataPosition, int bytesPerBounds, int lineHeight, int charWidth, byte[] lineData, char[] chars) {
+    public void paintLineText(Graphics g, long line, int linePositionX, int linePositionY, long dataPosition, int bytesPerBounds, int lineHeight, Charset charset, int charWidth, int charLength, LineDataCache lineDataCache) {
         int bytesPerLine = hexadecimal.getBytesPerLine();
         long dataSize = hexadecimal.getData().getDataSize();
         for (int byteOnLine = 0; byteOnLine < bytesPerLine; byteOnLine++) {
             if (dataPosition < dataSize || (dataPosition == dataSize && byteOnLine == 0)) {
-                paintText(g, line, linePositionX, byteOnLine, linePositionY + lineHeight, dataPosition, bytesPerLine, lineHeight, charWidth, chars);
+                paintText(g, line, linePositionX, byteOnLine, linePositionY + lineHeight, dataPosition, bytesPerLine, lineHeight, charset, charWidth, charLength, lineDataCache);
             } else {
                 break;
             }
@@ -242,47 +253,39 @@ public class DefaultHexadecimalPainter implements HexadecimalPainter {
         }
     }
 
-    public void paintText(Graphics g, long line, int linePositionX, int byteOnLine, int linePositionY, long dataPosition, int bytesPerBounds, int lineHeight, int charWidth, char[] chars) {
+    public void paintText(Graphics g, long line, int linePositionX, int byteOnLine, int linePositionY, long dataPosition, int bytesPerBounds, int lineHeight, Charset charset, int charWidth, int charLength, LineDataCache lineDataCache) {
         BinaryData data = hexadecimal.getData();
         Hexadecimal.ScrollPosition scrollPosition = hexadecimal.getScrollPosition();
         int positionY = linePositionY - hexadecimal.getSubFontSpace();
         g.setColor(hexadecimal.getForeground());
         if (dataPosition < data.getDataSize()) {
-            byte dataByte = data.getByte(dataPosition);
+            byte dataByte = lineDataCache.lineData[byteOnLine];
             if (hexadecimal.getViewMode() != Hexadecimal.ViewMode.PREVIEW) {
                 int startX = linePositionX + byteOnLine * charWidth * 3;
-                HexadecimalUtils.byteToHexChars(chars, dataByte);
+                HexadecimalUtils.byteToHexChars(lineDataCache.chars, dataByte);
                 if (hexadecimal.isCharFixedMode()) {
-                    g.drawChars(chars, 0, 2, startX, positionY);
+                    g.drawChars(lineDataCache.chars, 0, 2, startX, positionY);
                 } else {
-                    drawCenteredChar(g, chars, 0, charWidth, startX, positionY);
-                    drawCenteredChar(g, chars, 1, charWidth, startX, positionY);
+                    drawCenteredChar(g, lineDataCache.chars, 0, charWidth, startX, positionY);
+                    drawCenteredChar(g, lineDataCache.chars, 1, charWidth, startX, positionY);
                 }
             }
 
             if (hexadecimal.getViewMode() != Hexadecimal.ViewMode.HEXADECIMAL) {
                 int startX = hexadecimal.getPreviewX() + byteOnLine * charWidth;
                 startX -= scrollPosition.scrollBytePosition * charWidth + scrollPosition.scrollByteOffset;
-                Charset charset = hexadecimal.getCharset();
-                int charLength = 1;
-                String charsetName = charset.name().toLowerCase();
-                if (charsetName.startsWith("utf") || charsetName.startsWith("x-utf")) {
-                    charLength = 4;
-                }
-
-                char[] previewChar = new char[]{' '};
                 if (charLength > 1) {
                     if (dataPosition + charLength > data.getDataSize()) {
                         charLength = (int) (data.getDataSize() - dataPosition);
                     }
 
-                    byte[] displayData = new byte[charLength];
-                    for (int i = 0; i < displayData.length; i++) {
-                        displayData[i] = data.getByte(dataPosition + i);
+                    int charDataLength = charLength;
+                    if (byteOnLine + charDataLength > lineDataCache.lineData.length) {
+                        charDataLength = lineDataCache.lineData.length - byteOnLine;
                     }
-                    String displayString = new String(displayData, charset);
+                    String displayString = new String(lineDataCache.lineData, byteOnLine, charDataLength, charset);
                     if (!displayString.isEmpty()) {
-                        previewChar[0] = displayString.charAt(0);
+                        lineDataCache.previewChar[0] = displayString.charAt(0);
                     }
                 } else {
                     if (charMappingCharset == null || charMappingCharset != charset) {
@@ -292,7 +295,7 @@ public class DefaultHexadecimalPainter implements HexadecimalPainter {
                         charMappingCharset = charset;
                     }
 
-                    previewChar[0] = charMapping[dataByte & 0xFF];
+                    lineDataCache.previewChar[0] = charMapping[dataByte & 0xFF];
                 }
 
                 Character replacement = null;
@@ -314,9 +317,9 @@ public class DefaultHexadecimalPainter implements HexadecimalPainter {
                         // Ideographic Space -> Degree Sign
                         nonprintingMapping.put(Character.toChars(127)[0], Character.toChars(176)[0]);
                     }
-                    replacement = nonprintingMapping.get(previewChar[0]);
+                    replacement = nonprintingMapping.get(lineDataCache.previewChar[0]);
                     if (replacement != null) {
-                        previewChar[0] = replacement;
+                        lineDataCache.previewChar[0] = replacement;
                     }
                 }
 
@@ -324,9 +327,9 @@ public class DefaultHexadecimalPainter implements HexadecimalPainter {
                     g.setColor(hexadecimal.getWhiteSpaceColor());
                 }
                 if (hexadecimal.isCharFixedMode()) {
-                    g.drawChars(previewChar, 0, 1, startX, positionY);
+                    g.drawChars(lineDataCache.previewChar, 0, 1, startX, positionY);
                 } else {
-                    drawCenteredChar(g, previewChar, 0, charWidth, startX, positionY);
+                    drawCenteredChar(g, lineDataCache.previewChar, 0, charWidth, startX, positionY);
                 }
                 if (replacement != null) {
                     g.setColor(hexadecimal.getForeground());
@@ -419,7 +422,28 @@ public class DefaultHexadecimalPainter implements HexadecimalPainter {
      */
     protected void drawCenteredChar(Graphics g, char[] drawnChars, int charOffset, int charWidthSpace, int startX, int positionY) {
         int charWidth = g.getFontMetrics().charWidth(drawnChars[charOffset]);
-        int leftSpace = (charWidthSpace - charWidth) / 2;
+        int leftSpace = (charWidthSpace - charWidth) >> 1;
         g.drawChars(drawnChars, charOffset, 1, startX + charWidthSpace * charOffset + leftSpace, positionY);
+    }
+
+    /**
+     * Line data cache structure.
+     *
+     * Used for performance improvement.
+     */
+    public static class LineDataCache {
+
+        /**
+         * Characters cache.
+         */
+        public char[] chars = new char[2];
+        /**
+         * Preview character.
+         */
+        public char[] previewChar = new char[]{' '};
+        /**
+         * Line data cache.
+         */
+        public byte[] lineData;
     }
 }

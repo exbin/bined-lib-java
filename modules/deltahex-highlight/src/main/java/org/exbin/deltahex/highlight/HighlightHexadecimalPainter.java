@@ -55,7 +55,7 @@ public class HighlightHexadecimalPainter extends DefaultHexadecimalPainter {
     }
 
     @Override
-    public void paintLineBackground(Graphics g, long line, int positionY, long dataPosition, int bytesPerBounds, int lineHeight, int charWidth, byte[] lineData) {
+    public void paintLineBackground(Graphics g, long line, int positionY, long dataPosition, int bytesPerBounds, int lineHeight, int charWidth) {
         g.setColor(foundMatchesBackgroundColor);
         Point scrollPoint = hexadecimal.getScrollPoint();
         long lineMatchIndex = matchIndex;

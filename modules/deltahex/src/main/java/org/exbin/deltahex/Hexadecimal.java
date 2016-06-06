@@ -52,7 +52,7 @@ import org.exbin.utils.binary_data.BinaryData;
 /**
  * Hex editor component.
  *
- * @version 0.1.0 2016/05/27
+ * @version 0.1.0 2016/06/06
  * @author ExBin Project (http://exbin.org)
  */
 public class Hexadecimal extends JComponent {
@@ -90,6 +90,7 @@ public class Hexadecimal extends JComponent {
     private boolean wrapMode = false;
     private boolean handleClipboard = true;
     private boolean showNonprintingCharacters = false;
+    private boolean showShadowCursor = true;
 
     private ScrollBarVisibility verticalScrollBarVisibility = ScrollBarVisibility.IF_NEEDED;
     private VerticalScrollMode verticalScrollMode = VerticalScrollMode.PER_LINE;
@@ -125,7 +126,8 @@ public class Hexadecimal extends JComponent {
         selectionColor = UIManager.getColor("TextArea.selectionForeground");
         selectionBackgroundColor = UIManager.getColor("TextArea.selectionBackground");
         mirrorSelectionColor = UIManager.getColor("TextArea.selectionForeground");
-        mirrorSelectionBackgroundColor = Color.LIGHT_GRAY;
+        int grayLevel = (selectionBackgroundColor.getRed() + selectionBackgroundColor.getGreen() + selectionBackgroundColor.getBlue()) / 3;
+        mirrorSelectionBackgroundColor = new Color(grayLevel, grayLevel, grayLevel);
         cursorColor = UIManager.getColor("TextArea.caretForeground");
         Color foreground = super.getForeground();
         whiteSpaceColor = new Color(foreground.getRed(), (foreground.getGreen() + 128) % 256, foreground.getBlue());
@@ -985,6 +987,15 @@ public class Hexadecimal extends JComponent {
 
     public void setShowNonprintingCharacters(boolean showNonprintingCharacters) {
         this.showNonprintingCharacters = showNonprintingCharacters;
+        repaint();
+    }
+
+    public boolean isShowShadowCursor() {
+        return showShadowCursor;
+    }
+
+    public void setShowShadowCursor(boolean showShadowCursor) {
+        this.showShadowCursor = showShadowCursor;
         repaint();
     }
 
