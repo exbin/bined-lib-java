@@ -195,6 +195,22 @@ public class DefaultDoublyLinkedList<T extends DoublyLinkedItem> implements Doub
         size++;
     }
 
+    public void addBefore(T positionItem, T element) {
+        DoublyLinkedItem prev = positionItem.getPrev();
+        if (prev == null) {
+            positionItem.setPrev(element);
+            element.setNext(positionItem);
+            element.setPrev(null);
+            first = element;
+        } else {
+            positionItem.setPrev(element);
+            prev.setNext(element);
+            element.setNext(positionItem);
+            element.setPrev(prev);
+        }
+        size++;
+    }
+
     @Override
     public boolean addAll(Collection<? extends T> c) {
         boolean result = false;

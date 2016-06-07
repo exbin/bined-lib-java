@@ -15,13 +15,12 @@
  */
 package org.exbin.deltahex.delta;
 
-import org.exbin.utils.binary_data.BinaryData;
 import org.exbin.utils.binary_data.EditableBinaryData;
 
 /**
  * Data segment with binary data.
  *
- * @version 0.1.0 2016/06/05
+ * @version 0.1.0 2016/06/07
  * @author ExBin Project (http://exbin.org)
  */
 public class BinaryDataSegment extends DataSegment {
@@ -51,5 +50,10 @@ public class BinaryDataSegment extends DataSegment {
 
     public void setByte(long position, byte value) {
         binaryData.setByte(position, value);
+    }
+
+    @Override
+    public DataSegment copy() {
+        return new BinaryDataSegment((EditableBinaryData) binaryData.copy());
     }
 }

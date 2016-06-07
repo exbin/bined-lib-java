@@ -17,6 +17,7 @@ package org.exbin.deltahex;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
@@ -27,7 +28,7 @@ import org.exbin.utils.binary_data.BinaryData;
 /**
  * Hex editor painter.
  *
- * @version 0.1.0 2016/06/06
+ * @version 0.1.0 2016/06/07
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultHexadecimalPainter implements HexadecimalPainter {
@@ -36,6 +37,8 @@ public class DefaultHexadecimalPainter implements HexadecimalPainter {
 
     private Charset charMappingCharset = null;
     protected final char[] charMapping = new char[256];
+    private Charset charShiftsCharset = null;
+    protected final byte[] charShifts = new byte[16];
     protected Map<Character, Character> nonprintingMapping = null;
 
     public DefaultHexadecimalPainter(Hexadecimal hexadecimal) {
@@ -242,6 +245,7 @@ public class DefaultHexadecimalPainter implements HexadecimalPainter {
     public void paintLineText(Graphics g, long line, int linePositionX, int linePositionY, long dataPosition, int bytesPerBounds, int lineHeight, Charset charset, int charWidth, int charLength, LineDataCache lineDataCache) {
         int bytesPerLine = hexadecimal.getBytesPerLine();
         long dataSize = hexadecimal.getData().getDataSize();
+        g.setColor(hexadecimal.getForeground());
         for (int byteOnLine = 0; byteOnLine < bytesPerLine; byteOnLine++) {
             if (dataPosition < dataSize || (dataPosition == dataSize && byteOnLine == 0)) {
                 paintText(g, line, linePositionX, byteOnLine, linePositionY + lineHeight, dataPosition, bytesPerLine, lineHeight, charset, charWidth, charLength, lineDataCache);
@@ -254,10 +258,16 @@ public class DefaultHexadecimalPainter implements HexadecimalPainter {
     }
 
     public void paintText(Graphics g, long line, int linePositionX, int byteOnLine, int linePositionY, long dataPosition, int bytesPerBounds, int lineHeight, Charset charset, int charWidth, int charLength, LineDataCache lineDataCache) {
+        if (charShiftsCharset == null || charShiftsCharset != charset) {
+            for (int i = 0; i < 16; i++) {
+                charShifts[i] = (byte) ((charWidth - g.getFontMetrics().charWidth(HexadecimalUtils.HEX_CODES[i])) >> 1);
+            }
+            charShiftsCharset = charset;
+        }
+
         BinaryData data = hexadecimal.getData();
         Hexadecimal.ScrollPosition scrollPosition = hexadecimal.getScrollPosition();
         int positionY = linePositionY - hexadecimal.getSubFontSpace();
-        g.setColor(hexadecimal.getForeground());
         if (dataPosition < data.getDataSize()) {
             byte dataByte = lineDataCache.lineData[byteOnLine];
             if (hexadecimal.getViewMode() != Hexadecimal.ViewMode.PREVIEW) {
@@ -266,8 +276,8 @@ public class DefaultHexadecimalPainter implements HexadecimalPainter {
                 if (hexadecimal.isCharFixedMode()) {
                     g.drawChars(lineDataCache.chars, 0, 2, startX, positionY);
                 } else {
-                    drawCenteredChar(g, lineDataCache.chars, 0, charWidth, startX, positionY);
-                    drawCenteredChar(g, lineDataCache.chars, 1, charWidth, startX, positionY);
+                    drawShiftedChar(g, lineDataCache.chars, 0, charWidth, startX, positionY, charShifts[(dataByte >> 4) & 15]);
+                    drawShiftedChar(g, lineDataCache.chars, 1, charWidth, startX, positionY, charShifts[dataByte & 15]);
                 }
             }
 
@@ -422,8 +432,11 @@ public class DefaultHexadecimalPainter implements HexadecimalPainter {
      */
     protected void drawCenteredChar(Graphics g, char[] drawnChars, int charOffset, int charWidthSpace, int startX, int positionY) {
         int charWidth = g.getFontMetrics().charWidth(drawnChars[charOffset]);
-        int leftSpace = (charWidthSpace - charWidth) >> 1;
-        g.drawChars(drawnChars, charOffset, 1, startX + charWidthSpace * charOffset + leftSpace, positionY);
+        drawShiftedChar(g, drawnChars, charOffset, charWidthSpace, startX, positionY, (charWidthSpace - charWidth) >> 1);
+    }
+
+    protected void drawShiftedChar(Graphics g, char[] drawnChars, int charOffset, int charWidthSpace, int startX, int positionY, int shift) {
+        g.drawChars(drawnChars, charOffset, 1, startX + charWidthSpace * charOffset + shift, positionY);
     }
 
     /**

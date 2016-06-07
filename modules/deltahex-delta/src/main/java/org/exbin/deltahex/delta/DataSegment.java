@@ -20,7 +20,7 @@ import org.exbin.deltahex.delta.list.DoublyLinkedItem;
 /**
  * Abstract data segment of delta data source.
  *
- * @version 0.1.0 2016/06/03
+ * @version 0.1.0 2016/06/07
  * @author ExBin Project (http://exbin.org)
  */
 public abstract class DataSegment implements DoublyLinkedItem {
@@ -31,7 +31,19 @@ public abstract class DataSegment implements DoublyLinkedItem {
     public DataSegment() {
     }
 
+    /**
+     * Returns length of this segment in bytes.
+     *
+     * @return length of this segment
+     */
     public abstract long getLength();
+
+    /**
+     * Returns detached copy of this segment.
+     *
+     * @return copy of this segment
+     */
+    public abstract DataSegment copy();
 
     @Override
     public DataSegment getNext() {

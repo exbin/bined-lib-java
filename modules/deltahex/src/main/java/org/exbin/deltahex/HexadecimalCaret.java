@@ -53,7 +53,7 @@ public class HexadecimalCaret {
         } else {
             g.fillRect(cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y, DEFAULT_CURSOR_WIDTH, lineHeight - 1);
         }
-        if (hexadecimal.isShowShadowCursor()) {
+        if (hexadecimal.getViewMode() == Hexadecimal.ViewMode.DUAL && hexadecimal.isShowShadowCursor()) {
             Point shadowCursorPoint = getShadowCursorPoint(bytesPerBounds, lineHeight, charWidth);
             Graphics2D g2d = (Graphics2D) g.create();
             Stroke dashed = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{2}, 0);

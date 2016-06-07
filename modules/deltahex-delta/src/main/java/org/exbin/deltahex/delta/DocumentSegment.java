@@ -18,7 +18,7 @@ package org.exbin.deltahex.delta;
 /**
  * Data segment pointing to file.
  *
- * @version 0.1.0 2016/06/03
+ * @version 0.1.0 2016/06/07
  * @author ExBin Project (http://exbin.org)
  */
 public class DocumentSegment extends DataSegment {
@@ -46,5 +46,10 @@ public class DocumentSegment extends DataSegment {
 
     public void setLength(long length) {
         this.length = length;
+    }
+
+    @Override
+    public DataSegment copy() {
+        return new DocumentSegment(startPosition, length);
     }
 }
