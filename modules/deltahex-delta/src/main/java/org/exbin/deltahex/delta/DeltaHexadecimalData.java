@@ -40,6 +40,15 @@ public class DeltaHexadecimalData implements EditableBinaryData {
     // Temporary public
     public final DefaultDoublyLinkedList<DataSegment> segments = new DefaultDoublyLinkedList<>();
 
+    public DeltaHexadecimalData(DeltaDataSource data) throws IOException {
+        this.data = data;
+        dataLength = data.getFileLength();
+        DataSegment fullFileSegment = new DocumentSegment(0, dataLength);
+        segments.add(fullFileSegment);
+        pointerPosition = 0;
+        pointerSegment = fullFileSegment;
+    }
+
     /**
      * This is copy constructor.
      *
@@ -62,15 +71,6 @@ public class DeltaHexadecimalData implements EditableBinaryData {
             DataSegment fullFileSegment = new BinaryDataSegment(binaryData);
             segments.add(fullFileSegment);
         }
-    }
-
-    public DeltaHexadecimalData(DeltaDataSource data) throws IOException {
-        this.data = data;
-        dataLength = data.getFileLength();
-        DataSegment fullFileSegment = new DocumentSegment(0, dataLength);
-        segments.add(fullFileSegment);
-        pointerPosition = 0;
-        pointerSegment = fullFileSegment;
     }
 
     // Temporary method for accessing data pages
@@ -268,6 +268,7 @@ public class DeltaHexadecimalData implements EditableBinaryData {
     @Override
     public void remove(long startFrom, long length) {
         if (length > 0) {
+            dataLength -= length;
             focusSegment(startFrom + length);
             splitSegment(startFrom + length);
             focusSegment(startFrom);

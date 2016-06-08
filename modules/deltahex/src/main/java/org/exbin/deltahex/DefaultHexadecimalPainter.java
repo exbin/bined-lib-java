@@ -17,7 +17,6 @@ package org.exbin.deltahex;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
@@ -28,7 +27,7 @@ import org.exbin.utils.binary_data.BinaryData;
 /**
  * Hex editor painter.
  *
- * @version 0.1.0 2016/06/07
+ * @version 0.1.0 2016/06/08
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultHexadecimalPainter implements HexadecimalPainter {
@@ -39,6 +38,7 @@ public class DefaultHexadecimalPainter implements HexadecimalPainter {
     protected final char[] charMapping = new char[256];
     private Charset charShiftsCharset = null;
     protected final byte[] charShifts = new byte[16];
+    private char[] hexCharacters = HexadecimalUtils.UPPER_HEX_CODES;
     protected Map<Character, Character> nonprintingMapping = null;
 
     public DefaultHexadecimalPainter(Hexadecimal hexadecimal) {
@@ -260,7 +260,7 @@ public class DefaultHexadecimalPainter implements HexadecimalPainter {
     public void paintText(Graphics g, long line, int linePositionX, int byteOnLine, int linePositionY, long dataPosition, int bytesPerBounds, int lineHeight, Charset charset, int charWidth, int charLength, LineDataCache lineDataCache) {
         if (charShiftsCharset == null || charShiftsCharset != charset) {
             for (int i = 0; i < 16; i++) {
-                charShifts[i] = (byte) ((charWidth - g.getFontMetrics().charWidth(HexadecimalUtils.HEX_CODES[i])) >> 1);
+                charShifts[i] = (byte) ((charWidth - g.getFontMetrics().charWidth(hexCharacters[i])) >> 1);
             }
             charShiftsCharset = charset;
         }
@@ -272,7 +272,8 @@ public class DefaultHexadecimalPainter implements HexadecimalPainter {
             byte dataByte = lineDataCache.lineData[byteOnLine];
             if (hexadecimal.getViewMode() != Hexadecimal.ViewMode.PREVIEW) {
                 int startX = linePositionX + byteOnLine * charWidth * 3;
-                HexadecimalUtils.byteToHexChars(lineDataCache.chars, dataByte);
+                lineDataCache.chars[0] = hexCharacters[(dataByte >> 4) & 15];
+                lineDataCache.chars[1] = hexCharacters[dataByte & 15];
                 if (hexadecimal.isCharFixedMode()) {
                     g.drawChars(lineDataCache.chars, 0, 2, startX, positionY);
                 } else {
@@ -418,6 +419,16 @@ public class DefaultHexadecimalPainter implements HexadecimalPainter {
                 g.fillRect(selectionPreviewStart, positionY - fontHeight, selectionPreviewEnd - selectionPreviewStart, fontHeight);
             }
         }
+    }
+
+    @Override
+    public char[] getHexCharacters() {
+        return hexCharacters;
+    }
+
+    @Override
+    public void setHexCharacters(char[] hexCharacters) {
+        this.hexCharacters = hexCharacters;
     }
 
     /**

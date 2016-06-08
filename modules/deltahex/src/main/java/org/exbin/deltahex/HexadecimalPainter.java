@@ -59,4 +59,18 @@ public interface HexadecimalPainter {
      * @param g graphics
      */
     void paintMainArea(Graphics g);
+
+    /**
+     * Returns current array of hexadecimal characters (0..9 and A..F).
+     *
+     * @return array of 16 characters
+     */
+    char[] getHexCharacters();
+
+    /**
+     * Sets array of hexadecimal characters (0..9 and A..F).
+     *
+     * @param hexCharacters array of 16 characters
+     */
+    void setHexCharacters(char[] hexCharacters);
 }

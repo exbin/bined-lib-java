@@ -73,8 +73,6 @@
                                   </Group>
                               </Group>
                               <Component id="editableCheckBox" alignment="0" min="-2" pref="109" max="-2" attributes="0"/>
-                              <Component id="lineLengthLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                              <Component id="lineLengthSpinner" alignment="0" min="-2" pref="140" max="-2" attributes="0"/>
                               <Group type="102" alignment="0" attributes="0">
                                   <Component id="cursorPositionTextField" min="-2" pref="92" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
@@ -97,13 +95,23 @@
                                       <Component id="selectionEndTextField" alignment="0" min="-2" pref="132" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
+                              <Group type="102" attributes="0">
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="lineLengthLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="lineLengthSpinner" alignment="0" min="-2" pref="140" max="-2" attributes="0"/>
+                                  </Group>
+                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="hexCharactersModeLabel" min="-2" max="-2" attributes="0"/>
+                                      <Component id="hexCharactersModeComboBox" min="-2" pref="133" max="-2" attributes="0"/>
+                                  </Group>
+                              </Group>
                           </Group>
                           <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                       </Group>
                       <Component id="showNonprintableCharactersCheckBox" alignment="0" max="32767" attributes="0"/>
                       <Component id="showShadowCursorCheckBox" alignment="0" max="32767" attributes="0"/>
                   </Group>
-                  <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -145,9 +153,15 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="editableCheckBox" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="lineLengthLabel" min="-2" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="lineLengthLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="hexCharactersModeLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="lineLengthSpinner" min="-2" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="lineLengthSpinner" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="hexCharactersModeComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="cursorPositionLabel" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
@@ -501,6 +515,27 @@
           <Events>
             <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="showShadowCursorCheckBoxItemStateChanged"/>
           </Events>
+        </Component>
+        <Component class="javax.swing.JComboBox" name="hexCharactersModeComboBox">
+          <Properties>
+            <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+              <StringArray count="2">
+                <StringItem index="0" value="LOWER"/>
+                <StringItem index="1" value="UPPER"/>
+              </StringArray>
+            </Property>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="hexCharactersModeComboBoxActionPerformed"/>
+          </Events>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+          </AuxValues>
+        </Component>
+        <Component class="javax.swing.JLabel" name="hexCharactersModeLabel">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Hex Chars Mode"/>
+          </Properties>
         </Component>
       </SubComponents>
     </Container>

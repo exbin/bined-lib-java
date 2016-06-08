@@ -18,12 +18,13 @@ package org.exbin.deltahex;
 /**
  * Hexadecimal editor component utilities.
  *
- * @version 0.1.0 2016/05/25
+ * @version 0.1.0 2016/06/08
  * @author ExBin Project (http://exbin.org)
  */
 public class HexadecimalUtils {
 
-    public static final char[] HEX_CODES = "0123456789ABCDEF".toCharArray();
+    public static final char[] UPPER_HEX_CODES = "0123456789ABCDEF".toCharArray();
+    public static final char[] LOWER_HEX_CODES = "0123456789abcdef".toCharArray();
 
     /**
      * Converts byte value to sequence of hexadecimal characters.
@@ -44,8 +45,8 @@ public class HexadecimalUtils {
      * @param value byte value
      */
     public static void byteToHexChars(char[] target, byte value) {
-        target[0] = HEX_CODES[(value >> 4) & 15];
-        target[1] = HEX_CODES[value & 15];
+        target[0] = UPPER_HEX_CODES[(value >> 4) & 15];
+        target[1] = UPPER_HEX_CODES[value & 15];
     }
 
     /**
@@ -72,7 +73,7 @@ public class HexadecimalUtils {
      */
     public static void longToHexChars(char[] target, long value, int length) {
         for (int i = length - 1; i >= 0; i--) {
-            target[i] = HEX_CODES[(int) (value & 15)];
+            target[i] = UPPER_HEX_CODES[(int) (value & 15)];
             value = value >> 4;
         }
     }

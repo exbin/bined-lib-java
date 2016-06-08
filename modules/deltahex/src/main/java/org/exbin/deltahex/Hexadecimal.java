@@ -52,7 +52,7 @@ import org.exbin.utils.binary_data.BinaryData;
 /**
  * Hex editor component.
  *
- * @version 0.1.0 2016/06/06
+ * @version 0.1.0 2016/06/08
  * @author ExBin Project (http://exbin.org)
  */
 public class Hexadecimal extends JComponent {
@@ -81,6 +81,7 @@ public class Hexadecimal extends JComponent {
     private EditationMode editationMode = EditationMode.OVERWRITE;
     private CharRenderingMode charRenderingMode = CharRenderingMode.AUTO;
     private CharAntialiasingMode charAntialiasingMode = CharAntialiasingMode.AUTO;
+    private HexCharactersCase hexCharactersCase = HexCharactersCase.UPPER;
     private int lineLength = 16;
     private int subFontSpace = 3;
     private boolean showHeader = true;
@@ -1034,6 +1035,16 @@ public class Hexadecimal extends JComponent {
         repaint();
     }
 
+    public HexCharactersCase getHexCharactersCase() {
+        return hexCharactersCase;
+    }
+
+    public void setHexCharactersCase(HexCharactersCase hexCharactersCase) {
+        this.hexCharactersCase = hexCharactersCase;
+        painter.setHexCharacters(hexCharactersCase == HexCharactersCase.LOWER ? HexadecimalUtils.LOWER_HEX_CODES : HexadecimalUtils.UPPER_HEX_CODES);
+        repaint();
+    }
+
     public ScrollBarVisibility getVerticalScrollBarVisibility() {
         return verticalScrollBarVisibility;
     }
@@ -1238,6 +1249,10 @@ public class Hexadecimal extends JComponent {
 
     public static enum CharAntialiasingMode {
         OFF, AUTO, DEFAULT, BASIC, GASP, LCD_HRGB, LCD_HBGR, LCD_VRGB, LCD_VBGR
+    }
+
+    public static enum HexCharactersCase {
+        LOWER, UPPER
     }
 
     /**

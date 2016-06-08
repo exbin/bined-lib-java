@@ -14,17 +14,18 @@ Features
 --------
 
 - Hexadecimal representation of data and ascii preview
-- Insertion and overwrite editation mode
+- Insertion and overwrite edit modes
 - Support for selection and clipboard
 - Optional scrollbars
+- Support for text encodings
+- Support for showing unprintable/whitespace characters
+- Support for undo/redo
 
 Todo
 ----
 
-- Support for text encodings
 - Support for huge files
-- Delta mode - Changes are stored only in memory till save
-- Overview side ruler / modification's indicator
+- Delta mode - Only changes are stored in memory
 
 Compiling
 ---------
