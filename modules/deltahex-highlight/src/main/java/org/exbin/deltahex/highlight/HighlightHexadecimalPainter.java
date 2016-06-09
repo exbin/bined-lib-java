@@ -26,7 +26,7 @@ import org.exbin.deltahex.Hexadecimal;
 /**
  * Hexadecimal component painter supporting search matches highlighting.
  *
- * @version 0.1.0 2016/06/02
+ * @version 0.1.0 2016/06/09
  * @author ExBin Project (http://exbin.org)
  */
 public class HighlightHexadecimalPainter extends DefaultHexadecimalPainter {
@@ -73,18 +73,13 @@ public class HighlightHexadecimalPainter extends DefaultHexadecimalPainter {
                 }
                 long endPosition = match.position + match.length - dataPosition;
 
-                int trailingChar = 0;
-                if (endPosition >= bytesPerBounds - 1) {
-                    endPosition = bytesPerBounds;
-                    trailingChar = 1;
-                }
                 int blockX = (int) (startPosition * charWidth);
                 int blockWidth = (int) ((endPosition - startPosition) * charWidth);
                 if (lineMatchIndex == currentMatchIndex) {
                     g.setColor(currentMatchBackgroundColor);
                 }
                 if (hexadecimal.getViewMode() != Hexadecimal.ViewMode.PREVIEW) {
-                    g.fillRect(hexadecimal.getHexadecimalRectangle().x - scrollPoint.x + blockX * 3, positionY - lineHeight, blockWidth * 3 - trailingChar * charWidth, lineHeight);
+                    g.fillRect(hexadecimal.getHexadecimalRectangle().x - scrollPoint.x + blockX * 3, positionY - lineHeight, blockWidth * 3 - charWidth, lineHeight);
                 }
                 if (hexadecimal.getViewMode() != Hexadecimal.ViewMode.HEXADECIMAL) {
                     g.fillRect(hexadecimal.getPreviewX() - scrollPoint.x + blockX, positionY - lineHeight, blockWidth, lineHeight);
