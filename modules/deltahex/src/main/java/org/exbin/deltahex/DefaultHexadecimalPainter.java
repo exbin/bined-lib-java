@@ -25,9 +25,9 @@ import java.util.Map;
 import org.exbin.utils.binary_data.BinaryData;
 
 /**
- * Hex editor painter.
+ * Hexadecimal component painter.
  *
- * @version 0.1.0 2016/06/08
+ * @version 0.1.0 2016/06/10
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultHexadecimalPainter implements HexadecimalPainter {
@@ -158,13 +158,14 @@ public class DefaultHexadecimalPainter implements HexadecimalPainter {
         int positionY = hexRect.y - hexadecimal.getSubFontSpace() - scrollPosition.scrollLineOffset + hexadecimal.getLineHeight();
 
         g.setColor(hexadecimal.getForeground());
-        char[] lineNumberCode = new char[8];
+        int headerChars = hexadecimal.getHeaderCharacters();
+        char[] lineNumberCode = new char[headerChars];
         while (positionY <= maxY && dataPosition <= maxDataPosition) {
-            HexadecimalUtils.longToHexChars(lineNumberCode, dataPosition, 8);
+            HexadecimalUtils.longToHexChars(lineNumberCode, dataPosition, headerChars);
             if (hexadecimal.isCharFixedMode()) {
-                g.drawChars(lineNumberCode, 0, 8, compRect.x, positionY);
+                g.drawChars(lineNumberCode, 0, headerChars, compRect.x, positionY);
             } else {
-                for (int i = 0; i < 8; i++) {
+                for (int i = 0; i < headerChars; i++) {
                     drawCenteredChar(g, lineNumberCode, i, charWidth, compRect.x, positionY);
                 }
             }
