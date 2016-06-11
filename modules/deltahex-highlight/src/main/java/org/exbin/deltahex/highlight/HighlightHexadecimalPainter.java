@@ -26,7 +26,7 @@ import org.exbin.deltahex.Hexadecimal;
 /**
  * Hexadecimal component painter supporting search matches highlighting.
  *
- * @version 0.1.0 2016/06/09
+ * @version 0.1.0 2016/06/11
  * @author ExBin Project (http://exbin.org)
  */
 public class HighlightHexadecimalPainter extends DefaultHexadecimalPainter {
@@ -104,6 +104,10 @@ public class HighlightHexadecimalPainter extends DefaultHexadecimalPainter {
     public void setMatches(List<SearchMatch> matches) {
         this.matches.clear();
         this.matches.addAll(matches);
+    }
+
+    public void clearMatches() {
+        this.matches.clear();
     }
 
     public SearchMatch getCurrentMatch() {

@@ -189,15 +189,15 @@ public class Hexadecimal extends JComponent {
         painter.paintOverall(g);
         Rectangle hexRect = dimensionsCache.hexadecimalRectangle;
         if (showHeader) {
-            g.setClip(hexRect.x, 0, hexRect.width, hexRect.y);
+            g.setClip(clipBounds.createIntersection(new Rectangle(hexRect.x, 0, hexRect.width, hexRect.y)));
             painter.paintHeader(g);
         }
 
-        g.setClip(0, hexRect.y, hexRect.x + hexRect.width, hexRect.height);
+        g.setClip(clipBounds.createIntersection(new Rectangle(0, hexRect.y, hexRect.x + hexRect.width, hexRect.height)));
         painter.paintBackground(g);
         if (showLineNumbers) {
             painter.paintLineNumbers(g);
-            g.setClip(hexRect.x, hexRect.y, hexRect.width, hexRect.height);
+            g.setClip(clipBounds.createIntersection(new Rectangle(hexRect.x, hexRect.y, hexRect.width, hexRect.height)));
         }
 
         painter.paintMainArea(g);

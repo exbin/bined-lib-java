@@ -174,7 +174,8 @@ public class DefaultCommandHandler implements HexadecimalCommandHandler {
                 hexadecimal.moveLeft(NO_MODIFIER);
                 caret.setLowerHalf(false);
                 hexadecimal.revealCursor();
-                hexadecimal.repaint();
+                hexadecimal.computeDimensions();
+                hexadecimal.updateScrollBars();
             }
         }
     }
@@ -195,7 +196,8 @@ public class DefaultCommandHandler implements HexadecimalCommandHandler {
                 if (caret.isLowerHalf()) {
                     caret.setLowerHalf(false);
                 }
-                hexadecimal.repaint();
+                hexadecimal.computeDimensions();
+                hexadecimal.updateScrollBars();
             }
         }
     }
