@@ -26,7 +26,7 @@ import org.exbin.deltahex.Hexadecimal;
 /**
  * Hexadecimal component painter supporting search matches highlighting.
  *
- * @version 0.1.0 2016/06/11
+ * @version 0.1.0 2016/06/12
  * @author ExBin Project (http://exbin.org)
  */
 public class HighlightHexadecimalPainter extends DefaultHexadecimalPainter {
@@ -58,10 +58,10 @@ public class HighlightHexadecimalPainter extends DefaultHexadecimalPainter {
     public void paintLineBackground(Graphics g, long line, int positionY, long dataPosition, int bytesPerBounds, int lineHeight, int charWidth) {
         g.setColor(foundMatchesBackgroundColor);
         Point scrollPoint = hexadecimal.getScrollPoint();
-        long lineMatchIndex = matchIndex;
+        int lineMatchIndex = matchIndex;
         while (lineMatchIndex < matches.size()) {
-            SearchMatch match = matches.get(matchIndex);
-            if (match.position > dataPosition + bytesPerBounds) {
+            SearchMatch match = matches.get(lineMatchIndex);
+            if (match.position >= dataPosition + bytesPerBounds) {
                 break;
             }
             if (match.position + match.length >= dataPosition) {
@@ -72,6 +72,9 @@ public class HighlightHexadecimalPainter extends DefaultHexadecimalPainter {
                     startPosition = match.position - dataPosition;
                 }
                 long endPosition = match.position + match.length - dataPosition;
+                if (endPosition > bytesPerBounds) {
+                    endPosition = bytesPerBounds;
+                }
 
                 int blockX = (int) (startPosition * charWidth);
                 int blockWidth = (int) ((endPosition - startPosition) * charWidth);
@@ -104,10 +107,12 @@ public class HighlightHexadecimalPainter extends DefaultHexadecimalPainter {
     public void setMatches(List<SearchMatch> matches) {
         this.matches.clear();
         this.matches.addAll(matches);
+        currentMatchIndex = -1;
     }
 
     public void clearMatches() {
         this.matches.clear();
+        currentMatchIndex = -1;
     }
 
     public SearchMatch getCurrentMatch() {

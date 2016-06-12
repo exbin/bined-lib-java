@@ -52,7 +52,7 @@ import org.exbin.utils.binary_data.BinaryData;
 /**
  * Hexadecimal viewer/editor component.
  *
- * @version 0.1.0 2016/06/10
+ * @version 0.1.0 2016/06/12
  * @author ExBin Project (http://exbin.org)
  */
 public class Hexadecimal extends JComponent {
@@ -328,22 +328,25 @@ public class Hexadecimal extends JComponent {
     }
 
     public void revealCursor() {
+        revealPosition(caret.getCaretPosition().getDataPosition(), caret.getSection());
+    }
+
+    public void revealPosition(long position, Section section) {
         if (dimensionsCache.fontMetrics == null) {
             // Ignore if no font data is available
             return;
         }
         boolean scrolled = false;
         Rectangle hexRect = dimensionsCache.hexadecimalRectangle;
-        CaretPosition caretPosition = caret.getCaretPosition();
-        long caretLine = caretPosition.getDataPosition() / dimensionsCache.bytesPerLine;
+        long caretLine = position / dimensionsCache.bytesPerLine;
 
-        int caretByte;
-        if (caret.getSection() == Section.HEXADECIMAL) {
-            caretByte = (int) (caretPosition.getDataPosition() % dimensionsCache.bytesPerLine) * 3 + caret.getHalfBytePosition();
+        int positionByte;
+        if (section == Section.HEXADECIMAL) {
+            positionByte = (int) (position % dimensionsCache.bytesPerLine) * 3 + caret.getHalfBytePosition();
         } else {
-            caretByte = (int) (caretPosition.getDataPosition() % dimensionsCache.bytesPerLine);
+            positionByte = (int) (position % dimensionsCache.bytesPerLine);
             if (viewMode == ViewMode.DUAL) {
-                caretByte += dimensionsCache.bytesPerLine * 3;
+                positionByte += dimensionsCache.bytesPerLine * 3;
             }
         }
 
@@ -360,12 +363,12 @@ public class Hexadecimal extends JComponent {
             }
             scrolled = true;
         }
-        if (caretByte <= scrollPosition.scrollBytePosition) {
-            scrollPosition.scrollBytePosition = caretByte;
+        if (positionByte <= scrollPosition.scrollBytePosition) {
+            scrollPosition.scrollBytePosition = positionByte;
             scrollPosition.scrollByteOffset = 0;
             scrolled = true;
-        } else if (caretByte >= scrollPosition.scrollBytePosition + dimensionsCache.bytesPerRect) {
-            scrollPosition.scrollBytePosition = caretByte - dimensionsCache.bytesPerRect;
+        } else if (positionByte >= scrollPosition.scrollBytePosition + dimensionsCache.bytesPerRect) {
+            scrollPosition.scrollBytePosition = positionByte - dimensionsCache.bytesPerRect;
             if (horizontalScrollMode == HorizontalScrollMode.PIXEL) {
                 scrollPosition.scrollByteOffset = dimensionsCache.charWidth - (hexRect.width % dimensionsCache.charWidth);
             } else {
