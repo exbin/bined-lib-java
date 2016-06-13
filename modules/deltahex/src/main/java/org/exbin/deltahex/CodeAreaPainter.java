@@ -23,7 +23,7 @@ import java.awt.Graphics;
  * @version 0.1.0 2016/04/18
  * @author ExBin Project (http://exbin.org)
  */
-public interface HexadecimalPainter {
+public interface CodeAreaPainter {
 
     /**
      * Paints overall hexadecimal editor parts.

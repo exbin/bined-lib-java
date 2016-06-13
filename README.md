@@ -14,7 +14,7 @@ Features
 --------
 
 - Hexadecimal representation of data and ascii preview
-- Insertion and overwrite edit modes
+- Insert and overwrite edit modes
 - Support for selection and clipboard
 - Optional scrollbars
 - Support for text encodings
@@ -24,8 +24,9 @@ Features
 Todo
 ----
 
-- Support for huge files
+- Searching for text / hexadecimal code with matching highlighting
 - Delta mode - Only changes are stored in memory
+- Support for huge files
 
 Compiling
 ---------
@@ -52,5 +53,4 @@ Gradle support plugin website: http://plugins.netbeans.org/plugin/44510/gradle-s
 License
 -------
 
-Apache License, Version 2.0
-see LICENSE-2.0.txt
+Apache License, Version 2.0 - see LICENSE-2.0.txt

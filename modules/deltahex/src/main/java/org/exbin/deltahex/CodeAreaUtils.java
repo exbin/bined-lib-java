@@ -21,7 +21,7 @@ package org.exbin.deltahex;
  * @version 0.1.0 2016/06/08
  * @author ExBin Project (http://exbin.org)
  */
-public class HexadecimalUtils {
+public class CodeAreaUtils {
 
     public static final char[] UPPER_HEX_CODES = "0123456789ABCDEF".toCharArray();
     public static final char[] LOWER_HEX_CODES = "0123456789abcdef".toCharArray();

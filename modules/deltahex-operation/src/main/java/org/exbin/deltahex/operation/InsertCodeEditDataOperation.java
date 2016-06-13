@@ -15,39 +15,39 @@
  */
 package org.exbin.deltahex.operation;
 
-import org.exbin.deltahex.Hexadecimal;
-import org.exbin.deltahex.delta.MemoryHexadecimalData;
+import org.exbin.deltahex.CodeArea;
+import org.exbin.deltahex.delta.MemoryPagedData;
 import org.exbin.utils.binary_data.BinaryData;
 import org.exbin.utils.binary_data.EditableBinaryData;
 
 /**
  * Operation for editing data unsing insert mode.
  *
- * @version 0.1.0 2015/05/14
+ * @version 0.1.0 2015/06/13
  * @author ExBin Project (http://exbin.org)
  */
-public class InsertHexEditDataOperation extends HexEditDataOperation {
+public class InsertCodeEditDataOperation extends CodeEditDataOperation {
 
     private final long startPosition;
-    private final boolean startLowerHalf;
+    private final int startCodeOffset;
     private boolean trailing = false;
 
     private long length;
-    private boolean lowerHalf = false;
+    private int codeOffset = 0;
 
-    public InsertHexEditDataOperation(Hexadecimal hexadecimal, long startPosition, boolean startLowerHalf) {
-        super(hexadecimal);
+    public InsertCodeEditDataOperation(CodeArea codeArea, long startPosition, int startCodeOffset) {
+        super(codeArea);
         this.startPosition = startPosition;
-        this.startLowerHalf = startLowerHalf;
-        this.lowerHalf = startLowerHalf;
-        if (lowerHalf) {
+        this.startCodeOffset = startCodeOffset;
+        this.codeOffset = startCodeOffset;
+        if (codeOffset > 0) {
             length = 1;
         }
     }
 
     @Override
-    public HexOperationType getType() {
-        return HexOperationType.EDIT_DATA;
+    public CodeAreaOperationType getType() {
+        return CodeAreaOperationType.EDIT_DATA;
     }
 
     @Override
@@ -56,20 +56,20 @@ public class InsertHexEditDataOperation extends HexEditDataOperation {
     }
 
     @Override
-    public HexOperation executeWithUndo() throws Exception {
+    public CodeAreaOperation executeWithUndo() throws Exception {
         return execute(true);
     }
 
-    private HexOperation execute(boolean withUndo) {
+    private CodeAreaOperation execute(boolean withUndo) {
         throw new IllegalStateException("Cannot be executed");
     }
 
     @Override
     public void appendEdit(byte value) {
-        EditableBinaryData data = (EditableBinaryData) hexadecimal.getData();
+        EditableBinaryData data = (EditableBinaryData) codeArea.getData();
         long editedDataPosition = startPosition + length;
 
-        if (lowerHalf) {
+        if (codeOffset > 0) {
             byte lowerPart = (byte) (data.getByte(editedDataPosition - 1) & 0xf);
             if (lowerPart > 0) {
                 data.insert(editedDataPosition, 1);
@@ -85,29 +85,30 @@ public class InsertHexEditDataOperation extends HexEditDataOperation {
             data.setByte(editedDataPosition, byteValue);
             length++;
         }
-        lowerHalf = !lowerHalf;
+        // TODO other code types
+        codeOffset = 1 - codeOffset;
     }
 
     @Override
-    public HexOperation[] generateUndo() {
+    public CodeAreaOperation[] generateUndo() {
         if (trailing) {
-            MemoryHexadecimalData undoData = new MemoryHexadecimalData();
-            BinaryData data = hexadecimal.getData();
+            MemoryPagedData undoData = new MemoryPagedData();
+            BinaryData data = codeArea.getData();
             byte value = (byte) ((data.getByte(startPosition) & 0xf0) | (data.getByte(startPosition + length) & 0xf));
             undoData.insert(0, new byte[]{value});
-            ModifyDataOperation modifyDataOperation = new ModifyDataOperation(hexadecimal, startPosition, undoData);
-            return new HexOperation[]{modifyDataOperation, new RemoveDataOperation(hexadecimal, startPosition, startLowerHalf, length)};
+            ModifyDataOperation modifyDataOperation = new ModifyDataOperation(codeArea, startPosition, undoData);
+            return new CodeAreaOperation[]{modifyDataOperation, new RemoveDataOperation(codeArea, startPosition, startCodeOffset, length)};
         }
 
-        return new HexOperation[]{new RemoveDataOperation(hexadecimal, startPosition, startLowerHalf, length)};
+        return new CodeAreaOperation[]{new RemoveDataOperation(codeArea, startPosition, startCodeOffset, length)};
     }
 
     public long getStartPosition() {
         return startPosition;
     }
 
-    public boolean isStartLowerHalf() {
-        return startLowerHalf;
+    public int getStartCodeOffset() {
+        return startCodeOffset;
     }
 
     public long getLength() {

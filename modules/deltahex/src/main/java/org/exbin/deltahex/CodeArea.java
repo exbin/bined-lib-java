@@ -46,16 +46,17 @@ import java.util.List;
 import javax.swing.JComponent;
 import javax.swing.JScrollBar;
 import javax.swing.UIManager;
-import org.exbin.deltahex.HexadecimalCaret.Section;
 import org.exbin.utils.binary_data.BinaryData;
 
 /**
  * Hexadecimal viewer/editor component.
  *
- * @version 0.1.0 2016/06/12
+ * Also supports binary, octal and decimal codes.
+ *
+ * @version 0.1.0 2016/06/13
  * @author ExBin Project (http://exbin.org)
  */
-public class Hexadecimal extends JComponent {
+public class CodeArea extends JComponent {
 
     public static final int NO_MODIFIER = 0;
     public static final int DECORATION_LINENUM_HEX_LINE = 1;
@@ -67,12 +68,13 @@ public class Hexadecimal extends JComponent {
     private int metaMask;
 
     private BinaryData data;
-    private HexadecimalPainter painter;
-    private HexadecimalCommandHandler commandHandler;
-    private HexadecimalCaret caret;
+    private CodeAreaPainter painter;
+    private CodeAreaCommandHandler commandHandler;
+    private CodeAreaCaret caret;
     private SelectionRange selection;
 
     private ViewMode viewMode = ViewMode.DUAL;
+    private CodeType codeType = CodeType.HEXADECIMAL;
     private BackgroundMode backgroundMode = BackgroundMode.STRIPPED;
     private Charset charset = Charset.defaultCharset();
     private int decorationMode = DECORATION_DEFAULT;
@@ -121,10 +123,10 @@ public class Hexadecimal extends JComponent {
 
     private final DimensionsCache dimensionsCache = new DimensionsCache();
 
-    public Hexadecimal() {
+    public CodeArea() {
         super();
-        caret = new HexadecimalCaret(this);
-        painter = new DefaultHexadecimalPainter(this);
+        caret = new CodeAreaCaret(this);
+        painter = new DefaultCodeAreaPainter(this);
         commandHandler = new DefaultCommandHandler(this);
 
         super.setForeground(UIManager.getColor("TextArea.foreground"));
@@ -161,7 +163,7 @@ public class Hexadecimal extends JComponent {
 
         setFocusable(true);
         setFocusTraversalKeysEnabled(false);
-        addComponentListener(new HexComponentListener());
+        addComponentListener(new CodeAreaComponentListener());
 
         HexMouseListener hexMouseListener = new HexMouseListener();
         addMouseListener(hexMouseListener);
@@ -187,7 +189,7 @@ public class Hexadecimal extends JComponent {
         }
 
         painter.paintOverall(g);
-        Rectangle hexRect = dimensionsCache.hexadecimalRectangle;
+        Rectangle hexRect = dimensionsCache.codeSectionRectangle;
         if (showHeader) {
             g.setClip(clipBounds.createIntersection(new Rectangle(hexRect.x, 0, hexRect.width, hexRect.y)));
             painter.paintHeader(g);
@@ -256,12 +258,12 @@ public class Hexadecimal extends JComponent {
         return antialiasingHint;
     }
 
-    public HexadecimalCaret getCaret() {
+    public CodeAreaCaret getCaret() {
         return caret;
     }
 
     private void moveCaret(MouseEvent me, int modifiers) {
-        Rectangle hexRect = dimensionsCache.hexadecimalRectangle;
+        Rectangle hexRect = dimensionsCache.codeSectionRectangle;
 
         Point scrollPoint = getScrollPoint();
         int bytesPerLine = dimensionsCache.bytesPerLine;
@@ -275,19 +277,22 @@ public class Hexadecimal extends JComponent {
         }
 
         long dataPosition;
-        boolean lowerHalf = false;
+        int codeOffset = 0;
         int byteOnLine;
-        if ((viewMode == ViewMode.DUAL && cursorCharX < bytesPerLine * 3) || viewMode == ViewMode.HEXADECIMAL) {
-            caret.setSection(Section.HEXADECIMAL);
-            int bytePosition = cursorCharX % 3;
-            lowerHalf = bytePosition > 0;
+        if ((viewMode == ViewMode.DUAL && cursorCharX < bytesPerLine * 3) || viewMode == ViewMode.CODE_MATRIX) {
+            caret.setSection(Section.CODE_MATRIX);
+            int bytePosition = cursorCharX % (codeType.maxDigits + 1);
+            codeOffset = bytePosition;
+            if (codeOffset >= codeType.maxDigits) {
+                codeOffset = codeType.maxDigits - 1;
+            }
 
-            byteOnLine = cursorCharX / 3;
+            byteOnLine = cursorCharX / (codeType.maxDigits + 1);
             if (byteOnLine >= bytesPerLine) {
-                lowerHalf = true;
+                codeOffset = 0;
             }
         } else {
-            caret.setSection(Section.PREVIEW);
+            caret.setSection(Section.TEXT_PREVIEW);
             byteOnLine = cursorCharX;
             if (viewMode == ViewMode.DUAL) {
                 byteOnLine -= bytesPerLine * 3;
@@ -302,11 +307,11 @@ public class Hexadecimal extends JComponent {
         long dataSize = data.getDataSize();
         if (dataPosition >= dataSize) {
             dataPosition = dataSize;
-            lowerHalf = false;
+            codeOffset = 0;
         }
 
         CaretPosition caretPosition = caret.getCaretPosition();
-        caret.setCaretPosition(dataPosition, lowerHalf);
+        caret.setCaretPosition(dataPosition, codeOffset);
         notifyCaretMoved();
         commandHandler.caretMoved();
 
@@ -337,12 +342,12 @@ public class Hexadecimal extends JComponent {
             return;
         }
         boolean scrolled = false;
-        Rectangle hexRect = dimensionsCache.hexadecimalRectangle;
+        Rectangle hexRect = dimensionsCache.codeSectionRectangle;
         long caretLine = position / dimensionsCache.bytesPerLine;
 
         int positionByte;
-        if (section == Section.HEXADECIMAL) {
-            positionByte = (int) (position % dimensionsCache.bytesPerLine) * 3 + caret.getHalfBytePosition();
+        if (section == Section.CODE_MATRIX) {
+            positionByte = (int) (position % dimensionsCache.bytesPerLine) * 3 + caret.getCodeOffset();
         } else {
             positionByte = (int) (position % dimensionsCache.bytesPerLine);
             if (viewMode == ViewMode.DUAL) {
@@ -428,16 +433,15 @@ public class Hexadecimal extends JComponent {
     public void moveRight(int modifiers) {
         CaretPosition caretPosition = caret.getCaretPosition();
         if (caretPosition.getDataPosition() < data.getDataSize()) {
-            if (caret.getSection() == Section.HEXADECIMAL) {
-                boolean lowerHalf = caret.isLowerHalf();
+            if (caret.getSection() == Section.CODE_MATRIX) {
+                int codeOffset = caret.getCodeOffset();
                 if (caretPosition.getDataPosition() < data.getDataSize()) {
-                    if (!lowerHalf) {
-                        caret.setLowerHalf(true);
-                        updateSelection(modifiers, caretPosition);
+                    if (codeOffset < codeType.maxDigits - 1) {
+                        caret.setCodeOffset(codeOffset + 1);
                     } else {
-                        caret.setCaretPosition(caretPosition.getDataPosition() + 1, false);
-                        updateSelection(modifiers, caretPosition);
+                        caret.setCaretPosition(caretPosition.getDataPosition() + 1, 0);
                     }
+                    updateSelection(modifiers, caretPosition);
                     notifyCaretMoved();
                 }
             } else {
@@ -450,13 +454,13 @@ public class Hexadecimal extends JComponent {
 
     public void moveLeft(int modifiers) {
         CaretPosition caretPosition = caret.getCaretPosition();
-        if (caret.getSection() == Section.HEXADECIMAL) {
-            boolean lowerHalf = caret.isLowerHalf();
-            if (lowerHalf) {
-                caret.setLowerHalf(false);
+        if (caret.getSection() == Section.CODE_MATRIX) {
+            int codeOffset = caret.getCodeOffset();
+            if (codeOffset > 0) {
+                caret.setCodeOffset(codeOffset - 1);
                 updateSelection(modifiers, caretPosition);
             } else if (caretPosition.getDataPosition() > 0) {
-                caret.setCaretPosition(caretPosition.getDataPosition() - 1, true);
+                caret.setCaretPosition(caretPosition.getDataPosition() - 1, codeType.maxDigits - 1);
                 updateSelection(modifiers, caretPosition);
             }
         } else if (caretPosition.getDataPosition() > 0) {
@@ -540,8 +544,8 @@ public class Hexadecimal extends JComponent {
      *
      * @return rectangle of main hexadecimal area
      */
-    public Rectangle getHexadecimalRectangle() {
-        return dimensionsCache.hexadecimalRectangle;
+    public Rectangle getCodeSectionRectangle() {
+        return dimensionsCache.codeSectionRectangle;
     }
 
     /**
@@ -587,11 +591,11 @@ public class Hexadecimal extends JComponent {
         repaint();
     }
 
-    public HexadecimalPainter getPainter() {
+    public CodeAreaPainter getPainter() {
         return painter;
     }
 
-    public void setPainter(HexadecimalPainter painter) {
+    public void setPainter(CodeAreaPainter painter) {
         if (painter == null) {
             throw new NullPointerException("Painter cannot be null");
         }
@@ -645,7 +649,24 @@ public class Hexadecimal extends JComponent {
         if (dimensionsCache.fontMetrics == null) {
             return;
         }
-        dimensionsCache.charsPerByte = viewMode.charsPerByte;
+
+        // TODO byte groups, other code types
+        switch (viewMode) {
+            case CODE_MATRIX: {
+                dimensionsCache.charsPerByte = codeType.maxDigits + 1;
+                break;
+            }
+            case TEXT_PREVIEW: {
+                dimensionsCache.charsPerByte = 1;
+                break;
+            }
+            case DUAL: {
+                dimensionsCache.charsPerByte = codeType.maxDigits + 2;
+                break;
+            }
+            default:
+                throw new IllegalStateException("Unexpected view mode " + viewMode.name());
+        }
 
         boolean verticalScrollBarVisible;
         boolean horizontalScrollBarVisible;
@@ -670,7 +691,7 @@ public class Hexadecimal extends JComponent {
         }
         int lines = (int) (data.getDataSize() / bytesPerLine) + 1;
 
-        Rectangle hexRect = dimensionsCache.hexadecimalRectangle;
+        Rectangle hexRect = dimensionsCache.codeSectionRectangle;
         hexRect.y = insets.top + (showHeader ? dimensionsCache.lineHeight * 2 : 0);
         hexRect.x = insets.left + (showLineNumbers ? dimensionsCache.charWidth * 9 : 0);
 
@@ -719,7 +740,7 @@ public class Hexadecimal extends JComponent {
         dimensionsCache.linesPerRect = hexRect.height / dimensionsCache.lineHeight;
 
         // Compute sections positions
-        if (viewMode == ViewMode.HEXADECIMAL) {
+        if (viewMode == ViewMode.CODE_MATRIX) {
             dimensionsCache.previewX = -1;
         } else {
             dimensionsCache.previewX = hexRect.x;
@@ -899,13 +920,21 @@ public class Hexadecimal extends JComponent {
 
     public void setViewMode(ViewMode viewMode) {
         this.viewMode = viewMode;
-        if (viewMode == ViewMode.HEXADECIMAL) {
-            caret.setSection(Section.HEXADECIMAL);
-        } else if (viewMode == ViewMode.PREVIEW) {
-            caret.setSection(Section.PREVIEW);
+        if (viewMode == ViewMode.CODE_MATRIX) {
+            caret.setSection(Section.CODE_MATRIX);
+        } else if (viewMode == ViewMode.TEXT_PREVIEW) {
+            caret.setSection(Section.TEXT_PREVIEW);
         }
         computeDimensions();
         repaint();
+    }
+
+    public CodeType getCodeType() {
+        return codeType;
+    }
+
+    public void setCodeType(CodeType codeType) {
+        this.codeType = codeType;
     }
 
     public BackgroundMode getBackgroundMode() {
@@ -1074,7 +1103,7 @@ public class Hexadecimal extends JComponent {
 
     public void setHexCharactersCase(HexCharactersCase hexCharactersCase) {
         this.hexCharactersCase = hexCharactersCase;
-        painter.setHexCharacters(hexCharactersCase == HexCharactersCase.LOWER ? HexadecimalUtils.LOWER_HEX_CODES : HexadecimalUtils.UPPER_HEX_CODES);
+        painter.setHexCharacters(hexCharactersCase == HexCharactersCase.LOWER ? CodeAreaUtils.LOWER_HEX_CODES : CodeAreaUtils.UPPER_HEX_CODES);
         repaint();
     }
 
@@ -1128,23 +1157,23 @@ public class Hexadecimal extends JComponent {
         updateScrollBars();
     }
 
-    public boolean isLowerHalf() {
-        return caret.isLowerHalf();
-    }
-
     public long getDataPosition() {
         return caret.getDataPosition();
+    }
+
+    public int getCodeOffset() {
+        return caret.getCodeOffset();
     }
 
     public CaretPosition getCaretPosition() {
         return caret.getCaretPosition();
     }
 
-    public HexadecimalCommandHandler getCommandHandler() {
+    public CodeAreaCommandHandler getCommandHandler() {
         return commandHandler;
     }
 
-    public void setCommandHandler(HexadecimalCommandHandler commandHandler) {
+    public void setCommandHandler(CodeAreaCommandHandler commandHandler) {
         this.commandHandler = commandHandler;
     }
 
@@ -1253,17 +1282,33 @@ public class Hexadecimal extends JComponent {
     }
 
     /**
-     * Component supports showing hexadecimal codes and textual preview, but you
-     * can view only one of them.
+     * Component supports showing numerical codes or textual preview, or both.
      */
     public static enum ViewMode {
-        DUAL(4), HEXADECIMAL(3), PREVIEW(1);
+        DUAL, CODE_MATRIX, TEXT_PREVIEW;
+    }
 
-        private int charsPerByte;
+    public static enum CodeType {
+        BINARY(8), OCTAL(3), DECIMAL(3), HEXADECIMAL(2);
 
-        ViewMode(int charsPerByte) {
-            this.charsPerByte = charsPerByte;
+        private int maxDigits;
+
+        CodeType(int maxDigits) {
+            this.maxDigits = maxDigits;
         }
+
+        /**
+         * Maximum number of digits per single byte.
+         *
+         * @return number of digits
+         */
+        public int getMaxDigits() {
+            return maxDigits;
+        }
+    }
+
+    public static enum Section {
+        CODE_MATRIX, TEXT_PREVIEW
     }
 
     public static enum BackgroundMode {
@@ -1286,8 +1331,21 @@ public class Hexadecimal extends JComponent {
         NEVER, IF_NEEDED, ALWAYS
     }
 
+    /**
+     * Character rendering mode.
+     *
+     * AUTO - Detect if font is monospaced and use FIXED in such case or DYNAMIC
+     * in other cases
+     *
+     * DYNAMIC - For each character compute width to center this character in
+     * area
+     *
+     * LEFT - Render each character from top left corner of it's position
+     *
+     * FIXED - Render sequence of characters from top left corner
+     */
     public static enum CharRenderingMode {
-        AUTO, DYNAMIC, FIXED
+        AUTO, CENTER, LEFT, FIXED
     }
 
     public static enum CharAntialiasingMode {
@@ -1299,7 +1357,7 @@ public class Hexadecimal extends JComponent {
     }
 
     /**
-     * Precomputed dimensions for the hexadecimal editor.
+     * Precomputed dimensions for the component.
      */
     private static class DimensionsCache {
 
@@ -1319,7 +1377,7 @@ public class Hexadecimal extends JComponent {
          *
          * Component area without header, line numbers and scrollbars.
          */
-        final Rectangle hexadecimalRectangle = new Rectangle();
+        final Rectangle codeSectionRectangle = new Rectangle();
         int previewX;
         int bytesPerRect;
         int linesPerRect;
@@ -1379,7 +1437,7 @@ public class Hexadecimal extends JComponent {
 
         private void updateMouseCursor(MouseEvent e) {
             Cursor newCursor = defaultCursor;
-            Rectangle hexRect = dimensionsCache.hexadecimalRectangle;
+            Rectangle hexRect = dimensionsCache.codeSectionRectangle;
             if (e.getX() >= hexRect.x && e.getY() >= hexRect.y) {
                 newCursor = textCursor;
             }
@@ -1403,7 +1461,7 @@ public class Hexadecimal extends JComponent {
         public void mouseWheelMoved(MouseWheelEvent e) {
             if (e.isShiftDown() && horizontalScrollBar.isVisible()) {
                 if (e.getWheelRotation() > 0) {
-                    int visibleBytes = dimensionsCache.hexadecimalRectangle.width / (dimensionsCache.charWidth * dimensionsCache.charsPerByte);
+                    int visibleBytes = dimensionsCache.codeSectionRectangle.width / (dimensionsCache.charWidth * dimensionsCache.charsPerByte);
                     int bytes = dimensionsCache.bytesPerLine - visibleBytes;
                     if (scrollPosition.scrollBytePosition < bytes) {
                         if (scrollPosition.scrollBytePosition < bytes - MOUSE_SCROLL_LINES) {
@@ -1483,7 +1541,7 @@ public class Hexadecimal extends JComponent {
                     int bytesPerLine = dimensionsCache.bytesPerLine;
                     if (caretPosition.getDataPosition() > 0) {
                         if (caretPosition.getDataPosition() >= bytesPerLine) {
-                            caret.setCaretPosition(caretPosition.getDataPosition() - bytesPerLine, caret.isLowerHalf());
+                            caret.setCaretPosition(caretPosition.getDataPosition() - bytesPerLine, caret.getCodeOffset());
                             notifyCaretMoved();
                         }
                         updateSelection(e.getModifiersEx(), caretPosition);
@@ -1498,8 +1556,8 @@ public class Hexadecimal extends JComponent {
                     long dataSize = data.getDataSize();
                     if (caretPosition.getDataPosition() < dataSize) {
                         if (caretPosition.getDataPosition() + bytesPerLine < dataSize
-                                || (caretPosition.getDataPosition() + bytesPerLine == dataSize && !caretPosition.isLowerHalf())) {
-                            caret.setCaretPosition(caretPosition.getDataPosition() + bytesPerLine, caret.isLowerHalf());
+                                || (caretPosition.getDataPosition() + bytesPerLine == dataSize && caretPosition.getCodeOffset() == 0)) {
+                            caret.setCaretPosition(caretPosition.getDataPosition() + bytesPerLine, caret.getCodeOffset());
                             notifyCaretMoved();
                         }
                         updateSelection(e.getModifiersEx(), caretPosition);
@@ -1511,7 +1569,7 @@ public class Hexadecimal extends JComponent {
                 case KeyEvent.VK_HOME: {
                     CaretPosition caretPosition = caret.getCaretPosition();
                     int bytesPerLine = dimensionsCache.bytesPerLine;
-                    if (caretPosition.getDataPosition() > 0 || caret.isLowerHalf()) {
+                    if (caretPosition.getDataPosition() > 0 || caret.getCodeOffset() > 0) {
                         long targetPosition;
                         if ((e.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) > 0) {
                             targetPosition = 0;
@@ -1532,9 +1590,9 @@ public class Hexadecimal extends JComponent {
                     if (caretPosition.getDataPosition() < dataSize) {
                         if ((e.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) > 0) {
                             caret.setCaretPosition(data.getDataSize());
-                        } else if (caret.getSection() == Section.HEXADECIMAL) {
+                        } else if (caret.getSection() == Section.CODE_MATRIX) {
                             long newPosition = ((caretPosition.getDataPosition() / bytesPerLine) + 1) * bytesPerLine - 1;
-                            caret.setCaretPosition(newPosition < dataSize ? newPosition : dataSize, newPosition < dataSize);
+                            caret.setCaretPosition(newPosition < dataSize ? newPosition : dataSize, newPosition < dataSize ? codeType.maxDigits - 1 : 0);
                         } else {
                             long newPosition = ((caretPosition.getDataPosition() / bytesPerLine) + 1) * bytesPerLine - 1;
                             caret.setCaretPosition(newPosition < dataSize ? newPosition : dataSize);
@@ -1550,9 +1608,9 @@ public class Hexadecimal extends JComponent {
                     int bytesStep = dimensionsCache.bytesPerLine * dimensionsCache.linesPerRect;
                     if (caretPosition.getDataPosition() > 0) {
                         if (caretPosition.getDataPosition() >= bytesStep) {
-                            caret.setCaretPosition(caretPosition.getDataPosition() - bytesStep, caret.isLowerHalf());
+                            caret.setCaretPosition(caretPosition.getDataPosition() - bytesStep, caret.getCodeOffset());
                         } else if (caretPosition.getDataPosition() >= dimensionsCache.bytesPerLine) {
-                            caret.setCaretPosition(caretPosition.getDataPosition() % dimensionsCache.bytesPerLine, caret.isLowerHalf());
+                            caret.setCaretPosition(caretPosition.getDataPosition() % dimensionsCache.bytesPerLine, caret.getCodeOffset());
                         }
                         notifyCaretMoved();
                         updateSelection(e.getModifiersEx(), caretPosition);
@@ -1570,11 +1628,11 @@ public class Hexadecimal extends JComponent {
                     long dataSize = data.getDataSize();
                     if (caretPosition.getDataPosition() < dataSize) {
                         if (caretPosition.getDataPosition() + bytesStep < dataSize) {
-                            caret.setCaretPosition(caretPosition.getDataPosition() + bytesStep, caret.isLowerHalf());
+                            caret.setCaretPosition(caretPosition.getDataPosition() + bytesStep, caret.getCodeOffset());
                         } else if (caretPosition.getDataPosition() + dimensionsCache.bytesPerLine < dataSize) {
                             caret.setCaretPosition(dataSize
                                     - (dataSize % dimensionsCache.bytesPerLine)
-                                    + (caretPosition.getDataPosition() % dimensionsCache.bytesPerLine), caret.isLowerHalf());
+                                    + (caretPosition.getDataPosition() % dimensionsCache.bytesPerLine), caret.getCodeOffset());
                         }
                         notifyCaretMoved();
                         updateSelection(e.getModifiersEx(), caretPosition);
@@ -1594,9 +1652,9 @@ public class Hexadecimal extends JComponent {
                 }
                 case KeyEvent.VK_TAB: {
                     if (viewMode == ViewMode.DUAL) {
-                        Section activeSection = caret.getSection() == Section.HEXADECIMAL ? Section.PREVIEW : Section.HEXADECIMAL;
-                        if (activeSection == Section.PREVIEW) {
-                            caret.setLowerHalf(false);
+                        Section activeSection = caret.getSection() == Section.CODE_MATRIX ? Section.TEXT_PREVIEW : Section.CODE_MATRIX;
+                        if (activeSection == Section.TEXT_PREVIEW) {
+                            caret.setCodeOffset(0);
                         }
                         caret.setSection(activeSection);
                         revealCursor();
@@ -1639,9 +1697,9 @@ public class Hexadecimal extends JComponent {
         }
     }
 
-    private class HexComponentListener implements ComponentListener {
+    private class CodeAreaComponentListener implements ComponentListener {
 
-        public HexComponentListener() {
+        public CodeAreaComponentListener() {
         }
 
         @Override

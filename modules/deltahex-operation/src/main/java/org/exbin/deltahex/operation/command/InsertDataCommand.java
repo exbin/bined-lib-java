@@ -16,7 +16,7 @@
  */
 package org.exbin.deltahex.operation.command;
 
-import org.exbin.deltahex.Hexadecimal;
+import org.exbin.deltahex.CodeArea;
 import org.exbin.deltahex.operation.InsertDataOperation;
 import org.exbin.utils.binary_data.BinaryData;
 
@@ -26,32 +26,32 @@ import org.exbin.utils.binary_data.BinaryData;
  * @version 0.1.0 2016/05/14
  * @author ExBin Project (http://exbin.org)
  */
-public class InsertDataCommand extends OpHexCommand {
+public class InsertDataCommand extends OpCodeAreaCommand {
 
     private final long position;
     private final long dataLength;
 
-    public InsertDataCommand(Hexadecimal hexadecimal, long position, BinaryData data) {
-        super(hexadecimal);
+    public InsertDataCommand(CodeArea codeArea, long position, BinaryData data) {
+        super(codeArea);
         this.position = position;
         dataLength = data.getDataSize();
-        super.setOperation(new InsertDataOperation(hexadecimal, position, hexadecimal.getCaretPosition().isLowerHalf(), data));
+        super.setOperation(new InsertDataOperation(codeArea, position, codeArea.getCaretPosition().getCodeOffset(), data));
     }
 
     @Override
-    public HexCommandType getType() {
-        return HexCommandType.DATA_INSERTED;
+    public CodeAreaCommandType getType() {
+        return CodeAreaCommandType.DATA_INSERTED;
     }
 
     @Override
     public void redo() throws Exception {
         super.redo();
-        hexadecimal.getCaretPosition().setDataPosition(position + dataLength);
+        codeArea.getCaretPosition().setDataPosition(position + dataLength);
     }
 
     @Override
     public void undo() throws Exception {
         super.undo();
-        hexadecimal.getCaretPosition().setDataPosition(position);
+        codeArea.getCaretPosition().setDataPosition(position);
     }
 }

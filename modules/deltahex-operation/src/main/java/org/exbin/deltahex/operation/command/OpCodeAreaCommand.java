@@ -15,11 +15,11 @@
  */
 package org.exbin.deltahex.operation.command;
 
-import org.exbin.deltahex.Hexadecimal;
-import org.exbin.deltahex.operation.HexOperation;
-import org.exbin.deltahex.operation.HexOperationEvent;
-import org.exbin.deltahex.operation.HexOperationListener;
+import org.exbin.deltahex.CodeArea;
+import org.exbin.deltahex.operation.CodeAreaOperation;
+import org.exbin.deltahex.operation.CodeAreaOperationEvent;
 import org.exbin.xbup.operation.OperationListener;
+import org.exbin.deltahex.operation.CodeAreaOperationListener;
 
 /**
  * Abstract class for operation on hexadecimal document.
@@ -27,20 +27,20 @@ import org.exbin.xbup.operation.OperationListener;
  * @version 0.1.0 2016/05/14
  * @author ExBin Project (http://exbin.org)
  */
-public abstract class OpHexCommand extends HexCommand {
+public abstract class OpCodeAreaCommand extends CodeAreaCommand {
 
-    protected HexOperation operation;
+    protected CodeAreaOperation operation;
     protected boolean operationPerformed = false;
 
-    public OpHexCommand(Hexadecimal hexadecimal) {
-        super(hexadecimal);
+    public OpCodeAreaCommand(CodeArea codeArea) {
+        super(codeArea);
     }
 
-    public HexOperation getOperation() {
+    public CodeAreaOperation getOperation() {
         return operation;
     }
 
-    public void setOperation(HexOperation operation) {
+    public void setOperation(CodeAreaOperation operation) {
         this.operation = operation;
     }
 
@@ -52,9 +52,9 @@ public abstract class OpHexCommand extends HexCommand {
     @Override
     public void undo() throws Exception {
         if (operationPerformed) {
-            HexOperation redoOperation = operation.executeWithUndo();
-            if (hexadecimal instanceof OperationListener) {
-                ((HexOperationListener) hexadecimal).notifyChange(new HexOperationEvent(operation));
+            CodeAreaOperation redoOperation = operation.executeWithUndo();
+            if (codeArea instanceof OperationListener) {
+                ((CodeAreaOperationListener) codeArea).notifyChange(new CodeAreaOperationEvent(operation));
             }
 
             operation = redoOperation;
@@ -67,9 +67,9 @@ public abstract class OpHexCommand extends HexCommand {
     @Override
     public void redo() throws Exception {
         if (!operationPerformed) {
-            HexOperation undoOperation = operation.executeWithUndo();
-            if (hexadecimal instanceof OperationListener) {
-                ((HexOperationListener) hexadecimal).notifyChange(new HexOperationEvent(operation));
+            CodeAreaOperation undoOperation = operation.executeWithUndo();
+            if (codeArea instanceof OperationListener) {
+                ((CodeAreaOperationListener) codeArea).notifyChange(new CodeAreaOperationEvent(operation));
             }
 
             operation = undoOperation;

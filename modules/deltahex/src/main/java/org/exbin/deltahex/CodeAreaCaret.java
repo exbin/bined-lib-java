@@ -21,45 +21,46 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Stroke;
+import org.exbin.deltahex.CodeArea.Section;
 
 /**
- * Hexadecimal editor caret.
+ * Code area caret.
  *
- * @version 0.2.0 2016/06/06
+ * @version 0.1.0 2016/06/13
  * @author ExBin Project (http://exbin.org)
  */
-public class HexadecimalCaret {
+public class CodeAreaCaret {
 
     private static final int DEFAULT_CURSOR_WIDTH = 2;
 
-    private final Hexadecimal hexadecimal;
+    private final CodeArea codeArea;
 
     private final CaretPosition caretPosition = new CaretPosition();
-    private Section section = Section.HEXADECIMAL;
+    private Section section = Section.CODE_MATRIX;
 
-    public HexadecimalCaret(Hexadecimal hexadecimal) {
-        this.hexadecimal = hexadecimal;
+    public CodeAreaCaret(CodeArea codeArea) {
+        this.codeArea = codeArea;
     }
 
     public void paint(Graphics g) {
-        g.setColor(hexadecimal.getCursorColor());
-        int bytesPerBounds = hexadecimal.getBytesPerLine();
-        int lineHeight = hexadecimal.getLineHeight();
-        int charWidth = hexadecimal.getCharWidth();
-        Point scrollPoint = hexadecimal.getScrollPoint();
+        g.setColor(codeArea.getCursorColor());
+        int bytesPerBounds = codeArea.getBytesPerLine();
+        int lineHeight = codeArea.getLineHeight();
+        int charWidth = codeArea.getCharWidth();
+        Point scrollPoint = codeArea.getScrollPoint();
         Point cursorPoint = getCursorPoint(bytesPerBounds, lineHeight, charWidth);
-        if (hexadecimal.getEditationMode() == Hexadecimal.EditationMode.OVERWRITE) {
+        if (codeArea.getEditationMode() == CodeArea.EditationMode.OVERWRITE) {
             g.drawRect(cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y, charWidth, lineHeight - 1);
         } else {
             g.fillRect(cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y, DEFAULT_CURSOR_WIDTH, lineHeight - 1);
         }
-        if (hexadecimal.getViewMode() == Hexadecimal.ViewMode.DUAL && hexadecimal.isShowShadowCursor()) {
+        if (codeArea.getViewMode() == CodeArea.ViewMode.DUAL && codeArea.isShowShadowCursor()) {
             Point shadowCursorPoint = getShadowCursorPoint(bytesPerBounds, lineHeight, charWidth);
             Graphics2D g2d = (Graphics2D) g.create();
             Stroke dashed = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{2}, 0);
             g2d.setStroke(dashed);
             g2d.drawRect(shadowCursorPoint.x - scrollPoint.x, shadowCursorPoint.y - scrollPoint.y,
-                    charWidth * (hexadecimal.getActiveSection() == Section.PREVIEW ? 2 : 1), lineHeight - 1);
+                    charWidth * (codeArea.getActiveSection() == Section.TEXT_PREVIEW ? 2 : 1), lineHeight - 1);
         }
     }
 
@@ -68,13 +69,13 @@ public class HexadecimalCaret {
         long line = dataPosition / bytesPerLine;
         int offset = (int) (dataPosition % bytesPerLine);
 
-        Rectangle rect = hexadecimal.getHexadecimalRectangle();
+        Rectangle rect = codeArea.getCodeSectionRectangle();
         int caretY = (int) (rect.y + line * lineHeight);
         int caretX;
-        if (section == Section.PREVIEW) {
-            caretX = hexadecimal.getPreviewX() + charWidth * offset;
+        if (section == Section.TEXT_PREVIEW) {
+            caretX = codeArea.getPreviewX() + charWidth * offset;
         } else {
-            caretX = rect.x + charWidth * (offset * 3 + getHalfBytePosition());
+            caretX = rect.x + charWidth * (offset * 3 + getCodeOffset());
         }
 
         return new Point(caretX, caretY);
@@ -85,13 +86,13 @@ public class HexadecimalCaret {
         long line = dataPosition / bytesPerLine;
         int offset = (int) (dataPosition % bytesPerLine);
 
-        Rectangle rect = hexadecimal.getHexadecimalRectangle();
+        Rectangle rect = codeArea.getCodeSectionRectangle();
         int caretY = (int) (rect.y + line * lineHeight);
         int caretX;
-        if (section == Section.PREVIEW) {
+        if (section == Section.TEXT_PREVIEW) {
             caretX = rect.x + charWidth * (offset * 3);
         } else {
-            caretX = hexadecimal.getPreviewX() + charWidth * offset;
+            caretX = codeArea.getPreviewX() + charWidth * offset;
         }
 
         return new Point(caretX, caretY);
@@ -99,7 +100,7 @@ public class HexadecimalCaret {
 
     public Rectangle getCursorRect(int bytesPerLine, int fontHeight, int charWidth) {
         Point cursorPoint = getCursorPoint(bytesPerLine, fontHeight, charWidth);
-        if (hexadecimal.getEditationMode() == Hexadecimal.EditationMode.OVERWRITE) {
+        if (codeArea.getEditationMode() == CodeArea.EditationMode.OVERWRITE) {
             return new Rectangle(cursorPoint.x, cursorPoint.y, charWidth, fontHeight);
         } else {
             return new Rectangle(cursorPoint.x, cursorPoint.y, DEFAULT_CURSOR_WIDTH, fontHeight);
@@ -107,12 +108,12 @@ public class HexadecimalCaret {
     }
 
     public CaretPosition getCaretPosition() {
-        return new CaretPosition(caretPosition.getDataPosition(), caretPosition.isLowerHalf());
+        return new CaretPosition(caretPosition.getDataPosition(), caretPosition.getCodeOffset());
     }
 
     public void setCaretPosition(CaretPosition caretPosition) {
         this.caretPosition.setDataPosition(caretPosition == null ? 0 : caretPosition.getDataPosition());
-        this.caretPosition.setLowerHalf(caretPosition == null ? true : caretPosition.isLowerHalf());
+        this.caretPosition.setCodeOffset(caretPosition == null ? 0 : caretPosition.getCodeOffset());
     }
 
     public long getDataPosition() {
@@ -121,24 +122,20 @@ public class HexadecimalCaret {
 
     public void setCaretPosition(long dataPosition) {
         caretPosition.setDataPosition(dataPosition);
-        caretPosition.setLowerHalf(false);
+        caretPosition.setCodeOffset(0);
     }
 
-    public void setCaretPosition(long dataPosition, boolean lowerHalf) {
+    public void setCaretPosition(long dataPosition, int codeOffset) {
         caretPosition.setDataPosition(dataPosition);
-        caretPosition.setLowerHalf(lowerHalf);
+        caretPosition.setCodeOffset(codeOffset);
     }
 
-    public boolean isLowerHalf() {
-        return caretPosition.isLowerHalf();
+    public int getCodeOffset() {
+        return caretPosition.getCodeOffset();
     }
 
-    public int getHalfBytePosition() {
-        return caretPosition.isLowerHalf() ? 1 : 0;
-    }
-
-    public void setLowerHalf(boolean lowerHalf) {
-        caretPosition.setLowerHalf(lowerHalf);
+    public void setCodeOffset(int codeOffset) {
+        caretPosition.setCodeOffset(codeOffset);
     }
 
     public Section getSection() {
@@ -147,9 +144,5 @@ public class HexadecimalCaret {
 
     public void setSection(Section section) {
         this.section = section;
-    }
-
-    public static enum Section {
-        HEXADECIMAL, PREVIEW
     }
 }

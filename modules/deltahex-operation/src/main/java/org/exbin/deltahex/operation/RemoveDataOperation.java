@@ -15,32 +15,32 @@
  */
 package org.exbin.deltahex.operation;
 
-import org.exbin.deltahex.Hexadecimal;
+import org.exbin.deltahex.CodeArea;
 import org.exbin.utils.binary_data.BinaryData;
 import org.exbin.utils.binary_data.EditableBinaryData;
 
 /**
  * Operation for deleting child block.
  *
- * @version 0.1.0 2016/05/25
+ * @version 0.1.0 2016/06/13
  * @author ExBin Project (http://exbin.org)
  */
-public class RemoveDataOperation extends HexOperation {
+public class RemoveDataOperation extends CodeAreaOperation {
 
-    private long position;
-    private boolean lowerHalf;
-    private long size;
+    private final long position;
+    private final int codeOffset;
+    private final long size;
 
-    public RemoveDataOperation(Hexadecimal hexadecimal, long position, boolean lowerHalf, long size) {
-        super(hexadecimal);
+    public RemoveDataOperation(CodeArea codeArea, long position, int codeOffset, long size) {
+        super(codeArea);
         this.position = position;
-        this.lowerHalf = lowerHalf;
+        this.codeOffset = codeOffset;
         this.size = size;
     }
 
     @Override
-    public HexOperationType getType() {
-        return HexOperationType.REMOVE_DATA;
+    public CodeAreaOperationType getType() {
+        return CodeAreaOperationType.REMOVE_DATA;
     }
 
     @Override
@@ -49,18 +49,18 @@ public class RemoveDataOperation extends HexOperation {
     }
 
     @Override
-    public HexOperation executeWithUndo() throws Exception {
+    public CodeAreaOperation executeWithUndo() throws Exception {
         return execute(true);
     }
 
-    private HexOperation execute(boolean withUndo) {
-        HexOperation undoOperation = null;
+    private CodeAreaOperation execute(boolean withUndo) {
+        CodeAreaOperation undoOperation = null;
         if (withUndo) {
-            BinaryData undoData = hexadecimal.getData().copy(position, size);
-            undoOperation = new InsertDataOperation(hexadecimal, position, lowerHalf, undoData);
+            BinaryData undoData = codeArea.getData().copy(position, size);
+            undoOperation = new InsertDataOperation(codeArea, position, codeOffset, undoData);
         }
-        ((EditableBinaryData) hexadecimal.getData()).remove(position, size);
-        hexadecimal.getCaret().setCaretPosition(position, lowerHalf);
+        ((EditableBinaryData) codeArea.getData()).remove(position, size);
+        codeArea.getCaret().setCaretPosition(position, codeOffset);
         return undoOperation;
     }
 }

@@ -28,25 +28,26 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import static org.exbin.deltahex.Hexadecimal.NO_MODIFIER;
+import static org.exbin.deltahex.CodeArea.NO_MODIFIER;
+import org.exbin.deltahex.CodeArea.Section;
 import org.exbin.utils.binary_data.BinaryData;
 import org.exbin.utils.binary_data.EditableBinaryData;
 
 /**
  * Default hexadecimal editor command handler.
  *
- * @version 0.1.0 2016/05/24
+ * @version 0.1.0 2016/06/13
  * @author ExBin Project (http://exbin.org)
  */
-public class DefaultCommandHandler implements HexadecimalCommandHandler {
+public class DefaultCommandHandler implements CodeAreaCommandHandler {
 
-    private final Hexadecimal hexadecimal;
+    private final CodeArea codeArea;
     private Clipboard clipboard;
     private boolean canPaste = false;
     private DataFlavor binaryDataFlavor;
 
-    public DefaultCommandHandler(Hexadecimal hexadecimal) {
-        this.hexadecimal = hexadecimal;
+    public DefaultCommandHandler(CodeArea codeArea) {
+        this.codeArea = codeArea;
         try {
             clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         } catch (java.awt.HeadlessException ex) {
@@ -74,14 +75,14 @@ public class DefaultCommandHandler implements HexadecimalCommandHandler {
 
     @Override
     public void keyPressed(char keyValue) {
-        if (!hexadecimal.isEditable()) {
+        if (!codeArea.isEditable()) {
             return;
         }
 
-        if (hexadecimal.getActiveSection() == HexadecimalCaret.Section.HEXADECIMAL) {
+        if (codeArea.getActiveSection() == Section.CODE_MATRIX) {
             if ((keyValue >= '0' && keyValue <= '9')
                     || (keyValue >= 'a' && keyValue <= 'f') || (keyValue >= 'A' && keyValue <= 'F')) {
-                if (hexadecimal.hasSelection()) {
+                if (codeArea.hasSelection()) {
                     deleteSelection();
                 }
 
@@ -92,15 +93,16 @@ public class DefaultCommandHandler implements HexadecimalCommandHandler {
                     value = Character.toLowerCase(keyValue) - 'a' + 10;
                 }
 
-                BinaryData data = hexadecimal.getData();
-                long dataPosition = hexadecimal.getDataPosition();
-                if (hexadecimal.getEditationMode() == Hexadecimal.EditationMode.OVERWRITE) {
-                    if (dataPosition == hexadecimal.getData().getDataSize()) {
+                BinaryData data = codeArea.getData();
+                long dataPosition = codeArea.getDataPosition();
+                if (codeArea.getEditationMode() == CodeArea.EditationMode.OVERWRITE) {
+                    if (dataPosition == codeArea.getData().getDataSize()) {
                         ((EditableBinaryData) data).insert(dataPosition, 1);
                     }
-                    setHalfByte(value);
+                    setCodeValue(value);
                 } else {
-                    if (hexadecimal.isLowerHalf()) {
+                    // TODO code types
+                    if (codeArea.getCodeOffset() > 0) {
                         byte lowerHalf = (byte) (data.getByte(dataPosition) & 0xf);
                         if (lowerHalf > 0) {
                             ((EditableBinaryData) data).insert(dataPosition + 1, 1);
@@ -109,46 +111,47 @@ public class DefaultCommandHandler implements HexadecimalCommandHandler {
                     } else {
                         ((EditableBinaryData) data).insert(dataPosition, 1);
                     }
-                    setHalfByte(value);
+                    setCodeValue(value);
                 }
-                hexadecimal.moveRight(Hexadecimal.NO_MODIFIER);
-                hexadecimal.revealCursor();
+                codeArea.moveRight(CodeArea.NO_MODIFIER);
+                codeArea.revealCursor();
             }
         } else {
             char keyChar = keyValue;
-            if (keyChar > 31 && hexadecimal.isValidChar(keyValue)) {
-                BinaryData data = hexadecimal.getData();
-                CaretPosition caretPosition = hexadecimal.getCaretPosition();
+            if (keyChar > 31 && codeArea.isValidChar(keyValue)) {
+                BinaryData data = codeArea.getData();
+                CaretPosition caretPosition = codeArea.getCaretPosition();
                 long dataPosition = caretPosition.getDataPosition();
-                byte[] bytes = hexadecimal.charToBytes(keyChar);
-                if (hexadecimal.getEditationMode() == Hexadecimal.EditationMode.OVERWRITE) {
-                    if (dataPosition < hexadecimal.getData().getDataSize()) {
+                byte[] bytes = codeArea.charToBytes(keyChar);
+                if (codeArea.getEditationMode() == CodeArea.EditationMode.OVERWRITE) {
+                    if (dataPosition < codeArea.getData().getDataSize()) {
                         int length = bytes.length;
-                        if (dataPosition + length > hexadecimal.getData().getDataSize()) {
-                            length = (int) (hexadecimal.getData().getDataSize() - dataPosition);
+                        if (dataPosition + length > codeArea.getData().getDataSize()) {
+                            length = (int) (codeArea.getData().getDataSize() - dataPosition);
                         }
                         ((EditableBinaryData) data).remove(dataPosition, length);
                     }
                 }
                 ((EditableBinaryData) data).insert(dataPosition, bytes);
-                hexadecimal.getCaret().setCaretPosition(dataPosition + bytes.length - 1);
-                hexadecimal.moveRight(Hexadecimal.NO_MODIFIER);
-                hexadecimal.revealCursor();
+                codeArea.getCaret().setCaretPosition(dataPosition + bytes.length - 1);
+                codeArea.moveRight(CodeArea.NO_MODIFIER);
+                codeArea.revealCursor();
             }
         }
     }
 
-    private void setHalfByte(int value) {
-        CaretPosition caretPosition = hexadecimal.getCaretPosition();
+    private void setCodeValue(int value) {
+        CaretPosition caretPosition = codeArea.getCaretPosition();
         long dataPosition = caretPosition.getDataPosition();
-        setHalfByte(dataPosition, value, caretPosition.isLowerHalf());
+        setCodeValue(dataPosition, value, caretPosition.getCodeOffset());
     }
 
-    private void setHalfByte(long dataPosition, int value, boolean lowerHalf) {
-        BinaryData data = hexadecimal.getData();
+    private void setCodeValue(long dataPosition, int value, int codeOffset) {
+        BinaryData data = codeArea.getData();
         byte byteValue = data.getByte(dataPosition);
 
-        if (lowerHalf) {
+        // TODO other code types
+        if (codeOffset == 1) {
             byteValue = (byte) ((byteValue & 0xf0) | value);
         } else {
             byteValue = (byte) ((byteValue & 0xf) | (value << 4));
@@ -159,65 +162,65 @@ public class DefaultCommandHandler implements HexadecimalCommandHandler {
 
     @Override
     public void backSpacePressed() {
-        if (!hexadecimal.isEditable()) {
+        if (!codeArea.isEditable()) {
             return;
         }
 
-        if (hexadecimal.hasSelection()) {
+        if (codeArea.hasSelection()) {
             deleteSelection();
         } else {
-            HexadecimalCaret caret = hexadecimal.getCaret();
+            CodeAreaCaret caret = codeArea.getCaret();
             long dataPosition = caret.getDataPosition();
-            if (dataPosition > 0 && dataPosition <= hexadecimal.getData().getDataSize()) {
-                ((EditableBinaryData) hexadecimal.getData()).remove(dataPosition - 1, 1);
-                caret.setLowerHalf(false);
-                hexadecimal.moveLeft(NO_MODIFIER);
-                caret.setLowerHalf(false);
-                hexadecimal.revealCursor();
-                hexadecimal.computeDimensions();
-                hexadecimal.updateScrollBars();
+            if (dataPosition > 0 && dataPosition <= codeArea.getData().getDataSize()) {
+                ((EditableBinaryData) codeArea.getData()).remove(dataPosition - 1, 1);
+                caret.setCodeOffset(0);
+                codeArea.moveLeft(NO_MODIFIER);
+                caret.setCodeOffset(0);
+                codeArea.revealCursor();
+                codeArea.computeDimensions();
+                codeArea.updateScrollBars();
             }
         }
     }
 
     @Override
     public void deletePressed() {
-        if (!hexadecimal.isEditable()) {
+        if (!codeArea.isEditable()) {
             return;
         }
 
-        if (hexadecimal.hasSelection()) {
+        if (codeArea.hasSelection()) {
             deleteSelection();
         } else {
-            HexadecimalCaret caret = hexadecimal.getCaret();
+            CodeAreaCaret caret = codeArea.getCaret();
             long dataPosition = caret.getDataPosition();
-            if (dataPosition < hexadecimal.getData().getDataSize()) {
-                ((EditableBinaryData) hexadecimal.getData()).remove(dataPosition, 1);
-                if (caret.isLowerHalf()) {
-                    caret.setLowerHalf(false);
+            if (dataPosition < codeArea.getData().getDataSize()) {
+                ((EditableBinaryData) codeArea.getData()).remove(dataPosition, 1);
+                if (caret.getCodeOffset() > 0) {
+                    caret.setCodeOffset(0);
                 }
-                hexadecimal.computeDimensions();
-                hexadecimal.updateScrollBars();
+                codeArea.computeDimensions();
+                codeArea.updateScrollBars();
             }
         }
     }
 
     private void deleteSelection() {
-        Hexadecimal.SelectionRange selection = hexadecimal.getSelection();
+        CodeArea.SelectionRange selection = codeArea.getSelection();
         long first = selection.getFirst();
         long last = selection.getLast();
-        ((EditableBinaryData) hexadecimal.getData()).remove(first, last - first + 1);
-        hexadecimal.clearSelection();
-        HexadecimalCaret caret = hexadecimal.getCaret();
+        ((EditableBinaryData) codeArea.getData()).remove(first, last - first + 1);
+        codeArea.clearSelection();
+        CodeAreaCaret caret = codeArea.getCaret();
         caret.setCaretPosition(first);
-        hexadecimal.revealCursor();
-        hexadecimal.computeDimensions();
-        hexadecimal.updateScrollBars();
+        codeArea.revealCursor();
+        codeArea.computeDimensions();
+        codeArea.updateScrollBars();
     }
 
     @Override
     public void delete() {
-        if (!hexadecimal.isEditable()) {
+        if (!codeArea.isEditable()) {
             return;
         }
 
@@ -226,12 +229,12 @@ public class DefaultCommandHandler implements HexadecimalCommandHandler {
 
     @Override
     public void copy() {
-        Hexadecimal.SelectionRange selection = hexadecimal.getSelection();
+        CodeArea.SelectionRange selection = codeArea.getSelection();
         if (selection != null) {
             long first = selection.getFirst();
             long last = selection.getLast();
 
-            BinaryData copy = ((EditableBinaryData) hexadecimal.getData()).copy(first, last - first + 1);
+            BinaryData copy = ((EditableBinaryData) codeArea.getData()).copy(first, last - first + 1);
 
             BinaryDataClipboardData binaryData = new BinaryDataClipboardData(copy);
             clipboard.setContents(binaryData, binaryData);
@@ -240,11 +243,11 @@ public class DefaultCommandHandler implements HexadecimalCommandHandler {
 
     @Override
     public void cut() {
-        if (!hexadecimal.isEditable()) {
+        if (!codeArea.isEditable()) {
             return;
         }
 
-        Hexadecimal.SelectionRange selection = hexadecimal.getSelection();
+        CodeArea.SelectionRange selection = codeArea.getSelection();
         if (selection != null) {
             copy();
             deleteSelection();
@@ -253,42 +256,42 @@ public class DefaultCommandHandler implements HexadecimalCommandHandler {
 
     @Override
     public void paste() {
-        if (!hexadecimal.isEditable()) {
+        if (!codeArea.isEditable()) {
             return;
         }
 
         if (clipboard.isDataFlavorAvailable(binaryDataFlavor)) {
-            if (hexadecimal.hasSelection()) {
+            if (codeArea.hasSelection()) {
                 deleteSelection();
             }
 
             try {
                 Object object = clipboard.getData(binaryDataFlavor);
                 if (object instanceof BinaryData) {
-                    HexadecimalCaret caret = hexadecimal.getCaret();
+                    CodeAreaCaret caret = codeArea.getCaret();
                     long dataPosition = caret.getDataPosition();
 
                     BinaryData data = (BinaryData) object;
                     long dataSize = data.getDataSize();
-                    if (hexadecimal.getEditationMode() == Hexadecimal.EditationMode.OVERWRITE) {
+                    if (codeArea.getEditationMode() == CodeArea.EditationMode.OVERWRITE) {
                         long toRemove = dataSize;
-                        if (dataPosition + toRemove > hexadecimal.getData().getDataSize()) {
-                            toRemove = hexadecimal.getData().getDataSize() - dataPosition;
+                        if (dataPosition + toRemove > codeArea.getData().getDataSize()) {
+                            toRemove = codeArea.getData().getDataSize() - dataPosition;
                         }
-                        ((EditableBinaryData) hexadecimal.getData()).remove(dataPosition, toRemove);
+                        ((EditableBinaryData) codeArea.getData()).remove(dataPosition, toRemove);
                     }
-                    ((EditableBinaryData) hexadecimal.getData()).insert(hexadecimal.getDataPosition(), data);
+                    ((EditableBinaryData) codeArea.getData()).insert(codeArea.getDataPosition(), data);
 
                     caret.setCaretPosition(caret.getDataPosition() + dataSize);
-                    caret.setLowerHalf(false);
-                    hexadecimal.computeDimensions();
-                    hexadecimal.updateScrollBars();
+                    caret.setCodeOffset(0);
+                    codeArea.computeDimensions();
+                    codeArea.updateScrollBars();
                 }
             } catch (UnsupportedFlavorException | IOException ex) {
                 Logger.getLogger(DefaultCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else if (clipboard.isDataFlavorAvailable(DataFlavor.stringFlavor)) {
-            if (hexadecimal.hasSelection()) {
+            if (codeArea.hasSelection()) {
                 deleteSelection();
             }
 
@@ -296,24 +299,24 @@ public class DefaultCommandHandler implements HexadecimalCommandHandler {
             try {
                 insertedData = clipboard.getData(DataFlavor.stringFlavor);
                 if (insertedData instanceof String) {
-                    HexadecimalCaret caret = hexadecimal.getCaret();
+                    CodeAreaCaret caret = codeArea.getCaret();
                     long dataPosition = caret.getDataPosition();
 
                     byte[] bytes = ((String) insertedData).getBytes(Charset.forName("UTF-8"));
                     int length = bytes.length;
-                    if (hexadecimal.getEditationMode() == Hexadecimal.EditationMode.OVERWRITE) {
+                    if (codeArea.getEditationMode() == CodeArea.EditationMode.OVERWRITE) {
                         long toRemove = length;
-                        if (dataPosition + toRemove > hexadecimal.getData().getDataSize()) {
-                            toRemove = hexadecimal.getData().getDataSize() - dataPosition;
+                        if (dataPosition + toRemove > codeArea.getData().getDataSize()) {
+                            toRemove = codeArea.getData().getDataSize() - dataPosition;
                         }
-                        ((EditableBinaryData) hexadecimal.getData()).remove(dataPosition, toRemove);
+                        ((EditableBinaryData) codeArea.getData()).remove(dataPosition, toRemove);
                     }
-                    ((EditableBinaryData) hexadecimal.getData()).insert(hexadecimal.getDataPosition(), bytes);
+                    ((EditableBinaryData) codeArea.getData()).insert(codeArea.getDataPosition(), bytes);
 
                     caret.setCaretPosition(caret.getDataPosition() + length);
-                    caret.setLowerHalf(false);
-                    hexadecimal.computeDimensions();
-                    hexadecimal.updateScrollBars();
+                    caret.setCodeOffset(0);
+                    codeArea.computeDimensions();
+                    codeArea.updateScrollBars();
                 }
             } catch (UnsupportedFlavorException | IOException ex) {
                 Logger.getLogger(DefaultCommandHandler.class.getName()).log(Level.SEVERE, null, ex);

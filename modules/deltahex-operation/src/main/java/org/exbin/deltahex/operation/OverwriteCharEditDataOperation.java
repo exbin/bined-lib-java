@@ -15,31 +15,31 @@
  */
 package org.exbin.deltahex.operation;
 
-import org.exbin.deltahex.Hexadecimal;
-import org.exbin.deltahex.delta.MemoryHexadecimalData;
+import org.exbin.deltahex.CodeArea;
+import org.exbin.deltahex.delta.MemoryPagedData;
 import org.exbin.utils.binary_data.BinaryData;
 import org.exbin.utils.binary_data.EditableBinaryData;
 
 /**
  * Operation for editing data using overwrite mode.
  *
- * @version 0.1.0 2015/05/25
+ * @version 0.1.0 2015/06/13
  * @author ExBin Project (http://exbin.org)
  */
 public class OverwriteCharEditDataOperation extends CharEditDataOperation {
 
     private final long startPosition;
     private long length = 0;
-    private final MemoryHexadecimalData undoData = new MemoryHexadecimalData();
+    private final MemoryPagedData undoData = new MemoryPagedData();
 
-    public OverwriteCharEditDataOperation(Hexadecimal hexadecimal, long startPosition) {
-        super(hexadecimal);
+    public OverwriteCharEditDataOperation(CodeArea coreArea, long startPosition) {
+        super(coreArea);
         this.startPosition = startPosition;
     }
 
     @Override
-    public HexOperationType getType() {
-        return HexOperationType.EDIT_DATA;
+    public CodeAreaOperationType getType() {
+        return CodeAreaOperationType.EDIT_DATA;
     }
 
     @Override
@@ -48,20 +48,20 @@ public class OverwriteCharEditDataOperation extends CharEditDataOperation {
     }
 
     @Override
-    public HexOperation executeWithUndo() throws Exception {
+    public CodeAreaOperation executeWithUndo() throws Exception {
         return execute(true);
     }
 
-    private HexOperation execute(boolean withUndo) {
+    private CodeAreaOperation execute(boolean withUndo) {
         throw new IllegalStateException("Cannot be executed");
     }
 
     @Override
     public void appendEdit(char value) {
-        EditableBinaryData data = (EditableBinaryData) hexadecimal.getData();
+        EditableBinaryData data = (EditableBinaryData) codeArea.getData();
         long editedDataPosition = startPosition + length;
 
-        byte[] bytes = hexadecimal.charToBytes(value);
+        byte[] bytes = codeArea.charToBytes(value);
         if (editedDataPosition < data.getDataSize()) {
             long overwritten = data.getDataSize() - editedDataPosition;
             if (overwritten > bytes.length) {
@@ -87,21 +87,21 @@ public class OverwriteCharEditDataOperation extends CharEditDataOperation {
         }
 
         length += bytes.length;
-        hexadecimal.getCaret().setCaretPosition(startPosition + length);
+        codeArea.getCaret().setCaretPosition(startPosition + length);
     }
 
     @Override
-    public HexOperation[] generateUndo() {
+    public CodeAreaOperation[] generateUndo() {
         ModifyDataOperation modifyOperation = null;
         if (!undoData.isEmpty()) {
-            modifyOperation = new ModifyDataOperation(hexadecimal, startPosition, undoData);
+            modifyOperation = new ModifyDataOperation(codeArea, startPosition, undoData);
         }
-        RemoveDataOperation removeOperation = new RemoveDataOperation(hexadecimal, startPosition + undoData.getDataSize(), false, length - undoData.getDataSize());
+        RemoveDataOperation removeOperation = new RemoveDataOperation(codeArea, startPosition + undoData.getDataSize(), 0, length - undoData.getDataSize());
 
         if (modifyOperation != null) {
-            return new HexOperation[]{modifyOperation, removeOperation};
+            return new CodeAreaOperation[]{modifyOperation, removeOperation};
         }
-        return new HexOperation[]{removeOperation};
+        return new CodeAreaOperation[]{removeOperation};
     }
 
     public long getStartPosition() {

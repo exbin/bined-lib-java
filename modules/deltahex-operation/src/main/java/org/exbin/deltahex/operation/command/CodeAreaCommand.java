@@ -13,33 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.deltahex.operation;
+package org.exbin.deltahex.operation.command;
 
-import org.exbin.deltahex.Hexadecimal;
+import org.exbin.deltahex.CodeArea;
+import org.exbin.xbup.operation.AbstractCommand;
 
 /**
- * Abstract operation for editing data.
+ * Abstract class for operation on code area component.
  *
- * @version 0.1.0 2015/05/14
+ * @version 0.1.0 2016/06/13
  * @author ExBin Project (http://exbin.org)
  */
-public abstract class HexEditDataOperation extends HexOperation {
+public abstract class CodeAreaCommand extends AbstractCommand {
 
-    public HexEditDataOperation(Hexadecimal hexadecimal) {
-        super(hexadecimal);
+    protected final CodeArea codeArea;
+
+    public CodeAreaCommand(CodeArea codeArea) {
+        this.codeArea = codeArea;
     }
 
     /**
-     * Appends next hexadecimal value in editing action sequence.
+     * Returns type of the command.
      *
-     * @param value half-byte value (0..15)
+     * @return command type
      */
-    public abstract void appendEdit(byte value);
+    public abstract CodeAreaCommandType getType();
 
-    /**
-     * Generates undo operation for combined editing action.
-     *
-     * @return hexadecimal operation
-     */
-    public abstract HexOperation[] generateUndo();
+    @Override
+    public String getCaption() {
+        return getType().getCaption();
+    }
 }

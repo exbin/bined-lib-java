@@ -17,61 +17,61 @@ package org.exbin.deltahex.example;
 
 import java.awt.BorderLayout;
 import org.exbin.deltahex.CaretPosition;
-import org.exbin.deltahex.Hexadecimal;
-import org.exbin.deltahex.HexadecimalCaret;
+import org.exbin.deltahex.CodeArea;
+import org.exbin.deltahex.CodeArea.Section;
 
 /**
  * Hexadecimal editor example panel.
  *
- * @version 0.1.0 2016/06/08
+ * @version 0.1.0 2016/06/13
  * @author ExBin Project (http://exbin.org)
  */
 public class DeltaHexExamplePanel extends javax.swing.JPanel {
 
-    private Hexadecimal hexadecimal;
+    private CodeArea codeArea;
 
     public DeltaHexExamplePanel() {
         initComponents();
     }
 
-    public void setHexadecimal(final Hexadecimal hexadecimal) {
-        this.hexadecimal = hexadecimal;
-        add(hexadecimal, BorderLayout.CENTER);
-        viewModeComboBox.setSelectedIndex(hexadecimal.getViewMode().ordinal());
-        backgroundModeComboBox.setSelectedIndex(hexadecimal.getBackgroundMode().ordinal());
-        charRenderingComboBox.setSelectedIndex(hexadecimal.getCharRenderingMode().ordinal());
-        charAntialiasingComboBox.setSelectedIndex(hexadecimal.getCharAntialiasingMode().ordinal());
-        verticalScrollBarVisibilityComboBox.setSelectedIndex(hexadecimal.getVerticalScrollBarVisibility().ordinal());
-        verticalScrollModeComboBox.setSelectedIndex(hexadecimal.getVerticalScrollMode().ordinal());
-        horizontalScrollBarVisibilityComboBox.setSelectedIndex(hexadecimal.getHorizontalScrollBarVisibility().ordinal());
-        horizontalScrollModeComboBox.setSelectedIndex(hexadecimal.getHorizontalScrollMode().ordinal());
-        hexCharactersModeComboBox.setSelectedIndex(hexadecimal.getHexCharactersCase().ordinal());
-        showLineNumbersCheckBox.setSelected(hexadecimal.isShowLineNumbers());
-        showHeaderCheckBox.setSelected(hexadecimal.isShowHeader());
-        showNonprintableCharactersCheckBox.setSelected(hexadecimal.isShowNonprintingCharacters());
-        showShadowCursorCheckBox.setSelected(hexadecimal.isShowShadowCursor());
-        editableCheckBox.setSelected(hexadecimal.isEditable());
-        wrapModeCheckBox.setSelected(hexadecimal.isWrapMode());
-        lineLengthSpinner.setValue(hexadecimal.getLineLength());
+    public void setCodeArea(final CodeArea codeArea) {
+        this.codeArea = codeArea;
+        add(codeArea, BorderLayout.CENTER);
+        viewModeComboBox.setSelectedIndex(codeArea.getViewMode().ordinal());
+        backgroundModeComboBox.setSelectedIndex(codeArea.getBackgroundMode().ordinal());
+        charRenderingComboBox.setSelectedIndex(codeArea.getCharRenderingMode().ordinal());
+        charAntialiasingComboBox.setSelectedIndex(codeArea.getCharAntialiasingMode().ordinal());
+        verticalScrollBarVisibilityComboBox.setSelectedIndex(codeArea.getVerticalScrollBarVisibility().ordinal());
+        verticalScrollModeComboBox.setSelectedIndex(codeArea.getVerticalScrollMode().ordinal());
+        horizontalScrollBarVisibilityComboBox.setSelectedIndex(codeArea.getHorizontalScrollBarVisibility().ordinal());
+        horizontalScrollModeComboBox.setSelectedIndex(codeArea.getHorizontalScrollMode().ordinal());
+        hexCharactersModeComboBox.setSelectedIndex(codeArea.getHexCharactersCase().ordinal());
+        showLineNumbersCheckBox.setSelected(codeArea.isShowLineNumbers());
+        showHeaderCheckBox.setSelected(codeArea.isShowHeader());
+        showNonprintableCharactersCheckBox.setSelected(codeArea.isShowNonprintingCharacters());
+        showShadowCursorCheckBox.setSelected(codeArea.isShowShadowCursor());
+        editableCheckBox.setSelected(codeArea.isEditable());
+        wrapModeCheckBox.setSelected(codeArea.isWrapMode());
+        lineLengthSpinner.setValue(codeArea.getLineLength());
 
-        int decorationMode = hexadecimal.getDecorationMode();
-        decoratorLineNumLineCheckBox.setSelected((decorationMode & Hexadecimal.DECORATION_LINENUM_HEX_LINE) > 0);
-        decoratorSplitLineCheckBox.setSelected((decorationMode & Hexadecimal.DECORATION_HEX_PREVIEW_LINE) > 0);
-        decoratorBoxCheckBox.setSelected((decorationMode & Hexadecimal.DECORATION_BOX) > 0);
-        hexadecimal.addCaretMovedListener(new Hexadecimal.CaretMovedListener() {
+        int decorationMode = codeArea.getDecorationMode();
+        decoratorLineNumLineCheckBox.setSelected((decorationMode & CodeArea.DECORATION_LINENUM_HEX_LINE) > 0);
+        decoratorSplitLineCheckBox.setSelected((decorationMode & CodeArea.DECORATION_HEX_PREVIEW_LINE) > 0);
+        decoratorBoxCheckBox.setSelected((decorationMode & CodeArea.DECORATION_BOX) > 0);
+        codeArea.addCaretMovedListener(new CodeArea.CaretMovedListener() {
             @Override
-            public void caretMoved(CaretPosition caretPosition, HexadecimalCaret.Section section) {
+            public void caretMoved(CaretPosition caretPosition, Section section) {
                 cursorPositionTextField.setText(String.valueOf(caretPosition.getDataPosition()));
-                cursorPositionCheckBox.setSelected(caretPosition.isLowerHalf());
+                codeOffsetTextField.setText(String.valueOf(caretPosition.getCodeOffset()));
             }
         });
-        hexadecimal.addSelectionChangedListener(new Hexadecimal.SelectionChangedListener() {
+        codeArea.addSelectionChangedListener(new CodeArea.SelectionChangedListener() {
             @Override
-            public void selectionChanged(Hexadecimal.SelectionRange selection) {
+            public void selectionChanged(CodeArea.SelectionRange selection) {
                 if (selection != null) {
-                    long first = hexadecimal.getSelection().getFirst();
+                    long first = codeArea.getSelection().getFirst();
                     selectionBeginTextField.setText(String.valueOf(first));
-                    long last = hexadecimal.getSelection().getLast();
+                    long last = codeArea.getSelection().getLast();
                     selectionEndTextField.setText(String.valueOf(last));
                 } else {
                     selectionBeginTextField.setText("");
@@ -107,7 +107,6 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
         horizontalScrollModeComboBox = new javax.swing.JComboBox<>();
         cursorPositionLabel = new javax.swing.JLabel();
         cursorPositionTextField = new javax.swing.JTextField();
-        cursorPositionCheckBox = new javax.swing.JCheckBox();
         selectionPositionsLabel = new javax.swing.JLabel();
         selectionBeginTextField = new javax.swing.JTextField();
         selectionEndTextField = new javax.swing.JTextField();
@@ -126,6 +125,8 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
         showShadowCursorCheckBox = new javax.swing.JCheckBox();
         hexCharactersModeComboBox = new javax.swing.JComboBox<>();
         hexCharactersModeLabel = new javax.swing.JLabel();
+        codeOffsetLabel = new javax.swing.JLabel();
+        codeOffsetTextField = new javax.swing.JTextField();
 
         setLayout(new java.awt.BorderLayout());
 
@@ -205,9 +206,6 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
         cursorPositionLabel.setText("Cursor Position");
 
         cursorPositionTextField.setEditable(false);
-
-        cursorPositionCheckBox.setText("Half");
-        cursorPositionCheckBox.setEnabled(false);
 
         selectionPositionsLabel.setText("Selection Start/End");
 
@@ -295,6 +293,10 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
 
         hexCharactersModeLabel.setText("Hex Chars Mode");
 
+        codeOffsetLabel.setText("Cursor Position");
+
+        codeOffsetTextField.setEditable(false);
+
         javax.swing.GroupLayout settingsPanelLayout = new javax.swing.GroupLayout(settingsPanel);
         settingsPanel.setLayout(settingsPanelLayout);
         settingsPanelLayout.setHorizontalGroup(
@@ -337,30 +339,30 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
                                     .addComponent(horizontalScrollModeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addComponent(editableCheckBox, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(settingsPanelLayout.createSequentialGroup()
-                                .addComponent(cursorPositionTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(cursorPositionCheckBox))
-                            .addComponent(cursorPositionLabel)
-                            .addGroup(settingsPanelLayout.createSequentialGroup()
                                 .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(charRenderingScrollModeLabel)
                                     .addComponent(charRenderingComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                         .addComponent(selectionBeginTextField)
-                                        .addComponent(selectionPositionsLabel)))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(charAntialiasingScrollModeLabel)
-                                    .addComponent(charAntialiasingComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(selectionEndTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(settingsPanelLayout.createSequentialGroup()
-                                .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(selectionPositionsLabel))
                                     .addComponent(lineLengthLabel)
-                                    .addComponent(lineLengthSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(lineLengthSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(cursorPositionLabel)
+                                    .addComponent(cursorPositionTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(hexCharactersModeLabel)
-                                    .addComponent(hexCharactersModeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                    .addGroup(settingsPanelLayout.createSequentialGroup()
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(charAntialiasingScrollModeLabel)
+                                            .addComponent(charAntialiasingComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addGroup(settingsPanelLayout.createSequentialGroup()
+                                        .addGap(13, 13, 13)
+                                        .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                            .addComponent(hexCharactersModeLabel)
+                                            .addComponent(codeOffsetLabel)
+                                            .addComponent(codeOffsetTextField)
+                                            .addComponent(selectionEndTextField)
+                                            .addComponent(hexCharactersModeComboBox, 0, 125, Short.MAX_VALUE))))))
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(showNonprintableCharactersCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(showShadowCursorCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
@@ -405,11 +407,13 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
                     .addComponent(lineLengthSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(hexCharactersModeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cursorPositionLabel)
+                .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(cursorPositionLabel)
+                    .addComponent(codeOffsetLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cursorPositionTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cursorPositionCheckBox))
+                    .addComponent(codeOffsetTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(selectionPositionsLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -426,7 +430,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
                         .addComponent(charAntialiasingScrollModeLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(charAntialiasingComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 45, Short.MAX_VALUE)
                 .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(settingsPanelLayout.createSequentialGroup()
                         .addComponent(horizontalScrollBarVisibilityLabel)
@@ -453,94 +457,94 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void viewModeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewModeComboBoxActionPerformed
-        hexadecimal.setViewMode(Hexadecimal.ViewMode.values()[viewModeComboBox.getSelectedIndex()]);
+        codeArea.setViewMode(CodeArea.ViewMode.values()[viewModeComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_viewModeComboBoxActionPerformed
 
     private void lineLengthSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_lineLengthSpinnerStateChanged
         int value = (Integer) lineLengthSpinner.getValue();
         if (value > 0) {
-            hexadecimal.setLineLength(value);
+            codeArea.setLineLength(value);
         }
     }//GEN-LAST:event_lineLengthSpinnerStateChanged
 
     private void verticalScrollModeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_verticalScrollModeComboBoxActionPerformed
-        hexadecimal.setVerticalScrollMode(Hexadecimal.VerticalScrollMode.values()[verticalScrollModeComboBox.getSelectedIndex()]);
+        codeArea.setVerticalScrollMode(CodeArea.VerticalScrollMode.values()[verticalScrollModeComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_verticalScrollModeComboBoxActionPerformed
 
     private void horizontalScrollModeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_horizontalScrollModeComboBoxActionPerformed
-        hexadecimal.setHorizontalScrollMode(Hexadecimal.HorizontalScrollMode.values()[horizontalScrollModeComboBox.getSelectedIndex()]);
+        codeArea.setHorizontalScrollMode(CodeArea.HorizontalScrollMode.values()[horizontalScrollModeComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_horizontalScrollModeComboBoxActionPerformed
 
     private void charRenderingComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_charRenderingComboBoxActionPerformed
-        hexadecimal.setCharRenderingMode(Hexadecimal.CharRenderingMode.values()[charRenderingComboBox.getSelectedIndex()]);
+        codeArea.setCharRenderingMode(CodeArea.CharRenderingMode.values()[charRenderingComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_charRenderingComboBoxActionPerformed
 
     private void backgroundModeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backgroundModeComboBoxActionPerformed
-        hexadecimal.setBackgroundMode(Hexadecimal.BackgroundMode.values()[backgroundModeComboBox.getSelectedIndex()]);
+        codeArea.setBackgroundMode(CodeArea.BackgroundMode.values()[backgroundModeComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_backgroundModeComboBoxActionPerformed
 
     private void charAntialiasingComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_charAntialiasingComboBoxActionPerformed
-        hexadecimal.setCharAntialiasingMode(Hexadecimal.CharAntialiasingMode.values()[charAntialiasingComboBox.getSelectedIndex()]);
+        codeArea.setCharAntialiasingMode(CodeArea.CharAntialiasingMode.values()[charAntialiasingComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_charAntialiasingComboBoxActionPerformed
 
     private void verticalScrollBarVisibilityComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_verticalScrollBarVisibilityComboBoxActionPerformed
-        hexadecimal.setVerticalScrollBarVisibility(Hexadecimal.ScrollBarVisibility.values()[verticalScrollBarVisibilityComboBox.getSelectedIndex()]);
+        codeArea.setVerticalScrollBarVisibility(CodeArea.ScrollBarVisibility.values()[verticalScrollBarVisibilityComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_verticalScrollBarVisibilityComboBoxActionPerformed
 
     private void horizontalScrollBarVisibilityComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_horizontalScrollBarVisibilityComboBoxActionPerformed
-        hexadecimal.setHorizontalScrollBarVisibility(Hexadecimal.ScrollBarVisibility.values()[horizontalScrollBarVisibilityComboBox.getSelectedIndex()]);
+        codeArea.setHorizontalScrollBarVisibility(CodeArea.ScrollBarVisibility.values()[horizontalScrollBarVisibilityComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_horizontalScrollBarVisibilityComboBoxActionPerformed
 
     private void decoratorLineNumLineCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_decoratorLineNumLineCheckBoxItemStateChanged
-        int decorationMode = hexadecimal.getDecorationMode();
+        int decorationMode = codeArea.getDecorationMode();
         boolean selected = decoratorLineNumLineCheckBox.isSelected();
-        if (((decorationMode & Hexadecimal.DECORATION_LINENUM_HEX_LINE) > 0) != selected) {
-            hexadecimal.setDecorationMode(decorationMode ^ Hexadecimal.DECORATION_LINENUM_HEX_LINE);
+        if (((decorationMode & CodeArea.DECORATION_LINENUM_HEX_LINE) > 0) != selected) {
+            codeArea.setDecorationMode(decorationMode ^ CodeArea.DECORATION_LINENUM_HEX_LINE);
         }
     }//GEN-LAST:event_decoratorLineNumLineCheckBoxItemStateChanged
 
     private void decoratorSplitLineCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_decoratorSplitLineCheckBoxItemStateChanged
-        int decorationMode = hexadecimal.getDecorationMode();
+        int decorationMode = codeArea.getDecorationMode();
         boolean selected = decoratorSplitLineCheckBox.isSelected();
-        if (((decorationMode & Hexadecimal.DECORATION_HEX_PREVIEW_LINE) > 0) != selected) {
-            hexadecimal.setDecorationMode(decorationMode ^ Hexadecimal.DECORATION_HEX_PREVIEW_LINE);
+        if (((decorationMode & CodeArea.DECORATION_HEX_PREVIEW_LINE) > 0) != selected) {
+            codeArea.setDecorationMode(decorationMode ^ CodeArea.DECORATION_HEX_PREVIEW_LINE);
         }
     }//GEN-LAST:event_decoratorSplitLineCheckBoxItemStateChanged
 
     private void decoratorBoxCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_decoratorBoxCheckBoxItemStateChanged
-        int decorationMode = hexadecimal.getDecorationMode();
+        int decorationMode = codeArea.getDecorationMode();
         boolean selected = decoratorBoxCheckBox.isSelected();
-        if (((decorationMode & Hexadecimal.DECORATION_BOX) > 0) != selected) {
-            hexadecimal.setDecorationMode(decorationMode ^ Hexadecimal.DECORATION_BOX);
+        if (((decorationMode & CodeArea.DECORATION_BOX) > 0) != selected) {
+            codeArea.setDecorationMode(decorationMode ^ CodeArea.DECORATION_BOX);
         }
     }//GEN-LAST:event_decoratorBoxCheckBoxItemStateChanged
 
     private void showHeaderCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_showHeaderCheckBoxItemStateChanged
-        hexadecimal.setShowHeader(showHeaderCheckBox.isSelected());
+        codeArea.setShowHeader(showHeaderCheckBox.isSelected());
     }//GEN-LAST:event_showHeaderCheckBoxItemStateChanged
 
     private void showLineNumbersCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_showLineNumbersCheckBoxItemStateChanged
-        hexadecimal.setShowLineNumbers(showLineNumbersCheckBox.isSelected());
+        codeArea.setShowLineNumbers(showLineNumbersCheckBox.isSelected());
     }//GEN-LAST:event_showLineNumbersCheckBoxItemStateChanged
 
     private void editableCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_editableCheckBoxItemStateChanged
-        hexadecimal.setEditable(editableCheckBox.isSelected());
+        codeArea.setEditable(editableCheckBox.isSelected());
     }//GEN-LAST:event_editableCheckBoxItemStateChanged
 
     private void wrapModeCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_wrapModeCheckBoxItemStateChanged
-        hexadecimal.setWrapMode(wrapModeCheckBox.isSelected());
+        codeArea.setWrapMode(wrapModeCheckBox.isSelected());
     }//GEN-LAST:event_wrapModeCheckBoxItemStateChanged
 
     private void showNonprintableCharactersCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_showNonprintableCharactersCheckBoxItemStateChanged
-        hexadecimal.setShowNonprintingCharacters(showNonprintableCharactersCheckBox.isSelected());
+        codeArea.setShowNonprintingCharacters(showNonprintableCharactersCheckBox.isSelected());
     }//GEN-LAST:event_showNonprintableCharactersCheckBoxItemStateChanged
 
     private void showShadowCursorCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_showShadowCursorCheckBoxItemStateChanged
-        hexadecimal.setShowShadowCursor(showShadowCursorCheckBox.isSelected());
+        codeArea.setShowShadowCursor(showShadowCursorCheckBox.isSelected());
     }//GEN-LAST:event_showShadowCursorCheckBoxItemStateChanged
 
     private void hexCharactersModeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hexCharactersModeComboBoxActionPerformed
-        hexadecimal.setHexCharactersCase(Hexadecimal.HexCharactersCase.values()[hexCharactersModeComboBox.getSelectedIndex()]);
+        codeArea.setHexCharactersCase(CodeArea.HexCharactersCase.values()[hexCharactersModeComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_hexCharactersModeComboBoxActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -550,7 +554,8 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
     private javax.swing.JLabel charAntialiasingScrollModeLabel;
     private javax.swing.JComboBox<String> charRenderingComboBox;
     private javax.swing.JLabel charRenderingScrollModeLabel;
-    private javax.swing.JCheckBox cursorPositionCheckBox;
+    private javax.swing.JLabel codeOffsetLabel;
+    private javax.swing.JTextField codeOffsetTextField;
     private javax.swing.JLabel cursorPositionLabel;
     private javax.swing.JTextField cursorPositionTextField;
     private javax.swing.JCheckBox decoratorBoxCheckBox;

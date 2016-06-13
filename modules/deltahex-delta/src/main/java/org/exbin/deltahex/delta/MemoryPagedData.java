@@ -28,19 +28,19 @@ import org.exbin.utils.binary_data.PagedData;
  * @version 0.1.0 2016/05/25
  * @author ExBin Project (http://exbin.org)
  */
-public class MemoryHexadecimalData implements EditableBinaryData {
+public class MemoryPagedData implements EditableBinaryData {
 
     private final PagedData data;
 
-    public MemoryHexadecimalData() {
+    public MemoryPagedData() {
         data = new PagedData();
     }
 
-    public MemoryHexadecimalData(PagedData data) {
+    public MemoryPagedData(PagedData data) {
         this.data = data;
     }
 
-    public MemoryHexadecimalData(byte[] data) {
+    public MemoryPagedData(byte[] data) {
         this.data = new PagedData();
         this.data.insert(0, data);
     }

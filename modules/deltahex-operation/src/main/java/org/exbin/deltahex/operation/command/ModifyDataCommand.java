@@ -16,7 +16,7 @@
  */
 package org.exbin.deltahex.operation.command;
 
-import org.exbin.deltahex.Hexadecimal;
+import org.exbin.deltahex.CodeArea;
 import org.exbin.deltahex.operation.ModifyDataOperation;
 import org.exbin.utils.binary_data.BinaryData;
 
@@ -26,15 +26,15 @@ import org.exbin.utils.binary_data.BinaryData;
  * @version 0.1.0 2016/05/03
  * @author ExBin Project (http://exbin.org)
  */
-public class ModifyDataCommand extends OpHexCommand {
+public class ModifyDataCommand extends OpCodeAreaCommand {
 
-    public ModifyDataCommand(Hexadecimal hexadecimal, long position, BinaryData data) {
-        super(hexadecimal);
-        super.setOperation(new ModifyDataOperation(hexadecimal, position, data));
+    public ModifyDataCommand(CodeArea codeArea, long position, BinaryData data) {
+        super(codeArea);
+        super.setOperation(new ModifyDataOperation(codeArea, position, data));
     }
 
     @Override
-    public HexCommandType getType() {
-        return HexCommandType.DATA_MODIFIED;
+    public CodeAreaCommandType getType() {
+        return CodeAreaCommandType.DATA_MODIFIED;
     }
 }

@@ -20,8 +20,8 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
-import org.exbin.deltahex.DefaultHexadecimalPainter;
-import org.exbin.deltahex.Hexadecimal;
+import org.exbin.deltahex.DefaultCodeAreaPainter;
+import org.exbin.deltahex.CodeArea;
 
 /**
  * Hexadecimal component painter supporting search matches highlighting.
@@ -29,7 +29,7 @@ import org.exbin.deltahex.Hexadecimal;
  * @version 0.1.0 2016/06/12
  * @author ExBin Project (http://exbin.org)
  */
-public class HighlightHexadecimalPainter extends DefaultHexadecimalPainter {
+public class HighlightCodeAreaPainter extends DefaultCodeAreaPainter {
 
     /**
      * Matches must be ordered by position.
@@ -41,8 +41,8 @@ public class HighlightHexadecimalPainter extends DefaultHexadecimalPainter {
     private Color foundMatchesBackgroundColor;
     private Color currentMatchBackgroundColor;
 
-    public HighlightHexadecimalPainter(Hexadecimal hexadecimal) {
-        super(hexadecimal);
+    public HighlightCodeAreaPainter(CodeArea codeArea) {
+        super(codeArea);
 
         foundMatchesBackgroundColor = new Color(180, 255, 180);
         currentMatchBackgroundColor = new Color(255, 210, 180);
@@ -57,7 +57,7 @@ public class HighlightHexadecimalPainter extends DefaultHexadecimalPainter {
     @Override
     public void paintLineBackground(Graphics g, long line, int positionY, long dataPosition, int bytesPerBounds, int lineHeight, int charWidth) {
         g.setColor(foundMatchesBackgroundColor);
-        Point scrollPoint = hexadecimal.getScrollPoint();
+        Point scrollPoint = codeArea.getScrollPoint();
         int lineMatchIndex = matchIndex;
         while (lineMatchIndex < matches.size()) {
             SearchMatch match = matches.get(lineMatchIndex);
@@ -81,11 +81,11 @@ public class HighlightHexadecimalPainter extends DefaultHexadecimalPainter {
                 if (lineMatchIndex == currentMatchIndex) {
                     g.setColor(currentMatchBackgroundColor);
                 }
-                if (hexadecimal.getViewMode() != Hexadecimal.ViewMode.PREVIEW) {
-                    g.fillRect(hexadecimal.getHexadecimalRectangle().x - scrollPoint.x + blockX * 3, positionY - lineHeight, blockWidth * 3 - charWidth, lineHeight);
+                if (codeArea.getViewMode() != CodeArea.ViewMode.TEXT_PREVIEW) {
+                    g.fillRect(codeArea.getCodeSectionRectangle().x - scrollPoint.x + blockX * 3, positionY - lineHeight, blockWidth * 3 - charWidth, lineHeight);
                 }
-                if (hexadecimal.getViewMode() != Hexadecimal.ViewMode.HEXADECIMAL) {
-                    g.fillRect(hexadecimal.getPreviewX() - scrollPoint.x + blockX, positionY - lineHeight, blockWidth, lineHeight);
+                if (codeArea.getViewMode() != CodeArea.ViewMode.CODE_MATRIX) {
+                    g.fillRect(codeArea.getPreviewX() - scrollPoint.x + blockX, positionY - lineHeight, blockWidth, lineHeight);
                 }
                 if (lineMatchIndex == currentMatchIndex) {
                     g.setColor(foundMatchesBackgroundColor);

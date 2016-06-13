@@ -16,24 +16,24 @@
  */
 package org.exbin.deltahex.operation.command;
 
-import org.exbin.deltahex.Hexadecimal;
+import org.exbin.deltahex.CodeArea;
 import org.exbin.deltahex.operation.RemoveDataOperation;
 
 /**
  * Command for deleting data.
  *
- * @version 0.1.0 2016/05/14
+ * @version 0.1.0 2016/06/13
  * @author ExBin Project (http://exbin.org)
  */
-public class RemoveDataCommand extends OpHexCommand {
+public class RemoveDataCommand extends OpCodeAreaCommand {
 
-    public RemoveDataCommand(Hexadecimal hexadecimal, long position, boolean lowerHalf, long size) {
-        super(hexadecimal);
-        super.setOperation(new RemoveDataOperation(hexadecimal, position, lowerHalf, size));
+    public RemoveDataCommand(CodeArea codeArea, long position, int codeOffset, long size) {
+        super(codeArea);
+        super.setOperation(new RemoveDataOperation(codeArea, position, codeOffset, size));
     }
 
     @Override
-    public HexCommandType getType() {
-        return HexCommandType.DATA_REMOVED;
+    public CodeAreaCommandType getType() {
+        return CodeAreaCommandType.DATA_REMOVED;
     }
 }

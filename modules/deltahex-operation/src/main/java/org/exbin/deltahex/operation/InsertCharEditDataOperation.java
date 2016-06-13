@@ -15,7 +15,7 @@
  */
 package org.exbin.deltahex.operation;
 
-import org.exbin.deltahex.Hexadecimal;
+import org.exbin.deltahex.CodeArea;
 import org.exbin.utils.binary_data.EditableBinaryData;
 
 /**
@@ -29,14 +29,14 @@ public class InsertCharEditDataOperation extends CharEditDataOperation {
     private final long startPosition;
     private long length;
 
-    public InsertCharEditDataOperation(Hexadecimal hexadecimal, long startPosition) {
-        super(hexadecimal);
+    public InsertCharEditDataOperation(CodeArea coreArea, long startPosition) {
+        super(coreArea);
         this.startPosition = startPosition;
     }
 
     @Override
-    public HexOperationType getType() {
-        return HexOperationType.EDIT_DATA;
+    public CodeAreaOperationType getType() {
+        return CodeAreaOperationType.EDIT_DATA;
     }
 
     @Override
@@ -45,28 +45,28 @@ public class InsertCharEditDataOperation extends CharEditDataOperation {
     }
 
     @Override
-    public HexOperation executeWithUndo() throws Exception {
+    public CodeAreaOperation executeWithUndo() throws Exception {
         return execute(true);
     }
 
-    private HexOperation execute(boolean withUndo) {
+    private CodeAreaOperation execute(boolean withUndo) {
         throw new IllegalStateException("Cannot be executed");
     }
 
     @Override
     public void appendEdit(char value) {
-        EditableBinaryData data = (EditableBinaryData) hexadecimal.getData();
+        EditableBinaryData data = (EditableBinaryData) codeArea.getData();
         long editedDataPosition = startPosition + length;
 
-        byte[] bytes = hexadecimal.charToBytes(value);
+        byte[] bytes = codeArea.charToBytes(value);
         data.insert(editedDataPosition, bytes);
         length += bytes.length;
-        hexadecimal.getCaret().setCaretPosition(startPosition + length);
+        codeArea.getCaret().setCaretPosition(startPosition + length);
     }
 
     @Override
-    public HexOperation[] generateUndo() {
-        return new HexOperation[]{new RemoveDataOperation(hexadecimal, startPosition, false, length)};
+    public CodeAreaOperation[] generateUndo() {
+        return new CodeAreaOperation[]{new RemoveDataOperation(codeArea, startPosition, 0, length)};
     }
 
     public long getStartPosition() {

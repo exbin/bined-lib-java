@@ -73,13 +73,7 @@
                                   </Group>
                               </Group>
                               <Component id="editableCheckBox" alignment="0" min="-2" pref="109" max="-2" attributes="0"/>
-                              <Group type="102" alignment="0" attributes="0">
-                                  <Component id="cursorPositionTextField" min="-2" pref="92" max="-2" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="cursorPositionCheckBox" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <Component id="cursorPositionLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                              <Group type="102" alignment="0" attributes="0">
+                              <Group type="102" attributes="0">
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Component id="charRenderingScrollModeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                                       <Component id="charRenderingComboBox" alignment="0" min="-2" pref="133" max="-2" attributes="0"/>
@@ -87,23 +81,29 @@
                                           <Component id="selectionBeginTextField" max="32767" attributes="0"/>
                                           <Component id="selectionPositionsLabel" alignment="1" min="-2" max="-2" attributes="0"/>
                                       </Group>
-                                  </Group>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="charAntialiasingScrollModeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                                      <Component id="charAntialiasingComboBox" alignment="0" min="-2" pref="133" max="-2" attributes="0"/>
-                                      <Component id="selectionEndTextField" alignment="0" min="-2" pref="132" max="-2" attributes="0"/>
-                                  </Group>
-                              </Group>
-                              <Group type="102" attributes="0">
-                                  <Group type="103" groupAlignment="0" attributes="0">
                                       <Component id="lineLengthLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                                       <Component id="lineLengthSpinner" alignment="0" min="-2" pref="140" max="-2" attributes="0"/>
+                                      <Component id="cursorPositionLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="cursorPositionTextField" alignment="0" min="-2" pref="136" max="-2" attributes="0"/>
                                   </Group>
-                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="hexCharactersModeLabel" min="-2" max="-2" attributes="0"/>
-                                      <Component id="hexCharactersModeComboBox" min="-2" pref="133" max="-2" attributes="0"/>
+                                      <Group type="102" attributes="0">
+                                          <EmptySpace max="-2" attributes="0"/>
+                                          <Group type="103" groupAlignment="0" attributes="0">
+                                              <Component id="charAntialiasingScrollModeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                                              <Component id="charAntialiasingComboBox" alignment="0" min="-2" pref="133" max="-2" attributes="0"/>
+                                          </Group>
+                                      </Group>
+                                      <Group type="102" attributes="0">
+                                          <EmptySpace min="-2" pref="13" max="-2" attributes="0"/>
+                                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                              <Component id="hexCharactersModeLabel" min="-2" max="-2" attributes="0"/>
+                                              <Component id="codeOffsetLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                                              <Component id="codeOffsetTextField" alignment="0" max="32767" attributes="0"/>
+                                              <Component id="selectionEndTextField" alignment="0" max="32767" attributes="0"/>
+                                              <Component id="hexCharactersModeComboBox" alignment="0" pref="125" max="32767" attributes="0"/>
+                                          </Group>
+                                      </Group>
                                   </Group>
                               </Group>
                           </Group>
@@ -163,11 +163,14 @@
                       <Component id="hexCharactersModeComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="cursorPositionLabel" min="-2" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="cursorPositionLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="codeOffsetLabel" alignment="3" min="-2" pref="15" max="-2" attributes="0"/>
+                  </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="cursorPositionTextField" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="cursorPositionCheckBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="codeOffsetTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="selectionPositionsLabel" min="-2" max="-2" attributes="0"/>
@@ -189,7 +192,7 @@
                           <Component id="charAntialiasingComboBox" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
-                  <EmptySpace pref="44" max="32767" attributes="0"/>
+                  <EmptySpace pref="45" max="32767" attributes="0"/>
                   <Group type="103" groupAlignment="1" attributes="0">
                       <Group type="102" alignment="1" attributes="0">
                           <Component id="horizontalScrollBarVisibilityLabel" min="-2" max="-2" attributes="0"/>
@@ -358,12 +361,6 @@
         <Component class="javax.swing.JTextField" name="cursorPositionTextField">
           <Properties>
             <Property name="editable" type="boolean" value="false"/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JCheckBox" name="cursorPositionCheckBox">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Half"/>
-            <Property name="enabled" type="boolean" value="false"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="selectionPositionsLabel">
@@ -535,6 +532,16 @@
         <Component class="javax.swing.JLabel" name="hexCharactersModeLabel">
           <Properties>
             <Property name="text" type="java.lang.String" value="Hex Chars Mode"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="codeOffsetLabel">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Cursor Position"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JTextField" name="codeOffsetTextField">
+          <Properties>
+            <Property name="editable" type="boolean" value="false"/>
           </Properties>
         </Component>
       </SubComponents>

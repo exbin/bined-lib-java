@@ -13,34 +13,44 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.deltahex.operation.command;
-
-import org.exbin.deltahex.Hexadecimal;
-import org.exbin.xbup.operation.AbstractCommand;
+package org.exbin.deltahex.operation;
 
 /**
- * Abstract class for operation on hexadecimal document.
+ * Operation type enumeration.
  *
  * @version 0.1.0 2016/04/30
  * @author ExBin Project (http://exbin.org)
  */
-public abstract class HexCommand extends AbstractCommand {
-
-    protected final Hexadecimal hexadecimal;
-
-    public HexCommand(Hexadecimal hexadecimal) {
-        this.hexadecimal = hexadecimal;
-    }
+public enum CodeAreaOperationType {
 
     /**
-     * Returns type of the command.
-     *
-     * @return command type
+     * Insert data operation.
      */
-    public abstract HexCommandType getType();
+    INSERT_DATA("Insert data"),
+    /**
+     * Remove data operation.
+     */
+    REMOVE_DATA("Remove data"),
+    /**
+     * Modify data operation.
+     */
+    MODIFY_DATA("Modify data"),
+    /**
+     * Move data operation.
+     */
+    MOVE_DATA("Move data"),
+    /**
+     * Edit data operation.
+     */
+    EDIT_DATA("Edit data");
 
-    @Override
+    private final String caption;
+
+    private CodeAreaOperationType(String caption) {
+        this.caption = caption;
+    }
+
     public String getCaption() {
-        return getType().getCaption();
+        return caption;
     }
 }

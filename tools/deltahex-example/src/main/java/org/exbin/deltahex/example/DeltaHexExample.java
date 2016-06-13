@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
-import org.exbin.deltahex.Hexadecimal;
+import org.exbin.deltahex.CodeArea;
 import org.exbin.utils.binary_data.ByteArrayEditableData;
 
 /**
@@ -42,7 +42,7 @@ public class DeltaHexExample {
         frame.setLocationRelativeTo(null);
         final DeltaHexExamplePanel panel = new DeltaHexExamplePanel();
         frame.add(panel);
-        final Hexadecimal hexadecimal = new Hexadecimal();
+        final CodeArea hexadecimal = new CodeArea();
         ByteArrayEditableData data = new ByteArrayEditableData();
         try {
             data.loadFromStream(hexadecimal.getClass().getResourceAsStream("/org/exbin/deltahex/example/resources/lorem_1.txt"));
@@ -50,7 +50,7 @@ public class DeltaHexExample {
             Logger.getLogger(DeltaHexExample.class.getName()).log(Level.SEVERE, null, ex);
         }
         hexadecimal.setData(data);
-        panel.setHexadecimal(hexadecimal);
+        panel.setCodeArea(hexadecimal);
 
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override

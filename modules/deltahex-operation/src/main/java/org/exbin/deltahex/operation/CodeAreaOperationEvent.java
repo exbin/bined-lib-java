@@ -22,19 +22,19 @@ package org.exbin.deltahex.operation;
  * @version 0.1.0 2016/05/25
  * @author ExBin Project (http://exbin.org)
  */
-public class HexOperationEvent {
+public class CodeAreaOperationEvent {
 
-    private HexOperation operation;
+    private CodeAreaOperation operation;
 
-    public HexOperationEvent(HexOperation operation) {
+    public CodeAreaOperationEvent(CodeAreaOperation operation) {
         this.operation = operation;
     }
 
-    public HexOperation getOperation() {
+    public CodeAreaOperation getOperation() {
         return operation;
     }
 
-    public void setOperation(HexOperation operation) {
+    public void setOperation(CodeAreaOperation operation) {
         this.operation = operation;
     }
 }

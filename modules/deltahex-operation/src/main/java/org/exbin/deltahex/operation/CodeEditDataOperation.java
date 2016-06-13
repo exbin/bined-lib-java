@@ -15,42 +15,31 @@
  */
 package org.exbin.deltahex.operation;
 
+import org.exbin.deltahex.CodeArea;
+
 /**
- * Operation type enumeration.
+ * Abstract operation for editing data.
  *
- * @version 0.1.0 2016/04/30
+ * @version 0.1.0 2015/05/14
  * @author ExBin Project (http://exbin.org)
  */
-public enum HexOperationType {
+public abstract class CodeEditDataOperation extends CodeAreaOperation {
 
-    /**
-     * Insert data operation.
-     */
-    INSERT_DATA("Insert data"),
-    /**
-     * Remove data operation.
-     */
-    REMOVE_DATA("Remove data"),
-    /**
-     * Modify data operation.
-     */
-    MODIFY_DATA("Modify data"),
-    /**
-     * Move data operation.
-     */
-    MOVE_DATA("Move data"),
-    /**
-     * Edit data operation.
-     */
-    EDIT_DATA("Edit data");
-
-    private final String caption;
-
-    private HexOperationType(String caption) {
-        this.caption = caption;
+    public CodeEditDataOperation(CodeArea coreArea) {
+        super(coreArea);
     }
 
-    public String getCaption() {
-        return caption;
-    }
+    /**
+     * Appends next hexadecimal value in editing action sequence.
+     *
+     * @param value half-byte value (0..15)
+     */
+    public abstract void appendEdit(byte value);
+
+    /**
+     * Generates undo operation for combined editing action.
+     *
+     * @return hexadecimal operation
+     */
+    public abstract CodeAreaOperation[] generateUndo();
 }

@@ -21,7 +21,7 @@ package org.exbin.deltahex.operation.command;
  * @version 0.1.0 2016/05/05
  * @author ExBin Project (http://exbin.org)
  */
-public enum HexCommandType {
+public enum CodeAreaCommandType {
 
     /**
      * Insert data command.
@@ -50,7 +50,7 @@ public enum HexCommandType {
 
     private final String caption;
 
-    private HexCommandType(String caption) {
+    private CodeAreaCommandType(String caption) {
         this.caption = caption;
     }
 

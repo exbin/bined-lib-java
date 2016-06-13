@@ -16,23 +16,23 @@
 package org.exbin.deltahex;
 
 /**
- * Specifies caret position as combination of data position and lowerHalf byte
- * flag.
+ * Specifies caret position as combination of data position and code offset in
+ * single byte representation.
  *
- * @version 0.1.0 2016/04/04
+ * @version 0.1.0 2016/06/13
  * @author ExBin Project (http://exbin.org)
  */
 public class CaretPosition {
 
     private long dataPosition = 0;
-    private boolean lowerHalf = false;
+    private int codeOffset = 0;
 
     public CaretPosition() {
     }
 
-    public CaretPosition(long dataPosition, boolean lowerHalf) {
+    public CaretPosition(long dataPosition, int codeOffset) {
         this.dataPosition = dataPosition;
-        this.lowerHalf = lowerHalf;
+        this.codeOffset = codeOffset;
     }
 
     public long getDataPosition() {
@@ -43,16 +43,16 @@ public class CaretPosition {
         this.dataPosition = dataPosition;
     }
 
-    public boolean isLowerHalf() {
-        return lowerHalf;
+    public int getCodeOffset() {
+        return codeOffset;
     }
 
-    public void setLowerHalf(boolean lowerHalf) {
-        this.lowerHalf = lowerHalf;
+    public void setCodeOffset(int codeOffset) {
+        this.codeOffset = codeOffset;
     }
 
     public void setPosition(CaretPosition position) {
         dataPosition = position.dataPosition;
-        lowerHalf = position.lowerHalf;
+        codeOffset = position.codeOffset;
     }
 }

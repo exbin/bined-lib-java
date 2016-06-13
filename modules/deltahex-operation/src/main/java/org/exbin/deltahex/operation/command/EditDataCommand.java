@@ -16,7 +16,7 @@
  */
 package org.exbin.deltahex.operation.command;
 
-import org.exbin.deltahex.Hexadecimal;
+import org.exbin.deltahex.CodeArea;
 
 /**
  * Command for editing data in text mode.
@@ -24,15 +24,15 @@ import org.exbin.deltahex.Hexadecimal;
  * @version 0.1.0 2016/05/17
  * @author ExBin Project (http://exbin.org)
  */
-public abstract class EditDataCommand extends HexCommand {
+public abstract class EditDataCommand extends CodeAreaCommand {
 
-    public EditDataCommand(Hexadecimal hexadecimal) {
-        super(hexadecimal);
+    public EditDataCommand(CodeArea codeArea) {
+        super(codeArea);
     }
 
     @Override
-    public HexCommandType getType() {
-        return HexCommandType.DATA_EDITED;
+    public CodeAreaCommandType getType() {
+        return CodeAreaCommandType.DATA_EDITED;
     }
 
     @Override

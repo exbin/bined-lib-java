@@ -16,65 +16,65 @@
  */
 package org.exbin.deltahex.operation.command;
 
-import org.exbin.deltahex.Hexadecimal;
-import org.exbin.deltahex.operation.DeleteHexEditDataOperation;
-import org.exbin.deltahex.operation.HexEditDataOperation;
-import org.exbin.deltahex.operation.InsertHexEditDataOperation;
-import org.exbin.deltahex.operation.OverwriteHexEditDataOperation;
-import org.exbin.deltahex.operation.HexOperation;
-import org.exbin.deltahex.operation.HexOperationEvent;
-import org.exbin.deltahex.operation.HexOperationListener;
+import org.exbin.deltahex.CodeArea;
+import org.exbin.deltahex.operation.DeleteCodeEditDataOperation;
+import org.exbin.deltahex.operation.CodeEditDataOperation;
+import org.exbin.deltahex.operation.InsertCodeEditDataOperation;
+import org.exbin.deltahex.operation.OverwriteCodeEditDataOperation;
+import org.exbin.deltahex.operation.CodeAreaOperation;
+import org.exbin.deltahex.operation.CodeAreaOperationEvent;
 import org.exbin.xbup.operation.OperationListener;
+import org.exbin.deltahex.operation.CodeAreaOperationListener;
 
 /**
  * Command for editing data in hexadecimal mode.
  *
- * @version 0.1.0 2016/05/17
+ * @version 0.1.0 2016/06/13
  * @author ExBin Project (http://exbin.org)
  */
-public class EditHexDataCommand extends EditDataCommand {
+public class EditCodeDataCommand extends EditDataCommand {
 
     private final EditCommandType commandType;
     protected boolean operationPerformed = false;
-    private HexOperation[] operations = null;
+    private CodeAreaOperation[] operations = null;
 
-    public EditHexDataCommand(Hexadecimal hexadecimal, EditCommandType commandType, long position, boolean positionLowerHalf) {
-        super(hexadecimal);
+    public EditCodeDataCommand(CodeArea codeArea, EditCommandType commandType, long position, int positionCodeOffset) {
+        super(codeArea);
         this.commandType = commandType;
-        HexOperation operation;
+        CodeAreaOperation operation;
         switch (commandType) {
             case INSERT: {
-                operation = new InsertHexEditDataOperation(hexadecimal, position, positionLowerHalf);
+                operation = new InsertCodeEditDataOperation(codeArea, position, positionCodeOffset);
                 break;
             }
             case OVERWRITE: {
-                operation = new OverwriteHexEditDataOperation(hexadecimal, position, positionLowerHalf);
+                operation = new OverwriteCodeEditDataOperation(codeArea, position, positionCodeOffset);
                 break;
             }
             case DELETE: {
-                operation = new DeleteHexEditDataOperation(hexadecimal, position);
+                operation = new DeleteCodeEditDataOperation(codeArea, position);
                 break;
             }
             default: {
                 throw new IllegalStateException("Unsupported command type " + commandType.name());
             }
         }
-        operations = new HexOperation[]{operation};
+        operations = new CodeAreaOperation[]{operation};
         operationPerformed = true;
     }
 
     @Override
     public void undo() throws Exception {
-        if (operations.length == 1 && operations[0] instanceof HexEditDataOperation) {
-            HexOperation operation = operations[0];
-            operations = ((HexEditDataOperation) operation).generateUndo();
+        if (operations.length == 1 && operations[0] instanceof CodeEditDataOperation) {
+            CodeAreaOperation operation = operations[0];
+            operations = ((CodeEditDataOperation) operation).generateUndo();
         }
 
         if (operationPerformed) {
             for (int i = operations.length - 1; i >= 0; i--) {
-                HexOperation redoOperation = operations[i].executeWithUndo();
-                if (hexadecimal instanceof OperationListener) {
-                    ((HexOperationListener) hexadecimal).notifyChange(new HexOperationEvent(operations[i]));
+                CodeAreaOperation redoOperation = operations[i].executeWithUndo();
+                if (codeArea instanceof OperationListener) {
+                    ((CodeAreaOperationListener) codeArea).notifyChange(new CodeAreaOperationEvent(operations[i]));
                 }
                 operations[i] = redoOperation;
             }
@@ -88,9 +88,9 @@ public class EditHexDataCommand extends EditDataCommand {
     public void redo() throws Exception {
         if (!operationPerformed) {
             for (int i = 0; i < operations.length; i++) {
-                HexOperation undoOperation = operations[i].executeWithUndo();
-                if (hexadecimal instanceof OperationListener) {
-                    ((HexOperationListener) hexadecimal).notifyChange(new HexOperationEvent(operations[i]));
+                CodeAreaOperation undoOperation = operations[i].executeWithUndo();
+                if (codeArea instanceof OperationListener) {
+                    ((CodeAreaOperationListener) codeArea).notifyChange(new CodeAreaOperationEvent(operations[i]));
                 }
 
                 operations[i] = undoOperation;
@@ -102,8 +102,8 @@ public class EditHexDataCommand extends EditDataCommand {
     }
 
     @Override
-    public HexCommandType getType() {
-        return HexCommandType.DATA_EDITED;
+    public CodeAreaCommandType getType() {
+        return CodeAreaCommandType.DATA_EDITED;
     }
 
     @Override
@@ -117,8 +117,8 @@ public class EditHexDataCommand extends EditDataCommand {
      * @param value half-byte value (0..15)
      */
     public void appendEdit(byte value) {
-        if (operations.length == 1 && operations[0] instanceof HexEditDataOperation) {
-            ((HexEditDataOperation) operations[0]).appendEdit(value);
+        if (operations.length == 1 && operations[0] instanceof CodeEditDataOperation) {
+            ((CodeEditDataOperation) operations[0]).appendEdit(value);
         } else {
             throw new IllegalStateException("Cannot append edit on reverted command");
         }
@@ -131,6 +131,6 @@ public class EditHexDataCommand extends EditDataCommand {
 
     @Override
     public boolean wasReverted() {
-        return !(operations.length == 1 && operations[0] instanceof HexEditDataOperation);
+        return !(operations.length == 1 && operations[0] instanceof CodeEditDataOperation);
     }
 }

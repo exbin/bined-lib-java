@@ -15,7 +15,7 @@
  */
 package org.exbin.deltahex.operation;
 
-import org.exbin.deltahex.Hexadecimal;
+import org.exbin.deltahex.CodeArea;
 
 /**
  * Abstract operation for editing data.
@@ -23,9 +23,9 @@ import org.exbin.deltahex.Hexadecimal;
  * @version 0.1.0 2015/05/16
  * @author ExBin Project (http://exbin.org)
  */
-public abstract class CharEditDataOperation extends HexOperation {
+public abstract class CharEditDataOperation extends CodeAreaOperation {
 
-    public CharEditDataOperation(Hexadecimal hexadecimal) {
+    public CharEditDataOperation(CodeArea hexadecimal) {
         super(hexadecimal);
     }
 
@@ -41,5 +41,5 @@ public abstract class CharEditDataOperation extends HexOperation {
      *
      * @return hexadecimal operation
      */
-    public abstract HexOperation[] generateUndo();
+    public abstract CodeAreaOperation[] generateUndo();
 }

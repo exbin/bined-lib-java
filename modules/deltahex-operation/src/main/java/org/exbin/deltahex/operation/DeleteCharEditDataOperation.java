@@ -15,14 +15,14 @@
  */
 package org.exbin.deltahex.operation;
 
-import org.exbin.deltahex.Hexadecimal;
-import org.exbin.deltahex.delta.MemoryHexadecimalData;
+import org.exbin.deltahex.CodeArea;
+import org.exbin.deltahex.delta.MemoryPagedData;
 import org.exbin.utils.binary_data.EditableBinaryData;
 
 /**
  * Operation for editing data in delete mode.
  *
- * @version 0.1.0 2015/05/17
+ * @version 0.1.0 2015/06/13
  * @author ExBin Project (http://exbin.org)
  */
 public class DeleteCharEditDataOperation extends CharEditDataOperation {
@@ -31,16 +31,16 @@ public class DeleteCharEditDataOperation extends CharEditDataOperation {
     private static final char DELETE_CHAR = (char) 0x7f;
 
     private long position;
-    private final MemoryHexadecimalData undoData = new MemoryHexadecimalData();
+    private final MemoryPagedData undoData = new MemoryPagedData();
 
-    public DeleteCharEditDataOperation(Hexadecimal hexadecimal, long startPosition) {
-        super(hexadecimal);
+    public DeleteCharEditDataOperation(CodeArea codeArea, long startPosition) {
+        super(codeArea);
         this.position = startPosition;
     }
 
     @Override
-    public HexOperationType getType() {
-        return HexOperationType.EDIT_DATA;
+    public CodeAreaOperationType getType() {
+        return CodeAreaOperationType.EDIT_DATA;
     }
 
     @Override
@@ -49,17 +49,17 @@ public class DeleteCharEditDataOperation extends CharEditDataOperation {
     }
 
     @Override
-    public HexOperation executeWithUndo() throws Exception {
+    public CodeAreaOperation executeWithUndo() throws Exception {
         return execute(true);
     }
 
-    private HexOperation execute(boolean withUndo) {
+    private CodeAreaOperation execute(boolean withUndo) {
         throw new IllegalStateException("Cannot be executed");
     }
 
     @Override
     public void appendEdit(char value) {
-        EditableBinaryData data = (EditableBinaryData) hexadecimal.getData();
+        EditableBinaryData data = (EditableBinaryData) codeArea.getData();
         switch (value) {
             case BACKSPACE_CHAR: {
                 if (position > 0) {
@@ -80,14 +80,14 @@ public class DeleteCharEditDataOperation extends CharEditDataOperation {
                 throw new IllegalStateException("Unexpected character " + value);
             }
         }
-        hexadecimal.getCaret().setCaretPosition(position);
-        hexadecimal.repaint();
+        codeArea.getCaret().setCaretPosition(position);
+        codeArea.repaint();
     }
 
     @Override
-    public HexOperation[] generateUndo() {
-        InsertDataOperation insertOperation = new InsertDataOperation(hexadecimal, position, false, undoData);
-        return new HexOperation[]{insertOperation};
+    public CodeAreaOperation[] generateUndo() {
+        InsertDataOperation insertOperation = new InsertDataOperation(codeArea, position, 0, undoData);
+        return new CodeAreaOperation[]{insertOperation};
     }
 
     public long getPosition() {

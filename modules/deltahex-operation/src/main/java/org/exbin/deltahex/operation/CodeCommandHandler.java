@@ -28,16 +28,16 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.exbin.deltahex.CaretPosition;
-import org.exbin.deltahex.HexadecimalCommandHandler;
 import org.exbin.deltahex.DefaultCommandHandler;
-import org.exbin.deltahex.Hexadecimal;
-import org.exbin.deltahex.HexadecimalCaret;
-import org.exbin.deltahex.delta.MemoryHexadecimalData;
-import org.exbin.deltahex.operation.command.HexCommandType;
+import org.exbin.deltahex.CodeArea;
+import org.exbin.deltahex.CodeArea.Section;
+import org.exbin.deltahex.CodeAreaCaret;
+import org.exbin.deltahex.delta.MemoryPagedData;
+import org.exbin.deltahex.operation.command.CodeAreaCommandType;
 import org.exbin.deltahex.operation.command.EditCharDataCommand;
 import org.exbin.deltahex.operation.command.EditDataCommand;
-import org.exbin.deltahex.operation.command.EditHexDataCommand;
-import org.exbin.deltahex.operation.command.HexCommand;
+import org.exbin.deltahex.operation.command.EditCodeDataCommand;
+import org.exbin.deltahex.operation.command.CodeAreaCommand;
 import org.exbin.deltahex.operation.command.HexCompoundCommand;
 import org.exbin.deltahex.operation.command.InsertDataCommand;
 import org.exbin.deltahex.operation.command.ModifyDataCommand;
@@ -45,21 +45,22 @@ import org.exbin.deltahex.operation.command.RemoveDataCommand;
 import org.exbin.utils.binary_data.BinaryData;
 import org.exbin.utils.binary_data.EditableBinaryData;
 import org.exbin.xbup.operation.undo.XBUndoHandler;
+import org.exbin.deltahex.CodeAreaCommandHandler;
 
 /**
  * Command handler for undo/redo aware hexadecimal editor editing.
  *
- * @version 0.1.0 2016/05/17
+ * @version 0.1.0 2016/06/13
  * @author ExBin Project (http://exbin.org)
  */
-public class HexCommandHandler implements HexadecimalCommandHandler {
+public class CodeCommandHandler implements CodeAreaCommandHandler {
 
     public static final String MIME_CLIPBOARD_HEXADECIMAL = "application/x-deltahex";
     public static final String MIME_CLIPBOARD_BINARY = "application/octet-stream";
     private static final char BACKSPACE_CHAR = '\b';
     private static final char DELETE_CHAR = (char) 0x7f;
 
-    private final Hexadecimal hexadecimal;
+    private final CodeArea codeArea;
     private Clipboard clipboard;
     private boolean canPaste = false;
     private DataFlavor appDataFlavor;
@@ -67,8 +68,8 @@ public class HexCommandHandler implements HexadecimalCommandHandler {
     private final XBUndoHandler undoHandler;
     private EditDataCommand editCommand = null;
 
-    public HexCommandHandler(Hexadecimal hexadecimal, XBUndoHandler undoHandler) {
-        this.hexadecimal = hexadecimal;
+    public CodeCommandHandler(CodeArea codeArea, XBUndoHandler undoHandler) {
+        this.codeArea = codeArea;
         this.undoHandler = undoHandler;
 
         clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
@@ -93,16 +94,16 @@ public class HexCommandHandler implements HexadecimalCommandHandler {
 
     @Override
     public void keyPressed(char keyValue) {
-        if (!hexadecimal.isEditable()) {
+        if (!codeArea.isEditable()) {
             return;
         }
 
-        if (hexadecimal.getActiveSection() == HexadecimalCaret.Section.HEXADECIMAL) {
+        if (codeArea.getActiveSection() == Section.CODE_MATRIX) {
             if ((keyValue >= '0' && keyValue <= '9')
                     || (keyValue >= 'a' && keyValue <= 'f') || (keyValue >= 'A' && keyValue <= 'F')) {
                 DeleteSelectionCommand deleteCommand = null;
-                if (hexadecimal.hasSelection()) {
-                    deleteCommand = new DeleteSelectionCommand(hexadecimal);
+                if (codeArea.hasSelection()) {
+                    deleteCommand = new DeleteSelectionCommand(codeArea);
                 }
 
                 int value;
@@ -115,17 +116,17 @@ public class HexCommandHandler implements HexadecimalCommandHandler {
                 if (editCommand != null && editCommand.wasReverted()) {
                     editCommand = null;
                 }
-                long dataPosition = hexadecimal.getDataPosition();
-                if (hexadecimal.getEditationMode() == Hexadecimal.EditationMode.OVERWRITE) {
-                    if (editCommand == null || !(editCommand instanceof EditHexDataCommand) || editCommand.getCommandType() != EditDataCommand.EditCommandType.OVERWRITE) {
-                        editCommand = new EditHexDataCommand(hexadecimal, EditHexDataCommand.EditCommandType.OVERWRITE, dataPosition, hexadecimal.isLowerHalf());
+                long dataPosition = codeArea.getDataPosition();
+                if (codeArea.getEditationMode() == CodeArea.EditationMode.OVERWRITE) {
+                    if (editCommand == null || !(editCommand instanceof EditCodeDataCommand) || editCommand.getCommandType() != EditDataCommand.EditCommandType.OVERWRITE) {
+                        editCommand = new EditCodeDataCommand(codeArea, EditCodeDataCommand.EditCommandType.OVERWRITE, dataPosition, codeArea.getCodeOffset());
                         if (deleteCommand != null) {
-                            HexCompoundCommand compoundCommand = new HexCompoundCommand(hexadecimal);
+                            HexCompoundCommand compoundCommand = new HexCompoundCommand(codeArea);
                             compoundCommand.appendCommand(deleteCommand);
                             try {
                                 undoHandler.execute(compoundCommand);
                             } catch (Exception ex) {
-                                Logger.getLogger(HexCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
+                                Logger.getLogger(CodeCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
                             }
                             compoundCommand.appendCommand(editCommand);
                         } else {
@@ -133,17 +134,17 @@ public class HexCommandHandler implements HexadecimalCommandHandler {
                         }
                     }
 
-                    ((EditHexDataCommand) editCommand).appendEdit((byte) value);
+                    ((EditCodeDataCommand) editCommand).appendEdit((byte) value);
                 } else {
-                    if (editCommand == null || !(editCommand instanceof EditHexDataCommand) || editCommand.getCommandType() != EditHexDataCommand.EditCommandType.INSERT) {
-                        editCommand = new EditHexDataCommand(hexadecimal, EditCharDataCommand.EditCommandType.INSERT, dataPosition, hexadecimal.isLowerHalf());
+                    if (editCommand == null || !(editCommand instanceof EditCodeDataCommand) || editCommand.getCommandType() != EditCodeDataCommand.EditCommandType.INSERT) {
+                        editCommand = new EditCodeDataCommand(codeArea, EditCharDataCommand.EditCommandType.INSERT, dataPosition, codeArea.getCodeOffset());
                         if (deleteCommand != null) {
-                            HexCompoundCommand compoundCommand = new HexCompoundCommand(hexadecimal);
+                            HexCompoundCommand compoundCommand = new HexCompoundCommand(codeArea);
                             compoundCommand.appendCommand(deleteCommand);
                             try {
                                 undoHandler.execute(compoundCommand);
                             } catch (Exception ex) {
-                                Logger.getLogger(HexCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
+                                Logger.getLogger(CodeCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
                             }
                             compoundCommand.appendCommand(editCommand);
                         } else {
@@ -151,35 +152,35 @@ public class HexCommandHandler implements HexadecimalCommandHandler {
                         }
                     }
 
-                    ((EditHexDataCommand) editCommand).appendEdit((byte) value);
+                    ((EditCodeDataCommand) editCommand).appendEdit((byte) value);
                 }
-                hexadecimal.moveRight(Hexadecimal.NO_MODIFIER);
-                hexadecimal.revealCursor();
+                codeArea.moveRight(CodeArea.NO_MODIFIER);
+                codeArea.revealCursor();
             }
         } else {
             char keyChar = keyValue;
-            if (keyChar > 31 && hexadecimal.isValidChar(keyValue)) {
-                CaretPosition caretPosition = hexadecimal.getCaretPosition();
+            if (keyChar > 31 && codeArea.isValidChar(keyValue)) {
+                CaretPosition caretPosition = codeArea.getCaretPosition();
 
                 if (editCommand != null && editCommand.wasReverted()) {
                     editCommand = null;
                 }
                 long dataPosition = caretPosition.getDataPosition();
                 DeleteSelectionCommand deleteCommand = null;
-                if (hexadecimal.hasSelection()) {
-                    deleteCommand = new DeleteSelectionCommand(hexadecimal);
+                if (codeArea.hasSelection()) {
+                    deleteCommand = new DeleteSelectionCommand(codeArea);
                 }
 
-                if (hexadecimal.getEditationMode() == Hexadecimal.EditationMode.OVERWRITE) {
-                    if (editCommand == null || !(editCommand instanceof EditCharDataCommand) || editCommand.getCommandType() != EditHexDataCommand.EditCommandType.OVERWRITE) {
-                        editCommand = new EditCharDataCommand(hexadecimal, EditHexDataCommand.EditCommandType.OVERWRITE, dataPosition);
+                if (codeArea.getEditationMode() == CodeArea.EditationMode.OVERWRITE) {
+                    if (editCommand == null || !(editCommand instanceof EditCharDataCommand) || editCommand.getCommandType() != EditCodeDataCommand.EditCommandType.OVERWRITE) {
+                        editCommand = new EditCharDataCommand(codeArea, EditCodeDataCommand.EditCommandType.OVERWRITE, dataPosition);
                         if (deleteCommand != null) {
-                            HexCompoundCommand compoundCommand = new HexCompoundCommand(hexadecimal);
+                            HexCompoundCommand compoundCommand = new HexCompoundCommand(codeArea);
                             compoundCommand.appendCommand(deleteCommand);
                             try {
                                 undoHandler.execute(compoundCommand);
                             } catch (Exception ex) {
-                                Logger.getLogger(HexCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
+                                Logger.getLogger(CodeCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
                             }
                             compoundCommand.appendCommand(editCommand);
                         } else {
@@ -189,15 +190,15 @@ public class HexCommandHandler implements HexadecimalCommandHandler {
 
                     ((EditCharDataCommand) editCommand).appendEdit(keyChar);
                 } else {
-                    if (editCommand == null || !(editCommand instanceof EditCharDataCommand) || editCommand.getCommandType() != EditHexDataCommand.EditCommandType.INSERT) {
-                        editCommand = new EditCharDataCommand(hexadecimal, EditHexDataCommand.EditCommandType.INSERT, dataPosition);
+                    if (editCommand == null || !(editCommand instanceof EditCharDataCommand) || editCommand.getCommandType() != EditCodeDataCommand.EditCommandType.INSERT) {
+                        editCommand = new EditCharDataCommand(codeArea, EditCodeDataCommand.EditCommandType.INSERT, dataPosition);
                         if (deleteCommand != null) {
-                            HexCompoundCommand compoundCommand = new HexCompoundCommand(hexadecimal);
+                            HexCompoundCommand compoundCommand = new HexCompoundCommand(codeArea);
                             compoundCommand.appendCommand(deleteCommand);
                             try {
                                 undoHandler.execute(compoundCommand);
                             } catch (Exception ex) {
-                                Logger.getLogger(HexCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
+                                Logger.getLogger(CodeCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
                             }
                             compoundCommand.appendCommand(editCommand);
                         } else {
@@ -207,15 +208,15 @@ public class HexCommandHandler implements HexadecimalCommandHandler {
 
                     ((EditCharDataCommand) editCommand).appendEdit(keyChar);
                 }
-                hexadecimal.revealCursor();
-                hexadecimal.repaint();
+                codeArea.revealCursor();
+                codeArea.repaint();
             }
         }
     }
 
     @Override
     public void backSpacePressed() {
-        if (!hexadecimal.isEditable()) {
+        if (!codeArea.isEditable()) {
             return;
         }
 
@@ -224,7 +225,7 @@ public class HexCommandHandler implements HexadecimalCommandHandler {
 
     @Override
     public void deletePressed() {
-        if (!hexadecimal.isEditable()) {
+        if (!codeArea.isEditable()) {
             return;
         }
 
@@ -232,29 +233,29 @@ public class HexCommandHandler implements HexadecimalCommandHandler {
     }
 
     private void deletingAction(char keyChar) {
-        if (hexadecimal.hasSelection()) {
-            DeleteSelectionCommand deleteCommand = new DeleteSelectionCommand(hexadecimal);
+        if (codeArea.hasSelection()) {
+            DeleteSelectionCommand deleteCommand = new DeleteSelectionCommand(codeArea);
             try {
                 undoHandler.execute(deleteCommand);
             } catch (Exception ex) {
-                Logger.getLogger(HexCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(CodeCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
             if (editCommand != null && editCommand.wasReverted()) {
                 editCommand = null;
             }
 
-            long dataPosition = hexadecimal.getDataPosition();
-            if (hexadecimal.getActiveSection() == HexadecimalCaret.Section.HEXADECIMAL) {
-                if (editCommand == null || !(editCommand instanceof EditHexDataCommand) || editCommand.getCommandType() != EditHexDataCommand.EditCommandType.DELETE) {
-                    editCommand = new EditHexDataCommand(hexadecimal, EditHexDataCommand.EditCommandType.DELETE, dataPosition, false);
+            long dataPosition = codeArea.getDataPosition();
+            if (codeArea.getActiveSection() == Section.CODE_MATRIX) {
+                if (editCommand == null || !(editCommand instanceof EditCodeDataCommand) || editCommand.getCommandType() != EditCodeDataCommand.EditCommandType.DELETE) {
+                    editCommand = new EditCodeDataCommand(codeArea, EditCodeDataCommand.EditCommandType.DELETE, dataPosition, 0);
                     undoHandler.addCommand(editCommand);
                 }
 
-                ((EditHexDataCommand) editCommand).appendEdit((byte) keyChar);
+                ((EditCodeDataCommand) editCommand).appendEdit((byte) keyChar);
             } else {
-                if (editCommand == null || !(editCommand instanceof EditCharDataCommand) || editCommand.getCommandType() != EditHexDataCommand.EditCommandType.DELETE) {
-                    editCommand = new EditCharDataCommand(hexadecimal, EditCharDataCommand.EditCommandType.DELETE, dataPosition);
+                if (editCommand == null || !(editCommand instanceof EditCharDataCommand) || editCommand.getCommandType() != EditCodeDataCommand.EditCommandType.DELETE) {
+                    editCommand = new EditCharDataCommand(codeArea, EditCharDataCommand.EditCommandType.DELETE, dataPosition);
                     undoHandler.addCommand(editCommand);
                 }
 
@@ -265,25 +266,25 @@ public class HexCommandHandler implements HexadecimalCommandHandler {
 
     @Override
     public void delete() {
-        if (!hexadecimal.isEditable()) {
+        if (!codeArea.isEditable()) {
             return;
         }
 
         try {
-            undoHandler.execute(new DeleteSelectionCommand(hexadecimal));
+            undoHandler.execute(new DeleteSelectionCommand(codeArea));
         } catch (Exception ex) {
-            Logger.getLogger(HexCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CodeCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     @Override
     public void copy() {
-        Hexadecimal.SelectionRange selection = hexadecimal.getSelection();
+        CodeArea.SelectionRange selection = codeArea.getSelection();
         if (selection != null) {
             long first = selection.getFirst();
             long last = selection.getLast();
 
-            BinaryData copy = ((EditableBinaryData) hexadecimal.getData()).copy(first, last - first + 1);
+            BinaryData copy = ((EditableBinaryData) codeArea.getData()).copy(first, last - first + 1);
 
             BinaryDataClipboardData binaryData = new BinaryDataClipboardData(copy);
             clipboard.setContents(binaryData, binaryData);
@@ -292,33 +293,33 @@ public class HexCommandHandler implements HexadecimalCommandHandler {
 
     @Override
     public void cut() {
-        if (!hexadecimal.isEditable()) {
+        if (!codeArea.isEditable()) {
             return;
         }
 
-        Hexadecimal.SelectionRange selection = hexadecimal.getSelection();
+        CodeArea.SelectionRange selection = codeArea.getSelection();
         if (selection != null) {
             copy();
             try {
-                undoHandler.execute(new DeleteSelectionCommand(hexadecimal));
+                undoHandler.execute(new DeleteSelectionCommand(codeArea));
             } catch (Exception ex) {
-                Logger.getLogger(HexCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(CodeCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
 
     @Override
     public void paste() {
-        if (!hexadecimal.isEditable()) {
+        if (!codeArea.isEditable()) {
             return;
         }
 
         DeleteSelectionCommand deleteSelectionCommand = null;
-        if (hexadecimal.hasSelection()) {
+        if (codeArea.hasSelection()) {
             try {
-                deleteSelectionCommand = new DeleteSelectionCommand(hexadecimal);
+                deleteSelectionCommand = new DeleteSelectionCommand(codeArea);
             } catch (Exception ex) {
-                Logger.getLogger(HexCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(CodeCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
 
@@ -326,41 +327,41 @@ public class HexCommandHandler implements HexadecimalCommandHandler {
             try {
                 Object object = clipboard.getData(appDataFlavor);
                 if (object instanceof BinaryData) {
-                    HexadecimalCaret caret = hexadecimal.getCaret();
+                    CodeAreaCaret caret = codeArea.getCaret();
                     long dataPosition = caret.getDataPosition();
 
-                    HexCommand modifyCommand = null;
+                    CodeAreaCommand modifyCommand = null;
                     BinaryData pastedData = (BinaryData) object;
                     long dataSize = pastedData.getDataSize();
                     long insertionPosition = dataPosition;
-                    if (hexadecimal.getEditationMode() == Hexadecimal.EditationMode.OVERWRITE) {
+                    if (codeArea.getEditationMode() == CodeArea.EditationMode.OVERWRITE) {
                         BinaryData modifiedData = pastedData;
                         long toReplace = dataSize;
-                        if (insertionPosition + toReplace > hexadecimal.getData().getDataSize()) {
-                            toReplace = hexadecimal.getData().getDataSize() - insertionPosition;
+                        if (insertionPosition + toReplace > codeArea.getData().getDataSize()) {
+                            toReplace = codeArea.getData().getDataSize() - insertionPosition;
                             modifiedData = pastedData.copy(0, toReplace);
                         }
                         if (toReplace > 0) {
-                            modifyCommand = new ModifyDataCommand(hexadecimal, dataPosition, modifiedData);
+                            modifyCommand = new ModifyDataCommand(codeArea, dataPosition, modifiedData);
                             pastedData = pastedData.copy(toReplace, pastedData.getDataSize() - toReplace);
                             insertionPosition += toReplace;
                         }
                     }
 
-                    HexCommand insertCommand = null;
+                    CodeAreaCommand insertCommand = null;
                     if (pastedData.getDataSize() > 0) {
-                        insertCommand = new InsertDataCommand(hexadecimal, insertionPosition, pastedData);
+                        insertCommand = new InsertDataCommand(codeArea, insertionPosition, pastedData);
                     }
 
-                    HexCommand pasteCommand = HexCompoundCommand.buildCompoundCommand(hexadecimal, deleteSelectionCommand, modifyCommand, insertCommand);
+                    CodeAreaCommand pasteCommand = HexCompoundCommand.buildCompoundCommand(codeArea, deleteSelectionCommand, modifyCommand, insertCommand);
                     try {
                         undoHandler.execute(pasteCommand);
                     } catch (Exception ex) {
-                        Logger.getLogger(HexCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(CodeCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
                     }
 
-                    hexadecimal.computeDimensions();
-                    hexadecimal.updateScrollBars();
+                    codeArea.computeDimensions();
+                    codeArea.updateScrollBars();
                 }
             } catch (UnsupportedFlavorException | IOException ex) {
                 Logger.getLogger(DefaultCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
@@ -370,42 +371,42 @@ public class HexCommandHandler implements HexadecimalCommandHandler {
             try {
                 insertedData = clipboard.getData(DataFlavor.stringFlavor);
                 if (insertedData instanceof String) {
-                    HexadecimalCaret caret = hexadecimal.getCaret();
+                    CodeAreaCaret caret = codeArea.getCaret();
                     long dataPosition = caret.getDataPosition();
 
-                    HexCommand modifyCommand = null;
-                    byte[] bytes = ((String) insertedData).getBytes(hexadecimal.getCharset());
+                    CodeAreaCommand modifyCommand = null;
+                    byte[] bytes = ((String) insertedData).getBytes(codeArea.getCharset());
                     int dataSize = bytes.length;
-                    BinaryData pastedData = new MemoryHexadecimalData(bytes);
+                    BinaryData pastedData = new MemoryPagedData(bytes);
                     long insertionPosition = dataPosition;
-                    if (hexadecimal.getEditationMode() == Hexadecimal.EditationMode.OVERWRITE) {
+                    if (codeArea.getEditationMode() == CodeArea.EditationMode.OVERWRITE) {
                         BinaryData modifiedData = pastedData;
                         long toReplace = dataSize;
-                        if (insertionPosition + toReplace > hexadecimal.getData().getDataSize()) {
-                            toReplace = hexadecimal.getData().getDataSize() - insertionPosition;
+                        if (insertionPosition + toReplace > codeArea.getData().getDataSize()) {
+                            toReplace = codeArea.getData().getDataSize() - insertionPosition;
                             modifiedData = pastedData.copy(0, toReplace);
                         }
                         if (toReplace > 0) {
-                            modifyCommand = new ModifyDataCommand(hexadecimal, dataPosition, modifiedData);
+                            modifyCommand = new ModifyDataCommand(codeArea, dataPosition, modifiedData);
                             pastedData = pastedData.copy(toReplace, pastedData.getDataSize() - toReplace);
                             insertionPosition += toReplace;
                         }
                     }
 
-                    HexCommand insertCommand = null;
+                    CodeAreaCommand insertCommand = null;
                     if (pastedData.getDataSize() > 0) {
-                        insertCommand = new InsertDataCommand(hexadecimal, insertionPosition, pastedData);
+                        insertCommand = new InsertDataCommand(codeArea, insertionPosition, pastedData);
                     }
 
-                    HexCommand pasteCommand = HexCompoundCommand.buildCompoundCommand(hexadecimal, deleteSelectionCommand, modifyCommand, insertCommand);
+                    CodeAreaCommand pasteCommand = HexCompoundCommand.buildCompoundCommand(codeArea, deleteSelectionCommand, modifyCommand, insertCommand);
                     try {
                         undoHandler.execute(pasteCommand);
                     } catch (Exception ex) {
-                        Logger.getLogger(HexCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(CodeCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
                     }
 
-                    hexadecimal.computeDimensions();
-                    hexadecimal.updateScrollBars();
+                    codeArea.computeDimensions();
+                    codeArea.updateScrollBars();
                 }
             } catch (UnsupportedFlavorException | IOException ex) {
                 Logger.getLogger(DefaultCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
@@ -453,18 +454,18 @@ public class HexCommandHandler implements HexadecimalCommandHandler {
         }
     }
 
-    private static class DeleteSelectionCommand extends HexCommand {
+    private static class DeleteSelectionCommand extends CodeAreaCommand {
 
         private final RemoveDataCommand removeCommand;
         private final long position;
         private final long size;
 
-        public DeleteSelectionCommand(Hexadecimal hexadecimal) {
-            super(hexadecimal);
-            Hexadecimal.SelectionRange selection = hexadecimal.getSelection();
+        public DeleteSelectionCommand(CodeArea coreArea) {
+            super(coreArea);
+            CodeArea.SelectionRange selection = coreArea.getSelection();
             position = selection.getFirst();
             size = selection.getLast() - position + 1;
-            removeCommand = new RemoveDataCommand(hexadecimal, position, false, size);
+            removeCommand = new RemoveDataCommand(coreArea, position, 0, size);
         }
 
         @Override
@@ -475,28 +476,28 @@ public class HexCommandHandler implements HexadecimalCommandHandler {
         @Override
         public void redo() throws Exception {
             removeCommand.redo();
-            hexadecimal.clearSelection();
-            HexadecimalCaret caret = hexadecimal.getCaret();
+            codeArea.clearSelection();
+            CodeAreaCaret caret = codeArea.getCaret();
             caret.setCaretPosition(position);
-            hexadecimal.revealCursor();
-            hexadecimal.computeDimensions();
-            hexadecimal.updateScrollBars();
+            codeArea.revealCursor();
+            codeArea.computeDimensions();
+            codeArea.updateScrollBars();
         }
 
         @Override
         public void undo() throws Exception {
             removeCommand.undo();
-            hexadecimal.clearSelection();
-            HexadecimalCaret caret = hexadecimal.getCaret();
+            codeArea.clearSelection();
+            CodeAreaCaret caret = codeArea.getCaret();
             caret.setCaretPosition(size);
-            hexadecimal.revealCursor();
-            hexadecimal.computeDimensions();
-            hexadecimal.updateScrollBars();
+            codeArea.revealCursor();
+            codeArea.computeDimensions();
+            codeArea.updateScrollBars();
         }
 
         @Override
-        public HexCommandType getType() {
-            return HexCommandType.DATA_REMOVED;
+        public CodeAreaCommandType getType() {
+            return CodeAreaCommandType.DATA_REMOVED;
         }
 
         @Override

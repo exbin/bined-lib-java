@@ -16,15 +16,15 @@
  */
 package org.exbin.deltahex.operation.command;
 
-import org.exbin.deltahex.Hexadecimal;
+import org.exbin.deltahex.CodeArea;
 import org.exbin.deltahex.operation.CharEditDataOperation;
 import org.exbin.deltahex.operation.DeleteCharEditDataOperation;
-import org.exbin.deltahex.operation.HexOperation;
-import org.exbin.deltahex.operation.HexOperationEvent;
-import org.exbin.deltahex.operation.HexOperationListener;
+import org.exbin.deltahex.operation.CodeAreaOperation;
+import org.exbin.deltahex.operation.CodeAreaOperationEvent;
 import org.exbin.deltahex.operation.InsertCharEditDataOperation;
 import org.exbin.deltahex.operation.OverwriteCharEditDataOperation;
 import org.exbin.xbup.operation.OperationListener;
+import org.exbin.deltahex.operation.CodeAreaOperationListener;
 
 /**
  * Command for editing data in text mode.
@@ -36,45 +36,45 @@ public class EditCharDataCommand extends EditDataCommand {
 
     private final EditCommandType commandType;
     protected boolean operationPerformed = false;
-    private HexOperation[] operations = null;
+    private CodeAreaOperation[] operations = null;
 
-    public EditCharDataCommand(Hexadecimal hexadecimal, EditCommandType commandType, long position) {
-        super(hexadecimal);
+    public EditCharDataCommand(CodeArea codeArea, EditCommandType commandType, long position) {
+        super(codeArea);
         this.commandType = commandType;
-        HexOperation operation;
+        CodeAreaOperation operation;
         switch (commandType) {
             case INSERT: {
-                operation = new InsertCharEditDataOperation(hexadecimal, position);
+                operation = new InsertCharEditDataOperation(codeArea, position);
                 break;
             }
             case OVERWRITE: {
-                operation = new OverwriteCharEditDataOperation(hexadecimal, position);
+                operation = new OverwriteCharEditDataOperation(codeArea, position);
                 break;
             }
             case DELETE: {
-                operation = new DeleteCharEditDataOperation(hexadecimal, position);
+                operation = new DeleteCharEditDataOperation(codeArea, position);
                 break;
             }
             default: {
                 throw new IllegalStateException("Unsupported command type " + commandType.name());
             }
         }
-        operations = new HexOperation[]{operation};
+        operations = new CodeAreaOperation[]{operation};
         operationPerformed = true;
     }
 
     @Override
     public void undo() throws Exception {
         if (operations.length == 1 && operations[0] instanceof CharEditDataOperation) {
-            HexOperation operation = operations[0];
+            CodeAreaOperation operation = operations[0];
             operations = ((CharEditDataOperation) operation).generateUndo();
         }
 
         if (operationPerformed) {
             for (int i = operations.length - 1; i >= 0; i--) {
-                HexOperation redoOperation = operations[i].executeWithUndo();
-                if (hexadecimal instanceof OperationListener) {
-                    ((HexOperationListener) hexadecimal).notifyChange(new HexOperationEvent(operations[i]));
+                CodeAreaOperation redoOperation = operations[i].executeWithUndo();
+                if (codeArea instanceof OperationListener) {
+                    ((CodeAreaOperationListener) codeArea).notifyChange(new CodeAreaOperationEvent(operations[i]));
                 }
                 operations[i] = redoOperation;
             }
@@ -88,9 +88,9 @@ public class EditCharDataCommand extends EditDataCommand {
     public void redo() throws Exception {
         if (!operationPerformed) {
             for (int i = 0; i < operations.length; i++) {
-                HexOperation undoOperation = operations[i].executeWithUndo();
-                if (hexadecimal instanceof OperationListener) {
-                    ((HexOperationListener) hexadecimal).notifyChange(new HexOperationEvent(operations[i]));
+                CodeAreaOperation undoOperation = operations[i].executeWithUndo();
+                if (codeArea instanceof OperationListener) {
+                    ((CodeAreaOperationListener) codeArea).notifyChange(new CodeAreaOperationEvent(operations[i]));
                 }
 
                 operations[i] = undoOperation;
@@ -102,8 +102,8 @@ public class EditCharDataCommand extends EditDataCommand {
     }
 
     @Override
-    public HexCommandType getType() {
-        return HexCommandType.DATA_EDITED;
+    public CodeAreaCommandType getType() {
+        return CodeAreaCommandType.DATA_EDITED;
     }
 
     @Override

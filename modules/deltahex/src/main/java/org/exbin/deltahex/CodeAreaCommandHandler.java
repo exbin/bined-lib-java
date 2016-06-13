@@ -16,12 +16,12 @@
 package org.exbin.deltahex;
 
 /**
- * Interface for hexadecimal data manipulation.
+ * Interface for code area data manipulation.
  *
- * @version 0.1.0 2016/04/20
+ * @version 0.1.0 2016/06/13
  * @author ExBin Project (http://exbin.org)
  */
-public interface HexadecimalCommandHandler {
+public interface CodeAreaCommandHandler {
 
     /**
      * Notifies command handler about caret movement.

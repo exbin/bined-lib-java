@@ -15,20 +15,20 @@
  */
 package org.exbin.deltahex.operation;
 
-import org.exbin.deltahex.Hexadecimal;
+import org.exbin.deltahex.CodeArea;
 
 /**
- * Abstract class for operation on hexadecimal document.
+ * Abstract class for operation on code area component.
  *
- * @version 0.1.0 2016/05/21
+ * @version 0.1.0 2016/06/13
  * @author ExBin Project (http://exbin.org)
  */
-public abstract class HexOperation {
+public abstract class CodeAreaOperation {
 
-    protected final Hexadecimal hexadecimal;
+    protected final CodeArea codeArea;
 
-    public HexOperation(Hexadecimal hexadecimal) {
-        this.hexadecimal = hexadecimal;
+    public CodeAreaOperation(CodeArea codeArea) {
+        this.codeArea = codeArea;
     }
 
     /**
@@ -36,10 +36,10 @@ public abstract class HexOperation {
      *
      * @return operation type
      */
-    public abstract HexOperationType getType();
+    public abstract CodeAreaOperationType getType();
 
-    public Hexadecimal getHexadecimal() {
-        return hexadecimal;
+    public CodeArea getCodeArea() {
+        return codeArea;
     }
 
     /**
@@ -64,7 +64,7 @@ public abstract class HexOperation {
      * @return undo operation or null if not available
      * @throws java.lang.Exception if thrown during execution
      */
-    public abstract HexOperation executeWithUndo() throws Exception;
+    public abstract CodeAreaOperation executeWithUndo() throws Exception;
 
     /**
      * Performs dispose of the operation.

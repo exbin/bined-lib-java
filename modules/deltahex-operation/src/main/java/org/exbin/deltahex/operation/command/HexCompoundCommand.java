@@ -18,7 +18,7 @@ package org.exbin.deltahex.operation.command;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.exbin.deltahex.Hexadecimal;
+import org.exbin.deltahex.CodeArea;
 import org.exbin.xbup.operation.Command;
 import org.exbin.xbup.operation.CompoundCommand;
 
@@ -28,24 +28,24 @@ import org.exbin.xbup.operation.CompoundCommand;
  * @version 0.1.0 2016/05/07
  * @author ExBin Project (http://exbin.org)
  */
-public class HexCompoundCommand extends HexCommand implements CompoundCommand {
+public class HexCompoundCommand extends CodeAreaCommand implements CompoundCommand {
 
     private final List<Command> commands = new ArrayList<>();
 
-    public HexCompoundCommand(Hexadecimal hexadecimal) {
-        super(hexadecimal);
+    public HexCompoundCommand(CodeArea codeArea) {
+        super(codeArea);
     }
 
-    public static HexCommand buildCompoundCommand(Hexadecimal hexadecimal, HexCommand... commands) {
-        HexCommand resultCommand = null;
-        for (HexCommand command : commands) {
+    public static CodeAreaCommand buildCompoundCommand(CodeArea codeArea, CodeAreaCommand... commands) {
+        CodeAreaCommand resultCommand = null;
+        for (CodeAreaCommand command : commands) {
             if (command != null) {
                 if (resultCommand == null) {
                     resultCommand = command;
                 } else if (resultCommand instanceof HexCompoundCommand) {
                     ((HexCompoundCommand) resultCommand).appendCommand(command);
                 } else {
-                    HexCompoundCommand compoundCommand = new HexCompoundCommand(hexadecimal);
+                    HexCompoundCommand compoundCommand = new HexCompoundCommand(codeArea);
                     compoundCommand.appendCommand(resultCommand);
                     compoundCommand.appendCommand(command);
                     resultCommand = compoundCommand;
@@ -57,8 +57,8 @@ public class HexCompoundCommand extends HexCommand implements CompoundCommand {
     }
 
     @Override
-    public HexCommandType getType() {
-        return HexCommandType.COMPOUND;
+    public CodeAreaCommandType getType() {
+        return CodeAreaCommandType.COMPOUND;
     }
 
     @Override

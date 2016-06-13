@@ -66,7 +66,7 @@ public class DeltaHexadecimalData implements EditableBinaryData {
         this.data = data;
         if (length > 0) {
             dataLength = length;
-            MemoryHexadecimalData binaryData = new MemoryHexadecimalData();
+            MemoryPagedData binaryData = new MemoryPagedData();
             binaryData.insert(0, length);
             DataSegment fullFileSegment = new BinaryDataSegment(binaryData);
             segments.add(fullFileSegment);
@@ -115,7 +115,7 @@ public class DeltaHexadecimalData implements EditableBinaryData {
                 binaryData = ((BinaryDataSegment) prev).getBinaryData();
                 binaryData.insert(binaryData.getDataSize(), new byte[]{value});
             } else {
-                binaryData = new MemoryHexadecimalData();
+                binaryData = new MemoryPagedData();
                 binaryData.insert(0, new byte[]{value});
                 BinaryDataSegment binarySegment = new BinaryDataSegment(binaryData);
                 segments.addBefore(pointerSegment, binarySegment);
@@ -143,7 +143,7 @@ public class DeltaHexadecimalData implements EditableBinaryData {
                 splitSegment(startFrom);
                 focusSegment(startFrom);
             }
-            MemoryHexadecimalData binaryData = new MemoryHexadecimalData();
+            MemoryPagedData binaryData = new MemoryPagedData();
             binaryData.insertUninitialized(0, length);
             BinaryDataSegment binarySegment = new BinaryDataSegment(binaryData);
             segments.addBefore(pointerSegment, binarySegment);
@@ -160,7 +160,7 @@ public class DeltaHexadecimalData implements EditableBinaryData {
                 splitSegment(startFrom);
                 focusSegment(startFrom);
             }
-            MemoryHexadecimalData binaryData = new MemoryHexadecimalData();
+            MemoryPagedData binaryData = new MemoryPagedData();
             binaryData.insert(0, length);
             BinaryDataSegment binarySegment = new BinaryDataSegment(binaryData);
             segments.addBefore(pointerSegment, binarySegment);
@@ -177,7 +177,7 @@ public class DeltaHexadecimalData implements EditableBinaryData {
                 splitSegment(startFrom);
                 focusSegment(startFrom);
             }
-            MemoryHexadecimalData binaryData = new MemoryHexadecimalData();
+            MemoryPagedData binaryData = new MemoryPagedData();
             binaryData.insert(0, insertedData);
             BinaryDataSegment binarySegment = new BinaryDataSegment(binaryData);
             segments.addBefore(pointerSegment, binarySegment);
@@ -194,7 +194,7 @@ public class DeltaHexadecimalData implements EditableBinaryData {
                 splitSegment(startFrom);
                 focusSegment(startFrom);
             }
-            MemoryHexadecimalData binaryData = new MemoryHexadecimalData();
+            MemoryPagedData binaryData = new MemoryPagedData();
             binaryData.insert(0, insertedData, insertedDataOffset, insertedDataLength);
             BinaryDataSegment binarySegment = new BinaryDataSegment(binaryData);
             segments.addBefore(pointerSegment, binarySegment);
@@ -211,7 +211,7 @@ public class DeltaHexadecimalData implements EditableBinaryData {
                 splitSegment(startFrom);
                 focusSegment(startFrom);
             }
-            MemoryHexadecimalData binaryData = new MemoryHexadecimalData();
+            MemoryPagedData binaryData = new MemoryPagedData();
             binaryData.insert(0, insertedData);
             BinaryDataSegment binarySegment = new BinaryDataSegment(binaryData);
             segments.addBefore(pointerSegment, binarySegment);
@@ -228,7 +228,7 @@ public class DeltaHexadecimalData implements EditableBinaryData {
                 splitSegment(startFrom);
                 focusSegment(startFrom);
             }
-            MemoryHexadecimalData binaryData = new MemoryHexadecimalData();
+            MemoryPagedData binaryData = new MemoryPagedData();
             binaryData.insert(0, insertedData, insertedDataOffset, insertedDataLength);
             BinaryDataSegment binarySegment = new BinaryDataSegment(binaryData);
             segments.addBefore(pointerSegment, binarySegment);
@@ -368,7 +368,7 @@ public class DeltaHexadecimalData implements EditableBinaryData {
                 EditableBinaryData binaryData = ((BinaryDataSegment) pointerSegment).getBinaryData();
                 binaryData.setDataSize(binaryData.getDataSize() + (dataSize - dataLength));
             } else {
-                MemoryHexadecimalData binaryData = new MemoryHexadecimalData();
+                MemoryPagedData binaryData = new MemoryPagedData();
                 binaryData.setDataSize(dataSize - dataLength);
                 BinaryDataSegment emptySegment = new BinaryDataSegment(binaryData);
                 segments.add(emptySegment);

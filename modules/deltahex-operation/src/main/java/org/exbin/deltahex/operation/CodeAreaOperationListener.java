@@ -22,12 +22,12 @@ package org.exbin.deltahex.operation;
  * @version 0.1.0 2016/05/25
  * @author ExBin Project (http://exbin.org)
  */
-public interface HexOperationListener {
+public interface CodeAreaOperationListener {
 
     /**
      * Notifies about change in document content.
      *
      * @param event change event
      */
-    void notifyChange(HexOperationEvent event);
+    void notifyChange(CodeAreaOperationEvent event);
 }

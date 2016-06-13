@@ -17,7 +17,7 @@ package org.exbin.deltahex.operation;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.exbin.deltahex.Hexadecimal;
+import org.exbin.deltahex.CodeArea;
 import org.exbin.xbup.operation.Command;
 import org.exbin.xbup.operation.undo.XBUndoHandler;
 import org.exbin.xbup.operation.undo.XBUndoUpdateListener;
@@ -25,10 +25,10 @@ import org.exbin.xbup.operation.undo.XBUndoUpdateListener;
 /**
  * Undo handler for hexadecimal editor.
  *
- * @version 0.1.0 2016/05/30
+ * @version 0.1.0 2016/06/13
  * @author ExBin Project (http://exbin.org)
  */
-public class HexUndoHandler implements XBUndoHandler {
+public class CodeAreaUndoHandler implements XBUndoHandler {
 
     private long undoMaximumCount;
     private long undoMaximumSize;
@@ -36,16 +36,16 @@ public class HexUndoHandler implements XBUndoHandler {
     private long commandPosition;
     private long syncPointPosition = -1;
     private final List<Command> commandList;
-    private final Hexadecimal hexadecimal;
+    private final CodeArea codeArea;
     private final List<XBUndoUpdateListener> listeners = new ArrayList<>();
 
     /**
      * Creates a new instance.
      *
-     * @param hexadecimal hexadecimal component
+     * @param codeArea hexadecimal component
      */
-    public HexUndoHandler(Hexadecimal hexadecimal) {
-        this.hexadecimal = hexadecimal;
+    public CodeAreaUndoHandler(CodeArea codeArea) {
+        this.codeArea = codeArea;
         undoMaximumCount = 1024;
         undoMaximumSize = 65535;
         commandList = new ArrayList<>();

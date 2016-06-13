@@ -25,78 +25,78 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- * Tests for hexadecimal component.
+ * Tests for codeArea component.
  *
- * @version 0.1.0 2016/05/24
+ * @version 0.1.0 2016/06/13
  * @author ExBin Project (http://exbin.org)
  */
-public class HexadecimalTest {
+public class CodeAreaTest {
 
     public final static String SAMPLE_FILES_PATH = "/org/exbin/deltahex/resources/test/";
     public final static String SAMPLE_5BYTES = SAMPLE_FILES_PATH + "5bytes.dat";
     public final static String SAMPLE_10BYTES = SAMPLE_FILES_PATH + "10bytes.dat";
     public final static String SAMPLE_ALLBYTES = SAMPLE_FILES_PATH + "allbytes.dat";
 
-    public HexadecimalTest() {
+    public CodeAreaTest() {
     }
 
     @Test
     public void testDeleteAll() {
-        Hexadecimal hexadecimal = new Hexadecimal();
-        hexadecimal.setData(getSampleData(SAMPLE_ALLBYTES));
-        hexadecimal.selectAll();
-        hexadecimal.delete();
-        assertTrue(hexadecimal.getData().getDataSize() == 0);
+        CodeArea codeArea = new CodeArea();
+        codeArea.setData(getSampleData(SAMPLE_ALLBYTES));
+        codeArea.selectAll();
+        codeArea.delete();
+        assertTrue(codeArea.getData().getDataSize() == 0);
     }
 
     @Test
     public void testCopyPasteInOverwriteMode() {
-        Hexadecimal hexadecimal = new Hexadecimal();
+        CodeArea codeArea = new CodeArea();
         EditableBinaryData sampleData = getSampleData(SAMPLE_ALLBYTES);
-        hexadecimal.setData(sampleData);
+        codeArea.setData(sampleData);
         long dataSize = sampleData.getDataSize();
-        hexadecimal.selectAll();
-        hexadecimal.copy();
-        hexadecimal.clearSelection();
-        hexadecimal.paste();
-        assertTrue(hexadecimal.getData().getDataSize() == dataSize);
+        codeArea.selectAll();
+        codeArea.copy();
+        codeArea.clearSelection();
+        codeArea.paste();
+        assertTrue(codeArea.getData().getDataSize() == dataSize);
     }
 
     @Test
     public void testCopyPasteInInsertMode() {
-        Hexadecimal hexadecimal = new Hexadecimal();
-        hexadecimal.setEditationMode(Hexadecimal.EditationMode.INSERT);
+        CodeArea codeArea = new CodeArea();
+        codeArea.setEditationMode(CodeArea.EditationMode.INSERT);
         EditableBinaryData sampleData = getSampleData(SAMPLE_ALLBYTES);
-        hexadecimal.setData(sampleData);
+        codeArea.setData(sampleData);
         long dataSize = sampleData.getDataSize();
-        hexadecimal.selectAll();
-        hexadecimal.copy();
-        hexadecimal.clearSelection();
-        hexadecimal.paste();
-        assertTrue(hexadecimal.getData().getDataSize() == dataSize * 2);
+        codeArea.selectAll();
+        codeArea.copy();
+        codeArea.clearSelection();
+        codeArea.paste();
+        assertTrue(codeArea.getData().getDataSize() == dataSize * 2);
     }
 
     @Test
     public void testCopyPasteAtTheEnd() {
-        Hexadecimal hexadecimal = new Hexadecimal();
+        CodeArea codeArea = new CodeArea();
         EditableBinaryData sampleData = getSampleData(SAMPLE_ALLBYTES);
-        hexadecimal.setData(sampleData);
+        codeArea.setData(sampleData);
         long dataSize = sampleData.getDataSize();
-        hexadecimal.selectAll();
-        hexadecimal.copy();
-        hexadecimal.clearSelection();
-        hexadecimal.getCaret().setCaretPosition(dataSize / 2);
-        hexadecimal.paste();
-        assertTrue(hexadecimal.getData().getDataSize() == (dataSize / 2 + dataSize));
+        codeArea.selectAll();
+        codeArea.copy();
+        codeArea.clearSelection();
+        codeArea.getCaret().setCaretPosition(dataSize / 2);
+        codeArea.paste();
+        assertTrue(codeArea.getData().getDataSize() == (dataSize / 2 + dataSize));
     }
 
     private EditableBinaryData getSampleData(String dataPath) {
         ByteArrayEditableData data = new ByteArrayEditableData();
-        try (InputStream stream = HexadecimalTest.class.getResourceAsStream(dataPath)) {
+        try (InputStream stream = CodeAreaTest.class.getResourceAsStream(dataPath)) {
             data.loadFromStream(stream);
             stream.close();
         } catch (IOException ex) {
-            Logger.getLogger(HexadecimalTest.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CodeAreaTest.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         return data;
