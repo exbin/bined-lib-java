@@ -16,14 +16,23 @@
 package org.exbin.deltahex.example;
 
 import java.awt.BorderLayout;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileFilter;
 import org.exbin.deltahex.CaretPosition;
 import org.exbin.deltahex.CodeArea;
 import org.exbin.deltahex.CodeArea.Section;
+import org.exbin.utils.binary_data.EditableBinaryData;
 
 /**
  * Hexadecimal editor example panel.
  *
- * @version 0.1.0 2016/06/13
+ * @version 0.1.0 2016/06/14
  * @author ExBin Project (http://exbin.org)
  */
 public class DeltaHexExamplePanel extends javax.swing.JPanel {
@@ -38,6 +47,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
         this.codeArea = codeArea;
         add(codeArea, BorderLayout.CENTER);
         viewModeComboBox.setSelectedIndex(codeArea.getViewMode().ordinal());
+        codeTypeComboBox.setSelectedIndex(codeArea.getCodeType().ordinal());
         backgroundModeComboBox.setSelectedIndex(codeArea.getBackgroundMode().ordinal());
         charRenderingComboBox.setSelectedIndex(codeArea.getCharRenderingMode().ordinal());
         charAntialiasingComboBox.setSelectedIndex(codeArea.getCharAntialiasingMode().ordinal());
@@ -51,7 +61,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
         showNonprintableCharactersCheckBox.setSelected(codeArea.isShowNonprintingCharacters());
         showShadowCursorCheckBox.setSelected(codeArea.isShowShadowCursor());
         editableCheckBox.setSelected(codeArea.isEditable());
-        wrapModeCheckBox.setSelected(codeArea.isWrapMode());
+        wrapLineModeCheckBox.setSelected(codeArea.isWrapMode());
         lineLengthSpinner.setValue(codeArea.getLineLength());
 
         int decorationMode = codeArea.getDecorationMode();
@@ -61,7 +71,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
         codeArea.addCaretMovedListener(new CodeArea.CaretMovedListener() {
             @Override
             public void caretMoved(CaretPosition caretPosition, Section section) {
-                cursorPositionTextField.setText(String.valueOf(caretPosition.getDataPosition()));
+                positionTextField.setText(String.valueOf(caretPosition.getDataPosition()));
                 codeOffsetTextField.setText(String.valueOf(caretPosition.getCodeOffset()));
             }
         });
@@ -70,11 +80,11 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
             public void selectionChanged(CodeArea.SelectionRange selection) {
                 if (selection != null) {
                     long first = codeArea.getSelection().getFirst();
-                    selectionBeginTextField.setText(String.valueOf(first));
+                    selectionStartTextField.setText(String.valueOf(first));
                     long last = codeArea.getSelection().getLast();
                     selectionEndTextField.setText(String.valueOf(last));
                 } else {
-                    selectionBeginTextField.setText("");
+                    selectionStartTextField.setText("");
                     selectionEndTextField.setText("");
                 }
             }
@@ -90,45 +100,79 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        settingsPanel = new javax.swing.JPanel();
+        tabbedPane = new javax.swing.JTabbedPane();
+        modePanel = new javax.swing.JPanel();
+        editableCheckBox = new javax.swing.JCheckBox();
         viewModeScrollModeLabel = new javax.swing.JLabel();
         viewModeComboBox = new javax.swing.JComboBox<>();
         charRenderingScrollModeLabel = new javax.swing.JLabel();
         charRenderingComboBox = new javax.swing.JComboBox<>();
-        showHeaderCheckBox = new javax.swing.JCheckBox();
-        showLineNumbersCheckBox = new javax.swing.JCheckBox();
-        editableCheckBox = new javax.swing.JCheckBox();
-        wrapModeCheckBox = new javax.swing.JCheckBox();
-        lineLengthLabel = new javax.swing.JLabel();
-        lineLengthSpinner = new javax.swing.JSpinner();
-        verticalScrollModeLabel = new javax.swing.JLabel();
-        verticalScrollModeComboBox = new javax.swing.JComboBox<>();
-        horizontalScrollModeLabel = new javax.swing.JLabel();
-        horizontalScrollModeComboBox = new javax.swing.JComboBox<>();
-        cursorPositionLabel = new javax.swing.JLabel();
-        cursorPositionTextField = new javax.swing.JTextField();
-        selectionPositionsLabel = new javax.swing.JLabel();
-        selectionBeginTextField = new javax.swing.JTextField();
-        selectionEndTextField = new javax.swing.JTextField();
-        backgroundModeLabel = new javax.swing.JLabel();
-        backgroundModeComboBox = new javax.swing.JComboBox<>();
         charAntialiasingScrollModeLabel = new javax.swing.JLabel();
         charAntialiasingComboBox = new javax.swing.JComboBox<>();
-        verticalScrollBarVisibilityModeLabel = new javax.swing.JLabel();
-        verticalScrollBarVisibilityComboBox = new javax.swing.JComboBox<>();
-        horizontalScrollBarVisibilityLabel = new javax.swing.JLabel();
-        horizontalScrollBarVisibilityComboBox = new javax.swing.JComboBox<>();
+        codeTypeScrollModeLabel = new javax.swing.JLabel();
+        codeTypeComboBox = new javax.swing.JComboBox<>();
+        statePanel = new javax.swing.JPanel();
+        dataSizeLabel = new javax.swing.JLabel();
+        dataSizeTextField = new javax.swing.JTextField();
+        loadDataButton = new javax.swing.JButton();
+        saveDataButton = new javax.swing.JButton();
+        cursorPanel = new javax.swing.JPanel();
+        positionLabel = new javax.swing.JLabel();
+        positionTextField = new javax.swing.JTextField();
+        codeOffsetLabel = new javax.swing.JLabel();
+        codeOffsetTextField = new javax.swing.JTextField();
+        activeSectionLabel = new javax.swing.JLabel();
+        activeSectionComboBox = new javax.swing.JComboBox<>();
+        selectionPanel = new javax.swing.JPanel();
+        selectionStartLabel = new javax.swing.JLabel();
+        selectionStartTextField = new javax.swing.JTextField();
+        selectionEndLabel = new javax.swing.JLabel();
+        selectionEndTextField = new javax.swing.JTextField();
+        layoutPanel = new javax.swing.JPanel();
+        lineLengthLabel = new javax.swing.JLabel();
+        lineLengthSpinner = new javax.swing.JSpinner();
+        hexCharactersModeComboBox = new javax.swing.JComboBox<>();
+        hexCharactersModeLabel = new javax.swing.JLabel();
+        lineNumbersPanel = new javax.swing.JPanel();
+        showLineNumbersCheckBox = new javax.swing.JCheckBox();
+        wrapLineModeCheckBox = new javax.swing.JCheckBox();
+        headerPanel = new javax.swing.JPanel();
+        showHeaderCheckBox = new javax.swing.JCheckBox();
+        headerSpaceTypeLabel = new javax.swing.JLabel();
+        headerSpaceTypeComboBox = new javax.swing.JComboBox<>();
+        decorationPanel = new javax.swing.JPanel();
+        backgroundModeLabel = new javax.swing.JLabel();
+        backgroundModeComboBox = new javax.swing.JComboBox<>();
+        showNonprintableCharactersCheckBox = new javax.swing.JCheckBox();
+        showShadowCursorCheckBox = new javax.swing.JCheckBox();
+        linesPanel = new javax.swing.JPanel();
         decoratorLineNumLineCheckBox = new javax.swing.JCheckBox();
         decoratorSplitLineCheckBox = new javax.swing.JCheckBox();
         decoratorBoxCheckBox = new javax.swing.JCheckBox();
-        showNonprintableCharactersCheckBox = new javax.swing.JCheckBox();
-        showShadowCursorCheckBox = new javax.swing.JCheckBox();
-        hexCharactersModeComboBox = new javax.swing.JComboBox<>();
-        hexCharactersModeLabel = new javax.swing.JLabel();
-        codeOffsetLabel = new javax.swing.JLabel();
-        codeOffsetTextField = new javax.swing.JTextField();
+        decoratorHeaderLineCheckBox = new javax.swing.JCheckBox();
+        borderTypeLabel = new javax.swing.JLabel();
+        borderTypeComboBox = new javax.swing.JComboBox<>();
+        scrollingPanel = new javax.swing.JPanel();
+        verticalPanel = new javax.swing.JPanel();
+        verticalScrollBarVisibilityModeLabel = new javax.swing.JLabel();
+        verticalScrollBarVisibilityComboBox = new javax.swing.JComboBox<>();
+        verticalScrollModeLabel = new javax.swing.JLabel();
+        verticalScrollModeComboBox = new javax.swing.JComboBox<>();
+        horizontalPanel = new javax.swing.JPanel();
+        horizontalScrollBarVisibilityLabel = new javax.swing.JLabel();
+        horizontalScrollBarVisibilityComboBox = new javax.swing.JComboBox<>();
+        horizontalScrollModeLabel = new javax.swing.JLabel();
+        horizontalScrollModeComboBox = new javax.swing.JComboBox<>();
 
         setLayout(new java.awt.BorderLayout());
+
+        editableCheckBox.setSelected(true);
+        editableCheckBox.setText("Editable");
+        editableCheckBox.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                editableCheckBoxItemStateChanged(evt);
+            }
+        });
 
         viewModeScrollModeLabel.setText("View Mode");
 
@@ -141,84 +185,10 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
 
         charRenderingScrollModeLabel.setText("Character Rendering");
 
-        charRenderingComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "AUTO", "DYNAMIC", "FIXED" }));
+        charRenderingComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "AUTO", "LEFT", "CENTER", "FIXED" }));
         charRenderingComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 charRenderingComboBoxActionPerformed(evt);
-            }
-        });
-
-        showHeaderCheckBox.setText("Show Header");
-        showHeaderCheckBox.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                showHeaderCheckBoxItemStateChanged(evt);
-            }
-        });
-
-        showLineNumbersCheckBox.setText("Show Line Numbers");
-        showLineNumbersCheckBox.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                showLineNumbersCheckBoxItemStateChanged(evt);
-            }
-        });
-
-        editableCheckBox.setSelected(true);
-        editableCheckBox.setText("Editable");
-        editableCheckBox.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                editableCheckBoxItemStateChanged(evt);
-            }
-        });
-
-        wrapModeCheckBox.setText("Wrap Mode");
-        wrapModeCheckBox.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                wrapModeCheckBoxItemStateChanged(evt);
-            }
-        });
-
-        lineLengthLabel.setText("Bytes Per Line");
-
-        lineLengthSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                lineLengthSpinnerStateChanged(evt);
-            }
-        });
-
-        verticalScrollModeLabel.setText("Vertical Scroll Mode");
-
-        verticalScrollModeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "PER_LINE", "PIXEL" }));
-        verticalScrollModeComboBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                verticalScrollModeComboBoxActionPerformed(evt);
-            }
-        });
-
-        horizontalScrollModeLabel.setText("Horizontal Scroll Mode");
-
-        horizontalScrollModeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "PER_CHAR", "PIXEL" }));
-        horizontalScrollModeComboBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                horizontalScrollModeComboBoxActionPerformed(evt);
-            }
-        });
-
-        cursorPositionLabel.setText("Cursor Position");
-
-        cursorPositionTextField.setEditable(false);
-
-        selectionPositionsLabel.setText("Selection Start/End");
-
-        selectionBeginTextField.setEditable(false);
-
-        selectionEndTextField.setEditable(false);
-
-        backgroundModeLabel.setText("Background Mode");
-
-        backgroundModeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "NONE", "PLAIN", "STRIPPED", "GRIDDED" }));
-        backgroundModeComboBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                backgroundModeComboBoxActionPerformed(evt);
             }
         });
 
@@ -231,23 +201,380 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
             }
         });
 
-        verticalScrollBarVisibilityModeLabel.setText("Vertical Scrollbar");
+        codeTypeScrollModeLabel.setText("Code Type");
 
-        verticalScrollBarVisibilityComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "NEVER", "IF_NEEDED", "ALWAYS" }));
-        verticalScrollBarVisibilityComboBox.addActionListener(new java.awt.event.ActionListener() {
+        codeTypeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "BINARY", "OCTAL", "DECIMAL", "HEXADECIMAL" }));
+        codeTypeComboBox.setSelectedIndex(3);
+        codeTypeComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                verticalScrollBarVisibilityComboBoxActionPerformed(evt);
+                codeTypeComboBoxActionPerformed(evt);
             }
         });
 
-        horizontalScrollBarVisibilityLabel.setText("Horizontal Scrollbar");
+        javax.swing.GroupLayout modePanelLayout = new javax.swing.GroupLayout(modePanel);
+        modePanel.setLayout(modePanelLayout);
+        modePanelLayout.setHorizontalGroup(
+            modePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(modePanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(modePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(charRenderingComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(viewModeComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(codeTypeComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(modePanelLayout.createSequentialGroup()
+                        .addGroup(modePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(charRenderingScrollModeLabel)
+                            .addComponent(charAntialiasingScrollModeLabel)
+                            .addComponent(editableCheckBox, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(viewModeScrollModeLabel)
+                            .addComponent(codeTypeScrollModeLabel))
+                        .addGap(0, 88, Short.MAX_VALUE))
+                    .addComponent(charAntialiasingComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        modePanelLayout.setVerticalGroup(
+            modePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(modePanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(viewModeScrollModeLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(viewModeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(codeTypeScrollModeLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(codeTypeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(charRenderingScrollModeLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(charRenderingComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(charAntialiasingScrollModeLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(charAntialiasingComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(editableCheckBox)
+                .addContainerGap(179, Short.MAX_VALUE))
+        );
 
-        horizontalScrollBarVisibilityComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "NEVER", "IF_NEEDED", "ALWAYS" }));
-        horizontalScrollBarVisibilityComboBox.addActionListener(new java.awt.event.ActionListener() {
+        tabbedPane.addTab("Mode", modePanel);
+
+        dataSizeLabel.setText("Data Size");
+
+        dataSizeTextField.setEditable(false);
+        dataSizeTextField.setText("TODO");
+        dataSizeTextField.setEnabled(false);
+
+        loadDataButton.setText("Load...");
+        loadDataButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                horizontalScrollBarVisibilityComboBoxActionPerformed(evt);
+                loadDataButtonActionPerformed(evt);
             }
         });
+
+        saveDataButton.setText("Save...");
+        saveDataButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveDataButtonActionPerformed(evt);
+            }
+        });
+
+        cursorPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Cursor"));
+
+        positionLabel.setText("Data Position");
+
+        positionTextField.setEditable(false);
+
+        codeOffsetLabel.setText("Code Offset Position");
+
+        codeOffsetTextField.setEditable(false);
+
+        activeSectionLabel.setText("Active Section");
+        activeSectionLabel.setEnabled(false);
+
+        activeSectionComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "TODO" }));
+        activeSectionComboBox.setEnabled(false);
+        activeSectionComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                activeSectionComboBoxActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout cursorPanelLayout = new javax.swing.GroupLayout(cursorPanel);
+        cursorPanel.setLayout(cursorPanelLayout);
+        cursorPanelLayout.setHorizontalGroup(
+            cursorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(cursorPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(cursorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(codeOffsetTextField)
+                    .addComponent(positionTextField)
+                    .addGroup(cursorPanelLayout.createSequentialGroup()
+                        .addGroup(cursorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(positionLabel)
+                            .addComponent(codeOffsetLabel)
+                            .addComponent(activeSectionLabel))
+                        .addGap(0, 78, Short.MAX_VALUE))
+                    .addComponent(activeSectionComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        cursorPanelLayout.setVerticalGroup(
+            cursorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(cursorPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(positionLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(positionTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(codeOffsetLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(codeOffsetTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(activeSectionLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(activeSectionComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        selectionPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Selection"));
+
+        selectionStartLabel.setText("Selection Start");
+
+        selectionStartTextField.setEditable(false);
+
+        selectionEndLabel.setText("Selection End");
+
+        selectionEndTextField.setEditable(false);
+
+        javax.swing.GroupLayout selectionPanelLayout = new javax.swing.GroupLayout(selectionPanel);
+        selectionPanel.setLayout(selectionPanelLayout);
+        selectionPanelLayout.setHorizontalGroup(
+            selectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(selectionPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(selectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(selectionEndTextField, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(selectionStartTextField, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, selectionPanelLayout.createSequentialGroup()
+                        .addGroup(selectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(selectionEndLabel)
+                            .addComponent(selectionStartLabel))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        selectionPanelLayout.setVerticalGroup(
+            selectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(selectionPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(selectionStartLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(selectionStartTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(selectionEndLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(selectionEndTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout statePanelLayout = new javax.swing.GroupLayout(statePanel);
+        statePanel.setLayout(statePanelLayout);
+        statePanelLayout.setHorizontalGroup(
+            statePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, statePanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(statePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(selectionPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(cursorPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(dataSizeTextField, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, statePanelLayout.createSequentialGroup()
+                        .addGroup(statePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(dataSizeLabel)
+                            .addGroup(statePanelLayout.createSequentialGroup()
+                                .addComponent(loadDataButton)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(saveDataButton)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        statePanelLayout.setVerticalGroup(
+            statePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(statePanelLayout.createSequentialGroup()
+                .addGap(9, 9, 9)
+                .addComponent(dataSizeLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(dataSizeTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(7, 7, 7)
+                .addGroup(statePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(loadDataButton)
+                    .addComponent(saveDataButton))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(cursorPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(selectionPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        tabbedPane.addTab("State", statePanel);
+
+        lineLengthLabel.setText("Bytes Per Line");
+
+        lineLengthSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                lineLengthSpinnerStateChanged(evt);
+            }
+        });
+
+        hexCharactersModeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "LOWER", "UPPER" }));
+        hexCharactersModeComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                hexCharactersModeComboBoxActionPerformed(evt);
+            }
+        });
+
+        hexCharactersModeLabel.setText("Hex Chars Mode");
+
+        lineNumbersPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Line Numbers"));
+
+        showLineNumbersCheckBox.setText("Show Line Numbers");
+        showLineNumbersCheckBox.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                showLineNumbersCheckBoxItemStateChanged(evt);
+            }
+        });
+
+        javax.swing.GroupLayout lineNumbersPanelLayout = new javax.swing.GroupLayout(lineNumbersPanel);
+        lineNumbersPanel.setLayout(lineNumbersPanelLayout);
+        lineNumbersPanelLayout.setHorizontalGroup(
+            lineNumbersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(lineNumbersPanelLayout.createSequentialGroup()
+                .addComponent(showLineNumbersCheckBox)
+                .addGap(0, 68, Short.MAX_VALUE))
+        );
+        lineNumbersPanelLayout.setVerticalGroup(
+            lineNumbersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(lineNumbersPanelLayout.createSequentialGroup()
+                .addComponent(showLineNumbersCheckBox)
+                .addGap(0, 40, Short.MAX_VALUE))
+        );
+
+        wrapLineModeCheckBox.setText("Wrap Line Mode");
+        wrapLineModeCheckBox.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                wrapLineModeCheckBoxItemStateChanged(evt);
+            }
+        });
+
+        headerPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Header"));
+
+        showHeaderCheckBox.setText("Show Header");
+        showHeaderCheckBox.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                showHeaderCheckBoxItemStateChanged(evt);
+            }
+        });
+
+        headerSpaceTypeLabel.setText("Header Space Type");
+        headerSpaceTypeLabel.setEnabled(false);
+
+        headerSpaceTypeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "TODO" }));
+        headerSpaceTypeComboBox.setEnabled(false);
+        headerSpaceTypeComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                headerSpaceTypeComboBoxActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout headerPanelLayout = new javax.swing.GroupLayout(headerPanel);
+        headerPanel.setLayout(headerPanelLayout);
+        headerPanelLayout.setHorizontalGroup(
+            headerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(headerPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(headerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(headerSpaceTypeComboBox, javax.swing.GroupLayout.Alignment.TRAILING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(headerPanelLayout.createSequentialGroup()
+                        .addGroup(headerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(showHeaderCheckBox)
+                            .addComponent(headerSpaceTypeLabel))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        headerPanelLayout.setVerticalGroup(
+            headerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(headerPanelLayout.createSequentialGroup()
+                .addComponent(showHeaderCheckBox)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(headerSpaceTypeLabel)
+                .addGap(11, 11, 11)
+                .addComponent(headerSpaceTypeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 34, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout layoutPanelLayout = new javax.swing.GroupLayout(layoutPanel);
+        layoutPanel.setLayout(layoutPanelLayout);
+        layoutPanelLayout.setHorizontalGroup(
+            layoutPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layoutPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layoutPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lineLengthSpinner)
+                    .addComponent(lineNumbersPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(headerPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(hexCharactersModeComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layoutPanelLayout.createSequentialGroup()
+                        .addGroup(layoutPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lineLengthLabel)
+                            .addComponent(wrapLineModeCheckBox)
+                            .addComponent(hexCharactersModeLabel))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        layoutPanelLayout.setVerticalGroup(
+            layoutPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layoutPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(wrapLineModeCheckBox)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lineLengthLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lineLengthSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(headerPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
+                .addComponent(lineNumbersPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(hexCharactersModeLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(hexCharactersModeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(27, 27, 27))
+        );
+
+        tabbedPane.addTab("Layout", layoutPanel);
+
+        backgroundModeLabel.setText("Background Mode");
+
+        backgroundModeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "NONE", "PLAIN", "STRIPPED", "GRIDDED" }));
+        backgroundModeComboBox.setSelectedIndex(2);
+        backgroundModeComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                backgroundModeComboBoxActionPerformed(evt);
+            }
+        });
+
+        showNonprintableCharactersCheckBox.setText("Show Nonprintable Characters");
+        showNonprintableCharactersCheckBox.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                showNonprintableCharactersCheckBoxItemStateChanged(evt);
+            }
+        });
+
+        showShadowCursorCheckBox.setText("Show Shadow Cursor");
+        showShadowCursorCheckBox.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                showShadowCursorCheckBoxItemStateChanged(evt);
+            }
+        });
+
+        linesPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Lines"));
 
         decoratorLineNumLineCheckBox.setText("LineNum Line");
         decoratorLineNumLineCheckBox.addItemListener(new java.awt.event.ItemListener() {
@@ -270,190 +597,218 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
             }
         });
 
-        showNonprintableCharactersCheckBox.setText("Show Nonprintable Characters");
-        showNonprintableCharactersCheckBox.addItemListener(new java.awt.event.ItemListener() {
+        decoratorHeaderLineCheckBox.setText("Header Line");
+        decoratorHeaderLineCheckBox.setEnabled(false);
+        decoratorHeaderLineCheckBox.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                showNonprintableCharactersCheckBoxItemStateChanged(evt);
+                decoratorHeaderLineCheckBoxItemStateChanged(evt);
             }
         });
 
-        showShadowCursorCheckBox.setText("Show Shadow Cursor");
-        showShadowCursorCheckBox.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                showShadowCursorCheckBoxItemStateChanged(evt);
-            }
-        });
-
-        hexCharactersModeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "LOWER", "UPPER" }));
-        hexCharactersModeComboBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                hexCharactersModeComboBoxActionPerformed(evt);
-            }
-        });
-
-        hexCharactersModeLabel.setText("Hex Chars Mode");
-
-        codeOffsetLabel.setText("Cursor Position");
-
-        codeOffsetTextField.setEditable(false);
-
-        javax.swing.GroupLayout settingsPanelLayout = new javax.swing.GroupLayout(settingsPanel);
-        settingsPanel.setLayout(settingsPanelLayout);
-        settingsPanelLayout.setHorizontalGroup(
-            settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(settingsPanelLayout.createSequentialGroup()
+        javax.swing.GroupLayout linesPanelLayout = new javax.swing.GroupLayout(linesPanel);
+        linesPanel.setLayout(linesPanelLayout);
+        linesPanelLayout.setHorizontalGroup(
+            linesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(linesPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(settingsPanelLayout.createSequentialGroup()
-                        .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(showLineNumbersCheckBox, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(showHeaderCheckBox, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addComponent(wrapModeCheckBox))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(decoratorLineNumLineCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(decoratorSplitLineCheckBox, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(decoratorBoxCheckBox, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addGroup(settingsPanelLayout.createSequentialGroup()
-                        .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(settingsPanelLayout.createSequentialGroup()
-                                .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(viewModeScrollModeLabel)
-                                    .addComponent(viewModeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(backgroundModeLabel)
-                                    .addComponent(backgroundModeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(settingsPanelLayout.createSequentialGroup()
-                                .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(verticalScrollModeLabel)
-                                    .addComponent(verticalScrollModeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(verticalScrollBarVisibilityModeLabel)
-                                    .addComponent(verticalScrollBarVisibilityComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(horizontalScrollBarVisibilityLabel)
-                                    .addComponent(horizontalScrollBarVisibilityComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(horizontalScrollModeLabel)
-                                    .addComponent(horizontalScrollModeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addComponent(editableCheckBox, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(settingsPanelLayout.createSequentialGroup()
-                                .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(charRenderingScrollModeLabel)
-                                    .addComponent(charRenderingComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                        .addComponent(selectionBeginTextField)
-                                        .addComponent(selectionPositionsLabel))
-                                    .addComponent(lineLengthLabel)
-                                    .addComponent(lineLengthSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(cursorPositionLabel)
-                                    .addComponent(cursorPositionTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(settingsPanelLayout.createSequentialGroup()
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(charAntialiasingScrollModeLabel)
-                                            .addComponent(charAntialiasingComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                    .addGroup(settingsPanelLayout.createSequentialGroup()
-                                        .addGap(13, 13, 13)
-                                        .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                            .addComponent(hexCharactersModeLabel)
-                                            .addComponent(codeOffsetLabel)
-                                            .addComponent(codeOffsetTextField)
-                                            .addComponent(selectionEndTextField)
-                                            .addComponent(hexCharactersModeComboBox, 0, 125, Short.MAX_VALUE))))))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(showNonprintableCharactersCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(showShadowCursorCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addGroup(linesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(decoratorLineNumLineCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(decoratorSplitLineCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(decoratorBoxCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(decoratorHeaderLineCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
-        settingsPanelLayout.setVerticalGroup(
-            settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(settingsPanelLayout.createSequentialGroup()
+        linesPanelLayout.setVerticalGroup(
+            linesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(linesPanelLayout.createSequentialGroup()
+                .addComponent(decoratorLineNumLineCheckBox)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(decoratorSplitLineCheckBox)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(decoratorBoxCheckBox)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(decoratorHeaderLineCheckBox)
+                .addGap(0, 11, Short.MAX_VALUE))
+        );
+
+        borderTypeLabel.setText("Background Mode");
+        borderTypeLabel.setEnabled(false);
+
+        borderTypeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "TODO" }));
+        borderTypeComboBox.setEnabled(false);
+        borderTypeComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                borderTypeComboBoxActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout decorationPanelLayout = new javax.swing.GroupLayout(decorationPanel);
+        decorationPanel.setLayout(decorationPanelLayout);
+        decorationPanelLayout.setHorizontalGroup(
+            decorationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(decorationPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(settingsPanelLayout.createSequentialGroup()
-                        .addComponent(viewModeScrollModeLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(viewModeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(settingsPanelLayout.createSequentialGroup()
-                        .addComponent(backgroundModeLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(backgroundModeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGroup(decorationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(backgroundModeComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(linesPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(borderTypeComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(decorationPanelLayout.createSequentialGroup()
+                        .addGroup(decorationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(backgroundModeLabel)
+                            .addComponent(showNonprintableCharactersCheckBox)
+                            .addComponent(showShadowCursorCheckBox)
+                            .addComponent(borderTypeLabel))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        decorationPanelLayout.setVerticalGroup(
+            decorationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(decorationPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(backgroundModeLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(showHeaderCheckBox)
-                    .addComponent(decoratorLineNumLineCheckBox))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(showLineNumbersCheckBox)
-                    .addComponent(decoratorSplitLineCheckBox))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(decoratorBoxCheckBox)
-                    .addComponent(wrapModeCheckBox, javax.swing.GroupLayout.Alignment.TRAILING))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(showNonprintableCharactersCheckBox)
+                .addComponent(backgroundModeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(showShadowCursorCheckBox)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(editableCheckBox)
+                .addComponent(showNonprintableCharactersCheckBox)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lineLengthLabel)
-                    .addComponent(hexCharactersModeLabel))
+                .addComponent(linesPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(33, 33, 33)
+                .addComponent(borderTypeLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lineLengthSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(hexCharactersModeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cursorPositionLabel)
-                    .addComponent(codeOffsetLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cursorPositionTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(codeOffsetTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(selectionPositionsLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(selectionBeginTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(selectionEndTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(settingsPanelLayout.createSequentialGroup()
-                        .addComponent(charRenderingScrollModeLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(charRenderingComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(settingsPanelLayout.createSequentialGroup()
-                        .addComponent(charAntialiasingScrollModeLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(charAntialiasingComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 45, Short.MAX_VALUE)
-                .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(settingsPanelLayout.createSequentialGroup()
-                        .addComponent(horizontalScrollBarVisibilityLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(horizontalScrollBarVisibilityComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(settingsPanelLayout.createSequentialGroup()
-                        .addComponent(verticalScrollBarVisibilityModeLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(verticalScrollBarVisibilityComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(settingsPanelLayout.createSequentialGroup()
-                        .addComponent(horizontalScrollModeLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(horizontalScrollModeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(settingsPanelLayout.createSequentialGroup()
-                        .addComponent(verticalScrollModeLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(verticalScrollModeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
+                .addComponent(borderTypeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(73, Short.MAX_VALUE))
         );
 
-        add(settingsPanel, java.awt.BorderLayout.WEST);
+        tabbedPane.addTab("Decoration", decorationPanel);
+
+        verticalPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Vertical"));
+
+        verticalScrollBarVisibilityModeLabel.setText("Vertical Scrollbar");
+
+        verticalScrollBarVisibilityComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "NEVER", "IF_NEEDED", "ALWAYS" }));
+        verticalScrollBarVisibilityComboBox.setSelectedIndex(1);
+        verticalScrollBarVisibilityComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                verticalScrollBarVisibilityComboBoxActionPerformed(evt);
+            }
+        });
+
+        verticalScrollModeLabel.setText("Vertical Scroll Mode");
+
+        verticalScrollModeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "PER_LINE", "PIXEL" }));
+        verticalScrollModeComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                verticalScrollModeComboBoxActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout verticalPanelLayout = new javax.swing.GroupLayout(verticalPanel);
+        verticalPanel.setLayout(verticalPanelLayout);
+        verticalPanelLayout.setHorizontalGroup(
+            verticalPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(verticalPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(verticalPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(verticalScrollBarVisibilityComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(verticalPanelLayout.createSequentialGroup()
+                        .addGroup(verticalPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(verticalScrollBarVisibilityModeLabel)
+                            .addComponent(verticalScrollModeLabel))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(verticalScrollModeComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        verticalPanelLayout.setVerticalGroup(
+            verticalPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(verticalPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(verticalScrollBarVisibilityModeLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(verticalScrollBarVisibilityComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(verticalScrollModeLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(verticalScrollModeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        horizontalPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Horizontal"));
+
+        horizontalScrollBarVisibilityLabel.setText("Horizontal Scrollbar");
+
+        horizontalScrollBarVisibilityComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "NEVER", "IF_NEEDED", "ALWAYS" }));
+        horizontalScrollBarVisibilityComboBox.setSelectedIndex(1);
+        horizontalScrollBarVisibilityComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                horizontalScrollBarVisibilityComboBoxActionPerformed(evt);
+            }
+        });
+
+        horizontalScrollModeLabel.setText("Horizontal Scroll Mode");
+
+        horizontalScrollModeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "PER_CHAR", "PIXEL" }));
+        horizontalScrollModeComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                horizontalScrollModeComboBoxActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout horizontalPanelLayout = new javax.swing.GroupLayout(horizontalPanel);
+        horizontalPanel.setLayout(horizontalPanelLayout);
+        horizontalPanelLayout.setHorizontalGroup(
+            horizontalPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(horizontalPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(horizontalPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(horizontalScrollModeComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(horizontalPanelLayout.createSequentialGroup()
+                        .addGroup(horizontalPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(horizontalScrollBarVisibilityLabel)
+                            .addComponent(horizontalScrollModeLabel))
+                        .addGap(0, 64, Short.MAX_VALUE))
+                    .addComponent(horizontalScrollBarVisibilityComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        horizontalPanelLayout.setVerticalGroup(
+            horizontalPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(horizontalPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(horizontalScrollBarVisibilityLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(horizontalScrollBarVisibilityComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(horizontalScrollModeLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(horizontalScrollModeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout scrollingPanelLayout = new javax.swing.GroupLayout(scrollingPanel);
+        scrollingPanel.setLayout(scrollingPanelLayout);
+        scrollingPanelLayout.setHorizontalGroup(
+            scrollingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(scrollingPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(scrollingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(verticalPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(horizontalPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        scrollingPanelLayout.setVerticalGroup(
+            scrollingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(scrollingPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(verticalPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(horizontalPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(141, Short.MAX_VALUE))
+        );
+
+        tabbedPane.addTab("Scrolling", scrollingPanel);
+
+        add(tabbedPane, java.awt.BorderLayout.WEST);
     }// </editor-fold>//GEN-END:initComponents
 
     private void viewModeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewModeComboBoxActionPerformed
@@ -531,9 +886,9 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
         codeArea.setEditable(editableCheckBox.isSelected());
     }//GEN-LAST:event_editableCheckBoxItemStateChanged
 
-    private void wrapModeCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_wrapModeCheckBoxItemStateChanged
-        codeArea.setWrapMode(wrapModeCheckBox.isSelected());
-    }//GEN-LAST:event_wrapModeCheckBoxItemStateChanged
+    private void wrapLineModeCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_wrapLineModeCheckBoxItemStateChanged
+        codeArea.setWrapMode(wrapLineModeCheckBox.isSelected());
+    }//GEN-LAST:event_wrapLineModeCheckBoxItemStateChanged
 
     private void showNonprintableCharactersCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_showNonprintableCharactersCheckBoxItemStateChanged
         codeArea.setShowNonprintingCharacters(showNonprintableCharactersCheckBox.isSelected());
@@ -547,43 +902,140 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
         codeArea.setHexCharactersCase(CodeArea.HexCharactersCase.values()[hexCharactersModeComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_hexCharactersModeComboBoxActionPerformed
 
+    private void codeTypeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_codeTypeComboBoxActionPerformed
+        codeArea.setCodeType(CodeArea.CodeType.values()[codeTypeComboBox.getSelectedIndex()]);
+    }//GEN-LAST:event_codeTypeComboBoxActionPerformed
+
+    private void activeSectionComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_activeSectionComboBoxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_activeSectionComboBoxActionPerformed
+
+    private void loadDataButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadDataButtonActionPerformed
+        JFileChooser openFC = new JFileChooser();
+        openFC.addChoosableFileFilter(new FileFilter() {
+            @Override
+            public boolean accept(File file) {
+                return file.isFile();
+            }
+
+            @Override
+            public String getDescription() {
+                return "All files (*)";
+            }
+        });
+        if (openFC.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+            try {
+                File selectedFile = openFC.getSelectedFile();
+                try (FileInputStream stream = new FileInputStream(selectedFile)) {
+                    ((EditableBinaryData) codeArea.getData()).loadFromStream(stream);
+                    codeArea.repaint();
+                }
+            } catch (IOException ex) {
+                Logger.getLogger(DeltaHexExamplePanel.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_loadDataButtonActionPerformed
+
+    private void saveDataButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveDataButtonActionPerformed
+        JFileChooser saveFC = new JFileChooser();
+        saveFC.addChoosableFileFilter(new FileFilter() {
+            @Override
+            public boolean accept(File file) {
+                return file.isFile();
+            }
+
+            @Override
+            public String getDescription() {
+                return "All files (*)";
+            }
+        });
+        if (saveFC.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+            try {
+                File selectedFile = saveFC.getSelectedFile();
+                try (FileOutputStream stream = new FileOutputStream(selectedFile)) {
+                    codeArea.getData().saveToStream(stream);
+                }
+            } catch (IOException ex) {
+                Logger.getLogger(DeltaHexExamplePanel.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_saveDataButtonActionPerformed
+
+    private void borderTypeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_borderTypeComboBoxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_borderTypeComboBoxActionPerformed
+
+    private void decoratorHeaderLineCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_decoratorHeaderLineCheckBoxItemStateChanged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_decoratorHeaderLineCheckBoxItemStateChanged
+
+    private void headerSpaceTypeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_headerSpaceTypeComboBoxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_headerSpaceTypeComboBoxActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox<String> activeSectionComboBox;
+    private javax.swing.JLabel activeSectionLabel;
     private javax.swing.JComboBox<String> backgroundModeComboBox;
     private javax.swing.JLabel backgroundModeLabel;
+    private javax.swing.JComboBox<String> borderTypeComboBox;
+    private javax.swing.JLabel borderTypeLabel;
     private javax.swing.JComboBox<String> charAntialiasingComboBox;
     private javax.swing.JLabel charAntialiasingScrollModeLabel;
     private javax.swing.JComboBox<String> charRenderingComboBox;
     private javax.swing.JLabel charRenderingScrollModeLabel;
     private javax.swing.JLabel codeOffsetLabel;
     private javax.swing.JTextField codeOffsetTextField;
-    private javax.swing.JLabel cursorPositionLabel;
-    private javax.swing.JTextField cursorPositionTextField;
+    private javax.swing.JComboBox<String> codeTypeComboBox;
+    private javax.swing.JLabel codeTypeScrollModeLabel;
+    private javax.swing.JPanel cursorPanel;
+    private javax.swing.JLabel dataSizeLabel;
+    private javax.swing.JTextField dataSizeTextField;
+    private javax.swing.JPanel decorationPanel;
     private javax.swing.JCheckBox decoratorBoxCheckBox;
+    private javax.swing.JCheckBox decoratorHeaderLineCheckBox;
     private javax.swing.JCheckBox decoratorLineNumLineCheckBox;
     private javax.swing.JCheckBox decoratorSplitLineCheckBox;
     private javax.swing.JCheckBox editableCheckBox;
+    private javax.swing.JPanel headerPanel;
+    private javax.swing.JComboBox<String> headerSpaceTypeComboBox;
+    private javax.swing.JLabel headerSpaceTypeLabel;
     private javax.swing.JComboBox<String> hexCharactersModeComboBox;
     private javax.swing.JLabel hexCharactersModeLabel;
+    private javax.swing.JPanel horizontalPanel;
     private javax.swing.JComboBox<String> horizontalScrollBarVisibilityComboBox;
     private javax.swing.JLabel horizontalScrollBarVisibilityLabel;
     private javax.swing.JComboBox<String> horizontalScrollModeComboBox;
     private javax.swing.JLabel horizontalScrollModeLabel;
+    private javax.swing.JPanel layoutPanel;
     private javax.swing.JLabel lineLengthLabel;
     private javax.swing.JSpinner lineLengthSpinner;
-    private javax.swing.JTextField selectionBeginTextField;
+    private javax.swing.JPanel lineNumbersPanel;
+    private javax.swing.JPanel linesPanel;
+    private javax.swing.JButton loadDataButton;
+    private javax.swing.JPanel modePanel;
+    private javax.swing.JLabel positionLabel;
+    private javax.swing.JTextField positionTextField;
+    private javax.swing.JButton saveDataButton;
+    private javax.swing.JPanel scrollingPanel;
+    private javax.swing.JLabel selectionEndLabel;
     private javax.swing.JTextField selectionEndTextField;
-    private javax.swing.JLabel selectionPositionsLabel;
-    private javax.swing.JPanel settingsPanel;
+    private javax.swing.JPanel selectionPanel;
+    private javax.swing.JLabel selectionStartLabel;
+    private javax.swing.JTextField selectionStartTextField;
     private javax.swing.JCheckBox showHeaderCheckBox;
     private javax.swing.JCheckBox showLineNumbersCheckBox;
     private javax.swing.JCheckBox showNonprintableCharactersCheckBox;
     private javax.swing.JCheckBox showShadowCursorCheckBox;
+    private javax.swing.JPanel statePanel;
+    private javax.swing.JTabbedPane tabbedPane;
+    private javax.swing.JPanel verticalPanel;
     private javax.swing.JComboBox<String> verticalScrollBarVisibilityComboBox;
     private javax.swing.JLabel verticalScrollBarVisibilityModeLabel;
     private javax.swing.JComboBox<String> verticalScrollModeComboBox;
     private javax.swing.JLabel verticalScrollModeLabel;
     private javax.swing.JComboBox<String> viewModeComboBox;
     private javax.swing.JLabel viewModeScrollModeLabel;
-    private javax.swing.JCheckBox wrapModeCheckBox;
+    private javax.swing.JCheckBox wrapLineModeCheckBox;
     // End of variables declaration//GEN-END:variables
 }

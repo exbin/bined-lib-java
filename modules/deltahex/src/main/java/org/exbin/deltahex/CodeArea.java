@@ -53,7 +53,7 @@ import org.exbin.utils.binary_data.BinaryData;
  *
  * Also supports binary, octal and decimal codes.
  *
- * @version 0.1.0 2016/06/13
+ * @version 0.1.0 2016/06/14
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeArea extends JComponent {
@@ -264,6 +264,8 @@ public class CodeArea extends JComponent {
 
     private void moveCaret(MouseEvent me, int modifiers) {
         Rectangle hexRect = dimensionsCache.codeSectionRectangle;
+        int codeDigits = getCodeType().getMaxDigits();
+        int charsPerByte = codeDigits + 1;
 
         Point scrollPoint = getScrollPoint();
         int bytesPerLine = dimensionsCache.bytesPerLine;
@@ -279,7 +281,7 @@ public class CodeArea extends JComponent {
         long dataPosition;
         int codeOffset = 0;
         int byteOnLine;
-        if ((viewMode == ViewMode.DUAL && cursorCharX < bytesPerLine * 3) || viewMode == ViewMode.CODE_MATRIX) {
+        if ((viewMode == ViewMode.DUAL && cursorCharX < bytesPerLine * charsPerByte) || viewMode == ViewMode.CODE_MATRIX) {
             caret.setSection(Section.CODE_MATRIX);
             int bytePosition = cursorCharX % (codeType.maxDigits + 1);
             codeOffset = bytePosition;
@@ -295,7 +297,7 @@ public class CodeArea extends JComponent {
             caret.setSection(Section.TEXT_PREVIEW);
             byteOnLine = cursorCharX;
             if (viewMode == ViewMode.DUAL) {
-                byteOnLine -= bytesPerLine * 3;
+                byteOnLine -= bytesPerLine * charsPerByte;
             }
         }
 
@@ -344,14 +346,16 @@ public class CodeArea extends JComponent {
         boolean scrolled = false;
         Rectangle hexRect = dimensionsCache.codeSectionRectangle;
         long caretLine = position / dimensionsCache.bytesPerLine;
+        int codeDigits = getCodeType().getMaxDigits();
+        int charsPerByte = codeDigits + 1;
 
         int positionByte;
         if (section == Section.CODE_MATRIX) {
-            positionByte = (int) (position % dimensionsCache.bytesPerLine) * 3 + caret.getCodeOffset();
+            positionByte = (int) (position % dimensionsCache.bytesPerLine) * charsPerByte + caret.getCodeOffset();
         } else {
             positionByte = (int) (position % dimensionsCache.bytesPerLine);
             if (viewMode == ViewMode.DUAL) {
-                positionByte += dimensionsCache.bytesPerLine * 3;
+                positionByte += dimensionsCache.bytesPerLine * charsPerByte;
             }
         }
 
@@ -739,13 +743,15 @@ public class CodeArea extends JComponent {
         dimensionsCache.bytesPerRect = hexRect.width / dimensionsCache.charWidth;
         dimensionsCache.linesPerRect = hexRect.height / dimensionsCache.lineHeight;
 
+        int codeDigits = getCodeType().getMaxDigits();
+        int charsPerByte = codeDigits + 1;
         // Compute sections positions
         if (viewMode == ViewMode.CODE_MATRIX) {
             dimensionsCache.previewX = -1;
         } else {
             dimensionsCache.previewX = hexRect.x;
             if (viewMode == ViewMode.DUAL) {
-                dimensionsCache.previewX += dimensionsCache.bytesPerLine * dimensionsCache.charWidth * 3;
+                dimensionsCache.previewX += dimensionsCache.bytesPerLine * dimensionsCache.charWidth * charsPerByte;
             }
         }
 
@@ -935,6 +941,8 @@ public class CodeArea extends JComponent {
 
     public void setCodeType(CodeType codeType) {
         this.codeType = codeType;
+        computeDimensions();
+        repaint();
     }
 
     public BackgroundMode getBackgroundMode() {

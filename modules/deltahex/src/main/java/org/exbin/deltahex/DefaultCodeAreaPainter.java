@@ -27,7 +27,7 @@ import org.exbin.utils.binary_data.BinaryData;
 /**
  * Hexadecimal component painter.
  *
- * @version 0.1.0 2016/06/13
+ * @version 0.1.0 2016/06/14
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaPainter implements CodeAreaPainter {
@@ -66,6 +66,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         CodeArea.ScrollPosition scrollPosition = codeArea.getScrollPosition();
         Rectangle compRect = codeArea.getComponentRectangle();
         Rectangle hexRect = codeArea.getCodeSectionRectangle();
+        int codeDigits = codeArea.getCodeType().getMaxDigits();
+        int charsPerByte = codeDigits + 1;
         if (codeArea.getViewMode() != CodeArea.ViewMode.TEXT_PREVIEW) {
             int charWidth = codeArea.getCharWidth();
             int bytesPerBounds = codeArea.getBytesPerLine();
@@ -76,7 +78,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                 g.setColor(codeArea.getOddBackgroundColor());
                 int positionX = hexRect.x - scrollPosition.scrollByteOffset - scrollPosition.scrollBytePosition * charWidth;
                 for (int i = 0; i < bytesPerBounds / 2; i++) {
-                    g.fillRect(positionX + charWidth * (3 + i * 6), hexRect.y, charWidth * 2, hexRect.height);
+                    g.fillRect(positionX + charWidth * (3 + i * charsPerByte * 2), hexRect.y, charWidth * 2, hexRect.height);
                 }
             }
 
@@ -85,12 +87,12 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             if (codeArea.isCharFixedMode()) {
                 for (int i = 0; i < bytesPerBounds; i++) {
                     CodeAreaUtils.byteToHexChars(chars, (byte) i);
-                    g.drawChars(chars, 0, 2, headerX + i * charWidth * 3, headerY);
+                    g.drawChars(chars, 0, 2, headerX + i * charWidth * charsPerByte, headerY);
                 }
             } else {
                 for (int i = 0; i < bytesPerBounds; i++) {
                     CodeAreaUtils.byteToHexChars(chars, (byte) i);
-                    int startX = headerX + i * charWidth * 3;
+                    int startX = headerX + i * charWidth * charsPerByte;
                     drawCenteredChar(g, chars, 0, charWidth, startX, headerY);
                     drawCenteredChar(g, chars, 1, charWidth, startX, headerY);
                 }
@@ -192,12 +194,14 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         int charWidth = codeArea.getCharWidth();
         int bytesPerLine = codeArea.getBytesPerLine();
         int lineHeight = codeArea.getLineHeight();
+        int codeDigits = codeArea.getCodeType().getMaxDigits();
+        int charsPerByte = codeDigits + 1;
 
         if (codeArea.getViewMode() != CodeArea.ViewMode.TEXT_PREVIEW && codeArea.getBackgroundMode() == CodeArea.BackgroundMode.GRIDDED) {
             g.setColor(codeArea.getOddBackgroundColor());
             int positionX = hexRect.x - scrollPosition.scrollByteOffset - scrollPosition.scrollBytePosition * charWidth;
             for (int i = 0; i < bytesPerLine / 2; i++) {
-                g.fillRect(positionX + charWidth * (3 + i * 6), hexRect.y, charWidth * 2, hexRect.height);
+                g.fillRect(positionX + charWidth * (3 + i * charsPerByte * 2), hexRect.y, charWidth * 2, hexRect.height);
             }
         }
 
@@ -266,13 +270,15 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             charShiftsCharset = charset;
         }
 
+        int codeDigits = codeArea.getCodeType().getMaxDigits();
+        int charsPerByte = codeDigits + 1;
         BinaryData data = codeArea.getData();
         CodeArea.ScrollPosition scrollPosition = codeArea.getScrollPosition();
         int positionY = linePositionY - codeArea.getSubFontSpace();
         if (dataPosition < data.getDataSize()) {
             byte dataByte = lineDataCache.lineData[byteOnLine];
             if (codeArea.getViewMode() != CodeArea.ViewMode.TEXT_PREVIEW) {
-                int startX = linePositionX + byteOnLine * charWidth * 3;
+                int startX = linePositionX + byteOnLine * charWidth * charsPerByte;
                 lineDataCache.chars[0] = hexCharacters[(dataByte >> 4) & 15];
                 lineDataCache.chars[1] = hexCharacters[dataByte & 15];
                 if (codeArea.isCharFixedMode()) {
@@ -365,6 +371,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         int selectionPreviewEnd = 0;
         int startX = hexRect.x - scrollPosition.scrollBytePosition * charWidth - scrollPosition.scrollByteOffset;
         int previewStartX = codeArea.getPreviewX() - scrollPosition.scrollBytePosition * charWidth - scrollPosition.scrollByteOffset;
+        int codeDigits = codeArea.getCodeType().getMaxDigits();
+        int charsPerByte = codeDigits + 1;
 
         long maxLinePosition = dataPosition + bytesPerBounds - 1;
         long selectionFirst = selection.getFirst();
@@ -372,7 +380,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         if (selectionFirst <= maxLinePosition) {
             if (selectionFirst >= dataPosition) {
                 int linePosition = (int) (selectionFirst - dataPosition);
-                selectionStart = startX + charWidth * (linePosition * 3);
+                selectionStart = startX + charWidth * (linePosition * charsPerByte);
                 selectionPreviewStart = previewStartX + charWidth * linePosition;
             } else {
                 selectionStart = startX;
@@ -382,11 +390,11 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
         if (selectionLast >= dataPosition && selectionFirst <= maxLinePosition) {
             if (selectionLast >= maxLinePosition) {
-                selectionEnd = startX + (bytesPerBounds * 3 - 1) * charWidth;
+                selectionEnd = startX + (bytesPerBounds * charsPerByte - 1) * charWidth;
                 selectionPreviewEnd = previewStartX + bytesPerBounds * charWidth;
             } else {
                 int linePosition = (int) (selectionLast - dataPosition + 1);
-                selectionEnd = startX + charWidth * (linePosition * 3);
+                selectionEnd = startX + charWidth * (linePosition * charsPerByte);
                 selectionPreviewEnd = previewStartX + charWidth * linePosition;
             }
         }
@@ -461,7 +469,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         /**
          * Characters cache.
          */
-        public char[] chars = new char[2];
+        public char[] chars = new char[8];
         /**
          * Preview character.
          */

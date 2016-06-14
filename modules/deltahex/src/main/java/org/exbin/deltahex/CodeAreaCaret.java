@@ -26,7 +26,7 @@ import org.exbin.deltahex.CodeArea.Section;
 /**
  * Code area caret.
  *
- * @version 0.1.0 2016/06/13
+ * @version 0.1.0 2016/06/14
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeAreaCaret {
@@ -68,6 +68,8 @@ public class CodeAreaCaret {
         long dataPosition = caretPosition.getDataPosition();
         long line = dataPosition / bytesPerLine;
         int offset = (int) (dataPosition % bytesPerLine);
+        int codeDigits = codeArea.getCodeType().getMaxDigits();
+        int charsPerByte = codeDigits + 1;
 
         Rectangle rect = codeArea.getCodeSectionRectangle();
         int caretY = (int) (rect.y + line * lineHeight);
@@ -75,7 +77,7 @@ public class CodeAreaCaret {
         if (section == Section.TEXT_PREVIEW) {
             caretX = codeArea.getPreviewX() + charWidth * offset;
         } else {
-            caretX = rect.x + charWidth * (offset * 3 + getCodeOffset());
+            caretX = rect.x + charWidth * (offset * charsPerByte + getCodeOffset());
         }
 
         return new Point(caretX, caretY);
@@ -85,12 +87,14 @@ public class CodeAreaCaret {
         long dataPosition = caretPosition.getDataPosition();
         long line = dataPosition / bytesPerLine;
         int offset = (int) (dataPosition % bytesPerLine);
+        int codeDigits = codeArea.getCodeType().getMaxDigits();
+        int charsPerByte = codeDigits + 1;
 
         Rectangle rect = codeArea.getCodeSectionRectangle();
         int caretY = (int) (rect.y + line * lineHeight);
         int caretX;
         if (section == Section.TEXT_PREVIEW) {
-            caretX = rect.x + charWidth * (offset * 3);
+            caretX = rect.x + charWidth * (offset * charsPerByte);
         } else {
             caretX = codeArea.getPreviewX() + charWidth * offset;
         }
