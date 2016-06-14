@@ -26,7 +26,7 @@ import org.exbin.deltahex.CodeArea.Section;
 /**
  * Code area caret.
  *
- * @version 0.1.0 2016/06/14
+ * @version 0.1.0 2016/06/15
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeAreaCaret {
@@ -47,6 +47,7 @@ public class CodeAreaCaret {
         int bytesPerBounds = codeArea.getBytesPerLine();
         int lineHeight = codeArea.getLineHeight();
         int charWidth = codeArea.getCharWidth();
+        int codeDigits = codeArea.getCodeType().getMaxDigits();
         Point scrollPoint = codeArea.getScrollPoint();
         Point cursorPoint = getCursorPoint(bytesPerBounds, lineHeight, charWidth);
         if (codeArea.getEditationMode() == CodeArea.EditationMode.OVERWRITE) {
@@ -60,7 +61,7 @@ public class CodeAreaCaret {
             Stroke dashed = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{2}, 0);
             g2d.setStroke(dashed);
             g2d.drawRect(shadowCursorPoint.x - scrollPoint.x, shadowCursorPoint.y - scrollPoint.y,
-                    charWidth * (codeArea.getActiveSection() == Section.TEXT_PREVIEW ? 2 : 1), lineHeight - 1);
+                    charWidth * (codeArea.getActiveSection() == Section.TEXT_PREVIEW ? codeDigits : 1), lineHeight - 1);
         }
     }
 

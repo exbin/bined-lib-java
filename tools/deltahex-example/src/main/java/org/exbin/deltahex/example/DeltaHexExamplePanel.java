@@ -32,7 +32,7 @@ import org.exbin.utils.binary_data.EditableBinaryData;
 /**
  * Hexadecimal editor example panel.
  *
- * @version 0.1.0 2016/06/14
+ * @version 0.1.0 2016/06/15
  * @author ExBin Project (http://exbin.org)
  */
 public class DeltaHexExamplePanel extends javax.swing.JPanel {
@@ -158,11 +158,15 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
         verticalScrollBarVisibilityComboBox = new javax.swing.JComboBox<>();
         verticalScrollModeLabel = new javax.swing.JLabel();
         verticalScrollModeComboBox = new javax.swing.JComboBox<>();
+        verticalPositionLabel = new javax.swing.JLabel();
+        verticalPositionTextField = new javax.swing.JTextField();
         horizontalPanel = new javax.swing.JPanel();
         horizontalScrollBarVisibilityLabel = new javax.swing.JLabel();
         horizontalScrollBarVisibilityComboBox = new javax.swing.JComboBox<>();
         horizontalScrollModeLabel = new javax.swing.JLabel();
         horizontalScrollModeComboBox = new javax.swing.JComboBox<>();
+        horizontalPositionLabel = new javax.swing.JLabel();
+        horizontalPositionTextField = new javax.swing.JTextField();
 
         setLayout(new java.awt.BorderLayout());
 
@@ -228,7 +232,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
                             .addComponent(editableCheckBox, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(viewModeScrollModeLabel)
                             .addComponent(codeTypeScrollModeLabel))
-                        .addGap(0, 88, Short.MAX_VALUE))
+                        .addGap(0, 129, Short.MAX_VALUE))
                     .addComponent(charAntialiasingComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -313,7 +317,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
                             .addComponent(positionLabel)
                             .addComponent(codeOffsetLabel)
                             .addComponent(activeSectionLabel))
-                        .addGap(0, 78, Short.MAX_VALUE))
+                        .addGap(0, 119, Short.MAX_VALUE))
                     .addComponent(activeSectionComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -447,7 +451,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
             lineNumbersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(lineNumbersPanelLayout.createSequentialGroup()
                 .addComponent(showLineNumbersCheckBox)
-                .addGap(0, 68, Short.MAX_VALUE))
+                .addGap(0, 109, Short.MAX_VALUE))
         );
         lineNumbersPanelLayout.setVerticalGroup(
             lineNumbersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -704,6 +708,13 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
             }
         });
 
+        verticalPositionLabel.setText("Vertical Scroll Position");
+        verticalPositionLabel.setEnabled(false);
+
+        verticalPositionTextField.setEditable(false);
+        verticalPositionTextField.setText("TODO");
+        verticalPositionTextField.setEnabled(false);
+
         javax.swing.GroupLayout verticalPanelLayout = new javax.swing.GroupLayout(verticalPanel);
         verticalPanel.setLayout(verticalPanelLayout);
         verticalPanelLayout.setHorizontalGroup(
@@ -712,12 +723,14 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(verticalPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(verticalScrollBarVisibilityComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(verticalScrollModeComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(verticalPositionTextField)
                     .addGroup(verticalPanelLayout.createSequentialGroup()
                         .addGroup(verticalPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(verticalScrollBarVisibilityModeLabel)
-                            .addComponent(verticalScrollModeLabel))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(verticalScrollModeComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(verticalScrollModeLabel)
+                            .addComponent(verticalPositionLabel))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         verticalPanelLayout.setVerticalGroup(
@@ -731,6 +744,10 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
                 .addComponent(verticalScrollModeLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(verticalScrollModeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(verticalPositionLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(verticalPositionTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -755,6 +772,13 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
             }
         });
 
+        horizontalPositionLabel.setText("Horizontal Scroll Position");
+        horizontalPositionLabel.setEnabled(false);
+
+        horizontalPositionTextField.setEditable(false);
+        horizontalPositionTextField.setText("TODO");
+        horizontalPositionTextField.setEnabled(false);
+
         javax.swing.GroupLayout horizontalPanelLayout = new javax.swing.GroupLayout(horizontalPanel);
         horizontalPanel.setLayout(horizontalPanelLayout);
         horizontalPanelLayout.setHorizontalGroup(
@@ -763,12 +787,14 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(horizontalPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(horizontalScrollModeComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(horizontalScrollBarVisibilityComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(horizontalPanelLayout.createSequentialGroup()
                         .addGroup(horizontalPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(horizontalScrollBarVisibilityLabel)
-                            .addComponent(horizontalScrollModeLabel))
-                        .addGap(0, 64, Short.MAX_VALUE))
-                    .addComponent(horizontalScrollBarVisibilityComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(horizontalScrollModeLabel)
+                            .addComponent(horizontalPositionLabel))
+                        .addGap(0, 86, Short.MAX_VALUE))
+                    .addComponent(horizontalPositionTextField))
                 .addContainerGap())
         );
         horizontalPanelLayout.setVerticalGroup(
@@ -782,6 +808,10 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
                 .addComponent(horizontalScrollModeLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(horizontalScrollModeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(horizontalPositionLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(horizontalPositionTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -803,7 +833,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
                 .addComponent(verticalPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(horizontalPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(141, Short.MAX_VALUE))
+                .addContainerGap(41, Short.MAX_VALUE))
         );
 
         tabbedPane.addTab("Scrolling", scrollingPanel);
@@ -1003,6 +1033,8 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
     private javax.swing.JComboBox<String> hexCharactersModeComboBox;
     private javax.swing.JLabel hexCharactersModeLabel;
     private javax.swing.JPanel horizontalPanel;
+    private javax.swing.JLabel horizontalPositionLabel;
+    private javax.swing.JTextField horizontalPositionTextField;
     private javax.swing.JComboBox<String> horizontalScrollBarVisibilityComboBox;
     private javax.swing.JLabel horizontalScrollBarVisibilityLabel;
     private javax.swing.JComboBox<String> horizontalScrollModeComboBox;
@@ -1030,6 +1062,8 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
     private javax.swing.JPanel statePanel;
     private javax.swing.JTabbedPane tabbedPane;
     private javax.swing.JPanel verticalPanel;
+    private javax.swing.JLabel verticalPositionLabel;
+    private javax.swing.JTextField verticalPositionTextField;
     private javax.swing.JComboBox<String> verticalScrollBarVisibilityComboBox;
     private javax.swing.JLabel verticalScrollBarVisibilityModeLabel;
     private javax.swing.JComboBox<String> verticalScrollModeComboBox;

@@ -27,7 +27,7 @@ import org.exbin.utils.binary_data.BinaryData;
 /**
  * Hexadecimal component painter.
  *
- * @version 0.1.0 2016/06/14
+ * @version 0.1.0 2016/06/15
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaPainter implements CodeAreaPainter {
@@ -279,13 +279,13 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             byte dataByte = lineDataCache.lineData[byteOnLine];
             if (codeArea.getViewMode() != CodeArea.ViewMode.TEXT_PREVIEW) {
                 int startX = linePositionX + byteOnLine * charWidth * charsPerByte;
-                lineDataCache.chars[0] = hexCharacters[(dataByte >> 4) & 15];
-                lineDataCache.chars[1] = hexCharacters[dataByte & 15];
+                byteToCharsCode(dataByte, lineDataCache);
                 if (codeArea.isCharFixedMode()) {
-                    g.drawChars(lineDataCache.chars, 0, 2, startX, positionY);
+                    g.drawChars(lineDataCache.chars, 0, codeDigits, startX, positionY);
                 } else {
-                    drawShiftedChar(g, lineDataCache.chars, 0, charWidth, startX, positionY, charShifts[(dataByte >> 4) & 15]);
-                    drawShiftedChar(g, lineDataCache.chars, 1, charWidth, startX, positionY, charShifts[dataByte & 15]);
+                    for (int i = 0; i < codeDigits; i++) {
+                        drawShiftedChar(g, lineDataCache.chars, i, charWidth, startX, positionY, charShifts[lineDataCache.codeValues[i]]);
+                    }
                 }
             }
 
@@ -353,6 +353,48 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                     g.setColor(codeArea.getForeground());
                 }
             }
+        }
+    }
+
+    public void byteToCharsCode(byte dataByte, LineDataCache lineDataCache) {
+        CodeArea.CodeType codeType = codeArea.getCodeType();
+        switch (codeType) {
+            case BINARY: {
+                int bitMask = 1;
+                for (int i = 0; i < 8; i++) {
+                    lineDataCache.codeValues[i] = (dataByte & bitMask) > 0 ? 1 : 0;
+                    lineDataCache.chars[i] = hexCharacters[lineDataCache.codeValues[i]];
+                    bitMask = bitMask << 1;
+                }
+                break;
+            }
+            case DECIMAL: {
+                lineDataCache.codeValues[0] = dataByte / 100;
+                lineDataCache.chars[0] = hexCharacters[lineDataCache.codeValues[0]];
+                lineDataCache.codeValues[1] = (dataByte / 10) % 10;
+                lineDataCache.chars[1] = hexCharacters[lineDataCache.codeValues[1]];
+                lineDataCache.codeValues[2] = dataByte % 10;
+                lineDataCache.chars[2] = hexCharacters[lineDataCache.codeValues[2]];
+                break;
+            }
+            case OCTAL: {
+                lineDataCache.codeValues[0] = dataByte / 64;
+                lineDataCache.chars[0] = hexCharacters[lineDataCache.codeValues[0]];
+                lineDataCache.codeValues[1] = (dataByte / 8) & 7;
+                lineDataCache.chars[1] = hexCharacters[lineDataCache.codeValues[1]];
+                lineDataCache.codeValues[2] = dataByte % 8;
+                lineDataCache.chars[2] = hexCharacters[lineDataCache.codeValues[2]];
+                break;
+            }
+            case HEXADECIMAL: {
+                lineDataCache.codeValues[0] = (dataByte >> 4) & 15;
+                lineDataCache.chars[0] = hexCharacters[lineDataCache.codeValues[0]];
+                lineDataCache.codeValues[1] = dataByte & 15;
+                lineDataCache.chars[1] = hexCharacters[lineDataCache.codeValues[1]];
+                break;
+            }
+            default:
+                throw new IllegalStateException("Unexpected code type: " + codeType.name());
         }
     }
 
@@ -470,6 +512,11 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
          * Characters cache.
          */
         public char[] chars = new char[8];
+
+        /**
+         * Code values cache.
+         */
+        public int[] codeValues = new int[8];
         /**
          * Preview character.
          */
