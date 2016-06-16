@@ -369,20 +369,22 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                 break;
             }
             case DECIMAL: {
-                lineDataCache.codeValues[0] = dataByte / 100;
+                int value = dataByte & 0xff;
+                lineDataCache.codeValues[0] = value / 100;
                 lineDataCache.chars[0] = hexCharacters[lineDataCache.codeValues[0]];
-                lineDataCache.codeValues[1] = (dataByte / 10) % 10;
+                lineDataCache.codeValues[1] = (value / 10) % 10;
                 lineDataCache.chars[1] = hexCharacters[lineDataCache.codeValues[1]];
-                lineDataCache.codeValues[2] = dataByte % 10;
+                lineDataCache.codeValues[2] = value % 10;
                 lineDataCache.chars[2] = hexCharacters[lineDataCache.codeValues[2]];
                 break;
             }
             case OCTAL: {
-                lineDataCache.codeValues[0] = dataByte / 64;
+                int value = dataByte & 0xff;
+                lineDataCache.codeValues[0] = value / 64;
                 lineDataCache.chars[0] = hexCharacters[lineDataCache.codeValues[0]];
-                lineDataCache.codeValues[1] = (dataByte / 8) & 7;
+                lineDataCache.codeValues[1] = (value / 8) & 7;
                 lineDataCache.chars[1] = hexCharacters[lineDataCache.codeValues[1]];
-                lineDataCache.codeValues[2] = dataByte % 8;
+                lineDataCache.codeValues[2] = value % 8;
                 lineDataCache.chars[2] = hexCharacters[lineDataCache.codeValues[2]];
                 break;
             }
