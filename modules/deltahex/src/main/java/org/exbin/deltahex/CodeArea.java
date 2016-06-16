@@ -127,7 +127,7 @@ public class CodeArea extends JComponent {
         super();
         caret = new CodeAreaCaret(this);
         painter = new DefaultCodeAreaPainter(this);
-        commandHandler = new DefaultCommandHandler(this);
+        commandHandler = new DefaultCodeAreaCommandHandler(this);
 
         super.setForeground(UIManager.getColor("TextArea.foreground"));
         super.setBackground(UIManager.getColor("TextArea.background"));

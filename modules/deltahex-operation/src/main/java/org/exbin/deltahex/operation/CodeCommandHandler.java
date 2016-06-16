@@ -28,7 +28,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.exbin.deltahex.CaretPosition;
-import org.exbin.deltahex.DefaultCommandHandler;
+import org.exbin.deltahex.DefaultCodeAreaCommandHandler;
 import org.exbin.deltahex.CodeArea;
 import org.exbin.deltahex.CodeArea.Section;
 import org.exbin.deltahex.CodeAreaCaret;
@@ -82,7 +82,7 @@ public class CodeCommandHandler implements CodeAreaCommandHandler {
         try {
             appDataFlavor = new DataFlavor(MIME_CLIPBOARD_HEXADECIMAL);
         } catch (ClassNotFoundException ex) {
-            Logger.getLogger(DefaultCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DefaultCodeAreaCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
         canPaste = clipboard.isDataFlavorAvailable(appDataFlavor) || clipboard.isDataFlavorAvailable(DataFlavor.stringFlavor);
     }
@@ -364,7 +364,7 @@ public class CodeCommandHandler implements CodeAreaCommandHandler {
                     codeArea.updateScrollBars();
                 }
             } catch (UnsupportedFlavorException | IOException ex) {
-                Logger.getLogger(DefaultCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(DefaultCodeAreaCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else if (clipboard.isDataFlavorAvailable(DataFlavor.stringFlavor)) {
             Object insertedData;
@@ -409,7 +409,7 @@ public class CodeCommandHandler implements CodeAreaCommandHandler {
                     codeArea.updateScrollBars();
                 }
             } catch (UnsupportedFlavorException | IOException ex) {
-                Logger.getLogger(DefaultCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(DefaultCodeAreaCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }

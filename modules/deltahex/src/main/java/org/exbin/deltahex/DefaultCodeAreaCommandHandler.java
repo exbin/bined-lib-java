@@ -36,17 +36,17 @@ import org.exbin.utils.binary_data.EditableBinaryData;
 /**
  * Default hexadecimal editor command handler.
  *
- * @version 0.1.0 2016/06/13
+ * @version 0.1.0 2016/06/17
  * @author ExBin Project (http://exbin.org)
  */
-public class DefaultCommandHandler implements CodeAreaCommandHandler {
+public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
     private final CodeArea codeArea;
     private Clipboard clipboard;
     private boolean canPaste = false;
     private DataFlavor binaryDataFlavor;
 
-    public DefaultCommandHandler(CodeArea codeArea) {
+    public DefaultCodeAreaCommandHandler(CodeArea codeArea) {
         this.codeArea = codeArea;
         try {
             clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
@@ -63,7 +63,7 @@ public class DefaultCommandHandler implements CodeAreaCommandHandler {
         try {
             binaryDataFlavor = new DataFlavor("application/octet-stream");
         } catch (ClassNotFoundException ex) {
-            Logger.getLogger(DefaultCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DefaultCodeAreaCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
         canPaste = clipboard.isDataFlavorAvailable(binaryDataFlavor) || clipboard.isDataFlavorAvailable(DataFlavor.stringFlavor);
     }
@@ -80,8 +80,36 @@ public class DefaultCommandHandler implements CodeAreaCommandHandler {
         }
 
         if (codeArea.getActiveSection() == Section.CODE_MATRIX) {
-            if ((keyValue >= '0' && keyValue <= '9')
-                    || (keyValue >= 'a' && keyValue <= 'f') || (keyValue >= 'A' && keyValue <= 'F')) {
+            long dataPosition = codeArea.getDataPosition();
+            int codeOffset = codeArea.getCodeOffset();
+            CodeArea.CodeType codeType = codeArea.getCodeType();
+            boolean validKey = false;
+            switch (codeType) {
+                case BINARY: {
+                    validKey = keyValue >= '0' && keyValue <= '1';
+                    break;
+                }
+                case DECIMAL: {
+                    validKey = codeOffset == 0
+                            ? keyValue >= '0' && keyValue <= '2'
+                            : keyValue >= '0' && keyValue <= '9';
+                    break;
+                }
+                case OCTAL: {
+                    validKey = codeOffset == 0
+                            ? keyValue >= '0' && keyValue <= '3'
+                            : keyValue >= '0' && keyValue <= '7';
+                    break;
+                }
+                case HEXADECIMAL: {
+                    validKey = (keyValue >= '0' && keyValue <= '9')
+                            || (keyValue >= 'a' && keyValue <= 'f') || (keyValue >= 'A' && keyValue <= 'F');
+                    break;
+                }
+                default:
+                    throw new IllegalStateException("Unexpected code type " + codeType.name());
+            }
+            if (validKey) {
                 if (codeArea.hasSelection()) {
                     deleteSelection();
                 }
@@ -94,19 +122,38 @@ public class DefaultCommandHandler implements CodeAreaCommandHandler {
                 }
 
                 BinaryData data = codeArea.getData();
-                long dataPosition = codeArea.getDataPosition();
                 if (codeArea.getEditationMode() == CodeArea.EditationMode.OVERWRITE) {
                     if (dataPosition == codeArea.getData().getDataSize()) {
                         ((EditableBinaryData) data).insert(dataPosition, 1);
                     }
                     setCodeValue(value);
                 } else {
-                    // TODO code types
-                    if (codeArea.getCodeOffset() > 0) {
-                        byte lowerHalf = (byte) (data.getByte(dataPosition) & 0xf);
-                        if (lowerHalf > 0) {
+                    if (codeOffset > 0) {
+                        byte byteRest = data.getByte(dataPosition);
+                        switch (codeType) {
+                            case BINARY: {
+                                byteRest = (byte) (byteRest & (0xff >> codeOffset));
+                                break;
+                            }
+                            case DECIMAL: {
+                                byteRest = (byte) (byteRest % (10 ^ codeOffset));
+                                break;
+                            }
+                            case OCTAL: {
+                                byteRest = (byte) (byteRest % (8 ^ codeOffset));
+                                break;
+                            }
+                            case HEXADECIMAL: {
+                                byteRest = (byte) (data.getByte(dataPosition) & 0xf);
+                                break;
+                            }
+                            default:
+                                throw new IllegalStateException("Unexpected code type " + codeType.name());
+                        }
+                        if (byteRest > 0) {
                             ((EditableBinaryData) data).insert(dataPosition + 1, 1);
-                            ((EditableBinaryData) data).setByte(dataPosition + 1, lowerHalf);
+                            ((EditableBinaryData) data).setByte(dataPosition, (byte) (data.getByte(dataPosition) - byteRest));
+                            ((EditableBinaryData) data).setByte(dataPosition + 1, byteRest);
                         }
                     } else {
                         ((EditableBinaryData) data).insert(dataPosition, 1);
@@ -141,20 +188,81 @@ public class DefaultCommandHandler implements CodeAreaCommandHandler {
     }
 
     private void setCodeValue(int value) {
-        CaretPosition caretPosition = codeArea.getCaretPosition();
-        long dataPosition = caretPosition.getDataPosition();
-        setCodeValue(dataPosition, value, caretPosition.getCodeOffset());
+        long dataPosition = codeArea.getDataPosition();
+        int codeOffset = codeArea.getCodeOffset();
+        setCodeValue(dataPosition, value, codeOffset);
     }
 
     private void setCodeValue(long dataPosition, int value, int codeOffset) {
+        CodeArea.CodeType codeType = codeArea.getCodeType();
         BinaryData data = codeArea.getData();
-        byte byteValue = data.getByte(dataPosition);
 
-        // TODO other code types
-        if (codeOffset == 1) {
-            byteValue = (byte) ((byteValue & 0xf0) | value);
-        } else {
-            byteValue = (byte) ((byteValue & 0xf) | (value << 4));
+        byte byteValue = data.getByte(dataPosition);
+        switch (codeType) {
+            case BINARY: {
+                int bitMask = 0x80 >> codeOffset;
+                byteValue = (byte) (byteValue & (0xff - bitMask) | (value << (7 - codeOffset)));
+                break;
+            }
+            case DECIMAL: {
+                int newValue = byteValue & 0xff;
+                switch (codeOffset) {
+                    case 0: {
+                        newValue = (newValue % 100) + value * 100;
+                        if (newValue > 255) {
+                            newValue = 200;
+                        }
+                        break;
+                    }
+                    case 1: {
+                        newValue = (newValue / 100) * 100 + value * 10 + (newValue % 10);
+                        if (newValue > 255) {
+                            newValue -= 200;
+                        }
+                        break;
+                    }
+                    case 2: {
+                        newValue = (newValue / 10) * 10 + value;
+                        if (newValue > 255) {
+                            newValue -= 200;
+                        }
+                        break;
+                    }
+                }
+
+                byteValue = (byte) newValue;
+                break;
+            }
+            case OCTAL: {
+                int newValue = byteValue & 0xff;
+                switch (codeOffset) {
+                    case 0: {
+                        newValue = (newValue % 64) + value * 64;
+                        break;
+                    }
+                    case 1: {
+                        newValue = (newValue / 64) * 64 + value * 8 + (newValue % 8);
+                        break;
+                    }
+                    case 2: {
+                        newValue = (newValue / 8) * 8 + value;
+                        break;
+                    }
+                }
+
+                byteValue = (byte) newValue;
+                break;
+            }
+            case HEXADECIMAL: {
+                if (codeOffset == 1) {
+                    byteValue = (byte) ((byteValue & 0xf0) | value);
+                } else {
+                    byteValue = (byte) ((byteValue & 0xf) | (value << 4));
+                }
+                break;
+            }
+            default:
+                throw new IllegalStateException("Unexpected code type " + codeType.name());
         }
 
         ((EditableBinaryData) data).setByte(dataPosition, byteValue);
@@ -288,7 +396,7 @@ public class DefaultCommandHandler implements CodeAreaCommandHandler {
                     codeArea.updateScrollBars();
                 }
             } catch (UnsupportedFlavorException | IOException ex) {
-                Logger.getLogger(DefaultCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(DefaultCodeAreaCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else if (clipboard.isDataFlavorAvailable(DataFlavor.stringFlavor)) {
             if (codeArea.hasSelection()) {
@@ -319,7 +427,7 @@ public class DefaultCommandHandler implements CodeAreaCommandHandler {
                     codeArea.updateScrollBars();
                 }
             } catch (UnsupportedFlavorException | IOException ex) {
-                Logger.getLogger(DefaultCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(DefaultCodeAreaCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }

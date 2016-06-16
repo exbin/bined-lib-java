@@ -360,11 +360,11 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         CodeArea.CodeType codeType = codeArea.getCodeType();
         switch (codeType) {
             case BINARY: {
-                int bitMask = 1;
+                int bitMask = 0x80;
                 for (int i = 0; i < 8; i++) {
                     lineDataCache.codeValues[i] = (dataByte & bitMask) > 0 ? 1 : 0;
                     lineDataCache.chars[i] = hexCharacters[lineDataCache.codeValues[i]];
-                    bitMask = bitMask << 1;
+                    bitMask = bitMask >> 1;
                 }
                 break;
             }
