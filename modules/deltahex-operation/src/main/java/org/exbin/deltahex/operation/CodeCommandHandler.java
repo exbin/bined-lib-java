@@ -180,6 +180,7 @@ public class CodeCommandHandler implements CodeAreaCommandHandler {
 
                     ((EditCodeDataCommand) editCommand).appendEdit((byte) value);
                 }
+                codeArea.notifyDataChanged();
                 codeArea.moveRight(CodeArea.NO_MODIFIER);
                 codeArea.revealCursor();
             }
@@ -234,6 +235,7 @@ public class CodeCommandHandler implements CodeAreaCommandHandler {
 
                     ((EditCharDataCommand) editCommand).appendEdit(keyChar);
                 }
+                codeArea.notifyDataChanged();
                 codeArea.revealCursor();
                 codeArea.repaint();
             }
@@ -263,6 +265,7 @@ public class CodeCommandHandler implements CodeAreaCommandHandler {
             DeleteSelectionCommand deleteCommand = new DeleteSelectionCommand(codeArea);
             try {
                 undoHandler.execute(deleteCommand);
+                codeArea.notifyDataChanged();
             } catch (Exception ex) {
                 Logger.getLogger(CodeCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -287,6 +290,7 @@ public class CodeCommandHandler implements CodeAreaCommandHandler {
 
                 ((EditCharDataCommand) editCommand).appendEdit(keyChar);
             }
+            codeArea.notifyDataChanged();
         }
     }
 
@@ -298,6 +302,7 @@ public class CodeCommandHandler implements CodeAreaCommandHandler {
 
         try {
             undoHandler.execute(new DeleteSelectionCommand(codeArea));
+            codeArea.notifyDataChanged();
         } catch (Exception ex) {
             Logger.getLogger(CodeCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -328,6 +333,7 @@ public class CodeCommandHandler implements CodeAreaCommandHandler {
             copy();
             try {
                 undoHandler.execute(new DeleteSelectionCommand(codeArea));
+                codeArea.notifyDataChanged();
             } catch (Exception ex) {
                 Logger.getLogger(CodeCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -344,6 +350,7 @@ public class CodeCommandHandler implements CodeAreaCommandHandler {
         if (codeArea.hasSelection()) {
             try {
                 deleteSelectionCommand = new DeleteSelectionCommand(codeArea);
+                codeArea.notifyDataChanged();
             } catch (Exception ex) {
                 Logger.getLogger(CodeCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -386,6 +393,7 @@ public class CodeCommandHandler implements CodeAreaCommandHandler {
                         Logger.getLogger(CodeCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
                     }
 
+                    codeArea.notifyDataChanged();
                     codeArea.computeDimensions();
                     codeArea.updateScrollBars();
                 }
@@ -431,6 +439,7 @@ public class CodeCommandHandler implements CodeAreaCommandHandler {
                         Logger.getLogger(CodeCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
                     }
 
+                    codeArea.notifyDataChanged();
                     codeArea.computeDimensions();
                     codeArea.updateScrollBars();
                 }

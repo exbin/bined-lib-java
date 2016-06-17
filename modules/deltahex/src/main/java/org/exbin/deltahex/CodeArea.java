@@ -75,6 +75,7 @@ public class CodeArea extends JComponent {
 
     private ViewMode viewMode = ViewMode.DUAL;
     private CodeType codeType = CodeType.HEXADECIMAL;
+    private HeaderCodeType headerCodeType = HeaderCodeType.HEXADECIMAL;
     private BackgroundMode backgroundMode = BackgroundMode.STRIPPED;
     private Charset charset = Charset.defaultCharset();
     private int decorationMode = DECORATION_DEFAULT;
@@ -120,6 +121,7 @@ public class CodeArea extends JComponent {
     private final List<SelectionChangedListener> selectionChangedListeners = new ArrayList<>();
     private final List<CaretMovedListener> caretMovedListeners = new ArrayList<>();
     private final List<EditationModeChangedListener> editationModeChangedListeners = new ArrayList<>();
+    private final List<DataChangedListener> dataChangedListeners = new ArrayList<>();
 
     private final DimensionsCache dimensionsCache = new DimensionsCache();
 
@@ -323,6 +325,17 @@ public class CodeArea extends JComponent {
     private void notifyCaretMoved() {
         for (CaretMovedListener caretMovedListener : caretMovedListeners) {
             caretMovedListener.caretMoved(caret.getCaretPosition(), caret.getSection());
+        }
+    }
+
+    public void notifyDataChanged() {
+        if (caret.getDataPosition() > data.getDataSize()) {
+            caret.setCaretPosition(0);
+            notifyCaretMoved();
+        }
+
+        for (DataChangedListener dataChangedListener : dataChangedListeners) {
+            dataChangedListener.dataChanged();
         }
     }
 
@@ -532,6 +545,14 @@ public class CodeArea extends JComponent {
         editationModeChangedListeners.remove(editationModeChangedListener);
     }
 
+    public void addDataChangedListener(DataChangedListener dataChangedListener) {
+        dataChangedListeners.add(dataChangedListener);
+    }
+
+    public void removeDataChangedListener(DataChangedListener dataChangedListener) {
+        dataChangedListeners.remove(dataChangedListener);
+    }
+
     /**
      * Returns component area rectangle.
      *
@@ -579,9 +600,7 @@ public class CodeArea extends JComponent {
 
     public void setData(BinaryData data) {
         this.data = data;
-        if (caret.getDataPosition() > data.getDataSize()) {
-            caret.setCaretPosition(0);
-        }
+        notifyDataChanged();
         computeDimensions();
         repaint();
     }
@@ -928,8 +947,10 @@ public class CodeArea extends JComponent {
         this.viewMode = viewMode;
         if (viewMode == ViewMode.CODE_MATRIX) {
             caret.setSection(Section.CODE_MATRIX);
+            notifyCaretMoved();
         } else if (viewMode == ViewMode.TEXT_PREVIEW) {
             caret.setSection(Section.TEXT_PREVIEW);
+            notifyCaretMoved();
         }
         computeDimensions();
         repaint();
@@ -941,6 +962,16 @@ public class CodeArea extends JComponent {
 
     public void setCodeType(CodeType codeType) {
         this.codeType = codeType;
+        computeDimensions();
+        repaint();
+    }
+
+    public HeaderCodeType getHeaderCodeType() {
+        return headerCodeType;
+    }
+
+    public void setHeaderCodeType(HeaderCodeType headerCodeType) {
+        this.headerCodeType = headerCodeType;
         computeDimensions();
         repaint();
     }
@@ -1290,6 +1321,16 @@ public class CodeArea extends JComponent {
     }
 
     /**
+     * Data changed listener.
+     *
+     * Event is fired each time data is modified.
+     */
+    public interface DataChangedListener {
+
+        void dataChanged();
+    }
+
+    /**
      * Component supports showing numerical codes or textual preview, or both.
      */
     public static enum ViewMode {
@@ -1313,6 +1354,10 @@ public class CodeArea extends JComponent {
         public int getMaxDigits() {
             return maxDigits;
         }
+    }
+
+    public static enum HeaderCodeType {
+        OCTAL, DECIMAL, HEXADECIMAL
     }
 
     public static enum Section {

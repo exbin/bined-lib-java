@@ -48,6 +48,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
         add(codeArea, BorderLayout.CENTER);
         viewModeComboBox.setSelectedIndex(codeArea.getViewMode().ordinal());
         codeTypeComboBox.setSelectedIndex(codeArea.getCodeType().ordinal());
+        activeSectionComboBox.setSelectedIndex(codeArea.getActiveSection().ordinal());
         backgroundModeComboBox.setSelectedIndex(codeArea.getBackgroundMode().ordinal());
         charRenderingComboBox.setSelectedIndex(codeArea.getCharRenderingMode().ordinal());
         charAntialiasingComboBox.setSelectedIndex(codeArea.getCharAntialiasingMode().ordinal());
@@ -63,6 +64,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
         editableCheckBox.setSelected(codeArea.isEditable());
         wrapLineModeCheckBox.setSelected(codeArea.isWrapMode());
         lineLengthSpinner.setValue(codeArea.getLineLength());
+        dataSizeTextField.setText(String.valueOf(codeArea.getData().getDataSize()));
 
         int decorationMode = codeArea.getDecorationMode();
         decoratorLineNumLineCheckBox.setSelected((decorationMode & CodeArea.DECORATION_LINENUM_HEX_LINE) > 0);
@@ -73,6 +75,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
             public void caretMoved(CaretPosition caretPosition, Section section) {
                 positionTextField.setText(String.valueOf(caretPosition.getDataPosition()));
                 codeOffsetTextField.setText(String.valueOf(caretPosition.getCodeOffset()));
+                activeSectionComboBox.setSelectedIndex(section.ordinal());
             }
         });
         codeArea.addSelectionChangedListener(new CodeArea.SelectionChangedListener() {
@@ -87,6 +90,12 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
                     selectionStartTextField.setText("");
                     selectionEndTextField.setText("");
                 }
+            }
+        });
+        codeArea.addDataChangedListener(new CodeArea.DataChangedListener() {
+            @Override
+            public void dataChanged() {
+                dataSizeTextField.setText(String.valueOf(codeArea.getData().getDataSize()));
             }
         });
     }
@@ -263,7 +272,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
                 .addComponent(charAntialiasingComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(editableCheckBox)
-                .addContainerGap(281, Short.MAX_VALUE))
+                .addContainerGap(215, Short.MAX_VALUE))
         );
 
         tabbedPane.addTab("Mode", modePanel);
@@ -271,8 +280,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
         dataSizeLabel.setText("Data Size");
 
         dataSizeTextField.setEditable(false);
-        dataSizeTextField.setText("TODO");
-        dataSizeTextField.setEnabled(false);
+        dataSizeTextField.setText("0");
 
         loadDataButton.setText("Load...");
         loadDataButton.addActionListener(new java.awt.event.ActionListener() {
@@ -299,10 +307,8 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
         codeOffsetTextField.setEditable(false);
 
         activeSectionLabel.setText("Active Section");
-        activeSectionLabel.setEnabled(false);
 
-        activeSectionComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "TODO" }));
-        activeSectionComboBox.setEnabled(false);
+        activeSectionComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "CODE_MATRIX", "TEXT_PREVIEW" }));
         activeSectionComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 activeSectionComboBoxActionPerformed(evt);
@@ -420,7 +426,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
                 .addComponent(cursorPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(selectionPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(108, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         tabbedPane.addTab("State", statePanel);
@@ -613,7 +619,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
                 .addComponent(positionCodeTypeLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(positionCodeTypeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(72, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         tabbedPane.addTab("Layout", layoutPanel);
@@ -726,7 +732,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
                             .addComponent(showNonprintableCharactersCheckBox)
                             .addComponent(showShadowCursorCheckBox)
                             .addComponent(borderTypeLabel))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(0, 23, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         decorationPanelLayout.setVerticalGroup(
@@ -742,11 +748,11 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
                 .addComponent(showNonprintableCharactersCheckBox)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(linesPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(33, 33, 33)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(borderTypeLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(borderTypeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(175, Short.MAX_VALUE))
+                .addContainerGap(136, Short.MAX_VALUE))
         );
 
         tabbedPane.addTab("Decoration", decorationPanel);
@@ -897,7 +903,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
                 .addComponent(verticalPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(horizontalPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(143, Short.MAX_VALUE))
+                .addContainerGap(77, Short.MAX_VALUE))
         );
 
         tabbedPane.addTab("Scrolling", scrollingPanel);
@@ -1001,7 +1007,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
     }//GEN-LAST:event_codeTypeComboBoxActionPerformed
 
     private void activeSectionComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_activeSectionComboBoxActionPerformed
-        // TODO add your handling code here:
+        codeArea.setActiveSection(CodeArea.Section.values()[activeSectionComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_activeSectionComboBoxActionPerformed
 
     private void loadDataButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadDataButtonActionPerformed
@@ -1022,6 +1028,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
                 File selectedFile = openFC.getSelectedFile();
                 try (FileInputStream stream = new FileInputStream(selectedFile)) {
                     ((EditableBinaryData) codeArea.getData()).loadFromStream(stream);
+                    codeArea.notifyDataChanged();
                     codeArea.repaint();
                 }
             } catch (IOException ex) {

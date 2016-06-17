@@ -13,13 +13,14 @@ Screenshot
 Features
 --------
 
-- Hexadecimal representation of data and ascii preview
+- Data as hexadecimal codes and text preview
 - Insert and overwrite edit modes
-- Support for selection and clipboard
-- Optional scrollbars
-- Support for text encodings
+- Support for selection and clipboard actions
+- Scrollbars fixed or optional, character/line or pixel precision
 - Support for showing unprintable/whitespace characters
 - Support for undo/redo
+- Support for charset/encoding selection
+- Codes can be also binary, octal or decimal
 
 Todo
 ----

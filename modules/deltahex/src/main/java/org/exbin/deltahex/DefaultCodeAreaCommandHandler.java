@@ -52,7 +52,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         } catch (java.awt.HeadlessException ex) {
             // Create clipboard if system one not available
-            clipboard = new Clipboard("test");
+            clipboard = new Clipboard("clipboard");
         }
         clipboard.addFlavorListener(new FlavorListener() {
             @Override
@@ -160,6 +160,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                     }
                     setCodeValue(value);
                 }
+                codeArea.notifyDataChanged();
                 codeArea.moveRight(CodeArea.NO_MODIFIER);
                 codeArea.revealCursor();
             }
@@ -180,6 +181,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                     }
                 }
                 ((EditableBinaryData) data).insert(dataPosition, bytes);
+                codeArea.notifyDataChanged();
                 codeArea.getCaret().setCaretPosition(dataPosition + bytes.length - 1);
                 codeArea.moveRight(CodeArea.NO_MODIFIER);
                 codeArea.revealCursor();
@@ -276,11 +278,13 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
         if (codeArea.hasSelection()) {
             deleteSelection();
+            codeArea.notifyDataChanged();
         } else {
             CodeAreaCaret caret = codeArea.getCaret();
             long dataPosition = caret.getDataPosition();
             if (dataPosition > 0 && dataPosition <= codeArea.getData().getDataSize()) {
                 ((EditableBinaryData) codeArea.getData()).remove(dataPosition - 1, 1);
+                codeArea.notifyDataChanged();
                 caret.setCodeOffset(0);
                 codeArea.moveLeft(NO_MODIFIER);
                 caret.setCodeOffset(0);
@@ -299,11 +303,13 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
         if (codeArea.hasSelection()) {
             deleteSelection();
+            codeArea.notifyDataChanged();
         } else {
             CodeAreaCaret caret = codeArea.getCaret();
             long dataPosition = caret.getDataPosition();
             if (dataPosition < codeArea.getData().getDataSize()) {
                 ((EditableBinaryData) codeArea.getData()).remove(dataPosition, 1);
+                codeArea.notifyDataChanged();
                 if (caret.getCodeOffset() > 0) {
                     caret.setCodeOffset(0);
                 }
@@ -333,6 +339,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         }
 
         deleteSelection();
+        codeArea.notifyDataChanged();
     }
 
     @Override
@@ -359,6 +366,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         if (selection != null) {
             copy();
             deleteSelection();
+            codeArea.notifyDataChanged();
         }
     }
 
@@ -371,6 +379,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         if (clipboard.isDataFlavorAvailable(binaryDataFlavor)) {
             if (codeArea.hasSelection()) {
                 deleteSelection();
+                codeArea.notifyDataChanged();
             }
 
             try {
@@ -389,6 +398,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                         ((EditableBinaryData) codeArea.getData()).remove(dataPosition, toRemove);
                     }
                     ((EditableBinaryData) codeArea.getData()).insert(codeArea.getDataPosition(), data);
+                    codeArea.notifyDataChanged();
 
                     caret.setCaretPosition(caret.getDataPosition() + dataSize);
                     caret.setCodeOffset(0);
@@ -401,6 +411,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         } else if (clipboard.isDataFlavorAvailable(DataFlavor.stringFlavor)) {
             if (codeArea.hasSelection()) {
                 deleteSelection();
+                codeArea.notifyDataChanged();
             }
 
             Object insertedData;
@@ -420,6 +431,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                         ((EditableBinaryData) codeArea.getData()).remove(dataPosition, toRemove);
                     }
                     ((EditableBinaryData) codeArea.getData()).insert(codeArea.getDataPosition(), bytes);
+                    codeArea.notifyDataChanged();
 
                     caret.setCaretPosition(caret.getDataPosition() + length);
                     caret.setCodeOffset(0);
