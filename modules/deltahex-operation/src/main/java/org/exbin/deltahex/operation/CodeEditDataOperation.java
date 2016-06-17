@@ -20,7 +20,7 @@ import org.exbin.deltahex.CodeArea;
 /**
  * Abstract operation for editing data.
  *
- * @version 0.1.0 2015/05/14
+ * @version 0.1.0 2015/05/17
  * @author ExBin Project (http://exbin.org)
  */
 public abstract class CodeEditDataOperation extends CodeAreaOperation {
@@ -28,6 +28,13 @@ public abstract class CodeEditDataOperation extends CodeAreaOperation {
     public CodeEditDataOperation(CodeArea coreArea) {
         super(coreArea);
     }
+
+    /**
+     * Code type used for this edit operation.
+     *
+     * @return code type
+     */
+    public abstract CodeArea.CodeType getCodeType();
 
     /**
      * Appends next hexadecimal value in editing action sequence.

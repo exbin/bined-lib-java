@@ -53,6 +53,11 @@ public class DeleteCodeEditDataOperation extends CodeEditDataOperation {
         return execute(true);
     }
 
+    @Override
+    public CodeArea.CodeType getCodeType() {
+        return null;
+    }
+
     private CodeAreaOperation execute(boolean withUndo) {
         throw new IllegalStateException("Cannot be executed");
     }

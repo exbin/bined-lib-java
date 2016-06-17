@@ -53,7 +53,7 @@ import org.exbin.utils.binary_data.BinaryData;
  *
  * Also supports binary, octal and decimal codes.
  *
- * @version 0.1.0 2016/06/14
+ * @version 0.1.0 2016/06/17
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeArea extends JComponent {
@@ -1585,6 +1585,7 @@ public class CodeArea extends JComponent {
                             targetPosition = (caretPosition.getDataPosition() / bytesPerLine) * bytesPerLine;
                         }
                         caret.setCaretPosition(targetPosition);
+                        commandHandler.caretMoved();
                         notifyCaretMoved();
                         updateSelection(e.getModifiersEx(), caretPosition);
                     }
@@ -1605,6 +1606,7 @@ public class CodeArea extends JComponent {
                             long newPosition = ((caretPosition.getDataPosition() / bytesPerLine) + 1) * bytesPerLine - 1;
                             caret.setCaretPosition(newPosition < dataSize ? newPosition : dataSize);
                         }
+                        commandHandler.caretMoved();
                         notifyCaretMoved();
                         updateSelection(e.getModifiersEx(), caretPosition);
                     }
@@ -1620,6 +1622,7 @@ public class CodeArea extends JComponent {
                         } else if (caretPosition.getDataPosition() >= dimensionsCache.bytesPerLine) {
                             caret.setCaretPosition(caretPosition.getDataPosition() % dimensionsCache.bytesPerLine, caret.getCodeOffset());
                         }
+                        commandHandler.caretMoved();
                         notifyCaretMoved();
                         updateSelection(e.getModifiersEx(), caretPosition);
                     }
@@ -1642,6 +1645,7 @@ public class CodeArea extends JComponent {
                                     - (dataSize % dimensionsCache.bytesPerLine)
                                     + (caretPosition.getDataPosition() % dimensionsCache.bytesPerLine), caret.getCodeOffset());
                         }
+                        commandHandler.caretMoved();
                         notifyCaretMoved();
                         updateSelection(e.getModifiersEx(), caretPosition);
                     }

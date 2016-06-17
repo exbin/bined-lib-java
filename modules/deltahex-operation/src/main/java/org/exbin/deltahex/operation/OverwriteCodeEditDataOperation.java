@@ -22,7 +22,7 @@ import org.exbin.utils.binary_data.EditableBinaryData;
 /**
  * Operation for editing data using overwrite mode.
  *
- * @version 0.1.0 2015/06/13
+ * @version 0.1.0 2015/06/17
  * @author ExBin Project (http://exbin.org)
  */
 public class OverwriteCodeEditDataOperation extends CodeEditDataOperation {
@@ -31,6 +31,7 @@ public class OverwriteCodeEditDataOperation extends CodeEditDataOperation {
     private final int startCodeOffset;
     private long length = 0;
     private final MemoryPagedData undoData = new MemoryPagedData();
+    private final CodeArea.CodeType codeType;
 
     private int codeOffset = 0;
 
@@ -39,6 +40,7 @@ public class OverwriteCodeEditDataOperation extends CodeEditDataOperation {
         this.startPosition = startPosition;
         this.startCodeOffset = startCodeOffset;
         this.codeOffset = startCodeOffset;
+        this.codeType = codeArea.getCodeType();
         if (startCodeOffset > 0 && codeArea.getData().getDataSize() > startPosition) {
             undoData.insert(0, new byte[]{codeArea.getData().getByte(startPosition)});
             length++;
@@ -60,6 +62,11 @@ public class OverwriteCodeEditDataOperation extends CodeEditDataOperation {
         return execute(true);
     }
 
+    @Override
+    public CodeArea.CodeType getCodeType() {
+        return codeType;
+    }
+
     private CodeAreaOperation execute(boolean withUndo) {
         throw new IllegalStateException("Cannot be executed");
     }
@@ -69,27 +76,96 @@ public class OverwriteCodeEditDataOperation extends CodeEditDataOperation {
         EditableBinaryData data = (EditableBinaryData) codeArea.getData();
         long editedDataPosition = startPosition + length;
 
+        byte byteValue = 0;
         if (codeOffset > 0) {
-            byte dataValue = 0;
             if (editedDataPosition <= data.getDataSize()) {
-                dataValue = data.getByte(editedDataPosition - 1);
+                byteValue = data.getByte(editedDataPosition - 1);
             }
 
-            data.setByte(editedDataPosition - 1, (byte) ((dataValue & 0xf0) | value));
+            editedDataPosition--;
         } else {
-            byte dataValue = 0;
             if (editedDataPosition < data.getDataSize()) {
-                dataValue = data.getByte(editedDataPosition);
-                undoData.insert(undoData.getDataSize(), new byte[]{dataValue});
+                byteValue = data.getByte(editedDataPosition);
+                undoData.insert(undoData.getDataSize(), new byte[]{byteValue});
             } else {
                 data.insert(editedDataPosition, 1);
             }
 
-            data.setByte(editedDataPosition, (byte) ((dataValue & 0xf) | (value << 4)));
             length++;
         }
-        // TODO other code types
-        codeOffset = 1 - codeOffset;
+
+        switch (codeType) {
+            case BINARY: {
+                int bitMask = 0x80 >> codeOffset;
+                byteValue = (byte) (byteValue & (0xff - bitMask) | (value << (7 - codeOffset)));
+                break;
+            }
+            case DECIMAL: {
+                int newValue = byteValue & 0xff;
+                switch (codeOffset) {
+                    case 0: {
+                        newValue = (newValue % 100) + value * 100;
+                        if (newValue > 255) {
+                            newValue = 200;
+                        }
+                        break;
+                    }
+                    case 1: {
+                        newValue = (newValue / 100) * 100 + value * 10 + (newValue % 10);
+                        if (newValue > 255) {
+                            newValue -= 200;
+                        }
+                        break;
+                    }
+                    case 2: {
+                        newValue = (newValue / 10) * 10 + value;
+                        if (newValue > 255) {
+                            newValue -= 200;
+                        }
+                        break;
+                    }
+                }
+
+                byteValue = (byte) newValue;
+                break;
+            }
+            case OCTAL: {
+                int newValue = byteValue & 0xff;
+                switch (codeOffset) {
+                    case 0: {
+                        newValue = (newValue % 64) + value * 64;
+                        break;
+                    }
+                    case 1: {
+                        newValue = (newValue / 64) * 64 + value * 8 + (newValue % 8);
+                        break;
+                    }
+                    case 2: {
+                        newValue = (newValue / 8) * 8 + value;
+                        break;
+                    }
+                }
+
+                byteValue = (byte) newValue;
+                break;
+            }
+            case HEXADECIMAL: {
+                if (codeOffset == 1) {
+                    byteValue = (byte) ((byteValue & 0xf0) | value);
+                } else {
+                    byteValue = (byte) ((byteValue & 0xf) | (value << 4));
+                }
+                break;
+            }
+            default:
+                throw new IllegalStateException("Unexpected code type " + codeType.name());
+        }
+
+        data.setByte(editedDataPosition, byteValue);
+        codeOffset++;
+        if (codeOffset == codeType.getMaxDigits()) {
+            codeOffset = 0;
+        }
     }
 
     @Override

@@ -28,7 +28,6 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.exbin.deltahex.CaretPosition;
-import org.exbin.deltahex.DefaultCodeAreaCommandHandler;
 import org.exbin.deltahex.CodeArea;
 import org.exbin.deltahex.CodeArea.Section;
 import org.exbin.deltahex.CodeAreaCaret;
@@ -50,7 +49,7 @@ import org.exbin.deltahex.CodeAreaCommandHandler;
 /**
  * Command handler for undo/redo aware hexadecimal editor editing.
  *
- * @version 0.1.0 2016/06/13
+ * @version 0.1.0 2016/06/17
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeCommandHandler implements CodeAreaCommandHandler {
@@ -82,7 +81,7 @@ public class CodeCommandHandler implements CodeAreaCommandHandler {
         try {
             appDataFlavor = new DataFlavor(MIME_CLIPBOARD_HEXADECIMAL);
         } catch (ClassNotFoundException ex) {
-            Logger.getLogger(DefaultCodeAreaCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CodeCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
         canPaste = clipboard.isDataFlavorAvailable(appDataFlavor) || clipboard.isDataFlavorAvailable(DataFlavor.stringFlavor);
     }
@@ -99,8 +98,36 @@ public class CodeCommandHandler implements CodeAreaCommandHandler {
         }
 
         if (codeArea.getActiveSection() == Section.CODE_MATRIX) {
-            if ((keyValue >= '0' && keyValue <= '9')
-                    || (keyValue >= 'a' && keyValue <= 'f') || (keyValue >= 'A' && keyValue <= 'F')) {
+            long dataPosition = codeArea.getDataPosition();
+            int codeOffset = codeArea.getCodeOffset();
+            CodeArea.CodeType codeType = codeArea.getCodeType();
+            boolean validKey = false;
+            switch (codeType) {
+                case BINARY: {
+                    validKey = keyValue >= '0' && keyValue <= '1';
+                    break;
+                }
+                case DECIMAL: {
+                    validKey = codeOffset == 0
+                            ? keyValue >= '0' && keyValue <= '2'
+                            : keyValue >= '0' && keyValue <= '9';
+                    break;
+                }
+                case OCTAL: {
+                    validKey = codeOffset == 0
+                            ? keyValue >= '0' && keyValue <= '3'
+                            : keyValue >= '0' && keyValue <= '7';
+                    break;
+                }
+                case HEXADECIMAL: {
+                    validKey = (keyValue >= '0' && keyValue <= '9')
+                            || (keyValue >= 'a' && keyValue <= 'f') || (keyValue >= 'A' && keyValue <= 'F');
+                    break;
+                }
+                default:
+                    throw new IllegalStateException("Unexpected code type " + codeType.name());
+            }
+            if (validKey) {
                 DeleteSelectionCommand deleteCommand = null;
                 if (codeArea.hasSelection()) {
                     deleteCommand = new DeleteSelectionCommand(codeArea);
@@ -116,7 +143,6 @@ public class CodeCommandHandler implements CodeAreaCommandHandler {
                 if (editCommand != null && editCommand.wasReverted()) {
                     editCommand = null;
                 }
-                long dataPosition = codeArea.getDataPosition();
                 if (codeArea.getEditationMode() == CodeArea.EditationMode.OVERWRITE) {
                     if (editCommand == null || !(editCommand instanceof EditCodeDataCommand) || editCommand.getCommandType() != EditDataCommand.EditCommandType.OVERWRITE) {
                         editCommand = new EditCodeDataCommand(codeArea, EditCodeDataCommand.EditCommandType.OVERWRITE, dataPosition, codeArea.getCodeOffset());
@@ -364,7 +390,7 @@ public class CodeCommandHandler implements CodeAreaCommandHandler {
                     codeArea.updateScrollBars();
                 }
             } catch (UnsupportedFlavorException | IOException ex) {
-                Logger.getLogger(DefaultCodeAreaCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(CodeCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else if (clipboard.isDataFlavorAvailable(DataFlavor.stringFlavor)) {
             Object insertedData;
@@ -409,7 +435,7 @@ public class CodeCommandHandler implements CodeAreaCommandHandler {
                     codeArea.updateScrollBars();
                 }
             } catch (UnsupportedFlavorException | IOException ex) {
-                Logger.getLogger(DefaultCodeAreaCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(CodeCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }

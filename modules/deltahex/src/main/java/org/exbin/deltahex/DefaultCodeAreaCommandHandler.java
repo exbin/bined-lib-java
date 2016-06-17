@@ -136,15 +136,15 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                                 break;
                             }
                             case DECIMAL: {
-                                byteRest = (byte) (byteRest % (10 ^ codeOffset));
+                                byteRest = (byte) (byteRest % (codeOffset == 1 ? 100 : 10));
                                 break;
                             }
                             case OCTAL: {
-                                byteRest = (byte) (byteRest % (8 ^ codeOffset));
+                                byteRest = (byte) (byteRest % (codeOffset == 1 ? 64 : 8));
                                 break;
                             }
                             case HEXADECIMAL: {
-                                byteRest = (byte) (data.getByte(dataPosition) & 0xf);
+                                byteRest = (byte) (byteRest & 0xf);
                                 break;
                             }
                             default:
