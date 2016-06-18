@@ -53,7 +53,7 @@ import org.exbin.utils.binary_data.BinaryData;
  *
  * Also supports binary, octal and decimal codes.
  *
- * @version 0.1.0 2016/06/17
+ * @version 0.1.0 2016/06/18
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeArea extends JComponent {
@@ -122,6 +122,7 @@ public class CodeArea extends JComponent {
     private final List<CaretMovedListener> caretMovedListeners = new ArrayList<>();
     private final List<EditationModeChangedListener> editationModeChangedListeners = new ArrayList<>();
     private final List<DataChangedListener> dataChangedListeners = new ArrayList<>();
+    private final List<ScrollingListener> scrollingListeners = new ArrayList<>();
 
     private final DimensionsCache dimensionsCache = new DimensionsCache();
 
@@ -328,6 +329,12 @@ public class CodeArea extends JComponent {
         }
     }
 
+    public void notifyScrolled() {
+        for (ScrollingListener scrollingListener : scrollingListeners) {
+            scrollingListener.scrolled();
+        }
+    }
+
     public void notifyDataChanged() {
         if (caret.getDataPosition() > data.getDataSize()) {
             caret.setCaretPosition(0);
@@ -401,6 +408,7 @@ public class CodeArea extends JComponent {
 
         if (scrolled) {
             updateScrollBars();
+            notifyScrolled();
         }
     }
 
@@ -551,6 +559,14 @@ public class CodeArea extends JComponent {
 
     public void removeDataChangedListener(DataChangedListener dataChangedListener) {
         dataChangedListeners.remove(dataChangedListener);
+    }
+
+    public void addScrollingListener(ScrollingListener scrollingListener) {
+        scrollingListeners.add(scrollingListener);
+    }
+
+    public void removeScrollingListener(ScrollingListener scrollingListener) {
+        scrollingListeners.remove(scrollingListener);
     }
 
     /**
@@ -864,6 +880,7 @@ public class CodeArea extends JComponent {
 
         if (scrolled) {
             updateScrollBars();
+            notifyScrolled();
         }
     }
 
@@ -1169,6 +1186,7 @@ public class CodeArea extends JComponent {
         computeDimensions();
         scrollPosition.scrollLinePosition = linePosition;
         updateScrollBars();
+        notifyScrolled();
     }
 
     public ScrollBarVisibility getHorizontalScrollBarVisibility() {
@@ -1194,6 +1212,7 @@ public class CodeArea extends JComponent {
         computeDimensions();
         scrollPosition.scrollBytePosition = bytePosition;
         updateScrollBars();
+        notifyScrolled();
     }
 
     public long getDataPosition() {
@@ -1331,6 +1350,16 @@ public class CodeArea extends JComponent {
     }
 
     /**
+     * Scrolling listener.
+     *
+     * Event is fired each time component is scrolled.
+     */
+    public interface ScrollingListener {
+
+        void scrolled();
+    }
+
+    /**
      * Component supports showing numerical codes or textual preview, or both.
      */
     public static enum ViewMode {
@@ -1446,6 +1475,22 @@ public class CodeArea extends JComponent {
         int scrollLineOffset = 0;
         int scrollBytePosition = 0;
         int scrollByteOffset = 0;
+
+        public long getScrollLinePosition() {
+            return scrollLinePosition;
+        }
+
+        public int getScrollLineOffset() {
+            return scrollLineOffset;
+        }
+
+        public int getScrollBytePosition() {
+            return scrollBytePosition;
+        }
+
+        public int getScrollByteOffset() {
+            return scrollByteOffset;
+        }
     }
 
     private class HexMouseListener extends MouseAdapter implements MouseMotionListener, MouseWheelListener {
@@ -1523,6 +1568,7 @@ public class CodeArea extends JComponent {
                             scrollPosition.scrollBytePosition = bytes;
                         }
                         updateScrollBars();
+                        notifyScrolled();
                     }
                 } else if (scrollPosition.scrollBytePosition > 0) {
                     if (scrollPosition.scrollBytePosition > MOUSE_SCROLL_LINES) {
@@ -1531,6 +1577,7 @@ public class CodeArea extends JComponent {
                         scrollPosition.scrollBytePosition = 0;
                     }
                     updateScrollBars();
+                    notifyScrolled();
                 }
             } else if (e.getWheelRotation() > 0) {
                 long lines = (int) (data.getDataSize() / dimensionsCache.bytesPerLine) - dimensionsCache.linesPerRect;
@@ -1544,6 +1591,7 @@ public class CodeArea extends JComponent {
                         scrollPosition.scrollLinePosition = lines;
                     }
                     updateScrollBars();
+                    notifyScrolled();
                 }
             } else if (scrollPosition.scrollLinePosition > 0) {
                 if (scrollPosition.scrollLinePosition > MOUSE_SCROLL_LINES) {
@@ -1552,6 +1600,7 @@ public class CodeArea extends JComponent {
                     scrollPosition.scrollLinePosition = 0;
                 }
                 updateScrollBars();
+                notifyScrolled();
             }
         }
     }
@@ -1676,6 +1725,7 @@ public class CodeArea extends JComponent {
                     }
                     revealCursor();
                     updateScrollBars();
+                    notifyScrolled();
                     break;
                 }
                 case KeyEvent.VK_PAGE_DOWN: {
@@ -1699,6 +1749,7 @@ public class CodeArea extends JComponent {
                     }
                     revealCursor();
                     updateScrollBars();
+                    notifyScrolled();
                     break;
                 }
                 case KeyEvent.VK_INSERT: {
@@ -1791,6 +1842,7 @@ public class CodeArea extends JComponent {
                 scrollPosition.scrollLineOffset = verticalScrollBar.getValue() % dimensionsCache.lineHeight;
             }
             repaint();
+            notifyScrolled();
         }
     }
 
@@ -1808,6 +1860,7 @@ public class CodeArea extends JComponent {
                 scrollPosition.scrollByteOffset = horizontalScrollBar.getValue() % dimensionsCache.charWidth;
             }
             repaint();
+            notifyScrolled();
         }
     }
 }

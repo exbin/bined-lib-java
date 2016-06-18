@@ -1075,14 +1075,12 @@
                 <Component class="javax.swing.JLabel" name="verticalPositionLabel">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Vertical Scroll Position"/>
-                    <Property name="enabled" type="boolean" value="false"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JTextField" name="verticalPositionTextField">
                   <Properties>
                     <Property name="editable" type="boolean" value="false"/>
-                    <Property name="text" type="java.lang.String" value="TODO"/>
-                    <Property name="enabled" type="boolean" value="false"/>
+                    <Property name="text" type="java.lang.String" value="0:0"/>
                   </Properties>
                 </Component>
               </SubComponents>
@@ -1186,14 +1184,12 @@
                 <Component class="javax.swing.JLabel" name="horizontalPositionLabel">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Horizontal Scroll Position"/>
-                    <Property name="enabled" type="boolean" value="false"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JTextField" name="horizontalPositionTextField">
                   <Properties>
                     <Property name="editable" type="boolean" value="false"/>
-                    <Property name="text" type="java.lang.String" value="TODO"/>
-                    <Property name="enabled" type="boolean" value="false"/>
+                    <Property name="text" type="java.lang.String" value="0:0"/>
                   </Properties>
                 </Component>
               </SubComponents>

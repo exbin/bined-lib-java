@@ -32,7 +32,7 @@ import org.exbin.utils.binary_data.EditableBinaryData;
 /**
  * Hexadecimal editor example panel.
  *
- * @version 0.1.0 2016/06/17
+ * @version 0.1.0 2016/06/18
  * @author ExBin Project (http://exbin.org)
  */
 public class DeltaHexExamplePanel extends javax.swing.JPanel {
@@ -96,6 +96,14 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
             @Override
             public void dataChanged() {
                 dataSizeTextField.setText(String.valueOf(codeArea.getData().getDataSize()));
+            }
+        });
+        codeArea.addScrollingListener(new CodeArea.ScrollingListener() {
+            @Override
+            public void scrolled() {
+                CodeArea.ScrollPosition scrollPosition = codeArea.getScrollPosition();
+                verticalPositionTextField.setText(scrollPosition.getScrollLinePosition() + ":" + scrollPosition.getScrollLineOffset());
+                horizontalPositionTextField.setText(scrollPosition.getScrollBytePosition() + ":" + scrollPosition.getScrollByteOffset());
             }
         });
     }
@@ -779,11 +787,9 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
         });
 
         verticalPositionLabel.setText("Vertical Scroll Position");
-        verticalPositionLabel.setEnabled(false);
 
         verticalPositionTextField.setEditable(false);
-        verticalPositionTextField.setText("TODO");
-        verticalPositionTextField.setEnabled(false);
+        verticalPositionTextField.setText("0:0");
 
         javax.swing.GroupLayout verticalPanelLayout = new javax.swing.GroupLayout(verticalPanel);
         verticalPanel.setLayout(verticalPanelLayout);
@@ -843,11 +849,9 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
         });
 
         horizontalPositionLabel.setText("Horizontal Scroll Position");
-        horizontalPositionLabel.setEnabled(false);
 
         horizontalPositionTextField.setEditable(false);
-        horizontalPositionTextField.setText("TODO");
-        horizontalPositionTextField.setEnabled(false);
+        horizontalPositionTextField.setText("0:0");
 
         javax.swing.GroupLayout horizontalPanelLayout = new javax.swing.GroupLayout(horizontalPanel);
         horizontalPanel.setLayout(horizontalPanelLayout);
