@@ -55,6 +55,11 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             int lineX = hexRect.x - codeArea.getCharWidth() / 2;
             g.drawLine(lineX, compRect.y, lineX, hexRect.y);
         }
+        if ((decorationMode & CodeArea.DECORATION_HEADER_LINE) > 0) {
+            g.setColor(Color.GRAY);
+            int headerSpaceSize = codeArea.getHeaderSpaceSize();
+            g.drawLine(compRect.x, hexRect.y - headerSpaceSize / 2, compRect.x + compRect.width, hexRect.y - headerSpaceSize / 2);
+        }
         if ((decorationMode & CodeArea.DECORATION_BOX) > 0) {
             g.setColor(Color.GRAY);
             g.drawLine(hexRect.x - 1, hexRect.y - 1, hexRect.x + hexRect.width, hexRect.y - 1);

@@ -46,6 +46,8 @@ import java.util.List;
 import javax.swing.JComponent;
 import javax.swing.JScrollBar;
 import javax.swing.UIManager;
+import javax.swing.border.Border;
+import javax.swing.plaf.basic.BasicBorders;
 import org.exbin.utils.binary_data.BinaryData;
 
 /**
@@ -53,15 +55,16 @@ import org.exbin.utils.binary_data.BinaryData;
  *
  * Also supports binary, octal and decimal codes.
  *
- * @version 0.1.0 2016/06/18
+ * @version 0.1.0 2016/06/19
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeArea extends JComponent {
 
     public static final int NO_MODIFIER = 0;
-    public static final int DECORATION_LINENUM_HEX_LINE = 1;
-    public static final int DECORATION_HEX_PREVIEW_LINE = 2;
-    public static final int DECORATION_BOX = 4;
+    public static final int DECORATION_HEADER_LINE = 1;
+    public static final int DECORATION_LINENUM_HEX_LINE = 2;
+    public static final int DECORATION_HEX_PREVIEW_LINE = 4;
+    public static final int DECORATION_BOX = 8;
     public static final int DECORATION_DEFAULT = DECORATION_HEX_PREVIEW_LINE | DECORATION_LINENUM_HEX_LINE;
     public static final int MOUSE_SCROLL_LINES = 3;
 
@@ -75,7 +78,7 @@ public class CodeArea extends JComponent {
 
     private ViewMode viewMode = ViewMode.DUAL;
     private CodeType codeType = CodeType.HEXADECIMAL;
-    private HeaderCodeType headerCodeType = HeaderCodeType.HEXADECIMAL;
+    private PositionCodeType positionCodeType = PositionCodeType.HEXADECIMAL;
     private BackgroundMode backgroundMode = BackgroundMode.STRIPPED;
     private Charset charset = Charset.defaultCharset();
     private int decorationMode = DECORATION_DEFAULT;
@@ -83,6 +86,8 @@ public class CodeArea extends JComponent {
     private CharRenderingMode charRenderingMode = CharRenderingMode.AUTO;
     private CharAntialiasingMode charAntialiasingMode = CharAntialiasingMode.AUTO;
     private HexCharactersCase hexCharactersCase = HexCharactersCase.UPPER;
+    private final CodeAreaSpace headerSpace = new CodeAreaSpace();
+    private final CodeAreaSpace lineNumSpace = new CodeAreaSpace();
     private int lineLength = 16;
     private int subFontSpace = 3;
     private int headerCharacters = 8;
@@ -660,6 +665,12 @@ public class CodeArea extends JComponent {
         computeFontMetrics();
     }
 
+    @Override
+    public void setBorder(Border border) {
+        super.setBorder(border);
+        computeDimensions();
+    }
+
     private void computeFontMetrics() {
         Graphics g = getGraphics();
         if (g != null) {
@@ -730,8 +741,42 @@ public class CodeArea extends JComponent {
         }
         int lines = (int) (data.getDataSize() / bytesPerLine) + 1;
 
+        CodeAreaSpace.SpaceType headerSpaceType = headerSpace.getSpaceType();
+        switch (headerSpaceType) {
+            case NONE: {
+                dimensionsCache.headerSpace = 0;
+                break;
+            }
+            case SPECIFIED: {
+                dimensionsCache.headerSpace = headerSpace.getSpaceSize();
+                break;
+            }
+            case QUARTER_UNIT: {
+                dimensionsCache.headerSpace = dimensionsCache.lineHeight / 4;
+                break;
+            }
+            case HALF_UNIT: {
+                dimensionsCache.headerSpace = dimensionsCache.lineHeight / 2;
+                break;
+            }
+            case ONE_UNIT: {
+                dimensionsCache.headerSpace = dimensionsCache.lineHeight;
+                break;
+            }
+            case ONE_AND_HALF_UNIT: {
+                dimensionsCache.headerSpace = (int) (dimensionsCache.lineHeight * 1.5f);
+                break;
+            }
+            case DOUBLE_UNIT: {
+                dimensionsCache.headerSpace = dimensionsCache.lineHeight * 2;
+                break;
+            }
+            default:
+                throw new IllegalStateException("Unexpected header space type " + headerSpaceType.name());
+        }
+
         Rectangle hexRect = dimensionsCache.codeSectionRectangle;
-        hexRect.y = insets.top + (showHeader ? dimensionsCache.lineHeight * 2 : 0);
+        hexRect.y = insets.top + (showHeader ? dimensionsCache.lineHeight + dimensionsCache.headerSpace : 0);
         hexRect.x = insets.left + (showLineNumbers ? dimensionsCache.charWidth * 9 : 0);
 
         if (verticalScrollBarVisibility == ScrollBarVisibility.IF_NEEDED) {
@@ -983,12 +1028,12 @@ public class CodeArea extends JComponent {
         repaint();
     }
 
-    public HeaderCodeType getHeaderCodeType() {
-        return headerCodeType;
+    public PositionCodeType getPositionCodeType() {
+        return positionCodeType;
     }
 
-    public void setHeaderCodeType(HeaderCodeType headerCodeType) {
-        this.headerCodeType = headerCodeType;
+    public void setPositionCodeType(PositionCodeType positionCodeType) {
+        this.positionCodeType = positionCodeType;
         computeDimensions();
         repaint();
     }
@@ -1160,6 +1205,58 @@ public class CodeArea extends JComponent {
     public void setHexCharactersCase(HexCharactersCase hexCharactersCase) {
         this.hexCharactersCase = hexCharactersCase;
         painter.setHexCharacters(hexCharactersCase == HexCharactersCase.LOWER ? CodeAreaUtils.LOWER_HEX_CODES : CodeAreaUtils.UPPER_HEX_CODES);
+        repaint();
+    }
+
+    public CodeAreaSpace.SpaceType getHeaderSpaceType() {
+        return headerSpace.getSpaceType();
+    }
+
+    public void setHeaderSpaceType(CodeAreaSpace.SpaceType spaceType) {
+        if (spaceType == null) {
+            throw new NullPointerException();
+        }
+        headerSpace.setSpaceType(spaceType);
+        computeDimensions();
+        repaint();
+    }
+
+    public int getHeaderSpaceSize() {
+        return headerSpace.getSpaceSize();
+    }
+
+    public void getHeaderSpaceSize(int spaceSize) {
+        if (spaceSize < 0) {
+            throw new IllegalArgumentException("Negative space size is not valid");
+        }
+        headerSpace.setSpaceSize(spaceSize);
+        computeDimensions();
+        repaint();
+    }
+
+    public CodeAreaSpace.SpaceType getLineNumberSpace() {
+        return lineNumSpace.getSpaceType();
+    }
+
+    public void setLineNumberSpaceType(CodeAreaSpace.SpaceType spaceType) {
+        if (spaceType == null) {
+            throw new NullPointerException();
+        }
+        lineNumSpace.setSpaceType(spaceType);
+        computeDimensions();
+        repaint();
+    }
+
+    public int getLineNumberSpaceSize() {
+        return lineNumSpace.getSpaceSize();
+    }
+
+    public void setLineNumberSpaceSize(int spaceSize) {
+        if (spaceSize < 0) {
+            throw new IllegalArgumentException("Negative space size is not valid");
+        }
+        lineNumSpace.setSpaceSize(spaceSize);
+        computeDimensions();
         repaint();
     }
 
@@ -1385,7 +1482,7 @@ public class CodeArea extends JComponent {
         }
     }
 
-    public static enum HeaderCodeType {
+    public static enum PositionCodeType {
         OCTAL, DECIMAL, HEXADECIMAL
     }
 
@@ -1419,7 +1516,7 @@ public class CodeArea extends JComponent {
      * AUTO - Detect if font is monospaced and use FIXED in such case or DYNAMIC
      * in other cases
      *
-     * DYNAMIC - For each character compute width to center this character in
+     * CENTER - For each character compute width to center this character in
      * area
      *
      * LEFT - Render each character from top left corner of it's position
@@ -1446,14 +1543,27 @@ public class CodeArea extends JComponent {
         FontMetrics fontMetrics = null;
         int charWidth;
         int lineHeight;
-        int charsPerByte;
         int bytesPerLine;
+        int charsPerByte;
         boolean monospaced = false;
 
         /**
          * Component area without border insets.
          */
         final Rectangle componentRectangle = new Rectangle();
+        /**
+         * Space between header and code area.
+         */
+        int headerSpace;
+        /**
+         * Space between line numbers and code area.
+         */
+        int lineNumSpace;
+        /**
+         * Space between main code area and preview.
+         */
+        int previewSpace;
+
         /**
          * Main data area.
          *

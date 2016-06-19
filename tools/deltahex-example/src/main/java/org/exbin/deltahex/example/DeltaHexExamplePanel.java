@@ -16,6 +16,7 @@
 package org.exbin.deltahex.example;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -23,16 +24,22 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.EtchedBorder;
+import javax.swing.border.LineBorder;
 import javax.swing.filechooser.FileFilter;
+import javax.swing.plaf.basic.BasicBorders;
 import org.exbin.deltahex.CaretPosition;
 import org.exbin.deltahex.CodeArea;
 import org.exbin.deltahex.CodeArea.Section;
+import org.exbin.deltahex.CodeAreaSpace.SpaceType;
 import org.exbin.utils.binary_data.EditableBinaryData;
 
 /**
  * Hexadecimal editor example panel.
  *
- * @version 0.1.0 2016/06/18
+ * @version 0.1.0 2016/06/19
  * @author ExBin Project (http://exbin.org)
  */
 public class DeltaHexExamplePanel extends javax.swing.JPanel {
@@ -48,6 +55,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
         add(codeArea, BorderLayout.CENTER);
         viewModeComboBox.setSelectedIndex(codeArea.getViewMode().ordinal());
         codeTypeComboBox.setSelectedIndex(codeArea.getCodeType().ordinal());
+        positionCodeTypeComboBox.setSelectedIndex(codeArea.getPositionCodeType().ordinal());
         activeSectionComboBox.setSelectedIndex(codeArea.getActiveSection().ordinal());
         backgroundModeComboBox.setSelectedIndex(codeArea.getBackgroundMode().ordinal());
         charRenderingComboBox.setSelectedIndex(codeArea.getCharRenderingMode().ordinal());
@@ -67,6 +75,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
         dataSizeTextField.setText(String.valueOf(codeArea.getData().getDataSize()));
 
         int decorationMode = codeArea.getDecorationMode();
+        decoratorHeaderLineCheckBox.setSelected((decorationMode & CodeArea.DECORATION_HEADER_LINE) > 0);
         decoratorLineNumLineCheckBox.setSelected((decorationMode & CodeArea.DECORATION_LINENUM_HEX_LINE) > 0);
         decoratorSplitLineCheckBox.setSelected((decorationMode & CodeArea.DECORATION_HEX_PREVIEW_LINE) > 0);
         decoratorBoxCheckBox.setSelected((decorationMode & CodeArea.DECORATION_BOX) > 0);
@@ -152,15 +161,18 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
         hexCharactersModeLabel = new javax.swing.JLabel();
         lineNumbersPanel = new javax.swing.JPanel();
         showLineNumbersCheckBox = new javax.swing.JCheckBox();
-        lineNumbersLengthLabel = new javax.swing.JLabel();
-        lineNumbersLengthComboBox = new javax.swing.JComboBox<>();
-        lineNumbersSpaceLabel = new javax.swing.JLabel();
-        lineNumbersSpaceComboBox = new javax.swing.JComboBox<>();
+        lineNumberLengthLabel = new javax.swing.JLabel();
+        lineNumberLengthComboBox = new javax.swing.JComboBox<>();
+        lineNumberSpaceLabel = new javax.swing.JLabel();
+        lineNumberSpaceComboBox = new javax.swing.JComboBox<>();
+        lineNumberSpaceSpinner = new javax.swing.JSpinner();
+        lineNumberSpaceSpinner1 = new javax.swing.JSpinner();
         wrapLineModeCheckBox = new javax.swing.JCheckBox();
         headerPanel = new javax.swing.JPanel();
         showHeaderCheckBox = new javax.swing.JCheckBox();
         headerSpaceLabel = new javax.swing.JLabel();
         headerSpaceComboBox = new javax.swing.JComboBox<>();
+        headerSpaceSpinner = new javax.swing.JSpinner();
         positionCodeTypeLabel = new javax.swing.JLabel();
         positionCodeTypeComboBox = new javax.swing.JComboBox<>();
         decorationPanel = new javax.swing.JPanel();
@@ -248,6 +260,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
                     .addComponent(charRenderingComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(viewModeComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(codeTypeComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(charAntialiasingComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(modePanelLayout.createSequentialGroup()
                         .addGroup(modePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(charRenderingScrollModeLabel)
@@ -255,8 +268,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
                             .addComponent(editableCheckBox, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(viewModeScrollModeLabel)
                             .addComponent(codeTypeScrollModeLabel))
-                        .addGap(0, 88, Short.MAX_VALUE))
-                    .addComponent(charAntialiasingComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(0, 104, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         modePanelLayout.setVerticalGroup(
@@ -280,7 +292,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
                 .addComponent(charAntialiasingComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(editableCheckBox)
-                .addContainerGap(215, Short.MAX_VALUE))
+                .addContainerGap(284, Short.MAX_VALUE))
         );
 
         tabbedPane.addTab("Mode", modePanel);
@@ -337,7 +349,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
                             .addComponent(positionLabel)
                             .addComponent(codeOffsetLabel)
                             .addComponent(activeSectionLabel))
-                        .addGap(0, 78, Short.MAX_VALUE))
+                        .addGap(0, 94, Short.MAX_VALUE))
                     .addComponent(activeSectionComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -434,7 +446,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
                 .addComponent(cursorPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(selectionPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(111, Short.MAX_VALUE))
         );
 
         tabbedPane.addTab("State", statePanel);
@@ -465,25 +477,39 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
             }
         });
 
-        lineNumbersLengthLabel.setText("Line Numbers Length");
-        lineNumbersLengthLabel.setEnabled(false);
+        lineNumberLengthLabel.setText("Line Numbers Length");
+        lineNumberLengthLabel.setEnabled(false);
 
-        lineNumbersLengthComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "TODO" }));
-        lineNumbersLengthComboBox.setEnabled(false);
-        lineNumbersLengthComboBox.addActionListener(new java.awt.event.ActionListener() {
+        lineNumberLengthComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "TODO" }));
+        lineNumberLengthComboBox.setEnabled(false);
+        lineNumberLengthComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                lineNumbersLengthComboBoxActionPerformed(evt);
+                lineNumberLengthComboBoxActionPerformed(evt);
             }
         });
 
-        lineNumbersSpaceLabel.setText("Header Space");
-        lineNumbersSpaceLabel.setEnabled(false);
+        lineNumberSpaceLabel.setText("Line Numbers Space");
+        lineNumberSpaceLabel.setEnabled(false);
 
-        lineNumbersSpaceComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "TODO" }));
-        lineNumbersSpaceComboBox.setEnabled(false);
-        lineNumbersSpaceComboBox.addActionListener(new java.awt.event.ActionListener() {
+        lineNumberSpaceComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "TODO" }));
+        lineNumberSpaceComboBox.setEnabled(false);
+        lineNumberSpaceComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                lineNumbersSpaceComboBoxActionPerformed(evt);
+                lineNumberSpaceComboBoxActionPerformed(evt);
+            }
+        });
+
+        lineNumberSpaceSpinner.setEnabled(false);
+        lineNumberSpaceSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                lineNumberSpaceSpinnerStateChanged(evt);
+            }
+        });
+
+        lineNumberSpaceSpinner1.setEnabled(false);
+        lineNumberSpaceSpinner1.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                lineNumberSpaceSpinner1StateChanged(evt);
             }
         });
 
@@ -493,17 +519,23 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
             lineNumbersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(lineNumbersPanelLayout.createSequentialGroup()
                 .addComponent(showLineNumbersCheckBox)
-                .addGap(0, 91, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE))
             .addGroup(lineNumbersPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(lineNumbersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lineNumbersLengthComboBox, javax.swing.GroupLayout.Alignment.TRAILING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lineNumbersSpaceComboBox, javax.swing.GroupLayout.Alignment.TRAILING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(lineNumbersPanelLayout.createSequentialGroup()
+                        .addComponent(lineNumberLengthComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lineNumberSpaceSpinner1))
                     .addGroup(lineNumbersPanelLayout.createSequentialGroup()
                         .addGroup(lineNumbersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lineNumbersLengthLabel)
-                            .addComponent(lineNumbersSpaceLabel))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                            .addComponent(lineNumberLengthLabel)
+                            .addComponent(lineNumberSpaceLabel))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(lineNumbersPanelLayout.createSequentialGroup()
+                        .addComponent(lineNumberSpaceComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lineNumberSpaceSpinner)))
                 .addContainerGap())
         );
         lineNumbersPanelLayout.setVerticalGroup(
@@ -511,13 +543,18 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
             .addGroup(lineNumbersPanelLayout.createSequentialGroup()
                 .addComponent(showLineNumbersCheckBox)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lineNumbersLengthLabel)
+                .addComponent(lineNumberLengthLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lineNumbersLengthComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(lineNumbersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lineNumberLengthComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lineNumberSpaceSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lineNumbersSpaceLabel)
+                .addComponent(lineNumberSpaceLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lineNumbersSpaceComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(lineNumbersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lineNumberSpaceComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lineNumberSpaceSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         wrapLineModeCheckBox.setText("Wrap Line Mode");
@@ -537,13 +574,18 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
         });
 
         headerSpaceLabel.setText("Header Space");
-        headerSpaceLabel.setEnabled(false);
 
-        headerSpaceComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "TODO" }));
-        headerSpaceComboBox.setEnabled(false);
+        headerSpaceComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "NONE", "SPECIFIED", "QUARTER_UNIT", "HALF_UNIT", "ONE_UNIT", "ONE_AND_HALF_UNIT", "DOUBLE_UNIT" }));
+        headerSpaceComboBox.setSelectedIndex(1);
         headerSpaceComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 headerSpaceComboBoxActionPerformed(evt);
+            }
+        });
+
+        headerSpaceSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                headerSpaceSpinnerStateChanged(evt);
             }
         });
 
@@ -554,7 +596,10 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
             .addGroup(headerPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(headerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(headerSpaceComboBox, javax.swing.GroupLayout.Alignment.TRAILING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(headerPanelLayout.createSequentialGroup()
+                        .addComponent(headerSpaceComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(headerSpaceSpinner))
                     .addGroup(headerPanelLayout.createSequentialGroup()
                         .addGroup(headerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(showHeaderCheckBox)
@@ -569,14 +614,16 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(headerSpaceLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(headerSpaceComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(headerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(headerSpaceComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(headerSpaceSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         positionCodeTypeLabel.setText("Position Code Type");
-        positionCodeTypeLabel.setEnabled(false);
 
-        positionCodeTypeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "TODO" }));
-        positionCodeTypeComboBox.setEnabled(false);
+        positionCodeTypeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "OCTAL", "DECIMAL", "HEXADECIMAL" }));
+        positionCodeTypeComboBox.setSelectedIndex(2);
         positionCodeTypeComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 positionCodeTypeComboBoxActionPerformed(evt);
@@ -593,17 +640,20 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
                     .addGroup(layoutPanelLayout.createSequentialGroup()
                         .addGroup(layoutPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(lineLengthLabel)
-                            .addComponent(wrapLineModeCheckBox)
-                            .addComponent(hexCharactersModeLabel)
-                            .addComponent(positionCodeTypeLabel))
+                            .addComponent(wrapLineModeCheckBox))
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layoutPanelLayout.createSequentialGroup()
-                        .addGroup(layoutPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(lineNumbersPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(headerPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(lineLengthSpinner, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(hexCharactersModeComboBox, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(positionCodeTypeComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(layoutPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(headerPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(lineLengthSpinner)
+                            .addGroup(layoutPanelLayout.createSequentialGroup()
+                                .addGroup(layoutPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(hexCharactersModeLabel)
+                                    .addComponent(positionCodeTypeLabel))
+                                .addGap(126, 126, 126))
+                            .addComponent(lineNumbersPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(hexCharactersModeComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(positionCodeTypeComboBox, javax.swing.GroupLayout.Alignment.TRAILING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addContainerGap())))
         );
         layoutPanelLayout.setVerticalGroup(
@@ -616,9 +666,9 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lineLengthSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(headerPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(headerPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lineNumbersPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(lineNumbersPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(hexCharactersModeLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -627,7 +677,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
                 .addComponent(positionCodeTypeLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(positionCodeTypeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(63, Short.MAX_VALUE))
         );
 
         tabbedPane.addTab("Layout", layoutPanel);
@@ -680,7 +730,6 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
         });
 
         decoratorHeaderLineCheckBox.setText("Header Line");
-        decoratorHeaderLineCheckBox.setEnabled(false);
         decoratorHeaderLineCheckBox.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 decoratorHeaderLineCheckBoxItemStateChanged(evt);
@@ -703,21 +752,18 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
         linesPanelLayout.setVerticalGroup(
             linesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(linesPanelLayout.createSequentialGroup()
+                .addComponent(decoratorHeaderLineCheckBox)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(decoratorLineNumLineCheckBox)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(decoratorSplitLineCheckBox)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(decoratorBoxCheckBox)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(decoratorHeaderLineCheckBox)
-                .addGap(0, 11, Short.MAX_VALUE))
+                .addComponent(decoratorBoxCheckBox))
         );
 
-        borderTypeLabel.setText("Background Mode");
-        borderTypeLabel.setEnabled(false);
+        borderTypeLabel.setText("Border Type");
 
-        borderTypeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "TODO" }));
-        borderTypeComboBox.setEnabled(false);
+        borderTypeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "NONE", "EMPTY BORDER", "MARGIN BORDER", "BEVEL BORDER - RAISED", "BEVEL BORDER - LOWERED", "ETCHED BORDER - RAISED", "ETCHED BORDER - LOWERED", "LINE BORDER" }));
         borderTypeComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 borderTypeComboBoxActionPerformed(evt);
@@ -740,7 +786,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
                             .addComponent(showNonprintableCharactersCheckBox)
                             .addComponent(showShadowCursorCheckBox)
                             .addComponent(borderTypeLabel))
-                        .addGap(0, 23, Short.MAX_VALUE)))
+                        .addGap(0, 16, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         decorationPanelLayout.setVerticalGroup(
@@ -760,7 +806,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
                 .addComponent(borderTypeLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(borderTypeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(136, Short.MAX_VALUE))
+                .addContainerGap(216, Short.MAX_VALUE))
         );
 
         tabbedPane.addTab("Decoration", decorationPanel);
@@ -867,7 +913,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
                             .addComponent(horizontalScrollBarVisibilityLabel)
                             .addComponent(horizontalScrollModeLabel)
                             .addComponent(horizontalPositionLabel))
-                        .addGap(0, 45, Short.MAX_VALUE))
+                        .addGap(0, 61, Short.MAX_VALUE))
                     .addComponent(horizontalPositionTextField))
                 .addContainerGap())
         );
@@ -907,7 +953,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
                 .addComponent(verticalPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(horizontalPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(77, Short.MAX_VALUE))
+                .addContainerGap(146, Short.MAX_VALUE))
         );
 
         tabbedPane.addTab("Scrolling", scrollingPanel);
@@ -1067,28 +1113,77 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
     }//GEN-LAST:event_saveDataButtonActionPerformed
 
     private void borderTypeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_borderTypeComboBoxActionPerformed
-        // TODO add your handling code here:
+        switch (borderTypeComboBox.getSelectedIndex()) {
+            case 0: {
+                codeArea.setBorder(null);
+                break;
+            }
+            case 1: {
+                codeArea.setBorder(new EmptyBorder(5, 5, 5, 5));
+                break;
+            }
+            case 2: {
+                codeArea.setBorder(new BasicBorders.MarginBorder());
+                break;
+            }
+            case 3: {
+                codeArea.setBorder(new BevelBorder(BevelBorder.RAISED));
+                break;
+            }
+            case 4: {
+                codeArea.setBorder(new BevelBorder(BevelBorder.LOWERED));
+                break;
+            }
+            case 5: {
+                codeArea.setBorder(new EtchedBorder(EtchedBorder.RAISED));
+                break;
+            }
+            case 6: {
+                codeArea.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
+                break;
+            }
+            case 7: {
+                codeArea.setBorder(new LineBorder(Color.BLACK));
+                break;
+            }
+        }
     }//GEN-LAST:event_borderTypeComboBoxActionPerformed
 
     private void decoratorHeaderLineCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_decoratorHeaderLineCheckBoxItemStateChanged
-        // TODO add your handling code here:
+        int decorationMode = codeArea.getDecorationMode();
+        boolean selected = decoratorHeaderLineCheckBox.isSelected();
+        if (((decorationMode & CodeArea.DECORATION_HEADER_LINE) > 0) != selected) {
+            codeArea.setDecorationMode(decorationMode ^ CodeArea.DECORATION_HEADER_LINE);
+        }
     }//GEN-LAST:event_decoratorHeaderLineCheckBoxItemStateChanged
 
     private void headerSpaceComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_headerSpaceComboBoxActionPerformed
-        // TODO add your handling code here:
+        codeArea.setHeaderSpaceType(SpaceType.values()[headerSpaceComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_headerSpaceComboBoxActionPerformed
 
-    private void lineNumbersSpaceComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lineNumbersSpaceComboBoxActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_lineNumbersSpaceComboBoxActionPerformed
+    private void lineNumberSpaceComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lineNumberSpaceComboBoxActionPerformed
+        codeArea.setLineNumberSpaceType(SpaceType.values()[lineNumberSpaceComboBox.getSelectedIndex()]);
+    }//GEN-LAST:event_lineNumberSpaceComboBoxActionPerformed
 
-    private void lineNumbersLengthComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lineNumbersLengthComboBoxActionPerformed
+    private void lineNumberLengthComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lineNumberLengthComboBoxActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_lineNumbersLengthComboBoxActionPerformed
+    }//GEN-LAST:event_lineNumberLengthComboBoxActionPerformed
 
     private void positionCodeTypeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_positionCodeTypeComboBoxActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_positionCodeTypeComboBoxActionPerformed
+
+    private void headerSpaceSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_headerSpaceSpinnerStateChanged
+        codeArea.setLineNumberSpaceSize((Integer) lineNumberSpaceSpinner.getValue());
+    }//GEN-LAST:event_headerSpaceSpinnerStateChanged
+
+    private void lineNumberSpaceSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_lineNumberSpaceSpinnerStateChanged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_lineNumberSpaceSpinnerStateChanged
+
+    private void lineNumberSpaceSpinner1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_lineNumberSpaceSpinner1StateChanged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_lineNumberSpaceSpinner1StateChanged
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<String> activeSectionComboBox;
@@ -1117,6 +1212,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
     private javax.swing.JPanel headerPanel;
     private javax.swing.JComboBox<String> headerSpaceComboBox;
     private javax.swing.JLabel headerSpaceLabel;
+    private javax.swing.JSpinner headerSpaceSpinner;
     private javax.swing.JComboBox<String> hexCharactersModeComboBox;
     private javax.swing.JLabel hexCharactersModeLabel;
     private javax.swing.JPanel horizontalPanel;
@@ -1129,11 +1225,13 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
     private javax.swing.JPanel layoutPanel;
     private javax.swing.JLabel lineLengthLabel;
     private javax.swing.JSpinner lineLengthSpinner;
-    private javax.swing.JComboBox<String> lineNumbersLengthComboBox;
-    private javax.swing.JLabel lineNumbersLengthLabel;
+    private javax.swing.JComboBox<String> lineNumberLengthComboBox;
+    private javax.swing.JLabel lineNumberLengthLabel;
+    private javax.swing.JComboBox<String> lineNumberSpaceComboBox;
+    private javax.swing.JLabel lineNumberSpaceLabel;
+    private javax.swing.JSpinner lineNumberSpaceSpinner;
+    private javax.swing.JSpinner lineNumberSpaceSpinner1;
     private javax.swing.JPanel lineNumbersPanel;
-    private javax.swing.JComboBox<String> lineNumbersSpaceComboBox;
-    private javax.swing.JLabel lineNumbersSpaceLabel;
     private javax.swing.JPanel linesPanel;
     private javax.swing.JButton loadDataButton;
     private javax.swing.JPanel modePanel;
