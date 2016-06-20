@@ -64,7 +64,7 @@ public class CodeArea extends JComponent {
     public static final int DECORATION_LINENUM_LINE = 2;
     public static final int DECORATION_PREVIEW_LINE = 4;
     public static final int DECORATION_BOX = 8;
-    public static final int DECORATION_DEFAULT = DECORATION_PREVIEW_LINE | DECORATION_LINENUM_LINE;
+    public static final int DECORATION_DEFAULT = DECORATION_PREVIEW_LINE | DECORATION_LINENUM_LINE | DECORATION_HEADER_LINE;
     public static final int MOUSE_SCROLL_LINES = 3;
 
     private int metaMask;

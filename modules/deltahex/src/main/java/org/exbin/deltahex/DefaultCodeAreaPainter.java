@@ -76,7 +76,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             int charWidth = codeArea.getCharWidth();
             int bytesPerBounds = codeArea.getBytesPerLine();
             int headerX = hexRect.x - scrollPosition.scrollBytePosition * charWidth - scrollPosition.scrollByteOffset;
-            int headerY = codeArea.getLineHeight() - codeArea.getSubFontSpace();
+            int headerY = codeArea.getInsets().top + codeArea.getLineHeight() - codeArea.getSubFontSpace();
 
             if (codeArea.getBackgroundMode() == CodeArea.BackgroundMode.GRIDDED) {
                 g.setColor(codeArea.getOddBackgroundColor());
