@@ -47,7 +47,6 @@ import javax.swing.JComponent;
 import javax.swing.JScrollBar;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
-import javax.swing.plaf.basic.BasicBorders;
 import org.exbin.utils.binary_data.BinaryData;
 
 /**
@@ -55,17 +54,17 @@ import org.exbin.utils.binary_data.BinaryData;
  *
  * Also supports binary, octal and decimal codes.
  *
- * @version 0.1.0 2016/06/19
+ * @version 0.1.0 2016/06/20
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeArea extends JComponent {
 
     public static final int NO_MODIFIER = 0;
     public static final int DECORATION_HEADER_LINE = 1;
-    public static final int DECORATION_LINENUM_HEX_LINE = 2;
-    public static final int DECORATION_HEX_PREVIEW_LINE = 4;
+    public static final int DECORATION_LINENUM_LINE = 2;
+    public static final int DECORATION_PREVIEW_LINE = 4;
     public static final int DECORATION_BOX = 8;
-    public static final int DECORATION_DEFAULT = DECORATION_HEX_PREVIEW_LINE | DECORATION_LINENUM_HEX_LINE;
+    public static final int DECORATION_DEFAULT = DECORATION_PREVIEW_LINE | DECORATION_LINENUM_LINE;
     public static final int MOUSE_SCROLL_LINES = 3;
 
     private int metaMask;
@@ -86,11 +85,12 @@ public class CodeArea extends JComponent {
     private CharRenderingMode charRenderingMode = CharRenderingMode.AUTO;
     private CharAntialiasingMode charAntialiasingMode = CharAntialiasingMode.AUTO;
     private HexCharactersCase hexCharactersCase = HexCharactersCase.UPPER;
-    private final CodeAreaSpace headerSpace = new CodeAreaSpace();
-    private final CodeAreaSpace lineNumSpace = new CodeAreaSpace();
+    private final CodeAreaSpace headerSpace = new CodeAreaSpace(CodeAreaSpace.SpaceType.HALF_UNIT);
+    private final CodeAreaSpace lineNumberSpace = new CodeAreaSpace();
+    private final CodeAreaLineNumberLength lineNumberLength = new CodeAreaLineNumberLength();
+
     private int lineLength = 16;
     private int subFontSpace = 3;
-    private int headerCharacters = 8;
     private boolean showHeader = true;
     private boolean showLineNumbers = true;
     private boolean mouseDown;
@@ -119,6 +119,7 @@ public class CodeArea extends JComponent {
     private Color mirrorSelectionBackgroundColor;
     private Color cursorColor;
     private Color whiteSpaceColor;
+    private Color decorationLineColor;
 
     /**
      * Listeners.
@@ -148,6 +149,7 @@ public class CodeArea extends JComponent {
         cursorColor = UIManager.getColor("TextArea.caretForeground");
         Color foreground = super.getForeground();
         whiteSpaceColor = new Color(foreground.getRed(), (foreground.getGreen() + 128) % 256, foreground.getBlue());
+        decorationLineColor = Color.GRAY;
 
         try {
             metaMask = java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
@@ -615,6 +617,33 @@ public class CodeArea extends JComponent {
         return dimensionsCache.charWidth;
     }
 
+    /**
+     * Returns header space size.
+     *
+     * @return header space size
+     */
+    public int getHeaderSpace() {
+        return dimensionsCache.headerSpace;
+    }
+
+    /**
+     * Returns line number space size.
+     *
+     * @return line number space size
+     */
+    public int getLineNumberSpace() {
+        return dimensionsCache.lineNumberSpace;
+    }
+
+    /**
+     * Returns current line number length in characters.
+     *
+     * @return line number length
+     */
+    public int getLineNumberLength() {
+        return dimensionsCache.lineNumbersLength;
+    }
+
     public BinaryData getData() {
         return data;
     }
@@ -700,7 +729,7 @@ public class CodeArea extends JComponent {
             return;
         }
 
-        // TODO byte groups, other code types
+        // TODO byte groups
         switch (viewMode) {
             case CODE_MATRIX: {
                 dimensionsCache.charsPerByte = codeType.maxDigits + 1;
@@ -729,6 +758,21 @@ public class CodeArea extends JComponent {
         compRect.width = size.width - insets.left - insets.right;
         compRect.height = size.height - insets.top - insets.bottom;
 
+        switch (lineNumberLength.getLineNumberType()) {
+            case AUTO: {
+                double natLog = Math.log(getData().getDataSize());
+                dimensionsCache.lineNumbersLength = (int) Math.ceil(natLog / positionCodeType.baseLog);
+                if (dimensionsCache.lineNumbersLength == 0) {
+                    dimensionsCache.lineNumbersLength = 1;
+                }
+                break;
+            }
+            case SPECIFIED: {
+                dimensionsCache.lineNumbersLength = lineNumberLength.getLineNumberLength();
+                break;
+            }
+        }
+
         int charsPerRect = computeCharsPerRect(compRect.width);
         int bytesPerLine;
         if (wrapMode) {
@@ -740,7 +784,6 @@ public class CodeArea extends JComponent {
             bytesPerLine = lineLength;
         }
         int lines = (int) (data.getDataSize() / bytesPerLine) + 1;
-
         CodeAreaSpace.SpaceType headerSpaceType = headerSpace.getSpaceType();
         switch (headerSpaceType) {
             case NONE: {
@@ -775,9 +818,43 @@ public class CodeArea extends JComponent {
                 throw new IllegalStateException("Unexpected header space type " + headerSpaceType.name());
         }
 
+        CodeAreaSpace.SpaceType lineNumberSpaceType = lineNumberSpace.getSpaceType();
+        switch (lineNumberSpaceType) {
+            case NONE: {
+                dimensionsCache.lineNumberSpace = 0;
+                break;
+            }
+            case SPECIFIED: {
+                dimensionsCache.lineNumberSpace = lineNumberSpace.getSpaceSize();
+                break;
+            }
+            case QUARTER_UNIT: {
+                dimensionsCache.lineNumberSpace = dimensionsCache.charWidth / 4;
+                break;
+            }
+            case HALF_UNIT: {
+                dimensionsCache.lineNumberSpace = dimensionsCache.charWidth / 2;
+                break;
+            }
+            case ONE_UNIT: {
+                dimensionsCache.lineNumberSpace = dimensionsCache.charWidth;
+                break;
+            }
+            case ONE_AND_HALF_UNIT: {
+                dimensionsCache.lineNumberSpace = (int) (dimensionsCache.charWidth * 1.5f);
+                break;
+            }
+            case DOUBLE_UNIT: {
+                dimensionsCache.lineNumberSpace = dimensionsCache.charWidth * 2;
+                break;
+            }
+            default:
+                throw new IllegalStateException("Unexpected line number space type " + lineNumberSpaceType.name());
+        }
+
         Rectangle hexRect = dimensionsCache.codeSectionRectangle;
         hexRect.y = insets.top + (showHeader ? dimensionsCache.lineHeight + dimensionsCache.headerSpace : 0);
-        hexRect.x = insets.left + (showLineNumbers ? dimensionsCache.charWidth * 9 : 0);
+        hexRect.x = insets.left + (showLineNumbers ? dimensionsCache.charWidth * dimensionsCache.lineNumbersLength + dimensionsCache.lineNumberSpace : 0);
 
         if (verticalScrollBarVisibility == ScrollBarVisibility.IF_NEEDED) {
             verticalScrollBarVisible = lines > dimensionsCache.linesPerRect;
@@ -931,7 +1008,7 @@ public class CodeArea extends JComponent {
 
     private int computeCharsPerRect(int width) {
         if (showLineNumbers) {
-            width -= dimensionsCache.charWidth * 9;
+            width -= dimensionsCache.charWidth * dimensionsCache.lineNumbersLength + getLineNumberSpace();
         }
 
         return width / dimensionsCache.charWidth;
@@ -943,6 +1020,7 @@ public class CodeArea extends JComponent {
 
     public void setOddForegroundColor(Color oddForegroundColor) {
         this.oddForegroundColor = oddForegroundColor;
+        repaint();
     }
 
     public Color getOddBackgroundColor() {
@@ -951,6 +1029,7 @@ public class CodeArea extends JComponent {
 
     public void setOddBackgroundColor(Color oddBackgroundColor) {
         this.oddBackgroundColor = oddBackgroundColor;
+        repaint();
     }
 
     public Color getSelectionColor() {
@@ -959,6 +1038,7 @@ public class CodeArea extends JComponent {
 
     public void setSelectionColor(Color selectionColor) {
         this.selectionColor = selectionColor;
+        repaint();
     }
 
     public Color getSelectionBackgroundColor() {
@@ -967,6 +1047,7 @@ public class CodeArea extends JComponent {
 
     public void setSelectionBackgroundColor(Color selectionBackgroundColor) {
         this.selectionBackgroundColor = selectionBackgroundColor;
+        repaint();
     }
 
     public Color getMirrorSelectionColor() {
@@ -975,6 +1056,7 @@ public class CodeArea extends JComponent {
 
     public void setMirrorSelectionColor(Color mirrorSelectionColor) {
         this.mirrorSelectionColor = mirrorSelectionColor;
+        repaint();
     }
 
     public Color getMirrorSelectionBackgroundColor() {
@@ -983,6 +1065,7 @@ public class CodeArea extends JComponent {
 
     public void setMirrorSelectionBackgroundColor(Color mirrorSelectionBackgroundColor) {
         this.mirrorSelectionBackgroundColor = mirrorSelectionBackgroundColor;
+        repaint();
     }
 
     public Color getCursorColor() {
@@ -991,6 +1074,7 @@ public class CodeArea extends JComponent {
 
     public void setCursorColor(Color cursorColor) {
         this.cursorColor = cursorColor;
+        repaint();
     }
 
     public Color getWhiteSpaceColor() {
@@ -999,6 +1083,16 @@ public class CodeArea extends JComponent {
 
     public void setWhiteSpaceColor(Color whiteSpaceColor) {
         this.whiteSpaceColor = whiteSpaceColor;
+        repaint();
+    }
+
+    public Color getDecorationLineColor() {
+        return decorationLineColor;
+    }
+
+    public void setDecorationLineColor(Color decorationLineColor) {
+        this.decorationLineColor = decorationLineColor;
+        repaint();
     }
 
     public ViewMode getViewMode() {
@@ -1062,15 +1156,6 @@ public class CodeArea extends JComponent {
 
     public void setSubFontSpace(int subFontSpace) {
         this.subFontSpace = subFontSpace;
-    }
-
-    public int getHeaderCharacters() {
-        return headerCharacters;
-    }
-
-    public void setHeaderCharacters(int headerCharacters) {
-        this.headerCharacters = headerCharacters;
-        repaint();
     }
 
     public Section getActiveSection() {
@@ -1225,7 +1310,7 @@ public class CodeArea extends JComponent {
         return headerSpace.getSpaceSize();
     }
 
-    public void getHeaderSpaceSize(int spaceSize) {
+    public void setHeaderSpaceSize(int spaceSize) {
         if (spaceSize < 0) {
             throw new IllegalArgumentException("Negative space size is not valid");
         }
@@ -1234,28 +1319,54 @@ public class CodeArea extends JComponent {
         repaint();
     }
 
-    public CodeAreaSpace.SpaceType getLineNumberSpace() {
-        return lineNumSpace.getSpaceType();
+    public CodeAreaSpace.SpaceType getLineNumberSpaceType() {
+        return lineNumberSpace.getSpaceType();
     }
 
     public void setLineNumberSpaceType(CodeAreaSpace.SpaceType spaceType) {
         if (spaceType == null) {
             throw new NullPointerException();
         }
-        lineNumSpace.setSpaceType(spaceType);
+        lineNumberSpace.setSpaceType(spaceType);
         computeDimensions();
         repaint();
     }
 
     public int getLineNumberSpaceSize() {
-        return lineNumSpace.getSpaceSize();
+        return lineNumberSpace.getSpaceSize();
     }
 
     public void setLineNumberSpaceSize(int spaceSize) {
         if (spaceSize < 0) {
             throw new IllegalArgumentException("Negative space size is not valid");
         }
-        lineNumSpace.setSpaceSize(spaceSize);
+        lineNumberSpace.setSpaceSize(spaceSize);
+        computeDimensions();
+        repaint();
+    }
+
+    public CodeAreaLineNumberLength.LineNumberType getLineNumberType() {
+        return lineNumberLength.getLineNumberType();
+    }
+
+    public void setLineNumberType(CodeAreaLineNumberLength.LineNumberType lineNumberType) {
+        if (lineNumberType == null) {
+            throw new NullPointerException("Line number type cannot be null");
+        }
+        lineNumberLength.setLineNumberType(lineNumberType);
+        computeDimensions();
+        repaint();
+    }
+
+    public int getLineNumberSpecifiedLength() {
+        return lineNumberLength.getLineNumberLength();
+    }
+
+    public void setLineNumberSpecifiedLength(int lineNumberSize) {
+        if (lineNumberSize < 1) {
+            throw new NullPointerException("Line number type cannot be less then 1");
+        }
+        lineNumberLength.setLineNumberLength(lineNumberSize);
         computeDimensions();
         repaint();
     }
@@ -1483,7 +1594,23 @@ public class CodeArea extends JComponent {
     }
 
     public static enum PositionCodeType {
-        OCTAL, DECIMAL, HEXADECIMAL
+        OCTAL(8), DECIMAL(10), HEXADECIMAL(16);
+
+        int base;
+        double baseLog;
+
+        private PositionCodeType(int base) {
+            this.base = base;
+            baseLog = Math.log(base);
+        }
+
+        public int getBase() {
+            return base;
+        }
+
+        public double getBaseLog() {
+            return baseLog;
+        }
     }
 
     public static enum Section {
@@ -1545,6 +1672,7 @@ public class CodeArea extends JComponent {
         int lineHeight;
         int bytesPerLine;
         int charsPerByte;
+        int lineNumbersLength;
         boolean monospaced = false;
 
         /**
@@ -1558,7 +1686,7 @@ public class CodeArea extends JComponent {
         /**
          * Space between line numbers and code area.
          */
-        int lineNumSpace;
+        int lineNumberSpace;
         /**
          * Space between main code area and preview.
          */

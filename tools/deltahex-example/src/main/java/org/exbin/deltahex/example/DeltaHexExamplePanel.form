@@ -11,298 +11,58 @@
     <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
     <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
     <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
-    <AuxValue name="designerSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,2,50,0,0,1,47"/>
+    <AuxValue name="designerSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,2,50,0,0,1,-2"/>
   </AuxValues>
 
   <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
   <SubComponents>
-    <Container class="javax.swing.JTabbedPane" name="tabbedPane">
+    <Container class="javax.swing.JSplitPane" name="splitPane">
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
-          <BorderConstraints direction="West"/>
+          <BorderConstraints direction="Center"/>
         </Constraint>
       </Constraints>
 
-      <Layout class="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout"/>
+      <Layout class="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout"/>
       <SubComponents>
-        <Container class="javax.swing.JPanel" name="modePanel">
+        <Container class="javax.swing.JTabbedPane" name="tabbedPane">
           <Constraints>
-            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
-              <JTabbedPaneConstraints tabName="Mode">
-                <Property name="tabTitle" type="java.lang.String" value="Mode"/>
-              </JTabbedPaneConstraints>
+            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout$JSplitPaneConstraintsDescription">
+              <JSplitPaneConstraints position="left"/>
             </Constraint>
           </Constraints>
 
-          <Layout>
-            <DimensionLayout dim="0">
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" attributes="0">
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="charRenderingComboBox" alignment="0" max="32767" attributes="0"/>
-                          <Component id="viewModeComboBox" max="32767" attributes="0"/>
-                          <Component id="codeTypeComboBox" alignment="0" max="32767" attributes="0"/>
-                          <Component id="charAntialiasingComboBox" alignment="0" max="32767" attributes="0"/>
-                          <Group type="102" attributes="0">
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="charRenderingScrollModeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Component id="charAntialiasingScrollModeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Component id="editableCheckBox" alignment="0" min="-2" pref="109" max="-2" attributes="0"/>
-                                  <Component id="viewModeScrollModeLabel" min="-2" max="-2" attributes="0"/>
-                                  <Component id="codeTypeScrollModeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <EmptySpace min="0" pref="104" max="32767" attributes="0"/>
-                          </Group>
-                      </Group>
-                      <EmptySpace max="-2" attributes="0"/>
-                  </Group>
-              </Group>
-            </DimensionLayout>
-            <DimensionLayout dim="1">
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="viewModeScrollModeLabel" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="viewModeComboBox" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="codeTypeScrollModeLabel" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="codeTypeComboBox" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="charRenderingScrollModeLabel" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="charRenderingComboBox" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="charAntialiasingScrollModeLabel" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="charAntialiasingComboBox" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="editableCheckBox" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace pref="284" max="32767" attributes="0"/>
-                  </Group>
-              </Group>
-            </DimensionLayout>
-          </Layout>
+          <Layout class="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout"/>
           <SubComponents>
-            <Component class="javax.swing.JCheckBox" name="editableCheckBox">
-              <Properties>
-                <Property name="selected" type="boolean" value="true"/>
-                <Property name="text" type="java.lang.String" value="Editable"/>
-              </Properties>
-              <Events>
-                <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="editableCheckBoxItemStateChanged"/>
-              </Events>
-            </Component>
-            <Component class="javax.swing.JLabel" name="viewModeScrollModeLabel">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="View Mode"/>
-              </Properties>
-            </Component>
-            <Component class="javax.swing.JComboBox" name="viewModeComboBox">
-              <Properties>
-                <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                  <StringArray count="3">
-                    <StringItem index="0" value="DUAL"/>
-                    <StringItem index="1" value="HEXADECIMAL"/>
-                    <StringItem index="2" value="PREVIEW"/>
-                  </StringArray>
-                </Property>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="viewModeComboBoxActionPerformed"/>
-              </Events>
-              <AuxValues>
-                <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
-              </AuxValues>
-            </Component>
-            <Component class="javax.swing.JLabel" name="charRenderingScrollModeLabel">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Character Rendering"/>
-              </Properties>
-            </Component>
-            <Component class="javax.swing.JComboBox" name="charRenderingComboBox">
-              <Properties>
-                <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                  <StringArray count="4">
-                    <StringItem index="0" value="AUTO"/>
-                    <StringItem index="1" value="LEFT"/>
-                    <StringItem index="2" value="CENTER"/>
-                    <StringItem index="3" value="FIXED"/>
-                  </StringArray>
-                </Property>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="charRenderingComboBoxActionPerformed"/>
-              </Events>
-              <AuxValues>
-                <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
-              </AuxValues>
-            </Component>
-            <Component class="javax.swing.JLabel" name="charAntialiasingScrollModeLabel">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Character Antialiasing"/>
-              </Properties>
-            </Component>
-            <Component class="javax.swing.JComboBox" name="charAntialiasingComboBox">
-              <Properties>
-                <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                  <StringArray count="9">
-                    <StringItem index="0" value="OFF"/>
-                    <StringItem index="1" value="AUTO"/>
-                    <StringItem index="2" value="DEFAULT"/>
-                    <StringItem index="3" value="BASIC"/>
-                    <StringItem index="4" value="GASP"/>
-                    <StringItem index="5" value="LCD_HRGB"/>
-                    <StringItem index="6" value="LCD_HBGR"/>
-                    <StringItem index="7" value="LCD_VRGB"/>
-                    <StringItem index="8" value="LCD_VBGR"/>
-                  </StringArray>
-                </Property>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="charAntialiasingComboBoxActionPerformed"/>
-              </Events>
-              <AuxValues>
-                <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
-              </AuxValues>
-            </Component>
-            <Component class="javax.swing.JLabel" name="codeTypeScrollModeLabel">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Code Type"/>
-              </Properties>
-            </Component>
-            <Component class="javax.swing.JComboBox" name="codeTypeComboBox">
-              <Properties>
-                <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                  <StringArray count="4">
-                    <StringItem index="0" value="BINARY"/>
-                    <StringItem index="1" value="OCTAL"/>
-                    <StringItem index="2" value="DECIMAL"/>
-                    <StringItem index="3" value="HEXADECIMAL"/>
-                  </StringArray>
-                </Property>
-                <Property name="selectedIndex" type="int" value="3"/>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="codeTypeComboBoxActionPerformed"/>
-              </Events>
-              <AuxValues>
-                <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
-              </AuxValues>
-            </Component>
-          </SubComponents>
-        </Container>
-        <Container class="javax.swing.JPanel" name="statePanel">
-          <Constraints>
-            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
-              <JTabbedPaneConstraints tabName="State">
-                <Property name="tabTitle" type="java.lang.String" value="State"/>
-              </JTabbedPaneConstraints>
-            </Constraint>
-          </Constraints>
-
-          <Layout>
-            <DimensionLayout dim="0">
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="1" attributes="0">
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="1" attributes="0">
-                          <Component id="selectionPanel" max="32767" attributes="0"/>
-                          <Component id="cursorPanel" alignment="0" max="32767" attributes="0"/>
-                          <Component id="dataSizeTextField" alignment="0" max="32767" attributes="0"/>
-                          <Group type="102" alignment="0" attributes="0">
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="dataSizeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Group type="102" alignment="0" attributes="0">
-                                      <Component id="loadDataButton" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="saveDataButton" min="-2" max="-2" attributes="0"/>
-                                  </Group>
-                              </Group>
-                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                          </Group>
-                      </Group>
-                      <EmptySpace max="-2" attributes="0"/>
-                  </Group>
-              </Group>
-            </DimensionLayout>
-            <DimensionLayout dim="1">
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="-2" pref="9" max="-2" attributes="0"/>
-                      <Component id="dataSizeLabel" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="dataSizeTextField" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="7" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="loadDataButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="saveDataButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="cursorPanel" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="selectionPanel" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace pref="111" max="32767" attributes="0"/>
-                  </Group>
-              </Group>
-            </DimensionLayout>
-          </Layout>
-          <SubComponents>
-            <Component class="javax.swing.JLabel" name="dataSizeLabel">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Data Size"/>
-              </Properties>
-            </Component>
-            <Component class="javax.swing.JTextField" name="dataSizeTextField">
-              <Properties>
-                <Property name="editable" type="boolean" value="false"/>
-                <Property name="text" type="java.lang.String" value="0"/>
-              </Properties>
-            </Component>
-            <Component class="javax.swing.JButton" name="loadDataButton">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Load..."/>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="loadDataButtonActionPerformed"/>
-              </Events>
-            </Component>
-            <Component class="javax.swing.JButton" name="saveDataButton">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Save..."/>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="saveDataButtonActionPerformed"/>
-              </Events>
-            </Component>
-            <Container class="javax.swing.JPanel" name="cursorPanel">
-              <Properties>
-                <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-                  <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                    <TitledBorder title="Cursor"/>
-                  </Border>
-                </Property>
-              </Properties>
+            <Container class="javax.swing.JPanel" name="modePanel">
+              <Constraints>
+                <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
+                  <JTabbedPaneConstraints tabName="Mode">
+                    <Property name="tabTitle" type="java.lang.String" value="Mode"/>
+                  </JTabbedPaneConstraints>
+                </Constraint>
+              </Constraints>
 
               <Layout>
                 <DimensionLayout dim="0">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" alignment="0" attributes="0">
+                      <Group type="102" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="codeOffsetTextField" alignment="0" max="32767" attributes="0"/>
-                              <Component id="positionTextField" alignment="0" max="32767" attributes="0"/>
-                              <Group type="102" alignment="0" attributes="0">
+                              <Component id="charRenderingComboBox" alignment="0" max="32767" attributes="0"/>
+                              <Component id="viewModeComboBox" max="32767" attributes="0"/>
+                              <Component id="codeTypeComboBox" alignment="0" max="32767" attributes="0"/>
+                              <Component id="charAntialiasingComboBox" alignment="0" max="32767" attributes="0"/>
+                              <Group type="102" attributes="0">
                                   <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="positionLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                                      <Component id="codeOffsetLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                                      <Component id="activeSectionLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="charRenderingScrollModeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="charAntialiasingScrollModeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="editableCheckBox" alignment="0" min="-2" pref="109" max="-2" attributes="0"/>
+                                      <Component id="viewModeScrollModeLabel" min="-2" max="-2" attributes="0"/>
+                                      <Component id="codeTypeScrollModeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                                   </Group>
-                                  <EmptySpace min="0" pref="94" max="32767" attributes="0"/>
+                                  <EmptySpace min="0" pref="104" max="32767" attributes="0"/>
                               </Group>
-                              <Component id="activeSectionComboBox" alignment="0" max="32767" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                       </Group>
@@ -312,59 +72,130 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="positionLabel" min="-2" max="-2" attributes="0"/>
+                          <Component id="viewModeScrollModeLabel" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="positionTextField" min="-2" max="-2" attributes="0"/>
+                          <Component id="viewModeComboBox" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="codeOffsetLabel" min="-2" pref="15" max="-2" attributes="0"/>
+                          <Component id="codeTypeScrollModeLabel" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="codeOffsetTextField" min="-2" max="-2" attributes="0"/>
+                          <Component id="codeTypeComboBox" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="activeSectionLabel" min="-2" max="-2" attributes="0"/>
+                          <Component id="charRenderingScrollModeLabel" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="activeSectionComboBox" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="32767" attributes="0"/>
+                          <Component id="charRenderingComboBox" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="charAntialiasingScrollModeLabel" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="charAntialiasingComboBox" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="editableCheckBox" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace pref="282" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
               </Layout>
               <SubComponents>
-                <Component class="javax.swing.JLabel" name="positionLabel">
+                <Component class="javax.swing.JCheckBox" name="editableCheckBox">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Data Position"/>
+                    <Property name="selected" type="boolean" value="true"/>
+                    <Property name="text" type="java.lang.String" value="Editable"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="editableCheckBoxItemStateChanged"/>
+                  </Events>
+                </Component>
+                <Component class="javax.swing.JLabel" name="viewModeScrollModeLabel">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="View Mode"/>
                   </Properties>
                 </Component>
-                <Component class="javax.swing.JTextField" name="positionTextField">
-                  <Properties>
-                    <Property name="editable" type="boolean" value="false"/>
-                  </Properties>
-                </Component>
-                <Component class="javax.swing.JLabel" name="codeOffsetLabel">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="Code Offset Position"/>
-                  </Properties>
-                </Component>
-                <Component class="javax.swing.JTextField" name="codeOffsetTextField">
-                  <Properties>
-                    <Property name="editable" type="boolean" value="false"/>
-                  </Properties>
-                </Component>
-                <Component class="javax.swing.JLabel" name="activeSectionLabel">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="Active Section"/>
-                  </Properties>
-                </Component>
-                <Component class="javax.swing.JComboBox" name="activeSectionComboBox">
+                <Component class="javax.swing.JComboBox" name="viewModeComboBox">
                   <Properties>
                     <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                      <StringArray count="2">
-                        <StringItem index="0" value="CODE_MATRIX"/>
-                        <StringItem index="1" value="TEXT_PREVIEW"/>
+                      <StringArray count="3">
+                        <StringItem index="0" value="DUAL"/>
+                        <StringItem index="1" value="HEXADECIMAL"/>
+                        <StringItem index="2" value="PREVIEW"/>
                       </StringArray>
                     </Property>
                   </Properties>
                   <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="activeSectionComboBoxActionPerformed"/>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="viewModeComboBoxActionPerformed"/>
+                  </Events>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+                  </AuxValues>
+                </Component>
+                <Component class="javax.swing.JLabel" name="charRenderingScrollModeLabel">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Character Rendering"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JComboBox" name="charRenderingComboBox">
+                  <Properties>
+                    <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+                      <StringArray count="4">
+                        <StringItem index="0" value="AUTO"/>
+                        <StringItem index="1" value="LEFT"/>
+                        <StringItem index="2" value="CENTER"/>
+                        <StringItem index="3" value="FIXED"/>
+                      </StringArray>
+                    </Property>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="charRenderingComboBoxActionPerformed"/>
+                  </Events>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+                  </AuxValues>
+                </Component>
+                <Component class="javax.swing.JLabel" name="charAntialiasingScrollModeLabel">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Character Antialiasing"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JComboBox" name="charAntialiasingComboBox">
+                  <Properties>
+                    <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+                      <StringArray count="9">
+                        <StringItem index="0" value="OFF"/>
+                        <StringItem index="1" value="AUTO"/>
+                        <StringItem index="2" value="DEFAULT"/>
+                        <StringItem index="3" value="BASIC"/>
+                        <StringItem index="4" value="GASP"/>
+                        <StringItem index="5" value="LCD_HRGB"/>
+                        <StringItem index="6" value="LCD_HBGR"/>
+                        <StringItem index="7" value="LCD_VRGB"/>
+                        <StringItem index="8" value="LCD_VBGR"/>
+                      </StringArray>
+                    </Property>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="charAntialiasingComboBoxActionPerformed"/>
+                  </Events>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+                  </AuxValues>
+                </Component>
+                <Component class="javax.swing.JLabel" name="codeTypeScrollModeLabel">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Code Type"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JComboBox" name="codeTypeComboBox">
+                  <Properties>
+                    <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+                      <StringArray count="4">
+                        <StringItem index="0" value="BINARY"/>
+                        <StringItem index="1" value="OCTAL"/>
+                        <StringItem index="2" value="DECIMAL"/>
+                        <StringItem index="3" value="HEXADECIMAL"/>
+                      </StringArray>
+                    </Property>
+                    <Property name="selectedIndex" type="int" value="3"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="codeTypeComboBoxActionPerformed"/>
                   </Events>
                   <AuxValues>
                     <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
@@ -372,27 +203,32 @@
                 </Component>
               </SubComponents>
             </Container>
-            <Container class="javax.swing.JPanel" name="selectionPanel">
-              <Properties>
-                <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-                  <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                    <TitledBorder title="Selection"/>
-                  </Border>
-                </Property>
-              </Properties>
+            <Container class="javax.swing.JPanel" name="statePanel">
+              <Constraints>
+                <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
+                  <JTabbedPaneConstraints tabName="State">
+                    <Property name="tabTitle" type="java.lang.String" value="State"/>
+                  </JTabbedPaneConstraints>
+                </Constraint>
+              </Constraints>
 
               <Layout>
                 <DimensionLayout dim="0">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" alignment="0" attributes="0">
+                      <Group type="102" alignment="1" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="1" attributes="0">
-                              <Component id="selectionEndTextField" alignment="0" max="32767" attributes="0"/>
-                              <Component id="selectionStartTextField" alignment="0" max="32767" attributes="0"/>
+                              <Component id="selectionPanel" max="32767" attributes="0"/>
+                              <Component id="cursorPanel" alignment="0" max="32767" attributes="0"/>
+                              <Component id="dataSizeTextField" alignment="0" max="32767" attributes="0"/>
                               <Group type="102" alignment="0" attributes="0">
                                   <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="selectionEndLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                                      <Component id="selectionStartLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="dataSizeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Group type="102" alignment="0" attributes="0">
+                                          <Component id="loadDataButton" min="-2" max="-2" attributes="0"/>
+                                          <EmptySpace max="-2" attributes="0"/>
+                                          <Component id="saveDataButton" min="-2" max="-2" attributes="0"/>
+                                      </Group>
                                   </Group>
                                   <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                               </Group>
@@ -404,753 +240,589 @@
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace min="-2" pref="9" max="-2" attributes="0"/>
+                          <Component id="dataSizeLabel" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="selectionStartLabel" min="-2" max="-2" attributes="0"/>
+                          <Component id="dataSizeTextField" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="7" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="loadDataButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="saveDataButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="selectionStartTextField" min="-2" max="-2" attributes="0"/>
+                          <Component id="cursorPanel" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="selectionEndLabel" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="selectionEndTextField" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="32767" attributes="0"/>
+                          <Component id="selectionPanel" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace pref="109" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
               </Layout>
               <SubComponents>
-                <Component class="javax.swing.JLabel" name="selectionStartLabel">
+                <Component class="javax.swing.JLabel" name="dataSizeLabel">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Selection Start"/>
+                    <Property name="text" type="java.lang.String" value="Data Size"/>
                   </Properties>
                 </Component>
-                <Component class="javax.swing.JTextField" name="selectionStartTextField">
-                  <Properties>
-                    <Property name="editable" type="boolean" value="false"/>
-                  </Properties>
-                </Component>
-                <Component class="javax.swing.JLabel" name="selectionEndLabel">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="Selection End"/>
-                  </Properties>
-                </Component>
-                <Component class="javax.swing.JTextField" name="selectionEndTextField">
+                <Component class="javax.swing.JTextField" name="dataSizeTextField">
                   <Properties>
                     <Property name="editable" type="boolean" value="false"/>
+                    <Property name="text" type="java.lang.String" value="0"/>
                   </Properties>
                 </Component>
-              </SubComponents>
-            </Container>
-          </SubComponents>
-        </Container>
-        <Container class="javax.swing.JPanel" name="layoutPanel">
-          <Constraints>
-            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
-              <JTabbedPaneConstraints tabName="Layout">
-                <Property name="tabTitle" type="java.lang.String" value="Layout"/>
-              </JTabbedPaneConstraints>
-            </Constraint>
-          </Constraints>
+                <Component class="javax.swing.JButton" name="loadDataButton">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Load..."/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="loadDataButtonActionPerformed"/>
+                  </Events>
+                </Component>
+                <Component class="javax.swing.JButton" name="saveDataButton">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Save..."/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="saveDataButtonActionPerformed"/>
+                  </Events>
+                </Component>
+                <Container class="javax.swing.JPanel" name="cursorPanel">
+                  <Properties>
+                    <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                      <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
+                        <TitledBorder title="Cursor"/>
+                      </Border>
+                    </Property>
+                  </Properties>
 
-          <Layout>
-            <DimensionLayout dim="0">
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" attributes="0">
-                      <EmptySpace max="-2" attributes="0"/>
+                  <Layout>
+                    <DimensionLayout dim="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" attributes="0">
+                          <Group type="102" alignment="0" attributes="0">
+                              <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="lineLengthLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Component id="wrapLineModeCheckBox" alignment="0" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                          </Group>
-                          <Group type="102" alignment="1" attributes="0">
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="headerPanel" alignment="0" max="32767" attributes="0"/>
-                                  <Component id="lineLengthSpinner" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="codeOffsetTextField" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="positionTextField" alignment="0" max="32767" attributes="0"/>
                                   <Group type="102" alignment="0" attributes="0">
                                       <Group type="103" groupAlignment="0" attributes="0">
-                                          <Component id="hexCharactersModeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                                          <Component id="positionCodeTypeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                                          <Component id="positionLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                                          <Component id="codeOffsetLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                                          <Component id="activeSectionLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                                       </Group>
-                                      <EmptySpace min="-2" pref="126" max="-2" attributes="0"/>
+                                      <EmptySpace min="0" pref="94" max="32767" attributes="0"/>
                                   </Group>
-                                  <Component id="lineNumbersPanel" alignment="0" max="32767" attributes="0"/>
-                                  <Component id="hexCharactersModeComboBox" alignment="0" max="32767" attributes="0"/>
-                                  <Component id="positionCodeTypeComboBox" alignment="1" max="32767" attributes="0"/>
+                                  <Component id="activeSectionComboBox" alignment="0" max="32767" attributes="0"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                           </Group>
                       </Group>
-                  </Group>
-              </Group>
-            </DimensionLayout>
-            <DimensionLayout dim="1">
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="wrapLineModeCheckBox" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="lineLengthLabel" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="lineLengthSpinner" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="headerPanel" min="-2" pref="104" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="lineNumbersPanel" min="-2" pref="156" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="hexCharactersModeLabel" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="hexCharactersModeComboBox" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="positionCodeTypeLabel" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="positionCodeTypeComboBox" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace pref="63" max="32767" attributes="0"/>
-                  </Group>
-              </Group>
-            </DimensionLayout>
-          </Layout>
-          <SubComponents>
-            <Component class="javax.swing.JLabel" name="lineLengthLabel">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Bytes Per Line"/>
-              </Properties>
-            </Component>
-            <Component class="javax.swing.JSpinner" name="lineLengthSpinner">
-              <Events>
-                <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="lineLengthSpinnerStateChanged"/>
-              </Events>
-            </Component>
-            <Component class="javax.swing.JComboBox" name="hexCharactersModeComboBox">
-              <Properties>
-                <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                  <StringArray count="2">
-                    <StringItem index="0" value="LOWER"/>
-                    <StringItem index="1" value="UPPER"/>
-                  </StringArray>
-                </Property>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="hexCharactersModeComboBoxActionPerformed"/>
-              </Events>
-              <AuxValues>
-                <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
-              </AuxValues>
-            </Component>
-            <Component class="javax.swing.JLabel" name="hexCharactersModeLabel">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Hex Chars Mode"/>
-              </Properties>
-            </Component>
-            <Container class="javax.swing.JPanel" name="lineNumbersPanel">
-              <Properties>
-                <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-                  <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                    <TitledBorder title="Line Numbers"/>
-                  </Border>
-                </Property>
-              </Properties>
-
-              <Layout>
-                <DimensionLayout dim="0">
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" alignment="0" attributes="0">
-                          <Component id="showLineNumbersCheckBox" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                      </Group>
-                      <Group type="102" alignment="0" attributes="0">
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Group type="102" alignment="0" attributes="0">
-                                  <Component id="lineNumberLengthComboBox" min="-2" pref="100" max="-2" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="lineNumberSpaceSpinner1" max="32767" attributes="0"/>
-                              </Group>
-                              <Group type="102" attributes="0">
-                                  <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="lineNumberLengthLabel" min="-2" max="-2" attributes="0"/>
-                                      <Component id="lineNumberSpaceLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  </Group>
-                                  <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                              </Group>
-                              <Group type="102" alignment="0" attributes="0">
-                                  <Component id="lineNumberSpaceComboBox" min="-2" pref="100" max="-2" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="lineNumberSpaceSpinner" max="32767" attributes="0"/>
-                              </Group>
-                          </Group>
-                          <EmptySpace max="-2" attributes="0"/>
-                      </Group>
-                  </Group>
-                </DimensionLayout>
-                <DimensionLayout dim="1">
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" alignment="0" attributes="0">
-                          <Component id="showLineNumbersCheckBox" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="lineNumberLengthLabel" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="lineNumberLengthComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="lineNumberSpaceSpinner1" alignment="3" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="lineNumberSpaceLabel" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="lineNumberSpaceComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="lineNumberSpaceSpinner" alignment="3" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <EmptySpace max="32767" attributes="0"/>
-                      </Group>
-                  </Group>
-                </DimensionLayout>
-              </Layout>
-              <SubComponents>
-                <Component class="javax.swing.JCheckBox" name="showLineNumbersCheckBox">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="Show Line Numbers"/>
-                  </Properties>
-                  <Events>
-                    <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="showLineNumbersCheckBoxItemStateChanged"/>
-                  </Events>
-                </Component>
-                <Component class="javax.swing.JLabel" name="lineNumberLengthLabel">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="Line Numbers Length"/>
-                    <Property name="enabled" type="boolean" value="false"/>
-                  </Properties>
-                </Component>
-                <Component class="javax.swing.JComboBox" name="lineNumberLengthComboBox">
-                  <Properties>
-                    <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                      <StringArray count="1">
-                        <StringItem index="0" value="TODO"/>
-                      </StringArray>
-                    </Property>
-                    <Property name="enabled" type="boolean" value="false"/>
-                  </Properties>
-                  <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="lineNumberLengthComboBoxActionPerformed"/>
-                  </Events>
-                  <AuxValues>
-                    <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
-                  </AuxValues>
-                </Component>
-                <Component class="javax.swing.JLabel" name="lineNumberSpaceLabel">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="Line Numbers Space"/>
-                    <Property name="enabled" type="boolean" value="false"/>
-                  </Properties>
-                </Component>
-                <Component class="javax.swing.JComboBox" name="lineNumberSpaceComboBox">
-                  <Properties>
-                    <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                      <StringArray count="1">
-                        <StringItem index="0" value="TODO"/>
-                      </StringArray>
-                    </Property>
-                    <Property name="enabled" type="boolean" value="false"/>
-                  </Properties>
-                  <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="lineNumberSpaceComboBoxActionPerformed"/>
-                  </Events>
-                  <AuxValues>
-                    <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
-                  </AuxValues>
-                </Component>
-                <Component class="javax.swing.JSpinner" name="lineNumberSpaceSpinner">
-                  <Properties>
-                    <Property name="enabled" type="boolean" value="false"/>
-                  </Properties>
-                  <Events>
-                    <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="lineNumberSpaceSpinnerStateChanged"/>
-                  </Events>
-                </Component>
-                <Component class="javax.swing.JSpinner" name="lineNumberSpaceSpinner1">
-                  <Properties>
-                    <Property name="enabled" type="boolean" value="false"/>
-                  </Properties>
-                  <Events>
-                    <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="lineNumberSpaceSpinner1StateChanged"/>
-                  </Events>
-                </Component>
-              </SubComponents>
-            </Container>
-            <Component class="javax.swing.JCheckBox" name="wrapLineModeCheckBox">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Wrap Line Mode"/>
-              </Properties>
-              <Events>
-                <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="wrapLineModeCheckBoxItemStateChanged"/>
-              </Events>
-            </Component>
-            <Container class="javax.swing.JPanel" name="headerPanel">
-              <Properties>
-                <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-                  <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                    <TitledBorder title="Header"/>
-                  </Border>
-                </Property>
-              </Properties>
-
-              <Layout>
-                <DimensionLayout dim="0">
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" alignment="0" attributes="0">
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Group type="102" alignment="0" attributes="0">
-                                  <Component id="headerSpaceComboBox" min="-2" pref="100" max="-2" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="headerSpaceSpinner" max="32767" attributes="0"/>
-                              </Group>
-                              <Group type="102" attributes="0">
-                                  <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="showHeaderCheckBox" alignment="0" min="-2" max="-2" attributes="0"/>
-                                      <Component id="headerSpaceLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  </Group>
-                                  <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                              </Group>
-                          </Group>
-                          <EmptySpace max="-2" attributes="0"/>
-                      </Group>
-                  </Group>
-                </DimensionLayout>
-                <DimensionLayout dim="1">
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" alignment="0" attributes="0">
-                          <Component id="showHeaderCheckBox" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="headerSpaceLabel" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="headerSpaceComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="headerSpaceSpinner" alignment="3" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <EmptySpace max="32767" attributes="0"/>
-                      </Group>
-                  </Group>
-                </DimensionLayout>
-              </Layout>
-              <SubComponents>
-                <Component class="javax.swing.JCheckBox" name="showHeaderCheckBox">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="Show Header"/>
-                  </Properties>
-                  <Events>
-                    <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="showHeaderCheckBoxItemStateChanged"/>
-                  </Events>
-                </Component>
-                <Component class="javax.swing.JLabel" name="headerSpaceLabel">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="Header Space"/>
-                  </Properties>
-                </Component>
-                <Component class="javax.swing.JComboBox" name="headerSpaceComboBox">
-                  <Properties>
-                    <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                      <StringArray count="7">
-                        <StringItem index="0" value="NONE"/>
-                        <StringItem index="1" value="SPECIFIED"/>
-                        <StringItem index="2" value="QUARTER_UNIT"/>
-                        <StringItem index="3" value="HALF_UNIT"/>
-                        <StringItem index="4" value="ONE_UNIT"/>
-                        <StringItem index="5" value="ONE_AND_HALF_UNIT"/>
-                        <StringItem index="6" value="DOUBLE_UNIT"/>
-                      </StringArray>
-                    </Property>
-                    <Property name="selectedIndex" type="int" value="1"/>
-                  </Properties>
-                  <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="headerSpaceComboBoxActionPerformed"/>
-                  </Events>
-                  <AuxValues>
-                    <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
-                  </AuxValues>
-                </Component>
-                <Component class="javax.swing.JSpinner" name="headerSpaceSpinner">
-                  <Events>
-                    <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="headerSpaceSpinnerStateChanged"/>
-                  </Events>
-                </Component>
-              </SubComponents>
-            </Container>
-            <Component class="javax.swing.JLabel" name="positionCodeTypeLabel">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Position Code Type"/>
-              </Properties>
-            </Component>
-            <Component class="javax.swing.JComboBox" name="positionCodeTypeComboBox">
-              <Properties>
-                <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                  <StringArray count="3">
-                    <StringItem index="0" value="OCTAL"/>
-                    <StringItem index="1" value="DECIMAL"/>
-                    <StringItem index="2" value="HEXADECIMAL"/>
-                  </StringArray>
-                </Property>
-                <Property name="selectedIndex" type="int" value="2"/>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="positionCodeTypeComboBoxActionPerformed"/>
-              </Events>
-              <AuxValues>
-                <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
-              </AuxValues>
-            </Component>
-          </SubComponents>
-        </Container>
-        <Container class="javax.swing.JPanel" name="decorationPanel">
-          <Constraints>
-            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
-              <JTabbedPaneConstraints tabName="Decoration">
-                <Property name="tabTitle" type="java.lang.String" value="Decoration"/>
-              </JTabbedPaneConstraints>
-            </Constraint>
-          </Constraints>
-
-          <Layout>
-            <DimensionLayout dim="0">
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" attributes="0">
-                      <EmptySpace max="-2" attributes="0"/>
+                    </DimensionLayout>
+                    <DimensionLayout dim="1">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="backgroundModeComboBox" max="32767" attributes="0"/>
-                          <Component id="linesPanel" alignment="0" max="32767" attributes="0"/>
-                          <Component id="borderTypeComboBox" alignment="0" max="32767" attributes="0"/>
-                          <Group type="102" attributes="0">
+                          <Group type="102" alignment="0" attributes="0">
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="positionLabel" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="positionTextField" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="codeOffsetLabel" min="-2" pref="15" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="codeOffsetTextField" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="activeSectionLabel" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="activeSectionComboBox" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="32767" attributes="0"/>
+                          </Group>
+                      </Group>
+                    </DimensionLayout>
+                  </Layout>
+                  <SubComponents>
+                    <Component class="javax.swing.JLabel" name="positionLabel">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Data Position"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JTextField" name="positionTextField">
+                      <Properties>
+                        <Property name="editable" type="boolean" value="false"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="codeOffsetLabel">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Code Offset Position"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JTextField" name="codeOffsetTextField">
+                      <Properties>
+                        <Property name="editable" type="boolean" value="false"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="activeSectionLabel">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Active Section"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JComboBox" name="activeSectionComboBox">
+                      <Properties>
+                        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+                          <StringArray count="2">
+                            <StringItem index="0" value="CODE_MATRIX"/>
+                            <StringItem index="1" value="TEXT_PREVIEW"/>
+                          </StringArray>
+                        </Property>
+                      </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="activeSectionComboBoxActionPerformed"/>
+                      </Events>
+                      <AuxValues>
+                        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+                      </AuxValues>
+                    </Component>
+                  </SubComponents>
+                </Container>
+                <Container class="javax.swing.JPanel" name="selectionPanel">
+                  <Properties>
+                    <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                      <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
+                        <TitledBorder title="Selection"/>
+                      </Border>
+                    </Property>
+                  </Properties>
+
+                  <Layout>
+                    <DimensionLayout dim="0">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" alignment="0" attributes="0">
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="1" attributes="0">
+                                  <Component id="selectionEndTextField" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="selectionStartTextField" alignment="0" max="32767" attributes="0"/>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="selectionEndLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                                          <Component id="selectionStartLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                                  </Group>
+                              </Group>
+                              <EmptySpace max="-2" attributes="0"/>
+                          </Group>
+                      </Group>
+                    </DimensionLayout>
+                    <DimensionLayout dim="1">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" alignment="0" attributes="0">
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="selectionStartLabel" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="selectionStartTextField" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="selectionEndLabel" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="selectionEndTextField" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="32767" attributes="0"/>
+                          </Group>
+                      </Group>
+                    </DimensionLayout>
+                  </Layout>
+                  <SubComponents>
+                    <Component class="javax.swing.JLabel" name="selectionStartLabel">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Selection Start"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JTextField" name="selectionStartTextField">
+                      <Properties>
+                        <Property name="editable" type="boolean" value="false"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="selectionEndLabel">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Selection End"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JTextField" name="selectionEndTextField">
+                      <Properties>
+                        <Property name="editable" type="boolean" value="false"/>
+                      </Properties>
+                    </Component>
+                  </SubComponents>
+                </Container>
+              </SubComponents>
+            </Container>
+            <Container class="javax.swing.JPanel" name="layoutPanel">
+              <Constraints>
+                <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
+                  <JTabbedPaneConstraints tabName="Layout">
+                    <Property name="tabTitle" type="java.lang.String" value="Layout"/>
+                  </JTabbedPaneConstraints>
+                </Constraint>
+              </Constraints>
+
+              <Layout>
+                <DimensionLayout dim="0">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" attributes="0">
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Group type="102" attributes="0">
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="lineLengthLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="wrapLineModeCheckBox" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                              </Group>
+                              <Group type="102" alignment="1" attributes="0">
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="headerPanel" alignment="0" max="32767" attributes="0"/>
+                                      <Component id="lineLengthSpinner" alignment="0" max="32767" attributes="0"/>
+                                      <Group type="102" alignment="0" attributes="0">
+                                          <Group type="103" groupAlignment="0" attributes="0">
+                                              <Component id="hexCharactersModeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                                              <Component id="positionCodeTypeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                                          </Group>
+                                          <EmptySpace min="-2" pref="126" max="-2" attributes="0"/>
+                                      </Group>
+                                      <Component id="lineNumbersPanel" alignment="0" max="32767" attributes="0"/>
+                                      <Component id="hexCharactersModeComboBox" alignment="0" max="32767" attributes="0"/>
+                                      <Component id="positionCodeTypeComboBox" alignment="1" max="32767" attributes="0"/>
+                                  </Group>
+                                  <EmptySpace max="-2" attributes="0"/>
+                              </Group>
+                          </Group>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+                <DimensionLayout dim="1">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="wrapLineModeCheckBox" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="lineLengthLabel" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="lineLengthSpinner" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="headerPanel" min="-2" pref="104" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="lineNumbersPanel" min="-2" pref="156" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="hexCharactersModeLabel" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="hexCharactersModeComboBox" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="positionCodeTypeLabel" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="positionCodeTypeComboBox" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace pref="61" max="32767" attributes="0"/>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+              </Layout>
+              <SubComponents>
+                <Component class="javax.swing.JLabel" name="lineLengthLabel">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Bytes Per Line"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JSpinner" name="lineLengthSpinner">
+                  <Events>
+                    <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="lineLengthSpinnerStateChanged"/>
+                  </Events>
+                </Component>
+                <Component class="javax.swing.JComboBox" name="hexCharactersModeComboBox">
+                  <Properties>
+                    <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+                      <StringArray count="2">
+                        <StringItem index="0" value="LOWER"/>
+                        <StringItem index="1" value="UPPER"/>
+                      </StringArray>
+                    </Property>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="hexCharactersModeComboBoxActionPerformed"/>
+                  </Events>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+                  </AuxValues>
+                </Component>
+                <Component class="javax.swing.JLabel" name="hexCharactersModeLabel">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Hex Chars Mode"/>
+                  </Properties>
+                </Component>
+                <Container class="javax.swing.JPanel" name="lineNumbersPanel">
+                  <Properties>
+                    <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                      <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
+                        <TitledBorder title="Line Numbers"/>
+                      </Border>
+                    </Property>
+                  </Properties>
+
+                  <Layout>
+                    <DimensionLayout dim="0">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" alignment="0" attributes="0">
+                              <Component id="showLineNumbersCheckBox" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                          </Group>
+                          <Group type="102" alignment="0" attributes="0">
+                              <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="backgroundModeLabel" min="-2" max="-2" attributes="0"/>
-                                  <Component id="showNonprintableCharactersCheckBox" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Component id="showShadowCursorCheckBox" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Component id="borderTypeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Component id="lineNumberLengthComboBox" min="-2" pref="140" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="lineNumberLengthSpinner" max="32767" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" attributes="0">
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="lineNumberLengthLabel" min="-2" max="-2" attributes="0"/>
+                                          <Component id="lineNumberSpaceLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Component id="lineNumberSpaceComboBox" min="-2" pref="140" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="lineNumberSpaceSpinner" max="32767" attributes="0"/>
+                                  </Group>
                               </Group>
-                              <EmptySpace min="0" pref="16" max="32767" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
                           </Group>
                       </Group>
-                      <EmptySpace max="-2" attributes="0"/>
-                  </Group>
-              </Group>
-            </DimensionLayout>
-            <DimensionLayout dim="1">
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="backgroundModeLabel" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="backgroundModeComboBox" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="showShadowCursorCheckBox" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="showNonprintableCharactersCheckBox" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="linesPanel" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="borderTypeLabel" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="borderTypeComboBox" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace pref="216" max="32767" attributes="0"/>
-                  </Group>
-              </Group>
-            </DimensionLayout>
-          </Layout>
-          <SubComponents>
-            <Component class="javax.swing.JLabel" name="backgroundModeLabel">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Background Mode"/>
-              </Properties>
-            </Component>
-            <Component class="javax.swing.JComboBox" name="backgroundModeComboBox">
-              <Properties>
-                <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                  <StringArray count="4">
-                    <StringItem index="0" value="NONE"/>
-                    <StringItem index="1" value="PLAIN"/>
-                    <StringItem index="2" value="STRIPPED"/>
-                    <StringItem index="3" value="GRIDDED"/>
-                  </StringArray>
-                </Property>
-                <Property name="selectedIndex" type="int" value="2"/>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="backgroundModeComboBoxActionPerformed"/>
-              </Events>
-              <AuxValues>
-                <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
-              </AuxValues>
-            </Component>
-            <Component class="javax.swing.JCheckBox" name="showNonprintableCharactersCheckBox">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Show Nonprintable Characters"/>
-              </Properties>
-              <Events>
-                <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="showNonprintableCharactersCheckBoxItemStateChanged"/>
-              </Events>
-            </Component>
-            <Component class="javax.swing.JCheckBox" name="showShadowCursorCheckBox">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Show Shadow Cursor"/>
-              </Properties>
-              <Events>
-                <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="showShadowCursorCheckBoxItemStateChanged"/>
-              </Events>
-            </Component>
-            <Container class="javax.swing.JPanel" name="linesPanel">
-              <Properties>
-                <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-                  <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                    <TitledBorder title="Lines"/>
-                  </Border>
-                </Property>
-              </Properties>
-
-              <Layout>
-                <DimensionLayout dim="0">
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" attributes="0">
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="decoratorLineNumLineCheckBox" max="32767" attributes="0"/>
-                              <Component id="decoratorSplitLineCheckBox" alignment="0" max="32767" attributes="0"/>
-                              <Component id="decoratorBoxCheckBox" alignment="0" max="32767" attributes="0"/>
-                              <Component id="decoratorHeaderLineCheckBox" alignment="0" max="32767" attributes="0"/>
-                          </Group>
-                          <EmptySpace max="-2" attributes="0"/>
-                      </Group>
-                  </Group>
-                </DimensionLayout>
-                <DimensionLayout dim="1">
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" alignment="0" attributes="0">
-                          <Component id="decoratorHeaderLineCheckBox" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="decoratorLineNumLineCheckBox" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="decoratorSplitLineCheckBox" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="decoratorBoxCheckBox" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                  </Group>
-                </DimensionLayout>
-              </Layout>
-              <SubComponents>
-                <Component class="javax.swing.JCheckBox" name="decoratorLineNumLineCheckBox">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="LineNum Line"/>
-                  </Properties>
-                  <Events>
-                    <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="decoratorLineNumLineCheckBoxItemStateChanged"/>
-                  </Events>
-                </Component>
-                <Component class="javax.swing.JCheckBox" name="decoratorSplitLineCheckBox">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="Split Line"/>
-                  </Properties>
-                  <Events>
-                    <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="decoratorSplitLineCheckBoxItemStateChanged"/>
-                  </Events>
-                </Component>
-                <Component class="javax.swing.JCheckBox" name="decoratorBoxCheckBox">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="Area Box"/>
-                  </Properties>
-                  <Events>
-                    <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="decoratorBoxCheckBoxItemStateChanged"/>
-                  </Events>
-                </Component>
-                <Component class="javax.swing.JCheckBox" name="decoratorHeaderLineCheckBox">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="Header Line"/>
-                  </Properties>
-                  <Events>
-                    <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="decoratorHeaderLineCheckBoxItemStateChanged"/>
-                  </Events>
-                </Component>
-              </SubComponents>
-            </Container>
-            <Component class="javax.swing.JLabel" name="borderTypeLabel">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Border Type"/>
-              </Properties>
-            </Component>
-            <Component class="javax.swing.JComboBox" name="borderTypeComboBox">
-              <Properties>
-                <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                  <StringArray count="8">
-                    <StringItem index="0" value="NONE"/>
-                    <StringItem index="1" value="EMPTY BORDER"/>
-                    <StringItem index="2" value="MARGIN BORDER"/>
-                    <StringItem index="3" value="BEVEL BORDER - RAISED"/>
-                    <StringItem index="4" value="BEVEL BORDER - LOWERED"/>
-                    <StringItem index="5" value="ETCHED BORDER - RAISED"/>
-                    <StringItem index="6" value="ETCHED BORDER - LOWERED"/>
-                    <StringItem index="7" value="LINE BORDER"/>
-                  </StringArray>
-                </Property>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="borderTypeComboBoxActionPerformed"/>
-              </Events>
-              <AuxValues>
-                <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
-              </AuxValues>
-            </Component>
-          </SubComponents>
-        </Container>
-        <Container class="javax.swing.JPanel" name="scrollingPanel">
-          <Constraints>
-            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
-              <JTabbedPaneConstraints tabName="Scrolling">
-                <Property name="tabTitle" type="java.lang.String" value="Scrolling"/>
-              </JTabbedPaneConstraints>
-            </Constraint>
-          </Constraints>
-
-          <Layout>
-            <DimensionLayout dim="0">
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" attributes="0">
-                      <EmptySpace max="-2" attributes="0"/>
+                    </DimensionLayout>
+                    <DimensionLayout dim="1">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="verticalPanel" max="32767" attributes="0"/>
-                          <Component id="horizontalPanel" max="32767" attributes="0"/>
-                      </Group>
-                      <EmptySpace max="-2" attributes="0"/>
-                  </Group>
-              </Group>
-            </DimensionLayout>
-            <DimensionLayout dim="1">
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="verticalPanel" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="horizontalPanel" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace pref="146" max="32767" attributes="0"/>
-                  </Group>
-              </Group>
-            </DimensionLayout>
-          </Layout>
-          <SubComponents>
-            <Container class="javax.swing.JPanel" name="verticalPanel">
-              <Properties>
-                <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-                  <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                    <TitledBorder title="Vertical"/>
-                  </Border>
-                </Property>
-              </Properties>
-
-              <Layout>
-                <DimensionLayout dim="0">
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" attributes="0">
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="verticalScrollBarVisibilityComboBox" max="32767" attributes="0"/>
-                              <Component id="verticalScrollModeComboBox" alignment="0" max="32767" attributes="0"/>
-                              <Component id="verticalPositionTextField" alignment="0" max="32767" attributes="0"/>
-                              <Group type="102" attributes="0">
-                                  <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="verticalScrollBarVisibilityModeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                                      <Component id="verticalScrollModeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                                      <Component id="verticalPositionLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  </Group>
-                                  <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                          <Group type="102" alignment="0" attributes="0">
+                              <Component id="showLineNumbersCheckBox" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="lineNumberLengthLabel" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="3" attributes="0">
+                                  <Component id="lineNumberLengthComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="lineNumberLengthSpinner" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="lineNumberSpaceLabel" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="3" attributes="0">
+                                  <Component id="lineNumberSpaceComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="lineNumberSpaceSpinner" alignment="3" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace max="32767" attributes="0"/>
                           </Group>
-                          <EmptySpace max="-2" attributes="0"/>
                       </Group>
-                  </Group>
-                </DimensionLayout>
-                <DimensionLayout dim="1">
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" alignment="0" attributes="0">
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="verticalScrollBarVisibilityModeLabel" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="verticalScrollBarVisibilityComboBox" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="verticalScrollModeLabel" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="verticalScrollModeComboBox" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="verticalPositionLabel" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="verticalPositionTextField" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="32767" attributes="0"/>
-                      </Group>
-                  </Group>
-                </DimensionLayout>
-              </Layout>
-              <SubComponents>
-                <Component class="javax.swing.JLabel" name="verticalScrollBarVisibilityModeLabel">
+                    </DimensionLayout>
+                  </Layout>
+                  <SubComponents>
+                    <Component class="javax.swing.JCheckBox" name="showLineNumbersCheckBox">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Show Line Numbers"/>
+                      </Properties>
+                      <Events>
+                        <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="showLineNumbersCheckBoxItemStateChanged"/>
+                      </Events>
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="lineNumberLengthLabel">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Line Numbers Length"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JComboBox" name="lineNumberLengthComboBox">
+                      <Properties>
+                        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+                          <StringArray count="2">
+                            <StringItem index="0" value="AUTO"/>
+                            <StringItem index="1" value="SPECIFIED"/>
+                          </StringArray>
+                        </Property>
+                        <Property name="selectedIndex" type="int" value="1"/>
+                      </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="lineNumberLengthComboBoxActionPerformed"/>
+                      </Events>
+                      <AuxValues>
+                        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+                      </AuxValues>
+                    </Component>
+                    <Component class="javax.swing.JSpinner" name="lineNumberLengthSpinner">
+                      <Properties>
+                        <Property name="value" type="java.lang.Object" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                          <Connection code="8" type="code"/>
+                        </Property>
+                      </Properties>
+                      <Events>
+                        <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="lineNumberLengthSpinnerStateChanged"/>
+                      </Events>
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="lineNumberSpaceLabel">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Line Numbers Space"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JComboBox" name="lineNumberSpaceComboBox">
+                      <Properties>
+                        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+                          <StringArray count="7">
+                            <StringItem index="0" value="NONE"/>
+                            <StringItem index="1" value="SPECIFIED"/>
+                            <StringItem index="2" value="QUARTER_UNIT"/>
+                            <StringItem index="3" value="HALF_UNIT"/>
+                            <StringItem index="4" value="ONE_UNIT"/>
+                            <StringItem index="5" value="ONE_AND_HALF_UNIT"/>
+                            <StringItem index="6" value="DOUBLE_UNIT"/>
+                          </StringArray>
+                        </Property>
+                        <Property name="selectedIndex" type="int" value="4"/>
+                      </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="lineNumberSpaceComboBoxActionPerformed"/>
+                      </Events>
+                      <AuxValues>
+                        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+                      </AuxValues>
+                    </Component>
+                    <Component class="javax.swing.JSpinner" name="lineNumberSpaceSpinner">
+                      <Events>
+                        <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="lineNumberSpaceSpinnerStateChanged"/>
+                      </Events>
+                    </Component>
+                  </SubComponents>
+                </Container>
+                <Component class="javax.swing.JCheckBox" name="wrapLineModeCheckBox">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Vertical Scrollbar"/>
+                    <Property name="text" type="java.lang.String" value="Wrap Line Mode"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="wrapLineModeCheckBoxItemStateChanged"/>
+                  </Events>
+                </Component>
+                <Container class="javax.swing.JPanel" name="headerPanel">
+                  <Properties>
+                    <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                      <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
+                        <TitledBorder title="Header"/>
+                      </Border>
+                    </Property>
+                  </Properties>
+
+                  <Layout>
+                    <DimensionLayout dim="0">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" alignment="0" attributes="0">
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Component id="headerSpaceComboBox" min="-2" pref="140" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="headerSpaceSpinner" max="32767" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" attributes="0">
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="showHeaderCheckBox" alignment="0" min="-2" max="-2" attributes="0"/>
+                                          <Component id="headerSpaceLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                                  </Group>
+                              </Group>
+                              <EmptySpace max="-2" attributes="0"/>
+                          </Group>
+                      </Group>
+                    </DimensionLayout>
+                    <DimensionLayout dim="1">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" alignment="0" attributes="0">
+                              <Component id="showHeaderCheckBox" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="headerSpaceLabel" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="3" attributes="0">
+                                  <Component id="headerSpaceComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="headerSpaceSpinner" alignment="3" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace max="32767" attributes="0"/>
+                          </Group>
+                      </Group>
+                    </DimensionLayout>
+                  </Layout>
+                  <SubComponents>
+                    <Component class="javax.swing.JCheckBox" name="showHeaderCheckBox">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Show Header"/>
+                      </Properties>
+                      <Events>
+                        <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="showHeaderCheckBoxItemStateChanged"/>
+                      </Events>
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="headerSpaceLabel">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Header Space"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JComboBox" name="headerSpaceComboBox">
+                      <Properties>
+                        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+                          <StringArray count="7">
+                            <StringItem index="0" value="NONE"/>
+                            <StringItem index="1" value="SPECIFIED"/>
+                            <StringItem index="2" value="QUARTER_UNIT"/>
+                            <StringItem index="3" value="HALF_UNIT"/>
+                            <StringItem index="4" value="ONE_UNIT"/>
+                            <StringItem index="5" value="ONE_AND_HALF_UNIT"/>
+                            <StringItem index="6" value="DOUBLE_UNIT"/>
+                          </StringArray>
+                        </Property>
+                        <Property name="selectedIndex" type="int" value="2"/>
+                      </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="headerSpaceComboBoxActionPerformed"/>
+                      </Events>
+                      <AuxValues>
+                        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+                      </AuxValues>
+                    </Component>
+                    <Component class="javax.swing.JSpinner" name="headerSpaceSpinner">
+                      <Events>
+                        <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="headerSpaceSpinnerStateChanged"/>
+                      </Events>
+                    </Component>
+                  </SubComponents>
+                </Container>
+                <Component class="javax.swing.JLabel" name="positionCodeTypeLabel">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Position Code Type"/>
                   </Properties>
                 </Component>
-                <Component class="javax.swing.JComboBox" name="verticalScrollBarVisibilityComboBox">
+                <Component class="javax.swing.JComboBox" name="positionCodeTypeComboBox">
                   <Properties>
                     <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
                       <StringArray count="3">
-                        <StringItem index="0" value="NEVER"/>
-                        <StringItem index="1" value="IF_NEEDED"/>
-                        <StringItem index="2" value="ALWAYS"/>
+                        <StringItem index="0" value="OCTAL"/>
+                        <StringItem index="1" value="DECIMAL"/>
+                        <StringItem index="2" value="HEXADECIMAL"/>
                       </StringArray>
                     </Property>
-                    <Property name="selectedIndex" type="int" value="1"/>
+                    <Property name="selectedIndex" type="int" value="2"/>
                   </Properties>
                   <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="verticalScrollBarVisibilityComboBoxActionPerformed"/>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="positionCodeTypeComboBoxActionPerformed"/>
                   </Events>
                   <AuxValues>
                     <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
                   </AuxValues>
-                </Component>
-                <Component class="javax.swing.JLabel" name="verticalScrollModeLabel">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="Vertical Scroll Mode"/>
-                  </Properties>
-                </Component>
-                <Component class="javax.swing.JComboBox" name="verticalScrollModeComboBox">
-                  <Properties>
-                    <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                      <StringArray count="2">
-                        <StringItem index="0" value="PER_LINE"/>
-                        <StringItem index="1" value="PIXEL"/>
-                      </StringArray>
-                    </Property>
-                  </Properties>
-                  <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="verticalScrollModeComboBoxActionPerformed"/>
-                  </Events>
-                  <AuxValues>
-                    <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
-                  </AuxValues>
-                </Component>
-                <Component class="javax.swing.JLabel" name="verticalPositionLabel">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="Vertical Scroll Position"/>
-                  </Properties>
-                </Component>
-                <Component class="javax.swing.JTextField" name="verticalPositionTextField">
-                  <Properties>
-                    <Property name="editable" type="boolean" value="false"/>
-                    <Property name="text" type="java.lang.String" value="0:0"/>
-                  </Properties>
                 </Component>
               </SubComponents>
             </Container>
-            <Container class="javax.swing.JPanel" name="horizontalPanel">
-              <Properties>
-                <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-                  <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                    <TitledBorder title="Horizontal"/>
-                  </Border>
-                </Property>
-              </Properties>
+            <Container class="javax.swing.JPanel" name="decorationPanel">
+              <Constraints>
+                <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
+                  <JTabbedPaneConstraints tabName="Decoration">
+                    <Property name="tabTitle" type="java.lang.String" value="Decoration"/>
+                  </JTabbedPaneConstraints>
+                </Constraint>
+              </Constraints>
 
               <Layout>
                 <DimensionLayout dim="0">
@@ -1158,17 +830,18 @@
                       <Group type="102" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="horizontalScrollModeComboBox" max="32767" attributes="0"/>
-                              <Component id="horizontalScrollBarVisibilityComboBox" alignment="0" max="32767" attributes="0"/>
+                              <Component id="backgroundModeComboBox" max="32767" attributes="0"/>
+                              <Component id="linesPanel" alignment="0" max="32767" attributes="0"/>
+                              <Component id="borderTypeComboBox" alignment="0" max="32767" attributes="0"/>
                               <Group type="102" attributes="0">
                                   <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="horizontalScrollBarVisibilityLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                                      <Component id="horizontalScrollModeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                                      <Component id="horizontalPositionLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="backgroundModeLabel" min="-2" max="-2" attributes="0"/>
+                                      <Component id="showNonprintableCharactersCheckBox" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="showShadowCursorCheckBox" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="borderTypeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                                   </Group>
-                                  <EmptySpace min="0" pref="61" max="32767" attributes="0"/>
+                                  <EmptySpace min="0" pref="16" max="32767" attributes="0"/>
                               </Group>
-                              <Component id="horizontalPositionTextField" alignment="0" max="32767" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                       </Group>
@@ -1178,78 +851,420 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="horizontalScrollBarVisibilityLabel" min="-2" max="-2" attributes="0"/>
+                          <Component id="backgroundModeLabel" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="horizontalScrollBarVisibilityComboBox" min="-2" max="-2" attributes="0"/>
+                          <Component id="backgroundModeComboBox" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="horizontalScrollModeLabel" min="-2" max="-2" attributes="0"/>
+                          <Component id="showShadowCursorCheckBox" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="horizontalScrollModeComboBox" min="-2" max="-2" attributes="0"/>
+                          <Component id="showNonprintableCharactersCheckBox" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="horizontalPositionLabel" min="-2" max="-2" attributes="0"/>
+                          <Component id="linesPanel" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="horizontalPositionTextField" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="32767" attributes="0"/>
+                          <Component id="borderTypeLabel" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="borderTypeComboBox" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace pref="214" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
               </Layout>
               <SubComponents>
-                <Component class="javax.swing.JLabel" name="horizontalScrollBarVisibilityLabel">
+                <Component class="javax.swing.JLabel" name="backgroundModeLabel">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Horizontal Scrollbar"/>
+                    <Property name="text" type="java.lang.String" value="Background Mode"/>
                   </Properties>
                 </Component>
-                <Component class="javax.swing.JComboBox" name="horizontalScrollBarVisibilityComboBox">
+                <Component class="javax.swing.JComboBox" name="backgroundModeComboBox">
                   <Properties>
                     <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                      <StringArray count="3">
-                        <StringItem index="0" value="NEVER"/>
-                        <StringItem index="1" value="IF_NEEDED"/>
-                        <StringItem index="2" value="ALWAYS"/>
+                      <StringArray count="4">
+                        <StringItem index="0" value="NONE"/>
+                        <StringItem index="1" value="PLAIN"/>
+                        <StringItem index="2" value="STRIPPED"/>
+                        <StringItem index="3" value="GRIDDED"/>
                       </StringArray>
                     </Property>
-                    <Property name="selectedIndex" type="int" value="1"/>
+                    <Property name="selectedIndex" type="int" value="2"/>
                   </Properties>
                   <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="horizontalScrollBarVisibilityComboBoxActionPerformed"/>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="backgroundModeComboBoxActionPerformed"/>
                   </Events>
                   <AuxValues>
                     <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
                   </AuxValues>
                 </Component>
-                <Component class="javax.swing.JLabel" name="horizontalScrollModeLabel">
+                <Component class="javax.swing.JCheckBox" name="showNonprintableCharactersCheckBox">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Horizontal Scroll Mode"/>
+                    <Property name="text" type="java.lang.String" value="Show Nonprintable Characters"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="showNonprintableCharactersCheckBoxItemStateChanged"/>
+                  </Events>
+                </Component>
+                <Component class="javax.swing.JCheckBox" name="showShadowCursorCheckBox">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Show Shadow Cursor"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="showShadowCursorCheckBoxItemStateChanged"/>
+                  </Events>
+                </Component>
+                <Container class="javax.swing.JPanel" name="linesPanel">
+                  <Properties>
+                    <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                      <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
+                        <TitledBorder title="Lines"/>
+                      </Border>
+                    </Property>
+                  </Properties>
+
+                  <Layout>
+                    <DimensionLayout dim="0">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" attributes="0">
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="decoratorLineNumLineCheckBox" max="32767" attributes="0"/>
+                                  <Component id="decoratorSplitLineCheckBox" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="decoratorBoxCheckBox" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="decoratorHeaderLineCheckBox" alignment="0" max="32767" attributes="0"/>
+                              </Group>
+                              <EmptySpace max="-2" attributes="0"/>
+                          </Group>
+                      </Group>
+                    </DimensionLayout>
+                    <DimensionLayout dim="1">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" alignment="0" attributes="0">
+                              <Component id="decoratorHeaderLineCheckBox" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="decoratorLineNumLineCheckBox" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="decoratorSplitLineCheckBox" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="decoratorBoxCheckBox" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                      </Group>
+                    </DimensionLayout>
+                  </Layout>
+                  <SubComponents>
+                    <Component class="javax.swing.JCheckBox" name="decoratorLineNumLineCheckBox">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="LineNum Line"/>
+                      </Properties>
+                      <Events>
+                        <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="decoratorLineNumLineCheckBoxItemStateChanged"/>
+                      </Events>
+                    </Component>
+                    <Component class="javax.swing.JCheckBox" name="decoratorSplitLineCheckBox">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Split Line"/>
+                      </Properties>
+                      <Events>
+                        <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="decoratorSplitLineCheckBoxItemStateChanged"/>
+                      </Events>
+                    </Component>
+                    <Component class="javax.swing.JCheckBox" name="decoratorBoxCheckBox">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Area Box"/>
+                      </Properties>
+                      <Events>
+                        <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="decoratorBoxCheckBoxItemStateChanged"/>
+                      </Events>
+                    </Component>
+                    <Component class="javax.swing.JCheckBox" name="decoratorHeaderLineCheckBox">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Header Line"/>
+                      </Properties>
+                      <Events>
+                        <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="decoratorHeaderLineCheckBoxItemStateChanged"/>
+                      </Events>
+                    </Component>
+                  </SubComponents>
+                </Container>
+                <Component class="javax.swing.JLabel" name="borderTypeLabel">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Border Type"/>
                   </Properties>
                 </Component>
-                <Component class="javax.swing.JComboBox" name="horizontalScrollModeComboBox">
+                <Component class="javax.swing.JComboBox" name="borderTypeComboBox">
                   <Properties>
                     <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                      <StringArray count="2">
-                        <StringItem index="0" value="PER_CHAR"/>
-                        <StringItem index="1" value="PIXEL"/>
+                      <StringArray count="8">
+                        <StringItem index="0" value="NONE"/>
+                        <StringItem index="1" value="EMPTY BORDER"/>
+                        <StringItem index="2" value="MARGIN BORDER"/>
+                        <StringItem index="3" value="BEVEL BORDER - RAISED"/>
+                        <StringItem index="4" value="BEVEL BORDER - LOWERED"/>
+                        <StringItem index="5" value="ETCHED BORDER - RAISED"/>
+                        <StringItem index="6" value="ETCHED BORDER - LOWERED"/>
+                        <StringItem index="7" value="LINE BORDER"/>
                       </StringArray>
                     </Property>
                   </Properties>
                   <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="horizontalScrollModeComboBoxActionPerformed"/>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="borderTypeComboBoxActionPerformed"/>
                   </Events>
                   <AuxValues>
                     <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
                   </AuxValues>
                 </Component>
-                <Component class="javax.swing.JLabel" name="horizontalPositionLabel">
+              </SubComponents>
+            </Container>
+            <Container class="javax.swing.JPanel" name="scrollingPanel">
+              <Constraints>
+                <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
+                  <JTabbedPaneConstraints tabName="Scrolling">
+                    <Property name="tabTitle" type="java.lang.String" value="Scrolling"/>
+                  </JTabbedPaneConstraints>
+                </Constraint>
+              </Constraints>
+
+              <Layout>
+                <DimensionLayout dim="0">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" attributes="0">
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="verticalPanel" max="32767" attributes="0"/>
+                              <Component id="horizontalPanel" max="32767" attributes="0"/>
+                          </Group>
+                          <EmptySpace max="-2" attributes="0"/>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+                <DimensionLayout dim="1">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="verticalPanel" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="horizontalPanel" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace pref="144" max="32767" attributes="0"/>
+                      </Group>
+                  </Group>
+                </DimensionLayout>
+              </Layout>
+              <SubComponents>
+                <Container class="javax.swing.JPanel" name="verticalPanel">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Horizontal Scroll Position"/>
+                    <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                      <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
+                        <TitledBorder title="Vertical"/>
+                      </Border>
+                    </Property>
                   </Properties>
-                </Component>
-                <Component class="javax.swing.JTextField" name="horizontalPositionTextField">
+
+                  <Layout>
+                    <DimensionLayout dim="0">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" attributes="0">
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="verticalScrollBarVisibilityComboBox" max="32767" attributes="0"/>
+                                  <Component id="verticalScrollModeComboBox" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="verticalPositionTextField" alignment="0" max="32767" attributes="0"/>
+                                  <Group type="102" attributes="0">
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="verticalScrollBarVisibilityModeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                                          <Component id="verticalScrollModeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                                          <Component id="verticalPositionLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                                  </Group>
+                              </Group>
+                              <EmptySpace max="-2" attributes="0"/>
+                          </Group>
+                      </Group>
+                    </DimensionLayout>
+                    <DimensionLayout dim="1">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" alignment="0" attributes="0">
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="verticalScrollBarVisibilityModeLabel" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="verticalScrollBarVisibilityComboBox" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="verticalScrollModeLabel" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="verticalScrollModeComboBox" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="verticalPositionLabel" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="verticalPositionTextField" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="32767" attributes="0"/>
+                          </Group>
+                      </Group>
+                    </DimensionLayout>
+                  </Layout>
+                  <SubComponents>
+                    <Component class="javax.swing.JLabel" name="verticalScrollBarVisibilityModeLabel">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Vertical Scrollbar"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JComboBox" name="verticalScrollBarVisibilityComboBox">
+                      <Properties>
+                        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+                          <StringArray count="3">
+                            <StringItem index="0" value="NEVER"/>
+                            <StringItem index="1" value="IF_NEEDED"/>
+                            <StringItem index="2" value="ALWAYS"/>
+                          </StringArray>
+                        </Property>
+                        <Property name="selectedIndex" type="int" value="1"/>
+                      </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="verticalScrollBarVisibilityComboBoxActionPerformed"/>
+                      </Events>
+                      <AuxValues>
+                        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+                      </AuxValues>
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="verticalScrollModeLabel">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Vertical Scroll Mode"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JComboBox" name="verticalScrollModeComboBox">
+                      <Properties>
+                        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+                          <StringArray count="2">
+                            <StringItem index="0" value="PER_LINE"/>
+                            <StringItem index="1" value="PIXEL"/>
+                          </StringArray>
+                        </Property>
+                      </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="verticalScrollModeComboBoxActionPerformed"/>
+                      </Events>
+                      <AuxValues>
+                        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+                      </AuxValues>
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="verticalPositionLabel">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Vertical Scroll Position"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JTextField" name="verticalPositionTextField">
+                      <Properties>
+                        <Property name="editable" type="boolean" value="false"/>
+                        <Property name="text" type="java.lang.String" value="0:0"/>
+                      </Properties>
+                    </Component>
+                  </SubComponents>
+                </Container>
+                <Container class="javax.swing.JPanel" name="horizontalPanel">
                   <Properties>
-                    <Property name="editable" type="boolean" value="false"/>
-                    <Property name="text" type="java.lang.String" value="0:0"/>
+                    <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                      <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
+                        <TitledBorder title="Horizontal"/>
+                      </Border>
+                    </Property>
                   </Properties>
-                </Component>
+
+                  <Layout>
+                    <DimensionLayout dim="0">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" attributes="0">
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="horizontalScrollModeComboBox" max="32767" attributes="0"/>
+                                  <Component id="horizontalScrollBarVisibilityComboBox" alignment="0" max="32767" attributes="0"/>
+                                  <Group type="102" attributes="0">
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="horizontalScrollBarVisibilityLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                                          <Component id="horizontalScrollModeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                                          <Component id="horizontalPositionLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                      <EmptySpace min="0" pref="61" max="32767" attributes="0"/>
+                                  </Group>
+                                  <Component id="horizontalPositionTextField" alignment="0" max="32767" attributes="0"/>
+                              </Group>
+                              <EmptySpace max="-2" attributes="0"/>
+                          </Group>
+                      </Group>
+                    </DimensionLayout>
+                    <DimensionLayout dim="1">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" alignment="0" attributes="0">
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="horizontalScrollBarVisibilityLabel" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="horizontalScrollBarVisibilityComboBox" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="horizontalScrollModeLabel" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="horizontalScrollModeComboBox" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="horizontalPositionLabel" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="horizontalPositionTextField" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="32767" attributes="0"/>
+                          </Group>
+                      </Group>
+                    </DimensionLayout>
+                  </Layout>
+                  <SubComponents>
+                    <Component class="javax.swing.JLabel" name="horizontalScrollBarVisibilityLabel">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Horizontal Scrollbar"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JComboBox" name="horizontalScrollBarVisibilityComboBox">
+                      <Properties>
+                        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+                          <StringArray count="3">
+                            <StringItem index="0" value="NEVER"/>
+                            <StringItem index="1" value="IF_NEEDED"/>
+                            <StringItem index="2" value="ALWAYS"/>
+                          </StringArray>
+                        </Property>
+                        <Property name="selectedIndex" type="int" value="1"/>
+                      </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="horizontalScrollBarVisibilityComboBoxActionPerformed"/>
+                      </Events>
+                      <AuxValues>
+                        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+                      </AuxValues>
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="horizontalScrollModeLabel">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Horizontal Scroll Mode"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JComboBox" name="horizontalScrollModeComboBox">
+                      <Properties>
+                        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+                          <StringArray count="2">
+                            <StringItem index="0" value="PER_CHAR"/>
+                            <StringItem index="1" value="PIXEL"/>
+                          </StringArray>
+                        </Property>
+                      </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="horizontalScrollModeComboBoxActionPerformed"/>
+                      </Events>
+                      <AuxValues>
+                        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+                      </AuxValues>
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="horizontalPositionLabel">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Horizontal Scroll Position"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JTextField" name="horizontalPositionTextField">
+                      <Properties>
+                        <Property name="editable" type="boolean" value="false"/>
+                        <Property name="text" type="java.lang.String" value="0:0"/>
+                      </Properties>
+                    </Component>
+                  </SubComponents>
+                </Container>
               </SubComponents>
             </Container>
           </SubComponents>

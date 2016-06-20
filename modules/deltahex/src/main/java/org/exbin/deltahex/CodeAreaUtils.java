@@ -77,4 +77,30 @@ public class CodeAreaUtils {
             value = value >> 4;
         }
     }
+
+    /**
+     * Converts long value to code of given base and length limit.
+     *
+     * Optionally fills rest of the value with zeros.
+     *
+     * @param target target characters array
+     * @param value value
+     * @param base target numerical base, supported values are 1 to 16
+     * @param lengthLimit length limit
+     * @param fillZeros flag if rest of the value should be filled with zeros
+     * @param upperCase upper case for values greater than 9
+     * @return offset of characters position
+     */
+    public static int longToBaseCode(char[] target, long value, int base, int lengthLimit, boolean fillZeros, boolean upperCase) {
+        char[] codes = upperCase ? UPPER_HEX_CODES : LOWER_HEX_CODES;
+        for (int i = lengthLimit - 1; i >= 0; i--) {
+            target[i] = codes[(int) (value % base)];
+            if (!fillZeros && value == 0) {
+                return i;
+            }
+            value = value / base;
+        }
+
+        return 0;
+    }
 }

@@ -20,13 +20,20 @@ import javax.swing.JComponent;
 /**
  * Empty space definition.
  *
- * @version 0.1.0 2016/06/19
+ * @version 0.1.0 2016/06/20
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeAreaSpace extends JComponent {
 
     private SpaceType spaceType = SpaceType.ONE_UNIT;
     private int spaceSize;
+
+    public CodeAreaSpace() {
+    }
+
+    public CodeAreaSpace(SpaceType spaceType) {
+        this.spaceType = spaceType;
+    }
 
     public SpaceType getSpaceType() {
         return spaceType;

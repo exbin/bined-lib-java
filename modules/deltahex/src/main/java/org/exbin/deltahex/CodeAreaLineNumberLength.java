@@ -20,19 +20,26 @@ import javax.swing.JComponent;
 /**
  * Line number length.
  *
- * @version 0.1.0 2016/06/19
+ * @version 0.1.0 2016/06/20
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeAreaLineNumberLength extends JComponent {
 
-    private LineNumberType lineNumberType;
-    private int lineNumberLength;
+    private LineNumberType lineNumberType = LineNumberType.SPECIFIED;
+    private int lineNumberLength = 8;
+
+    public CodeAreaLineNumberLength() {
+    }
 
     public LineNumberType getSpaceType() {
         return lineNumberType;
     }
 
-    public void setSpaceType(LineNumberType lineNumberType) {
+    public LineNumberType getLineNumberType() {
+        return lineNumberType;
+    }
+
+    public void setLineNumberType(LineNumberType lineNumberType) {
         this.lineNumberType = lineNumberType;
     }
 
