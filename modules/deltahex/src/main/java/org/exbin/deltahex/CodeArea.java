@@ -175,11 +175,11 @@ public class CodeArea extends JComponent {
         setFocusTraversalKeysEnabled(false);
         addComponentListener(new CodeAreaComponentListener());
 
-        HexMouseListener hexMouseListener = new HexMouseListener();
+        CodeAreaMouseListener hexMouseListener = new CodeAreaMouseListener();
         addMouseListener(hexMouseListener);
         addMouseMotionListener(hexMouseListener);
         addMouseWheelListener(hexMouseListener);
-        addKeyListener(new HexKeyListener());
+        addKeyListener(new CodeAreaKeyListener());
     }
 
     @Override
@@ -1731,7 +1731,7 @@ public class CodeArea extends JComponent {
         }
     }
 
-    private class HexMouseListener extends MouseAdapter implements MouseMotionListener, MouseWheelListener {
+    private class CodeAreaMouseListener extends MouseAdapter implements MouseMotionListener, MouseWheelListener {
 
         private Cursor currentCursor = getCursor();
         private final Cursor defaultCursor = Cursor.getDefaultCursor();
@@ -1743,8 +1743,8 @@ public class CodeArea extends JComponent {
             if (me.getButton() == MouseEvent.BUTTON1) {
                 moveCaret(me, me.getModifiersEx());
                 revealCursor();
+                mouseDown = true;
             }
-            mouseDown = true;
         }
 
         @Override
@@ -1754,20 +1754,17 @@ public class CodeArea extends JComponent {
 
         @Override
         public void mouseExited(MouseEvent e) {
-            super.mouseExited(e);
             currentCursor = defaultCursor;
             setCursor(defaultCursor);
         }
 
         @Override
         public void mouseEntered(MouseEvent e) {
-            super.mouseEntered(e);
             updateMouseCursor(e);
         }
 
         @Override
         public void mouseMoved(MouseEvent e) {
-            super.mouseMoved(e);
             updateMouseCursor(e);
         }
 
@@ -1818,10 +1815,11 @@ public class CodeArea extends JComponent {
                     notifyScrolled();
                 }
             } else if (e.getWheelRotation() > 0) {
-                long lines = (int) (data.getDataSize() / dimensionsCache.bytesPerLine) - dimensionsCache.linesPerRect;
-                if (isShowHeader()) {
-                    lines += 2;
+                long lines = (int) (data.getDataSize() / dimensionsCache.bytesPerLine);
+                if (lines * dimensionsCache.bytesPerLine < data.getDataSize()) {
+                    lines++;
                 }
+                lines -= dimensionsCache.linesPerRect;
                 if (scrollPosition.scrollLinePosition < lines) {
                     if (scrollPosition.scrollLinePosition < lines - MOUSE_SCROLL_LINES) {
                         scrollPosition.scrollLinePosition += MOUSE_SCROLL_LINES;
@@ -1843,9 +1841,9 @@ public class CodeArea extends JComponent {
         }
     }
 
-    private class HexKeyListener extends KeyAdapter {
+    private class CodeAreaKeyListener extends KeyAdapter {
 
-        public HexKeyListener() {
+        public CodeAreaKeyListener() {
         }
 
         @Override
