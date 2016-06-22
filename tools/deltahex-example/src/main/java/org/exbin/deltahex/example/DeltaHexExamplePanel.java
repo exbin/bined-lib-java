@@ -231,7 +231,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
 
         charRenderingScrollModeLabel.setText("Character Rendering");
 
-        charRenderingComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "AUTO", "LEFT", "CENTER", "FIXED" }));
+        charRenderingComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "AUTO", "LINE_AT_ONCE", "SEPARATE_CHARACTERS", "CENTER" }));
         charRenderingComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 charRenderingComboBoxActionPerformed(evt);

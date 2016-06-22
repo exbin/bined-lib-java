@@ -54,7 +54,7 @@ import org.exbin.utils.binary_data.BinaryData;
  *
  * Also supports binary, octal and decimal codes.
  *
- * @version 0.1.0 2016/06/20
+ * @version 0.1.0 2016/06/22
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeArea extends JComponent {
@@ -615,6 +615,10 @@ public class CodeArea extends JComponent {
 
     public int getCharWidth() {
         return dimensionsCache.charWidth;
+    }
+
+    public FontMetrics getFontMetrics() {
+        return dimensionsCache.fontMetrics;
     }
 
     /**
@@ -1264,8 +1268,8 @@ public class CodeArea extends JComponent {
         return charRenderingMode;
     }
 
-    public boolean isCharFixedMode() {
-        return charRenderingMode == CharRenderingMode.FIXED || (charRenderingMode == CharRenderingMode.AUTO && dimensionsCache.monospaced);
+    public boolean isLineAtOnce() {
+        return charRenderingMode == CharRenderingMode.LINE_AT_ONCE || (charRenderingMode == CharRenderingMode.AUTO && dimensionsCache.monospaced);
     }
 
     public void setCharRenderingMode(CharRenderingMode charRenderingMode) {
@@ -1640,18 +1644,20 @@ public class CodeArea extends JComponent {
     /**
      * Character rendering mode.
      *
-     * AUTO - Detect if font is monospaced and use FIXED in such case or DYNAMIC
-     * in other cases
+     * AUTO - Detect if font is monospaced and use LINE_AT_ONCE in such case or
+     * CENTER in other cases
+     *
+     * LINE_AT_ONCE - Render sequence of characters from top left corner of the
+     * line
+     *
+     * SEPARATE_CHARACTERS - Render each character from top left corner of it's
+     * position
      *
      * CENTER - For each character compute width to center this character in
      * area
-     *
-     * LEFT - Render each character from top left corner of it's position
-     *
-     * FIXED - Render sequence of characters from top left corner
      */
     public static enum CharRenderingMode {
-        AUTO, CENTER, LEFT, FIXED
+        AUTO, LINE_AT_ONCE, SEPARATE_CHARACTERS, CENTER
     }
 
     public static enum CharAntialiasingMode {

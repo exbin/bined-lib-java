@@ -25,7 +25,7 @@ import org.exbin.utils.binary_data.ByteArrayEditableData;
 /**
  * Hexadecimal editor examples.
  *
- * @version 0.1.0 2016/05/24
+ * @version 0.1.0 2016/06/22
  * @author ExBin Project (http://exbin.org)
  */
 public class DeltaHexExample {
@@ -42,15 +42,16 @@ public class DeltaHexExample {
         frame.setLocationRelativeTo(null);
         final DeltaHexExamplePanel panel = new DeltaHexExamplePanel();
         frame.add(panel);
-        final CodeArea hexadecimal = new CodeArea();
+        final CodeArea codeArea = new CodeArea();
+//        codeArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 14));
         ByteArrayEditableData data = new ByteArrayEditableData();
         try {
-            data.loadFromStream(hexadecimal.getClass().getResourceAsStream("/org/exbin/deltahex/example/resources/lorem_1.txt"));
+            data.loadFromStream(codeArea.getClass().getResourceAsStream("/org/exbin/deltahex/example/resources/lorem_1.txt"));
         } catch (IOException ex) {
             Logger.getLogger(DeltaHexExample.class.getName()).log(Level.SEVERE, null, ex);
         }
-        hexadecimal.setData(data);
-        panel.setCodeArea(hexadecimal);
+        codeArea.setData(data);
+        panel.setCodeArea(codeArea);
 
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
@@ -64,7 +65,7 @@ public class DeltaHexExample {
                     }
                 });
                 frame.setVisible(true);
-                hexadecimal.requestFocus();
+                codeArea.requestFocus();
             }
         });
     }
