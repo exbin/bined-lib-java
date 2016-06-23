@@ -109,16 +109,14 @@ public class CodeArea extends JComponent {
     private ScrollPosition scrollPosition = new ScrollPosition();
 
     /**
-     * Component colors.
+     * Component colors. Parent foreground and background are used for header
+     * and line numbers section.
      */
-    private Color oddForegroundColor;
-    private Color oddBackgroundColor;
-    private Color selectionColor;
-    private Color selectionBackgroundColor;
-    private Color mirrorSelectionColor;
-    private Color mirrorSelectionBackgroundColor;
+    private final ColorsGroup mainColors = new ColorsGroup();
+    private final ColorsGroup stripColors = new ColorsGroup();
+    private final ColorsGroup selectionColors = new ColorsGroup();
+    private final ColorsGroup mirrorSelectionColors = new ColorsGroup();
     private Color cursorColor;
-    private Color whiteSpaceColor;
     private Color decorationLineColor;
 
     /**
@@ -138,17 +136,28 @@ public class CodeArea extends JComponent {
         painter = new DefaultCodeAreaPainter(this);
         commandHandler = new DefaultCodeAreaCommandHandler(this);
 
-        super.setForeground(UIManager.getColor("TextArea.foreground"));
-        super.setBackground(UIManager.getColor("TextArea.background"));
-        oddBackgroundColor = createOddColor(UIManager.getColor("TextArea.background"));
-        selectionColor = UIManager.getColor("TextArea.selectionForeground");
-        selectionBackgroundColor = UIManager.getColor("TextArea.selectionBackground");
-        mirrorSelectionColor = UIManager.getColor("TextArea.selectionForeground");
+        Color textColor = UIManager.getColor("TextArea.foreground");
+        Color backgroundColor = UIManager.getColor("TextArea.background");
+        super.setForeground(textColor);
+        super.setBackground(createOddColor(backgroundColor));
+        Color nonprintableColor = new Color(textColor.getRed(), (textColor.getGreen() + 128) % 256, textColor.getBlue());
+        mainColors.setTextColor(textColor);
+        mainColors.setBothBackgroundColors(backgroundColor);
+        mainColors.setNonprintableColor(nonprintableColor);
+        stripColors.setTextColor(textColor);
+        stripColors.setBothBackgroundColors(createOddColor(backgroundColor));
+        stripColors.setNonprintableColor(nonprintableColor);
+        Color selectionTextColor = UIManager.getColor("TextArea.selectionForeground");
+        Color selectionBackgroundColor = UIManager.getColor("TextArea.selectionBackground");
+        selectionColors.setTextColor(selectionTextColor);
+        selectionColors.setBothBackgroundColors(selectionBackgroundColor);
+        selectionColors.setNonprintableColor(nonprintableColor);
+        mirrorSelectionColors.setTextColor(selectionTextColor);
         int grayLevel = (selectionBackgroundColor.getRed() + selectionBackgroundColor.getGreen() + selectionBackgroundColor.getBlue()) / 3;
-        mirrorSelectionBackgroundColor = new Color(grayLevel, grayLevel, grayLevel);
+        mirrorSelectionColors.setBothBackgroundColors(new Color(grayLevel, grayLevel, grayLevel));
+        mirrorSelectionColors.setNonprintableColor(nonprintableColor);
+
         cursorColor = UIManager.getColor("TextArea.caretForeground");
-        Color foreground = super.getForeground();
-        whiteSpaceColor = new Color(foreground.getRed(), (foreground.getGreen() + 128) % 256, foreground.getBlue());
         decorationLineColor = Color.GRAY;
 
         try {
@@ -718,7 +727,7 @@ public class CodeArea extends JComponent {
              *
              * TODO: Is there better way?
              */
-            dimensionsCache.monospaced = dimensionsCache.charWidth == dimensionsCache.fontMetrics.charWidth('i');
+            dimensionsCache.monospaceFont = dimensionsCache.charWidth == dimensionsCache.fontMetrics.charWidth('i');
             int fontHeight = font.getSize();
             if (dimensionsCache.charWidth == 0) {
                 dimensionsCache.charWidth = fontHeight;
@@ -1018,57 +1027,39 @@ public class CodeArea extends JComponent {
         return width / dimensionsCache.charWidth;
     }
 
-    public Color getOddForegroundColor() {
-        return oddForegroundColor;
+    public ColorsGroup getMainColors() {
+        return new ColorsGroup(mainColors);
     }
 
-    public void setOddForegroundColor(Color oddForegroundColor) {
-        this.oddForegroundColor = oddForegroundColor;
+    public ColorsGroup getStripColors() {
+        return new ColorsGroup(stripColors);
+    }
+
+    public ColorsGroup getSelectionColors() {
+        return new ColorsGroup(selectionColors);
+    }
+
+    public ColorsGroup getMirrorSelectionColors() {
+        return new ColorsGroup(mirrorSelectionColors);
+    }
+
+    public void setMainColors(ColorsGroup colorsGroup) {
+        mainColors.setColors(colorsGroup);
         repaint();
     }
 
-    public Color getOddBackgroundColor() {
-        return oddBackgroundColor;
-    }
-
-    public void setOddBackgroundColor(Color oddBackgroundColor) {
-        this.oddBackgroundColor = oddBackgroundColor;
+    public void setStripColors(ColorsGroup colorsGroup) {
+        stripColors.setColors(colorsGroup);
         repaint();
     }
 
-    public Color getSelectionColor() {
-        return selectionColor;
-    }
-
-    public void setSelectionColor(Color selectionColor) {
-        this.selectionColor = selectionColor;
+    public void setSelectionColors(ColorsGroup colorsGroup) {
+        selectionColors.setColors(colorsGroup);
         repaint();
     }
 
-    public Color getSelectionBackgroundColor() {
-        return selectionBackgroundColor;
-    }
-
-    public void setSelectionBackgroundColor(Color selectionBackgroundColor) {
-        this.selectionBackgroundColor = selectionBackgroundColor;
-        repaint();
-    }
-
-    public Color getMirrorSelectionColor() {
-        return mirrorSelectionColor;
-    }
-
-    public void setMirrorSelectionColor(Color mirrorSelectionColor) {
-        this.mirrorSelectionColor = mirrorSelectionColor;
-        repaint();
-    }
-
-    public Color getMirrorSelectionBackgroundColor() {
-        return mirrorSelectionBackgroundColor;
-    }
-
-    public void setMirrorSelectionBackgroundColor(Color mirrorSelectionBackgroundColor) {
-        this.mirrorSelectionBackgroundColor = mirrorSelectionBackgroundColor;
+    public void setMirrorSelectionColors(ColorsGroup colorsGroup) {
+        mirrorSelectionColors.setColors(colorsGroup);
         repaint();
     }
 
@@ -1078,15 +1069,6 @@ public class CodeArea extends JComponent {
 
     public void setCursorColor(Color cursorColor) {
         this.cursorColor = cursorColor;
-        repaint();
-    }
-
-    public Color getWhiteSpaceColor() {
-        return whiteSpaceColor;
-    }
-
-    public void setWhiteSpaceColor(Color whiteSpaceColor) {
-        this.whiteSpaceColor = whiteSpaceColor;
         repaint();
     }
 
@@ -1268,8 +1250,8 @@ public class CodeArea extends JComponent {
         return charRenderingMode;
     }
 
-    public boolean isLineAtOnce() {
-        return charRenderingMode == CharRenderingMode.LINE_AT_ONCE || (charRenderingMode == CharRenderingMode.AUTO && dimensionsCache.monospaced);
+    public boolean isMonospaceFontDetected() {
+        return dimensionsCache.monospaceFont;
     }
 
     public void setCharRenderingMode(CharRenderingMode charRenderingMode) {
@@ -1644,20 +1626,19 @@ public class CodeArea extends JComponent {
     /**
      * Character rendering mode.
      *
-     * AUTO - Detect if font is monospaced and use LINE_AT_ONCE in such case or
-     * CENTER in other cases
+     * AUTO - Centers characters if width is not default and detects monospace
+     * fonts to render characters as string if possible
      *
      * LINE_AT_ONCE - Render sequence of characters from top left corner of the
-     * line
+     * line ignoring character width (fastest, but doesn't work correctly on
+     * characters with dissimilar width)
      *
-     * SEPARATE_CHARACTERS - Render each character from top left corner of it's
-     * position
+     * TOP_LEFT - Render each character from top left corner of it's position
      *
-     * CENTER - For each character compute width to center this character in
-     * area
+     * CENTER - Centers each character in it's area
      */
     public static enum CharRenderingMode {
-        AUTO, LINE_AT_ONCE, SEPARATE_CHARACTERS, CENTER
+        AUTO, LINE_AT_ONCE, TOP_LEFT, CENTER
     }
 
     public static enum CharAntialiasingMode {
@@ -1679,7 +1660,7 @@ public class CodeArea extends JComponent {
         int bytesPerLine;
         int charsPerByte;
         int lineNumbersLength;
-        boolean monospaced = false;
+        boolean monospaceFont = false;
 
         /**
          * Component area without border insets.
@@ -1734,6 +1715,77 @@ public class CodeArea extends JComponent {
 
         public int getScrollByteOffset() {
             return scrollByteOffset;
+        }
+    }
+
+    /**
+     * Set of colors for different sections of component rendering.
+     */
+    public static class ColorsGroup {
+
+        private Color textColor;
+        private Color backgroundColor;
+        private Color nonprintableColor;
+        private Color nonprintableBackgroundColor;
+
+        public ColorsGroup() {
+        }
+
+        /**
+         * Copy constructor.
+         *
+         * @param colorsGroup colors group
+         */
+        public ColorsGroup(ColorsGroup colorsGroup) {
+            setColorsFromGroup(colorsGroup);
+        }
+
+        private void setColorsFromGroup(ColorsGroup colorsGroup) {
+            textColor = colorsGroup.getTextColor();
+            backgroundColor = colorsGroup.getBackgroundColor();
+            nonprintableColor = colorsGroup.getNonprintableColor();
+            nonprintableBackgroundColor = colorsGroup.getNonprintableBackgroundColor();
+        }
+
+        public Color getTextColor() {
+            return textColor;
+        }
+
+        public void setTextColor(Color textColor) {
+            this.textColor = textColor;
+        }
+
+        public Color getBackgroundColor() {
+            return backgroundColor;
+        }
+
+        public void setBackgroundColor(Color backgroundColor) {
+            this.backgroundColor = backgroundColor;
+        }
+
+        public Color getNonprintableColor() {
+            return nonprintableColor;
+        }
+
+        public void setNonprintableColor(Color nonprintableColor) {
+            this.nonprintableColor = nonprintableColor;
+        }
+
+        public Color getNonprintableBackgroundColor() {
+            return nonprintableBackgroundColor;
+        }
+
+        public void setNonprintableBackgroundColor(Color nonprintableBackgroundColor) {
+            this.nonprintableBackgroundColor = nonprintableBackgroundColor;
+        }
+
+        public void setBothBackgroundColors(Color backgroundColor) {
+            this.backgroundColor = backgroundColor;
+            this.nonprintableBackgroundColor = backgroundColor;
+        }
+
+        public void setColors(ColorsGroup colorsGroup) {
+            setColorsFromGroup(colorsGroup);
         }
     }
 

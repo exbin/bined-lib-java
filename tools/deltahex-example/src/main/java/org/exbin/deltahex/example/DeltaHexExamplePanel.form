@@ -49,10 +49,12 @@
                       <Group type="102" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="charRenderingComboBox" alignment="0" max="32767" attributes="0"/>
+                              <Component id="charRenderingComboBox" alignment="0" pref="262" max="32767" attributes="0"/>
                               <Component id="viewModeComboBox" max="32767" attributes="0"/>
                               <Component id="codeTypeComboBox" alignment="0" max="32767" attributes="0"/>
                               <Component id="charAntialiasingComboBox" alignment="0" max="32767" attributes="0"/>
+                              <Component id="fontComboBox" alignment="0" max="32767" attributes="0"/>
+                              <Component id="charsetComboBox" alignment="0" max="32767" attributes="0"/>
                               <Group type="102" attributes="0">
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Component id="charRenderingScrollModeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
@@ -60,8 +62,10 @@
                                       <Component id="editableCheckBox" alignment="0" min="-2" pref="109" max="-2" attributes="0"/>
                                       <Component id="viewModeScrollModeLabel" min="-2" max="-2" attributes="0"/>
                                       <Component id="codeTypeScrollModeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="fondLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="charsetLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                                   </Group>
-                                  <EmptySpace min="0" pref="104" max="32767" attributes="0"/>
+                                  <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
@@ -89,7 +93,15 @@
                           <Component id="charAntialiasingComboBox" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="editableCheckBox" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="282" max="32767" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="fondLabel" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="fontComboBox" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="charsetLabel" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="charsetComboBox" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace pref="178" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -137,7 +149,7 @@
                       <StringArray count="4">
                         <StringItem index="0" value="AUTO"/>
                         <StringItem index="1" value="LINE_AT_ONCE"/>
-                        <StringItem index="2" value="SEPARATE_CHARACTERS"/>
+                        <StringItem index="2" value="TOP_LEFT"/>
                         <StringItem index="3" value="CENTER"/>
                       </StringArray>
                     </Property>
@@ -196,6 +208,53 @@
                   </Properties>
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="codeTypeComboBoxActionPerformed"/>
+                  </Events>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+                  </AuxValues>
+                </Component>
+                <Component class="javax.swing.JLabel" name="fondLabel">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Example Font"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JComboBox" name="fontComboBox">
+                  <Properties>
+                    <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+                      <StringArray count="3">
+                        <StringItem index="0" value="DIALOG"/>
+                        <StringItem index="1" value="MONOSPACE"/>
+                        <StringItem index="2" value="SERIF"/>
+                      </StringArray>
+                    </Property>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="fontComboBoxActionPerformed"/>
+                  </Events>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+                  </AuxValues>
+                </Component>
+                <Component class="javax.swing.JLabel" name="charsetLabel">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Example Charset"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JComboBox" name="charsetComboBox">
+                  <Properties>
+                    <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+                      <StringArray count="6">
+                        <StringItem index="0" value="UTF-8"/>
+                        <StringItem index="1" value="UTF-16"/>
+                        <StringItem index="2" value="UTF-16BE"/>
+                        <StringItem index="3" value="US-ASCII"/>
+                        <StringItem index="4" value="IBM852"/>
+                        <StringItem index="5" value="ISO-8859-1"/>
+                      </StringArray>
+                    </Property>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="charsetComboBoxActionPerformed"/>
                   </Events>
                   <AuxValues>
                     <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>

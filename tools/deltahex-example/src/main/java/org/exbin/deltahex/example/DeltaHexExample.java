@@ -43,7 +43,6 @@ public class DeltaHexExample {
         final DeltaHexExamplePanel panel = new DeltaHexExamplePanel();
         frame.add(panel);
         final CodeArea codeArea = new CodeArea();
-//        codeArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 14));
         ByteArrayEditableData data = new ByteArrayEditableData();
         try {
             data.loadFromStream(codeArea.getClass().getResourceAsStream("/org/exbin/deltahex/example/resources/lorem_1.txt"));
