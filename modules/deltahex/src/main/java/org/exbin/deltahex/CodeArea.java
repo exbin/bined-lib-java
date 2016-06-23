@@ -54,7 +54,7 @@ import org.exbin.utils.binary_data.BinaryData;
  *
  * Also supports binary, octal and decimal codes.
  *
- * @version 0.1.0 2016/06/22
+ * @version 0.1.0 2016/06/23
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeArea extends JComponent {
@@ -97,7 +97,7 @@ public class CodeArea extends JComponent {
     private boolean editable = true;
     private boolean wrapMode = false;
     private boolean handleClipboard = true;
-    private boolean showNonprintingCharacters = false;
+    private boolean showUnprintableCharacters = false;
     private boolean showShadowCursor = true;
 
     private ScrollBarVisibility verticalScrollBarVisibility = ScrollBarVisibility.IF_NEEDED;
@@ -140,22 +140,22 @@ public class CodeArea extends JComponent {
         Color backgroundColor = UIManager.getColor("TextArea.background");
         super.setForeground(textColor);
         super.setBackground(createOddColor(backgroundColor));
-        Color nonprintableColor = new Color(textColor.getRed(), (textColor.getGreen() + 128) % 256, textColor.getBlue());
+        Color unprintablesColor = new Color(textColor.getRed(), (textColor.getGreen() + 128) % 256, textColor.getBlue());
         mainColors.setTextColor(textColor);
         mainColors.setBothBackgroundColors(backgroundColor);
-        mainColors.setNonprintableColor(nonprintableColor);
+        mainColors.setUnprintablesColor(unprintablesColor);
         stripColors.setTextColor(textColor);
         stripColors.setBothBackgroundColors(createOddColor(backgroundColor));
-        stripColors.setNonprintableColor(nonprintableColor);
+        stripColors.setUnprintablesColor(unprintablesColor);
         Color selectionTextColor = UIManager.getColor("TextArea.selectionForeground");
         Color selectionBackgroundColor = UIManager.getColor("TextArea.selectionBackground");
         selectionColors.setTextColor(selectionTextColor);
         selectionColors.setBothBackgroundColors(selectionBackgroundColor);
-        selectionColors.setNonprintableColor(nonprintableColor);
+        selectionColors.setUnprintablesColor(unprintablesColor);
         mirrorSelectionColors.setTextColor(selectionTextColor);
         int grayLevel = (selectionBackgroundColor.getRed() + selectionBackgroundColor.getGreen() + selectionBackgroundColor.getBlue()) / 3;
         mirrorSelectionColors.setBothBackgroundColors(new Color(grayLevel, grayLevel, grayLevel));
-        mirrorSelectionColors.setNonprintableColor(nonprintableColor);
+        mirrorSelectionColors.setUnprintablesColor(unprintablesColor);
 
         cursorColor = UIManager.getColor("TextArea.caretForeground");
         decorationLineColor = Color.GRAY;
@@ -184,10 +184,10 @@ public class CodeArea extends JComponent {
         setFocusTraversalKeysEnabled(false);
         addComponentListener(new CodeAreaComponentListener());
 
-        CodeAreaMouseListener hexMouseListener = new CodeAreaMouseListener();
-        addMouseListener(hexMouseListener);
-        addMouseMotionListener(hexMouseListener);
-        addMouseWheelListener(hexMouseListener);
+        CodeAreaMouseListener codeAreaMouseListener = new CodeAreaMouseListener();
+        addMouseListener(codeAreaMouseListener);
+        addMouseMotionListener(codeAreaMouseListener);
+        addMouseWheelListener(codeAreaMouseListener);
         addKeyListener(new CodeAreaKeyListener());
     }
 
@@ -200,9 +200,7 @@ public class CodeArea extends JComponent {
                     RenderingHints.KEY_TEXT_ANTIALIASING,
                     antialiasingHint);
         }
-
-        g.setFont(getFont());
-
+        
         if (dimensionsCache.fontMetrics == null) {
             computeFontMetrics();
         }
@@ -1216,12 +1214,12 @@ public class CodeArea extends JComponent {
         this.handleClipboard = handleClipboard;
     }
 
-    public boolean isShowNonprintingCharacters() {
-        return showNonprintingCharacters;
+    public boolean isShowUnprintableCharacters() {
+        return showUnprintableCharacters;
     }
 
-    public void setShowNonprintingCharacters(boolean showNonprintingCharacters) {
-        this.showNonprintingCharacters = showNonprintingCharacters;
+    public void setShowUnprintableCharacters(boolean showUnprintableCharacters) {
+        this.showUnprintableCharacters = showUnprintableCharacters;
         repaint();
     }
 
@@ -1725,8 +1723,8 @@ public class CodeArea extends JComponent {
 
         private Color textColor;
         private Color backgroundColor;
-        private Color nonprintableColor;
-        private Color nonprintableBackgroundColor;
+        private Color unprintablesColor;
+        private Color unprintablesBackgroundColor;
 
         public ColorsGroup() {
         }
@@ -1743,8 +1741,8 @@ public class CodeArea extends JComponent {
         private void setColorsFromGroup(ColorsGroup colorsGroup) {
             textColor = colorsGroup.getTextColor();
             backgroundColor = colorsGroup.getBackgroundColor();
-            nonprintableColor = colorsGroup.getNonprintableColor();
-            nonprintableBackgroundColor = colorsGroup.getNonprintableBackgroundColor();
+            unprintablesColor = colorsGroup.getUnprintablesColor();
+            unprintablesBackgroundColor = colorsGroup.getUnprintablesBackgroundColor();
         }
 
         public Color getTextColor() {
@@ -1763,25 +1761,25 @@ public class CodeArea extends JComponent {
             this.backgroundColor = backgroundColor;
         }
 
-        public Color getNonprintableColor() {
-            return nonprintableColor;
+        public Color getUnprintablesColor() {
+            return unprintablesColor;
         }
 
-        public void setNonprintableColor(Color nonprintableColor) {
-            this.nonprintableColor = nonprintableColor;
+        public void setUnprintablesColor(Color unprintablesColor) {
+            this.unprintablesColor = unprintablesColor;
         }
 
-        public Color getNonprintableBackgroundColor() {
-            return nonprintableBackgroundColor;
+        public Color getUnprintablesBackgroundColor() {
+            return unprintablesBackgroundColor;
         }
 
-        public void setNonprintableBackgroundColor(Color nonprintableBackgroundColor) {
-            this.nonprintableBackgroundColor = nonprintableBackgroundColor;
+        public void setUnprintablesBackgroundColor(Color unprintablesBackgroundColor) {
+            this.unprintablesBackgroundColor = unprintablesBackgroundColor;
         }
 
         public void setBothBackgroundColors(Color backgroundColor) {
             this.backgroundColor = backgroundColor;
-            this.nonprintableBackgroundColor = backgroundColor;
+            this.unprintablesBackgroundColor = backgroundColor;
         }
 
         public void setColors(ColorsGroup colorsGroup) {
@@ -1798,7 +1796,7 @@ public class CodeArea extends JComponent {
         @Override
         public void mousePressed(MouseEvent me) {
             requestFocus();
-            if (me.getButton() == MouseEvent.BUTTON1) {
+            if (isEnabled() && me.getButton() == MouseEvent.BUTTON1) {
                 moveCaret(me, me.getModifiersEx());
                 revealCursor();
                 mouseDown = true;
@@ -1842,7 +1840,7 @@ public class CodeArea extends JComponent {
         @Override
         public void mouseDragged(MouseEvent me) {
             updateMouseCursor(me);
-            if (mouseDown) {
+            if (isEnabled() && mouseDown) {
                 moveCaret(me, KeyEvent.SHIFT_DOWN_MASK);
                 revealCursor();
             }
@@ -1850,6 +1848,10 @@ public class CodeArea extends JComponent {
 
         @Override
         public void mouseWheelMoved(MouseWheelEvent e) {
+            if (!isEnabled()) {
+                return;
+            }
+
             if (e.isShiftDown() && horizontalScrollBar.isVisible()) {
                 if (e.getWheelRotation() > 0) {
                     int visibleBytes = dimensionsCache.codeSectionRectangle.width / (dimensionsCache.charWidth * dimensionsCache.charsPerByte);
@@ -1906,19 +1908,17 @@ public class CodeArea extends JComponent {
 
         @Override
         public void keyTyped(KeyEvent e) {
-            super.keyTyped(e);
             if (e.getKeyChar() != 0xffff) {
                 commandHandler.keyPressed(e.getKeyChar());
             }
         }
 
         @Override
-        public void keyReleased(KeyEvent e) {
-            super.keyReleased(e);
-        }
-
-        @Override
         public void keyPressed(KeyEvent e) {
+            if (!isEnabled()) {
+                return;
+            }
+
             switch (e.getKeyCode()) {
                 case KeyEvent.VK_LEFT: {
                     moveLeft(e.getModifiersEx());

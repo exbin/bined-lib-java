@@ -69,7 +69,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
         hexCharactersModeComboBox.setSelectedIndex(codeArea.getHexCharactersCase().ordinal());
         showLineNumbersCheckBox.setSelected(codeArea.isShowLineNumbers());
         showHeaderCheckBox.setSelected(codeArea.isShowHeader());
-        showNonprintableCharactersCheckBox.setSelected(codeArea.isShowNonprintingCharacters());
+        showNonprintableCharactersCheckBox.setSelected(codeArea.isShowUnprintableCharacters());
         showShadowCursorCheckBox.setSelected(codeArea.isShowShadowCursor());
         editableCheckBox.setSelected(codeArea.isEditable());
         wrapLineModeCheckBox.setSelected(codeArea.isWrapMode());
@@ -1083,7 +1083,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
     }//GEN-LAST:event_wrapLineModeCheckBoxItemStateChanged
 
     private void showNonprintableCharactersCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_showNonprintableCharactersCheckBoxItemStateChanged
-        codeArea.setShowNonprintingCharacters(showNonprintableCharactersCheckBox.isSelected());
+        codeArea.setShowUnprintableCharacters(showNonprintableCharactersCheckBox.isSelected());
     }//GEN-LAST:event_showNonprintableCharactersCheckBoxItemStateChanged
 
     private void showShadowCursorCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_showShadowCursorCheckBoxItemStateChanged

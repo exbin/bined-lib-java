@@ -53,6 +53,10 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     public void paintOverall(Graphics g) {
         Rectangle compRect = codeArea.getComponentRectangle();
         Rectangle hexRect = codeArea.getCodeSectionRectangle();
+        if (compRect.y < hexRect.y) {
+            g.setColor(codeArea.getBackground());
+            g.fillRect(compRect.x, compRect.y, compRect.x + compRect.width, hexRect.y - compRect.y);
+        }
         int decorationMode = codeArea.getDecorationMode();
         if ((decorationMode & CodeArea.DECORATION_LINENUM_LINE) > 0) {
             g.setColor(codeArea.getDecorationLineColor());
@@ -123,10 +127,11 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     public void paintBackground(Graphics g) {
         Rectangle clipBounds = g.getClipBounds();
         Rectangle hexRect = codeArea.getCodeSectionRectangle();
+        CodeArea.ColorsGroup mainColors = codeArea.getMainColors();
+        CodeArea.ColorsGroup stripColors = codeArea.getStripColors();
         int bytesPerLine = codeArea.getBytesPerLine();
         int lineHeight = codeArea.getLineHeight();
         if (codeArea.getBackgroundMode() != CodeArea.BackgroundMode.NONE) {
-            CodeArea.ColorsGroup mainColors = codeArea.getMainColors();
             g.setColor(mainColors.getBackgroundColor());
             g.fillRect(clipBounds.x, clipBounds.y, clipBounds.width, clipBounds.height);
         }
@@ -139,7 +144,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         int positionY;
         long dataPosition = line * bytesPerLine;
         if (codeArea.getBackgroundMode() != CodeArea.BackgroundMode.PLAIN) {
-            g.setColor(codeArea.getBackground());
+            g.setColor(stripColors.getBackgroundColor());
 
             positionY = hexRect.y - scrollPosition.scrollLineOffset;
             if ((line & 1) == 0) {
@@ -410,7 +415,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     }
 
     public void paintLineNonprintables(Graphics g, int linePositionX, int linePositionY, PaintData paintData) {
-        g.setColor(paintData.mainColors.getNonprintableColor());
+        g.setColor(paintData.mainColors.getUnprintablesColor());
         int positionY = linePositionY + paintData.lineHeight - codeArea.getSubFontSpace();
 
         if (paintData.charRenderingMode == CodeArea.CharRenderingMode.LINE_AT_ONCE) {
@@ -645,7 +650,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         paintData.lineChars = new char[paintData.charsPerLine];
         Arrays.fill(paintData.lineChars, ' ');
 
-        paintData.showNonprintingCharacters = codeArea.isShowNonprintingCharacters();
+        paintData.showNonprintingCharacters = codeArea.isShowUnprintableCharacters();
         if (paintData.showNonprintingCharacters) {
             paintData.nonprintableChars = new char[paintData.charsPerLine];
         }
