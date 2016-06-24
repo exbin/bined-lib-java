@@ -33,7 +33,11 @@ import java.util.Map;
  */
 public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
-    public static final int MAX_MONOSPACE_CODE_POINT = 0x24f;
+    public static final int MIN_MONOSPACE_CODE_POINT = 0x19;
+    public static final int MAX_MONOSPACE_CODE_POINT = 0x1C3;
+    public static final int INV_SPACE_CODE_POINT = 0x7f;
+    public static final int EXCEPTION1_CODE_POINT = 0x8e;
+    public static final int EXCEPTION2_CODE_POINT = 0x9e;
 
     protected final CodeArea codeArea;
 
@@ -393,6 +397,9 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     }
 
     public void paintLineText(Graphics g, long line, int linePositionX, int linePositionY, PaintData paintData) {
+        for (int i = 0; i < 1024; i++) {
+            System.out.println("Code " + i + " : " + paintData.fontMetrics.charWidth((char) i));
+        }
         int positionY = linePositionY + paintData.lineHeight - codeArea.getSubFontSpace();
 
         int renderOffset = 0;
@@ -430,7 +437,9 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                 }
                 if (paintData.charRenderingMode == CodeArea.CharRenderingMode.AUTO && paintData.monospaceFont) {
                     // Detect if character is in unicode range covered by monospace fonts
-                    if ((int) currentChar < MAX_MONOSPACE_CODE_POINT) {
+                    if (currentChar > MIN_MONOSPACE_CODE_POINT && (int) currentChar < MAX_MONOSPACE_CODE_POINT
+                            && currentChar != INV_SPACE_CODE_POINT
+                            && currentChar != EXCEPTION1_CODE_POINT && currentChar != EXCEPTION2_CODE_POINT) {
                         currentCharWidth = paintData.charWidth;
                     }
                 }
