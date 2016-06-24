@@ -54,7 +54,7 @@ import org.exbin.utils.binary_data.BinaryData;
  *
  * Also supports binary, octal and decimal codes.
  *
- * @version 0.1.0 2016/06/23
+ * @version 0.1.0 2016/06/24
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeArea extends JComponent {
@@ -113,7 +113,7 @@ public class CodeArea extends JComponent {
      * and line numbers section.
      */
     private final ColorsGroup mainColors = new ColorsGroup();
-    private final ColorsGroup stripColors = new ColorsGroup();
+    private final ColorsGroup alternateColors = new ColorsGroup();
     private final ColorsGroup selectionColors = new ColorsGroup();
     private final ColorsGroup mirrorSelectionColors = new ColorsGroup();
     private Color cursorColor;
@@ -144,9 +144,9 @@ public class CodeArea extends JComponent {
         mainColors.setTextColor(textColor);
         mainColors.setBothBackgroundColors(backgroundColor);
         mainColors.setUnprintablesColor(unprintablesColor);
-        stripColors.setTextColor(textColor);
-        stripColors.setBothBackgroundColors(createOddColor(backgroundColor));
-        stripColors.setUnprintablesColor(unprintablesColor);
+        alternateColors.setTextColor(textColor);
+        alternateColors.setBothBackgroundColors(createOddColor(backgroundColor));
+        alternateColors.setUnprintablesColor(unprintablesColor);
         Color selectionTextColor = UIManager.getColor("TextArea.selectionForeground");
         Color selectionBackgroundColor = UIManager.getColor("TextArea.selectionBackground");
         selectionColors.setTextColor(selectionTextColor);
@@ -200,7 +200,7 @@ public class CodeArea extends JComponent {
                     RenderingHints.KEY_TEXT_ANTIALIASING,
                     antialiasingHint);
         }
-        
+
         if (dimensionsCache.fontMetrics == null) {
             computeFontMetrics();
         }
@@ -1029,8 +1029,8 @@ public class CodeArea extends JComponent {
         return new ColorsGroup(mainColors);
     }
 
-    public ColorsGroup getStripColors() {
-        return new ColorsGroup(stripColors);
+    public ColorsGroup getAlternateColors() {
+        return new ColorsGroup(alternateColors);
     }
 
     public ColorsGroup getSelectionColors() {
@@ -1046,8 +1046,8 @@ public class CodeArea extends JComponent {
         repaint();
     }
 
-    public void setStripColors(ColorsGroup colorsGroup) {
-        stripColors.setColors(colorsGroup);
+    public void setAlternateColors(ColorsGroup colorsGroup) {
+        alternateColors.setColors(colorsGroup);
         repaint();
     }
 
@@ -1491,10 +1491,20 @@ public class CodeArea extends JComponent {
             this.end = end;
         }
 
+        /**
+         * Returns first data position of the selection.
+         *
+         * @return data position
+         */
         public long getFirst() {
             return end >= start ? start : end;
         }
 
+        /**
+         * Returns last data position of the selection.
+         *
+         * @return data position
+         */
         public long getLast() {
             return end >= start ? end : start - 1;
         }
@@ -1628,8 +1638,8 @@ public class CodeArea extends JComponent {
      * fonts to render characters as string if possible
      *
      * LINE_AT_ONCE - Render sequence of characters from top left corner of the
-     * line ignoring character width (fastest, but doesn't work correctly on
-     * characters with dissimilar width)
+     * line ignoring character width. It's fastest, but render correctly only
+     * for monospaced fonts and charsets where all characters have same width
      *
      * TOP_LEFT - Render each character from top left corner of it's position
      *
@@ -1785,6 +1795,54 @@ public class CodeArea extends JComponent {
         public void setColors(ColorsGroup colorsGroup) {
             setColorsFromGroup(colorsGroup);
         }
+
+        public Color getColor(ColorType colorType) {
+            switch (colorType) {
+                case TEXT:
+                    return textColor;
+                case BACKGROUND:
+                    return backgroundColor;
+                case UNPRINTABLES:
+                    return unprintablesColor;
+                case UNPRINTABLES_BACKGROUND:
+                    return unprintablesBackgroundColor;
+                default:
+                    throw new IllegalStateException();
+            }
+        }
+
+        public void setColor(ColorType colorType, Color color) {
+            switch (colorType) {
+                case TEXT: {
+                    textColor = color;
+                    break;
+                }
+                case BACKGROUND: {
+                    backgroundColor = color;
+                    break;
+                }
+                case UNPRINTABLES: {
+                    unprintablesColor = color;
+                    break;
+                }
+                case UNPRINTABLES_BACKGROUND: {
+                    unprintablesBackgroundColor = color;
+                    break;
+                }
+                default:
+                    throw new IllegalStateException();
+            }
+        }
+    }
+
+    /**
+     * Enumeration of color types in group.
+     */
+    public static enum ColorType {
+        TEXT,
+        BACKGROUND,
+        UNPRINTABLES,
+        UNPRINTABLES_BACKGROUND
     }
 
     private class CodeAreaMouseListener extends MouseAdapter implements MouseMotionListener, MouseWheelListener {

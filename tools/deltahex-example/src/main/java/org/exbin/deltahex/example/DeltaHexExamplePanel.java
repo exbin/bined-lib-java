@@ -41,7 +41,7 @@ import org.exbin.utils.binary_data.EditableBinaryData;
 /**
  * Hexadecimal editor example panel.
  *
- * @version 0.1.0 2016/06/19
+ * @version 0.1.0 2016/06/23
  * @author ExBin Project (http://exbin.org)
  */
 public class DeltaHexExamplePanel extends javax.swing.JPanel {
@@ -1104,6 +1104,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
 
     private void loadDataButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadDataButtonActionPerformed
         JFileChooser openFC = new JFileChooser();
+        openFC.removeChoosableFileFilter(openFC.getAcceptAllFileFilter());
         openFC.addChoosableFileFilter(new FileFilter() {
             @Override
             public boolean accept(File file) {
@@ -1112,7 +1113,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
 
             @Override
             public String getDescription() {
-                return "All files (*)";
+                return "All Files (*)";
             }
         });
         if (openFC.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
@@ -1131,6 +1132,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
 
     private void saveDataButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveDataButtonActionPerformed
         JFileChooser saveFC = new JFileChooser();
+        saveFC.removeChoosableFileFilter(saveFC.getAcceptAllFileFilter());
         saveFC.addChoosableFileFilter(new FileFilter() {
             @Override
             public boolean accept(File file) {
@@ -1139,7 +1141,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
 
             @Override
             public String getDescription() {
-                return "All files (*)";
+                return "All Files (*)";
             }
         });
         if (saveFC.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
