@@ -397,9 +397,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     }
 
     public void paintLineText(Graphics g, long line, int linePositionX, int linePositionY, PaintData paintData) {
-        for (int i = 0; i < 1024; i++) {
-            System.out.println("Code " + i + " : " + paintData.fontMetrics.charWidth((char) i));
-        }
         int positionY = linePositionY + paintData.lineHeight - codeArea.getSubFontSpace();
 
         int renderOffset = 0;
