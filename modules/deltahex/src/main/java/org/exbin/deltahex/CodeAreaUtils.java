@@ -84,6 +84,7 @@ public class CodeAreaUtils {
      * Optionally fills rest of the value with zeros.
      *
      * @param target target characters array
+     * @param targetOffset offset position in target array
      * @param value value
      * @param base target numerical base, supported values are 1 to 16
      * @param lengthLimit length limit
@@ -91,10 +92,10 @@ public class CodeAreaUtils {
      * @param upperCase upper case for values greater than 9
      * @return offset of characters position
      */
-    public static int longToBaseCode(char[] target, long value, int base, int lengthLimit, boolean fillZeros, boolean upperCase) {
+    public static int longToBaseCode(char[] target, int targetOffset, long value, int base, int lengthLimit, boolean fillZeros, boolean upperCase) {
         char[] codes = upperCase ? UPPER_HEX_CODES : LOWER_HEX_CODES;
         for (int i = lengthLimit - 1; i >= 0; i--) {
-            target[i] = codes[(int) (value % base)];
+            target[targetOffset + i] = codes[(int) (value % base)];
             if (!fillZeros && value == 0) {
                 return i;
             }

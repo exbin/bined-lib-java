@@ -25,7 +25,7 @@ import org.exbin.deltahex.CodeArea;
 /**
  * Hexadecimal component painter supporting search matches highlighting.
  *
- * @version 0.1.0 2016/06/24
+ * @version 0.1.0 2016/06/26
  * @author ExBin Project (http://exbin.org)
  */
 public class HighlightCodeAreaPainter extends DefaultCodeAreaPainter {
@@ -57,25 +57,25 @@ public class HighlightCodeAreaPainter extends DefaultCodeAreaPainter {
     }
 
     @Override
-    public Color getPositionColor(long lineDataPosition, long line, int byteOnLine, int charOnLine, CodeArea.Section section, CodeArea.ColorType colorType, PaintData paintData) {
+    public Color getPositionColor(int byteOnLine, int charOnLine, CodeArea.Section section, CodeArea.ColorType colorType, PaintData paintData) {
         if (section == CodeArea.Section.TEXT_PREVIEW || charOnLine < paintData.getBytesPerLine() * paintData.getCharsPerByte() - 1) {
-            long dataPosition = lineDataPosition + byteOnLine;
+            long dataPosition = paintData.getLineDataPosition() + byteOnLine;
             if (currentMatchIndex >= 0) {
                 SearchMatch currentMatch = matches.get(currentMatchIndex);
                 if (dataPosition >= currentMatch.position && dataPosition < currentMatch.position + currentMatch.length
-                        && (section == CodeArea.Section.TEXT_PREVIEW || charOnLine != ((currentMatch.position + currentMatch.length) - lineDataPosition) * paintData.getCharsPerByte() - 1)) {
+                        && (section == CodeArea.Section.TEXT_PREVIEW || charOnLine != ((currentMatch.position + currentMatch.length) - paintData.getLineDataPosition()) * paintData.getCharsPerByte() - 1)) {
                     return currentMatchColors.getColor(colorType);
                 }
             }
 
-            if (matchPosition < lineDataPosition) {
+            if (matchPosition < paintData.getLineDataPosition()) {
                 matchIndex = 0;
             }
             int lineMatchIndex = matchIndex;
             while (lineMatchIndex < matches.size()) {
                 SearchMatch match = matches.get(lineMatchIndex);
                 if (dataPosition >= match.position && dataPosition < match.position + match.length
-                        && (section == CodeArea.Section.TEXT_PREVIEW || charOnLine != ((match.position + match.length) - lineDataPosition) * paintData.getCharsPerByte() - 1)) {
+                        && (section == CodeArea.Section.TEXT_PREVIEW || charOnLine != ((match.position + match.length) - paintData.getLineDataPosition()) * paintData.getCharsPerByte() - 1)) {
                     if (byteOnLine == 0) {
                         matchIndex = lineMatchIndex;
                         matchPosition = match.position;
@@ -95,7 +95,7 @@ public class HighlightCodeAreaPainter extends DefaultCodeAreaPainter {
             }
         }
 
-        return super.getPositionColor(lineDataPosition, line, byteOnLine, charOnLine, section, colorType, paintData);
+        return super.getPositionColor(byteOnLine, charOnLine, section, colorType, paintData);
     }
 
     public List<SearchMatch> getMatches() {

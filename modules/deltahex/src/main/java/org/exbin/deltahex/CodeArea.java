@@ -725,7 +725,7 @@ public class CodeArea extends JComponent {
              *
              * TODO: Is there better way?
              */
-            dimensionsCache.monospaceFont = dimensionsCache.charWidth == dimensionsCache.fontMetrics.charWidth('i');
+            dimensionsCache.monospaceFont = dimensionsCache.charWidth == dimensionsCache.fontMetrics.charWidth(' ') && dimensionsCache.charWidth == dimensionsCache.fontMetrics.charWidth('i');
             int fontHeight = font.getSize();
             if (dimensionsCache.charWidth == 0) {
                 dimensionsCache.charWidth = fontHeight;
