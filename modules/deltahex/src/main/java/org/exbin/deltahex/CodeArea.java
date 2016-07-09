@@ -128,7 +128,7 @@ public class CodeArea extends JComponent {
     private final List<DataChangedListener> dataChangedListeners = new ArrayList<>();
     private final List<ScrollingListener> scrollingListeners = new ArrayList<>();
 
-    private final DimensionsCache dimensionsCache = new DimensionsCache();
+    private final PaintDataCache paintDataCache = new PaintDataCache();
 
     public CodeArea() {
         super();
@@ -193,6 +193,17 @@ public class CodeArea extends JComponent {
 
     @Override
     public void paintComponent(Graphics g) {
+        Insets insets = getInsets();
+        Dimension size = getSize();
+        Rectangle compRect = new Rectangle();
+        compRect.x = insets.left;
+        compRect.y = insets.top;
+        compRect.width = size.width - insets.left - insets.right;
+        compRect.height = size.height - insets.top - insets.bottom;
+        if (!paintDataCache.componentRectangle.equals(compRect)) {
+            computePaintData();
+        }
+
         Rectangle clipBounds = g.getClipBounds();
         if (charAntialiasingMode != CharAntialiasingMode.OFF && g instanceof Graphics2D) {
             Object antialiasingHint = getAntialiasingHint((Graphics2D) g);
@@ -201,12 +212,12 @@ public class CodeArea extends JComponent {
                     antialiasingHint);
         }
 
-        if (dimensionsCache.fontMetrics == null) {
+        if (paintDataCache.fontMetrics == null) {
             computeFontMetrics();
         }
 
         painter.paintOverall(g);
-        Rectangle hexRect = dimensionsCache.codeSectionRectangle;
+        Rectangle hexRect = paintDataCache.codeSectionRectangle;
         if (showHeader) {
             g.setClip(clipBounds.createIntersection(new Rectangle(hexRect.x, 0, hexRect.width, hexRect.y)));
             painter.paintHeader(g);
@@ -280,14 +291,14 @@ public class CodeArea extends JComponent {
     }
 
     private void moveCaret(MouseEvent me, int modifiers) {
-        Rectangle hexRect = dimensionsCache.codeSectionRectangle;
+        Rectangle hexRect = paintDataCache.codeSectionRectangle;
         int codeDigits = getCodeType().getMaxDigits();
         int charsPerByte = codeDigits + 1;
 
         Point scrollPoint = getScrollPoint();
-        int bytesPerLine = dimensionsCache.bytesPerLine;
-        int cursorCharX = (me.getX() - hexRect.x + scrollPoint.x) / dimensionsCache.charWidth;
-        int cursorLineY = (me.getY() - hexRect.y + scrollPoint.y) / dimensionsCache.lineHeight;
+        int bytesPerLine = paintDataCache.bytesPerLine;
+        int cursorCharX = (me.getX() - hexRect.x + scrollPoint.x) / paintDataCache.charWidth;
+        int cursorLineY = (me.getY() - hexRect.y + scrollPoint.y) / paintDataCache.lineHeight;
         if (cursorLineY < 0) {
             cursorLineY = 0;
         }
@@ -361,7 +372,7 @@ public class CodeArea extends JComponent {
     }
 
     public Point getScrollPoint() {
-        return new Point(scrollPosition.scrollBytePosition * dimensionsCache.charWidth + scrollPosition.scrollByteOffset, (int) scrollPosition.scrollLinePosition * dimensionsCache.lineHeight + scrollPosition.scrollLineOffset);
+        return new Point(scrollPosition.scrollBytePosition * paintDataCache.charWidth + scrollPosition.scrollByteOffset, (int) scrollPosition.scrollLinePosition * paintDataCache.lineHeight + scrollPosition.scrollLineOffset);
     }
 
     public ScrollPosition getScrollPosition() {
@@ -373,23 +384,23 @@ public class CodeArea extends JComponent {
     }
 
     public void revealPosition(long position, Section section) {
-        if (dimensionsCache.fontMetrics == null) {
+        if (paintDataCache.fontMetrics == null) {
             // Ignore if no font data is available
             return;
         }
         boolean scrolled = false;
-        Rectangle hexRect = dimensionsCache.codeSectionRectangle;
-        long caretLine = position / dimensionsCache.bytesPerLine;
+        Rectangle hexRect = paintDataCache.codeSectionRectangle;
+        long caretLine = position / paintDataCache.bytesPerLine;
         int codeDigits = getCodeType().getMaxDigits();
         int charsPerByte = codeDigits + 1;
 
         int positionByte;
         if (section == Section.CODE_MATRIX) {
-            positionByte = (int) (position % dimensionsCache.bytesPerLine) * charsPerByte + caret.getCodeOffset();
+            positionByte = (int) (position % paintDataCache.bytesPerLine) * charsPerByte + caret.getCodeOffset();
         } else {
-            positionByte = (int) (position % dimensionsCache.bytesPerLine);
+            positionByte = (int) (position % paintDataCache.bytesPerLine);
             if (viewMode == ViewMode.DUAL) {
-                positionByte += dimensionsCache.bytesPerLine * charsPerByte;
+                positionByte += paintDataCache.bytesPerLine * charsPerByte;
             }
         }
 
@@ -397,10 +408,10 @@ public class CodeArea extends JComponent {
             scrollPosition.scrollLinePosition = caretLine;
             scrollPosition.scrollLineOffset = 0;
             scrolled = true;
-        } else if (caretLine >= scrollPosition.scrollLinePosition + dimensionsCache.linesPerRect) {
-            scrollPosition.scrollLinePosition = caretLine - dimensionsCache.linesPerRect;
+        } else if (caretLine >= scrollPosition.scrollLinePosition + paintDataCache.linesPerRect) {
+            scrollPosition.scrollLinePosition = caretLine - paintDataCache.linesPerRect;
             if (verticalScrollMode == VerticalScrollMode.PIXEL) {
-                scrollPosition.scrollLineOffset = dimensionsCache.lineHeight - (hexRect.height % dimensionsCache.lineHeight);
+                scrollPosition.scrollLineOffset = paintDataCache.lineHeight - (hexRect.height % paintDataCache.lineHeight);
             } else {
                 scrollPosition.scrollLinePosition++;
             }
@@ -410,10 +421,10 @@ public class CodeArea extends JComponent {
             scrollPosition.scrollBytePosition = positionByte;
             scrollPosition.scrollByteOffset = 0;
             scrolled = true;
-        } else if (positionByte >= scrollPosition.scrollBytePosition + dimensionsCache.bytesPerRect) {
-            scrollPosition.scrollBytePosition = positionByte - dimensionsCache.bytesPerRect;
+        } else if (positionByte >= scrollPosition.scrollBytePosition + paintDataCache.bytesPerRect) {
+            scrollPosition.scrollBytePosition = positionByte - paintDataCache.bytesPerRect;
             if (horizontalScrollMode == HorizontalScrollMode.PIXEL) {
-                scrollPosition.scrollByteOffset = dimensionsCache.charWidth - (hexRect.width % dimensionsCache.charWidth);
+                scrollPosition.scrollByteOffset = paintDataCache.charWidth - (hexRect.width % paintDataCache.charWidth);
             } else {
                 scrollPosition.scrollBytePosition++;
             }
@@ -430,13 +441,13 @@ public class CodeArea extends JComponent {
         if (verticalScrollMode == VerticalScrollMode.PER_LINE) {
             verticalScrollBar.setValue((int) scrollPosition.scrollLinePosition);
         } else {
-            verticalScrollBar.setValue((int) (scrollPosition.scrollLinePosition * dimensionsCache.lineHeight + scrollPosition.scrollLineOffset));
+            verticalScrollBar.setValue((int) (scrollPosition.scrollLinePosition * paintDataCache.lineHeight + scrollPosition.scrollLineOffset));
         }
 
         if (horizontalScrollMode == HorizontalScrollMode.PER_CHAR) {
             horizontalScrollBar.setValue(scrollPosition.scrollBytePosition);
         } else {
-            horizontalScrollBar.setValue(scrollPosition.scrollBytePosition * dimensionsCache.charWidth + scrollPosition.scrollByteOffset);
+            horizontalScrollBar.setValue(scrollPosition.scrollBytePosition * paintDataCache.charWidth + scrollPosition.scrollByteOffset);
         }
         repaint();
     }
@@ -591,7 +602,7 @@ public class CodeArea extends JComponent {
      * @return rectangle of component area
      */
     public Rectangle getComponentRectangle() {
-        return dimensionsCache.componentRectangle;
+        return paintDataCache.componentRectangle;
     }
 
     /**
@@ -600,7 +611,7 @@ public class CodeArea extends JComponent {
      * @return rectangle of main hexadecimal area
      */
     public Rectangle getCodeSectionRectangle() {
-        return dimensionsCache.codeSectionRectangle;
+        return paintDataCache.codeSectionRectangle;
     }
 
     /**
@@ -609,23 +620,23 @@ public class CodeArea extends JComponent {
      * @return X position or -1 if area not present
      */
     public int getPreviewX() {
-        return dimensionsCache.previewX;
+        return paintDataCache.previewX;
     }
 
     public int getLineHeight() {
-        return dimensionsCache.lineHeight;
+        return paintDataCache.lineHeight;
     }
 
     public int getBytesPerLine() {
-        return dimensionsCache.bytesPerLine;
+        return paintDataCache.bytesPerLine;
     }
 
     public int getCharWidth() {
-        return dimensionsCache.charWidth;
+        return paintDataCache.charWidth;
     }
 
     public FontMetrics getFontMetrics() {
-        return dimensionsCache.fontMetrics;
+        return paintDataCache.fontMetrics;
     }
 
     /**
@@ -634,7 +645,7 @@ public class CodeArea extends JComponent {
      * @return header space size
      */
     public int getHeaderSpace() {
-        return dimensionsCache.headerSpace;
+        return paintDataCache.headerSpace;
     }
 
     /**
@@ -643,7 +654,7 @@ public class CodeArea extends JComponent {
      * @return line number space size
      */
     public int getLineNumberSpace() {
-        return dimensionsCache.lineNumberSpace;
+        return paintDataCache.lineNumberSpace;
     }
 
     /**
@@ -652,7 +663,7 @@ public class CodeArea extends JComponent {
      * @return line number length
      */
     public int getLineNumberLength() {
-        return dimensionsCache.lineNumbersLength;
+        return paintDataCache.lineNumbersLength;
     }
 
     public BinaryData getData() {
@@ -662,7 +673,7 @@ public class CodeArea extends JComponent {
     public void setData(BinaryData data) {
         this.data = data;
         notifyDataChanged();
-        computeDimensions();
+        computePaintData();
         repaint();
     }
 
@@ -708,50 +719,50 @@ public class CodeArea extends JComponent {
     @Override
     public void setBorder(Border border) {
         super.setBorder(border);
-        computeDimensions();
+        computePaintData();
     }
 
     private void computeFontMetrics() {
         Graphics g = getGraphics();
         if (g != null) {
             Font font = getFont();
-            dimensionsCache.fontMetrics = g.getFontMetrics(font);
+            paintDataCache.fontMetrics = g.getFontMetrics(font);
             /**
              * Use small 'w' character to guess normal font width.
              */
-            dimensionsCache.charWidth = dimensionsCache.fontMetrics.charWidth('w');
+            paintDataCache.charWidth = paintDataCache.fontMetrics.charWidth('w');
             /**
              * Compare it to small 'i' to detect if font is monospaced.
              *
              * TODO: Is there better way?
              */
-            dimensionsCache.monospaceFont = dimensionsCache.charWidth == dimensionsCache.fontMetrics.charWidth(' ') && dimensionsCache.charWidth == dimensionsCache.fontMetrics.charWidth('i');
+            paintDataCache.monospaceFont = paintDataCache.charWidth == paintDataCache.fontMetrics.charWidth(' ') && paintDataCache.charWidth == paintDataCache.fontMetrics.charWidth('i');
             int fontHeight = font.getSize();
-            if (dimensionsCache.charWidth == 0) {
-                dimensionsCache.charWidth = fontHeight;
+            if (paintDataCache.charWidth == 0) {
+                paintDataCache.charWidth = fontHeight;
             }
-            dimensionsCache.lineHeight = fontHeight + subFontSpace;
-            computeDimensions();
+            paintDataCache.lineHeight = fontHeight + subFontSpace;
+            computePaintData();
         }
     }
 
-    public void computeDimensions() {
-        if (dimensionsCache.fontMetrics == null) {
+    public void computePaintData() {
+        if (paintDataCache.fontMetrics == null) {
             return;
         }
 
         // TODO byte groups
         switch (viewMode) {
             case CODE_MATRIX: {
-                dimensionsCache.charsPerByte = codeType.maxDigits + 1;
+                paintDataCache.charsPerByte = codeType.maxDigits + 1;
                 break;
             }
             case TEXT_PREVIEW: {
-                dimensionsCache.charsPerByte = 1;
+                paintDataCache.charsPerByte = 1;
                 break;
             }
             case DUAL: {
-                dimensionsCache.charsPerByte = codeType.maxDigits + 2;
+                paintDataCache.charsPerByte = codeType.maxDigits + 2;
                 break;
             }
             default:
@@ -763,7 +774,7 @@ public class CodeArea extends JComponent {
 
         Insets insets = getInsets();
         Dimension size = getSize();
-        Rectangle compRect = dimensionsCache.componentRectangle;
+        Rectangle compRect = paintDataCache.componentRectangle;
         compRect.x = insets.left;
         compRect.y = insets.top;
         compRect.width = size.width - insets.left - insets.right;
@@ -772,14 +783,14 @@ public class CodeArea extends JComponent {
         switch (lineNumberLength.getLineNumberType()) {
             case AUTO: {
                 double natLog = Math.log(getData().getDataSize());
-                dimensionsCache.lineNumbersLength = (int) Math.ceil(natLog / positionCodeType.baseLog);
-                if (dimensionsCache.lineNumbersLength == 0) {
-                    dimensionsCache.lineNumbersLength = 1;
+                paintDataCache.lineNumbersLength = (int) Math.ceil(natLog / positionCodeType.baseLog);
+                if (paintDataCache.lineNumbersLength == 0) {
+                    paintDataCache.lineNumbersLength = 1;
                 }
                 break;
             }
             case SPECIFIED: {
-                dimensionsCache.lineNumbersLength = lineNumberLength.getLineNumberLength();
+                paintDataCache.lineNumbersLength = lineNumberLength.getLineNumberLength();
                 break;
             }
         }
@@ -787,7 +798,7 @@ public class CodeArea extends JComponent {
         int charsPerRect = computeCharsPerRect(compRect.width);
         int bytesPerLine;
         if (wrapMode) {
-            bytesPerLine = charsPerRect / dimensionsCache.charsPerByte;
+            bytesPerLine = charsPerRect / paintDataCache.charsPerByte;
             if (bytesPerLine == 0) {
                 bytesPerLine = 1;
             }
@@ -798,31 +809,31 @@ public class CodeArea extends JComponent {
         CodeAreaSpace.SpaceType headerSpaceType = headerSpace.getSpaceType();
         switch (headerSpaceType) {
             case NONE: {
-                dimensionsCache.headerSpace = 0;
+                paintDataCache.headerSpace = 0;
                 break;
             }
             case SPECIFIED: {
-                dimensionsCache.headerSpace = headerSpace.getSpaceSize();
+                paintDataCache.headerSpace = headerSpace.getSpaceSize();
                 break;
             }
             case QUARTER_UNIT: {
-                dimensionsCache.headerSpace = dimensionsCache.lineHeight / 4;
+                paintDataCache.headerSpace = paintDataCache.lineHeight / 4;
                 break;
             }
             case HALF_UNIT: {
-                dimensionsCache.headerSpace = dimensionsCache.lineHeight / 2;
+                paintDataCache.headerSpace = paintDataCache.lineHeight / 2;
                 break;
             }
             case ONE_UNIT: {
-                dimensionsCache.headerSpace = dimensionsCache.lineHeight;
+                paintDataCache.headerSpace = paintDataCache.lineHeight;
                 break;
             }
             case ONE_AND_HALF_UNIT: {
-                dimensionsCache.headerSpace = (int) (dimensionsCache.lineHeight * 1.5f);
+                paintDataCache.headerSpace = (int) (paintDataCache.lineHeight * 1.5f);
                 break;
             }
             case DOUBLE_UNIT: {
-                dimensionsCache.headerSpace = dimensionsCache.lineHeight * 2;
+                paintDataCache.headerSpace = paintDataCache.lineHeight * 2;
                 break;
             }
             default:
@@ -832,50 +843,50 @@ public class CodeArea extends JComponent {
         CodeAreaSpace.SpaceType lineNumberSpaceType = lineNumberSpace.getSpaceType();
         switch (lineNumberSpaceType) {
             case NONE: {
-                dimensionsCache.lineNumberSpace = 0;
+                paintDataCache.lineNumberSpace = 0;
                 break;
             }
             case SPECIFIED: {
-                dimensionsCache.lineNumberSpace = lineNumberSpace.getSpaceSize();
+                paintDataCache.lineNumberSpace = lineNumberSpace.getSpaceSize();
                 break;
             }
             case QUARTER_UNIT: {
-                dimensionsCache.lineNumberSpace = dimensionsCache.charWidth / 4;
+                paintDataCache.lineNumberSpace = paintDataCache.charWidth / 4;
                 break;
             }
             case HALF_UNIT: {
-                dimensionsCache.lineNumberSpace = dimensionsCache.charWidth / 2;
+                paintDataCache.lineNumberSpace = paintDataCache.charWidth / 2;
                 break;
             }
             case ONE_UNIT: {
-                dimensionsCache.lineNumberSpace = dimensionsCache.charWidth;
+                paintDataCache.lineNumberSpace = paintDataCache.charWidth;
                 break;
             }
             case ONE_AND_HALF_UNIT: {
-                dimensionsCache.lineNumberSpace = (int) (dimensionsCache.charWidth * 1.5f);
+                paintDataCache.lineNumberSpace = (int) (paintDataCache.charWidth * 1.5f);
                 break;
             }
             case DOUBLE_UNIT: {
-                dimensionsCache.lineNumberSpace = dimensionsCache.charWidth * 2;
+                paintDataCache.lineNumberSpace = paintDataCache.charWidth * 2;
                 break;
             }
             default:
                 throw new IllegalStateException("Unexpected line number space type " + lineNumberSpaceType.name());
         }
 
-        Rectangle hexRect = dimensionsCache.codeSectionRectangle;
-        hexRect.y = insets.top + (showHeader ? dimensionsCache.lineHeight + dimensionsCache.headerSpace : 0);
-        hexRect.x = insets.left + (showLineNumbers ? dimensionsCache.charWidth * dimensionsCache.lineNumbersLength + dimensionsCache.lineNumberSpace : 0);
+        Rectangle hexRect = paintDataCache.codeSectionRectangle;
+        hexRect.y = insets.top + (showHeader ? paintDataCache.lineHeight + paintDataCache.headerSpace : 0);
+        hexRect.x = insets.left + (showLineNumbers ? paintDataCache.charWidth * paintDataCache.lineNumbersLength + paintDataCache.lineNumberSpace : 0);
 
         if (verticalScrollBarVisibility == ScrollBarVisibility.IF_NEEDED) {
-            verticalScrollBarVisible = lines > dimensionsCache.linesPerRect;
+            verticalScrollBarVisible = lines > paintDataCache.linesPerRect;
         } else {
             verticalScrollBarVisible = verticalScrollBarVisibility == ScrollBarVisibility.ALWAYS;
         }
         if (verticalScrollBarVisible) {
-            charsPerRect = computeCharsPerRect(compRect.x + compRect.width - dimensionsCache.scrollBarThickness);
+            charsPerRect = computeCharsPerRect(compRect.x + compRect.width - paintDataCache.scrollBarThickness);
             if (wrapMode) {
-                bytesPerLine = charsPerRect / dimensionsCache.charsPerByte;
+                bytesPerLine = charsPerRect / paintDataCache.charsPerByte;
                 if (bytesPerLine <= 0) {
                     bytesPerLine = 1;
                 }
@@ -883,43 +894,43 @@ public class CodeArea extends JComponent {
             }
         }
 
-        dimensionsCache.bytesPerLine = bytesPerLine;
+        paintDataCache.bytesPerLine = bytesPerLine;
 
         int maxWidth = compRect.x + compRect.width - hexRect.x;
         if (verticalScrollBarVisible) {
-            maxWidth -= dimensionsCache.scrollBarThickness;
+            maxWidth -= paintDataCache.scrollBarThickness;
         }
 
         if (horizontalScrollBarVisibility == ScrollBarVisibility.IF_NEEDED) {
-            horizontalScrollBarVisible = dimensionsCache.bytesPerLine * dimensionsCache.charWidth * dimensionsCache.charsPerByte > maxWidth;
+            horizontalScrollBarVisible = paintDataCache.bytesPerLine * paintDataCache.charWidth * paintDataCache.charsPerByte > maxWidth;
         } else {
             horizontalScrollBarVisible = horizontalScrollBarVisibility == ScrollBarVisibility.ALWAYS;
         }
         if (horizontalScrollBarVisible) {
-            dimensionsCache.linesPerRect = (hexRect.height - dimensionsCache.scrollBarThickness) / dimensionsCache.lineHeight;
+            paintDataCache.linesPerRect = (hexRect.height - paintDataCache.scrollBarThickness) / paintDataCache.lineHeight;
         }
 
         hexRect.width = compRect.x + compRect.width - hexRect.x;
         if (verticalScrollBarVisible) {
-            hexRect.width -= dimensionsCache.scrollBarThickness;
+            hexRect.width -= paintDataCache.scrollBarThickness;
         }
         hexRect.height = compRect.y + compRect.height - hexRect.y;
         if (horizontalScrollBarVisible) {
-            hexRect.height -= dimensionsCache.scrollBarThickness;
+            hexRect.height -= paintDataCache.scrollBarThickness;
         }
 
-        dimensionsCache.bytesPerRect = hexRect.width / dimensionsCache.charWidth;
-        dimensionsCache.linesPerRect = hexRect.height / dimensionsCache.lineHeight;
+        paintDataCache.bytesPerRect = hexRect.width / paintDataCache.charWidth;
+        paintDataCache.linesPerRect = hexRect.height / paintDataCache.lineHeight;
 
         int codeDigits = getCodeType().getMaxDigits();
         int charsPerByte = codeDigits + 1;
         // Compute sections positions
         if (viewMode == ViewMode.CODE_MATRIX) {
-            dimensionsCache.previewX = -1;
+            paintDataCache.previewX = -1;
         } else {
-            dimensionsCache.previewX = hexRect.x;
+            paintDataCache.previewX = hexRect.x;
             if (viewMode == ViewMode.DUAL) {
-                dimensionsCache.previewX += dimensionsCache.bytesPerLine * dimensionsCache.charWidth * charsPerByte;
+                paintDataCache.previewX += paintDataCache.bytesPerLine * paintDataCache.charWidth * charsPerByte;
             }
         }
 
@@ -929,17 +940,17 @@ public class CodeArea extends JComponent {
         if (verticalScrollBarVisible) {
             int verticalScrollBarHeight = compRect.y + compRect.height - hexRect.y;
             if (horizontalScrollBarVisible) {
-                verticalScrollBarHeight -= dimensionsCache.scrollBarThickness - 2;
+                verticalScrollBarHeight -= paintDataCache.scrollBarThickness - 2;
             }
-            verticalScrollBar.setBounds(compRect.x + compRect.width - dimensionsCache.scrollBarThickness, hexRect.y, dimensionsCache.scrollBarThickness, verticalScrollBarHeight);
+            verticalScrollBar.setBounds(compRect.x + compRect.width - paintDataCache.scrollBarThickness, hexRect.y, paintDataCache.scrollBarThickness, verticalScrollBarHeight);
 
             int verticalVisibleAmount;
             int verticalMaximum = lines;
             if (verticalScrollMode == VerticalScrollMode.PIXEL) {
                 verticalVisibleAmount = hexRect.height;
-                verticalMaximum *= dimensionsCache.lineHeight;
+                verticalMaximum *= paintDataCache.lineHeight;
             } else {
-                verticalVisibleAmount = hexRect.height / dimensionsCache.lineHeight;
+                verticalVisibleAmount = hexRect.height / paintDataCache.lineHeight;
             }
             verticalScrollBar.setMaximum(verticalMaximum);
             verticalScrollBar.setVisibleAmount(verticalVisibleAmount);
@@ -948,10 +959,10 @@ public class CodeArea extends JComponent {
             if (verticalVisibleAmount < verticalMaximum) {
                 long maxLineScroll = verticalMaximum - verticalVisibleAmount;
                 if (verticalScrollMode == VerticalScrollMode.PIXEL) {
-                    long lineScroll = scrollPosition.scrollLinePosition * dimensionsCache.lineHeight + scrollPosition.scrollLineOffset;
+                    long lineScroll = scrollPosition.scrollLinePosition * paintDataCache.lineHeight + scrollPosition.scrollLineOffset;
                     if (lineScroll > maxLineScroll) {
-                        scrollPosition.scrollLinePosition = maxLineScroll / dimensionsCache.lineHeight;
-                        scrollPosition.scrollLineOffset = (int) (maxLineScroll % dimensionsCache.lineHeight);
+                        scrollPosition.scrollLinePosition = maxLineScroll / paintDataCache.lineHeight;
+                        scrollPosition.scrollLineOffset = (int) (maxLineScroll % paintDataCache.lineHeight);
                         scrolled = true;
                     }
                 } else {
@@ -972,17 +983,17 @@ public class CodeArea extends JComponent {
         if (horizontalScrollBarVisible) {
             int horizontalScrollBarWidth = compRect.x + compRect.width - hexRect.x;
             if (verticalScrollBarVisible) {
-                horizontalScrollBarWidth -= dimensionsCache.scrollBarThickness - 2;
+                horizontalScrollBarWidth -= paintDataCache.scrollBarThickness - 2;
             }
-            horizontalScrollBar.setBounds(hexRect.x, compRect.y + compRect.height - dimensionsCache.scrollBarThickness, horizontalScrollBarWidth, dimensionsCache.scrollBarThickness);
+            horizontalScrollBar.setBounds(hexRect.x, compRect.y + compRect.height - paintDataCache.scrollBarThickness, horizontalScrollBarWidth, paintDataCache.scrollBarThickness);
 
             int horizontalVisibleAmount;
-            int horizontalMaximum = dimensionsCache.bytesPerLine * dimensionsCache.charsPerByte;
+            int horizontalMaximum = paintDataCache.bytesPerLine * paintDataCache.charsPerByte;
             if (horizontalScrollMode == HorizontalScrollMode.PIXEL) {
                 horizontalVisibleAmount = hexRect.width;
-                horizontalMaximum *= dimensionsCache.charWidth;
+                horizontalMaximum *= paintDataCache.charWidth;
             } else {
-                horizontalVisibleAmount = hexRect.width / dimensionsCache.charWidth;
+                horizontalVisibleAmount = hexRect.width / paintDataCache.charWidth;
             }
             horizontalScrollBar.setMaximum(horizontalMaximum);
             horizontalScrollBar.setVisibleAmount(horizontalVisibleAmount);
@@ -991,10 +1002,10 @@ public class CodeArea extends JComponent {
             int maxByteScroll = horizontalMaximum - horizontalVisibleAmount;
             if (horizontalVisibleAmount < horizontalMaximum) {
                 if (horizontalScrollMode == HorizontalScrollMode.PIXEL) {
-                    int byteScroll = scrollPosition.scrollBytePosition * dimensionsCache.charWidth + scrollPosition.scrollByteOffset;
+                    int byteScroll = scrollPosition.scrollBytePosition * paintDataCache.charWidth + scrollPosition.scrollByteOffset;
                     if (byteScroll > maxByteScroll) {
-                        scrollPosition.scrollBytePosition = maxByteScroll / dimensionsCache.charWidth;
-                        scrollPosition.scrollByteOffset = maxByteScroll % dimensionsCache.charWidth;
+                        scrollPosition.scrollBytePosition = maxByteScroll / paintDataCache.charWidth;
+                        scrollPosition.scrollByteOffset = maxByteScroll % paintDataCache.charWidth;
                         scrolled = true;
                     }
                 } else {
@@ -1019,10 +1030,10 @@ public class CodeArea extends JComponent {
 
     private int computeCharsPerRect(int width) {
         if (showLineNumbers) {
-            width -= dimensionsCache.charWidth * dimensionsCache.lineNumbersLength + getLineNumberSpace();
+            width -= paintDataCache.charWidth * paintDataCache.lineNumbersLength + getLineNumberSpace();
         }
 
-        return width / dimensionsCache.charWidth;
+        return width / paintDataCache.charWidth;
     }
 
     public ColorsGroup getMainColors() {
@@ -1092,7 +1103,7 @@ public class CodeArea extends JComponent {
             caret.setSection(Section.TEXT_PREVIEW);
             notifyCaretMoved();
         }
-        computeDimensions();
+        computePaintData();
         repaint();
     }
 
@@ -1102,7 +1113,7 @@ public class CodeArea extends JComponent {
 
     public void setCodeType(CodeType codeType) {
         this.codeType = codeType;
-        computeDimensions();
+        computePaintData();
         repaint();
     }
 
@@ -1112,7 +1123,7 @@ public class CodeArea extends JComponent {
 
     public void setPositionCodeType(PositionCodeType positionCodeType) {
         this.positionCodeType = positionCodeType;
-        computeDimensions();
+        computePaintData();
         repaint();
     }
 
@@ -1173,7 +1184,7 @@ public class CodeArea extends JComponent {
 
     public void setShowHeader(boolean showHeader) {
         this.showHeader = showHeader;
-        computeDimensions();
+        computePaintData();
         repaint();
     }
 
@@ -1183,7 +1194,7 @@ public class CodeArea extends JComponent {
 
     public void setShowLineNumbers(boolean showLineNumbers) {
         this.showLineNumbers = showLineNumbers;
-        computeDimensions();
+        computePaintData();
         repaint();
     }
 
@@ -1202,7 +1213,7 @@ public class CodeArea extends JComponent {
 
     public void setWrapMode(boolean wrapMode) {
         this.wrapMode = wrapMode;
-        computeDimensions();
+        computePaintData();
         repaint();
     }
 
@@ -1239,7 +1250,7 @@ public class CodeArea extends JComponent {
     public void setLineLength(int lineLength) {
         this.lineLength = lineLength;
         if (!wrapMode) {
-            computeDimensions();
+            computePaintData();
             repaint();
         }
     }
@@ -1249,7 +1260,7 @@ public class CodeArea extends JComponent {
     }
 
     public boolean isMonospaceFontDetected() {
-        return dimensionsCache.monospaceFont;
+        return paintDataCache.monospaceFont;
     }
 
     public void setCharRenderingMode(CharRenderingMode charRenderingMode) {
@@ -1286,7 +1297,7 @@ public class CodeArea extends JComponent {
             throw new NullPointerException();
         }
         headerSpace.setSpaceType(spaceType);
-        computeDimensions();
+        computePaintData();
         repaint();
     }
 
@@ -1299,7 +1310,7 @@ public class CodeArea extends JComponent {
             throw new IllegalArgumentException("Negative space size is not valid");
         }
         headerSpace.setSpaceSize(spaceSize);
-        computeDimensions();
+        computePaintData();
         repaint();
     }
 
@@ -1312,7 +1323,7 @@ public class CodeArea extends JComponent {
             throw new NullPointerException();
         }
         lineNumberSpace.setSpaceType(spaceType);
-        computeDimensions();
+        computePaintData();
         repaint();
     }
 
@@ -1325,7 +1336,7 @@ public class CodeArea extends JComponent {
             throw new IllegalArgumentException("Negative space size is not valid");
         }
         lineNumberSpace.setSpaceSize(spaceSize);
-        computeDimensions();
+        computePaintData();
         repaint();
     }
 
@@ -1338,7 +1349,7 @@ public class CodeArea extends JComponent {
             throw new NullPointerException("Line number type cannot be null");
         }
         lineNumberLength.setLineNumberType(lineNumberType);
-        computeDimensions();
+        computePaintData();
         repaint();
     }
 
@@ -1351,7 +1362,7 @@ public class CodeArea extends JComponent {
             throw new NullPointerException("Line number type cannot be less then 1");
         }
         lineNumberLength.setLineNumberLength(lineNumberSize);
-        computeDimensions();
+        computePaintData();
         repaint();
     }
 
@@ -1361,7 +1372,7 @@ public class CodeArea extends JComponent {
 
     public void setVerticalScrollBarVisibility(ScrollBarVisibility verticalScrollBarVisibility) {
         this.verticalScrollBarVisibility = verticalScrollBarVisibility;
-        computeDimensions();
+        computePaintData();
         updateScrollBars();
     }
 
@@ -1375,7 +1386,7 @@ public class CodeArea extends JComponent {
         if (verticalScrollMode == VerticalScrollMode.PER_LINE) {
             scrollPosition.scrollLineOffset = 0;
         }
-        computeDimensions();
+        computePaintData();
         scrollPosition.scrollLinePosition = linePosition;
         updateScrollBars();
         notifyScrolled();
@@ -1387,7 +1398,7 @@ public class CodeArea extends JComponent {
 
     public void setHorizontalScrollBarVisibility(ScrollBarVisibility horizontalScrollBarVisibility) {
         this.horizontalScrollBarVisibility = horizontalScrollBarVisibility;
-        computeDimensions();
+        computePaintData();
         updateScrollBars();
     }
 
@@ -1401,7 +1412,7 @@ public class CodeArea extends JComponent {
         if (horizontalScrollMode == HorizontalScrollMode.PER_CHAR) {
             scrollPosition.scrollByteOffset = 0;
         }
-        computeDimensions();
+        computePaintData();
         scrollPosition.scrollBytePosition = bytePosition;
         updateScrollBars();
         notifyScrolled();
@@ -1658,17 +1669,21 @@ public class CodeArea extends JComponent {
     }
 
     /**
-     * Precomputed dimensions for the component.
+     * Precomputed data for painting of the component.
      */
-    private static class DimensionsCache {
+    private static class PaintDataCache {
 
+        /**
+         * Font related paint data.
+         */
         FontMetrics fontMetrics = null;
         int charWidth;
         int lineHeight;
+        boolean monospaceFont = false;
+
         int bytesPerLine;
         int charsPerByte;
         int lineNumbersLength;
-        boolean monospaceFont = false;
 
         /**
          * Component area without border insets.
@@ -1884,7 +1899,7 @@ public class CodeArea extends JComponent {
 
         private void updateMouseCursor(MouseEvent e) {
             Cursor newCursor = defaultCursor;
-            Rectangle hexRect = dimensionsCache.codeSectionRectangle;
+            Rectangle hexRect = paintDataCache.codeSectionRectangle;
             if (e.getX() >= hexRect.x && e.getY() >= hexRect.y) {
                 newCursor = textCursor;
             }
@@ -1912,8 +1927,8 @@ public class CodeArea extends JComponent {
 
             if (e.isShiftDown() && horizontalScrollBar.isVisible()) {
                 if (e.getWheelRotation() > 0) {
-                    int visibleBytes = dimensionsCache.codeSectionRectangle.width / (dimensionsCache.charWidth * dimensionsCache.charsPerByte);
-                    int bytes = dimensionsCache.bytesPerLine - visibleBytes;
+                    int visibleBytes = paintDataCache.codeSectionRectangle.width / (paintDataCache.charWidth * paintDataCache.charsPerByte);
+                    int bytes = paintDataCache.bytesPerLine - visibleBytes;
                     if (scrollPosition.scrollBytePosition < bytes) {
                         if (scrollPosition.scrollBytePosition < bytes - MOUSE_SCROLL_LINES) {
                             scrollPosition.scrollBytePosition += MOUSE_SCROLL_LINES;
@@ -1933,11 +1948,11 @@ public class CodeArea extends JComponent {
                     notifyScrolled();
                 }
             } else if (e.getWheelRotation() > 0) {
-                long lines = (int) (data.getDataSize() / dimensionsCache.bytesPerLine);
-                if (lines * dimensionsCache.bytesPerLine < data.getDataSize()) {
+                long lines = (int) (data.getDataSize() / paintDataCache.bytesPerLine);
+                if (lines * paintDataCache.bytesPerLine < data.getDataSize()) {
                     lines++;
                 }
-                lines -= dimensionsCache.linesPerRect;
+                lines -= paintDataCache.linesPerRect;
                 if (scrollPosition.scrollLinePosition < lines) {
                     if (scrollPosition.scrollLinePosition < lines - MOUSE_SCROLL_LINES) {
                         scrollPosition.scrollLinePosition += MOUSE_SCROLL_LINES;
@@ -1992,7 +2007,7 @@ public class CodeArea extends JComponent {
                 }
                 case KeyEvent.VK_UP: {
                     CaretPosition caretPosition = caret.getCaretPosition();
-                    int bytesPerLine = dimensionsCache.bytesPerLine;
+                    int bytesPerLine = paintDataCache.bytesPerLine;
                     if (caretPosition.getDataPosition() > 0) {
                         if (caretPosition.getDataPosition() >= bytesPerLine) {
                             caret.setCaretPosition(caretPosition.getDataPosition() - bytesPerLine, caret.getCodeOffset());
@@ -2006,7 +2021,7 @@ public class CodeArea extends JComponent {
                 }
                 case KeyEvent.VK_DOWN: {
                     CaretPosition caretPosition = caret.getCaretPosition();
-                    int bytesPerLine = dimensionsCache.bytesPerLine;
+                    int bytesPerLine = paintDataCache.bytesPerLine;
                     long dataSize = data.getDataSize();
                     if (caretPosition.getDataPosition() < dataSize) {
                         if (caretPosition.getDataPosition() + bytesPerLine < dataSize
@@ -2022,7 +2037,7 @@ public class CodeArea extends JComponent {
                 }
                 case KeyEvent.VK_HOME: {
                     CaretPosition caretPosition = caret.getCaretPosition();
-                    int bytesPerLine = dimensionsCache.bytesPerLine;
+                    int bytesPerLine = paintDataCache.bytesPerLine;
                     if (caretPosition.getDataPosition() > 0 || caret.getCodeOffset() > 0) {
                         long targetPosition;
                         if ((e.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) > 0) {
@@ -2040,7 +2055,7 @@ public class CodeArea extends JComponent {
                 }
                 case KeyEvent.VK_END: {
                     CaretPosition caretPosition = caret.getCaretPosition();
-                    int bytesPerLine = dimensionsCache.bytesPerLine;
+                    int bytesPerLine = paintDataCache.bytesPerLine;
                     long dataSize = data.getDataSize();
                     if (caretPosition.getDataPosition() < dataSize) {
                         if ((e.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) > 0) {
@@ -2061,19 +2076,19 @@ public class CodeArea extends JComponent {
                 }
                 case KeyEvent.VK_PAGE_UP: {
                     CaretPosition caretPosition = caret.getCaretPosition();
-                    int bytesStep = dimensionsCache.bytesPerLine * dimensionsCache.linesPerRect;
+                    int bytesStep = paintDataCache.bytesPerLine * paintDataCache.linesPerRect;
                     if (caretPosition.getDataPosition() > 0) {
                         if (caretPosition.getDataPosition() >= bytesStep) {
                             caret.setCaretPosition(caretPosition.getDataPosition() - bytesStep, caret.getCodeOffset());
-                        } else if (caretPosition.getDataPosition() >= dimensionsCache.bytesPerLine) {
-                            caret.setCaretPosition(caretPosition.getDataPosition() % dimensionsCache.bytesPerLine, caret.getCodeOffset());
+                        } else if (caretPosition.getDataPosition() >= paintDataCache.bytesPerLine) {
+                            caret.setCaretPosition(caretPosition.getDataPosition() % paintDataCache.bytesPerLine, caret.getCodeOffset());
                         }
                         commandHandler.caretMoved();
                         notifyCaretMoved();
                         updateSelection(e.getModifiersEx(), caretPosition);
                     }
-                    if (scrollPosition.scrollLinePosition > dimensionsCache.linesPerRect) {
-                        scrollPosition.scrollLinePosition -= dimensionsCache.linesPerRect;
+                    if (scrollPosition.scrollLinePosition > paintDataCache.linesPerRect) {
+                        scrollPosition.scrollLinePosition -= paintDataCache.linesPerRect;
                     }
                     revealCursor();
                     updateScrollBars();
@@ -2082,22 +2097,22 @@ public class CodeArea extends JComponent {
                 }
                 case KeyEvent.VK_PAGE_DOWN: {
                     CaretPosition caretPosition = caret.getCaretPosition();
-                    int bytesStep = dimensionsCache.bytesPerLine * dimensionsCache.linesPerRect;
+                    int bytesStep = paintDataCache.bytesPerLine * paintDataCache.linesPerRect;
                     long dataSize = data.getDataSize();
                     if (caretPosition.getDataPosition() < dataSize) {
                         if (caretPosition.getDataPosition() + bytesStep < dataSize) {
                             caret.setCaretPosition(caretPosition.getDataPosition() + bytesStep, caret.getCodeOffset());
-                        } else if (caretPosition.getDataPosition() + dimensionsCache.bytesPerLine < dataSize) {
+                        } else if (caretPosition.getDataPosition() + paintDataCache.bytesPerLine < dataSize) {
                             caret.setCaretPosition(dataSize
-                                    - (dataSize % dimensionsCache.bytesPerLine)
-                                    + (caretPosition.getDataPosition() % dimensionsCache.bytesPerLine), caret.getCodeOffset());
+                                    - (dataSize % paintDataCache.bytesPerLine)
+                                    + (caretPosition.getDataPosition() % paintDataCache.bytesPerLine), caret.getCodeOffset());
                         }
                         commandHandler.caretMoved();
                         notifyCaretMoved();
                         updateSelection(e.getModifiersEx(), caretPosition);
                     }
-                    if (scrollPosition.scrollLinePosition < data.getDataSize() / dimensionsCache.bytesPerLine - dimensionsCache.linesPerRect * 2) {
-                        scrollPosition.scrollLinePosition += dimensionsCache.linesPerRect;
+                    if (scrollPosition.scrollLinePosition < data.getDataSize() / paintDataCache.bytesPerLine - paintDataCache.linesPerRect * 2) {
+                        scrollPosition.scrollLinePosition += paintDataCache.linesPerRect;
                     }
                     revealCursor();
                     updateScrollBars();
@@ -2164,7 +2179,7 @@ public class CodeArea extends JComponent {
 
         @Override
         public void componentResized(ComponentEvent e) {
-            computeDimensions();
+            computePaintData();
         }
 
         @Override
@@ -2190,8 +2205,8 @@ public class CodeArea extends JComponent {
             if (verticalScrollMode == VerticalScrollMode.PER_LINE) {
                 scrollPosition.scrollLinePosition = verticalScrollBar.getValue();
             } else {
-                scrollPosition.scrollLinePosition = verticalScrollBar.getValue() / dimensionsCache.lineHeight;
-                scrollPosition.scrollLineOffset = verticalScrollBar.getValue() % dimensionsCache.lineHeight;
+                scrollPosition.scrollLinePosition = verticalScrollBar.getValue() / paintDataCache.lineHeight;
+                scrollPosition.scrollLineOffset = verticalScrollBar.getValue() % paintDataCache.lineHeight;
             }
             repaint();
             notifyScrolled();
@@ -2208,8 +2223,8 @@ public class CodeArea extends JComponent {
             if (horizontalScrollMode == HorizontalScrollMode.PER_CHAR) {
                 scrollPosition.scrollBytePosition = horizontalScrollBar.getValue();
             } else {
-                scrollPosition.scrollBytePosition = horizontalScrollBar.getValue() / dimensionsCache.charWidth;
-                scrollPosition.scrollByteOffset = horizontalScrollBar.getValue() % dimensionsCache.charWidth;
+                scrollPosition.scrollBytePosition = horizontalScrollBar.getValue() / paintDataCache.charWidth;
+                scrollPosition.scrollByteOffset = horizontalScrollBar.getValue() % paintDataCache.charWidth;
             }
             repaint();
             notifyScrolled();

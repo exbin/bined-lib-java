@@ -58,7 +58,7 @@ public class HighlightCodeAreaPainter extends DefaultCodeAreaPainter {
 
     @Override
     public Color getPositionColor(int byteOnLine, int charOnLine, CodeArea.Section section, CodeArea.ColorType colorType, PaintData paintData) {
-        if (section == CodeArea.Section.TEXT_PREVIEW || charOnLine < paintData.getBytesPerLine() * paintData.getCharsPerByte() - 1) {
+        if (!matches.isEmpty() && section == CodeArea.Section.TEXT_PREVIEW || charOnLine < paintData.getBytesPerLine() * paintData.getCharsPerByte() - 1) {
             long dataPosition = paintData.getLineDataPosition() + byteOnLine;
             if (currentMatchIndex >= 0) {
                 SearchMatch currentMatch = matches.get(currentMatchIndex);

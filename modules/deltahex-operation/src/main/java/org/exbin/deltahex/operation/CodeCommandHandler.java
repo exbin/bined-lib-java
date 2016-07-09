@@ -394,7 +394,7 @@ public class CodeCommandHandler implements CodeAreaCommandHandler {
                     }
 
                     codeArea.notifyDataChanged();
-                    codeArea.computeDimensions();
+                    codeArea.computePaintData();
                     codeArea.updateScrollBars();
                 }
             } catch (UnsupportedFlavorException | IOException ex) {
@@ -440,7 +440,7 @@ public class CodeCommandHandler implements CodeAreaCommandHandler {
                     }
 
                     codeArea.notifyDataChanged();
-                    codeArea.computeDimensions();
+                    codeArea.computePaintData();
                     codeArea.updateScrollBars();
                 }
             } catch (UnsupportedFlavorException | IOException ex) {
@@ -515,7 +515,7 @@ public class CodeCommandHandler implements CodeAreaCommandHandler {
             CodeAreaCaret caret = codeArea.getCaret();
             caret.setCaretPosition(position);
             codeArea.revealCursor();
-            codeArea.computeDimensions();
+            codeArea.computePaintData();
             codeArea.updateScrollBars();
         }
 
@@ -526,7 +526,7 @@ public class CodeCommandHandler implements CodeAreaCommandHandler {
             CodeAreaCaret caret = codeArea.getCaret();
             caret.setCaretPosition(size);
             codeArea.revealCursor();
-            codeArea.computeDimensions();
+            codeArea.computePaintData();
             codeArea.updateScrollBars();
         }
 

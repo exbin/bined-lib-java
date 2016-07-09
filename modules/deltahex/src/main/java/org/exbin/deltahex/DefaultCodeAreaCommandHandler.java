@@ -289,7 +289,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                 codeArea.moveLeft(NO_MODIFIER);
                 caret.setCodeOffset(0);
                 codeArea.revealCursor();
-                codeArea.computeDimensions();
+                codeArea.computePaintData();
                 codeArea.updateScrollBars();
             }
         }
@@ -313,7 +313,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                 if (caret.getCodeOffset() > 0) {
                     caret.setCodeOffset(0);
                 }
-                codeArea.computeDimensions();
+                codeArea.computePaintData();
                 codeArea.updateScrollBars();
             }
         }
@@ -328,7 +328,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         CodeAreaCaret caret = codeArea.getCaret();
         caret.setCaretPosition(first);
         codeArea.revealCursor();
-        codeArea.computeDimensions();
+        codeArea.computePaintData();
         codeArea.updateScrollBars();
     }
 
@@ -402,7 +402,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
                     caret.setCaretPosition(caret.getDataPosition() + dataSize);
                     caret.setCodeOffset(0);
-                    codeArea.computeDimensions();
+                    codeArea.computePaintData();
                     codeArea.updateScrollBars();
                 }
             } catch (UnsupportedFlavorException | IOException ex) {
@@ -435,7 +435,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
                     caret.setCaretPosition(caret.getDataPosition() + length);
                     caret.setCodeOffset(0);
-                    codeArea.computeDimensions();
+                    codeArea.computePaintData();
                     codeArea.updateScrollBars();
                 }
             } catch (UnsupportedFlavorException | IOException ex) {
