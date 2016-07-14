@@ -291,7 +291,7 @@ public class DefaultDoublyLinkedList<T extends DoublyLinkedItem> implements Doub
     public boolean removeAll(Collection<?> c) {
         boolean result = false;
         for (Object item : c) {
-            result |= remove(item);
+            result |= remove((T) item);
         }
 
         return result;

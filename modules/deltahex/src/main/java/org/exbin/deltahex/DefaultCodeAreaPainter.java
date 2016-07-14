@@ -28,7 +28,7 @@ import java.util.Map;
 /**
  * Code area component default painter.
  *
- * @version 0.1.0 2016/06/26
+ * @version 0.1.0 2016/07/14
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaPainter implements CodeAreaPainter {
@@ -302,9 +302,9 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         }
 
         int positionY = paintData.codeSectionRect.y - paintData.scrollPosition.scrollLineOffset;
-        long line = paintData.scrollPosition.scrollLinePosition;
+        paintData.line = paintData.scrollPosition.scrollLinePosition;
         int positionX = paintData.codeSectionRect.x - paintData.scrollPosition.scrollBytePosition * paintData.charWidth - paintData.scrollPosition.scrollByteOffset;
-        paintData.lineDataPosition = line * paintData.bytesPerLine;
+        paintData.lineDataPosition = paintData.line * paintData.bytesPerLine;
 
         do {
             if (paintData.showUnprintableCharacters) {
@@ -400,10 +400,10 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                     Arrays.fill(paintData.lineChars, paintData.previewCharPos + lineBytesLimit, paintData.previewCharPos + paintData.bytesPerLine, ' ');
                 }
             }
-            paintLineBackground(g, line, positionX, positionY, paintData);
-            paintLineText(g, line, positionX, positionY, paintData);
+            paintLineBackground(g, positionX, positionY, paintData);
+            paintLineText(g, positionX, positionY, paintData);
             paintData.lineDataPosition += paintData.bytesPerLine;
-            line++;
+            paintData.line++;
             positionY += paintData.lineHeight;
         } while (positionY - paintData.lineHeight < paintData.codeSectionRect.y + paintData.codeSectionRect.height);
 
@@ -418,7 +418,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         }
     }
 
-    public void paintLineBackground(Graphics g, long line, int linePositionX, int linePositionY, PaintData paintData) {
+    public void paintLineBackground(Graphics g, int linePositionX, int linePositionY, PaintData paintData) {
         int renderOffset = 0;
         CodeArea.ColorType renderColorType = null;
         Color renderColor = null;
@@ -481,7 +481,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         return (color == null && comparedColor == null) || (color != null && color.equals(comparedColor));
     }
 
-    public void paintLineText(Graphics g, long line, int linePositionX, int linePositionY, PaintData paintData) {
+    public void paintLineText(Graphics g, int linePositionX, int linePositionY, PaintData paintData) {
         int positionY = linePositionY + paintData.lineHeight - codeArea.getSubFontSpace();
 
         int renderOffset = 0;

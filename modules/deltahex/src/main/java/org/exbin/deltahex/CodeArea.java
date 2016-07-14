@@ -136,6 +136,15 @@ public class CodeArea extends JComponent {
         painter = new DefaultCodeAreaPainter(this);
         commandHandler = new DefaultCodeAreaCommandHandler(this);
 
+        try {
+            metaMask = java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
+        } catch (java.awt.HeadlessException ex) {
+            metaMask = java.awt.Event.CTRL_MASK;
+        }
+        init();
+    }
+
+    private void init() {
         Color textColor = UIManager.getColor("TextArea.foreground");
         Color backgroundColor = UIManager.getColor("TextArea.background");
         super.setForeground(textColor);
@@ -160,15 +169,6 @@ public class CodeArea extends JComponent {
         cursorColor = UIManager.getColor("TextArea.caretForeground");
         decorationLineColor = Color.GRAY;
 
-        try {
-            metaMask = java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
-        } catch (java.awt.HeadlessException ex) {
-            metaMask = java.awt.Event.CTRL_MASK;
-        }
-        init();
-    }
-
-    private void init() {
         verticalScrollBar = new JScrollBar(Scrollbar.VERTICAL);
         verticalScrollBar.setVisible(false);
         verticalScrollBar.setIgnoreRepaint(true);
