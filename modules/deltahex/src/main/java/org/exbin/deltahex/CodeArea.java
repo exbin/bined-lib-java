@@ -32,6 +32,8 @@ import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -54,7 +56,7 @@ import org.exbin.utils.binary_data.BinaryData;
  *
  * Also supports binary, octal and decimal codes.
  *
- * @version 0.1.0 2016/06/24
+ * @version 0.1.0 2016/07/18
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeArea extends JComponent {
@@ -189,6 +191,17 @@ public class CodeArea extends JComponent {
         addMouseMotionListener(codeAreaMouseListener);
         addMouseWheelListener(codeAreaMouseListener);
         addKeyListener(new CodeAreaKeyListener());
+        addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                repaint();
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                repaint();
+            }
+        });
     }
 
     @Override
@@ -552,6 +565,21 @@ public class CodeArea extends JComponent {
     public void setSelection(SelectionRange selection) {
         this.selection = selection;
         notifySelectionChanged();
+    }
+
+    public void setCaretPosition(CaretPosition caretPosition) {
+        caret.setCaretPosition(caretPosition);
+        notifyCaretMoved();
+    }
+
+    public void setCaretPosition(long dataPosition) {
+        caret.setCaretPosition(dataPosition);
+        notifyCaretMoved();
+    }
+
+    public void setCaretPosition(long dataPosition, int codeOffset) {
+        caret.setCaretPosition(dataPosition, codeOffset);
+        notifyCaretMoved();
     }
 
     public void addSelectionChangedListener(SelectionChangedListener selectionChangedListener) {
