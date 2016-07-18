@@ -42,8 +42,6 @@ command in project folder or gradlew or gradlew.bat scripts to download separate
 
 There are currently manual dependencies which are expected to be deployed in local Maven repository via "gradle publish" command:
 
-There are currently manual dependencies which are expected to be deployed in local Maven repository via "gradle publish" command:
-
 https://github.com/exbin/exbin-utils-java
 
 License
