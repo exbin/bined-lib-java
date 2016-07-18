@@ -8,7 +8,7 @@ Homepage: http://deltahex.exbin.org
 Screenshot
 ----------
 
-![DeltaHex-Example Screenshot](images/deltahex_example.png?raw=true)
+![DeltaHex-Example Screenshot](images/example_screenshot.png?raw=true)
 
 Features
 --------
@@ -40,16 +40,11 @@ For project compiling Gradle 2.0 build system is used. You can either download a
 
 command in project folder or gradlew or gradlew.bat scripts to download separate copy of gradle to perform the project build.
 
-Build system website: http://gradle.org
+There are currently manual dependencies which are expected to be deployed in local Maven repository via "gradle publish" command:
 
-Development
------------
+There are currently manual dependencies which are expected to be deployed in local Maven repository via "gradle publish" command:
 
-The Gradle build system provides support for various IDEs. See gradle website for more information.
-
-There is gradle support plugin, which can be used to some degree, but some projects need other way of handling as described in their readme files.
-
-Gradle support plugin website: http://plugins.netbeans.org/plugin/44510/gradle-support
+https://github.com/exbin/exbin-utils-java
 
 License
 -------
