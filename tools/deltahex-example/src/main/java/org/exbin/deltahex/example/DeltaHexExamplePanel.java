@@ -120,7 +120,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
             public void scrolled() {
                 CodeArea.ScrollPosition scrollPosition = codeArea.getScrollPosition();
                 verticalPositionTextField.setText(scrollPosition.getScrollLinePosition() + ":" + scrollPosition.getScrollLineOffset());
-                horizontalPositionTextField.setText(scrollPosition.getScrollBytePosition() + ":" + scrollPosition.getScrollByteOffset());
+                horizontalPositionTextField.setText(scrollPosition.getScrollCharPosition() + ":" + scrollPosition.getScrollCharOffset());
             }
         });
     }

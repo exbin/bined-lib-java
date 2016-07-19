@@ -28,7 +28,7 @@ import java.util.Map;
 /**
  * Code area component default painter.
  *
- * @version 0.1.0 2016/07/14
+ * @version 0.1.0 2016/07/19
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaPainter implements CodeAreaPainter {
@@ -89,15 +89,26 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         if (codeArea.getViewMode() != CodeArea.ViewMode.TEXT_PREVIEW) {
             int charWidth = codeArea.getCharWidth();
             int bytesPerLine = codeArea.getBytesPerLine();
-            int headerX = hexRect.x - scrollPosition.scrollBytePosition * charWidth - scrollPosition.scrollByteOffset;
+            int headerX = hexRect.x - scrollPosition.scrollCharPosition * charWidth - scrollPosition.scrollCharOffset;
             int headerY = codeArea.getInsets().top + codeArea.getLineHeight() - codeArea.getSubFontSpace();
+
+            int visibleCharStart = (scrollPosition.scrollCharPosition * charWidth + scrollPosition.scrollCharOffset) / charWidth;
+            if (visibleCharStart < 0) {
+                visibleCharStart = 0;
+            }
+            int visibleCharEnd = (hexRect.width + (scrollPosition.scrollCharPosition + charsPerByte) * charWidth + scrollPosition.scrollCharOffset) / charWidth;
+            if (visibleCharEnd > bytesPerLine * charsPerByte) {
+                visibleCharEnd = bytesPerLine * charsPerByte;
+            }
+            int visibleStart = visibleCharStart / charsPerByte;
+            int visibleEnd = visibleCharEnd / charsPerByte;
 
             if (codeArea.getBackgroundMode() == CodeArea.BackgroundMode.GRIDDED) {
                 CodeArea.ColorsGroup stripColors = codeArea.getAlternateColors();
                 g.setColor(stripColors.getBackgroundColor());
-                int positionX = hexRect.x - scrollPosition.scrollByteOffset - scrollPosition.scrollBytePosition * charWidth;
-                for (int i = 0; i < bytesPerLine / 2; i++) {
-                    g.fillRect(positionX + charWidth * (charsPerByte + i * charsPerByte * 2), hexRect.y, charWidth * codeDigits, hexRect.height);
+                int positionX = hexRect.x - scrollPosition.scrollCharOffset - scrollPosition.scrollCharPosition * charWidth;
+                for (int i = visibleStart / 2; i < visibleEnd / 2; i++) {
+                    g.fillRect(positionX + charWidth * (charsPerByte + i * charsPerByte * 2), compRect.y, charWidth * codeDigits, hexRect.y - compRect.y);
                 }
             }
 
@@ -108,14 +119,14 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             CodeArea.CharRenderingMode charRenderingMode = codeArea.getCharRenderingMode();
 
             boolean upperCase = codeArea.getHexCharactersCase() == CodeArea.HexCharactersCase.UPPER;
-            for (int i = 0; i < bytesPerLine; i++) {
+            for (int i = visibleStart; i < visibleEnd; i++) {
                 CodeAreaUtils.longToBaseCode(headerChars, i * charsPerByte, i, codeArea.getPositionCodeType().base, 2, true, upperCase);
             }
 
-            int renderOffset = 0;
+            int renderOffset = visibleCharStart;
             CodeArea.ColorType renderColorType = null;
             Color renderColor = null;
-            for (int charOnLine = 0; charOnLine < charsPerLine; charOnLine++) {
+            for (int charOnLine = visibleCharStart; charOnLine < visibleCharEnd; charOnLine++) {
                 int byteOnLine;
                 byteOnLine = charOnLine / charsPerByte;
                 boolean sequenceBreak = false;
@@ -191,8 +202,16 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         }
 
         int decorationMode = codeArea.getDecorationMode();
+        if ((decorationMode & CodeArea.DECORATION_HEADER_LINE) > 0) {
+            g.setColor(codeArea.getDecorationLineColor());
+            g.drawLine(compRect.x, hexRect.y - 1, compRect.x + compRect.width, hexRect.y - 1);
+        }
+        if ((decorationMode & CodeArea.DECORATION_BOX) > 0) {
+            g.setColor(codeArea.getDecorationLineColor());
+            g.drawLine(hexRect.x - 1, hexRect.y - 1, hexRect.x + hexRect.width, hexRect.y - 1);
+        }
         if ((decorationMode & CodeArea.DECORATION_PREVIEW_LINE) > 0) {
-            int lineX = codeArea.getPreviewX() - scrollPosition.scrollBytePosition * codeArea.getCharWidth() - scrollPosition.scrollByteOffset - codeArea.getCharWidth() / 2;
+            int lineX = codeArea.getPreviewX() - scrollPosition.scrollCharPosition * codeArea.getCharWidth() - scrollPosition.scrollCharOffset - codeArea.getCharWidth() / 2;
             if (lineX >= hexRect.x) {
                 g.setColor(codeArea.getDecorationLineColor());
                 g.drawLine(lineX, compRect.y, lineX, hexRect.y);
@@ -295,22 +314,22 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     public void paintMainArea(Graphics g, PaintData paintData) {
         if (paintData.viewMode != CodeArea.ViewMode.TEXT_PREVIEW && codeArea.getBackgroundMode() == CodeArea.BackgroundMode.GRIDDED) {
             g.setColor(paintData.alternateColors.getBackgroundColor());
-            int positionX = paintData.codeSectionRect.x - paintData.scrollPosition.scrollByteOffset - paintData.scrollPosition.scrollBytePosition * paintData.charWidth;
-            for (int i = 0; i < paintData.bytesPerLine / 2; i++) {
+            int positionX = paintData.codeSectionRect.x - paintData.scrollPosition.scrollCharOffset - paintData.scrollPosition.scrollCharPosition * paintData.charWidth;
+            for (int i = paintData.visibleCodeStart / 2; i < paintData.visibleCodeEnd / 2; i++) {
                 g.fillRect(positionX + paintData.charWidth * (paintData.charsPerByte + i * paintData.charsPerByte * 2), paintData.codeSectionRect.y, paintData.charWidth * paintData.codeDigits, paintData.codeSectionRect.height);
             }
         }
 
         int positionY = paintData.codeSectionRect.y - paintData.scrollPosition.scrollLineOffset;
         paintData.line = paintData.scrollPosition.scrollLinePosition;
-        int positionX = paintData.codeSectionRect.x - paintData.scrollPosition.scrollBytePosition * paintData.charWidth - paintData.scrollPosition.scrollByteOffset;
+        int positionX = paintData.codeSectionRect.x - paintData.scrollPosition.scrollCharPosition * paintData.charWidth - paintData.scrollPosition.scrollCharOffset;
         paintData.lineDataPosition = paintData.line * paintData.bytesPerLine;
+        long dataSize = codeArea.getData().getDataSize();
 
         do {
             if (paintData.showUnprintableCharacters) {
                 Arrays.fill(paintData.unprintableChars, ' ');
             }
-            long dataSize = codeArea.getData().getDataSize();
             int lineBytesLimit = paintData.bytesPerLine;
             if (paintData.lineDataPosition < dataSize) {
                 int lineDataSize = paintData.bytesPerLine + paintData.maxCharLength - 1;
@@ -327,7 +346,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
             // Fill codes
             if (paintData.viewMode != CodeArea.ViewMode.TEXT_PREVIEW) {
-                for (int byteOnLine = 0; byteOnLine < lineBytesLimit; byteOnLine++) {
+                for (int byteOnLine = paintData.visibleCodeStart; byteOnLine < Math.min(paintData.visibleCodeEnd, lineBytesLimit); byteOnLine++) {
                     byte dataByte = paintData.lineData[byteOnLine];
                     byteToCharsCode(dataByte, byteOnLine * paintData.charsPerByte, paintData);
                 }
@@ -338,11 +357,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
             // Fill preview characters
             if (paintData.viewMode != CodeArea.ViewMode.CODE_MATRIX) {
-                paintData.previewCharPos = 0;
-                if (paintData.viewMode == CodeArea.ViewMode.DUAL) {
-                    paintData.previewCharPos = paintData.bytesPerLine * paintData.charsPerByte;
-                }
-                for (int byteOnLine = 0; byteOnLine < lineBytesLimit; byteOnLine++) {
+                for (int byteOnLine = paintData.visiblePreviewStart; byteOnLine < Math.min(paintData.visiblePreviewEnd, lineBytesLimit); byteOnLine++) {
                     byte dataByte = paintData.lineData[byteOnLine];
 
                     if (paintData.maxCharLength > 1) {
@@ -410,7 +425,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         // Draw decoration lines
         int decorationMode = codeArea.getDecorationMode();
         if ((decorationMode & CodeArea.DECORATION_PREVIEW_LINE) > 0) {
-            int lineX = codeArea.getPreviewX() - paintData.scrollPosition.scrollBytePosition * codeArea.getCharWidth() - paintData.scrollPosition.scrollByteOffset - codeArea.getCharWidth() / 2;
+            int lineX = codeArea.getPreviewX() - paintData.scrollPosition.scrollCharPosition * codeArea.getCharWidth() - paintData.scrollPosition.scrollCharOffset - codeArea.getCharWidth() / 2;
             if (lineX >= paintData.codeSectionRect.x) {
                 g.setColor(codeArea.getDecorationLineColor());
                 g.drawLine(lineX, paintData.codeSectionRect.y, lineX, paintData.codeSectionRect.y + paintData.codeSectionRect.height);
@@ -419,10 +434,10 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     }
 
     public void paintLineBackground(Graphics g, int linePositionX, int linePositionY, PaintData paintData) {
-        int renderOffset = 0;
+        int renderOffset = paintData.visibleCharStart;
         CodeArea.ColorType renderColorType = null;
         Color renderColor = null;
-        for (int charOnLine = 0; charOnLine < paintData.charsPerLine; charOnLine++) {
+        for (int charOnLine = paintData.visibleCharStart; charOnLine < paintData.visibleCharEnd; charOnLine++) {
             CodeArea.Section section;
             int byteOnLine;
             if (charOnLine >= paintData.previewCharPos && paintData.viewMode != CodeArea.ViewMode.CODE_MATRIX) {
@@ -484,10 +499,10 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     public void paintLineText(Graphics g, int linePositionX, int linePositionY, PaintData paintData) {
         int positionY = linePositionY + paintData.lineHeight - codeArea.getSubFontSpace();
 
-        int renderOffset = 0;
+        int renderOffset = paintData.visibleCharStart;
         CodeArea.ColorType renderColorType = null;
         Color renderColor = null;
-        for (int charOnLine = 0; charOnLine < paintData.charsPerLine; charOnLine++) {
+        for (int charOnLine = paintData.visibleCharStart; charOnLine < paintData.visibleCharEnd; charOnLine++) {
             CodeArea.Section section;
             int byteOnLine;
             if (charOnLine >= paintData.previewCharPos) {
@@ -738,6 +753,12 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         protected FontMetrics fontMetrics;
         protected boolean monospaceFont;
         protected int previewCharPos;
+        protected int visibleCharStart;
+        protected int visibleCharEnd;
+        protected int visibleCodeStart;
+        protected int visibleCodeEnd;
+        protected int visiblePreviewStart;
+        protected int visiblePreviewEnd;
 
         protected CodeArea.ColorsGroup mainColors;
         protected CodeArea.ColorsGroup alternateColors;
@@ -802,6 +823,51 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             showUnprintableCharacters = codeArea.isShowUnprintableCharacters();
             if (showUnprintableCharacters) {
                 unprintableChars = new char[charsPerLine];
+            }
+
+            // Compute first and last visible character of the code area
+            if (viewMode == CodeArea.ViewMode.DUAL) {
+                previewCharPos = bytesPerLine * charsPerByte;
+            } else {
+                previewCharPos = 0;
+            }
+
+            if (viewMode == CodeArea.ViewMode.DUAL || viewMode == CodeArea.ViewMode.CODE_MATRIX) {
+                visibleCharStart = (scrollPosition.scrollCharPosition * charWidth + scrollPosition.scrollCharOffset) / charWidth;
+                if (visibleCharStart < 0) {
+                    visibleCharStart = 0;
+                }
+                visibleCharEnd = (codeSectionRect.width + (scrollPosition.scrollCharPosition + charsPerByte) * charWidth + scrollPosition.scrollCharOffset) / charWidth;
+                if (visibleCharEnd > bytesPerLine * charsPerByte) {
+                    visibleCharEnd = bytesPerLine * charsPerByte;
+                }
+                visibleCodeStart = visibleCharStart / charsPerByte;
+                visibleCodeEnd = visibleCharEnd / charsPerByte;
+            } else {
+                visibleCharStart = 0;
+                visibleCharEnd = -1;
+                visibleCodeStart = 0;
+                visibleCodeEnd = -1;
+            }
+
+            if (viewMode == CodeArea.ViewMode.DUAL || viewMode == CodeArea.ViewMode.TEXT_PREVIEW) {
+                visiblePreviewStart = (scrollPosition.scrollCharPosition * charWidth + scrollPosition.scrollCharOffset) / charWidth - previewCharPos;
+                if (visiblePreviewStart < 0) {
+                    visiblePreviewStart = 0;
+                }
+                if (visibleCodeEnd < 0) {
+                    visibleCharStart = visiblePreviewStart + previewCharPos;
+                }
+                visiblePreviewEnd = (codeSectionRect.width + (scrollPosition.scrollCharPosition + 1) * charWidth + scrollPosition.scrollCharOffset) / charWidth - previewCharPos;
+                if (visiblePreviewEnd > bytesPerLine) {
+                    visiblePreviewEnd = bytesPerLine;
+                }
+                if (visiblePreviewEnd >= 0) {
+                    visibleCharEnd = visiblePreviewEnd + previewCharPos;
+                }
+            } else {
+                visiblePreviewStart = 0;
+                visiblePreviewEnd = -1;
             }
         }
 
@@ -879,6 +945,30 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
         public long getLine() {
             return line;
+        }
+
+        public int getVisibleCharStart() {
+            return visibleCharStart;
+        }
+
+        public int getVisibleCharEnd() {
+            return visibleCharEnd;
+        }
+
+        public int getVisibleCodeStart() {
+            return visibleCodeStart;
+        }
+
+        public int getVisibleCodeEnd() {
+            return visibleCodeEnd;
+        }
+
+        public int getVisiblePreviewStart() {
+            return visiblePreviewStart;
+        }
+
+        public int getVisiblePreviewEnd() {
+            return visiblePreviewEnd;
         }
     }
 }
