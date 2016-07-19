@@ -21,11 +21,11 @@ Features
 - Support for undo/redo
 - Support for charset/encoding selection
 - Codes can be also binary, octal or decimal
+- Support for code and matching highlighting
 
 Todo
 ----
 
-- Searching for text / hexadecimal code with matching highlighting
 - Delta mode - Only changes are stored in memory
 - Support for huge files
 
@@ -47,4 +47,5 @@ https://github.com/exbin/exbin-utils-java
 License
 -------
 
-Apache License, Version 2.0 - see LICENSE-2.0.txt
+Apache License, Version 2.0 - see LICENSE-2.0.txt  
+

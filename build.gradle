@@ -48,6 +48,8 @@ distributions {
                     into('') {
                         from p.configurations.runtime
                         include '*'
+                        from p.sourceJar
+                        include '*'
                     }
                 }
             }
