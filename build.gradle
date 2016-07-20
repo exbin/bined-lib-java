@@ -1,7 +1,7 @@
 apply plugin: 'base'
 apply plugin: 'distribution'
 apply plugin: 'maven-publish'
-version = '0.1.0-SNAPSHOT'
+version = '0.1.1-SNAPSHOT'
 
 task wrapper(type: Wrapper, description: 'Creates and deploys the Gradle wrapper to the current directory.') {
     gradleVersion = '2.1'
