@@ -28,7 +28,6 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import static org.exbin.deltahex.CodeArea.NO_MODIFIER;
 import org.exbin.deltahex.CodeArea.Section;
 import org.exbin.utils.binary_data.BinaryData;
 import org.exbin.utils.binary_data.EditableBinaryData;
@@ -294,7 +293,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                 ((EditableBinaryData) codeArea.getData()).remove(dataPosition - 1, 1);
                 codeArea.notifyDataChanged();
                 caret.setCodeOffset(0);
-                codeArea.moveLeft(NO_MODIFIER);
+                codeArea.moveLeft(CodeArea.NO_MODIFIER);
                 caret.setCodeOffset(0);
                 codeArea.revealCursor();
                 codeArea.computePaintData();

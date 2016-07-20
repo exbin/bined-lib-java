@@ -56,7 +56,7 @@ import org.exbin.utils.binary_data.BinaryData;
  *
  * Also supports binary, octal and decimal codes.
  *
- * @version 0.1.0 2016/07/19
+ * @version 0.1.0 2016/07/20
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeArea extends JComponent {
@@ -111,8 +111,10 @@ public class CodeArea extends JComponent {
     private ScrollPosition scrollPosition = new ScrollPosition();
 
     /**
-     * Component colors. Parent foreground and background are used for header
-     * and line numbers section.
+     * Component colors.
+     *
+     * Parent foreground and background are used for header and line numbers
+     * section.
      */
     private final ColorsGroup mainColors = new ColorsGroup();
     private final ColorsGroup alternateColors = new ColorsGroup();
@@ -522,15 +524,17 @@ public class CodeArea extends JComponent {
             if (codeOffset > 0) {
                 caret.setCodeOffset(codeOffset - 1);
                 updateSelection(modifiers, caretPosition);
+                notifyCaretMoved();
             } else if (caretPosition.getDataPosition() > 0) {
                 caret.setCaretPosition(caretPosition.getDataPosition() - 1, codeType.maxDigits - 1);
                 updateSelection(modifiers, caretPosition);
+                notifyCaretMoved();
             }
         } else if (caretPosition.getDataPosition() > 0) {
             caret.setCaretPosition(caretPosition.getDataPosition() - 1);
             updateSelection(modifiers, caretPosition);
+            notifyCaretMoved();
         }
-        notifyCaretMoved();
     }
 
     public SelectionRange getSelection() {
@@ -634,7 +638,7 @@ public class CodeArea extends JComponent {
     }
 
     /**
-     * Returns main hexadecimal area rectangle.
+     * Returns main code area rectangle.
      *
      * @return rectangle of main hexadecimal area
      */
@@ -1879,7 +1883,7 @@ public class CodeArea extends JComponent {
     }
 
     /**
-     * Enumeration of color types in group.
+     * Enumeration of color types in ColorsGroup.
      */
     public static enum ColorType {
         TEXT,
@@ -2025,12 +2029,14 @@ public class CodeArea extends JComponent {
                     moveLeft(e.getModifiersEx());
                     commandHandler.caretMoved();
                     revealCursor();
+                    e.consume();
                     break;
                 }
                 case KeyEvent.VK_RIGHT: {
                     moveRight(e.getModifiersEx());
                     commandHandler.caretMoved();
                     revealCursor();
+                    e.consume();
                     break;
                 }
                 case KeyEvent.VK_UP: {
@@ -2045,6 +2051,7 @@ public class CodeArea extends JComponent {
                     }
                     commandHandler.caretMoved();
                     revealCursor();
+                    e.consume();
                     break;
                 }
                 case KeyEvent.VK_DOWN: {
@@ -2061,6 +2068,7 @@ public class CodeArea extends JComponent {
                     }
                     commandHandler.caretMoved();
                     revealCursor();
+                    e.consume();
                     break;
                 }
                 case KeyEvent.VK_HOME: {
@@ -2079,6 +2087,7 @@ public class CodeArea extends JComponent {
                         updateSelection(e.getModifiersEx(), caretPosition);
                     }
                     revealCursor();
+                    e.consume();
                     break;
                 }
                 case KeyEvent.VK_END: {
@@ -2100,6 +2109,7 @@ public class CodeArea extends JComponent {
                         updateSelection(e.getModifiersEx(), caretPosition);
                     }
                     revealCursor();
+                    e.consume();
                     break;
                 }
                 case KeyEvent.VK_PAGE_UP: {
@@ -2121,6 +2131,7 @@ public class CodeArea extends JComponent {
                     revealCursor();
                     updateScrollBars();
                     notifyScrolled();
+                    e.consume();
                     break;
                 }
                 case KeyEvent.VK_PAGE_DOWN: {
@@ -2145,12 +2156,14 @@ public class CodeArea extends JComponent {
                     revealCursor();
                     updateScrollBars();
                     notifyScrolled();
+                    e.consume();
                     break;
                 }
                 case KeyEvent.VK_INSERT: {
                     if (editationMode != EditationMode.READ_ONLY) {
                         setEditationMode(editationMode == EditationMode.INSERT ? EditationMode.OVERWRITE : EditationMode.INSERT);
                     }
+                    e.consume();
                     break;
                 }
                 case KeyEvent.VK_TAB: {
@@ -2163,35 +2176,36 @@ public class CodeArea extends JComponent {
                         revealCursor();
                         repaint();
                     }
+                    e.consume();
                     break;
                 }
                 case KeyEvent.VK_DELETE: {
                     commandHandler.deletePressed();
+                    e.consume();
                     break;
                 }
                 case KeyEvent.VK_BACK_SPACE: {
                     commandHandler.backSpacePressed();
-                    break;
-                }
-                case KeyEvent.VK_ESCAPE: {
-                    if (hasSelection()) {
-                        clearSelection();
-                    }
+                    e.consume();
                     break;
                 }
                 default: {
                     if (handleClipboard) {
                         if ((e.getModifiers() & metaMask) > 0 && e.getKeyCode() == KeyEvent.VK_C) {
                             commandHandler.copy();
+                            e.consume();
                             break;
                         } else if ((e.getModifiers() & metaMask) > 0 && e.getKeyCode() == KeyEvent.VK_X) {
                             commandHandler.cut();
+                            e.consume();
                             break;
                         } else if ((e.getModifiers() & metaMask) > 0 && e.getKeyCode() == KeyEvent.VK_V) {
                             commandHandler.paste();
+                            e.consume();
                             break;
                         } else if ((e.getModifiers() & metaMask) > 0 && e.getKeyCode() == KeyEvent.VK_A) {
                             selectAll();
+                            e.consume();
                             break;
                         }
                     }
