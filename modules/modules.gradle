@@ -6,7 +6,7 @@ apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
 sourceCompatibility = '1.7'
-version = '0.1.0'
+version = '0.1.1-SNAPSHOT'
 def repositoryName = "deltahex-java"
 def libraryUrl = 'http://deltahex.exbin.org'
 ext.xbupVersion = '0.2.0-SNAPSHOT'
