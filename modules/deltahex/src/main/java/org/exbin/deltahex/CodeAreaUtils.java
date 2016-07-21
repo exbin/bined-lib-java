@@ -18,7 +18,7 @@ package org.exbin.deltahex;
 /**
  * Hexadecimal editor component utilities.
  *
- * @version 0.1.0 2016/06/08
+ * @version 0.1.1 2016/07/21
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeAreaUtils {
@@ -76,6 +76,142 @@ public class CodeAreaUtils {
             target[i] = UPPER_HEX_CODES[(int) (value & 15)];
             value = value >> 4;
         }
+    }
+
+    public static void byteToCharsCode(byte dataByte, CodeArea.CodeType codeType, DataTarget target, int targetPosition, CodeArea.HexCharactersCase charCase) {
+        char[] hexCharacters = charCase == CodeArea.HexCharactersCase.UPPER ? CodeAreaUtils.UPPER_HEX_CODES : CodeAreaUtils.LOWER_HEX_CODES;
+        switch (codeType) {
+            case BINARY: {
+                int bitMask = 0x80;
+                for (int i = 0; i < 8; i++) {
+                    int codeValue = (dataByte & bitMask) > 0 ? 1 : 0;
+                    target.data[targetPosition + i] = hexCharacters[codeValue];
+                    bitMask = bitMask >> 1;
+                }
+                break;
+            }
+            case DECIMAL: {
+                int value = dataByte & 0xff;
+                int codeValue0 = value / 100;
+                target.data[targetPosition] = hexCharacters[codeValue0];
+                int codeValue1 = (value / 10) % 10;
+                target.data[targetPosition + 1] = hexCharacters[codeValue1];
+                int codeValue2 = value % 10;
+                target.data[targetPosition + 2] = hexCharacters[codeValue2];
+                break;
+            }
+            case OCTAL: {
+                int value = dataByte & 0xff;
+                int codeValue0 = value / 64;
+                target.data[targetPosition] = hexCharacters[codeValue0];
+                int codeValue1 = (value / 8) & 7;
+                target.data[targetPosition + 1] = hexCharacters[codeValue1];
+                int codeValue2 = value % 8;
+                target.data[targetPosition + 2] = hexCharacters[codeValue2];
+                break;
+            }
+            case HEXADECIMAL: {
+                int codeValue0 = (dataByte >> 4) & 15;
+                target.data[targetPosition] = hexCharacters[codeValue0];
+                int codeValue1 = dataByte & 15;
+                target.data[targetPosition + 1] = hexCharacters[codeValue1];
+                break;
+            }
+            default:
+                throw new IllegalStateException("Unexpected code type: " + codeType.name());
+        }
+    }
+
+    public static class DataTarget {
+
+        public char[] data;
+    }
+
+    public static byte stringCodeToByte(String code, CodeArea.CodeType codeType) {
+        if (code.length() > codeType.getMaxDigits()) {
+            throw new IllegalArgumentException("String code is too long");
+        }
+        byte result = 0;
+        switch (codeType) {
+            case BINARY: {
+                int bitMask = 1;
+                for (int i = code.length() - 1; i >= 0; i--) {
+                    switch (code.charAt(i)) {
+                        case '0':
+                            break;
+                        case '1':
+                            result |= bitMask;
+                            break;
+                        default:
+                            throw new IllegalArgumentException("Invalid character " + code.charAt(i));
+                    }
+                    bitMask = bitMask << 1;
+                }
+                break;
+            }
+            case OCTAL: {
+                int bitMask = 1;
+                int resultInt = 0;
+                for (int i = code.length() - 1; i >= 0; i--) {
+                    char codeChar = code.charAt(i);
+                    if (codeChar >= '0' && codeChar <= '7') {
+                        resultInt += bitMask * (codeChar - '0');
+                    } else {
+                        throw new IllegalArgumentException("Invalid character " + codeChar);
+                    }
+
+                    bitMask = bitMask << 3;
+                }
+
+                if (resultInt > 255) {
+                    throw new IllegalArgumentException("Number is too big " + resultInt);
+                }
+                result = (byte) resultInt;
+                break;
+            }
+            case DECIMAL: {
+                int bitMask = 1;
+                int resultInt = 0;
+                for (int i = code.length() - 1; i >= 0; i--) {
+                    char codeChar = code.charAt(i);
+                    if (codeChar >= '0' && codeChar <= '9') {
+                        resultInt += bitMask * (codeChar - '0');
+                    } else {
+                        throw new IllegalArgumentException("Invalid character " + codeChar);
+                    }
+
+                    bitMask = bitMask * 10;
+                }
+
+                if (resultInt > 255) {
+                    throw new IllegalArgumentException("Number is too big " + resultInt);
+                }
+                result = (byte) resultInt;
+                break;
+            }
+            case HEXADECIMAL: {
+                int bitMask = 1;
+                for (int i = code.length() - 1; i >= 0; i--) {
+                    char codeChar = code.charAt(i);
+                    if (codeChar >= '0' && codeChar <= '9') {
+                        result |= bitMask * (codeChar - '0');
+                    } else if (codeChar >= 'a' && codeChar <= 'f') {
+                        result |= bitMask * (codeChar + 10 - 'a');
+                    } else if (codeChar >= 'A' && codeChar <= 'F') {
+                        result |= bitMask * (codeChar + 10 - 'A');
+                    } else {
+                        throw new IllegalArgumentException("Invalid character " + codeChar);
+                    }
+
+                    bitMask = bitMask << 4;
+                }
+                break;
+            }
+            default:
+                throw new IllegalStateException("Unexpected code type: " + codeType.name());
+        }
+
+        return result;
     }
 
     /**

@@ -18,7 +18,7 @@ package org.exbin.deltahex;
 /**
  * Interface for code area data manipulation.
  *
- * @version 0.1.0 2016/06/13
+ * @version 0.1.1 2016/07/21
  * @author ExBin Project (http://exbin.org)
  */
 public interface CodeAreaCommandHandler {
@@ -58,6 +58,11 @@ public interface CodeAreaCommandHandler {
     void copy();
 
     /**
+     * Copies selection to clipboard as code string.
+     */
+    void copyAsCode();
+
+    /**
      * Cuts selection to clipboard.
      */
     void cut();
@@ -66,6 +71,11 @@ public interface CodeAreaCommandHandler {
      * Pastes content of clipboard to cursor area.
      */
     void paste();
+
+    /**
+     * Pastes content of clipboard to cursor area analyzing string code.
+     */
+    void pasteFromCode();
 
     /**
      * Returns true if paste action is possible.
