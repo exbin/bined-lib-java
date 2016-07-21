@@ -42,6 +42,8 @@ import org.exbin.utils.binary_data.EditableBinaryData;
  */
 public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
+    private static final int CODE_BUFFER_LENGTH = 16;
+
     private final CodeArea codeArea;
     private Clipboard clipboard;
     private boolean canPaste = false;
@@ -504,6 +506,8 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                     int maxDigits = codeType.getMaxDigits();
                     String insertedString = (String) insertedData;
                     ByteArrayEditableData data = new ByteArrayEditableData();
+                    byte[] buffer = new byte[CODE_BUFFER_LENGTH];
+                    int bufferUsage = 0;
                     int offset = 0;
                     for (int i = 0; i < insertedString.length(); i++) {
                         char charAt = insertedString.charAt(i);
@@ -511,20 +515,42 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                             offset++;
                         } else if (charAt == ' ' || charAt == '\t' || charAt == ',' || charAt == ';' || charAt == ':') {
                             byte value = CodeAreaUtils.stringCodeToByte(insertedString.substring(offset, i), codeType);
-                            data.insert(data.getDataSize(), value);
+                            if (bufferUsage < CODE_BUFFER_LENGTH) {
+                                buffer[bufferUsage] = value;
+                                bufferUsage++;
+                            } else {
+                                data.insert(data.getDataSize(), buffer, 0, bufferUsage);
+                                bufferUsage = 0;
+                            }
                             offset = i + 1;
                         } else if (i == offset + maxDigits) {
-                            byte value = CodeAreaUtils.stringCodeToByte(insertedString.substring(offset, i + 1), codeType);
-                            data.insert(data.getDataSize(), value);
-                            offset = i + 1;
+                            byte value = CodeAreaUtils.stringCodeToByte(insertedString.substring(offset, i), codeType);
+                            if (bufferUsage < CODE_BUFFER_LENGTH) {
+                                buffer[bufferUsage] = value;
+                                bufferUsage++;
+                            } else {
+                                data.insert(data.getDataSize(), buffer, 0, bufferUsage);
+                                bufferUsage = 0;
+                            }
+                            offset = i;
                         }
                     }
-                    
+
                     if (offset < insertedString.length()) {
                         byte value = CodeAreaUtils.stringCodeToByte(insertedString.substring(offset), codeType);
-                        data.insert(data.getDataSize(), value);
+                        if (bufferUsage < CODE_BUFFER_LENGTH) {
+                            buffer[bufferUsage] = value;
+                            bufferUsage++;
+                        } else {
+                            data.insert(data.getDataSize(), buffer, 0, bufferUsage);
+                            bufferUsage = 0;
+                        }
                     }
-                    
+
+                    if (bufferUsage > 0) {
+                        data.insert(data.getDataSize(), buffer, 0, bufferUsage);
+                    }
+
                     long length = data.getDataSize();
                     if (codeArea.getEditationMode() == CodeArea.EditationMode.OVERWRITE) {
                         long toRemove = length;
