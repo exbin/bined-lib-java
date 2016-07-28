@@ -1,10 +1,40 @@
-apply plugin: 'base'
-apply plugin: 'distribution'
-apply plugin: 'maven-publish'
 version = '0.1.1-SNAPSHOT'
 
-task wrapper(type: Wrapper, description: 'Creates and deploys the Gradle wrapper to the current directory.') {
-    gradleVersion = '2.1'
+buildscript {
+    repositories {
+        mavenLocal()
+        jcenter()
+    }
+    dependencies {
+        classpath("at.bxm.gradleplugins:gradle-svntools-plugin:latest.integration")
+    }
+}
+
+['base', 'distribution', 'maven-publish', 'at.bxm.svntools'].each {
+    apply plugin: it
+}
+
+task wrapper(type: Wrapper, description: 'Creates and deploys the Gradle wrapper to the current directory.') << {
+    gradleVersion = '2.14'
+}
+
+task('cleanDeps') << {
+    println "Deleting temporary dependency modules"
+    File depsCheckFile = rootProject.file("deps/dependency.txt")
+    if (depsCheckFile.exists()) {
+        File depsDir = rootProject.file("deps")
+        depsDir.listFiles().each() { childFile ->
+            if (childFile.name != '_placeholder' && childFile.isDirectory()) {
+                project.delete(childFile)
+            }
+        }
+    } else {
+        throw new Exception('Invalid dependency path')
+    }
+}
+
+if (gradle.startParameter.taskNames.contains("clean") && !project.gradle.startParameter.projectProperties.containsKey("moduleDep")) {
+    cleanDeps.execute()
 }
 
 subprojects.each { subproject -> evaluationDependsOn(subproject.path) }
@@ -13,55 +43,88 @@ publish.dependsOn {
     project(':modules').subprojects.publish
 }
 
-distributions {
-    main {
-        contents {
-            duplicatesStrategy = 'exclude'
+if (file('deps/_placeholder').exists()) {
+    // Perform restart for new dependency handling
+    def depsLevel
+    if (project.gradle.startParameter.projectProperties.containsKey('moduleDep')) {
+        depsLevel = project.gradle.startParameter.projectProperties['moduleDep'] + 1
+    } else {
+        depsLevel = 1
+    }
+    def artefactBuild = project.tasks.create([name: "depsRebuild_${depsLevel}", type: GradleBuild])
+    artefactBuild.buildFile = project.file('build.gradle')
+    artefactBuild.tasks = project.gradle.startParameter.taskNames
 
-            from project.rootDir
-            include 'LICENSE-2.0.txt'
-            from 'src/dist'
-            include 'readme.txt'
-            include 'deltahex-example.sh'
-            include 'deltahex-example.bat'
+    def artefactProjectProperties = artefactBuild.startParameter.projectProperties
+    def currentProjectProperties = project.gradle.startParameter.projectProperties
+    artefactProjectProperties << currentProjectProperties
+    artefactProjectProperties << ['moduleDep': depsLevel]
 
-            project(':modules').subprojects.each { p ->
-                p.plugins.withType(JavaPlugin) {
-                    into('') {
-                        from p.jar
-                        include '*'
-                        from p.sourceJar
-                        include '*'
-                        from p.javadocJar
-                        include '*'
+    // Terminate currently invalid tasks
+    // TODO: Fix support for other tasks like distZip
+    subprojects.each { subproject ->
+        if (subproject.tasks.findByPath('assemble') != null) {
+            subproject.tasks['assemble'].setDependsOn([])
+        }
+    }
+    if (project.tasks.findByPath('assemble') != null) {
+        project.tasks['assemble'].setDependsOn([])
+    }
+
+    artefactBuild.execute()
+}
+
+if (!project.gradle.startParameter.projectProperties.containsKey("moduleDep")) {
+    distributions {
+        main {
+            contents {
+                duplicatesStrategy = 'exclude'
+
+                from project.rootDir
+                include 'LICENSE-2.0.txt'
+                from 'src/dist'
+                include 'readme.txt'
+                include 'deltahex-example.sh'
+                include 'deltahex-example.bat'
+
+                project(':modules').subprojects.each { p ->
+                    p.plugins.withType(JavaPlugin) {
+                        into('') {
+                            from p.jar
+                            include '*'
+                            from p.sourceJar
+                            include '*'
+                            from p.javadocJar
+                            include '*'
+                        }
                     }
                 }
-            }
 
-            project(':tools').subprojects.each { p ->
-                p.plugins.withType(JavaPlugin) {
-                    into('') {
-                        from p.jar
-                        include '*'
-                        rename { filename -> p.name + ".jar" }
-                    }
-                    into('') {
-                        from p.configurations.runtime
-                        include '*'
-                        from p.sourceJar
-                        include '*'
+                project(':tools').subprojects.each { p ->
+                    p.plugins.withType(JavaPlugin) {
+                        into('') {
+                            from p.jar
+                            include '*'
+                            rename { filename -> p.name + ".jar" }
+                        }
+                        into('') {
+                            from p.configurations.runtime
+                            include '*'
+                            from p.sourceJar
+                            include '*'
+                        }
                     }
                 }
-            }
 
-            into('doc') {
-                from 'doc'
-                include '**'
-            }
-            into('resources') {
-                from 'resources'
-                include '**'
-                exclude 'private'
+                into('doc') {
+                    from 'doc'
+                    include '**'
+                }
+                into('resources') {
+                    from 'resources'
+                    include '**'
+                    exclude 'private'
+                }
             }
         }
     }

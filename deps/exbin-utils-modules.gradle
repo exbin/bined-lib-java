@@ -1,17 +1,20 @@
 // Shared modules build
 
-apply plugin: 'java'
-apply plugin: 'maven'
-apply plugin: 'maven-publish'
-apply plugin: 'signing'
+version = '0.1.1-SNAPSHOT'
+def repositoryName = "exbin-utils-java"
+def libraryUrl = 'http://exbin.org'
+
+ext.depsExbinUtils = [
+    githubProfile: 'exbin',
+    githubRepo: "${repositoryName}",
+    version: "${version}"
+]
+
+['java', 'maven', 'maven-publish', 'signing'].each {
+    apply plugin: it
+}
 
 sourceCompatibility = '1.7'
-version = '0.1.1-SNAPSHOT'
-def repositoryName = "deltahex-java"
-def libraryUrl = 'http://deltahex.exbin.org'
-ext.xbupVersion = '0.2.0-SNAPSHOT'
-ext.frameworkVersion = '0.2.0-SNAPSHOT'
-ext.exbinUtilsVersion = '0.1.1-SNAPSHOT'
 
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
@@ -97,58 +100,58 @@ publishing {
     }
 }
 
-// Uncomment for deployment to maven central
-// Unable to force required only
+if (gradle.startParameter.taskNames.contains("uploadArchives") && !version.endsWith('-SNAPSHOT')) {
+    artifacts {
+        archives javadocJar, sourceJar
+    }
 
-//artifacts {
-//    archives javadocJar, sourceJar
-//}
-//
-//signing {
-//    sign configurations.archives
-//}
-//
-//uploadArchives {
-//    repositories {
-//        mavenDeployer {
-//            beforeDeployment {
-//                MavenDeployment deployment -> signing.signPom(deployment)
-//            }
-//
-//            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-//                authentication(userName: ossrhUsername, password: ossrhPassword)
-//            }
-//
-//            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
-//                authentication(userName: ossrhUsername, password: ossrhPassword)
-//            }
-//
-//            pom.project {
-//                name libraryName
-//                packaging 'jar'
-//                description libraryDescription
-//                url libraryUrl
-//                
-//                scm {
-//                    url "https://github.com/exbin/${repositoryName}"
-//                    connection "cm:git:git://github.com/exbin/${repositoryName}.git"
-//                    developerConnection "scm:git:git@github.com:exbin/${repositoryName}.git"
-//                }
-//                licenses {
-//                    license {
-//                        name 'Apache License, Version 2.0'
-//                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-//                        distribution 'repo'
-//                    }
-//                }
-//                developers {
-//                    developer {
-//                        id 'HajdaM'
-//                        name 'Miroslav Hajda'
-//                        email 'hajdam@users.sf.net'
-//                    }
-//                }
-//            }
-//        }
-//    }
-//}
+    signing {
+        sign configurations.archives
+    }
+
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                beforeDeployment {
+                    MavenDeployment deployment -> signing.signPom(deployment)
+                }
+
+                repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                    authentication(userName: ossrhUsername, password: ossrhPassword)
+                }
+
+                snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+                    authentication(userName: ossrhUsername, password: ossrhPassword)
+                }
+
+                pom.project {
+                    name libraryName
+                    packaging 'jar'
+                    description libraryDescription
+                    url libraryUrl
+                
+                    scm {
+                        url "https://github.com/exbin/${repositoryName}"
+                        connection "cm:git:git://github.com/exbin/${repositoryName}.git"
+                        developerConnection "scm:git:git@github.com:exbin/${repositoryName}.git"
+                    }
+                    licenses {
+                        license {
+                            name 'Apache License, Version 2.0'
+                            url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                            distribution 'repo'
+                        }
+                    }
+                    developers {
+                        developer {
+                            id 'HajdaM'
+                            name 'Miroslav Hajda'
+                            email 'hajdam@users.sf.net'
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+

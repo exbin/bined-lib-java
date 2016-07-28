@@ -2,7 +2,7 @@ group = 'org.exbin.deltahex'
 ext.libraryName = 'Delta Hexadecimal Delta-Support Library'
 ext.libraryDescription = 'Library for delta data source'
 
-apply from: '../modules.gradle'
+apply from: '../deltahex-java-modules.gradle'
 
 if (!hasProperty('mainClass')) {
     ext.mainClass = ''
@@ -17,7 +17,7 @@ repositories {
 }
 
 dependencies {
-    compile(project(':modules:deltahex'))
+    compile moduleDep('DeltahexJava', 'org.exbin.deltahex', 'deltahex')
     testCompile group : 'junit', name: 'junit', version: '4.10'
-    testCompile project(path: ':modules:deltahex', configuration: 'tests')
+    testCompile project(path: moduleDepPath('DeltahexJava', 'deltahex'), configuration: 'tests')
 }

@@ -1,19 +1,19 @@
-// Shared tools build
+// Shared modules build
 
-version = '0.1.1-SNAPSHOT'
-def repositoryName = "deltahex-java"
-def libraryUrl = 'http://deltahex.exbin.org'
+version = '0.2.0-SNAPSHOT'
+def repositoryName = "xbup-java"
+def libraryUrl = 'http://xbup.exbin.org'
+
+ext.depsXbupJava = [
+    githubProfile: 'exbin',
+    githubRepo: "${repositoryName}",
+    version: "${version}"
+]
 
 ext.depsExbinUtils = [
     githubProfile: 'exbin',
     githubRepo: 'exbin-utils-java',
     version: '0.1.1-SNAPSHOT'
-]
-
-ext.depsXbupJava = [
-    githubProfile: 'exbin',
-    githubRepo: 'xbup-java',
-    version: '0.2.0-SNAPSHOT'
 ]
 
 buildscript {
@@ -26,7 +26,7 @@ buildscript {
     }
 }
 
-['java', 'at.bxm.svntools'].each {
+['java', 'maven-publish', 'at.bxm.svntools'].each {
     apply plugin: it
 }
 
@@ -39,7 +39,7 @@ tasks.withType(JavaCompile) {
     doFirst {
         options.fork = true
         options.bootClasspath = "${System.properties['java.home']}/lib/rt.jar"
-     	   options.bootClasspath += "$File.pathSeparator${System.properties['java.home']}/jre/lib/jsse.jar"
+        options.bootClasspath += "$File.pathSeparator${System.properties['java.home']}/jre/lib/jsse.jar"
     }
 }
 
@@ -60,16 +60,6 @@ artifacts {
     tests testJar
 }
 
-task sourceJar(type: Jar) {
-    classifier = 'sources'
-    from sourceSets.main.java
-}
-
-task javadocJar (type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from javadoc.destinationDir
-}
-
 def createSvnDownloadTask(def moduleName, def svnUrlValue, def targetDirValue) {
     return tasks.create("svnDownload${moduleName}", at.bxm.gradleplugins.svntools.tasks.SvnExport) {
         svnUrl = svnUrlValue
@@ -88,10 +78,6 @@ project.dependencies.ext.moduleDep = { depsName, packageName, moduleName ->
     }
 
     def depsDir = project.buildDir.parentFile.parentFile.parent + '/deps/'
-    if (gradle.startParameter.taskNames == ['clean']) {
-        return project(':deps')
-    }
-
     def depModuleDir = depsDir + moduleName
     if (!new File(depModuleDir).isDirectory()) {
         // Download module
@@ -116,10 +102,6 @@ project.dependencies.ext.moduleDep = { depsName, packageName, moduleName ->
 }
 
 project.dependencies.ext.moduleDepPath = { depsName, moduleName ->
-    if (depsName == ext.depsThis) {
-        return ":modules:${moduleName}"
-    }
-
     return ":deps:${moduleName}"
 }
 
