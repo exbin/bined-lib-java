@@ -36,11 +36,19 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.10'
 }
 
+def manifestClassPath() {
+    try {
+        return (configurations.runtime.collect { it.getName() }).join(' ')
+    } catch (Exception) {
+        return ""
+    }
+}
+
 jar {
     manifest {
         attributes(
             'Main-Class': mainClass,
-            'Class-Path': configurations.runtime.collect {it.getName() }.join(' ')
+            'Class-Path': manifestClassPath()
         )
     }
 }

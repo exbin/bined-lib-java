@@ -10,7 +10,7 @@ ext.depsXbupJava = [
     version: "${version}"
 ]
 
-ext.depsExbinUtils = [
+ext.depsExbinUtilsJava = [
     githubProfile: 'exbin',
     githubRepo: 'exbin-utils-java',
     version: '0.1.1-SNAPSHOT'

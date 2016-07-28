@@ -4,7 +4,7 @@ version = '0.1.1-SNAPSHOT'
 def repositoryName = "deltahex-java"
 def libraryUrl = 'http://deltahex.exbin.org'
 
-ext.depsExbinUtils = [
+ext.depsExbinUtilsJava = [
     githubProfile: 'exbin',
     githubRepo: 'exbin-utils-java',
     version: '0.1.1-SNAPSHOT'
