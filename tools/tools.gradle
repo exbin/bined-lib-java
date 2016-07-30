@@ -16,6 +16,8 @@ ext.depsXbupJava = [
     version: '0.2.0-SNAPSHOT'
 ]
 
+ext.depsThis = 'DeltahexJava'
+
 buildscript {
     repositories {
         mavenLocal()
@@ -26,7 +28,7 @@ buildscript {
     }
 }
 
-['java', 'at.bxm.svntools'].each {
+['java', 'distribution', 'maven-publish', 'at.bxm.svntools'].each {
     apply plugin: it
 }
 
@@ -81,13 +83,17 @@ def createSvnDownloadTask(def moduleName, def svnUrlValue, def targetDirValue) {
 // - local maven repository module will be used if available
 // - otherwise module will be download to deps folder
 project.dependencies.ext.moduleDep = { depsName, packageName, moduleName ->
+    if (depsName == ext.depsThis) {
+        return project(":modules:" + moduleName)
+    }
+
     def mavenModuleDir = repositories.mavenLocal().url.path + packageName.replace('.', '/') + '/' + moduleName + '/' + ext['deps' + depsName].version
     if (new File(mavenModuleDir).isDirectory()) {
         // Use maven package if available
         return packageName + ':' + moduleName + ':' + ext['deps' + depsName].version
     }
 
-    def depsDir = project.buildDir.parentFile.parentFile.parent + '/deps/'
+    def depsDir = rootProject.buildDir.parent + '/deps/'
     if (gradle.startParameter.taskNames == ['clean']) {
         return project(':deps')
     }
@@ -122,3 +128,4 @@ project.dependencies.ext.moduleDepPath = { depsName, moduleName ->
 
     return ":deps:${moduleName}"
 }
+

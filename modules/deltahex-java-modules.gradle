@@ -93,7 +93,7 @@ project.dependencies.ext.moduleDep = { depsName, packageName, moduleName ->
         return packageName + ':' + moduleName + ':' + ext['deps' + depsName].version
     }
 
-    def depsDir = project.buildDir.parentFile.parentFile.parent + '/deps/'
+    def depsDir = rootProject.buildDir.parent + '/deps/'
     if (gradle.startParameter.taskNames == ['clean']) {
         return project(':deps')
     }
