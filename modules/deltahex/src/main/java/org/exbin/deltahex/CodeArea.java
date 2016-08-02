@@ -56,7 +56,7 @@ import org.exbin.utils.binary_data.BinaryData;
  *
  * Also supports binary, octal and decimal codes.
  *
- * @version 0.1.1 2016/07/21
+ * @version 0.1.1 2016/08/02
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeArea extends JComponent {
@@ -2123,6 +2123,11 @@ public class CodeArea extends JComponent {
                 case KeyEvent.VK_PAGE_UP: {
                     CaretPosition caretPosition = caret.getCaretPosition();
                     int bytesStep = paintDataCache.bytesPerLine * paintDataCache.linesPerRect;
+                    if (scrollPosition.scrollLinePosition > paintDataCache.linesPerRect) {
+                        scrollPosition.scrollLinePosition -= paintDataCache.linesPerRect;
+                        updateScrollBars();
+                        notifyScrolled();
+                    }
                     if (caretPosition.getDataPosition() > 0) {
                         if (caretPosition.getDataPosition() >= bytesStep) {
                             caret.setCaretPosition(caretPosition.getDataPosition() - bytesStep, caret.getCodeOffset());
@@ -2133,12 +2138,7 @@ public class CodeArea extends JComponent {
                         notifyCaretMoved();
                         updateSelection(e.getModifiersEx(), caretPosition);
                     }
-                    if (scrollPosition.scrollLinePosition > paintDataCache.linesPerRect) {
-                        scrollPosition.scrollLinePosition -= paintDataCache.linesPerRect;
-                    }
                     revealCursor();
-                    updateScrollBars();
-                    notifyScrolled();
                     e.consume();
                     break;
                 }
@@ -2146,24 +2146,26 @@ public class CodeArea extends JComponent {
                     CaretPosition caretPosition = caret.getCaretPosition();
                     int bytesStep = paintDataCache.bytesPerLine * paintDataCache.linesPerRect;
                     long dataSize = data.getDataSize();
+                    if (scrollPosition.scrollLinePosition < dataSize / paintDataCache.bytesPerLine - paintDataCache.linesPerRect * 2) {
+                        scrollPosition.scrollLinePosition += paintDataCache.linesPerRect;
+                        updateScrollBars();
+                        notifyScrolled();
+                    }
                     if (caretPosition.getDataPosition() < dataSize) {
                         if (caretPosition.getDataPosition() + bytesStep < dataSize) {
                             caret.setCaretPosition(caretPosition.getDataPosition() + bytesStep, caret.getCodeOffset());
-                        } else if (caretPosition.getDataPosition() + paintDataCache.bytesPerLine < dataSize) {
-                            caret.setCaretPosition(dataSize
-                                    - (dataSize % paintDataCache.bytesPerLine)
-                                    + (caretPosition.getDataPosition() % paintDataCache.bytesPerLine), caret.getCodeOffset());
+                        } else if (caretPosition.getDataPosition() + paintDataCache.bytesPerLine <= dataSize) {
+                            long dataPosition = dataSize
+                                    - dataSize % paintDataCache.bytesPerLine
+                                    - ((caretPosition.getDataPosition() % paintDataCache.bytesPerLine <= dataSize % paintDataCache.bytesPerLine) ? 0 : paintDataCache.bytesPerLine)
+                                    + (caretPosition.getDataPosition() % paintDataCache.bytesPerLine);
+                            caret.setCaretPosition(dataPosition, dataPosition == dataSize ? 0 : caret.getCodeOffset());
                         }
                         commandHandler.caretMoved();
                         notifyCaretMoved();
                         updateSelection(e.getModifiersEx(), caretPosition);
                     }
-                    if (scrollPosition.scrollLinePosition < data.getDataSize() / paintDataCache.bytesPerLine - paintDataCache.linesPerRect * 2) {
-                        scrollPosition.scrollLinePosition += paintDataCache.linesPerRect;
-                    }
                     revealCursor();
-                    updateScrollBars();
-                    notifyScrolled();
                     e.consume();
                     break;
                 }
