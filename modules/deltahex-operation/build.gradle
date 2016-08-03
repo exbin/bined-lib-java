@@ -4,6 +4,16 @@ ext.libraryDescription = 'Library for delta data source'
 
 apply from: '../deltahex-java-modules.gradle'
 
+buildscript {
+    repositories {
+        mavenLocal()
+        jcenter()
+    }
+    dependencies {
+        classpath("at.bxm.gradleplugins:gradle-svntools-plugin:latest.integration")
+    }
+}
+
 if (!hasProperty('mainClass')) {
     ext.mainClass = ''
 }

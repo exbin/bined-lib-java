@@ -18,16 +18,6 @@ ext.depsXbupJava = [
 
 ext.depsThis = 'DeltahexJava'
 
-buildscript {
-    repositories {
-        mavenLocal()
-        jcenter()
-    }
-    dependencies {
-        classpath("at.bxm.gradleplugins:gradle-svntools-plugin:latest.integration")
-    }
-}
-
 ['java', 'maven', 'maven-publish', 'at.bxm.svntools', 'signing'].each {
     apply plugin: it
 }

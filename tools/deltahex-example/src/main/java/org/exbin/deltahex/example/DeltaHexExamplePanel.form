@@ -53,15 +53,16 @@
                               <Component id="viewModeComboBox" max="32767" attributes="0"/>
                               <Component id="codeTypeComboBox" alignment="0" max="32767" attributes="0"/>
                               <Component id="charAntialiasingComboBox" alignment="0" max="32767" attributes="0"/>
+                              <Component id="editationAllowedComboBox" alignment="0" max="32767" attributes="0"/>
                               <Component id="fontComboBox" alignment="0" max="32767" attributes="0"/>
                               <Component id="charsetComboBox" alignment="0" max="32767" attributes="0"/>
                               <Group type="102" attributes="0">
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Component id="charRenderingScrollModeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                                       <Component id="charAntialiasingScrollModeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                                      <Component id="editableCheckBox" alignment="0" min="-2" pref="109" max="-2" attributes="0"/>
                                       <Component id="viewModeScrollModeLabel" min="-2" max="-2" attributes="0"/>
                                       <Component id="codeTypeScrollModeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="editationAllowedLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                                       <Component id="fondLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                                       <Component id="charsetLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                                   </Group>
@@ -92,7 +93,9 @@
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="charAntialiasingComboBox" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="editableCheckBox" min="-2" max="-2" attributes="0"/>
+                          <Component id="editationAllowedLabel" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="editationAllowedComboBox" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="fondLabel" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
@@ -101,21 +104,12 @@
                           <Component id="charsetLabel" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="charsetComboBox" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="178" max="32767" attributes="0"/>
+                          <EmptySpace pref="156" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
               </Layout>
               <SubComponents>
-                <Component class="javax.swing.JCheckBox" name="editableCheckBox">
-                  <Properties>
-                    <Property name="selected" type="boolean" value="true"/>
-                    <Property name="text" type="java.lang.String" value="Editable"/>
-                  </Properties>
-                  <Events>
-                    <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="editableCheckBoxItemStateChanged"/>
-                  </Events>
-                </Component>
                 <Component class="javax.swing.JLabel" name="viewModeScrollModeLabel">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="View Mode"/>
@@ -255,6 +249,28 @@
                   </Properties>
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="charsetComboBoxActionPerformed"/>
+                  </Events>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+                  </AuxValues>
+                </Component>
+                <Component class="javax.swing.JLabel" name="editationAllowedLabel">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Editation"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JComboBox" name="editationAllowedComboBox">
+                  <Properties>
+                    <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+                      <StringArray count="3">
+                        <StringItem index="0" value="READ_ONLY"/>
+                        <StringItem index="1" value="OVERWRITE_ONLY"/>
+                        <StringItem index="2" value="ALLOWED"/>
+                      </StringArray>
+                    </Property>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="editationAllowedComboBoxActionPerformed"/>
                   </Events>
                   <AuxValues>
                     <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>

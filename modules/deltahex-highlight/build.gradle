@@ -4,6 +4,16 @@ ext.libraryDescription = 'Library with Support for Highlighting in Hexadecimal C
 
 apply from: '../deltahex-java-modules.gradle'
 
+buildscript {
+    repositories {
+        mavenLocal()
+        jcenter()
+    }
+    dependencies {
+        classpath("at.bxm.gradleplugins:gradle-svntools-plugin:latest.integration")
+    }
+}
+
 if (!hasProperty('mainClass')) {
     ext.mainClass = ''
 }

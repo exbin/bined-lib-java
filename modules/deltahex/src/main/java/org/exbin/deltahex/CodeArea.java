@@ -56,7 +56,7 @@ import org.exbin.utils.binary_data.BinaryData;
  *
  * Also supports binary, octal and decimal codes.
  *
- * @version 0.1.1 2016/08/02
+ * @version 0.1.1 2016/08/03
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeArea extends JComponent {
@@ -83,6 +83,7 @@ public class CodeArea extends JComponent {
     private BackgroundMode backgroundMode = BackgroundMode.STRIPPED;
     private Charset charset = Charset.defaultCharset();
     private int decorationMode = DECORATION_DEFAULT;
+    private EditationAllowed editationAllowed = EditationAllowed.ALLOWED;
     private EditationMode editationMode = EditationMode.OVERWRITE;
     private CharRenderingMode charRenderingMode = CharRenderingMode.AUTO;
     private CharAntialiasingMode charAntialiasingMode = CharAntialiasingMode.AUTO;
@@ -96,7 +97,6 @@ public class CodeArea extends JComponent {
     private boolean showHeader = true;
     private boolean showLineNumbers = true;
     private boolean mouseDown;
-    private boolean editable = true;
     private boolean wrapMode = false;
     private boolean handleClipboard = true;
     private boolean showUnprintableCharacters = false;
@@ -1195,11 +1195,42 @@ public class CodeArea extends JComponent {
         repaint();
     }
 
+    public EditationAllowed getEditationAllowed() {
+        return editationAllowed;
+    }
+
+    public void setEditationAllowed(EditationAllowed editationAllowed) {
+        this.editationAllowed = editationAllowed;
+        switch (editationAllowed) {
+            case READ_ONLY: {
+                editationMode = EditationMode.INSERT;
+                break;
+            }
+            case OVERWRITE_ONLY: {
+                editationMode = EditationMode.OVERWRITE;
+                break;
+            }
+            default: // ignore
+        }
+        repaint();
+    }
+
     public EditationMode getEditationMode() {
         return editationMode;
     }
 
     public void setEditationMode(EditationMode editationMode) {
+        switch (editationAllowed) {
+            case READ_ONLY: {
+                editationMode = EditationMode.INSERT;
+                break;
+            }
+            case OVERWRITE_ONLY: {
+                editationMode = EditationMode.OVERWRITE;
+                break;
+            }
+            default: // ignore
+        }
         boolean chaged = editationMode != this.editationMode;
         this.editationMode = editationMode;
         if (chaged) {
@@ -1231,12 +1262,11 @@ public class CodeArea extends JComponent {
     }
 
     public boolean isEditable() {
-        return editable;
+        return editationAllowed != EditationAllowed.READ_ONLY;
     }
 
     public void setEditable(boolean editable) {
-        this.editable = editable;
-        repaint();
+        setEditationAllowed(EditationAllowed.ALLOWED);
     }
 
     public boolean isWrapMode() {
@@ -1666,8 +1696,12 @@ public class CodeArea extends JComponent {
         NONE, PLAIN, STRIPPED, GRIDDED
     }
 
+    public static enum EditationAllowed {
+        READ_ONLY, OVERWRITE_ONLY, ALLOWED
+    }
+
     public static enum EditationMode {
-        OVERWRITE, INSERT, READ_ONLY
+        INSERT, OVERWRITE
     }
 
     public static enum VerticalScrollMode {
@@ -2170,7 +2204,7 @@ public class CodeArea extends JComponent {
                     break;
                 }
                 case KeyEvent.VK_INSERT: {
-                    if (editationMode != EditationMode.READ_ONLY) {
+                    if (editationAllowed == EditationAllowed.ALLOWED) {
                         setEditationMode(editationMode == EditationMode.INSERT ? EditationMode.OVERWRITE : EditationMode.INSERT);
                     }
                     e.consume();
