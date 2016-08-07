@@ -15,16 +15,21 @@
  */
 package org.exbin.deltahex.example;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Font;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
+import javax.swing.JPanel;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
@@ -41,12 +46,14 @@ import org.exbin.utils.binary_data.EditableBinaryData;
 /**
  * Hexadecimal editor example panel.
  *
- * @version 0.1.1 2016/08/03
+ * @version 0.1.1 2016/08/07
  * @author ExBin Project (http://exbin.org)
  */
 public class DeltaHexExamplePanel extends javax.swing.JPanel {
 
     private CodeArea codeArea;
+    private final Map<JPanel, JPanel> tabMap = new HashMap<>();
+    private JPanel activeTab;
 
     public DeltaHexExamplePanel() {
         initComponents();
@@ -123,6 +130,15 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
                 horizontalPositionTextField.setText(scrollPosition.getScrollCharPosition() + ":" + scrollPosition.getScrollCharOffset());
             }
         });
+
+        tabMap.put(modeTab, modePanel);
+        tabMap.put(stateTab, statePanel);
+        tabMap.put(layoutTab, layoutPanel);
+        tabMap.put(decorationTab, decorationPanel);
+        tabMap.put(scrollingTab, scrollingPanel);
+
+        activeTab = modeTab;
+        modeTab.add(modePanel, BorderLayout.CENTER);
     }
 
     /**
@@ -134,8 +150,6 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        splitPane = new javax.swing.JSplitPane();
-        tabbedPane = new javax.swing.JTabbedPane();
         modePanel = new javax.swing.JPanel();
         viewModeScrollModeLabel = new javax.swing.JLabel();
         viewModeComboBox = new javax.swing.JComboBox<>();
@@ -216,8 +230,13 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
         horizontalScrollModeComboBox = new javax.swing.JComboBox<>();
         horizontalPositionLabel = new javax.swing.JLabel();
         horizontalPositionTextField = new javax.swing.JTextField();
-
-        setLayout(new java.awt.BorderLayout());
+        splitPane = new javax.swing.JSplitPane();
+        tabbedPane = new javax.swing.JTabbedPane();
+        modeTab = new javax.swing.JPanel();
+        stateTab = new javax.swing.JPanel();
+        layoutTab = new javax.swing.JPanel();
+        decorationTab = new javax.swing.JPanel();
+        scrollingTab = new javax.swing.JPanel();
 
         viewModeScrollModeLabel.setText("View Mode");
 
@@ -340,10 +359,8 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
                 .addComponent(charsetLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(charsetComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(156, Short.MAX_VALUE))
+                .addContainerGap(141, Short.MAX_VALUE))
         );
-
-        tabbedPane.addTab("Mode", modePanel);
 
         dataSizeLabel.setText("Data Size");
 
@@ -494,10 +511,8 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
                 .addComponent(cursorPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(selectionPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(109, Short.MAX_VALUE))
+                .addContainerGap(94, Short.MAX_VALUE))
         );
-
-        tabbedPane.addTab("State", statePanel);
 
         lineLengthLabel.setText("Bytes Per Line");
 
@@ -722,10 +737,8 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
                 .addComponent(positionCodeTypeLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(positionCodeTypeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(61, Short.MAX_VALUE))
+                .addContainerGap(46, Short.MAX_VALUE))
         );
-
-        tabbedPane.addTab("Layout", layoutPanel);
 
         backgroundModeLabel.setText("Background Mode");
 
@@ -851,10 +864,8 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
                 .addComponent(borderTypeLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(borderTypeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(214, Short.MAX_VALUE))
+                .addContainerGap(199, Short.MAX_VALUE))
         );
-
-        tabbedPane.addTab("Decoration", decorationPanel);
 
         verticalPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Vertical"));
 
@@ -998,10 +1009,31 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
                 .addComponent(verticalPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(horizontalPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(144, Short.MAX_VALUE))
+                .addContainerGap(129, Short.MAX_VALUE))
         );
 
-        tabbedPane.addTab("Scrolling", scrollingPanel);
+        setLayout(new java.awt.BorderLayout());
+
+        tabbedPane.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                tabbedPaneStateChanged(evt);
+            }
+        });
+
+        modeTab.setLayout(new java.awt.BorderLayout());
+        tabbedPane.addTab("Mode", modeTab);
+
+        stateTab.setLayout(new java.awt.BorderLayout());
+        tabbedPane.addTab("State", stateTab);
+
+        layoutTab.setLayout(new java.awt.BorderLayout());
+        tabbedPane.addTab("Layout", layoutTab);
+
+        decorationTab.setLayout(new java.awt.BorderLayout());
+        tabbedPane.addTab("Decoration", decorationTab);
+
+        scrollingTab.setLayout(new java.awt.BorderLayout());
+        tabbedPane.addTab("Scrolling", scrollingTab);
 
         splitPane.setLeftComponent(tabbedPane);
 
@@ -1255,6 +1287,18 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
         codeArea.setEditationAllowed(CodeArea.EditationAllowed.values()[editationAllowedComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_editationAllowedComboBoxActionPerformed
 
+    private void tabbedPaneStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_tabbedPaneStateChanged
+        Component tab = tabbedPane.getSelectedComponent();
+        if (tab != null && tab != activeTab && !tabMap.isEmpty()) {
+            if (activeTab != null) {
+                ((JPanel) activeTab).remove(tabMap.get(activeTab));
+            }
+
+            ((JPanel) tab).add(tabMap.get((JPanel) tab), BorderLayout.CENTER);
+            activeTab = (JPanel) tab;
+        }
+    }//GEN-LAST:event_tabbedPaneStateChanged
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<String> activeSectionComboBox;
     private javax.swing.JLabel activeSectionLabel;
@@ -1276,6 +1320,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
     private javax.swing.JLabel dataSizeLabel;
     private javax.swing.JTextField dataSizeTextField;
     private javax.swing.JPanel decorationPanel;
+    private javax.swing.JPanel decorationTab;
     private javax.swing.JCheckBox decoratorBoxCheckBox;
     private javax.swing.JCheckBox decoratorHeaderLineCheckBox;
     private javax.swing.JCheckBox decoratorLineNumLineCheckBox;
@@ -1298,6 +1343,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
     private javax.swing.JComboBox<String> horizontalScrollModeComboBox;
     private javax.swing.JLabel horizontalScrollModeLabel;
     private javax.swing.JPanel layoutPanel;
+    private javax.swing.JPanel layoutTab;
     private javax.swing.JLabel lineLengthLabel;
     private javax.swing.JSpinner lineLengthSpinner;
     private javax.swing.JComboBox<String> lineNumberLengthComboBox;
@@ -1310,12 +1356,14 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
     private javax.swing.JPanel linesPanel;
     private javax.swing.JButton loadDataButton;
     private javax.swing.JPanel modePanel;
+    private javax.swing.JPanel modeTab;
     private javax.swing.JComboBox<String> positionCodeTypeComboBox;
     private javax.swing.JLabel positionCodeTypeLabel;
     private javax.swing.JLabel positionLabel;
     private javax.swing.JTextField positionTextField;
     private javax.swing.JButton saveDataButton;
     private javax.swing.JPanel scrollingPanel;
+    private javax.swing.JPanel scrollingTab;
     private javax.swing.JLabel selectionEndLabel;
     private javax.swing.JTextField selectionEndTextField;
     private javax.swing.JPanel selectionPanel;
@@ -1327,6 +1375,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
     private javax.swing.JCheckBox showShadowCursorCheckBox;
     private javax.swing.JSplitPane splitPane;
     private javax.swing.JPanel statePanel;
+    private javax.swing.JPanel stateTab;
     private javax.swing.JTabbedPane tabbedPane;
     private javax.swing.JPanel verticalPanel;
     private javax.swing.JLabel verticalPositionLabel;
