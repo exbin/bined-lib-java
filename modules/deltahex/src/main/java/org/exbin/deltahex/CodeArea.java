@@ -56,7 +56,7 @@ import org.exbin.utils.binary_data.BinaryData;
  *
  * Also supports binary, octal and decimal codes.
  *
- * @version 0.1.1 2016/08/03
+ * @version 0.1.1 2016/08/12
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeArea extends JComponent {
@@ -150,7 +150,13 @@ public class CodeArea extends JComponent {
 
     private void init() {
         Color textColor = UIManager.getColor("TextArea.foreground");
+        if (textColor == null) {
+            textColor = Color.BLACK;
+        }
         Color backgroundColor = UIManager.getColor("TextArea.background");
+        if (backgroundColor == null) {
+            backgroundColor = Color.WHITE;
+        }
         super.setForeground(textColor);
         super.setBackground(createOddColor(backgroundColor));
         Color unprintablesColor = new Color(textColor.getRed(), (textColor.getGreen() + 128) % 256, textColor.getBlue());
@@ -161,7 +167,13 @@ public class CodeArea extends JComponent {
         alternateColors.setBothBackgroundColors(createOddColor(backgroundColor));
         alternateColors.setUnprintablesColor(unprintablesColor);
         Color selectionTextColor = UIManager.getColor("TextArea.selectionForeground");
+        if (selectionTextColor == null) {
+            selectionTextColor = Color.WHITE;
+        }
         Color selectionBackgroundColor = UIManager.getColor("TextArea.selectionBackground");
+        if (selectionBackgroundColor == null) {
+            selectionBackgroundColor = new Color(96, 96, 255);
+        }
         selectionColors.setTextColor(selectionTextColor);
         selectionColors.setBothBackgroundColors(selectionBackgroundColor);
         selectionColors.setUnprintablesColor(unprintablesColor);
@@ -171,6 +183,9 @@ public class CodeArea extends JComponent {
         mirrorSelectionColors.setUnprintablesColor(unprintablesColor);
 
         cursorColor = UIManager.getColor("TextArea.caretForeground");
+        if (cursorColor == null) {
+            cursorColor = Color.BLACK;
+        }
         decorationLineColor = Color.GRAY;
 
         verticalScrollBar = new JScrollBar(Scrollbar.VERTICAL);
