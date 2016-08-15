@@ -56,7 +56,7 @@ import org.exbin.utils.binary_data.BinaryData;
  *
  * Also supports binary, octal and decimal codes.
  *
- * @version 0.1.1 2016/08/12
+ * @version 0.1.1 2016/08/15
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeArea extends JComponent {
