@@ -53,14 +53,15 @@ public class CodeAreaCaret {
     }
 
     public void paint(Graphics g) {
+        int bytesPerLine = codeArea.getBytesPerLine();
+        int lineHeight = codeArea.getLineHeight();
+        int charWidth = codeArea.getCharWidth();
+        int codeDigits = codeArea.getCodeType().getMaxDigits();
+        Point scrollPoint = codeArea.getScrollPoint();
+        Point cursorPoint = getCursorPoint(bytesPerLine, lineHeight, charWidth);
+        g.setColor(codeArea.getCursorColor());
+
         if (cursorVisible) {
-            g.setColor(codeArea.getCursorColor());
-            int bytesPerLine = codeArea.getBytesPerLine();
-            int lineHeight = codeArea.getLineHeight();
-            int charWidth = codeArea.getCharWidth();
-            int codeDigits = codeArea.getCodeType().getMaxDigits();
-            Point scrollPoint = codeArea.getScrollPoint();
-            Point cursorPoint = getCursorPoint(bytesPerLine, lineHeight, charWidth);
             g.setXORMode(Color.WHITE);
             if (codeArea.getEditationMode() == CodeArea.EditationMode.OVERWRITE) {
                 switch (overrideCursorShape) {
@@ -80,16 +81,16 @@ public class CodeAreaCaret {
                 g.fillRect(cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y, DEFAULT_CURSOR_WIDTH, lineHeight - 1);
             }
             g.setPaintMode();
+        }
 
-            // Paint shadow cursor
-            if (codeArea.getViewMode() == CodeArea.ViewMode.DUAL && codeArea.isShowShadowCursor()) {
-                Point shadowCursorPoint = getShadowCursorPoint(bytesPerLine, lineHeight, charWidth);
-                Graphics2D g2d = (Graphics2D) g.create();
-                Stroke dashed = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{2}, 0);
-                g2d.setStroke(dashed);
-                g2d.drawRect(shadowCursorPoint.x - scrollPoint.x, shadowCursorPoint.y - scrollPoint.y,
-                        charWidth * (codeArea.getActiveSection() == Section.TEXT_PREVIEW ? codeDigits : 1), lineHeight - 1);
-            }
+        // Paint shadow cursor
+        if (codeArea.getViewMode() == CodeArea.ViewMode.DUAL && codeArea.isShowShadowCursor()) {
+            Point shadowCursorPoint = getShadowCursorPoint(bytesPerLine, lineHeight, charWidth);
+            Graphics2D g2d = (Graphics2D) g.create();
+            Stroke dashed = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{2}, 0);
+            g2d.setStroke(dashed);
+            g2d.drawRect(shadowCursorPoint.x - scrollPoint.x, shadowCursorPoint.y - scrollPoint.y,
+                    charWidth * (codeArea.getActiveSection() == Section.TEXT_PREVIEW ? codeDigits : 1), lineHeight - 1);
         }
     }
 
