@@ -121,6 +121,7 @@ public class CodeArea extends JComponent {
     private final ColorsGroup selectionColors = new ColorsGroup();
     private final ColorsGroup mirrorSelectionColors = new ColorsGroup();
     private Color cursorColor;
+    private Color negativeCursorColor;
     private Color decorationLineColor;
 
     /**
@@ -186,6 +187,7 @@ public class CodeArea extends JComponent {
         if (cursorColor == null) {
             cursorColor = Color.BLACK;
         }
+        negativeCursorColor = createNegativeColor(cursorColor);
         decorationLineColor = Color.GRAY;
 
         verticalScrollBar = new JScrollBar(Scrollbar.VERTICAL);
@@ -1125,7 +1127,12 @@ public class CodeArea extends JComponent {
 
     public void setCursorColor(Color cursorColor) {
         this.cursorColor = cursorColor;
+        negativeCursorColor = createNegativeColor(cursorColor);
         repaint();
+    }
+
+    public Color getNegativeCursorColor() {
+        return negativeCursorColor;
     }
 
     public Color getDecorationLineColor() {
@@ -1552,6 +1559,13 @@ public class CodeArea extends JComponent {
 
     private static int computeOddColorComponent(int colorComponent) {
         return colorComponent + (colorComponent > 64 ? - 16 : 16);
+    }
+
+    private static Color createNegativeColor(Color color) {
+        return new Color(
+                255 - color.getRed(),
+                255 - color.getGreen(),
+                255 - color.getBlue());
     }
 
     /**

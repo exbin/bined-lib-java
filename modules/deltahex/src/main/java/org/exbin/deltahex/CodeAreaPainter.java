@@ -20,7 +20,7 @@ import java.awt.Graphics;
 /**
  * Hexadecimal editor painter.
  *
- * @version 0.1.0 2016/04/18
+ * @version 0.1.0 2016/04/19
  * @author ExBin Project (http://exbin.org)
  */
 public interface CodeAreaPainter {
@@ -73,4 +73,11 @@ public interface CodeAreaPainter {
      * @param hexCharacters array of 16 characters
      */
     void setHexCharacters(char[] hexCharacters);
+
+    /**
+     * Paints negative cursor character.
+     *
+     * @param g graphics
+     */
+    void paintCursorNegative(Graphics g);
 }

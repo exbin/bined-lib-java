@@ -21,6 +21,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -30,12 +31,13 @@ import org.exbin.deltahex.CodeArea.Section;
 /**
  * Code area caret.
  *
- * @version 0.1.1 2016/08/15
+ * @version 0.1.1 2016/08/19
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeAreaCaret {
 
-    private static final int DEFAULT_CURSOR_WIDTH = 2;
+    private static final int LINE_CURSOR_WIDTH = 1;
+    private static final int DOUBLE_CURSOR_WIDTH = 2;
     private static final int DEFAULT_BLINK_RATE = 450;
 
     private final CodeArea codeArea;
@@ -45,7 +47,9 @@ public class CodeAreaCaret {
     private Timer blinkTimer = null;
     private boolean cursorVisible = true;
     private Section section = Section.CODE_MATRIX;
-    private OverrideCursorShape overrideCursorShape = OverrideCursorShape.FULL;
+    private CursorShape insertCursorShape = CursorShape.DOUBLE_LEFT;
+    private CursorShape overwriteCursorShape = CursorShape.BOX;
+    private CursorRenderingMode renderingMode = CursorRenderingMode.XOR;
 
     public CodeAreaCaret(CodeArea codeArea) {
         this.codeArea = codeArea;
@@ -59,38 +63,128 @@ public class CodeAreaCaret {
         int codeDigits = codeArea.getCodeType().getMaxDigits();
         Point scrollPoint = codeArea.getScrollPoint();
         Point cursorPoint = getCursorPoint(bytesPerLine, lineHeight, charWidth);
-        g.setColor(codeArea.getCursorColor());
 
         if (cursorVisible) {
-            g.setXORMode(Color.WHITE);
-            if (codeArea.getEditationMode() == CodeArea.EditationMode.OVERWRITE) {
-                switch (overrideCursorShape) {
-                    case EMPTY: {
-                        g.drawRect(cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y, charWidth, lineHeight - 1);
-                        break;
-                    }
-                    case FULL: {
-                        g.fillRect(cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y, charWidth, lineHeight - 1);
-                        break;
-                    }
-                    default: {
-                        throw new IllegalStateException("Unexpected overrideCursorShape " + overrideCursorShape.name());
-                    }
-                }
-            } else {
-                g.fillRect(cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y, DEFAULT_CURSOR_WIDTH, lineHeight - 1);
+            g.setColor(codeArea.getCursorColor());
+            if (renderingMode == CursorRenderingMode.XOR) {
+                g.setXORMode(Color.WHITE);
             }
-            g.setPaintMode();
+
+            CursorShape cursorShape = codeArea.getEditationMode() == CodeArea.EditationMode.INSERT ? insertCursorShape : overwriteCursorShape;
+            switch (cursorShape) {
+                case LINE_TOP:
+                case DOUBLE_TOP: {
+                    paintCursorRect(g, cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y,
+                            charWidth, cursorShape == CursorShape.LINE_TOP ? LINE_CURSOR_WIDTH : DOUBLE_CURSOR_WIDTH);
+                    break;
+                }
+                case LINE_BOTTOM:
+                case DOUBLE_BOTTOM: {
+                    int height = cursorShape == CursorShape.LINE_BOTTOM ? LINE_CURSOR_WIDTH : DOUBLE_CURSOR_WIDTH;
+                    paintCursorRect(g, cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y + lineHeight - height,
+                            charWidth, height);
+                    break;
+                }
+                case LINE_LEFT:
+                case DOUBLE_LEFT: {
+                    paintCursorRect(g, cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y,
+                            cursorShape == CursorShape.LINE_LEFT ? LINE_CURSOR_WIDTH : DOUBLE_CURSOR_WIDTH, lineHeight);
+                    break;
+                }
+                case LINE_RIGHT:
+                case DOUBLE_RIGHT: {
+                    int width = cursorShape == CursorShape.LINE_RIGHT ? LINE_CURSOR_WIDTH : DOUBLE_CURSOR_WIDTH;
+                    paintCursorRect(g, cursorPoint.x - scrollPoint.x + charWidth - width, cursorPoint.y - scrollPoint.y,
+                            width, lineHeight);
+                    break;
+                }
+                case BOX: {
+                    paintCursorRect(g, cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y,
+                            charWidth, lineHeight - 1);
+                    break;
+                }
+                case FRAME: {
+                    switch (renderingMode) {
+                        case PAINT:
+                        case XOR: {
+                            g.drawRect(cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y, charWidth, lineHeight - 1);
+                            break;
+                        }
+                        case NEGATIVE: {
+                            // TODO
+                            break;
+                        }
+                    }
+                    break;
+                }
+                case CORNERS: {
+                    int quarterWidth = charWidth / 4;
+                    int quarterLine = lineHeight / 4;
+                    paintCursorLine(g, cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y,
+                            cursorPoint.x - scrollPoint.x + quarterWidth, cursorPoint.y - scrollPoint.y);
+                    paintCursorLine(g, cursorPoint.x - scrollPoint.x + charWidth - quarterWidth, cursorPoint.y - scrollPoint.y,
+                            cursorPoint.x - scrollPoint.x + charWidth, cursorPoint.y - scrollPoint.y);
+
+                    paintCursorLine(g, cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y + 1,
+                            cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y + quarterLine);
+                    paintCursorLine(g, cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y + lineHeight - quarterLine - 1,
+                            cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y + lineHeight - 2);
+                    paintCursorLine(g, cursorPoint.x - scrollPoint.x + charWidth, cursorPoint.y - scrollPoint.y + 1,
+                            cursorPoint.x - scrollPoint.x + charWidth, cursorPoint.y - scrollPoint.y + quarterLine);
+                    paintCursorLine(g, cursorPoint.x - scrollPoint.x + charWidth, cursorPoint.y - scrollPoint.y + lineHeight - quarterLine - 1,
+                            cursorPoint.x - scrollPoint.x + charWidth, cursorPoint.y - scrollPoint.y + lineHeight - 2);
+
+                    paintCursorLine(g, cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y + lineHeight - 1,
+                            cursorPoint.x - scrollPoint.x + quarterWidth, cursorPoint.y - scrollPoint.y + lineHeight - 1);
+                    paintCursorLine(g, cursorPoint.x - scrollPoint.x + charWidth - quarterWidth, cursorPoint.y - scrollPoint.y + lineHeight - 1,
+                            cursorPoint.x - scrollPoint.x + charWidth, cursorPoint.y - scrollPoint.y + lineHeight - 1);
+                    break;
+                }
+                default: {
+                    throw new IllegalStateException("Unexpected cursor shape type " + cursorShape.name());
+                }
+            }
+
+            if (renderingMode == CursorRenderingMode.XOR) {
+                g.setPaintMode();
+            }
         }
 
         // Paint shadow cursor
         if (codeArea.getViewMode() == CodeArea.ViewMode.DUAL && codeArea.isShowShadowCursor()) {
+            g.setColor(codeArea.getCursorColor());
             Point shadowCursorPoint = getShadowCursorPoint(bytesPerLine, lineHeight, charWidth);
             Graphics2D g2d = (Graphics2D) g.create();
             Stroke dashed = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{2}, 0);
             g2d.setStroke(dashed);
             g2d.drawRect(shadowCursorPoint.x - scrollPoint.x, shadowCursorPoint.y - scrollPoint.y,
                     charWidth * (codeArea.getActiveSection() == Section.TEXT_PREVIEW ? codeDigits : 1), lineHeight - 1);
+        }
+    }
+
+    private void paintCursorRect(Graphics g, int x, int y, int width, int height) {
+        switch (renderingMode) {
+            case PAINT:
+            case XOR: {
+                g.fillRect(x, y, width, height);
+                break;
+            }
+            case NEGATIVE: {
+                Shape clip = g.getClip();
+                g.setClip(x, y, width, height);
+                g.fillRect(x, y, width, height);
+                codeArea.getPainter().paintCursorNegative(g);
+                g.setClip(clip);
+                break;
+            }
+        }
+    }
+
+    private void paintCursorLine(Graphics g, int x1, int y1, int x2, int y2) {
+        if (renderingMode != CursorRenderingMode.NEGATIVE) {
+            g.drawLine(x1, y1, x2, y2);
+        } else {
+            // TODO
         }
     }
 
@@ -132,17 +226,45 @@ public class CodeAreaCaret {
         return new Point(caretX, caretY);
     }
 
-    public Rectangle getCursorRect(int bytesPerLine, int fontHeight, int charWidth) {
-        Point cursorPoint = getCursorPoint(bytesPerLine, fontHeight, charWidth);
+    public Rectangle getCursorRect(int bytesPerLine, int lineHeight, int charWidth) {
+        Point cursorPoint = getCursorPoint(bytesPerLine, lineHeight, charWidth);
         Point scrollPoint = codeArea.getScrollPoint();
-        if (codeArea.getEditationMode() == CodeArea.EditationMode.OVERWRITE) {
-            int width = charWidth;
-            if (overrideCursorShape == OverrideCursorShape.EMPTY) {
-                width++;
+        CursorShape cursorShape = codeArea.getEditationMode() == CodeArea.EditationMode.INSERT ? insertCursorShape : overwriteCursorShape;
+        switch (cursorShape) {
+            case BOX:
+            case FRAME:
+            case CORNERS: {
+                int width = charWidth;
+                if (cursorShape != CursorShape.BOX) {
+                    width++;
+                }
+                return new Rectangle(cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y, width, lineHeight);
             }
-            return new Rectangle(cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y, width, fontHeight);
-        } else {
-            return new Rectangle(cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y, DEFAULT_CURSOR_WIDTH, fontHeight);
+            case LINE_TOP:
+            case DOUBLE_TOP: {
+                return new Rectangle(cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y,
+                        charWidth, cursorShape == CursorShape.LINE_TOP ? LINE_CURSOR_WIDTH : DOUBLE_CURSOR_WIDTH);
+            }
+            case LINE_BOTTOM:
+            case DOUBLE_BOTTOM: {
+                int height = cursorShape == CursorShape.LINE_BOTTOM ? LINE_CURSOR_WIDTH : DOUBLE_CURSOR_WIDTH;
+                return new Rectangle(cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y + lineHeight - height,
+                        charWidth, height);
+            }
+            case LINE_LEFT:
+            case DOUBLE_LEFT: {
+                return new Rectangle(cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y,
+                        cursorShape == CursorShape.LINE_LEFT ? LINE_CURSOR_WIDTH : DOUBLE_CURSOR_WIDTH, lineHeight);
+            }
+            case LINE_RIGHT:
+            case DOUBLE_RIGHT: {
+                int width = cursorShape == CursorShape.LINE_RIGHT ? LINE_CURSOR_WIDTH : DOUBLE_CURSOR_WIDTH;
+                return new Rectangle(cursorPoint.x - scrollPoint.x + charWidth - width, cursorPoint.y - scrollPoint.y,
+                        width, lineHeight);
+            }
+            default: {
+                throw new IllegalStateException("Unexpected cursor shape type " + cursorShape.name());
+            }
         }
     }
 
@@ -163,7 +285,7 @@ public class CodeAreaCaret {
             int lineHeight = codeArea.getLineHeight();
             int charWidth = codeArea.getCharWidth();
             Rectangle cursorRect = getCursorRect(bytesPerLine, lineHeight, charWidth);
-            codeArea.repaint(cursorRect);
+            codeArea.paintImmediately(cursorRect);
         }
     }
 
@@ -214,15 +336,39 @@ public class CodeAreaCaret {
         privateSetBlinkRate(blinkRate);
     }
 
-    public OverrideCursorShape getOverrideCursorShape() {
-        return overrideCursorShape;
+    public CursorShape getInsertCursorShape() {
+        return insertCursorShape;
     }
 
-    public void setOverrideCursorShape(OverrideCursorShape overrideCursorShape) {
-        if (overrideCursorShape == null) {
+    public void setInsertCursorShape(CursorShape insertCursorShape) {
+        if (insertCursorShape == null) {
+            throw new NullPointerException("Insert cursor shape cannot be null");
+        }
+        this.insertCursorShape = insertCursorShape;
+        cursorRepaint();
+    }
+
+    public CursorShape getOverwriteCursorShape() {
+        return overwriteCursorShape;
+    }
+
+    public void setOverwriteCursorShape(CursorShape overwriteCursorShape) {
+        if (overwriteCursorShape == null) {
             throw new NullPointerException("Override cursor shape cannot be null");
         }
-        this.overrideCursorShape = overrideCursorShape;
+        this.overwriteCursorShape = overwriteCursorShape;
+        cursorRepaint();
+    }
+
+    public CursorRenderingMode getRenderingMode() {
+        return renderingMode;
+    }
+
+    public void setRenderingMode(CursorRenderingMode renderingMode) {
+        if (renderingMode == null) {
+            throw new NullPointerException("Cursor rendering mode cannot be null");
+        }
+        this.renderingMode = renderingMode;
         cursorRepaint();
     }
 
@@ -256,7 +402,29 @@ public class CodeAreaCaret {
         }
     }
 
-    public static enum OverrideCursorShape {
-        EMPTY, FULL
+    public static enum CursorShape {
+        LINE_BOTTOM, LINE_TOP, LINE_LEFT, LINE_RIGHT,
+        DOUBLE_BOTTOM, DOUBLE_TOP, DOUBLE_LEFT, DOUBLE_RIGHT,
+        BOX,
+        /**
+         * Frame and corners mode is not recommended for negative rendering
+         * modes.
+         */
+        FRAME, CORNERS
+    }
+
+    public static enum CursorRenderingMode {
+        /**
+         * Cursor is just painted.
+         */
+        PAINT,
+        /**
+         * Cursor is painted using pixels inversion.
+         */
+        XOR,
+        /**
+         * Underlying character is painted using cursor negative color.
+         */
+        NEGATIVE
     }
 }

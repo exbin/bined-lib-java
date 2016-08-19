@@ -28,7 +28,7 @@ import java.util.Map;
 /**
  * Code area component default painter.
  *
- * @version 0.1.0 2016/07/19
+ * @version 0.1.0 2016/08/19
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaPainter implements CodeAreaPainter {
@@ -727,6 +727,12 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
     protected void drawShiftedChar(Graphics g, char[] drawnChars, int charOffset, int charWidthSpace, int startX, int positionY, int shift) {
         g.drawChars(drawnChars, charOffset, 1, startX + shift, positionY);
+    }
+
+    @Override
+    public void paintCursorNegative(Graphics g) {
+        g.setColor(codeArea.getNegativeCursorColor());
+        // TODO this should draw single character on cursor position with given color
     }
 
     /**
