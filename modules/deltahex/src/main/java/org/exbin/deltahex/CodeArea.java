@@ -1259,6 +1259,7 @@ public class CodeArea extends JComponent {
             for (EditationModeChangedListener listener : editationModeChangedListeners) {
                 listener.editationModeChanged(editationMode);
             }
+            getCaret().resetBlink();
             repaint();
         }
     }
