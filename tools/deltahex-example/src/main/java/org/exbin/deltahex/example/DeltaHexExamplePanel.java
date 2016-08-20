@@ -93,6 +93,8 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
         cursorInsertShapeComboBox.setSelectedIndex(codeArea.getCaret().getInsertCursorShape().ordinal());
         cursorOverwriteShapeComboBox.setSelectedIndex(codeArea.getCaret().getOverwriteCursorShape().ordinal());
         cursorBlinkingRateSpinner.setValue(codeArea.getCaret().getBlinkRate());
+        byteGroupSizeSpinner.setValue(codeArea.getByteGroupSize());
+        spaceGroupSizeSpinner.setValue(codeArea.getSpaceGroupSize());
 
         int decorationMode = codeArea.getDecorationMode();
         decoratorHeaderLineCheckBox.setSelected((decorationMode & CodeArea.DECORATION_HEADER_LINE) > 0);
@@ -205,6 +207,10 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
         headerSpaceLabel = new javax.swing.JLabel();
         headerSpaceComboBox = new javax.swing.JComboBox<>();
         headerSpaceSpinner = new javax.swing.JSpinner();
+        byteGroupSizeLabel = new javax.swing.JLabel();
+        byteGroupSizeSpinner = new javax.swing.JSpinner();
+        spaceGroupSizeLabel = new javax.swing.JLabel();
+        spaceGroupSizeSpinner = new javax.swing.JSpinner();
         decorationPanel = new javax.swing.JPanel();
         backgroundModeLabel = new javax.swing.JLabel();
         backgroundModeComboBox = new javax.swing.JComboBox<>();
@@ -532,6 +538,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
 
         lineLengthLabel.setText("Bytes Per Line");
 
+        lineLengthSpinner.setModel(new javax.swing.SpinnerNumberModel(16, 1, null, 1));
         lineLengthSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 lineLengthSpinnerStateChanged(evt);
@@ -557,6 +564,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
             }
         });
 
+        lineNumberLengthSpinner.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1));
         lineNumberLengthSpinner.setValue(8);
         lineNumberLengthSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
@@ -574,6 +582,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
             }
         });
 
+        lineNumberSpaceSpinner.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1));
         lineNumberSpaceSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 lineNumberSpaceSpinnerStateChanged(evt);
@@ -650,6 +659,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
             }
         });
 
+        headerSpaceSpinner.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1));
         headerSpaceSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 headerSpaceSpinnerStateChanged(evt);
@@ -666,7 +676,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
                     .addGroup(headerPanelLayout.createSequentialGroup()
                         .addComponent(headerSpaceComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(headerSpaceSpinner))
+                        .addComponent(headerSpaceSpinner, javax.swing.GroupLayout.DEFAULT_SIZE, 317, Short.MAX_VALUE))
                     .addGroup(headerPanelLayout.createSequentialGroup()
                         .addGroup(headerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(showHeaderCheckBox)
@@ -687,6 +697,24 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        byteGroupSizeLabel.setText("Byte Group Size");
+
+        byteGroupSizeSpinner.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1));
+        byteGroupSizeSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                byteGroupSizeSpinnerStateChanged(evt);
+            }
+        });
+
+        spaceGroupSizeLabel.setText("Space Group Size");
+
+        spaceGroupSizeSpinner.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1));
+        spaceGroupSizeSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                spaceGroupSizeSpinnerStateChanged(evt);
+            }
+        });
+
         javax.swing.GroupLayout layoutPanelLayout = new javax.swing.GroupLayout(layoutPanel);
         layoutPanel.setLayout(layoutPanelLayout);
         layoutPanelLayout.setHorizontalGroup(
@@ -700,10 +728,17 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
                             .addComponent(wrapLineModeCheckBox))
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layoutPanelLayout.createSequentialGroup()
-                        .addGroup(layoutPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(headerPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(lineLengthSpinner)
-                            .addComponent(lineNumbersPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(layoutPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(spaceGroupSizeSpinner, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(byteGroupSizeSpinner, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(headerPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(lineLengthSpinner, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lineNumbersPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layoutPanelLayout.createSequentialGroup()
+                                .addGroup(layoutPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(byteGroupSizeLabel, javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(spaceGroupSizeLabel, javax.swing.GroupLayout.Alignment.LEADING))
+                                .addGap(0, 0, Short.MAX_VALUE)))
                         .addContainerGap())))
         );
         layoutPanelLayout.setVerticalGroup(
@@ -719,7 +754,15 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
                 .addComponent(headerPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lineNumbersPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(150, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(byteGroupSizeLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(byteGroupSizeSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(spaceGroupSizeLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(spaceGroupSizeSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(87, Short.MAX_VALUE))
         );
 
         backgroundModeLabel.setText("Background Mode");
@@ -1414,6 +1457,14 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
         codeArea.getCaret().setBlinkRate((Integer) cursorBlinkingRateSpinner.getValue());
     }//GEN-LAST:event_cursorBlinkingRateSpinnerStateChanged
 
+    private void byteGroupSizeSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_byteGroupSizeSpinnerStateChanged
+        codeArea.setByteGroupSize((Integer) byteGroupSizeSpinner.getValue());
+    }//GEN-LAST:event_byteGroupSizeSpinnerStateChanged
+
+    private void spaceGroupSizeSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spaceGroupSizeSpinnerStateChanged
+        codeArea.setSpaceGroupSize((Integer) spaceGroupSizeSpinner.getValue());
+    }//GEN-LAST:event_spaceGroupSizeSpinnerStateChanged
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<String> activeSectionComboBox;
     private javax.swing.JLabel activeSectionLabel;
@@ -1421,6 +1472,8 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
     private javax.swing.JLabel backgroundModeLabel;
     private javax.swing.JComboBox<String> borderTypeComboBox;
     private javax.swing.JLabel borderTypeLabel;
+    private javax.swing.JLabel byteGroupSizeLabel;
+    private javax.swing.JSpinner byteGroupSizeSpinner;
     private javax.swing.JComboBox<String> charAntialiasingComboBox;
     private javax.swing.JLabel charAntialiasingScrollModeLabel;
     private javax.swing.JComboBox<String> charRenderingComboBox;
@@ -1498,6 +1551,8 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
     private javax.swing.JCheckBox showLineNumbersCheckBox;
     private javax.swing.JCheckBox showNonprintableCharactersCheckBox;
     private javax.swing.JCheckBox showShadowCursorCheckBox;
+    private javax.swing.JLabel spaceGroupSizeLabel;
+    private javax.swing.JSpinner spaceGroupSizeSpinner;
     private javax.swing.JSplitPane splitPane;
     private javax.swing.JPanel statePanel;
     private javax.swing.JPanel stateTab;

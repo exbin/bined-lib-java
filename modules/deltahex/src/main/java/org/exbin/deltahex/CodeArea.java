@@ -56,7 +56,7 @@ import org.exbin.utils.binary_data.BinaryData;
  *
  * Also supports binary, octal and decimal codes.
  *
- * @version 0.1.1 2016/08/15
+ * @version 0.1.1 2016/08/20
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeArea extends JComponent {
@@ -93,6 +93,8 @@ public class CodeArea extends JComponent {
     private final CodeAreaLineNumberLength lineNumberLength = new CodeAreaLineNumberLength();
 
     private int lineLength = 16;
+    private int byteGroupSize = 1;
+    private int spaceGroupSize = 1;
     private int subFontSpace = 3;
     private boolean showHeader = true;
     private boolean showLineNumbers = true;
@@ -680,6 +682,10 @@ public class CodeArea extends JComponent {
         return paintDataCache.bytesPerLine;
     }
 
+    public int getCharsPerLine() {
+        return paintDataCache.charsPerLine;
+    }
+
     public int getCharWidth() {
         return paintDataCache.charWidth;
     }
@@ -800,24 +806,6 @@ public class CodeArea extends JComponent {
             return;
         }
 
-        // TODO byte groups
-        switch (viewMode) {
-            case CODE_MATRIX: {
-                paintDataCache.charsPerByte = codeType.maxDigits + 1;
-                break;
-            }
-            case TEXT_PREVIEW: {
-                paintDataCache.charsPerByte = 1;
-                break;
-            }
-            case DUAL: {
-                paintDataCache.charsPerByte = codeType.maxDigits + 2;
-                break;
-            }
-            default:
-                throw new IllegalStateException("Unexpected view mode " + viewMode.name());
-        }
-
         boolean verticalScrollBarVisible;
         boolean horizontalScrollBarVisible;
 
@@ -847,7 +835,7 @@ public class CodeArea extends JComponent {
         int charsPerRect = computeCharsPerRect(compRect.width);
         int bytesPerLine;
         if (wrapMode) {
-            bytesPerLine = charsPerRect / paintDataCache.charsPerByte;
+            bytesPerLine = computeFittingBytes(charsPerRect);
             if (bytesPerLine == 0) {
                 bytesPerLine = 1;
             }
@@ -935,7 +923,7 @@ public class CodeArea extends JComponent {
         if (verticalScrollBarVisible) {
             charsPerRect = computeCharsPerRect(compRect.x + compRect.width - paintDataCache.scrollBarThickness);
             if (wrapMode) {
-                bytesPerLine = charsPerRect / paintDataCache.charsPerByte;
+                bytesPerLine = computeFittingBytes(charsPerRect);
                 if (bytesPerLine <= 0) {
                     bytesPerLine = 1;
                 }
@@ -944,6 +932,7 @@ public class CodeArea extends JComponent {
         }
 
         paintDataCache.bytesPerLine = bytesPerLine;
+        paintDataCache.charsPerLine = computeCharsPerLine(bytesPerLine);
 
         int maxWidth = compRect.x + compRect.width - hexRect.x;
         if (verticalScrollBarVisible) {
@@ -951,7 +940,7 @@ public class CodeArea extends JComponent {
         }
 
         if (horizontalScrollBarVisibility == ScrollBarVisibility.IF_NEEDED) {
-            horizontalScrollBarVisible = paintDataCache.bytesPerLine * paintDataCache.charWidth * paintDataCache.charsPerByte > maxWidth;
+            horizontalScrollBarVisible = paintDataCache.charsPerLine * paintDataCache.charWidth > maxWidth;
         } else {
             horizontalScrollBarVisible = horizontalScrollBarVisibility == ScrollBarVisibility.ALWAYS;
         }
@@ -971,15 +960,13 @@ public class CodeArea extends JComponent {
         paintDataCache.bytesPerRect = hexRect.width / paintDataCache.charWidth;
         paintDataCache.linesPerRect = hexRect.height / paintDataCache.lineHeight;
 
-        int codeDigits = getCodeType().getMaxDigits();
-        int charsPerByte = codeDigits + 1;
         // Compute sections positions
         if (viewMode == ViewMode.CODE_MATRIX) {
             paintDataCache.previewX = -1;
         } else {
             paintDataCache.previewX = hexRect.x;
             if (viewMode == ViewMode.DUAL) {
-                paintDataCache.previewX += paintDataCache.bytesPerLine * paintDataCache.charWidth * charsPerByte;
+                paintDataCache.previewX += (paintDataCache.charsPerLine - paintDataCache.bytesPerLine) * paintDataCache.charWidth;
             }
         }
 
@@ -1037,7 +1024,7 @@ public class CodeArea extends JComponent {
             horizontalScrollBar.setBounds(hexRect.x, compRect.y + compRect.height - paintDataCache.scrollBarThickness, horizontalScrollBarWidth, paintDataCache.scrollBarThickness);
 
             int horizontalVisibleAmount;
-            int horizontalMaximum = paintDataCache.bytesPerLine * paintDataCache.charsPerByte;
+            int horizontalMaximum = paintDataCache.charsPerLine;
             if (horizontalScrollMode == HorizontalScrollMode.PIXEL) {
                 horizontalVisibleAmount = hexRect.width;
                 horizontalMaximum *= paintDataCache.charWidth;
@@ -1083,6 +1070,132 @@ public class CodeArea extends JComponent {
         }
 
         return width / paintDataCache.charWidth;
+    }
+
+    public int computeFittingBytes(int charsPerRect) {
+        if (viewMode == ViewMode.TEXT_PREVIEW) {
+            return charsPerRect;
+        }
+
+        int fittingBytes = computeByteOffsetPerCodeCharOffset(charsPerRect, viewMode == CodeArea.ViewMode.DUAL);
+        if (byteGroupSize != 0 || spaceGroupSize != 0) {
+            if (computeCharsPerLine(fittingBytes + 1) <= charsPerRect) {
+                fittingBytes++;
+            }
+        }
+
+        return fittingBytes;
+    }
+
+    /**
+     * Computes byte offset index for given code line offset.
+     *
+     * @param charOffset char offset position
+     * @param includePreview flag if preview should be included
+     * @return byte offset index
+     */
+    public int computeByteOffsetPerCodeCharOffset(int charOffset, boolean includePreview) {
+//        charsPerLine = codeDigits * bytesPerLine + (bytesPerLine / byteGroupSize)                   | * byteGroupSize
+//        charsPerLine * byteGroupSize = codeDigits * bytesPerLine * byteGroupSize + bytesPerLine
+//        charsPerLine * byteGroupSize = bytesPerLine * (codeDigits * byteGroupSize + 1)              | / (codeDigits * byteGroupSize + 1)
+//        (charsPerLine * byteGroupSize) / (codeDigits * byteGroupSize + 1) = bytesPerLine
+//
+//        charsPerLine = codeDigits * bytesPerLine + (bytesPerLine / byteGroupSize) + (bytesPerLine / spaceGroupSize)   | * byteGroupSize * spaceGroupSize
+//        charsPerLine * byteGroupSize * spaceGroupSize = codeDigits * bytesPerLine * byteGroupSize * spaceGroupSize + bytesPerLine * spaceGroupSize + bytesPerLine * byteGroupSize
+//        charsPerLine * byteGroupSize * spaceGroupSize = (codeDigits * byteGroupSize * spaceGroupSize + spaceGroupSize + byteGroupSize) * bytesPerLine      | / (codeDigits * byteGroupSize * spaceGroupSize + spaceGroupSize + byteGroupSize)
+//        (charsPerLine * byteGroupSize * spaceGroupSize) / (codeDigits * byteGroupSize * spaceGroupSize + spaceGroupSize + byteGroupSize) = bytesPerLine
+        int byteOffset;
+        if (byteGroupSize == 0) {
+            if (spaceGroupSize == 0) {
+                byteOffset = (charOffset - (includePreview ? 1 : 0))
+                        / (codeType.maxDigits + (includePreview ? 1 : 0));
+            } else {
+                byteOffset = (int) (((long) (charOffset - (includePreview ? 1 : 0)) * spaceGroupSize)
+                        / ((long) (codeType.maxDigits + (includePreview ? 1 : 0)) * spaceGroupSize + 2));
+            }
+        } else if (spaceGroupSize == 0) {
+            byteOffset = (int) (((long) (charOffset - (includePreview ? 1 : 0)) * byteGroupSize)
+                    / ((long) (codeType.maxDigits + (includePreview ? 1 : 0)) * byteGroupSize + 1));
+        } else {
+            byteOffset = 0;
+            int charsPerLine = includePreview ? 1 : 0;
+            while (charsPerLine < charOffset) {
+                charsPerLine += codeType.maxDigits + (includePreview ? 1 : 0);
+                byteOffset++;
+                if ((byteOffset % byteGroupSize) == 0) {
+                    if ((byteOffset % spaceGroupSize) == 0) {
+                        charsPerLine += 2;
+                    } else {
+                        charsPerLine++;
+                    }
+                } else if ((byteOffset % spaceGroupSize) == 0) {
+                    charsPerLine += 2;
+                }
+                if (charsPerLine > charOffset) {
+                    return byteOffset - 1;
+                }
+            }
+        }
+
+        return byteOffset;
+    }
+
+    /**
+     * Computes number of characters for given number of bytes / offset.
+     *
+     * @param bytesPerLine number of bytes per line
+     * @return characters count
+     */
+    public int computeCharsPerLine(int bytesPerLine) {
+        if (viewMode == ViewMode.TEXT_PREVIEW) {
+            return bytesPerLine;
+        }
+
+        int charsPerLine = computeByteCharPos(bytesPerLine, false);
+
+        if (viewMode == ViewMode.DUAL) {
+            charsPerLine += bytesPerLine + 1;
+        }
+
+        return charsPerLine;
+    }
+
+    /**
+     * Computes character position for byte code of given offset position
+     *
+     * @param byteOffset byte start offset
+     * @return characters position
+     */
+    public int computeByteCharPos(int byteOffset) {
+        return computeByteCharPos(byteOffset, true);
+    }
+
+    public int computeByteCharPos(int byteOffset, boolean includeTail) {
+        int charsPerLine = codeType.maxDigits * byteOffset;
+        if (!includeTail) {
+            byteOffset--;
+        }
+        if (byteGroupSize == 0) {
+            if (spaceGroupSize != 0) {
+                charsPerLine += (byteOffset / spaceGroupSize) * 2;
+            }
+        } else if (spaceGroupSize == 0) {
+            charsPerLine += (byteOffset / byteGroupSize);
+        } else {
+            for (int index = 1; index <= byteOffset; index++) {
+                if ((index % byteGroupSize) == 0) {
+                    if ((index % spaceGroupSize) == 0) {
+                        charsPerLine += 2;
+                    } else {
+                        charsPerLine++;
+                    }
+                } else if ((index % spaceGroupSize) == 0) {
+                    charsPerLine += 2;
+                }
+            }
+        }
+
+        return charsPerLine;
     }
 
     public ColorsGroup getMainColors() {
@@ -1333,11 +1446,40 @@ public class CodeArea extends JComponent {
     }
 
     public void setLineLength(int lineLength) {
+        if (lineLength < 1) {
+            throw new IllegalStateException("Line length must be at least 1");
+        }
         this.lineLength = lineLength;
         if (!wrapMode) {
             computePaintData();
             repaint();
         }
+    }
+
+    public int getByteGroupSize() {
+        return byteGroupSize;
+    }
+
+    public void setByteGroupSize(int byteGroupSize) {
+        if (byteGroupSize < 0) {
+            throw new IllegalStateException("Negative group size is not valid");
+        }
+        this.byteGroupSize = byteGroupSize;
+        computePaintData();
+        repaint();
+    }
+
+    public int getSpaceGroupSize() {
+        return spaceGroupSize;
+    }
+
+    public void setSpaceGroupSize(int spaceGroupSize) {
+        if (spaceGroupSize < 0) {
+            throw new IllegalStateException("Negative group size is not valid");
+        }
+        this.spaceGroupSize = spaceGroupSize;
+        computePaintData();
+        repaint();
     }
 
     public CharRenderingMode getCharRenderingMode() {
@@ -1786,7 +1928,7 @@ public class CodeArea extends JComponent {
         boolean monospaceFont = false;
 
         int bytesPerLine;
-        int charsPerByte;
+        int charsPerLine;
         int lineNumbersLength;
 
         /**
@@ -1827,6 +1969,10 @@ public class CodeArea extends JComponent {
         int scrollLineOffset = 0;
         int scrollCharPosition = 0;
         int scrollCharOffset = 0;
+        /**
+         * How is start of the line scrolled compare it's normal position.
+         */
+        int scrollByteOffset = 0;
 
         public long getScrollLinePosition() {
             return scrollLinePosition;
@@ -1842,6 +1988,10 @@ public class CodeArea extends JComponent {
 
         public int getScrollCharOffset() {
             return scrollCharOffset;
+        }
+
+        public int getScrollByteOffset() {
+            return scrollByteOffset;
         }
     }
 
@@ -2031,8 +2181,9 @@ public class CodeArea extends JComponent {
 
             if (e.isShiftDown() && horizontalScrollBar.isVisible()) {
                 if (e.getWheelRotation() > 0) {
-                    int visibleBytes = paintDataCache.codeSectionRectangle.width / (paintDataCache.charWidth * paintDataCache.charsPerByte);
-                    int bytes = paintDataCache.bytesPerLine - visibleBytes;
+                    // TODO
+                    int visibleChars = paintDataCache.codeSectionRectangle.width / paintDataCache.charWidth;
+                    int bytes = paintDataCache.bytesPerLine - visibleChars;
                     if (scrollPosition.scrollCharPosition < bytes) {
                         if (scrollPosition.scrollCharPosition < bytes - MOUSE_SCROLL_LINES) {
                             scrollPosition.scrollCharPosition += MOUSE_SCROLL_LINES;
