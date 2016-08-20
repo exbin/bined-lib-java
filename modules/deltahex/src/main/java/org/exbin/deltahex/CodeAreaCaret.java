@@ -189,19 +189,17 @@ public class CodeAreaCaret {
     }
 
     private Point getCursorPoint(int bytesPerLine, int lineHeight, int charWidth) {
-        long dataPosition = caretPosition.getDataPosition();
-        long line = dataPosition / bytesPerLine;
-        int offset = (int) (dataPosition % bytesPerLine);
-        int codeDigits = codeArea.getCodeType().getMaxDigits();
-        int charsPerByte = codeDigits + 1;
+        long shiftedPosition = caretPosition.getDataPosition() + codeArea.getScrollPosition().lineByteShift;
+        long line = shiftedPosition / bytesPerLine;
+        int byteOffset = (int) (shiftedPosition % bytesPerLine);
 
         Rectangle rect = codeArea.getCodeSectionRectangle();
         int caretY = (int) (rect.y + line * lineHeight);
         int caretX;
         if (section == Section.TEXT_PREVIEW) {
-            caretX = codeArea.getPreviewX() + charWidth * offset;
+            caretX = codeArea.getPreviewX() + charWidth * byteOffset;
         } else {
-            caretX = rect.x + charWidth * (offset * charsPerByte + getCodeOffset());
+            caretX = rect.x + charWidth * (codeArea.computeByteCharPos(byteOffset) + getCodeOffset());
         }
 
         return new Point(caretX, caretY);

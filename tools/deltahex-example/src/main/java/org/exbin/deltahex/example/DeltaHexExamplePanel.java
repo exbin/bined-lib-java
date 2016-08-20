@@ -135,6 +135,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
                 CodeArea.ScrollPosition scrollPosition = codeArea.getScrollPosition();
                 verticalPositionTextField.setText(scrollPosition.getScrollLinePosition() + ":" + scrollPosition.getScrollLineOffset());
                 horizontalPositionTextField.setText(scrollPosition.getScrollCharPosition() + ":" + scrollPosition.getScrollCharOffset());
+                horizontalByteShiftTextField.setText(String.valueOf(scrollPosition.getLineByteShift()));
             }
         });
 
@@ -241,6 +242,8 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
         horizontalScrollModeComboBox = new javax.swing.JComboBox<>();
         horizontalPositionLabel = new javax.swing.JLabel();
         horizontalPositionTextField = new javax.swing.JTextField();
+        horizontalByteShiftLabel = new javax.swing.JLabel();
+        horizontalByteShiftTextField = new javax.swing.JTextField();
         cursorPanel = new javax.swing.JPanel();
         showShadowCursorCheckBox = new javax.swing.JCheckBox();
         cursorRenderingModeLabel = new javax.swing.JLabel();
@@ -1040,6 +1043,11 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        horizontalByteShiftLabel.setText("Horizontal Byte Shift");
+
+        horizontalByteShiftTextField.setEditable(false);
+        horizontalByteShiftTextField.setText("0");
+
         javax.swing.GroupLayout scrollingPanelLayout = new javax.swing.GroupLayout(scrollingPanel);
         scrollingPanel.setLayout(scrollingPanelLayout);
         scrollingPanelLayout.setHorizontalGroup(
@@ -1048,7 +1056,11 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(scrollingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(verticalPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(horizontalPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(horizontalPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(horizontalByteShiftTextField)
+                    .addGroup(scrollingPanelLayout.createSequentialGroup()
+                        .addComponent(horizontalByteShiftLabel)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         scrollingPanelLayout.setVerticalGroup(
@@ -1058,7 +1070,11 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
                 .addComponent(verticalPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(horizontalPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(138, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(horizontalByteShiftLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(horizontalByteShiftTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(88, Short.MAX_VALUE))
         );
 
         showShadowCursorCheckBox.setText("Show Shadow Cursor");
@@ -1512,6 +1528,8 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
     private javax.swing.JSpinner headerSpaceSpinner;
     private javax.swing.JComboBox<String> hexCharactersModeComboBox;
     private javax.swing.JLabel hexCharactersModeLabel;
+    private javax.swing.JLabel horizontalByteShiftLabel;
+    private javax.swing.JTextField horizontalByteShiftTextField;
     private javax.swing.JPanel horizontalPanel;
     private javax.swing.JLabel horizontalPositionLabel;
     private javax.swing.JTextField horizontalPositionTextField;

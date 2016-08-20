@@ -279,7 +279,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         long line = scrollPosition.scrollLinePosition;
         long maxDataPosition = codeArea.getData().getDataSize();
         int maxY = clipBounds.y + clipBounds.height + lineHeight;
-        long dataPosition = line * bytesPerLine;
+        long dataPosition = line * bytesPerLine - scrollPosition.lineByteShift;
         int charWidth = codeArea.getCharWidth();
         int positionY = hexRect.y - codeArea.getSubFontSpace() - scrollPosition.scrollLineOffset + codeArea.getLineHeight();
 
@@ -288,7 +288,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         char[] lineNumberCode = new char[lineNumberLength];
         boolean upperCase = codeArea.getHexCharactersCase() == CodeArea.HexCharactersCase.UPPER;
         while (positionY <= maxY && dataPosition <= maxDataPosition) {
-            CodeAreaUtils.longToBaseCode(lineNumberCode, 0, dataPosition, codeArea.getPositionCodeType().base, lineNumberLength, true, upperCase);
+            CodeAreaUtils.longToBaseCode(lineNumberCode, 0, dataPosition < 0 ? 0 : dataPosition, codeArea.getPositionCodeType().base, lineNumberLength, true, upperCase);
             if (codeArea.getCharRenderingMode() == CodeArea.CharRenderingMode.LINE_AT_ONCE) {
                 g.drawChars(lineNumberCode, 0, lineNumberLength, compRect.x, positionY);
             } else {
@@ -331,7 +331,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         int positionY = paintData.codeSectionRect.y - paintData.scrollPosition.scrollLineOffset;
         paintData.line = paintData.scrollPosition.scrollLinePosition;
         int positionX = paintData.codeSectionRect.x - paintData.scrollPosition.scrollCharPosition * paintData.charWidth - paintData.scrollPosition.scrollCharOffset;
-        paintData.lineDataPosition = paintData.line * paintData.bytesPerLine;
+        paintData.lineDataPosition = paintData.line * paintData.bytesPerLine - paintData.scrollPosition.lineByteShift;
         long dataSize = codeArea.getData().getDataSize();
 
         do {
@@ -344,7 +344,12 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                 if (paintData.lineDataPosition + lineDataSize > dataSize) {
                     lineDataSize = (int) (dataSize - paintData.lineDataPosition);
                 }
-                codeArea.getData().copyToArray(paintData.lineDataPosition, paintData.lineData, 0, lineDataSize);
+                if (paintData.lineDataPosition < 0) {
+                    paintData.lineStart = (int) -paintData.lineDataPosition;
+                } else {
+                    paintData.lineStart = 0;
+                }
+                codeArea.getData().copyToArray(paintData.lineDataPosition + paintData.lineStart, paintData.lineData, paintData.lineStart, lineDataSize - paintData.lineStart);
                 if (paintData.lineDataPosition + lineBytesLimit > dataSize) {
                     lineBytesLimit = (int) (dataSize - paintData.lineDataPosition);
                 }
@@ -354,7 +359,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
             // Fill codes
             if (paintData.viewMode != CodeArea.ViewMode.TEXT_PREVIEW) {
-                for (int byteOnLine = paintData.visibleCodeStart; byteOnLine < Math.min(paintData.visibleCodeEnd, lineBytesLimit); byteOnLine++) {
+                for (int byteOnLine = Math.max(paintData.visibleCodeStart, paintData.lineStart); byteOnLine < Math.min(paintData.visibleCodeEnd, lineBytesLimit); byteOnLine++) {
                     byte dataByte = paintData.lineData[byteOnLine];
                     byteToCharsCode(dataByte, codeArea.computeByteCharPos(byteOnLine), paintData);
                 }
@@ -780,6 +785,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         protected CodeArea.ColorsGroup alternateColors;
 
         // Line related fields
+        protected int lineStart;
         protected long lineDataPosition;
         protected long line;
 

@@ -94,7 +94,7 @@ public class CodeArea extends JComponent {
 
     private int lineLength = 16;
     private int byteGroupSize = 1;
-    private int spaceGroupSize = 1;
+    private int spaceGroupSize = 0;
     private int subFontSpace = 3;
     private boolean showHeader = true;
     private boolean showLineNumbers = true;
@@ -326,9 +326,6 @@ public class CodeArea extends JComponent {
 
     private void moveCaret(MouseEvent me, int modifiers) {
         Rectangle hexRect = paintDataCache.codeSectionRectangle;
-        int codeDigits = getCodeType().getMaxDigits();
-        int charsPerByte = codeDigits + 1;
-
         Point scrollPoint = getScrollPoint();
         int bytesPerLine = paintDataCache.bytesPerLine;
         int cursorCharX = (me.getX() - hexRect.x + scrollPoint.x) / paintDataCache.charWidth;
@@ -343,23 +340,22 @@ public class CodeArea extends JComponent {
         long dataPosition;
         int codeOffset = 0;
         int byteOnLine;
-        if ((viewMode == ViewMode.DUAL && cursorCharX < bytesPerLine * charsPerByte) || viewMode == ViewMode.CODE_MATRIX) {
+        if ((viewMode == ViewMode.DUAL && cursorCharX < paintDataCache.previewStartChar) || viewMode == ViewMode.CODE_MATRIX) {
             caret.setSection(Section.CODE_MATRIX);
-            int bytePosition = cursorCharX % (codeType.maxDigits + 1);
-            codeOffset = bytePosition;
-            if (codeOffset >= codeType.maxDigits) {
-                codeOffset = codeType.maxDigits - 1;
-            }
-
-            byteOnLine = cursorCharX / (codeType.maxDigits + 1);
+            byteOnLine = computeByteOffsetPerCodeCharOffset(cursorCharX, false);
             if (byteOnLine >= bytesPerLine) {
                 codeOffset = 0;
+            } else {
+                codeOffset = cursorCharX - computeByteCharPos(byteOnLine);
+                if (codeOffset >= codeType.maxDigits) {
+                    codeOffset = codeType.maxDigits - 1;
+                }
             }
         } else {
             caret.setSection(Section.TEXT_PREVIEW);
             byteOnLine = cursorCharX;
             if (viewMode == ViewMode.DUAL) {
-                byteOnLine -= bytesPerLine * charsPerByte;
+                byteOnLine -= paintDataCache.previewStartChar;
             }
         }
 
@@ -367,7 +363,12 @@ public class CodeArea extends JComponent {
             byteOnLine = bytesPerLine - 1;
         }
 
-        dataPosition = byteOnLine + (cursorLineY * bytesPerLine);
+        dataPosition = byteOnLine + (cursorLineY * bytesPerLine) - scrollPosition.lineByteShift;
+        if (dataPosition < 0) {
+            dataPosition = 0;
+            codeOffset = 0;
+        }
+
         long dataSize = data.getDataSize();
         if (dataPosition >= dataSize) {
             dataPosition = dataSize;
@@ -425,16 +426,14 @@ public class CodeArea extends JComponent {
         boolean scrolled = false;
         Rectangle hexRect = paintDataCache.codeSectionRectangle;
         long caretLine = position / paintDataCache.bytesPerLine;
-        int codeDigits = getCodeType().getMaxDigits();
-        int charsPerByte = codeDigits + 1;
 
         int positionByte;
         if (section == Section.CODE_MATRIX) {
-            positionByte = (int) (position % paintDataCache.bytesPerLine) * charsPerByte + caret.getCodeOffset();
+            positionByte = computeByteCharPos((int) (position % paintDataCache.bytesPerLine)) + caret.getCodeOffset();
         } else {
             positionByte = (int) (position % paintDataCache.bytesPerLine);
             if (viewMode == ViewMode.DUAL) {
-                positionByte += paintDataCache.bytesPerLine * charsPerByte;
+                positionByte += paintDataCache.previewStartChar;
             }
         }
 
@@ -961,11 +960,13 @@ public class CodeArea extends JComponent {
         paintDataCache.linesPerRect = hexRect.height / paintDataCache.lineHeight;
 
         // Compute sections positions
+        paintDataCache.previewStartChar = 0;
         if (viewMode == ViewMode.CODE_MATRIX) {
             paintDataCache.previewX = -1;
         } else {
             paintDataCache.previewX = hexRect.x;
             if (viewMode == ViewMode.DUAL) {
+                paintDataCache.previewStartChar = paintDataCache.charsPerLine - paintDataCache.bytesPerLine;
                 paintDataCache.previewX += (paintDataCache.charsPerLine - paintDataCache.bytesPerLine) * paintDataCache.charWidth;
             }
         }
@@ -1095,15 +1096,6 @@ public class CodeArea extends JComponent {
      * @return byte offset index
      */
     public int computeByteOffsetPerCodeCharOffset(int charOffset, boolean includePreview) {
-//        charsPerLine = codeDigits * bytesPerLine + (bytesPerLine / byteGroupSize)                   | * byteGroupSize
-//        charsPerLine * byteGroupSize = codeDigits * bytesPerLine * byteGroupSize + bytesPerLine
-//        charsPerLine * byteGroupSize = bytesPerLine * (codeDigits * byteGroupSize + 1)              | / (codeDigits * byteGroupSize + 1)
-//        (charsPerLine * byteGroupSize) / (codeDigits * byteGroupSize + 1) = bytesPerLine
-//
-//        charsPerLine = codeDigits * bytesPerLine + (bytesPerLine / byteGroupSize) + (bytesPerLine / spaceGroupSize)   | * byteGroupSize * spaceGroupSize
-//        charsPerLine * byteGroupSize * spaceGroupSize = codeDigits * bytesPerLine * byteGroupSize * spaceGroupSize + bytesPerLine * spaceGroupSize + bytesPerLine * byteGroupSize
-//        charsPerLine * byteGroupSize * spaceGroupSize = (codeDigits * byteGroupSize * spaceGroupSize + spaceGroupSize + byteGroupSize) * bytesPerLine      | / (codeDigits * byteGroupSize * spaceGroupSize + spaceGroupSize + byteGroupSize)
-//        (charsPerLine * byteGroupSize * spaceGroupSize) / (codeDigits * byteGroupSize * spaceGroupSize + spaceGroupSize + byteGroupSize) = bytesPerLine
         int byteOffset;
         if (byteGroupSize == 0) {
             if (spaceGroupSize == 0) {
@@ -1955,6 +1947,7 @@ public class CodeArea extends JComponent {
          */
         final Rectangle codeSectionRectangle = new Rectangle();
         int previewX;
+        int previewStartChar;
         int bytesPerRect;
         int linesPerRect;
         int scrollBarThickness = 17;
@@ -1972,7 +1965,7 @@ public class CodeArea extends JComponent {
         /**
          * How is start of the line scrolled compare it's normal position.
          */
-        int scrollByteOffset = 0;
+        int lineByteShift = 0;
 
         public long getScrollLinePosition() {
             return scrollLinePosition;
@@ -1990,8 +1983,8 @@ public class CodeArea extends JComponent {
             return scrollCharOffset;
         }
 
-        public int getScrollByteOffset() {
-            return scrollByteOffset;
+        public int getLineByteShift() {
+            return lineByteShift;
         }
     }
 
@@ -2249,31 +2242,69 @@ public class CodeArea extends JComponent {
 
             switch (e.getKeyCode()) {
                 case KeyEvent.VK_LEFT: {
-                    moveLeft(e.getModifiersEx());
-                    commandHandler.caretMoved();
-                    revealCursor();
+                    if ((e.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) > 0) {
+                        // Scroll page instead of cursor
+                        if (scrollPosition.lineByteShift < paintDataCache.bytesPerLine - 1) {
+                            scrollPosition.lineByteShift++;
+                        } else if (scrollPosition.scrollLinePosition > 0) {
+                            scrollPosition.scrollLinePosition -= 1;
+                            scrollPosition.lineByteShift = 0;
+                        }
+
+                        updateScrollBars();
+                        notifyScrolled();
+                    } else {
+                        moveLeft(e.getModifiersEx());
+                        commandHandler.caretMoved();
+                        revealCursor();
+                    }
                     e.consume();
                     break;
                 }
                 case KeyEvent.VK_RIGHT: {
-                    moveRight(e.getModifiersEx());
-                    commandHandler.caretMoved();
-                    revealCursor();
+                    if ((e.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) > 0) {
+                        // Scroll page instead of cursor
+                        if (scrollPosition.lineByteShift > 0) {
+                            scrollPosition.lineByteShift--;
+                        } else {
+                            long dataSize = data.getDataSize();
+                            if (scrollPosition.scrollLinePosition < dataSize / paintDataCache.bytesPerLine) {
+                                scrollPosition.scrollLinePosition += 1;
+                                scrollPosition.lineByteShift = paintDataCache.bytesPerLine - 1;
+                            }
+                        }
+
+                        updateScrollBars();
+                        notifyScrolled();
+                    } else {
+                        moveRight(e.getModifiersEx());
+                        commandHandler.caretMoved();
+                        revealCursor();
+                    }
                     e.consume();
                     break;
                 }
                 case KeyEvent.VK_UP: {
                     CaretPosition caretPosition = caret.getCaretPosition();
                     int bytesPerLine = paintDataCache.bytesPerLine;
-                    if (caretPosition.getDataPosition() > 0) {
-                        if (caretPosition.getDataPosition() >= bytesPerLine) {
-                            caret.setCaretPosition(caretPosition.getDataPosition() - bytesPerLine, caret.getCodeOffset());
-                            notifyCaretMoved();
+                    if ((e.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) > 0) {
+                        // Scroll page instead of cursor
+                        if (scrollPosition.scrollLinePosition > 0) {
+                            scrollPosition.scrollLinePosition -= 1;
+                            updateScrollBars();
+                            notifyScrolled();
                         }
-                        updateSelection(e.getModifiersEx(), caretPosition);
+                    } else {
+                        if (caretPosition.getDataPosition() > 0) {
+                            if (caretPosition.getDataPosition() >= bytesPerLine) {
+                                caret.setCaretPosition(caretPosition.getDataPosition() - bytesPerLine, caret.getCodeOffset());
+                                notifyCaretMoved();
+                            }
+                            updateSelection(e.getModifiersEx(), caretPosition);
+                        }
+                        commandHandler.caretMoved();
+                        revealCursor();
                     }
-                    commandHandler.caretMoved();
-                    revealCursor();
                     e.consume();
                     break;
                 }
@@ -2281,28 +2312,37 @@ public class CodeArea extends JComponent {
                     CaretPosition caretPosition = caret.getCaretPosition();
                     int bytesPerLine = paintDataCache.bytesPerLine;
                     long dataSize = data.getDataSize();
-                    if (caretPosition.getDataPosition() < dataSize) {
-                        if (caretPosition.getDataPosition() + bytesPerLine < dataSize
-                                || (caretPosition.getDataPosition() + bytesPerLine == dataSize && caretPosition.getCodeOffset() == 0)) {
-                            caret.setCaretPosition(caretPosition.getDataPosition() + bytesPerLine, caret.getCodeOffset());
-                            notifyCaretMoved();
+                    if ((e.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) > 0) {
+                        // Scroll page instead of cursor
+                        if (scrollPosition.scrollLinePosition < dataSize / paintDataCache.bytesPerLine) {
+                            scrollPosition.scrollLinePosition += 1;
+                            updateScrollBars();
+                            notifyScrolled();
                         }
-                        updateSelection(e.getModifiersEx(), caretPosition);
+                    } else {
+                        if (caretPosition.getDataPosition() < dataSize) {
+                            if (caretPosition.getDataPosition() + bytesPerLine < dataSize
+                                    || (caretPosition.getDataPosition() + bytesPerLine == dataSize && caretPosition.getCodeOffset() == 0)) {
+                                caret.setCaretPosition(caretPosition.getDataPosition() + bytesPerLine, caret.getCodeOffset());
+                                notifyCaretMoved();
+                            }
+                            updateSelection(e.getModifiersEx(), caretPosition);
+                        }
+                        commandHandler.caretMoved();
+                        revealCursor();
                     }
-                    commandHandler.caretMoved();
-                    revealCursor();
                     e.consume();
                     break;
                 }
                 case KeyEvent.VK_HOME: {
                     CaretPosition caretPosition = caret.getCaretPosition();
                     int bytesPerLine = paintDataCache.bytesPerLine;
-                    if (caretPosition.getDataPosition() > 0 || caret.getCodeOffset() > 0) {
+                    if (caretPosition.getDataPosition() > 0 || caret.getCodeOffset() - scrollPosition.lineByteShift != 0) {
                         long targetPosition;
                         if ((e.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) > 0) {
                             targetPosition = 0;
                         } else {
-                            targetPosition = (caretPosition.getDataPosition() / bytesPerLine) * bytesPerLine;
+                            targetPosition = (caretPosition.getDataPosition() / bytesPerLine) * bytesPerLine - scrollPosition.lineByteShift;
                         }
                         caret.setCaretPosition(targetPosition);
                         commandHandler.caretMoved();
