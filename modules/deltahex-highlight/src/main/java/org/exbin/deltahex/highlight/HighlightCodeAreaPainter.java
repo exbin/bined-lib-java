@@ -58,12 +58,12 @@ public class HighlightCodeAreaPainter extends DefaultCodeAreaPainter {
 
     @Override
     public Color getPositionColor(int byteOnLine, int charOnLine, CodeArea.Section section, CodeArea.ColorType colorType, PaintData paintData) {
-        if (!matches.isEmpty() && section == CodeArea.Section.TEXT_PREVIEW || charOnLine < paintData.getBytesPerLine() * paintData.getCharsPerByte() - 1) {
+        if (!matches.isEmpty() && section == CodeArea.Section.TEXT_PREVIEW || charOnLine < paintData.getCharsPerLine() - 1) {
             long dataPosition = paintData.getLineDataPosition() + byteOnLine;
             if (currentMatchIndex >= 0) {
                 SearchMatch currentMatch = matches.get(currentMatchIndex);
                 if (dataPosition >= currentMatch.position && dataPosition < currentMatch.position + currentMatch.length
-                        && (section == CodeArea.Section.TEXT_PREVIEW || charOnLine != ((currentMatch.position + currentMatch.length) - paintData.getLineDataPosition()) * paintData.getCharsPerByte() - 1)) {
+                        && (section == CodeArea.Section.TEXT_PREVIEW || charOnLine != ((currentMatch.position + currentMatch.length) - paintData.getLineDataPosition()) * paintData.getCharsPerLine() - 1)) {
                     return currentMatchColors.getColor(colorType);
                 }
             }
@@ -75,7 +75,7 @@ public class HighlightCodeAreaPainter extends DefaultCodeAreaPainter {
             while (lineMatchIndex < matches.size()) {
                 SearchMatch match = matches.get(lineMatchIndex);
                 if (dataPosition >= match.position && dataPosition < match.position + match.length
-                        && (section == CodeArea.Section.TEXT_PREVIEW || charOnLine != ((match.position + match.length) - paintData.getLineDataPosition()) * paintData.getCharsPerByte() - 1)) {
+                        && (section == CodeArea.Section.TEXT_PREVIEW || charOnLine != ((match.position + match.length) - paintData.getLineDataPosition()) * paintData.getCharsPerLine() - 1)) {
                     if (byteOnLine == 0) {
                         matchIndex = lineMatchIndex;
                         matchPosition = match.position;
