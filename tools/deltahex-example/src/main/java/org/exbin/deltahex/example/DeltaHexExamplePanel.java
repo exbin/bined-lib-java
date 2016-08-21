@@ -1297,7 +1297,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
                 try (FileInputStream stream = new FileInputStream(selectedFile)) {
                     ((EditableBinaryData) codeArea.getData()).loadFromStream(stream);
                     codeArea.notifyDataChanged();
-                    codeArea.repaint();
+                    codeArea.resetPosition();
                 }
             } catch (IOException ex) {
                 Logger.getLogger(DeltaHexExamplePanel.class.getName()).log(Level.SEVERE, null, ex);

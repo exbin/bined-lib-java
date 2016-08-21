@@ -56,7 +56,7 @@ import org.exbin.utils.binary_data.BinaryData;
  *
  * Also supports binary, octal and decimal codes.
  *
- * @version 0.1.1 2016/08/20
+ * @version 0.1.1 2016/08/21
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeArea extends JComponent {
@@ -1364,7 +1364,7 @@ public class CodeArea extends JComponent {
             for (EditationModeChangedListener listener : editationModeChangedListeners) {
                 listener.editationModeChanged(editationMode);
             }
-            getCaret().resetBlink();
+            caret.resetBlink();
             repaint();
         }
     }
@@ -1685,6 +1685,17 @@ public class CodeArea extends JComponent {
         return commandHandler.canPaste();
     }
 
+    public void resetPosition() {
+        getScrollPosition().reset();
+        updateScrollBars();
+        notifyScrolled();
+        caret.setCaretPosition(0);
+        notifyCaretMoved();
+        commandHandler.caretMoved();
+        computePaintData();
+        clearSelection();
+    }
+
     private static Color createOddColor(Color color) {
         return new Color(
                 computeOddColorComponent(color.getRed()),
@@ -1985,6 +1996,14 @@ public class CodeArea extends JComponent {
 
         public int getLineByteShift() {
             return lineByteShift;
+        }
+
+        private void reset() {
+            scrollLinePosition = 0;
+            scrollLineOffset = 0;
+            scrollCharPosition = 0;
+            scrollCharOffset = 0;
+            lineByteShift = 0;
         }
     }
 
