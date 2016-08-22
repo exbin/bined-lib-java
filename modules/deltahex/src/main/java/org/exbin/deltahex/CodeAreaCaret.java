@@ -71,31 +71,35 @@ public class CodeAreaCaret {
             }
 
             CursorShape cursorShape = codeArea.getEditationMode() == CodeArea.EditationMode.INSERT ? insertCursorShape : overwriteCursorShape;
+            int cursorThickness = 0;
+            if (cursorShape.getWidth() != CursorShapeWidth.FULL) {
+                cursorThickness = getCursorThickness(cursorShape, charWidth, lineHeight);
+            }
             switch (cursorShape) {
                 case LINE_TOP:
-                case DOUBLE_TOP: {
+                case DOUBLE_TOP:
+                case HALP_TOP: {
                     paintCursorRect(g, cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y,
-                            charWidth, cursorShape == CursorShape.LINE_TOP ? LINE_CURSOR_WIDTH : DOUBLE_CURSOR_WIDTH);
+                            charWidth, cursorThickness);
                     break;
                 }
                 case LINE_BOTTOM:
-                case DOUBLE_BOTTOM: {
-                    int height = cursorShape == CursorShape.LINE_BOTTOM ? LINE_CURSOR_WIDTH : DOUBLE_CURSOR_WIDTH;
-                    paintCursorRect(g, cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y + lineHeight - height,
-                            charWidth, height);
+                case DOUBLE_BOTTOM:
+                case HALF_BOTTOM: {
+                    paintCursorRect(g, cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y + lineHeight - cursorThickness,
+                            charWidth, cursorThickness);
                     break;
                 }
                 case LINE_LEFT:
-                case DOUBLE_LEFT: {
-                    paintCursorRect(g, cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y,
-                            cursorShape == CursorShape.LINE_LEFT ? LINE_CURSOR_WIDTH : DOUBLE_CURSOR_WIDTH, lineHeight);
+                case DOUBLE_LEFT:
+                case HALF_LEFT: {
+                    paintCursorRect(g, cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y, cursorThickness, lineHeight);
                     break;
                 }
                 case LINE_RIGHT:
-                case DOUBLE_RIGHT: {
-                    int width = cursorShape == CursorShape.LINE_RIGHT ? LINE_CURSOR_WIDTH : DOUBLE_CURSOR_WIDTH;
-                    paintCursorRect(g, cursorPoint.x - scrollPoint.x + charWidth - width, cursorPoint.y - scrollPoint.y,
-                            width, lineHeight);
+                case DOUBLE_RIGHT:
+                case HALF_RIGHT: {
+                    paintCursorRect(g, cursorPoint.x - scrollPoint.x + charWidth - cursorThickness, cursorPoint.y - scrollPoint.y, cursorThickness, lineHeight);
                     break;
                 }
                 case BOX: {
@@ -162,6 +166,23 @@ public class CodeAreaCaret {
         }
     }
 
+    private int getCursorThickness(CursorShape cursorShape, int charWidth, int lineHeight) {
+        switch (cursorShape.getWidth()) {
+            case LINE:
+                return LINE_CURSOR_WIDTH;
+            case DOUBLE:
+                return DOUBLE_CURSOR_WIDTH;
+            case HALF: {
+                if (cursorShape == CursorShape.HALF_LEFT || cursorShape == CursorShape.HALF_RIGHT) {
+                    return charWidth / 2;
+                } else {
+                    return lineHeight / 2;
+                }
+            }
+        }
+        return -1;
+    }
+
     private void paintCursorRect(Graphics g, int x, int y, int width, int height) {
         switch (renderingMode) {
             case PAINT:
@@ -226,6 +247,10 @@ public class CodeAreaCaret {
         Point cursorPoint = getCursorPoint(bytesPerLine, lineHeight, charWidth);
         Point scrollPoint = codeArea.getScrollPoint();
         CursorShape cursorShape = codeArea.getEditationMode() == CodeArea.EditationMode.INSERT ? insertCursorShape : overwriteCursorShape;
+        int cursorThickness = 0;
+        if (cursorShape.getWidth() != CursorShapeWidth.FULL) {
+            cursorThickness = getCursorThickness(cursorShape, charWidth, lineHeight);
+        }
         switch (cursorShape) {
             case BOX:
             case FRAME:
@@ -237,26 +262,26 @@ public class CodeAreaCaret {
                 return new Rectangle(cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y, width, lineHeight);
             }
             case LINE_TOP:
-            case DOUBLE_TOP: {
+            case DOUBLE_TOP:
+            case HALP_TOP: {
                 return new Rectangle(cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y,
-                        charWidth, cursorShape == CursorShape.LINE_TOP ? LINE_CURSOR_WIDTH : DOUBLE_CURSOR_WIDTH);
+                        charWidth, cursorThickness);
             }
             case LINE_BOTTOM:
-            case DOUBLE_BOTTOM: {
-                int height = cursorShape == CursorShape.LINE_BOTTOM ? LINE_CURSOR_WIDTH : DOUBLE_CURSOR_WIDTH;
-                return new Rectangle(cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y + lineHeight - height,
-                        charWidth, height);
+            case DOUBLE_BOTTOM:
+            case HALF_BOTTOM: {
+                return new Rectangle(cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y + lineHeight - cursorThickness,
+                        charWidth, cursorThickness);
             }
             case LINE_LEFT:
-            case DOUBLE_LEFT: {
-                return new Rectangle(cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y,
-                        cursorShape == CursorShape.LINE_LEFT ? LINE_CURSOR_WIDTH : DOUBLE_CURSOR_WIDTH, lineHeight);
+            case DOUBLE_LEFT:
+            case HALF_LEFT: {
+                return new Rectangle(cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y, cursorThickness, lineHeight);
             }
             case LINE_RIGHT:
-            case DOUBLE_RIGHT: {
-                int width = cursorShape == CursorShape.LINE_RIGHT ? LINE_CURSOR_WIDTH : DOUBLE_CURSOR_WIDTH;
-                return new Rectangle(cursorPoint.x - scrollPoint.x + charWidth - width, cursorPoint.y - scrollPoint.y,
-                        width, lineHeight);
+            case DOUBLE_RIGHT:
+            case HALF_RIGHT: {
+                return new Rectangle(cursorPoint.x - scrollPoint.x + charWidth - cursorThickness, cursorPoint.y - scrollPoint.y, cursorThickness, lineHeight);
             }
             default: {
                 throw new IllegalStateException("Unexpected cursor shape type " + cursorShape.name());
@@ -399,15 +424,50 @@ public class CodeAreaCaret {
     }
 
     public static enum CursorShape {
-        LINE_BOTTOM, LINE_TOP, LINE_LEFT, LINE_RIGHT,
-        DOUBLE_BOTTOM, DOUBLE_TOP, DOUBLE_LEFT, DOUBLE_RIGHT,
-        HALF_BOTTOM, HALP_TOP, HALF_LEFT, HALF_RIGHT,
-        BOX,
+        /*
+         * Single line cursor shapes.
+         */
+        LINE_BOTTOM(CursorShapeWidth.LINE),
+        LINE_TOP(CursorShapeWidth.LINE),
+        LINE_LEFT(CursorShapeWidth.LINE),
+        LINE_RIGHT(CursorShapeWidth.LINE),
+        /*
+         * Double line cursor shapes.
+         */
+        DOUBLE_BOTTOM(CursorShapeWidth.DOUBLE),
+        DOUBLE_TOP(CursorShapeWidth.DOUBLE),
+        DOUBLE_LEFT(CursorShapeWidth.DOUBLE),
+        DOUBLE_RIGHT(CursorShapeWidth.DOUBLE),
+        /*
+         * Half cursor shapes.
+         */
+        HALF_BOTTOM(CursorShapeWidth.HALF),
+        HALP_TOP(CursorShapeWidth.HALF),
+        HALF_LEFT(CursorShapeWidth.HALF),
+        HALF_RIGHT(CursorShapeWidth.HALF),
+        /*
+         * Full cursor shapes.
+         */
+        BOX(CursorShapeWidth.FULL),
         /**
          * Frame and corners mode is not recommended for negative rendering
          * modes.
          */
-        FRAME, CORNERS
+        FRAME(CursorShapeWidth.FULL), CORNERS(CursorShapeWidth.FULL);
+
+        private final CursorShapeWidth width;
+
+        private CursorShape(CursorShapeWidth width) {
+            this.width = width;
+        }
+
+        public CursorShapeWidth getWidth() {
+            return width;
+        }
+    }
+
+    public static enum CursorShapeWidth {
+        LINE, DOUBLE, HALF, FULL
     }
 
     public static enum CursorRenderingMode {
