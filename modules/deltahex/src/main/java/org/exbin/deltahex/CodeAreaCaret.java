@@ -208,17 +208,15 @@ public class CodeAreaCaret {
     private Point getShadowCursorPoint(int bytesPerLine, int lineHeight, int charWidth) {
         long dataPosition = caretPosition.getDataPosition();
         long line = dataPosition / bytesPerLine;
-        int offset = (int) (dataPosition % bytesPerLine);
-        int codeDigits = codeArea.getCodeType().getMaxDigits();
-        int charsPerByte = codeDigits + 1;
+        int byteOffset = (int) (dataPosition % bytesPerLine);
 
         Rectangle rect = codeArea.getCodeSectionRectangle();
         int caretY = (int) (rect.y + line * lineHeight);
         int caretX;
         if (section == Section.TEXT_PREVIEW) {
-            caretX = rect.x + charWidth * (offset * charsPerByte);
+            caretX = rect.x + charWidth * (codeArea.computeByteCharPos(byteOffset) + getCodeOffset());
         } else {
-            caretX = codeArea.getPreviewX() + charWidth * offset;
+            caretX = codeArea.getPreviewX() + charWidth * byteOffset;
         }
 
         return new Point(caretX, caretY);
@@ -403,6 +401,7 @@ public class CodeAreaCaret {
     public static enum CursorShape {
         LINE_BOTTOM, LINE_TOP, LINE_LEFT, LINE_RIGHT,
         DOUBLE_BOTTOM, DOUBLE_TOP, DOUBLE_LEFT, DOUBLE_RIGHT,
+        HALF_BOTTOM, HALP_TOP, HALF_LEFT, HALF_RIGHT,
         BOX,
         /**
          * Frame and corners mode is not recommended for negative rendering
