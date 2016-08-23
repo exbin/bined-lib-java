@@ -870,8 +870,11 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                 break;
             }
             case XOR: {
-                // TODO CLIP
-                g.fillRect(x, y, width, height);
+                Rectangle rect = new Rectangle(x, y, width, height);
+                Rectangle intersection = rect.intersection(g.getClipBounds());
+                if (!intersection.isEmpty()) {
+                    g.fillRect(intersection.x, intersection.y, intersection.width, intersection.height);
+                }
                 break;
             }
             case NEGATIVE: {

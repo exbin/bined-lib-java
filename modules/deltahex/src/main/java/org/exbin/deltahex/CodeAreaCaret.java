@@ -360,7 +360,8 @@ public class CodeAreaCaret {
          */
         XOR,
         /**
-         * Underlying character is painted using cursor negative color.
+         * Underlying character is painted using negative color to cursor
+         * cursor.
          */
         NEGATIVE
     }
