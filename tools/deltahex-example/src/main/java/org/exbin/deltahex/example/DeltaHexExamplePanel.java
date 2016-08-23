@@ -1096,7 +1096,8 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
 
         cursorInsertShapeModeLabel.setText("Insert Cursor Shape");
 
-        cursorInsertShapeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "LINE_BOTTOM", "LINE_TOP", "LINE_LEFT", "LINE_RIGHT", "DOUBLE_BOTTOM", "DOUBLE_TOP", "DOUBLE_LEFT", "DOUBLE_RIGHT", "HALF_BOTTOM", "HALF_TOP", "HALF_LEFT", "HALF_RIGHT", "BOX", "FRAME", "CORNERS" }));
+        cursorInsertShapeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "LINE_BOTTOM", "LINE_TOP", "LINE_LEFT", "LINE_RIGHT", "DOUBLE_BOTTOM", "DOUBLE_TOP", "DOUBLE_LEFT", "DOUBLE_RIGHT", "QUARTER_BOTTOM", "QUARTER_TOP", "QUARTER_LEFT", "QUARTER_RIGHT", "HALF_BOTTOM", "HALF_TOP", "HALF_LEFT", "HALF_RIGHT", "BOX", "FRAME", "CORNERS", "BOTTOM_CORNERS" }));
+        cursorInsertShapeComboBox.setSelectedIndex(6);
         cursorInsertShapeComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cursorInsertShapeComboBoxActionPerformed(evt);
@@ -1105,7 +1106,8 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
 
         cursorOverwriteShapeModeLabel.setText("Overwrite Cursor Shape");
 
-        cursorOverwriteShapeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "LINE_BOTTOM", "LINE_TOP", "LINE_LEFT", "LINE_RIGHT", "DOUBLE_BOTTOM", "DOUBLE_TOP", "DOUBLE_LEFT", "DOUBLE_RIGHT", "HALF_BOTTOM", "HALF_TOP", "HALF_LEFT", "HALF_RIGHT", "BOX", "FRAME", "CORNERS" }));
+        cursorOverwriteShapeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "LINE_BOTTOM", "LINE_TOP", "LINE_LEFT", "LINE_RIGHT", "DOUBLE_BOTTOM", "DOUBLE_TOP", "DOUBLE_LEFT", "DOUBLE_RIGHT", "QUARTER_BOTTOM", "QUARTER_TOP", "QUARTER_LEFT", "QUARTER_RIGHT", "HALF_BOTTOM", "HALF_TOP", "HALF_LEFT", "HALF_RIGHT", "BOX", "FRAME", "CORNERS", "BOTTOM_CORNERS" }));
+        cursorOverwriteShapeComboBox.setSelectedIndex(16);
         cursorOverwriteShapeComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cursorOverwriteShapeComboBoxActionPerformed(evt);

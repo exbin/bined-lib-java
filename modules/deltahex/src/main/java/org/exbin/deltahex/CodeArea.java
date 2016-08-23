@@ -265,10 +265,8 @@ public class CodeArea extends JComponent {
         }
 
         painter.paintMainArea(g);
+        painter.paintCursor(g);
 
-        if (hasFocus()) {
-            caret.paint(g);
-        }
         g.setClip(clipBounds);
     }
 

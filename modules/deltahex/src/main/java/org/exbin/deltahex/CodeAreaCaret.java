@@ -15,14 +15,8 @@
  */
 package org.exbin.deltahex;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.Shape;
-import java.awt.Stroke;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.Timer;
@@ -31,7 +25,7 @@ import org.exbin.deltahex.CodeArea.Section;
 /**
  * Code area caret.
  *
- * @version 0.1.1 2016/08/19
+ * @version 0.1.1 2016/08/23
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeAreaCaret {
@@ -56,122 +50,19 @@ public class CodeAreaCaret {
         privateSetBlinkRate(DEFAULT_BLINK_RATE);
     }
 
-    public void paint(Graphics g) {
-        int bytesPerLine = codeArea.getBytesPerLine();
-        int lineHeight = codeArea.getLineHeight();
-        int charWidth = codeArea.getCharWidth();
-        int codeDigits = codeArea.getCodeType().getMaxDigits();
-        Point scrollPoint = codeArea.getScrollPoint();
-        Point cursorPoint = getCursorPoint(bytesPerLine, lineHeight, charWidth);
-
-        if (cursorVisible) {
-            g.setColor(codeArea.getCursorColor());
-            if (renderingMode == CursorRenderingMode.XOR) {
-                g.setXORMode(Color.WHITE);
-            }
-
-            CursorShape cursorShape = codeArea.getEditationMode() == CodeArea.EditationMode.INSERT ? insertCursorShape : overwriteCursorShape;
-            int cursorThickness = 0;
-            if (cursorShape.getWidth() != CursorShapeWidth.FULL) {
-                cursorThickness = getCursorThickness(cursorShape, charWidth, lineHeight);
-            }
-            switch (cursorShape) {
-                case LINE_TOP:
-                case DOUBLE_TOP:
-                case HALP_TOP: {
-                    paintCursorRect(g, cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y,
-                            charWidth, cursorThickness);
-                    break;
-                }
-                case LINE_BOTTOM:
-                case DOUBLE_BOTTOM:
-                case HALF_BOTTOM: {
-                    paintCursorRect(g, cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y + lineHeight - cursorThickness,
-                            charWidth, cursorThickness);
-                    break;
-                }
-                case LINE_LEFT:
-                case DOUBLE_LEFT:
-                case HALF_LEFT: {
-                    paintCursorRect(g, cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y, cursorThickness, lineHeight);
-                    break;
-                }
-                case LINE_RIGHT:
-                case DOUBLE_RIGHT:
-                case HALF_RIGHT: {
-                    paintCursorRect(g, cursorPoint.x - scrollPoint.x + charWidth - cursorThickness, cursorPoint.y - scrollPoint.y, cursorThickness, lineHeight);
-                    break;
-                }
-                case BOX: {
-                    paintCursorRect(g, cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y,
-                            charWidth, lineHeight - 1);
-                    break;
-                }
-                case FRAME: {
-                    switch (renderingMode) {
-                        case PAINT:
-                        case XOR: {
-                            g.drawRect(cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y, charWidth, lineHeight - 1);
-                            break;
-                        }
-                        case NEGATIVE: {
-                            // TODO
-                            break;
-                        }
-                    }
-                    break;
-                }
-                case CORNERS: {
-                    int quarterWidth = charWidth / 4;
-                    int quarterLine = lineHeight / 4;
-                    paintCursorLine(g, cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y,
-                            cursorPoint.x - scrollPoint.x + quarterWidth, cursorPoint.y - scrollPoint.y);
-                    paintCursorLine(g, cursorPoint.x - scrollPoint.x + charWidth - quarterWidth, cursorPoint.y - scrollPoint.y,
-                            cursorPoint.x - scrollPoint.x + charWidth, cursorPoint.y - scrollPoint.y);
-
-                    paintCursorLine(g, cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y + 1,
-                            cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y + quarterLine);
-                    paintCursorLine(g, cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y + lineHeight - quarterLine - 1,
-                            cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y + lineHeight - 2);
-                    paintCursorLine(g, cursorPoint.x - scrollPoint.x + charWidth, cursorPoint.y - scrollPoint.y + 1,
-                            cursorPoint.x - scrollPoint.x + charWidth, cursorPoint.y - scrollPoint.y + quarterLine);
-                    paintCursorLine(g, cursorPoint.x - scrollPoint.x + charWidth, cursorPoint.y - scrollPoint.y + lineHeight - quarterLine - 1,
-                            cursorPoint.x - scrollPoint.x + charWidth, cursorPoint.y - scrollPoint.y + lineHeight - 2);
-
-                    paintCursorLine(g, cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y + lineHeight - 1,
-                            cursorPoint.x - scrollPoint.x + quarterWidth, cursorPoint.y - scrollPoint.y + lineHeight - 1);
-                    paintCursorLine(g, cursorPoint.x - scrollPoint.x + charWidth - quarterWidth, cursorPoint.y - scrollPoint.y + lineHeight - 1,
-                            cursorPoint.x - scrollPoint.x + charWidth, cursorPoint.y - scrollPoint.y + lineHeight - 1);
-                    break;
-                }
-                default: {
-                    throw new IllegalStateException("Unexpected cursor shape type " + cursorShape.name());
-                }
-            }
-
-            if (renderingMode == CursorRenderingMode.XOR) {
-                g.setPaintMode();
-            }
-        }
-
-        // Paint shadow cursor
-        if (codeArea.getViewMode() == CodeArea.ViewMode.DUAL && codeArea.isShowShadowCursor()) {
-            g.setColor(codeArea.getCursorColor());
-            Point shadowCursorPoint = getShadowCursorPoint(bytesPerLine, lineHeight, charWidth);
-            Graphics2D g2d = (Graphics2D) g.create();
-            Stroke dashed = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{2}, 0);
-            g2d.setStroke(dashed);
-            g2d.drawRect(shadowCursorPoint.x - scrollPoint.x, shadowCursorPoint.y - scrollPoint.y,
-                    charWidth * (codeArea.getActiveSection() == Section.TEXT_PREVIEW ? codeDigits : 1), lineHeight - 1);
-        }
-    }
-
-    private int getCursorThickness(CursorShape cursorShape, int charWidth, int lineHeight) {
+    public int getCursorThickness(CursorShape cursorShape, int charWidth, int lineHeight) {
         switch (cursorShape.getWidth()) {
             case LINE:
                 return LINE_CURSOR_WIDTH;
             case DOUBLE:
                 return DOUBLE_CURSOR_WIDTH;
+            case QUARTER: {
+                if (cursorShape == CursorShape.QUARTER_LEFT || cursorShape == CursorShape.QUARTER_RIGHT) {
+                    return charWidth / 4;
+                } else {
+                    return lineHeight / 4;
+                }
+            }
             case HALF: {
                 if (cursorShape == CursorShape.HALF_LEFT || cursorShape == CursorShape.HALF_RIGHT) {
                     return charWidth / 2;
@@ -183,33 +74,7 @@ public class CodeAreaCaret {
         return -1;
     }
 
-    private void paintCursorRect(Graphics g, int x, int y, int width, int height) {
-        switch (renderingMode) {
-            case PAINT:
-            case XOR: {
-                g.fillRect(x, y, width, height);
-                break;
-            }
-            case NEGATIVE: {
-                Shape clip = g.getClip();
-                g.setClip(x, y, width, height);
-                g.fillRect(x, y, width, height);
-                codeArea.getPainter().paintCursorNegative(g);
-                g.setClip(clip);
-                break;
-            }
-        }
-    }
-
-    private void paintCursorLine(Graphics g, int x1, int y1, int x2, int y2) {
-        if (renderingMode != CursorRenderingMode.NEGATIVE) {
-            g.drawLine(x1, y1, x2, y2);
-        } else {
-            // TODO
-        }
-    }
-
-    private Point getCursorPoint(int bytesPerLine, int lineHeight, int charWidth) {
+    public Point getCursorPoint(int bytesPerLine, int lineHeight, int charWidth) {
         long shiftedPosition = caretPosition.getDataPosition() + codeArea.getScrollPosition().lineByteShift;
         long line = shiftedPosition / bytesPerLine;
         int byteOffset = (int) (shiftedPosition % bytesPerLine);
@@ -226,7 +91,7 @@ public class CodeAreaCaret {
         return new Point(caretX, caretY);
     }
 
-    private Point getShadowCursorPoint(int bytesPerLine, int lineHeight, int charWidth) {
+    public Point getShadowCursorPoint(int bytesPerLine, int lineHeight, int charWidth) {
         long dataPosition = caretPosition.getDataPosition();
         long line = dataPosition / bytesPerLine;
         int byteOffset = (int) (dataPosition % bytesPerLine);
@@ -254,6 +119,7 @@ public class CodeAreaCaret {
         switch (cursorShape) {
             case BOX:
             case FRAME:
+            case BOTTOM_CORNERS:
             case CORNERS: {
                 int width = charWidth;
                 if (cursorShape != CursorShape.BOX) {
@@ -263,23 +129,27 @@ public class CodeAreaCaret {
             }
             case LINE_TOP:
             case DOUBLE_TOP:
-            case HALP_TOP: {
+            case QUARTER_TOP:
+            case HALF_TOP: {
                 return new Rectangle(cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y,
                         charWidth, cursorThickness);
             }
             case LINE_BOTTOM:
             case DOUBLE_BOTTOM:
+            case QUARTER_BOTTOM:
             case HALF_BOTTOM: {
                 return new Rectangle(cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y + lineHeight - cursorThickness,
                         charWidth, cursorThickness);
             }
             case LINE_LEFT:
             case DOUBLE_LEFT:
+            case QUARTER_LEFT:
             case HALF_LEFT: {
                 return new Rectangle(cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y, cursorThickness, lineHeight);
             }
             case LINE_RIGHT:
             case DOUBLE_RIGHT:
+            case QUARTER_RIGHT:
             case HALF_RIGHT: {
                 return new Rectangle(cursorPoint.x - scrollPoint.x + charWidth - cursorThickness, cursorPoint.y - scrollPoint.y, cursorThickness, lineHeight);
             }
@@ -381,6 +251,10 @@ public class CodeAreaCaret {
         cursorRepaint();
     }
 
+    public boolean isCursorVisible() {
+        return cursorVisible;
+    }
+
     public CursorRenderingMode getRenderingMode() {
         return renderingMode;
     }
@@ -439,21 +313,27 @@ public class CodeAreaCaret {
         DOUBLE_LEFT(CursorShapeWidth.DOUBLE),
         DOUBLE_RIGHT(CursorShapeWidth.DOUBLE),
         /*
+         * Quarter cursor shapes.
+         */
+        QUARTER_BOTTOM(CursorShapeWidth.QUARTER),
+        QUARTER_TOP(CursorShapeWidth.QUARTER),
+        QUARTER_LEFT(CursorShapeWidth.QUARTER),
+        QUARTER_RIGHT(CursorShapeWidth.QUARTER),
+        /*
          * Half cursor shapes.
          */
         HALF_BOTTOM(CursorShapeWidth.HALF),
-        HALP_TOP(CursorShapeWidth.HALF),
+        HALF_TOP(CursorShapeWidth.HALF),
         HALF_LEFT(CursorShapeWidth.HALF),
         HALF_RIGHT(CursorShapeWidth.HALF),
         /*
          * Full cursor shapes.
+         * Frame and corners modes are always rendered using paint mode.
          */
         BOX(CursorShapeWidth.FULL),
-        /**
-         * Frame and corners mode is not recommended for negative rendering
-         * modes.
-         */
-        FRAME(CursorShapeWidth.FULL), CORNERS(CursorShapeWidth.FULL);
+        FRAME(CursorShapeWidth.FULL),
+        CORNERS(CursorShapeWidth.FULL),
+        BOTTOM_CORNERS(CursorShapeWidth.FULL);
 
         private final CursorShapeWidth width;
 
@@ -467,7 +347,7 @@ public class CodeAreaCaret {
     }
 
     public static enum CursorShapeWidth {
-        LINE, DOUBLE, HALF, FULL
+        LINE, DOUBLE, QUARTER, HALF, FULL
     }
 
     public static enum CursorRenderingMode {

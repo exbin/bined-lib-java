@@ -15,10 +15,15 @@
  */
 package org.exbin.deltahex;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.Shape;
+import java.awt.Stroke;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 import java.util.Arrays;
@@ -28,7 +33,7 @@ import java.util.Map;
 /**
  * Code area component default painter.
  *
- * @version 0.1.0 2016/08/20
+ * @version 0.1.0 2016/08/23
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaPainter implements CodeAreaPainter {
@@ -743,9 +748,142 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     }
 
     @Override
-    public void paintCursorNegative(Graphics g) {
-        g.setColor(codeArea.getNegativeCursorColor());
-        // TODO this should draw single character on cursor position with given color
+    public void paintCursor(Graphics g) {
+        if (!codeArea.hasFocus()) {
+            return;
+        }
+
+        CodeAreaCaret caret = codeArea.getCaret();
+        int bytesPerLine = codeArea.getBytesPerLine();
+        int lineHeight = codeArea.getLineHeight();
+        int charWidth = codeArea.getCharWidth();
+        int codeDigits = codeArea.getCodeType().getMaxDigits();
+        Point scrollPoint = codeArea.getScrollPoint();
+        Point cursorPoint = caret.getCursorPoint(bytesPerLine, lineHeight, charWidth);
+        boolean cursorVisible = caret.isCursorVisible();
+        CodeAreaCaret.CursorRenderingMode renderingMode = caret.getRenderingMode();
+
+        if (cursorVisible) {
+            g.setColor(codeArea.getCursorColor());
+            if (renderingMode == CodeAreaCaret.CursorRenderingMode.XOR) {
+                g.setXORMode(Color.WHITE);
+            }
+
+            CodeAreaCaret.CursorShape cursorShape = codeArea.getEditationMode() == CodeArea.EditationMode.INSERT ? caret.getInsertCursorShape() : caret.getOverwriteCursorShape();
+            int cursorThickness = 0;
+            if (cursorShape.getWidth() != CodeAreaCaret.CursorShapeWidth.FULL) {
+                cursorThickness = caret.getCursorThickness(cursorShape, charWidth, lineHeight);
+            }
+            switch (cursorShape) {
+                case LINE_TOP:
+                case DOUBLE_TOP:
+                case QUARTER_TOP:
+                case HALF_TOP: {
+                    paintCursorRect(g, cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y,
+                            charWidth, cursorThickness, renderingMode);
+                    break;
+                }
+                case LINE_BOTTOM:
+                case DOUBLE_BOTTOM:
+                case QUARTER_BOTTOM:
+                case HALF_BOTTOM: {
+                    paintCursorRect(g, cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y + lineHeight - cursorThickness,
+                            charWidth, cursorThickness, renderingMode);
+                    break;
+                }
+                case LINE_LEFT:
+                case DOUBLE_LEFT:
+                case QUARTER_LEFT:
+                case HALF_LEFT: {
+                    paintCursorRect(g, cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y, cursorThickness, lineHeight, renderingMode);
+                    break;
+                }
+                case LINE_RIGHT:
+                case DOUBLE_RIGHT:
+                case QUARTER_RIGHT:
+                case HALF_RIGHT: {
+                    paintCursorRect(g, cursorPoint.x - scrollPoint.x + charWidth - cursorThickness, cursorPoint.y - scrollPoint.y, cursorThickness, lineHeight, renderingMode);
+                    break;
+                }
+                case BOX: {
+                    paintCursorRect(g, cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y,
+                            charWidth, lineHeight - 1, renderingMode);
+                    break;
+                }
+                case FRAME: {
+                    g.drawRect(cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y, charWidth, lineHeight - 1);
+                    break;
+                }
+                case BOTTOM_CORNERS:
+                case CORNERS: {
+                    int quarterWidth = charWidth / 4;
+                    int quarterLine = lineHeight / 4;
+                    if (cursorShape == CodeAreaCaret.CursorShape.CORNERS) {
+                        g.drawLine(cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y,
+                                cursorPoint.x - scrollPoint.x + quarterWidth, cursorPoint.y - scrollPoint.y);
+                        g.drawLine(cursorPoint.x - scrollPoint.x + charWidth - quarterWidth, cursorPoint.y - scrollPoint.y,
+                                cursorPoint.x - scrollPoint.x + charWidth, cursorPoint.y - scrollPoint.y);
+
+                        g.drawLine(cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y + 1,
+                                cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y + quarterLine);
+                        g.drawLine(cursorPoint.x - scrollPoint.x + charWidth, cursorPoint.y - scrollPoint.y + 1,
+                                cursorPoint.x - scrollPoint.x + charWidth, cursorPoint.y - scrollPoint.y + quarterLine);
+                    }
+
+                    g.drawLine(cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y + lineHeight - quarterLine - 1,
+                            cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y + lineHeight - 2);
+                    g.drawLine(cursorPoint.x - scrollPoint.x + charWidth, cursorPoint.y - scrollPoint.y + lineHeight - quarterLine - 1,
+                            cursorPoint.x - scrollPoint.x + charWidth, cursorPoint.y - scrollPoint.y + lineHeight - 2);
+
+                    g.drawLine(cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y + lineHeight - 1,
+                            cursorPoint.x - scrollPoint.x + quarterWidth, cursorPoint.y - scrollPoint.y + lineHeight - 1);
+                    g.drawLine(cursorPoint.x - scrollPoint.x + charWidth - quarterWidth, cursorPoint.y - scrollPoint.y + lineHeight - 1,
+                            cursorPoint.x - scrollPoint.x + charWidth, cursorPoint.y - scrollPoint.y + lineHeight - 1);
+                    break;
+                }
+                default: {
+                    throw new IllegalStateException("Unexpected cursor shape type " + cursorShape.name());
+                }
+            }
+
+            if (renderingMode == CodeAreaCaret.CursorRenderingMode.XOR) {
+                g.setPaintMode();
+            }
+        }
+
+        // Paint shadow cursor
+        if (codeArea.getViewMode() == CodeArea.ViewMode.DUAL && codeArea.isShowShadowCursor()) {
+            g.setColor(codeArea.getCursorColor());
+            Point shadowCursorPoint = caret.getShadowCursorPoint(bytesPerLine, lineHeight, charWidth);
+            Graphics2D g2d = (Graphics2D) g.create();
+            Stroke dashed = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{2}, 0);
+            g2d.setStroke(dashed);
+            g2d.drawRect(shadowCursorPoint.x - scrollPoint.x, shadowCursorPoint.y - scrollPoint.y,
+                    charWidth * (codeArea.getActiveSection() == CodeArea.Section.TEXT_PREVIEW ? codeDigits : 1), lineHeight - 1);
+        }
+    }
+
+    private void paintCursorRect(Graphics g, int x, int y, int width, int height, CodeAreaCaret.CursorRenderingMode renderingMode) {
+        switch (renderingMode) {
+            case PAINT: {
+                g.fillRect(x, y, width, height);
+                break;
+            }
+            case XOR: {
+                // TODO CLIP
+                g.fillRect(x, y, width, height);
+                break;
+            }
+            case NEGATIVE: {
+                Shape clip = g.getClip();
+                g.setClip(x, y, width, height);
+                g.fillRect(x, y, width, height);
+                g.setColor(codeArea.getNegativeCursorColor());
+                // TODO paint char
+                g.setClip(clip);
+                break;
+            }
+        }
     }
 
     /**
