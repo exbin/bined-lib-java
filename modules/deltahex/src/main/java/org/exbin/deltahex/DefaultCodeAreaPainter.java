@@ -33,7 +33,7 @@ import java.util.Map;
 /**
  * Code area component default painter.
  *
- * @version 0.1.0 2016/08/23
+ * @version 0.1.0 2016/08/24
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaPainter implements CodeAreaPainter {
@@ -882,11 +882,31 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                 g.setClip(x, y, width, height);
                 g.fillRect(x, y, width, height);
                 g.setColor(codeArea.getNegativeCursorColor());
-                // TODO paint char
+                int previewX = codeArea.getPreviewX();
+                int charWidth = codeArea.getCharWidth();
+                int line = y / codeArea.getLineHeight();
+                if (codeArea.getViewMode() != CodeArea.ViewMode.CODE_MATRIX && x > previewX) {
+                    int lineOffset = (x - previewX) / charWidth;
+                    // TODO
+                } else {
+                    int charPos = x / charWidth;
+                    int byteOffset = codeArea.computeByteOffsetPerCodeCharOffset(charPos, false);
+                    int codeCharPos = codeArea.computeByteCharPos(byteOffset);
+                    byte[] buffer = new byte[codeArea.getCodeType().getMaxDigits()];
+                    // TODO
+                }
                 g.setClip(clip);
                 break;
             }
         }
+    }
+    
+    protected static class LineCharsData {
+        /**
+         * Single line of characters.
+         */
+        protected char[] lineChars;
+        
     }
 
     /**
@@ -894,7 +914,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
      *
      * Data copied from CodeArea for faster access + array space for line data.
      */
-    protected static class PaintData {
+    protected static class PaintData extends LineCharsData {
 
         protected CodeArea.ViewMode viewMode;
         protected CodeArea.BackgroundMode backgroundMode;
@@ -934,11 +954,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
          * Line data cache.
          */
         protected byte[] lineData;
-
-        /**
-         * Single line of characters.
-         */
-        protected char[] lineChars;
 
         /**
          * Single line of unprintable characters.
