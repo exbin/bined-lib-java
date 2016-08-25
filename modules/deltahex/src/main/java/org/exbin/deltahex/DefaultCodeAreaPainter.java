@@ -885,9 +885,12 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                 int previewX = codeArea.getPreviewX();
                 int charWidth = codeArea.getCharWidth();
                 int line = y / codeArea.getLineHeight();
+                CodeArea.ScrollPosition scrollPosition = codeArea.getScrollPosition();
                 if (codeArea.getViewMode() != CodeArea.ViewMode.CODE_MATRIX && x > previewX) {
                     int lineOffset = (x - previewX) / charWidth;
-                    // TODO
+                    long dataPosition = line * codeArea.getBytesPerLine() + scrollPosition.scrollLinePosition + lineOffset;
+                    byte previewChar = codeArea.getData().getByte(dataPosition);
+                    int posY = (line + 1) * codeArea.getLineHeight();
                 } else {
                     int charPos = x / charWidth;
                     int byteOffset = codeArea.computeByteOffsetPerCodeCharOffset(charPos, false);
@@ -900,13 +903,14 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             }
         }
     }
-    
+
     protected static class LineCharsData {
+
         /**
          * Single line of characters.
          */
         protected char[] lineChars;
-        
+
     }
 
     /**
