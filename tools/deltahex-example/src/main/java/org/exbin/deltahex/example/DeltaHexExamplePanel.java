@@ -168,12 +168,15 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
         charAntialiasingComboBox = new javax.swing.JComboBox<>();
         codeTypeScrollModeLabel = new javax.swing.JLabel();
         codeTypeComboBox = new javax.swing.JComboBox<>();
-        fondLabel = new javax.swing.JLabel();
-        fontComboBox = new javax.swing.JComboBox<>();
-        charsetLabel = new javax.swing.JLabel();
-        charsetComboBox = new javax.swing.JComboBox<>();
         editationAllowedLabel = new javax.swing.JLabel();
         editationAllowedComboBox = new javax.swing.JComboBox<>();
+        fontPanel = new javax.swing.JPanel();
+        fontFamilyLabel = new javax.swing.JLabel();
+        fontFamilyComboBox = new javax.swing.JComboBox<>();
+        fontSizeLabel = new javax.swing.JLabel();
+        fontSizeComboBox = new javax.swing.JComboBox<>();
+        charsetLabel = new javax.swing.JLabel();
+        charsetComboBox = new javax.swing.JComboBox<>();
         statePanel = new javax.swing.JPanel();
         dataSizeLabel = new javax.swing.JLabel();
         dataSizeTextField = new javax.swing.JTextField();
@@ -300,30 +303,72 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
             }
         });
 
-        fondLabel.setText("Example Font");
-
-        fontComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "DIALOG", "MONOSPACE", "SERIF" }));
-        fontComboBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                fontComboBoxActionPerformed(evt);
-            }
-        });
-
-        charsetLabel.setText("Example Charset");
-
-        charsetComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "UTF-8", "UTF-16", "UTF-16BE", "US-ASCII", "IBM852", "ISO-8859-1" }));
-        charsetComboBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                charsetComboBoxActionPerformed(evt);
-            }
-        });
-
         editationAllowedLabel.setText("Editation");
 
         editationAllowedComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "READ_ONLY", "OVERWRITE_ONLY", "ALLOWED" }));
         editationAllowedComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 editationAllowedComboBoxActionPerformed(evt);
+            }
+        });
+
+        fontPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Font"));
+
+        fontFamilyLabel.setText("Font Family");
+
+        fontFamilyComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "DIALOG", "MONOSPACE", "SERIF" }));
+        fontFamilyComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                fontFamilyComboBoxActionPerformed(evt);
+            }
+        });
+
+        fontSizeLabel.setText("Font Size");
+
+        fontSizeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "8", "9", "10", "12", "14", "18", "22" }));
+        fontSizeComboBox.setSelectedIndex(3);
+        fontSizeComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                fontSizeComboBoxActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout fontPanelLayout = new javax.swing.GroupLayout(fontPanel);
+        fontPanel.setLayout(fontPanelLayout);
+        fontPanelLayout.setHorizontalGroup(
+            fontPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(fontPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(fontPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(fontFamilyComboBox, 0, 309, Short.MAX_VALUE)
+                    .addComponent(fontSizeComboBox, 0, 309, Short.MAX_VALUE)
+                    .addGroup(fontPanelLayout.createSequentialGroup()
+                        .addGroup(fontPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(fontFamilyLabel)
+                            .addComponent(fontSizeLabel))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        fontPanelLayout.setVerticalGroup(
+            fontPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(fontPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(fontFamilyLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(fontFamilyComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(fontSizeLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(fontSizeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        charsetLabel.setText("Charset");
+
+        charsetComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "UTF-8", "UTF-16", "UTF-16BE", "US-ASCII", "IBM852", "ISO-8859-1" }));
+        charsetComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                charsetComboBoxActionPerformed(evt);
             }
         });
 
@@ -334,12 +379,12 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
             .addGroup(modePanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(modePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(charRenderingComboBox, 0, 262, Short.MAX_VALUE)
+                    .addComponent(charRenderingComboBox, 0, 331, Short.MAX_VALUE)
                     .addComponent(viewModeComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(codeTypeComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(charAntialiasingComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(editationAllowedComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(fontComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(fontPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(charsetComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(modePanelLayout.createSequentialGroup()
                         .addGroup(modePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -348,7 +393,6 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
                             .addComponent(viewModeScrollModeLabel)
                             .addComponent(codeTypeScrollModeLabel)
                             .addComponent(editationAllowedLabel)
-                            .addComponent(fondLabel)
                             .addComponent(charsetLabel))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
@@ -377,14 +421,12 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(editationAllowedComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(fondLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(fontComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(fontPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(charsetLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(charsetComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(141, Short.MAX_VALUE))
+                .addContainerGap(45, Short.MAX_VALUE))
         );
 
         dataSizeLabel.setText("Data Size");
@@ -1406,22 +1448,23 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
         codeArea.setLineNumberSpecifiedLength((Integer) lineNumberLengthSpinner.getValue());
     }//GEN-LAST:event_lineNumberLengthSpinnerStateChanged
 
-    private void fontComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fontComboBoxActionPerformed
-        switch (fontComboBox.getSelectedIndex()) {
+    private void fontFamilyComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fontFamilyComboBoxActionPerformed
+        int size = codeArea.getFont().getSize();
+        switch (fontFamilyComboBox.getSelectedIndex()) {
             case 0: {
-                codeArea.setFont(new Font(Font.DIALOG, Font.PLAIN, 12));
+                codeArea.setFont(new Font(Font.DIALOG, Font.PLAIN, size));
                 break;
             }
             case 1: {
-                codeArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 14));
+                codeArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, size));
                 break;
             }
             case 2: {
-                codeArea.setFont(new Font(Font.SERIF, Font.PLAIN, 12));
+                codeArea.setFont(new Font(Font.SERIF, Font.PLAIN, size));
                 break;
             }
         }
-    }//GEN-LAST:event_fontComboBoxActionPerformed
+    }//GEN-LAST:event_fontFamilyComboBoxActionPerformed
 
     private void charsetComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_charsetComboBoxActionPerformed
         codeArea.setCharset(Charset.forName((String) charsetComboBox.getSelectedItem()));
@@ -1483,6 +1526,12 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
         codeArea.setSpaceGroupSize((Integer) spaceGroupSizeSpinner.getValue());
     }//GEN-LAST:event_spaceGroupSizeSpinnerStateChanged
 
+    private void fontSizeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fontSizeComboBoxActionPerformed
+        Font font = codeArea.getFont();
+        Font derivedFont = font.deriveFont(Font.PLAIN, Integer.valueOf((String) fontSizeComboBox.getSelectedItem()));
+        codeArea.setFont(derivedFont);
+    }//GEN-LAST:event_fontSizeComboBoxActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<String> activeSectionComboBox;
     private javax.swing.JLabel activeSectionLabel;
@@ -1522,8 +1571,11 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
     private javax.swing.JCheckBox decoratorSplitLineCheckBox;
     private javax.swing.JComboBox<String> editationAllowedComboBox;
     private javax.swing.JLabel editationAllowedLabel;
-    private javax.swing.JLabel fondLabel;
-    private javax.swing.JComboBox<String> fontComboBox;
+    private javax.swing.JComboBox<String> fontFamilyComboBox;
+    private javax.swing.JLabel fontFamilyLabel;
+    private javax.swing.JPanel fontPanel;
+    private javax.swing.JComboBox<String> fontSizeComboBox;
+    private javax.swing.JLabel fontSizeLabel;
     private javax.swing.JPanel headerPanel;
     private javax.swing.JComboBox<String> headerSpaceComboBox;
     private javax.swing.JLabel headerSpaceLabel;

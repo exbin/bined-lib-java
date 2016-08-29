@@ -673,14 +673,14 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         g.fillRect(linePositionX + startOffset * paintData.charWidth, positionY, (endOffset - startOffset) * paintData.charWidth, paintData.lineHeight);
     }
 
-    public void byteToCharsCode(byte dataByte, int targetPosition, PaintData lineDataCache) {
+    public void byteToCharsCode(byte dataByte, int targetPosition, LineCharsData lineCharsData) {
         CodeArea.CodeType codeType = codeArea.getCodeType();
         switch (codeType) {
             case BINARY: {
                 int bitMask = 0x80;
                 for (int i = 0; i < 8; i++) {
                     int codeValue = (dataByte & bitMask) > 0 ? 1 : 0;
-                    lineDataCache.lineChars[targetPosition + i] = hexCharacters[codeValue];
+                    lineCharsData.lineChars[targetPosition + i] = hexCharacters[codeValue];
                     bitMask = bitMask >> 1;
                 }
                 break;
@@ -688,28 +688,28 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             case DECIMAL: {
                 int value = dataByte & 0xff;
                 int codeValue0 = value / 100;
-                lineDataCache.lineChars[targetPosition] = hexCharacters[codeValue0];
+                lineCharsData.lineChars[targetPosition] = hexCharacters[codeValue0];
                 int codeValue1 = (value / 10) % 10;
-                lineDataCache.lineChars[targetPosition + 1] = hexCharacters[codeValue1];
+                lineCharsData.lineChars[targetPosition + 1] = hexCharacters[codeValue1];
                 int codeValue2 = value % 10;
-                lineDataCache.lineChars[targetPosition + 2] = hexCharacters[codeValue2];
+                lineCharsData.lineChars[targetPosition + 2] = hexCharacters[codeValue2];
                 break;
             }
             case OCTAL: {
                 int value = dataByte & 0xff;
                 int codeValue0 = value / 64;
-                lineDataCache.lineChars[targetPosition] = hexCharacters[codeValue0];
+                lineCharsData.lineChars[targetPosition] = hexCharacters[codeValue0];
                 int codeValue1 = (value / 8) & 7;
-                lineDataCache.lineChars[targetPosition + 1] = hexCharacters[codeValue1];
+                lineCharsData.lineChars[targetPosition + 1] = hexCharacters[codeValue1];
                 int codeValue2 = value % 8;
-                lineDataCache.lineChars[targetPosition + 2] = hexCharacters[codeValue2];
+                lineCharsData.lineChars[targetPosition + 2] = hexCharacters[codeValue2];
                 break;
             }
             case HEXADECIMAL: {
                 int codeValue0 = (dataByte >> 4) & 15;
-                lineDataCache.lineChars[targetPosition] = hexCharacters[codeValue0];
+                lineCharsData.lineChars[targetPosition] = hexCharacters[codeValue0];
                 int codeValue1 = dataByte & 15;
-                lineDataCache.lineChars[targetPosition + 1] = hexCharacters[codeValue1];
+                lineCharsData.lineChars[targetPosition + 1] = hexCharacters[codeValue1];
                 break;
             }
             default:
@@ -879,24 +879,35 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             }
             case NEGATIVE: {
                 Shape clip = g.getClip();
-                g.setClip(x, y, width, height);
+                // g.setClip(x, y, width, height);
+                CodeArea.ScrollPosition scrollPosition = codeArea.getScrollPosition();
                 g.fillRect(x, y, width, height);
-                g.setColor(codeArea.getNegativeCursorColor());
+                g.setColor(Color.RED); //codeArea.getNegativeCursorColor());
+                Rectangle rect = codeArea.getCodeSectionRectangle();
                 int previewX = codeArea.getPreviewX();
                 int charWidth = codeArea.getCharWidth();
-                int line = y / codeArea.getLineHeight();
-                CodeArea.ScrollPosition scrollPosition = codeArea.getScrollPosition();
+                int lineHeight = codeArea.getLineHeight();
+                int line = (y - rect.y) / lineHeight;
+                int posY = rect.y + (line + 1) * lineHeight - codeArea.getSubFontSpace() - scrollPosition.scrollLineOffset;
                 if (codeArea.getViewMode() != CodeArea.ViewMode.CODE_MATRIX && x > previewX) {
                     int lineOffset = (x - previewX) / charWidth;
-                    long dataPosition = line * codeArea.getBytesPerLine() + scrollPosition.scrollLinePosition + lineOffset;
+                    long dataPosition = (line + scrollPosition.scrollLinePosition) * codeArea.getBytesPerLine() + lineOffset;
                     byte previewChar = codeArea.getData().getByte(dataPosition);
-                    int posY = (line + 1) * codeArea.getLineHeight();
                 } else {
-                    int charPos = x / charWidth;
+                    int charPos = (x - rect.x + scrollPosition.scrollCharPosition * charWidth + scrollPosition.scrollCharOffset) / charWidth;
                     int byteOffset = codeArea.computeByteOffsetPerCodeCharOffset(charPos, false);
                     int codeCharPos = codeArea.computeByteCharPos(byteOffset);
-                    byte[] buffer = new byte[codeArea.getCodeType().getMaxDigits()];
-                    // TODO
+                    LineCharsData lineCharsData = new LineCharsData();
+                    lineCharsData.lineChars = new char[codeArea.getCodeType().getMaxDigits()];
+                    long dataPosition = (line + scrollPosition.scrollLinePosition) * codeArea.getBytesPerLine() + byteOffset;
+                    byte dataByte = codeArea.getData().getByte(dataPosition);
+                    byteToCharsCode(dataByte, 0, lineCharsData);
+                    int posX = rect.x + codeArea.getHeaderSpaceSize() + codeCharPos * charWidth - scrollPosition.scrollCharPosition * charWidth - scrollPosition.scrollCharOffset;
+                    int charsOffset = charPos - codeCharPos;
+                    drawCenteredChar(g, lineCharsData.lineChars, charsOffset, charWidth, posX + (charsOffset * charWidth), posY);
+//                    System.out.println("X: " + posX + ", Y: " + posY);
+//                    System.out.println("BYTE: " + dataByte + ", Offset: " + (charPos - codeCharPos));
+//                    System.out.println("DATAPOS: " + dataPosition);
                 }
                 g.setClip(clip);
                 break;
