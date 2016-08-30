@@ -1,6 +1,6 @@
 group = 'org.exbin.deltahex'
-ext.libraryName = 'Delta Hexadecimal Delta-Support Library'
-ext.libraryDescription = 'Library for delta data source'
+ext.libraryName = 'Delta Hexadecimal Swing Library'
+ext.libraryDescription = 'Library for delta hexadecimal editor component'
 
 apply from: '../deltahex-java-modules.gradle'
 
@@ -28,10 +28,6 @@ repositories {
 
 dependencies {
     compile moduleDep('DeltahexJava', 'org.exbin.deltahex', 'deltahex-core')
-    compile moduleDep('DeltahexJava', 'org.exbin.deltahex', 'deltahex-delta')
-    compile moduleDep('XbupJava', 'org.exbin.xbup', 'xbup-core')
-    compile moduleDep('XbupJava', 'org.exbin.xbup', 'xbup-operation')
-    compile moduleDep('XbupJava', 'org.exbin.xbup', 'xbup-parser-tree')
+    compile moduleDep('ExbinUtilsJava', 'org.exbin.utils', 'exbin-binary_data')
     testCompile group : 'junit', name: 'junit', version: '4.10'
-    testCompile project(path: moduleDepPath('DeltahexJava', 'deltahex-core'), configuration: 'tests')
 }

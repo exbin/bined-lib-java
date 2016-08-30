@@ -1,4 +1,4 @@
-rootProject.name = 'deltahex-example'
+rootProject.name = 'deltahex-swing-example'
 
 include ":modules:deltahex"
 

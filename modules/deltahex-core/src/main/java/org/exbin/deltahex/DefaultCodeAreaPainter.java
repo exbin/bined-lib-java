@@ -33,7 +33,7 @@ import java.util.Map;
 /**
  * Code area component default painter.
  *
- * @version 0.1.0 2016/08/24
+ * @version 0.1.0 2016/08/30
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaPainter implements CodeAreaPainter {
@@ -656,6 +656,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     }
 
     /**
+     * Render sequence of characters.
+     *
      * Doesn't include character at offset end.
      */
     private void renderCharSequence(Graphics g, int startOffset, int endOffset, int linePositionX, int positionY, CodeArea.ColorType colorType, PaintData paintData) {
@@ -667,6 +669,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     }
 
     /**
+     * Render sequence of background rectangles.
+     *
      * Doesn't include character at offset end.
      */
     private void renderBackgroundSequence(Graphics g, int startOffset, int endOffset, int linePositionX, int positionY, PaintData paintData) {
@@ -879,11 +883,12 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             }
             case NEGATIVE: {
                 Shape clip = g.getClip();
-                // g.setClip(x, y, width, height);
+                g.setClip(x, y, width, height);
                 CodeArea.ScrollPosition scrollPosition = codeArea.getScrollPosition();
                 g.fillRect(x, y, width, height);
-                g.setColor(Color.RED); //codeArea.getNegativeCursorColor());
+                g.setColor(codeArea.getNegativeCursorColor());
                 Rectangle rect = codeArea.getCodeSectionRectangle();
+                Rectangle hexRect = codeArea.getComponentRectangle();
                 int previewX = codeArea.getPreviewX();
                 int charWidth = codeArea.getCharWidth();
                 int lineHeight = codeArea.getLineHeight();
@@ -893,6 +898,58 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                     int lineOffset = (x - previewX) / charWidth;
                     long dataPosition = (line + scrollPosition.scrollLinePosition) * codeArea.getBytesPerLine() + lineOffset;
                     byte previewChar = codeArea.getData().getByte(dataPosition);
+
+//                    if (paintData.maxCharLength > 1) {
+//                        if (paintData.lineDataPosition + paintData.maxCharLength > dataSize) {
+//                            paintData.maxCharLength = (int) (dataSize - paintData.lineDataPosition);
+//                        }
+//
+//                        int charDataLength = paintData.maxCharLength;
+//                        if (byteOnLine + charDataLength > paintData.lineData.length) {
+//                            charDataLength = paintData.lineData.length - byteOnLine;
+//                        }
+//                        String displayString = new String(paintData.lineData, byteOnLine, charDataLength, paintData.charset);
+//                        if (!displayString.isEmpty()) {
+//                            paintData.lineChars[paintData.previewCharPos + byteOnLine] = displayString.charAt(0);
+//                        }
+//                    } else {
+//                        if (charMappingCharset == null || charMappingCharset != paintData.charset) {
+//                            for (int i = 0; i < 256; i++) {
+//                                charMapping[i] = new String(new byte[]{(byte) i}, paintData.charset).charAt(0);
+//                            }
+//                            charMappingCharset = paintData.charset;
+//                        }
+//
+//                        paintData.lineChars[paintData.previewCharPos + byteOnLine] = charMapping[dataByte & 0xFF];
+//                    }
+//
+//                    if (paintData.showUnprintableCharacters || paintData.charRenderingMode == CodeArea.CharRenderingMode.LINE_AT_ONCE) {
+//                        if (unprintableCharactersMapping == null) {
+//                            unprintableCharactersMapping = new HashMap<>();
+//                            // Unicode control characters, might not be supported by font
+//                            for (int i = 0; i < 32; i++) {
+//                                unprintableCharactersMapping.put((char) i, Character.toChars(9216 + i)[0]);
+//                            }
+//                            // Space -> Middle Dot
+//                            unprintableCharactersMapping.put(' ', Character.toChars(183)[0]);
+//                            // Tab -> Right-Pointing Double Angle Quotation Mark
+//                            unprintableCharactersMapping.put('\t', Character.toChars(187)[0]);
+//                            // Line Feed -> Currency Sign
+//                            unprintableCharactersMapping.put('\r', Character.toChars(164)[0]);
+//                            // Carriage Return -> Pilcrow Sign
+//                            unprintableCharactersMapping.put('\n', Character.toChars(182)[0]);
+//                            // Ideographic Space -> Degree Sign
+//                            unprintableCharactersMapping.put(Character.toChars(127)[0], Character.toChars(176)[0]);
+//                        }
+//                        Character replacement = unprintableCharactersMapping.get(paintData.lineChars[paintData.previewCharPos + byteOnLine]);
+//                        if (replacement != null) {
+//                            if (paintData.showUnprintableCharacters) {
+//                                paintData.unprintableChars[paintData.previewCharPos + byteOnLine] = replacement;
+//                            }
+//                            paintData.lineChars[paintData.previewCharPos + byteOnLine] = ' ';
+//                        }
+//                    }
+
                 } else {
                     int charPos = (x - rect.x + scrollPosition.scrollCharPosition * charWidth + scrollPosition.scrollCharOffset) / charWidth;
                     int byteOffset = codeArea.computeByteOffsetPerCodeCharOffset(charPos, false);
@@ -903,11 +960,10 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                     byte dataByte = codeArea.getData().getByte(dataPosition);
                     byteToCharsCode(dataByte, 0, lineCharsData);
                     int posX = rect.x + codeArea.getHeaderSpaceSize() + codeCharPos * charWidth - scrollPosition.scrollCharPosition * charWidth - scrollPosition.scrollCharOffset;
+                    // TODO
+                    posX++;
                     int charsOffset = charPos - codeCharPos;
                     drawCenteredChar(g, lineCharsData.lineChars, charsOffset, charWidth, posX + (charsOffset * charWidth), posY);
-//                    System.out.println("X: " + posX + ", Y: " + posY);
-//                    System.out.println("BYTE: " + dataByte + ", Offset: " + (charPos - codeCharPos));
-//                    System.out.println("DATAPOS: " + dataPosition);
                 }
                 g.setClip(clip);
                 break;
