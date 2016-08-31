@@ -1,2 +1,2 @@
 #!/bin/sh
-java -jar deltahex-example.jar $*
+java -jar deltahex-swing-example.jar $*
