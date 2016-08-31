@@ -13,34 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.deltahex.operation.command;
-
-import org.exbin.deltahex.swing.CodeArea;
-import org.exbin.xbup.operation.AbstractCommand;
+package org.exbin.deltahex;
 
 /**
- * Abstract class for operation on code area component.
+ * Enumeration of supported code types.
  *
- * @version 0.1.0 2016/06/13
+ * @version 0.1.1 2016/08/31
  * @author ExBin Project (http://exbin.org)
  */
-public abstract class CodeAreaCommand extends AbstractCommand {
+public enum CodeType {
 
-    protected final CodeArea codeArea;
+    BINARY(8), OCTAL(3), DECIMAL(3), HEXADECIMAL(2);
 
-    public CodeAreaCommand(CodeArea codeArea) {
-        this.codeArea = codeArea;
+    private final int maxDigits;
+
+    CodeType(int maxDigits) {
+        this.maxDigits = maxDigits;
     }
 
     /**
-     * Returns type of the command.
+     * Maximum number of digits per single byte.
      *
-     * @return command type
+     * @return number of digits
      */
-    public abstract CodeAreaCommandType getType();
-
-    @Override
-    public String getCaption() {
-        return getType().getCaption();
+    public int getMaxDigits() {
+        return maxDigits;
     }
 }

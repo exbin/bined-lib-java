@@ -13,12 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.deltahex;
+package org.exbin.deltahex.swing;
+
+import java.awt.event.KeyEvent;
 
 /**
  * Interface for code area data manipulation.
  *
- * @version 0.1.1 2016/07/21
+ * @version 0.1.1 2016/07/31
  * @author ExBin Project (http://exbin.org)
  */
 public interface CodeAreaCommandHandler {
@@ -33,9 +35,16 @@ public interface CodeAreaCommandHandler {
     /**
      * Keyboard key was pressed.
      *
-     * @param keyValue key value
+     * @param keyEvent key event
      */
-    void keyPressed(char keyValue);
+    void keyPressed(KeyEvent keyEvent);
+    
+    /**
+     * Keyboard key was typed.
+     *
+     * @param keyEvent key event
+     */
+    void keyTyped(KeyEvent keyEvent);
 
     /**
      * Backspace key was pressed.

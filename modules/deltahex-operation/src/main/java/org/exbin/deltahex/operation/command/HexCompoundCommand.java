@@ -18,7 +18,7 @@ package org.exbin.deltahex.operation.command;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.exbin.deltahex.CodeArea;
+import org.exbin.deltahex.swing.CodeArea;
 import org.exbin.xbup.operation.Command;
 import org.exbin.xbup.operation.CompoundCommand;
 

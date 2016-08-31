@@ -13,34 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.deltahex.operation.command;
-
-import org.exbin.deltahex.swing.CodeArea;
-import org.exbin.xbup.operation.AbstractCommand;
+package org.exbin.deltahex;
 
 /**
- * Abstract class for operation on code area component.
+ * Interface for selection change listener.
  *
- * @version 0.1.0 2016/06/13
+ * @version 0.1.1 2016/08/31
  * @author ExBin Project (http://exbin.org)
  */
-public abstract class CodeAreaCommand extends AbstractCommand {
-
-    protected final CodeArea codeArea;
-
-    public CodeAreaCommand(CodeArea codeArea) {
-        this.codeArea = codeArea;
-    }
+public interface SelectionChangedListener {
 
     /**
-     * Returns type of the command.
+     * Fires notification each time selection range changes or selection is
+     * created or cleared.
      *
-     * @return command type
+     * @param selection new selection range or null if selection is empty
      */
-    public abstract CodeAreaCommandType getType();
-
-    @Override
-    public String getCaption() {
-        return getType().getCaption();
-    }
+    void selectionChanged(SelectionRange selection);
 }

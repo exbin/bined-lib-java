@@ -36,18 +36,29 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.plaf.basic.BasicBorders;
+import org.exbin.deltahex.CaretMovedListener;
 import org.exbin.deltahex.CaretPosition;
-import org.exbin.deltahex.CodeArea;
-import org.exbin.deltahex.CodeArea.Section;
-import org.exbin.deltahex.CodeAreaCaret;
+import org.exbin.deltahex.swing.CodeArea;
+import org.exbin.deltahex.swing.CodeAreaCaret;
 import org.exbin.deltahex.CodeAreaLineNumberLength;
-import org.exbin.deltahex.CodeAreaSpace.SpaceType;
+import org.exbin.deltahex.CodeType;
+import org.exbin.deltahex.DataChangedListener;
+import org.exbin.deltahex.EditationAllowed;
+import org.exbin.deltahex.HexCharactersCase;
+import org.exbin.deltahex.PositionCodeType;
+import org.exbin.deltahex.ScrollBarVisibility;
+import org.exbin.deltahex.ScrollingListener;
+import org.exbin.deltahex.Section;
+import org.exbin.deltahex.SelectionChangedListener;
+import org.exbin.deltahex.SelectionRange;
+import org.exbin.deltahex.ViewMode;
+import org.exbin.deltahex.swing.CodeAreaSpace.SpaceType;
 import org.exbin.utils.binary_data.EditableBinaryData;
 
 /**
  * Hexadecimal editor example panel.
  *
- * @version 0.1.1 2016/08/19
+ * @version 0.1.1 2016/08/31
  * @author ExBin Project (http://exbin.org)
  */
 public class DeltaHexExamplePanel extends javax.swing.JPanel {
@@ -68,6 +79,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
         positionCodeTypeComboBox.setSelectedIndex(codeArea.getPositionCodeType().ordinal());
         activeSectionComboBox.setSelectedIndex(codeArea.getActiveSection().ordinal());
         backgroundModeComboBox.setSelectedIndex(codeArea.getBackgroundMode().ordinal());
+        lineNumbersBackgroundCheckBox.setSelected(codeArea.isLineNumberBackground());
         charRenderingComboBox.setSelectedIndex(codeArea.getCharRenderingMode().ordinal());
         charAntialiasingComboBox.setSelectedIndex(codeArea.getCharAntialiasingMode().ordinal());
         verticalScrollBarVisibilityComboBox.setSelectedIndex(codeArea.getVerticalScrollBarVisibility().ordinal());
@@ -82,7 +94,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
         editationAllowedComboBox.setSelectedIndex(codeArea.getEditationAllowed().ordinal());
         wrapLineModeCheckBox.setSelected(codeArea.isWrapMode());
         lineLengthSpinner.setValue(codeArea.getLineLength());
-        dataSizeTextField.setText(String.valueOf(codeArea.getData().getDataSize()));
+        dataSizeTextField.setText(String.valueOf(codeArea.getDataSize()));
         headerSpaceComboBox.setSelectedIndex(codeArea.getHeaderSpaceType().ordinal());
         headerSpaceSpinner.setValue(codeArea.getHeaderSpaceSize());
         lineNumberSpaceComboBox.setSelectedIndex(codeArea.getLineNumberSpaceType().ordinal());
@@ -101,7 +113,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
         decoratorLineNumLineCheckBox.setSelected((decorationMode & CodeArea.DECORATION_LINENUM_LINE) > 0);
         decoratorSplitLineCheckBox.setSelected((decorationMode & CodeArea.DECORATION_PREVIEW_LINE) > 0);
         decoratorBoxCheckBox.setSelected((decorationMode & CodeArea.DECORATION_BOX) > 0);
-        codeArea.addCaretMovedListener(new CodeArea.CaretMovedListener() {
+        codeArea.addCaretMovedListener(new CaretMovedListener() {
             @Override
             public void caretMoved(CaretPosition caretPosition, Section section) {
                 positionTextField.setText(String.valueOf(caretPosition.getDataPosition()));
@@ -109,9 +121,9 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
                 activeSectionComboBox.setSelectedIndex(section.ordinal());
             }
         });
-        codeArea.addSelectionChangedListener(new CodeArea.SelectionChangedListener() {
+        codeArea.addSelectionChangedListener(new SelectionChangedListener() {
             @Override
-            public void selectionChanged(CodeArea.SelectionRange selection) {
+            public void selectionChanged(SelectionRange selection) {
                 if (selection != null) {
                     long first = codeArea.getSelection().getFirst();
                     selectionStartTextField.setText(String.valueOf(first));
@@ -123,13 +135,13 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
                 }
             }
         });
-        codeArea.addDataChangedListener(new CodeArea.DataChangedListener() {
+        codeArea.addDataChangedListener(new DataChangedListener() {
             @Override
             public void dataChanged() {
-                dataSizeTextField.setText(String.valueOf(codeArea.getData().getDataSize()));
+                dataSizeTextField.setText(String.valueOf(codeArea.getDataSize()));
             }
         });
-        codeArea.addScrollingListener(new CodeArea.ScrollingListener() {
+        codeArea.addScrollingListener(new ScrollingListener() {
             @Override
             public void scrolled() {
                 CodeArea.ScrollPosition scrollPosition = codeArea.getScrollPosition();
@@ -177,6 +189,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
         fontSizeComboBox = new javax.swing.JComboBox<>();
         charsetLabel = new javax.swing.JLabel();
         charsetComboBox = new javax.swing.JComboBox<>();
+        showNonprintableCharactersCheckBox = new javax.swing.JCheckBox();
         statePanel = new javax.swing.JPanel();
         dataSizeLabel = new javax.swing.JLabel();
         dataSizeTextField = new javax.swing.JTextField();
@@ -218,7 +231,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
         decorationPanel = new javax.swing.JPanel();
         backgroundModeLabel = new javax.swing.JLabel();
         backgroundModeComboBox = new javax.swing.JComboBox<>();
-        showNonprintableCharactersCheckBox = new javax.swing.JCheckBox();
+        lineNumbersBackgroundCheckBox = new javax.swing.JCheckBox();
         linesPanel = new javax.swing.JPanel();
         decoratorLineNumLineCheckBox = new javax.swing.JCheckBox();
         decoratorSplitLineCheckBox = new javax.swing.JCheckBox();
@@ -340,8 +353,8 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
             .addGroup(fontPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(fontPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(fontFamilyComboBox, 0, 309, Short.MAX_VALUE)
-                    .addComponent(fontSizeComboBox, 0, 309, Short.MAX_VALUE)
+                    .addComponent(fontFamilyComboBox, 0, 264, Short.MAX_VALUE)
+                    .addComponent(fontSizeComboBox, 0, 264, Short.MAX_VALUE)
                     .addGroup(fontPanelLayout.createSequentialGroup()
                         .addGroup(fontPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(fontFamilyLabel)
@@ -372,6 +385,13 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
             }
         });
 
+        showNonprintableCharactersCheckBox.setText("Show Nonprintable Characters");
+        showNonprintableCharactersCheckBox.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                showNonprintableCharactersCheckBoxItemStateChanged(evt);
+            }
+        });
+
         javax.swing.GroupLayout modePanelLayout = new javax.swing.GroupLayout(modePanel);
         modePanel.setLayout(modePanelLayout);
         modePanelLayout.setHorizontalGroup(
@@ -379,8 +399,9 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
             .addGroup(modePanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(modePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(charRenderingComboBox, 0, 331, Short.MAX_VALUE)
                     .addComponent(viewModeComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(showNonprintableCharactersCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(charRenderingComboBox, 0, 286, Short.MAX_VALUE)
                     .addComponent(codeTypeComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(charAntialiasingComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(editationAllowedComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -388,9 +409,9 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
                     .addComponent(charsetComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(modePanelLayout.createSequentialGroup()
                         .addGroup(modePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(viewModeScrollModeLabel)
                             .addComponent(charRenderingScrollModeLabel)
                             .addComponent(charAntialiasingScrollModeLabel)
-                            .addComponent(viewModeScrollModeLabel)
                             .addComponent(codeTypeScrollModeLabel)
                             .addComponent(editationAllowedLabel)
                             .addComponent(charsetLabel))
@@ -404,6 +425,8 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
                 .addComponent(viewModeScrollModeLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(viewModeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(showNonprintableCharactersCheckBox)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(codeTypeScrollModeLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -426,7 +449,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
                 .addComponent(charsetLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(charsetComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(45, Short.MAX_VALUE))
+                .addContainerGap(27, Short.MAX_VALUE))
         );
 
         dataSizeLabel.setText("Data Size");
@@ -820,10 +843,10 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
             }
         });
 
-        showNonprintableCharactersCheckBox.setText("Show Nonprintable Characters");
-        showNonprintableCharactersCheckBox.addItemListener(new java.awt.event.ItemListener() {
+        lineNumbersBackgroundCheckBox.setText("Include Line Numbers");
+        lineNumbersBackgroundCheckBox.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                showNonprintableCharactersCheckBoxItemStateChanged(evt);
+                lineNumbersBackgroundCheckBoxItemStateChanged(evt);
             }
         });
 
@@ -917,23 +940,22 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
             .addGroup(decorationPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(decorationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(backgroundModeComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(linesPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(borderTypeComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(decorationPanelLayout.createSequentialGroup()
-                        .addGroup(decorationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(backgroundModeLabel)
-                            .addComponent(showNonprintableCharactersCheckBox)
-                            .addComponent(borderTypeLabel))
-                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(decorationPanelLayout.createSequentialGroup()
                         .addGroup(decorationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(hexCharactersModeLabel)
                             .addComponent(positionCodeTypeLabel))
-                        .addGap(126, 126, 126))
-                    .addComponent(hexCharactersModeComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(positionCodeTypeComboBox, javax.swing.GroupLayout.Alignment.TRAILING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                        .addGap(132, 132, 132))
+                    .addGroup(decorationPanelLayout.createSequentialGroup()
+                        .addGroup(decorationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(backgroundModeLabel)
+                            .addComponent(borderTypeLabel)
+                            .addComponent(lineNumbersBackgroundCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(backgroundModeComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(linesPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(borderTypeComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(hexCharactersModeComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(positionCodeTypeComboBox, javax.swing.GroupLayout.Alignment.TRAILING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap())))
         );
         decorationPanelLayout.setVerticalGroup(
             decorationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -943,7 +965,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(backgroundModeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(showNonprintableCharactersCheckBox)
+                .addComponent(lineNumbersBackgroundCheckBox)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(linesPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -1243,7 +1265,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void viewModeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewModeComboBoxActionPerformed
-        codeArea.setViewMode(CodeArea.ViewMode.values()[viewModeComboBox.getSelectedIndex()]);
+        codeArea.setViewMode(ViewMode.values()[viewModeComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_viewModeComboBoxActionPerformed
 
     private void lineLengthSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_lineLengthSpinnerStateChanged
@@ -1301,24 +1323,24 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
         codeArea.setWrapMode(wrapLineModeCheckBox.isSelected());
     }//GEN-LAST:event_wrapLineModeCheckBoxItemStateChanged
 
-    private void showNonprintableCharactersCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_showNonprintableCharactersCheckBoxItemStateChanged
-        codeArea.setShowUnprintableCharacters(showNonprintableCharactersCheckBox.isSelected());
-    }//GEN-LAST:event_showNonprintableCharactersCheckBoxItemStateChanged
+    private void lineNumbersBackgroundCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_lineNumbersBackgroundCheckBoxItemStateChanged
+        codeArea.setLineNumberBackground(lineNumbersBackgroundCheckBox.isSelected());
+    }//GEN-LAST:event_lineNumbersBackgroundCheckBoxItemStateChanged
 
     private void showShadowCursorCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_showShadowCursorCheckBoxItemStateChanged
         codeArea.setShowShadowCursor(showShadowCursorCheckBox.isSelected());
     }//GEN-LAST:event_showShadowCursorCheckBoxItemStateChanged
 
     private void hexCharactersModeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hexCharactersModeComboBoxActionPerformed
-        codeArea.setHexCharactersCase(CodeArea.HexCharactersCase.values()[hexCharactersModeComboBox.getSelectedIndex()]);
+        codeArea.setHexCharactersCase(HexCharactersCase.values()[hexCharactersModeComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_hexCharactersModeComboBoxActionPerformed
 
     private void codeTypeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_codeTypeComboBoxActionPerformed
-        codeArea.setCodeType(CodeArea.CodeType.values()[codeTypeComboBox.getSelectedIndex()]);
+        codeArea.setCodeType(CodeType.values()[codeTypeComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_codeTypeComboBoxActionPerformed
 
     private void activeSectionComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_activeSectionComboBoxActionPerformed
-        codeArea.setActiveSection(CodeArea.Section.values()[activeSectionComboBox.getSelectedIndex()]);
+        codeArea.setActiveSection(Section.values()[activeSectionComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_activeSectionComboBoxActionPerformed
 
     private void loadDataButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadDataButtonActionPerformed
@@ -1433,7 +1455,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
     }//GEN-LAST:event_lineNumberLengthComboBoxActionPerformed
 
     private void positionCodeTypeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_positionCodeTypeComboBoxActionPerformed
-        codeArea.setPositionCodeType(CodeArea.PositionCodeType.values()[positionCodeTypeComboBox.getSelectedIndex()]);
+        codeArea.setPositionCodeType(PositionCodeType.values()[positionCodeTypeComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_positionCodeTypeComboBoxActionPerformed
 
     private void headerSpaceSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_headerSpaceSpinnerStateChanged
@@ -1471,7 +1493,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
     }//GEN-LAST:event_charsetComboBoxActionPerformed
 
     private void editationAllowedComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editationAllowedComboBoxActionPerformed
-        codeArea.setEditationAllowed(CodeArea.EditationAllowed.values()[editationAllowedComboBox.getSelectedIndex()]);
+        codeArea.setEditationAllowed(EditationAllowed.values()[editationAllowedComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_editationAllowedComboBoxActionPerformed
 
     private void tabbedPaneStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_tabbedPaneStateChanged
@@ -1491,7 +1513,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
     }//GEN-LAST:event_verticalScrollModeComboBoxActionPerformed
 
     private void verticalScrollBarVisibilityComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_verticalScrollBarVisibilityComboBoxActionPerformed
-        codeArea.setVerticalScrollBarVisibility(CodeArea.ScrollBarVisibility.values()[verticalScrollBarVisibilityComboBox.getSelectedIndex()]);
+        codeArea.setVerticalScrollBarVisibility(ScrollBarVisibility.values()[verticalScrollBarVisibilityComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_verticalScrollBarVisibilityComboBoxActionPerformed
 
     private void horizontalScrollModeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_horizontalScrollModeComboBoxActionPerformed
@@ -1499,7 +1521,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
     }//GEN-LAST:event_horizontalScrollModeComboBoxActionPerformed
 
     private void horizontalScrollBarVisibilityComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_horizontalScrollBarVisibilityComboBoxActionPerformed
-        codeArea.setHorizontalScrollBarVisibility(CodeArea.ScrollBarVisibility.values()[horizontalScrollBarVisibilityComboBox.getSelectedIndex()]);
+        codeArea.setHorizontalScrollBarVisibility(ScrollBarVisibility.values()[horizontalScrollBarVisibilityComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_horizontalScrollBarVisibilityComboBoxActionPerformed
 
     private void cursorRenderingModeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cursorRenderingModeComboBoxActionPerformed
@@ -1531,6 +1553,10 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
         Font derivedFont = font.deriveFont(Font.PLAIN, Integer.valueOf((String) fontSizeComboBox.getSelectedItem()));
         codeArea.setFont(derivedFont);
     }//GEN-LAST:event_fontSizeComboBoxActionPerformed
+
+    private void showNonprintableCharactersCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_showNonprintableCharactersCheckBoxItemStateChanged
+        codeArea.setShowUnprintableCharacters(showNonprintableCharactersCheckBox.isSelected());
+    }//GEN-LAST:event_showNonprintableCharactersCheckBoxItemStateChanged
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<String> activeSectionComboBox;
@@ -1601,6 +1627,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
     private javax.swing.JComboBox<String> lineNumberSpaceComboBox;
     private javax.swing.JLabel lineNumberSpaceLabel;
     private javax.swing.JSpinner lineNumberSpaceSpinner;
+    private javax.swing.JCheckBox lineNumbersBackgroundCheckBox;
     private javax.swing.JPanel lineNumbersPanel;
     private javax.swing.JPanel linesPanel;
     private javax.swing.JButton loadDataButton;

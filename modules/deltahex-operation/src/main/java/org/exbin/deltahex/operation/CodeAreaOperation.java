@@ -15,7 +15,7 @@
  */
 package org.exbin.deltahex.operation;
 
-import org.exbin.deltahex.CodeArea;
+import org.exbin.deltahex.swing.CodeArea;
 
 /**
  * Abstract class for operation on code area component.

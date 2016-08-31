@@ -15,7 +15,7 @@
  */
 package org.exbin.deltahex.operation;
 
-import org.exbin.deltahex.CodeArea;
+import org.exbin.deltahex.swing.CodeArea;
 import org.exbin.utils.binary_data.BinaryData;
 import org.exbin.utils.binary_data.EditableBinaryData;
 

@@ -15,7 +15,8 @@
  */
 package org.exbin.deltahex.operation;
 
-import org.exbin.deltahex.CodeArea;
+import org.exbin.deltahex.CodeType;
+import org.exbin.deltahex.swing.CodeArea;
 import org.exbin.deltahex.delta.MemoryPagedData;
 import org.exbin.utils.binary_data.EditableBinaryData;
 
@@ -31,7 +32,7 @@ public class OverwriteCodeEditDataOperation extends CodeEditDataOperation {
     private final int startCodeOffset;
     private long length = 0;
     private final MemoryPagedData undoData = new MemoryPagedData();
-    private final CodeArea.CodeType codeType;
+    private final CodeType codeType;
 
     private int codeOffset = 0;
 
@@ -41,7 +42,7 @@ public class OverwriteCodeEditDataOperation extends CodeEditDataOperation {
         this.startCodeOffset = startCodeOffset;
         this.codeOffset = startCodeOffset;
         this.codeType = codeArea.getCodeType();
-        if (startCodeOffset > 0 && codeArea.getData().getDataSize() > startPosition) {
+        if (startCodeOffset > 0 && codeArea.getDataSize() > startPosition) {
             undoData.insert(0, new byte[]{codeArea.getData().getByte(startPosition)});
             length++;
         }
@@ -63,7 +64,7 @@ public class OverwriteCodeEditDataOperation extends CodeEditDataOperation {
     }
 
     @Override
-    public CodeArea.CodeType getCodeType() {
+    public CodeType getCodeType() {
         return codeType;
     }
 

@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
-import org.exbin.deltahex.CodeArea;
+import org.exbin.deltahex.swing.CodeArea;
 import org.exbin.utils.binary_data.ByteArrayEditableData;
 
 /**

@@ -13,34 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.deltahex.operation.command;
-
-import org.exbin.deltahex.swing.CodeArea;
-import org.exbin.xbup.operation.AbstractCommand;
+package org.exbin.deltahex;
 
 /**
- * Abstract class for operation on code area component.
+ * Enumeration of supported position code types.
  *
- * @version 0.1.0 2016/06/13
+ * @version 0.1.1 2016/08/31
  * @author ExBin Project (http://exbin.org)
  */
-public abstract class CodeAreaCommand extends AbstractCommand {
+public enum PositionCodeType {
 
-    protected final CodeArea codeArea;
+    OCTAL(8), DECIMAL(10), HEXADECIMAL(16);
 
-    public CodeAreaCommand(CodeArea codeArea) {
-        this.codeArea = codeArea;
+    private final int base;
+    private final double baseLog;
+
+    private PositionCodeType(int base) {
+        this.base = base;
+        baseLog = Math.log(base);
     }
 
-    /**
-     * Returns type of the command.
-     *
-     * @return command type
-     */
-    public abstract CodeAreaCommandType getType();
+    public int getBase() {
+        return base;
+    }
 
-    @Override
-    public String getCaption() {
-        return getType().getCaption();
+    public double getBaseLog() {
+        return baseLog;
     }
 }

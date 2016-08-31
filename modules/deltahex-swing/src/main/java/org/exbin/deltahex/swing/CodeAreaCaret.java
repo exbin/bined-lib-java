@@ -13,19 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.deltahex;
+package org.exbin.deltahex.swing;
 
+import org.exbin.deltahex.CaretPosition;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.Timer;
-import org.exbin.deltahex.CodeArea.Section;
+import org.exbin.deltahex.EditationMode;
+import org.exbin.deltahex.Section;
 
 /**
  * Code area caret.
  *
- * @version 0.1.1 2016/08/23
+ * @version 0.1.1 2016/08/31
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeAreaCaret {
@@ -43,7 +45,7 @@ public class CodeAreaCaret {
     private Section section = Section.CODE_MATRIX;
     private CursorShape insertCursorShape = CursorShape.DOUBLE_LEFT;
     private CursorShape overwriteCursorShape = CursorShape.BOX;
-    private CursorRenderingMode renderingMode = CursorRenderingMode.XOR;
+    private CursorRenderingMode renderingMode = CursorRenderingMode.NEGATIVE;
 
     public CodeAreaCaret(CodeArea codeArea) {
         this.codeArea = codeArea;
@@ -71,11 +73,12 @@ public class CodeAreaCaret {
                 }
             }
         }
+
         return -1;
     }
 
     public Point getCursorPoint(int bytesPerLine, int lineHeight, int charWidth) {
-        long shiftedPosition = caretPosition.getDataPosition() + codeArea.getScrollPosition().lineByteShift;
+        long shiftedPosition = caretPosition.getDataPosition() + codeArea.getScrollPosition().getLineByteShift();
         long line = shiftedPosition / bytesPerLine;
         int byteOffset = (int) (shiftedPosition % bytesPerLine);
 
@@ -111,7 +114,7 @@ public class CodeAreaCaret {
     public Rectangle getCursorRect(int bytesPerLine, int lineHeight, int charWidth) {
         Point cursorPoint = getCursorPoint(bytesPerLine, lineHeight, charWidth);
         Point scrollPoint = codeArea.getScrollPoint();
-        CursorShape cursorShape = codeArea.getEditationMode() == CodeArea.EditationMode.INSERT ? insertCursorShape : overwriteCursorShape;
+        CursorShape cursorShape = codeArea.getEditationMode() == EditationMode.INSERT ? insertCursorShape : overwriteCursorShape;
         int cursorThickness = 0;
         if (cursorShape.getWidth() != CursorShapeWidth.FULL) {
             cursorThickness = getCursorThickness(cursorShape, charWidth, lineHeight);
@@ -280,6 +283,7 @@ public class CodeAreaCaret {
                 cursorRepaint();
             } else {
                 blinkTimer.setDelay(blinkRate);
+                blinkTimer.setInitialDelay(blinkRate);
             }
         } else if (blinkRate > 0) {
             blinkTimer = new javax.swing.Timer(blinkRate, new Blink());

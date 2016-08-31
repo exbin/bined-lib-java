@@ -41,7 +41,7 @@ repositories {
 }
 
 dependencies {
-    compile moduleDep('DeltahexJava', 'org.exbin.deltahex', 'deltahex-core')
+    compile moduleDep('DeltahexJava', 'org.exbin.deltahex', 'deltahex-swing')
 
     testCompile group: 'junit', name: 'junit', version: '4.10'
 }

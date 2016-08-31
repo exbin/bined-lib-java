@@ -15,7 +15,8 @@
  */
 package org.exbin.deltahex.operation;
 
-import org.exbin.deltahex.CodeArea;
+import org.exbin.deltahex.CodeType;
+import org.exbin.deltahex.swing.CodeArea;
 import org.exbin.deltahex.delta.MemoryPagedData;
 import org.exbin.utils.binary_data.EditableBinaryData;
 
@@ -54,7 +55,7 @@ public class DeleteCodeEditDataOperation extends CodeEditDataOperation {
     }
 
     @Override
-    public CodeArea.CodeType getCodeType() {
+    public CodeType getCodeType() {
         return null;
     }
 

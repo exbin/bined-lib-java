@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.deltahex;
+package org.exbin.deltahex.swing;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.exbin.deltahex.EditationMode;
 import org.exbin.utils.binary_data.ByteArrayEditableData;
 import org.exbin.utils.binary_data.EditableBinaryData;
 import org.junit.Test;
@@ -46,7 +47,7 @@ public class CodeAreaTest {
         codeArea.setData(getSampleData(SAMPLE_ALLBYTES));
         codeArea.selectAll();
         codeArea.delete();
-        assertTrue(codeArea.getData().getDataSize() == 0);
+        assertTrue(codeArea.getDataSize() == 0);
     }
 
     @Test
@@ -59,13 +60,13 @@ public class CodeAreaTest {
         codeArea.copy();
         codeArea.clearSelection();
         codeArea.paste();
-        assertTrue(codeArea.getData().getDataSize() == dataSize);
+        assertTrue(codeArea.getDataSize() == dataSize);
     }
 
     @Test
     public void testCopyPasteInInsertMode() {
         CodeArea codeArea = new CodeArea();
-        codeArea.setEditationMode(CodeArea.EditationMode.INSERT);
+        codeArea.setEditationMode(EditationMode.INSERT);
         EditableBinaryData sampleData = getSampleData(SAMPLE_ALLBYTES);
         codeArea.setData(sampleData);
         long dataSize = sampleData.getDataSize();
@@ -73,7 +74,7 @@ public class CodeAreaTest {
         codeArea.copy();
         codeArea.clearSelection();
         codeArea.paste();
-        assertTrue(codeArea.getData().getDataSize() == dataSize * 2);
+        assertTrue(codeArea.getDataSize() == dataSize * 2);
     }
 
     @Test
@@ -87,7 +88,7 @@ public class CodeAreaTest {
         codeArea.clearSelection();
         codeArea.getCaret().setCaretPosition(dataSize / 2);
         codeArea.paste();
-        assertTrue(codeArea.getData().getDataSize() == (dataSize / 2 + dataSize));
+        assertTrue(codeArea.getDataSize() == (dataSize / 2 + dataSize));
     }
 
     private EditableBinaryData getSampleData(String dataPath) {

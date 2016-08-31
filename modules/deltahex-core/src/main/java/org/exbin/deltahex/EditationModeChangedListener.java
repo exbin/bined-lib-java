@@ -13,34 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.deltahex.operation.command;
-
-import org.exbin.deltahex.swing.CodeArea;
-import org.exbin.xbup.operation.AbstractCommand;
+package org.exbin.deltahex;
 
 /**
- * Abstract class for operation on code area component.
+ * Interface for editation mode change listener.
  *
- * @version 0.1.0 2016/06/13
+ * @version 0.1.1 2016/08/31
  * @author ExBin Project (http://exbin.org)
  */
-public abstract class CodeAreaCommand extends AbstractCommand {
-
-    protected final CodeArea codeArea;
-
-    public CodeAreaCommand(CodeArea codeArea) {
-        this.codeArea = codeArea;
-    }
+public interface EditationModeChangedListener {
 
     /**
-     * Returns type of the command.
+     * Fires notification each time editation mode is changed.
      *
-     * @return command type
+     * @param editationMode new editation mode
      */
-    public abstract CodeAreaCommandType getType();
-
-    @Override
-    public String getCaption() {
-        return getType().getCaption();
-    }
+    void editationModeChanged(EditationMode editationMode);
 }

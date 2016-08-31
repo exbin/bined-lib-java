@@ -18,7 +18,7 @@ package org.exbin.deltahex;
 /**
  * Hexadecimal editor component utilities.
  *
- * @version 0.1.1 2016/07/21
+ * @version 0.1.1 2016/08/31
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeAreaUtils {
@@ -78,14 +78,14 @@ public class CodeAreaUtils {
         }
     }
 
-    public static void byteToCharsCode(byte dataByte, CodeArea.CodeType codeType, DataTarget target, int targetPosition, CodeArea.HexCharactersCase charCase) {
-        char[] hexCharacters = charCase == CodeArea.HexCharactersCase.UPPER ? CodeAreaUtils.UPPER_HEX_CODES : CodeAreaUtils.LOWER_HEX_CODES;
+    public static void byteToCharsCode(byte dataByte, CodeType codeType, char[] targetData, int targetPosition, HexCharactersCase charCase) {
+        char[] hexCharacters = charCase == HexCharactersCase.UPPER ? CodeAreaUtils.UPPER_HEX_CODES : CodeAreaUtils.LOWER_HEX_CODES;
         switch (codeType) {
             case BINARY: {
                 int bitMask = 0x80;
                 for (int i = 0; i < 8; i++) {
                     int codeValue = (dataByte & bitMask) > 0 ? 1 : 0;
-                    target.data[targetPosition + i] = hexCharacters[codeValue];
+                    targetData[targetPosition + i] = hexCharacters[codeValue];
                     bitMask = bitMask >> 1;
                 }
                 break;
@@ -93,28 +93,28 @@ public class CodeAreaUtils {
             case DECIMAL: {
                 int value = dataByte & 0xff;
                 int codeValue0 = value / 100;
-                target.data[targetPosition] = hexCharacters[codeValue0];
+                targetData[targetPosition] = hexCharacters[codeValue0];
                 int codeValue1 = (value / 10) % 10;
-                target.data[targetPosition + 1] = hexCharacters[codeValue1];
+                targetData[targetPosition + 1] = hexCharacters[codeValue1];
                 int codeValue2 = value % 10;
-                target.data[targetPosition + 2] = hexCharacters[codeValue2];
+                targetData[targetPosition + 2] = hexCharacters[codeValue2];
                 break;
             }
             case OCTAL: {
                 int value = dataByte & 0xff;
                 int codeValue0 = value / 64;
-                target.data[targetPosition] = hexCharacters[codeValue0];
+                targetData[targetPosition] = hexCharacters[codeValue0];
                 int codeValue1 = (value / 8) & 7;
-                target.data[targetPosition + 1] = hexCharacters[codeValue1];
+                targetData[targetPosition + 1] = hexCharacters[codeValue1];
                 int codeValue2 = value % 8;
-                target.data[targetPosition + 2] = hexCharacters[codeValue2];
+                targetData[targetPosition + 2] = hexCharacters[codeValue2];
                 break;
             }
             case HEXADECIMAL: {
                 int codeValue0 = (dataByte >> 4) & 15;
-                target.data[targetPosition] = hexCharacters[codeValue0];
+                targetData[targetPosition] = hexCharacters[codeValue0];
                 int codeValue1 = dataByte & 15;
-                target.data[targetPosition + 1] = hexCharacters[codeValue1];
+                targetData[targetPosition + 1] = hexCharacters[codeValue1];
                 break;
             }
             default:
@@ -122,12 +122,7 @@ public class CodeAreaUtils {
         }
     }
 
-    public static class DataTarget {
-
-        public char[] data;
-    }
-
-    public static byte stringCodeToByte(String code, CodeArea.CodeType codeType) {
+    public static byte stringCodeToByte(String code, CodeType codeType) {
         if (code.length() > codeType.getMaxDigits()) {
             throw new IllegalArgumentException("String code is too long");
         }

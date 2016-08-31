@@ -10,8 +10,9 @@
               <Group type="102" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="charRenderingComboBox" alignment="0" pref="331" max="32767" attributes="0"/>
                       <Component id="viewModeComboBox" max="32767" attributes="0"/>
+                      <Component id="showNonprintableCharactersCheckBox" alignment="0" max="32767" attributes="0"/>
+                      <Component id="charRenderingComboBox" alignment="0" pref="286" max="32767" attributes="0"/>
                       <Component id="codeTypeComboBox" alignment="0" max="32767" attributes="0"/>
                       <Component id="charAntialiasingComboBox" alignment="0" max="32767" attributes="0"/>
                       <Component id="editationAllowedComboBox" alignment="0" max="32767" attributes="0"/>
@@ -19,9 +20,9 @@
                       <Component id="charsetComboBox" alignment="0" max="32767" attributes="0"/>
                       <Group type="102" attributes="0">
                           <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="viewModeScrollModeLabel" min="-2" max="-2" attributes="0"/>
                               <Component id="charRenderingScrollModeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                               <Component id="charAntialiasingScrollModeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                              <Component id="viewModeScrollModeLabel" min="-2" max="-2" attributes="0"/>
                               <Component id="codeTypeScrollModeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                               <Component id="editationAllowedLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                               <Component id="charsetLabel" alignment="0" min="-2" max="-2" attributes="0"/>
@@ -40,6 +41,8 @@
                   <Component id="viewModeScrollModeLabel" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="viewModeComboBox" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="showNonprintableCharactersCheckBox" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="codeTypeScrollModeLabel" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
@@ -62,7 +65,7 @@
                   <Component id="charsetLabel" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="charsetComboBox" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="45" max="32767" attributes="0"/>
+                  <EmptySpace pref="27" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -202,8 +205,8 @@
                   <Group type="102" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="fontFamilyComboBox" alignment="0" pref="309" max="32767" attributes="0"/>
-                          <Component id="fontSizeComboBox" alignment="0" pref="309" max="32767" attributes="0"/>
+                          <Component id="fontFamilyComboBox" alignment="0" pref="264" max="32767" attributes="0"/>
+                          <Component id="fontSizeComboBox" alignment="0" pref="264" max="32767" attributes="0"/>
                           <Group type="102" attributes="0">
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Component id="fontFamilyLabel" min="-2" max="-2" attributes="0"/>
@@ -308,6 +311,14 @@
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
           </AuxValues>
+        </Component>
+        <Component class="javax.swing.JCheckBox" name="showNonprintableCharactersCheckBox">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Show Nonprintable Characters"/>
+          </Properties>
+          <Events>
+            <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="showNonprintableCharactersCheckBoxItemStateChanged"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>
@@ -921,28 +932,27 @@
               <Group type="102" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="backgroundModeComboBox" max="32767" attributes="0"/>
-                      <Component id="linesPanel" alignment="0" max="32767" attributes="0"/>
-                      <Component id="borderTypeComboBox" alignment="0" max="32767" attributes="0"/>
-                      <Group type="102" attributes="0">
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="backgroundModeLabel" min="-2" max="-2" attributes="0"/>
-                              <Component id="showNonprintableCharactersCheckBox" alignment="0" min="-2" max="-2" attributes="0"/>
-                              <Component id="borderTypeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                      </Group>
                       <Group type="102" alignment="0" attributes="0">
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Component id="hexCharactersModeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                               <Component id="positionCodeTypeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace min="-2" pref="126" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="132" max="-2" attributes="0"/>
                       </Group>
-                      <Component id="hexCharactersModeComboBox" alignment="0" max="32767" attributes="0"/>
-                      <Component id="positionCodeTypeComboBox" alignment="1" max="32767" attributes="0"/>
+                      <Group type="102" attributes="0">
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="backgroundModeLabel" min="-2" max="-2" attributes="0"/>
+                              <Component id="borderTypeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="lineNumbersBackgroundCheckBox" alignment="0" max="32767" attributes="0"/>
+                              <Component id="backgroundModeComboBox" max="32767" attributes="0"/>
+                              <Component id="linesPanel" alignment="0" max="32767" attributes="0"/>
+                              <Component id="borderTypeComboBox" alignment="0" max="32767" attributes="0"/>
+                              <Component id="hexCharactersModeComboBox" alignment="0" max="32767" attributes="0"/>
+                              <Component id="positionCodeTypeComboBox" alignment="1" max="32767" attributes="0"/>
+                          </Group>
+                          <EmptySpace max="-2" attributes="0"/>
+                      </Group>
                   </Group>
-                  <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -954,7 +964,7 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="backgroundModeComboBox" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="showNonprintableCharactersCheckBox" min="-2" max="-2" attributes="0"/>
+                  <Component id="lineNumbersBackgroundCheckBox" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="linesPanel" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
@@ -999,12 +1009,12 @@
             <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
           </AuxValues>
         </Component>
-        <Component class="javax.swing.JCheckBox" name="showNonprintableCharactersCheckBox">
+        <Component class="javax.swing.JCheckBox" name="lineNumbersBackgroundCheckBox">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Show Nonprintable Characters"/>
+            <Property name="text" type="java.lang.String" value="Include Line Numbers"/>
           </Properties>
           <Events>
-            <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="showNonprintableCharactersCheckBoxItemStateChanged"/>
+            <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="lineNumbersBackgroundCheckBoxItemStateChanged"/>
           </Events>
         </Component>
         <Container class="javax.swing.JPanel" name="linesPanel">

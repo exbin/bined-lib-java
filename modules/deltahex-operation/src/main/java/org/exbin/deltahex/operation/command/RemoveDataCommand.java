@@ -16,7 +16,7 @@
  */
 package org.exbin.deltahex.operation.command;
 
-import org.exbin.deltahex.CodeArea;
+import org.exbin.deltahex.swing.CodeArea;
 import org.exbin.deltahex.operation.RemoveDataOperation;
 
 /**

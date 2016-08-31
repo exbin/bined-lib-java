@@ -15,7 +15,8 @@
  */
 package org.exbin.deltahex.operation;
 
-import org.exbin.deltahex.CodeArea;
+import org.exbin.deltahex.CodeType;
+import org.exbin.deltahex.swing.CodeArea;
 import org.exbin.deltahex.delta.MemoryPagedData;
 import org.exbin.utils.binary_data.EditableBinaryData;
 
@@ -31,7 +32,7 @@ public class InsertCodeEditDataOperation extends CodeEditDataOperation {
     private final int startCodeOffset;
     private boolean trailing = false;
     private byte trailingValue;
-    private final CodeArea.CodeType codeType;
+    private final CodeType codeType;
 
     private long length;
     private int codeOffset = 0;
@@ -63,7 +64,7 @@ public class InsertCodeEditDataOperation extends CodeEditDataOperation {
     }
 
     @Override
-    public CodeArea.CodeType getCodeType() {
+    public CodeType getCodeType() {
         return codeType;
     }
 

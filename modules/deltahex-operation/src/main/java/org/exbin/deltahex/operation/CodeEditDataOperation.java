@@ -15,7 +15,8 @@
  */
 package org.exbin.deltahex.operation;
 
-import org.exbin.deltahex.CodeArea;
+import org.exbin.deltahex.CodeType;
+import org.exbin.deltahex.swing.CodeArea;
 
 /**
  * Abstract operation for editing data.
@@ -34,7 +35,7 @@ public abstract class CodeEditDataOperation extends CodeAreaOperation {
      *
      * @return code type
      */
-    public abstract CodeArea.CodeType getCodeType();
+    public abstract CodeType getCodeType();
 
     /**
      * Appends next hexadecimal value in editing action sequence.

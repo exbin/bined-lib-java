@@ -13,34 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.deltahex.operation.command;
-
-import org.exbin.deltahex.swing.CodeArea;
-import org.exbin.xbup.operation.AbstractCommand;
+package org.exbin.deltahex;
 
 /**
- * Abstract class for operation on code area component.
+ * Interface for caret moved listener.
  *
- * @version 0.1.0 2016/06/13
+ * @version 0.1.1 2016/08/31
  * @author ExBin Project (http://exbin.org)
  */
-public abstract class CodeAreaCommand extends AbstractCommand {
-
-    protected final CodeArea codeArea;
-
-    public CodeAreaCommand(CodeArea codeArea) {
-        this.codeArea = codeArea;
-    }
+public interface CaretMovedListener {
 
     /**
-     * Returns type of the command.
+     * Fires notification each time caret is moved or section is changed.
      *
-     * @return command type
+     * @param caretPosition caret position
+     * @param section active section
      */
-    public abstract CodeAreaCommandType getType();
-
-    @Override
-    public String getCaption() {
-        return getType().getCaption();
-    }
+    void caretMoved(CaretPosition caretPosition, Section section);
 }
