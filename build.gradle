@@ -80,12 +80,16 @@ if (!project.gradle.startParameter.projectProperties.containsKey("moduleDep")) {
             contents {
                 duplicatesStrategy = 'exclude'
 
-                from project.rootDir
-                include 'LICENSE-2.0.txt'
-                from 'src/dist'
-                include 'readme.txt'
-                include 'deltahex-example.sh'
-                include 'deltahex-example.bat'
+                into('') {
+                    from project.rootDir
+                    include 'LICENSE-2.0.txt'
+                }
+                into('') {
+                    from 'src/dist'
+                    include 'readme.txt'
+                    include '*.sh'
+                    include '*.bat'
+                }
 
                 project(':modules').subprojects.each { p ->
                     p.plugins.withType(JavaPlugin) {

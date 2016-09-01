@@ -411,6 +411,7 @@ public class CodeArea extends JComponent {
             caret.setCaretPosition(0);
             notifyCaretMoved();
         }
+        computePaintData();
 
         for (DataChangedListener dataChangedListener : dataChangedListeners) {
             dataChangedListener.dataChanged();
@@ -842,9 +843,14 @@ public class CodeArea extends JComponent {
 
         switch (lineNumberLength.getLineNumberType()) {
             case AUTO: {
-                double natLog = Math.log(getDataSize());
-                paintDataCache.lineNumbersLength = (int) Math.ceil(natLog / positionCodeType.getBaseLog());
-                if (paintDataCache.lineNumbersLength == 0) {
+                long dataSize = getDataSize();
+                if (dataSize > 0) {
+                    double natLog = Math.log(dataSize);
+                    paintDataCache.lineNumbersLength = (int) Math.ceil(natLog / positionCodeType.getBaseLog());
+                    if (paintDataCache.lineNumbersLength == 0) {
+                        paintDataCache.lineNumbersLength = 1;
+                    }
+                } else {
                     paintDataCache.lineNumbersLength = 1;
                 }
                 break;

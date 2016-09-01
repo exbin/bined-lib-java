@@ -45,7 +45,7 @@ import org.exbin.utils.binary_data.EditableBinaryData;
 /**
  * Default hexadecimal editor command handler.
  *
- * @version 0.1.1 2016/08/31
+ * @version 0.1.1 2016/09/01
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
@@ -211,18 +211,16 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                 CaretPosition caretPosition = codeArea.getCaretPosition();
                 int bytesPerLine = codeArea.getBytesPerLine();
                 CodeArea.ScrollPosition scrollPosition = codeArea.getScrollPosition();
-                if (caretPosition.getDataPosition() > 0 || caretPosition.getCodeOffset() - scrollPosition.getLineByteShift() != 0) {
-                    long targetPosition;
-                    if ((keyEvent.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) > 0) {
-                        targetPosition = 0;
-                    } else {
-                        targetPosition = (caretPosition.getDataPosition() / bytesPerLine) * bytesPerLine - scrollPosition.getLineByteShift();
-                    }
-                    codeArea.setCaretPosition(targetPosition);
-                    caretMoved();
-                    codeArea.notifyCaretMoved();
-                    codeArea.updateSelection(keyEvent.getModifiersEx(), caretPosition);
+                long targetPosition;
+                if ((keyEvent.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) > 0) {
+                    targetPosition = 0;
+                } else {
+                    targetPosition = (caretPosition.getDataPosition() / bytesPerLine) * bytesPerLine - scrollPosition.getLineByteShift();
                 }
+                codeArea.setCaretPosition(targetPosition);
+                caretMoved();
+                codeArea.notifyCaretMoved();
+                codeArea.updateSelection(keyEvent.getModifiersEx(), caretPosition);
                 codeArea.revealCursor();
                 keyEvent.consume();
                 break;
@@ -231,19 +229,17 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                 CaretPosition caretPosition = codeArea.getCaretPosition();
                 int bytesPerLine = codeArea.getBytesPerLine();
                 long dataSize = codeArea.getDataSize();
-                if (caretPosition.getDataPosition() < dataSize) {
-                    if ((keyEvent.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) > 0) {
-                        codeArea.setCaretPosition(codeArea.getDataSize());
-                    } else if (codeArea.getActiveSection() == Section.CODE_MATRIX) {
-                        long newPosition = ((caretPosition.getDataPosition() / bytesPerLine) + 1) * bytesPerLine - 1;
-                        codeArea.setCaretPosition(newPosition < dataSize ? newPosition : dataSize, newPosition < dataSize ? codeArea.getCodeType().getMaxDigits() - 1 : 0);
-                    } else {
-                        long newPosition = ((caretPosition.getDataPosition() / bytesPerLine) + 1) * bytesPerLine - 1;
-                        codeArea.setCaretPosition(newPosition < dataSize ? newPosition : dataSize);
-                    }
-                    caretMoved();
-                    codeArea.updateSelection(keyEvent.getModifiersEx(), caretPosition);
+                if ((keyEvent.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) > 0) {
+                    codeArea.setCaretPosition(codeArea.getDataSize());
+                } else if (codeArea.getActiveSection() == Section.CODE_MATRIX) {
+                    long newPosition = ((caretPosition.getDataPosition() / bytesPerLine) + 1) * bytesPerLine - 1;
+                    codeArea.setCaretPosition(newPosition < dataSize ? newPosition : dataSize, newPosition < dataSize ? codeArea.getCodeType().getMaxDigits() - 1 : 0);
+                } else {
+                    long newPosition = ((caretPosition.getDataPosition() / bytesPerLine) + 1) * bytesPerLine - 1;
+                    codeArea.setCaretPosition(newPosition < dataSize ? newPosition : dataSize);
                 }
+                caretMoved();
+                codeArea.updateSelection(keyEvent.getModifiersEx(), caretPosition);
                 codeArea.revealCursor();
                 keyEvent.consume();
                 break;
@@ -565,13 +561,12 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             CodeAreaCaret caret = codeArea.getCaret();
             long dataPosition = caret.getDataPosition();
             if (dataPosition > 0 && dataPosition <= codeArea.getDataSize()) {
-                ((EditableBinaryData) codeArea.getData()).remove(dataPosition - 1, 1);
-                codeArea.notifyDataChanged();
                 caret.setCodeOffset(0);
                 codeArea.moveLeft(CodeArea.NO_MODIFIER);
                 caret.setCodeOffset(0);
+                ((EditableBinaryData) codeArea.getData()).remove(dataPosition - 1, 1);
+                codeArea.notifyDataChanged();
                 codeArea.revealCursor();
-                codeArea.computePaintData();
                 codeArea.updateScrollBars();
             }
         }
@@ -595,7 +590,6 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                 if (caret.getCodeOffset() > 0) {
                     caret.setCodeOffset(0);
                 }
-                codeArea.computePaintData();
                 codeArea.updateScrollBars();
             }
         }
@@ -610,7 +604,6 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         CodeAreaCaret caret = codeArea.getCaret();
         caret.setCaretPosition(first);
         codeArea.revealCursor();
-        codeArea.computePaintData();
         codeArea.updateScrollBars();
     }
 
@@ -707,8 +700,8 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
                         caret.setCaretPosition(caret.getDataPosition() + dataSize);
                         caret.setCodeOffset(0);
-                        codeArea.computePaintData();
                         codeArea.updateScrollBars();
+                        codeArea.revealCursor();
                     }
                 } catch (UnsupportedFlavorException | IOException ex) {
                     Logger.getLogger(DefaultCodeAreaCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
@@ -740,8 +733,8 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
                         caret.setCaretPosition(caret.getDataPosition() + length);
                         caret.setCodeOffset(0);
-                        codeArea.computePaintData();
                         codeArea.updateScrollBars();
+                        codeArea.revealCursor();
                     }
                 } catch (UnsupportedFlavorException | IOException ex) {
                     Logger.getLogger(DefaultCodeAreaCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
@@ -835,8 +828,8 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
                     caret.setCaretPosition(caret.getDataPosition() + length);
                     caret.setCodeOffset(0);
-                    codeArea.computePaintData();
                     codeArea.updateScrollBars();
+                    codeArea.revealCursor();
                 }
             } catch (UnsupportedFlavorException | IOException ex) {
                 Logger.getLogger(DefaultCodeAreaCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
