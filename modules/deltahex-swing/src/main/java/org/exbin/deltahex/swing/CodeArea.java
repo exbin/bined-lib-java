@@ -335,7 +335,11 @@ public class CodeArea extends JComponent {
     private void moveCaret(MouseEvent me, int modifiers) {
         Rectangle hexRect = paintDataCache.codeSectionRectangle;
         int bytesPerLine = paintDataCache.bytesPerLine;
-        int cursorCharX = (me.getX() - hexRect.x + scrollPosition.scrollCharOffset) / paintDataCache.charWidth + scrollPosition.scrollCharPosition;
+        int mouseX = me.getX();
+        if (mouseX < hexRect.x) {
+            mouseX = hexRect.x;
+        }
+        int cursorCharX = (mouseX - hexRect.x + scrollPosition.scrollCharOffset) / paintDataCache.charWidth + scrollPosition.scrollCharPosition;
         long cursorLineY = (me.getY() - hexRect.y + scrollPosition.scrollLineOffset) / paintDataCache.lineHeight + scrollPosition.scrollLinePosition;
         if (cursorLineY < 0) {
             cursorLineY = 0;
