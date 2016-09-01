@@ -58,7 +58,7 @@ import org.exbin.utils.binary_data.ByteArrayEditableData;
 /**
  * Command handler for undo/redo aware hexadecimal editor editing.
  *
- * @version 0.1.1 2016/08/31
+ * @version 0.1.1 2016/09/01
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeCommandHandler implements CodeAreaCommandHandler {
@@ -219,18 +219,16 @@ public class CodeCommandHandler implements CodeAreaCommandHandler {
                 CaretPosition caretPosition = codeArea.getCaretPosition();
                 int bytesPerLine = codeArea.getBytesPerLine();
                 CodeArea.ScrollPosition scrollPosition = codeArea.getScrollPosition();
-                if (caretPosition.getDataPosition() > 0 || caretPosition.getCodeOffset() - scrollPosition.getLineByteShift() != 0) {
-                    long targetPosition;
-                    if ((keyEvent.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) > 0) {
-                        targetPosition = 0;
-                    } else {
-                        targetPosition = (caretPosition.getDataPosition() / bytesPerLine) * bytesPerLine - scrollPosition.getLineByteShift();
-                    }
-                    codeArea.setCaretPosition(targetPosition);
-                    caretMoved();
-                    codeArea.notifyCaretMoved();
-                    codeArea.updateSelection(keyEvent.getModifiersEx(), caretPosition);
+                long targetPosition;
+                if ((keyEvent.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) > 0) {
+                    targetPosition = 0;
+                } else {
+                    targetPosition = (caretPosition.getDataPosition() / bytesPerLine) * bytesPerLine - scrollPosition.getLineByteShift();
                 }
+                codeArea.setCaretPosition(targetPosition);
+                caretMoved();
+                codeArea.notifyCaretMoved();
+                codeArea.updateSelection(keyEvent.getModifiersEx(), caretPosition);
                 codeArea.revealCursor();
                 keyEvent.consume();
                 break;
@@ -239,19 +237,17 @@ public class CodeCommandHandler implements CodeAreaCommandHandler {
                 CaretPosition caretPosition = codeArea.getCaretPosition();
                 int bytesPerLine = codeArea.getBytesPerLine();
                 long dataSize = codeArea.getDataSize();
-                if (caretPosition.getDataPosition() < dataSize) {
-                    if ((keyEvent.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) > 0) {
-                        codeArea.setCaretPosition(codeArea.getDataSize());
-                    } else if (codeArea.getActiveSection() == Section.CODE_MATRIX) {
-                        long newPosition = ((caretPosition.getDataPosition() / bytesPerLine) + 1) * bytesPerLine - 1;
-                        codeArea.setCaretPosition(newPosition < dataSize ? newPosition : dataSize, newPosition < dataSize ? codeArea.getCodeType().getMaxDigits() - 1 : 0);
-                    } else {
-                        long newPosition = ((caretPosition.getDataPosition() / bytesPerLine) + 1) * bytesPerLine - 1;
-                        codeArea.setCaretPosition(newPosition < dataSize ? newPosition : dataSize);
-                    }
-                    caretMoved();
-                    codeArea.updateSelection(keyEvent.getModifiersEx(), caretPosition);
+                if ((keyEvent.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) > 0) {
+                    codeArea.setCaretPosition(codeArea.getDataSize());
+                } else if (codeArea.getActiveSection() == Section.CODE_MATRIX) {
+                    long newPosition = ((caretPosition.getDataPosition() / bytesPerLine) + 1) * bytesPerLine - 1;
+                    codeArea.setCaretPosition(newPosition < dataSize ? newPosition : dataSize, newPosition < dataSize ? codeArea.getCodeType().getMaxDigits() - 1 : 0);
+                } else {
+                    long newPosition = ((caretPosition.getDataPosition() / bytesPerLine) + 1) * bytesPerLine - 1;
+                    codeArea.setCaretPosition(newPosition < dataSize ? newPosition : dataSize);
                 }
+                caretMoved();
+                codeArea.updateSelection(keyEvent.getModifiersEx(), caretPosition);
                 codeArea.revealCursor();
                 keyEvent.consume();
                 break;
@@ -684,8 +680,8 @@ public class CodeCommandHandler implements CodeAreaCommandHandler {
                     }
 
                     codeArea.notifyDataChanged();
-                    codeArea.computePaintData();
                     codeArea.updateScrollBars();
+                    codeArea.revealCursor();
                 }
             } catch (UnsupportedFlavorException | IOException ex) {
                 Logger.getLogger(CodeCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
@@ -730,8 +726,8 @@ public class CodeCommandHandler implements CodeAreaCommandHandler {
                     }
 
                     codeArea.notifyDataChanged();
-                    codeArea.computePaintData();
                     codeArea.updateScrollBars();
+                    codeArea.revealCursor();
                 }
             } catch (UnsupportedFlavorException | IOException ex) {
                 Logger.getLogger(CodeCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
@@ -846,7 +842,6 @@ public class CodeCommandHandler implements CodeAreaCommandHandler {
                     }
 
                     codeArea.notifyDataChanged();
-                    codeArea.computePaintData();
                     codeArea.updateScrollBars();
                 }
             } catch (UnsupportedFlavorException | IOException ex) {
@@ -965,7 +960,7 @@ public class CodeCommandHandler implements CodeAreaCommandHandler {
             CodeAreaCaret caret = codeArea.getCaret();
             caret.setCaretPosition(position);
             codeArea.revealCursor();
-            codeArea.computePaintData();
+            codeArea.notifyDataChanged();
             codeArea.updateScrollBars();
         }
 
@@ -976,7 +971,7 @@ public class CodeCommandHandler implements CodeAreaCommandHandler {
             CodeAreaCaret caret = codeArea.getCaret();
             caret.setCaretPosition(size);
             codeArea.revealCursor();
-            codeArea.computePaintData();
+            codeArea.notifyDataChanged();
             codeArea.updateScrollBars();
         }
 
