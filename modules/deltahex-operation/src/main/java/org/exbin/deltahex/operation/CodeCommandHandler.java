@@ -45,7 +45,7 @@ import org.exbin.deltahex.operation.command.RemoveDataCommand;
 import org.exbin.utils.binary_data.BinaryData;
 import org.exbin.utils.binary_data.EditableBinaryData;
 import org.exbin.xbup.operation.undo.XBUndoHandler;
-import org.exbin.deltahex.swing.CodeAreaCommandHandler;
+import org.exbin.deltahex.CodeAreaCommandHandler;
 import org.exbin.deltahex.CodeAreaUtils;
 import org.exbin.deltahex.CodeType;
 import org.exbin.deltahex.EditationAllowed;

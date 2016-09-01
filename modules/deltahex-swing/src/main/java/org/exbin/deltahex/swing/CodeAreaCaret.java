@@ -77,43 +77,87 @@ public class CodeAreaCaret {
         return -1;
     }
 
-    public Point getCursorPoint(int bytesPerLine, int lineHeight, int charWidth) {
-        long shiftedPosition = caretPosition.getDataPosition() + codeArea.getScrollPosition().getLineByteShift();
-        long line = shiftedPosition / bytesPerLine;
+    /**
+     * Returns relative cursor position in code area or null if cursor is not
+     * visible.
+     *
+     * @param bytesPerLine bytes per line
+     * @param lineHeight line height
+     * @param charWidth character width
+     * @param linesPerRect lines per visible rectangle
+     * @return cursor position or null
+     */
+    public Point getCursorPoint(int bytesPerLine, int lineHeight, int charWidth, int linesPerRect) {
+        CodeArea.ScrollPosition scrollPosition = codeArea.getScrollPosition();
+        long shiftedPosition = caretPosition.getDataPosition() + scrollPosition.getLineByteShift();
+        long line = shiftedPosition / bytesPerLine - scrollPosition.getScrollLinePosition();
+        if (line < -1 || line + 1 > linesPerRect) {
+            return null;
+        }
+
         int byteOffset = (int) (shiftedPosition % bytesPerLine);
 
         Rectangle rect = codeArea.getCodeSectionRectangle();
-        int caretY = (int) (rect.y + line * lineHeight);
+        int caretY = (int) (rect.y + line * lineHeight) - scrollPosition.getScrollLineOffset();
         int caretX;
         if (section == Section.TEXT_PREVIEW) {
             caretX = codeArea.getPreviewX() + charWidth * byteOffset;
         } else {
             caretX = rect.x + charWidth * (codeArea.computeByteCharPos(byteOffset) + getCodeOffset());
         }
+        caretX -= scrollPosition.getScrollCharPosition() * charWidth + scrollPosition.getScrollCharOffset();
 
         return new Point(caretX, caretY);
     }
 
-    public Point getShadowCursorPoint(int bytesPerLine, int lineHeight, int charWidth) {
+    /**
+     * Returns relative shadow cursor position in code area or null if cursor is
+     * not visible.
+     *
+     * @param bytesPerLine bytes per line
+     * @param lineHeight line height
+     * @param charWidth character width
+     * @param linesPerRect lines per visible rectangle
+     * @return cursor position or null
+     */
+    public Point getShadowCursorPoint(int bytesPerLine, int lineHeight, int charWidth, int linesPerRect) {
+        CodeArea.ScrollPosition scrollPosition = codeArea.getScrollPosition();
         long dataPosition = caretPosition.getDataPosition();
-        long line = dataPosition / bytesPerLine;
+        long line = dataPosition / bytesPerLine - scrollPosition.getScrollLinePosition();
+        if (line < -1 || line + 1 > linesPerRect) {
+            return null;
+        }
+
         int byteOffset = (int) (dataPosition % bytesPerLine);
 
         Rectangle rect = codeArea.getCodeSectionRectangle();
-        int caretY = (int) (rect.y + line * lineHeight);
+        int caretY = (int) (rect.y + line * lineHeight) - scrollPosition.getScrollLineOffset();
         int caretX;
         if (section == Section.TEXT_PREVIEW) {
             caretX = rect.x + charWidth * (codeArea.computeByteCharPos(byteOffset) + getCodeOffset());
         } else {
             caretX = codeArea.getPreviewX() + charWidth * byteOffset;
         }
+        caretX -= scrollPosition.getScrollCharPosition() * charWidth + scrollPosition.getScrollCharOffset();
 
         return new Point(caretX, caretY);
     }
 
-    public Rectangle getCursorRect(int bytesPerLine, int lineHeight, int charWidth) {
-        Point cursorPoint = getCursorPoint(bytesPerLine, lineHeight, charWidth);
-        Point scrollPoint = codeArea.getScrollPoint();
+    /**
+     * Returns cursor rectangle.
+     *
+     * @param bytesPerLine bytes per line
+     * @param lineHeight line height
+     * @param charWidth character width
+     * @param linesPerRect lines per visible rectangle
+     * @return cursor rectangle or null
+     */
+    public Rectangle getCursorRect(int bytesPerLine, int lineHeight, int charWidth, int linesPerRect) {
+        Point cursorPoint = getCursorPoint(bytesPerLine, lineHeight, charWidth, linesPerRect);
+        if (cursorPoint == null) {
+            return null;
+        }
+
         CursorShape cursorShape = codeArea.getEditationMode() == EditationMode.INSERT ? insertCursorShape : overwriteCursorShape;
         int cursorThickness = 0;
         if (cursorShape.getWidth() != CursorShapeWidth.FULL) {
@@ -128,33 +172,33 @@ public class CodeAreaCaret {
                 if (cursorShape != CursorShape.BOX) {
                     width++;
                 }
-                return new Rectangle(cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y, width, lineHeight);
+                return new Rectangle(cursorPoint.x, cursorPoint.y, width, lineHeight);
             }
             case LINE_TOP:
             case DOUBLE_TOP:
             case QUARTER_TOP:
             case HALF_TOP: {
-                return new Rectangle(cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y,
+                return new Rectangle(cursorPoint.x, cursorPoint.y,
                         charWidth, cursorThickness);
             }
             case LINE_BOTTOM:
             case DOUBLE_BOTTOM:
             case QUARTER_BOTTOM:
             case HALF_BOTTOM: {
-                return new Rectangle(cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y + lineHeight - cursorThickness,
+                return new Rectangle(cursorPoint.x, cursorPoint.y + lineHeight - cursorThickness,
                         charWidth, cursorThickness);
             }
             case LINE_LEFT:
             case DOUBLE_LEFT:
             case QUARTER_LEFT:
             case HALF_LEFT: {
-                return new Rectangle(cursorPoint.x - scrollPoint.x, cursorPoint.y - scrollPoint.y, cursorThickness, lineHeight);
+                return new Rectangle(cursorPoint.x, cursorPoint.y, cursorThickness, lineHeight);
             }
             case LINE_RIGHT:
             case DOUBLE_RIGHT:
             case QUARTER_RIGHT:
             case HALF_RIGHT: {
-                return new Rectangle(cursorPoint.x - scrollPoint.x + charWidth - cursorThickness, cursorPoint.y - scrollPoint.y, cursorThickness, lineHeight);
+                return new Rectangle(cursorPoint.x + charWidth - cursorThickness, cursorPoint.y, cursorThickness, lineHeight);
             }
             default: {
                 throw new IllegalStateException("Unexpected cursor shape type " + cursorShape.name());
@@ -178,8 +222,11 @@ public class CodeAreaCaret {
         if (bytesPerLine > 0) {
             int lineHeight = codeArea.getLineHeight();
             int charWidth = codeArea.getCharWidth();
-            Rectangle cursorRect = getCursorRect(bytesPerLine, lineHeight, charWidth);
-            codeArea.paintImmediately(cursorRect);
+            int linesPerRect = codeArea.getLinesPerRect();
+            Rectangle cursorRect = getCursorRect(bytesPerLine, lineHeight, charWidth, linesPerRect);
+            if (cursorRect != null) {
+                codeArea.paintImmediately(cursorRect);
+            }
         }
     }
 

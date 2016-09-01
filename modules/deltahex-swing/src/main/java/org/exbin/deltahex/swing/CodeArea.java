@@ -15,6 +15,7 @@
  */
 package org.exbin.deltahex.swing;
 
+import org.exbin.deltahex.CodeAreaCommandHandler;
 import org.exbin.deltahex.CaretPosition;
 import java.awt.Color;
 import java.awt.Cursor;
@@ -25,7 +26,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsDevice;
 import java.awt.Insets;
-import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Scrollbar;
@@ -74,7 +74,7 @@ import org.exbin.utils.binary_data.BinaryData;
  *
  * Also supports binary, octal and decimal codes.
  *
- * @version 0.1.1 2016/08/31
+ * @version 0.1.1 2016/09/01
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeArea extends JComponent {
@@ -336,10 +336,9 @@ public class CodeArea extends JComponent {
 
     private void moveCaret(MouseEvent me, int modifiers) {
         Rectangle hexRect = paintDataCache.codeSectionRectangle;
-        Point scrollPoint = getScrollPoint();
         int bytesPerLine = paintDataCache.bytesPerLine;
-        int cursorCharX = (me.getX() - hexRect.x + scrollPoint.x) / paintDataCache.charWidth;
-        int cursorLineY = (me.getY() - hexRect.y + scrollPoint.y) / paintDataCache.lineHeight;
+        int cursorCharX = (me.getX() - hexRect.x + scrollPosition.scrollCharOffset) / paintDataCache.charWidth + scrollPosition.scrollCharPosition;
+        long cursorLineY = (me.getY() - hexRect.y + scrollPosition.scrollLineOffset) / paintDataCache.lineHeight + scrollPosition.scrollLinePosition;
         if (cursorLineY < 0) {
             cursorLineY = 0;
         }
@@ -416,10 +415,6 @@ public class CodeArea extends JComponent {
         }
     }
 
-    public Point getScrollPoint() {
-        return new Point(scrollPosition.scrollCharPosition * paintDataCache.charWidth + scrollPosition.scrollCharOffset, (int) scrollPosition.scrollLinePosition * paintDataCache.lineHeight + scrollPosition.scrollLineOffset);
-    }
-
     public ScrollPosition getScrollPosition() {
         return scrollPosition;
     }
@@ -481,7 +476,16 @@ public class CodeArea extends JComponent {
     }
 
     public void updateScrollBars() {
-        if (verticalScrollMode == VerticalScrollMode.PER_LINE) {
+        if (scrollPosition.verticalMaxMode) {
+            long lines = (data.getDataSize() / paintDataCache.bytesPerLine) + 1;
+            int scrollValue;
+            if (scrollPosition.scrollLinePosition < Long.MAX_VALUE / Integer.MAX_VALUE) {
+                scrollValue = (int) ((scrollPosition.scrollLinePosition * Integer.MAX_VALUE) / lines);
+            } else {
+                scrollValue = (int) (scrollPosition.scrollLinePosition / (lines / Integer.MAX_VALUE));
+            }
+            verticalScrollBar.setValue(scrollValue);
+        } else if (verticalScrollMode == VerticalScrollMode.PER_LINE) {
             verticalScrollBar.setValue((int) scrollPosition.scrollLinePosition);
         } else {
             verticalScrollBar.setValue((int) (scrollPosition.scrollLinePosition * paintDataCache.lineHeight + scrollPosition.scrollLineOffset));
@@ -859,7 +863,7 @@ public class CodeArea extends JComponent {
         } else {
             bytesPerLine = lineLength;
         }
-        int lines = (int) (data.getDataSize() / bytesPerLine) + 1;
+        long lines = (data.getDataSize() / bytesPerLine) + 1;
         CodeAreaSpace.SpaceType headerSpaceType = headerSpace.getSpaceType();
         switch (headerSpaceType) {
             case NONE: {
@@ -944,7 +948,7 @@ public class CodeArea extends JComponent {
                 if (bytesPerLine <= 0) {
                     bytesPerLine = 1;
                 }
-                lines = (int) (data.getDataSize() / bytesPerLine) + 1;
+                lines = (data.getDataSize() / bytesPerLine) + 1;
             }
         }
 
@@ -1000,30 +1004,45 @@ public class CodeArea extends JComponent {
             verticalScrollBar.setBounds(compRect.x + compRect.width - paintDataCache.scrollBarThickness, hexRect.y, paintDataCache.scrollBarThickness, verticalScrollBarHeight);
 
             int verticalVisibleAmount;
-            int verticalMaximum = lines;
+            scrollPosition.verticalMaxMode = false;
+            int verticalMaximum;
             if (verticalScrollMode == VerticalScrollMode.PIXEL) {
-                verticalVisibleAmount = hexRect.height;
-                verticalMaximum *= paintDataCache.lineHeight;
+                if (lines * paintDataCache.lineHeight > Integer.MAX_VALUE) {
+                    scrollPosition.verticalMaxMode = true;
+                    verticalMaximum = Integer.MAX_VALUE;
+                    verticalVisibleAmount = (int) (hexRect.height * Integer.MAX_VALUE / lines);
+                } else {
+                    verticalMaximum = (int) (lines * paintDataCache.lineHeight);
+                    verticalVisibleAmount = hexRect.height;
+                }
+            } else if (lines > Integer.MAX_VALUE) {
+                scrollPosition.verticalMaxMode = true;
+                verticalMaximum = Integer.MAX_VALUE;
+                verticalVisibleAmount = (int) (hexRect.height * Integer.MAX_VALUE / paintDataCache.lineHeight / lines);
             } else {
+                verticalMaximum = (int) lines;
                 verticalVisibleAmount = hexRect.height / paintDataCache.lineHeight;
+            }
+            if (verticalVisibleAmount == 0) {
+                verticalVisibleAmount = 1;
             }
             verticalScrollBar.setMaximum(verticalMaximum);
             verticalScrollBar.setVisibleAmount(verticalVisibleAmount);
 
             // Cap vertical scrolling
-            if (verticalVisibleAmount < verticalMaximum) {
+            if (!scrollPosition.verticalMaxMode && verticalVisibleAmount < verticalMaximum) {
                 long maxLineScroll = verticalMaximum - verticalVisibleAmount;
-                if (verticalScrollMode == VerticalScrollMode.PIXEL) {
+                if (verticalScrollMode == VerticalScrollMode.PER_LINE) {
+                    long lineScroll = scrollPosition.scrollLinePosition;
+                    if (lineScroll > maxLineScroll) {
+                        scrollPosition.scrollLinePosition = maxLineScroll;
+                        scrolled = true;
+                    }
+                } else {
                     long lineScroll = scrollPosition.scrollLinePosition * paintDataCache.lineHeight + scrollPosition.scrollLineOffset;
                     if (lineScroll > maxLineScroll) {
                         scrollPosition.scrollLinePosition = maxLineScroll / paintDataCache.lineHeight;
                         scrollPosition.scrollLineOffset = (int) (maxLineScroll % paintDataCache.lineHeight);
-                        scrolled = true;
-                    }
-                } else {
-                    long lineScroll = scrollPosition.scrollLinePosition;
-                    if (lineScroll > maxLineScroll) {
-                        scrollPosition.scrollLinePosition = maxLineScroll;
                         scrolled = true;
                     }
                 }
@@ -1842,6 +1861,10 @@ public class CodeArea extends JComponent {
          * How is start of the line scrolled compare it's normal position.
          */
         private int lineByteShift = 0;
+        /**
+         * Flag for scroll mode with huge data.
+         */
+        private boolean verticalMaxMode = false;
 
         public long getScrollLinePosition() {
             return scrollLinePosition;
@@ -1881,6 +1904,14 @@ public class CodeArea extends JComponent {
 
         public void setLineByteShift(int lineByteShift) {
             this.lineByteShift = lineByteShift;
+        }
+
+        public boolean isVerticalMaxMode() {
+            return verticalMaxMode;
+        }
+
+        public void setVerticalMaxMode(boolean verticalMaxMode) {
+            this.verticalMaxMode = verticalMaxMode;
         }
 
         private void reset() {
@@ -1981,7 +2012,7 @@ public class CodeArea extends JComponent {
                     notifyScrolled();
                 }
             } else if (e.getWheelRotation() > 0) {
-                long lines = (int) (data.getDataSize() / paintDataCache.bytesPerLine);
+                long lines = data.getDataSize() / paintDataCache.bytesPerLine;
                 if (lines * paintDataCache.bytesPerLine < data.getDataSize()) {
                     lines++;
                 }
@@ -2053,12 +2084,29 @@ public class CodeArea extends JComponent {
 
         @Override
         public void adjustmentValueChanged(AdjustmentEvent e) {
-            if (verticalScrollMode == VerticalScrollMode.PER_LINE) {
-                scrollPosition.scrollLinePosition = verticalScrollBar.getValue();
+            int scrollBarValue = verticalScrollBar.getValue();
+            if (scrollPosition.verticalMaxMode) {
+                int maxValue = Integer.MAX_VALUE - verticalScrollBar.getVisibleAmount();
+                long lines = (data.getDataSize() / paintDataCache.bytesPerLine) - paintDataCache.linesPerRect + 1;
+                long targetLine;
+                if (scrollBarValue > 0 && lines > maxValue / scrollBarValue) {
+                    targetLine = scrollBarValue * (lines / maxValue);
+                    long rest = lines % maxValue;
+                    targetLine += (rest * scrollBarValue) / maxValue;
+                } else {
+                    targetLine = (scrollBarValue * lines) / Integer.MAX_VALUE;
+                }
+                scrollPosition.scrollLinePosition = targetLine;
+                if (verticalScrollMode != VerticalScrollMode.PER_LINE) {
+                    scrollPosition.scrollLineOffset = 0;
+                }
+            } else if (verticalScrollMode == VerticalScrollMode.PER_LINE) {
+                scrollPosition.scrollLinePosition = scrollBarValue;
             } else {
-                scrollPosition.scrollLinePosition = verticalScrollBar.getValue() / paintDataCache.lineHeight;
-                scrollPosition.scrollLineOffset = verticalScrollBar.getValue() % paintDataCache.lineHeight;
+                scrollPosition.scrollLinePosition = scrollBarValue / paintDataCache.lineHeight;
+                scrollPosition.scrollLineOffset = scrollBarValue % paintDataCache.lineHeight;
             }
+
             repaint();
             notifyScrolled();
         }
