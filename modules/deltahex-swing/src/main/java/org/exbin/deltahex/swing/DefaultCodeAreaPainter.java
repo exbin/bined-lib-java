@@ -30,7 +30,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import org.exbin.deltahex.CodeAreaUtils;
-import org.exbin.deltahex.ColorsGroup;
 import org.exbin.deltahex.EditationMode;
 import org.exbin.deltahex.HexCharactersCase;
 import org.exbin.deltahex.Section;

@@ -19,7 +19,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.List;
-import org.exbin.deltahex.ColorsGroup;
+import org.exbin.deltahex.swing.ColorsGroup;
 import org.exbin.deltahex.Section;
 import org.exbin.deltahex.swing.DefaultCodeAreaPainter;
 import org.exbin.deltahex.swing.CodeArea;

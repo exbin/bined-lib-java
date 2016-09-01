@@ -15,7 +15,6 @@
  */
 package org.exbin.deltahex.swing;
 
-import org.exbin.deltahex.CodeAreaCommandHandler;
 import org.exbin.deltahex.CaretPosition;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;

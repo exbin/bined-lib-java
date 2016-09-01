@@ -15,7 +15,6 @@
  */
 package org.exbin.deltahex.swing;
 
-import org.exbin.deltahex.CodeAreaCommandHandler;
 import org.exbin.deltahex.CaretPosition;
 import java.awt.Color;
 import java.awt.Cursor;
@@ -54,7 +53,6 @@ import org.exbin.deltahex.CaretMovedListener;
 import org.exbin.deltahex.CodeAreaLineNumberLength;
 import org.exbin.deltahex.CodeAreaUtils;
 import org.exbin.deltahex.CodeType;
-import org.exbin.deltahex.ColorsGroup;
 import org.exbin.deltahex.DataChangedListener;
 import org.exbin.deltahex.EditationAllowed;
 import org.exbin.deltahex.EditationMode;

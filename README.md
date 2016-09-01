@@ -22,12 +22,12 @@ Features
 - Support for charset/encoding selection
 - Codes can be also binary, octal or decimal
 - Support for code and matching highlighting
+- Support for huge files
 
 Todo
 ----
 
 - Delta mode - Only changes are stored in memory
-- Support for huge files
 
 Compiling
 ---------
