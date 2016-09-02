@@ -23,7 +23,7 @@ import java.util.logging.Logger;
 /**
  * Access window for delta data.
  *
- * @version 0.1.0 2016/06/03
+ * @version 0.1.1 2016/09/02
  * @author ExBin Project (http://exbin.org)
  */
 public class DeltaDataPageWindow {
@@ -85,7 +85,7 @@ public class DeltaDataPageWindow {
     /**
      * Simple structure for data page.
      */
-    private class DataPage {
+    private static class DataPage {
 
         public DataPage() {
             page = new byte[PAGE_SIZE];

@@ -4,11 +4,13 @@ include ":deps"
 
 include ":modules:deltahex-core"
 include ":modules:deltahex-swing"
+include ":modules:deltahex-javafx"
 include ":modules:deltahex-delta"
 include ":modules:deltahex-operation"
 include ":modules:deltahex-highlight"
 
 include ":tools:deltahex-swing-example"
+include ":tools:deltahex-javafx-example"
 
 File placeholder = file("deps/_placeholder")
 if (placeholder.exists()) {

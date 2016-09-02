@@ -1,0 +1,75 @@
+apply from: '../tools.gradle'
+
+sourceCompatibility = '1.8'
+
+def javaFxHome = "${System.properties['java.home']}";
+
+buildscript {
+    repositories {
+        mavenLocal()
+        jcenter()
+    }
+    dependencies {
+        classpath("at.bxm.gradleplugins:gradle-svntools-plugin:latest.integration")
+        classpath "org.bitbucket.shemnon.javafxplugin:gradle-javafx-plugin:8.1.1"
+    }
+}
+
+if (!hasProperty('mainClass')) {
+    ext.mainClass = 'org.exbin.deltahex.example.javafx.DeltaHexExample'
+    ext.appArgs = '-dev'
+}
+
+//if (!project.plugins.findPlugin(org.bitbucket.shemnon.javafxplugin.JavaFXPlugin)) {
+//    project.apply(plugin: org.bitbucket.shemnon.javafxplugin.JavaFXPlugin)
+//}
+
+def configureExec(task) {
+    task.main = mainClass
+    task.classpath = sourceSets.main.runtimeClasspath
+    if (hasProperty('appArgs')) {
+        task.args appArgs
+    }
+}
+
+task run(type: JavaExec) {
+    task -> configureExec(task)
+}
+
+task debug(type: JavaExec) {
+    task -> configureExec(task)
+    debug = true
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    flatDir {
+        dirs "../../lib"
+    }
+}
+
+dependencies {
+//    providedCompile files("$javaFxHome/lib/jfxrt.jar")
+    compile moduleDep('DeltahexJava', 'org.exbin.deltahex', 'deltahex-javafx')
+
+    testCompile group: 'junit', name: 'junit', version: '4.10'
+}
+
+def manifestClassPath() {
+    try {
+        return (configurations.runtime.collect { it.getName() }).join(' ')
+    } catch (Exception) {
+        return ""
+    }
+}
+
+jar {
+    manifest {
+        attributes(
+            'Main-Class': mainClass,
+            'Class-Path': manifestClassPath()
+        )
+    }
+}
+

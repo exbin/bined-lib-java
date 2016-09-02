@@ -1,4 +1,4 @@
-rootProject.name = 'deltahex-swing'
+rootProject.name = 'deltahex-javafx'
 
 if (rootProject.path == ':') {
     include ':modules:deltahex-core'

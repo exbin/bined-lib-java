@@ -24,9 +24,9 @@ import org.exbin.utils.binary_data.EditableBinaryData;
 import org.exbin.utils.binary_data.OutOfBoundsException;
 
 /**
- * Basic implementation of hexadecimal data interface using byte array.
+ * Hexadecimal data using segments of data source.
  *
- * @version 0.1.0 2016/06/07
+ * @version 0.1.1 2016/09/02
  * @author ExBin Project (http://exbin.org)
  */
 public class DeltaHexadecimalData implements EditableBinaryData {
@@ -37,8 +37,7 @@ public class DeltaHexadecimalData implements EditableBinaryData {
     private long pointerPosition;
     private DataSegment pointerSegment;
 
-    // Temporary public
-    public final DefaultDoublyLinkedList<DataSegment> segments = new DefaultDoublyLinkedList<>();
+    private final DefaultDoublyLinkedList<DataSegment> segments = new DefaultDoublyLinkedList<>();
 
     public DeltaHexadecimalData(DeltaDataSource data) throws IOException {
         this.data = data;
@@ -435,6 +434,39 @@ public class DeltaHexadecimalData implements EditableBinaryData {
                     throw new OutOfBoundsException("Unable to access next segment");
                 }
             }
+        }
+    }
+
+    /**
+     * Attempts to merge segments at specified position.
+     *
+     * @param position target position
+     */
+    private void tryMergeSegments(long position) {
+        if (position == 0 || position >= getDataSize()) {
+            return;
+        }
+
+        focusSegment(position);
+        DataSegment nextSegment = pointerSegment;
+        focusSegment(position - 1);
+        DataSegment segment = pointerSegment;
+        if (segment == nextSegment) {
+            return;
+        }
+
+        if (segment instanceof DocumentSegment && nextSegment instanceof DocumentSegment) {
+            if (((DocumentSegment) segment).getStartPosition() + segment.getLength() == ((DocumentSegment) nextSegment).getStartPosition()) {
+                ((DocumentSegment) segment).setLength(segment.getLength() + nextSegment.getLength());
+                segments.remove(nextSegment);
+            }
+        }
+
+        if (segment instanceof BinaryDataSegment && nextSegment instanceof BinaryDataSegment) {
+            EditableBinaryData binaryData = ((BinaryDataSegment) segment).getBinaryData();
+            EditableBinaryData nextBinaryData = ((BinaryDataSegment) nextSegment).getBinaryData();
+            binaryData.insert(binaryData.getDataSize(), nextBinaryData);
+            segments.remove(nextSegment);
         }
     }
 }
