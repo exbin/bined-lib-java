@@ -37,14 +37,14 @@ public class DeltaHexExample extends Application {
         final CodeAreaFX codeArea = new CodeAreaFX();
         ByteArrayEditableData data = new ByteArrayEditableData();
         try {
-            data.loadFromStream(codeArea.getClass().getResourceAsStream("/org/exbin/deltahex/example/resources/lorem_1.txt"));
+            data.loadFromStream(codeArea.getClass().getResourceAsStream("/org/exbin/deltahex/javafx/example/resources/lorem_1.txt"));
         } catch (IOException ex) {
             Logger.getLogger(DeltaHexExample.class.getName()).log(Level.SEVERE, null, ex);
         }
         codeArea.setData(data);
 
         stage.setScene(new Scene(codeArea, 600, 480));
-//        stage.setOnCloseRequest(e -> Platform.exit());
+        stage.setOnCloseRequest(e -> Platform.exit());
     }
 
     @Override

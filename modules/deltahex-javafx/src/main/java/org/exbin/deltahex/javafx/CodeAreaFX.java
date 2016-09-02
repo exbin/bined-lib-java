@@ -39,11 +39,11 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Control;
 import javafx.scene.control.Skin;
+import javafx.scene.text.Text;
 import javax.swing.JScrollBar;
 import org.exbin.deltahex.CaretMovedListener;
 import org.exbin.deltahex.CaretPosition;
 import org.exbin.deltahex.CodeAreaLineNumberLength;
-import org.exbin.deltahex.CodeAreaUtils;
 import org.exbin.deltahex.CodeType;
 import org.exbin.deltahex.DataChangedListener;
 import org.exbin.deltahex.EditationAllowed;
@@ -164,6 +164,8 @@ public class CodeAreaFX extends Control {
 
         protected void redraw() {
             List<Node> rootChildren = new ArrayList<>();
+            Text text = new Text("TEST");
+            rootChildren.add(text);
 //            rootChildren.add(createBackground());
 //            rootChildren.add(createGauge());
 //            rootChildren.add(createTicks());
@@ -174,7 +176,7 @@ public class CodeAreaFX extends Control {
 
         @Override
         public CodeAreaFX getSkinnable() {
-            throw new UnsupportedOperationException("Not supported yet.");
+            return CodeAreaFX.this;
         }
 
         @Override
@@ -188,7 +190,6 @@ public class CodeAreaFX extends Control {
 
         @Override
         public void dispose() {
-            throw new UnsupportedOperationException("Not supported yet.");
         }
     }
 
@@ -831,6 +832,7 @@ public class CodeAreaFX extends Control {
 //    }
 
     private void computeFontMetrics() {
+// TODO        Toolkit.getToolkit().getFontLoader().getFontMetrics(myFont); 
 //        Graphics g = getGraphics();
 //        if (g != null) {
 //            Font font = getFont();
@@ -1581,7 +1583,6 @@ public class CodeAreaFX extends Control {
 
     public void setHexCharactersCase(HexCharactersCase hexCharactersCase) {
         this.hexCharactersCase = hexCharactersCase;
-        painter.setHexCharacters(hexCharactersCase == HexCharactersCase.LOWER ? CodeAreaUtils.LOWER_HEX_CODES : CodeAreaUtils.UPPER_HEX_CODES);
         repaint();
     }
 

@@ -33,7 +33,6 @@ import org.exbin.deltahex.CodeAreaUtils;
 import org.exbin.deltahex.EditationMode;
 import org.exbin.deltahex.HexCharactersCase;
 import org.exbin.deltahex.Section;
-import org.exbin.deltahex.SelectionRange;
 import org.exbin.deltahex.ViewMode;
 
 /**
@@ -54,7 +53,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
     private Charset charMappingCharset = null;
     protected final char[] charMapping = new char[256];
-    private char[] hexCharacters = CodeAreaUtils.UPPER_HEX_CODES;
     protected Map<Character, Character> unprintableCharactersMapping = null;
 
     public DefaultCodeAreaPainter(CodeAreaFX codeArea) {
@@ -675,16 +673,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
      */
     private void renderBackgroundSequence(Graphics g, int startOffset, int endOffset, int linePositionX, int positionY, PaintData paintData) {
         g.fillRect(linePositionX + startOffset * paintData.charWidth, positionY, (endOffset - startOffset) * paintData.charWidth, paintData.lineHeight);
-    }
-
-    @Override
-    public char[] getHexCharacters() {
-        return hexCharacters;
-    }
-
-    @Override
-    public void setHexCharacters(char[] hexCharacters) {
-        this.hexCharacters = hexCharacters;
     }
 
     /**

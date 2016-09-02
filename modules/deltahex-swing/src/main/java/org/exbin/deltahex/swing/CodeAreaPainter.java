@@ -20,7 +20,7 @@ import java.awt.Graphics;
 /**
  * Hexadecimal editor painter.
  *
- * @version 0.1.0 2016/04/23
+ * @version 0.1.1 2016/09/02
  * @author ExBin Project (http://exbin.org)
  */
 public interface CodeAreaPainter {
@@ -66,18 +66,4 @@ public interface CodeAreaPainter {
      * @param g graphics
      */
     void paintCursor(Graphics g);
-
-    /**
-     * Returns current array of hexadecimal characters (0..9 and A..F).
-     *
-     * @return array of 16 characters
-     */
-    char[] getHexCharacters();
-
-    /**
-     * Sets array of hexadecimal characters (0..9 and A..F).
-     *
-     * @param hexCharacters array of 16 characters
-     */
-    void setHexCharacters(char[] hexCharacters);
 }

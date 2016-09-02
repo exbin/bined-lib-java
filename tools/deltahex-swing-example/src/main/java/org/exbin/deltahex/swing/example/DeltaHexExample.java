@@ -45,7 +45,7 @@ public class DeltaHexExample {
         final CodeArea codeArea = new CodeArea();
         ByteArrayEditableData data = new ByteArrayEditableData();
         try {
-            data.loadFromStream(codeArea.getClass().getResourceAsStream("/org/exbin/deltahex/example/resources/lorem_1.txt"));
+            data.loadFromStream(codeArea.getClass().getResourceAsStream("/org/exbin/deltahex/swing/example/resources/lorem_1.txt"));
         } catch (IOException ex) {
             Logger.getLogger(DeltaHexExample.class.getName()).log(Level.SEVERE, null, ex);
         }

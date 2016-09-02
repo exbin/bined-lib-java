@@ -39,7 +39,7 @@ import org.exbin.deltahex.ViewMode;
 /**
  * Code area component default painter.
  *
- * @version 0.1.0 2016/09/01
+ * @version 0.1.0 2016/09/02
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaPainter implements CodeAreaPainter {
@@ -54,7 +54,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
     private Charset charMappingCharset = null;
     protected final char[] charMapping = new char[256];
-    private char[] hexCharacters = CodeAreaUtils.UPPER_HEX_CODES;
     protected Map<Character, Character> unprintableCharactersMapping = null;
 
     public DefaultCodeAreaPainter(CodeArea codeArea) {
@@ -674,16 +673,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
      */
     private void renderBackgroundSequence(Graphics g, int startOffset, int endOffset, int linePositionX, int positionY, PaintData paintData) {
         g.fillRect(linePositionX + startOffset * paintData.charWidth, positionY, (endOffset - startOffset) * paintData.charWidth, paintData.lineHeight);
-    }
-
-    @Override
-    public char[] getHexCharacters() {
-        return hexCharacters;
-    }
-
-    @Override
-    public void setHexCharacters(char[] hexCharacters) {
-        this.hexCharacters = hexCharacters;
     }
 
     /**

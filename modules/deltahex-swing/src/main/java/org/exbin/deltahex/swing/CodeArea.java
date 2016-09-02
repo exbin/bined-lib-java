@@ -51,7 +51,6 @@ import javax.swing.UIManager;
 import javax.swing.border.Border;
 import org.exbin.deltahex.CaretMovedListener;
 import org.exbin.deltahex.CodeAreaLineNumberLength;
-import org.exbin.deltahex.CodeAreaUtils;
 import org.exbin.deltahex.CodeType;
 import org.exbin.deltahex.DataChangedListener;
 import org.exbin.deltahex.EditationAllowed;
@@ -1557,7 +1556,6 @@ public class CodeArea extends JComponent {
 
     public void setHexCharactersCase(HexCharactersCase hexCharactersCase) {
         this.hexCharactersCase = hexCharactersCase;
-        painter.setHexCharacters(hexCharactersCase == HexCharactersCase.LOWER ? CodeAreaUtils.LOWER_HEX_CODES : CodeAreaUtils.UPPER_HEX_CODES);
         repaint();
     }
 
