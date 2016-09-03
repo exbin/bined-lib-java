@@ -15,11 +15,10 @@
  */
 package org.exbin.deltahex.javafx;
 
-import java.awt.Color;
+import com.sun.javafx.geom.Rectangle;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsDevice;
-import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
@@ -35,12 +34,18 @@ import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+import javafx.beans.value.ObservableValue;
+import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Control;
+import javafx.scene.control.ScrollBar;
 import javafx.scene.control.Skin;
+import javafx.scene.layout.Border;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import javax.swing.JScrollBar;
 import org.exbin.deltahex.CaretMovedListener;
 import org.exbin.deltahex.CaretPosition;
 import org.exbin.deltahex.CodeAreaLineNumberLength;
@@ -64,7 +69,7 @@ import org.exbin.utils.binary_data.BinaryData;
  *
  * Also supports binary, octal and decimal codes.
  *
- * @version 0.1.1 2016/09/02
+ * @version 0.1.1 2016/09/03
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeAreaFX extends Control {
@@ -78,6 +83,7 @@ public class CodeAreaFX extends Control {
     public static final int MOUSE_SCROLL_LINES = 3;
 
     private BinaryData data;
+    private Font font;
     private CodeAreaPainter painter;
     private CodeAreaCommandHandler commandHandler;
     private final CodeAreaCaret caret;
@@ -115,8 +121,8 @@ public class CodeAreaFX extends Control {
     private VerticalScrollMode verticalScrollMode = VerticalScrollMode.PER_LINE;
     private ScrollBarVisibility horizontalScrollBarVisibility = ScrollBarVisibility.IF_NEEDED;
     private HorizontalScrollMode horizontalScrollMode = HorizontalScrollMode.PIXEL;
-    private JScrollBar horizontalScrollBar;
-    private JScrollBar verticalScrollBar;
+    private ScrollBar horizontalScrollBar;
+    private ScrollBar verticalScrollBar;
     private final ScrollPosition scrollPosition = new ScrollPosition();
 
     /**
@@ -125,6 +131,8 @@ public class CodeAreaFX extends Control {
      * Parent foreground and background are used for header and line numbers
      * section.
      */
+    private Color textColor;
+    private Color backgroundColor;
     private final ColorsGroup mainColors = new ColorsGroup();
     private final ColorsGroup alternateColors = new ColorsGroup();
     private final ColorsGroup selectionColors = new ColorsGroup();
@@ -146,13 +154,13 @@ public class CodeAreaFX extends Control {
 
     public CodeAreaFX() {
         super();
-        setSkin(new CodeAreaFXSkin());
 
         caret = new CodeAreaCaret(this);
         painter = new DefaultCodeAreaPainter(this);
         commandHandler = new DefaultCodeAreaCommandHandler(this);
 
         init();
+        setSkin(new CodeAreaFXSkin());
     }
 
     public class CodeAreaFXSkin implements Skin<CodeAreaFX> {
@@ -163,15 +171,59 @@ public class CodeAreaFX extends Control {
         }
 
         protected void redraw() {
-            List<Node> rootChildren = new ArrayList<>();
+            List<Node> nodes = new ArrayList<>();
+
+            Insets insets = getInsets();
+            double width = getWidth();
+            double height = getHeight();
+            Rectangle compRect = new Rectangle(
+                    (int) insets.getLeft(),
+                    (int) insets.getTop(),
+                    (int) (width  - insets.getLeft() - insets.getRight()),
+                    (int) (height - insets.getTop() - insets.getBottom()));
+
+            if (!paintDataCache.componentRectangle.equals(compRect)) {
+                computePaintData();
+            }
+
+//          // TODO No antialiasing not available?
+//            if (charAntialiasingMode != CharAntialiasingMode.OFF && g instanceof Graphics2D) {
+//                Object antialiasingHint = getAntialiasingHint((Graphics2D) g);
+//                ((Graphics2D) g).setRenderingHint(
+//                        RenderingHints.KEY_TEXT_ANTIALIASING,
+//                        antialiasingHint);
+//            }
+//            text.setFontSmoothingType(FontSmoothingType.LCD);
+            
+
+            if (paintDataCache.fontMetrics == null) {
+                computeFontMetrics();
+            }
+
+            Node overall = painter.paintOverall();
+            nodes.add(overall);
             Text text = new Text("TEST");
-            rootChildren.add(text);
-//            rootChildren.add(createBackground());
-//            rootChildren.add(createGauge());
-//            rootChildren.add(createTicks());
-//            rootChildren.add(createGaugeBlend());
-//            rootChildren.add(createBorder());
-            this.rootNode.getChildren().setAll(rootChildren);
+            nodes.add(text);
+            
+//        Rectangle hexRect = paintDataCache.codeSectionRectangle;
+//        if (showHeader) {
+//            g.setClip(clipBounds.createIntersection(new Rectangle(hexRect.x, 0, hexRect.width, hexRect.y)));
+//            painter.paintHeader(g);
+//        }
+//
+//        g.setClip(clipBounds.createIntersection(new Rectangle(0, hexRect.y, hexRect.x + hexRect.width, hexRect.height)));
+//        painter.paintBackground(g);
+//        if (showLineNumbers) {
+//            painter.paintLineNumbers(g);
+//            g.setClip(clipBounds.createIntersection(new Rectangle(hexRect.x, hexRect.y, hexRect.width, hexRect.height)));
+//        }
+//
+//        painter.paintMainArea(g);
+//        painter.paintCursor(g);
+//
+//        g.setClip(clipBounds);
+
+            this.rootNode.getChildren().setAll(nodes);
         }
 
         @Override
@@ -194,57 +246,38 @@ public class CodeAreaFX extends Control {
     }
 
     private void init() {
-//        Color textColor = UIManager.getColor("TextArea.foreground");
-//        if (textColor == null) {
-//            textColor = Color.BLACK;
-//        }
-//        Color backgroundColor = UIManager.getColor("TextArea.background");
-//        if (backgroundColor == null) {
-//            backgroundColor = Color.WHITE;
-//        }
-//        super.setForeground(textColor);
-//        super.setBackground(createOddColor(backgroundColor));
-//        Color unprintablesColor = new Color(textColor.getRed(), (textColor.getGreen() + 128) % 256, textColor.getBlue());
-//        mainColors.setTextColor(textColor);
-//        mainColors.setBothBackgroundColors(backgroundColor);
-//        mainColors.setUnprintablesColor(unprintablesColor);
-//        alternateColors.setTextColor(textColor);
-//        alternateColors.setBothBackgroundColors(createOddColor(backgroundColor));
-//        alternateColors.setUnprintablesColor(unprintablesColor);
-//        Color selectionTextColor = UIManager.getColor("TextArea.selectionForeground");
-//        if (selectionTextColor == null) {
-//            selectionTextColor = Color.WHITE;
-//        }
-//        Color selectionBackgroundColor = UIManager.getColor("TextArea.selectionBackground");
-//        if (selectionBackgroundColor == null) {
-//            selectionBackgroundColor = new Color(96, 96, 255);
-//        }
-//        selectionColors.setTextColor(selectionTextColor);
-//        selectionColors.setBothBackgroundColors(selectionBackgroundColor);
-//        selectionColors.setUnprintablesColor(unprintablesColor);
-//        mirrorSelectionColors.setTextColor(selectionTextColor);
-//        int grayLevel = (selectionBackgroundColor.getRed() + selectionBackgroundColor.getGreen() + selectionBackgroundColor.getBlue()) / 3;
-//        mirrorSelectionColors.setBothBackgroundColors(new Color(grayLevel, grayLevel, grayLevel));
-//        mirrorSelectionColors.setUnprintablesColor(unprintablesColor);
-//
-//        cursorColor = UIManager.getColor("TextArea.caretForeground");
-//        if (cursorColor == null) {
-//            cursorColor = Color.BLACK;
-//        }
-//        negativeCursorColor = createNegativeColor(cursorColor);
-//        decorationLineColor = Color.GRAY;
-//
-//        verticalScrollBar = new JScrollBar(Scrollbar.VERTICAL);
-//        verticalScrollBar.setVisible(false);
-//        verticalScrollBar.setIgnoreRepaint(true);
+        textColor = Color.BLACK;
+        backgroundColor = Color.WHITE;
+        Color unprintablesColor = new Color(textColor.getRed(), (textColor.getGreen() + 0.5) % 1, textColor.getBlue(), textColor.getOpacity());
+        mainColors.setTextColor(textColor);
+        mainColors.setBothBackgroundColors(backgroundColor);
+        mainColors.setUnprintablesColor(unprintablesColor);
+        alternateColors.setTextColor(textColor);
+        alternateColors.setBothBackgroundColors(createOddColor(backgroundColor));
+        alternateColors.setUnprintablesColor(unprintablesColor);
+        Color selectionTextColor = Color.WHITE;
+        Color selectionBackgroundColor = new Color(96 / 256f, 96 / 256f, 255 / 256f, 1);
+        selectionColors.setTextColor(selectionTextColor);
+        selectionColors.setBothBackgroundColors(selectionBackgroundColor);
+        selectionColors.setUnprintablesColor(unprintablesColor);
+        mirrorSelectionColors.setTextColor(selectionTextColor);
+        double grayLevel = (selectionBackgroundColor.getRed() + selectionBackgroundColor.getGreen() + selectionBackgroundColor.getBlue()) / 3;
+        mirrorSelectionColors.setBothBackgroundColors(new Color(grayLevel, grayLevel, grayLevel, 1));
+        mirrorSelectionColors.setUnprintablesColor(unprintablesColor);
+
+        cursorColor = Color.BLACK;
+        negativeCursorColor = createNegativeColor(cursorColor);
+        decorationLineColor = Color.GRAY;
+
+        verticalScrollBar = new ScrollBar();
+        verticalScrollBar.setOrientation(Orientation.VERTICAL);
 //        verticalScrollBar.addAdjustmentListener(new VerticalAdjustmentListener());
 //        add(verticalScrollBar);
-//        horizontalScrollBar = new JScrollBar(Scrollbar.HORIZONTAL);
-//        horizontalScrollBar.setIgnoreRepaint(true);
-//        horizontalScrollBar.setVisible(false);
+        horizontalScrollBar = new ScrollBar();
+        horizontalScrollBar.setOrientation(Orientation.HORIZONTAL);
 //        horizontalScrollBar.addAdjustmentListener(new HorizontalAdjustmentListener());
 //        add(horizontalScrollBar);
-//
+
 //        setFocusable(true);
 //        setFocusTraversalKeysEnabled(false);
 //        addComponentListener(new CodeAreaComponentListener());
@@ -254,66 +287,15 @@ public class CodeAreaFX extends Control {
 //        addMouseMotionListener(codeAreaMouseListener);
 //        addMouseWheelListener(codeAreaMouseListener);
 //        addKeyListener(new CodeAreaKeyListener());
-//        addFocusListener(new FocusListener() {
-//            @Override
-//            public void focusGained(FocusEvent e) {
-//                repaint();
-//            }
-//
-//            @Override
-//            public void focusLost(FocusEvent e) {
-//                repaint();
-//            }
-//        });
+
+        focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+            repaint();
+        });
     }
 
     public void repaint() {
         ((CodeAreaFXSkin) getSkin()).redraw();
     }
-
-//    public void redraw() {
-//        Insets insets = getInsets();
-//        Dimension size = getSize();
-//        Rectangle compRect = new Rectangle();
-//        compRect.x = insets.left;
-//        compRect.y = insets.top;
-//        compRect.width = size.width - insets.left - insets.right;
-//        compRect.height = size.height - insets.top - insets.bottom;
-//        if (!paintDataCache.componentRectangle.equals(compRect)) {
-//            computePaintData();
-//        }
-//
-//        Rectangle clipBounds = g.getClipBounds();
-//        if (charAntialiasingMode != CharAntialiasingMode.OFF && g instanceof Graphics2D) {
-//            Object antialiasingHint = getAntialiasingHint((Graphics2D) g);
-//            ((Graphics2D) g).setRenderingHint(
-//                    RenderingHints.KEY_TEXT_ANTIALIASING,
-//                    antialiasingHint);
-//        }
-//
-//        if (paintDataCache.fontMetrics == null) {
-//            computeFontMetrics();
-//        }
-//
-//        painter.paintOverall(g);
-//        Rectangle hexRect = paintDataCache.codeSectionRectangle;
-//        if (showHeader) {
-//            g.setClip(clipBounds.createIntersection(new Rectangle(hexRect.x, 0, hexRect.width, hexRect.y)));
-//            painter.paintHeader(g);
-//        }
-//
-//        g.setClip(clipBounds.createIntersection(new Rectangle(0, hexRect.y, hexRect.x + hexRect.width, hexRect.height)));
-//        painter.paintBackground(g);
-//        if (showLineNumbers) {
-//            painter.paintLineNumbers(g);
-//            g.setClip(clipBounds.createIntersection(new Rectangle(hexRect.x, hexRect.y, hexRect.width, hexRect.height)));
-//        }
-//
-//        painter.paintMainArea(g);
-//        painter.paintCursor(g);
-//
-//        g.setClip(clipBounds);
-//    }
 
     private Object getAntialiasingHint(Graphics2D g) {
         Object antialiasingHint;
@@ -819,12 +801,11 @@ public class CodeAreaFX extends Control {
         return bytes;
     }
 
-//    @Override
-//    public void setFont(Font font) {
-//        super.setFont(font);
-//        computeFontMetrics();
-//    }
-//
+    public void setFont(Font font) {
+        this.font = font;
+        computeFontMetrics();
+    }
+
 //    @Override
 //    public void setBorder(Border border) {
 //        super.setBorder(border);
@@ -1275,6 +1256,24 @@ public class CodeAreaFX extends Control {
 
     public ColorsGroup getMirrorSelectionColors() {
         return new ColorsGroup(mirrorSelectionColors);
+    }
+
+    public Color getTextColor() {
+        return textColor;
+    }
+
+    public void setTextColor(Color textColor) {
+        this.textColor = textColor;
+        repaint();
+    }
+
+    public Color getBackgroundColor() {
+        return backgroundColor;
+    }
+
+    public void setBackgroundColor(Color backgroundColor) {
+        this.backgroundColor = backgroundColor;
+        repaint();
     }
 
     public void setMainColors(ColorsGroup colorsGroup) {
@@ -1779,18 +1778,20 @@ public class CodeAreaFX extends Control {
         return new Color(
                 computeOddColorComponent(color.getRed()),
                 computeOddColorComponent(color.getGreen()),
-                computeOddColorComponent(color.getBlue()));
+                computeOddColorComponent(color.getBlue()),
+                color.getOpacity());
     }
 
-    private static int computeOddColorComponent(int colorComponent) {
-        return colorComponent + (colorComponent > 64 ? - 16 : 16);
+    private static double computeOddColorComponent(double colorComponent) {
+        return colorComponent + (colorComponent > 0.25 ? -0.0625 : 0.0625);
     }
 
     private static Color createNegativeColor(Color color) {
         return new Color(
-                255 - color.getRed(),
-                255 - color.getGreen(),
-                255 - color.getBlue());
+                1 - color.getRed(),
+                1 - color.getGreen(),
+                1 - color.getBlue(),
+                color.getOpacity());
     }
 
     public static enum BackgroundMode {
@@ -2117,31 +2118,31 @@ public class CodeAreaFX extends Control {
 
         @Override
         public void adjustmentValueChanged(AdjustmentEvent e) {
-            int scrollBarValue = verticalScrollBar.getValue();
-            if (scrollPosition.verticalMaxMode) {
-                int maxValue = Integer.MAX_VALUE - verticalScrollBar.getVisibleAmount();
-                long lines = (data.getDataSize() / paintDataCache.bytesPerLine) - paintDataCache.linesPerRect + 1;
-                long targetLine;
-                if (scrollBarValue > 0 && lines > maxValue / scrollBarValue) {
-                    targetLine = scrollBarValue * (lines / maxValue);
-                    long rest = lines % maxValue;
-                    targetLine += (rest * scrollBarValue) / maxValue;
-                } else {
-                    targetLine = (scrollBarValue * lines) / Integer.MAX_VALUE;
-                }
-                scrollPosition.scrollLinePosition = targetLine;
-                if (verticalScrollMode != VerticalScrollMode.PER_LINE) {
-                    scrollPosition.scrollLineOffset = 0;
-                }
-            } else if (verticalScrollMode == VerticalScrollMode.PER_LINE) {
-                scrollPosition.scrollLinePosition = scrollBarValue;
-            } else {
-                scrollPosition.scrollLinePosition = scrollBarValue / paintDataCache.lineHeight;
-                scrollPosition.scrollLineOffset = scrollBarValue % paintDataCache.lineHeight;
-            }
-
-            repaint();
-            notifyScrolled();
+            double scrollBarValue = verticalScrollBar.getValue();
+//            if (scrollPosition.verticalMaxMode) {
+//                int maxValue = Integer.MAX_VALUE - verticalScrollBar.getVisibleAmount();
+//                long lines = (data.getDataSize() / paintDataCache.bytesPerLine) - paintDataCache.linesPerRect + 1;
+//                long targetLine;
+//                if (scrollBarValue > 0 && lines > maxValue / scrollBarValue) {
+//                    targetLine = scrollBarValue * (lines / maxValue);
+//                    long rest = lines % maxValue;
+//                    targetLine += (rest * scrollBarValue) / maxValue;
+//                } else {
+//                    targetLine = (scrollBarValue * lines) / Integer.MAX_VALUE;
+//                }
+//                scrollPosition.scrollLinePosition = targetLine;
+//                if (verticalScrollMode != VerticalScrollMode.PER_LINE) {
+//                    scrollPosition.scrollLineOffset = 0;
+//                }
+//            } else if (verticalScrollMode == VerticalScrollMode.PER_LINE) {
+//                scrollPosition.scrollLinePosition = scrollBarValue;
+//            } else {
+//                scrollPosition.scrollLinePosition = scrollBarValue / paintDataCache.lineHeight;
+//                scrollPosition.scrollLineOffset = scrollBarValue % paintDataCache.lineHeight;
+//            }
+//
+//            repaint();
+//            notifyScrolled();
         }
     }
 
@@ -2152,14 +2153,14 @@ public class CodeAreaFX extends Control {
 
         @Override
         public void adjustmentValueChanged(AdjustmentEvent e) {
-            if (horizontalScrollMode == HorizontalScrollMode.PER_CHAR) {
-                scrollPosition.scrollCharPosition = horizontalScrollBar.getValue();
-            } else {
-                scrollPosition.scrollCharPosition = horizontalScrollBar.getValue() / paintDataCache.charWidth;
-                scrollPosition.scrollCharOffset = horizontalScrollBar.getValue() % paintDataCache.charWidth;
-            }
-            repaint();
-            notifyScrolled();
+//            if (horizontalScrollMode == HorizontalScrollMode.PER_CHAR) {
+//                scrollPosition.scrollCharPosition = horizontalScrollBar.getValue();
+//            } else {
+//                scrollPosition.scrollCharPosition = horizontalScrollBar.getValue() / paintDataCache.charWidth;
+//                scrollPosition.scrollCharOffset = horizontalScrollBar.getValue() % paintDataCache.charWidth;
+//            }
+//            repaint();
+//            notifyScrolled();
         }
     }
 }

@@ -15,9 +15,9 @@
  */
 package org.exbin.deltahex.javafx;
 
+import com.sun.javafx.geom.Rectangle;
 import org.exbin.deltahex.CaretPosition;
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.Timer;
@@ -27,7 +27,7 @@ import org.exbin.deltahex.Section;
 /**
  * Code area caret.
  *
- * @version 0.1.1 2016/08/31
+ * @version 0.1.1 2016/09/03
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeAreaCaret {

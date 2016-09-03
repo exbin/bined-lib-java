@@ -15,12 +15,12 @@
  */
 package org.exbin.deltahex.javafx;
 
-import java.awt.Graphics;
+import javafx.scene.Node;
 
 /**
  * Hexadecimal editor painter.
  *
- * @version 0.1.0 2016/09/02
+ * @version 0.1.0 2016/09/03
  * @author ExBin Project (http://exbin.org)
  */
 public interface CodeAreaPainter {
@@ -28,42 +28,42 @@ public interface CodeAreaPainter {
     /**
      * Paints overall hexadecimal editor parts.
      *
-     * @param g graphics
+     * @return node
      */
-    void paintOverall(Graphics g);
+    Node paintOverall();
 
     /**
      * Paints header for hexadecimal editor.
      *
-     * @param g graphics
+     * @return node
      */
-    void paintHeader(Graphics g);
+    Node paintHeader();
 
     /**
      * Paints background.
      *
-     * @param g graphics
+     * @return node
      */
-    void paintBackground(Graphics g);
+    Node paintBackground();
 
     /**
      * Paints line number.
      *
-     * @param g graphics
+     * @return node
      */
-    void paintLineNumbers(Graphics g);
+    Node paintLineNumbers();
 
     /**
      * Paints main hexadecimal data section of the component.
      *
-     * @param g graphics
+     * @return node
      */
-    void paintMainArea(Graphics g);
+    Node paintMainArea();
 
     /**
      * Paints cursor symbol.
      *
-     * @param g graphics
+     * @return node
      */
-    void paintCursor(Graphics g);
+    Node paintCursor();
 }
