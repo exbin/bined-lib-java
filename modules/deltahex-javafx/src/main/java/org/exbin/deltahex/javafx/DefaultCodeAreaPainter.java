@@ -16,13 +16,8 @@
 package org.exbin.deltahex.javafx;
 
 import com.sun.javafx.geom.Rectangle;
-import java.awt.BasicStroke;
-import java.awt.FontMetrics;
+import com.sun.javafx.tk.FontMetrics;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Point;
-import java.awt.Shape;
-import java.awt.Stroke;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 import java.util.Arrays;
@@ -33,15 +28,13 @@ import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import org.exbin.deltahex.CodeAreaUtils;
-import org.exbin.deltahex.EditationMode;
-import org.exbin.deltahex.HexCharactersCase;
 import org.exbin.deltahex.Section;
 import org.exbin.deltahex.ViewMode;
 
 /**
  * Code area component default painter.
  *
- * @version 0.1.0 2016/09/03
+ * @version 0.1.0 2016/09/04
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaPainter implements CodeAreaPainter {
@@ -573,7 +566,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                 }
 
                 if (currentCharWidth == 0) {
-                    currentCharWidth = paintData.fontMetrics.charWidth(currentChar);
+                    currentCharWidth = (int) paintData.fontMetrics.computeStringWidth(Character.toString(currentChar));
                     nativeWidth = currentCharWidth == paintData.charWidth;
                 }
             } else {
@@ -582,7 +575,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                     char currentChar = paintData.unprintableChars[charOnLine];
                     if (currentChar != ' ') {
                         colorType = ColorsGroup.ColorType.UNPRINTABLES;
-                        currentCharWidth = paintData.fontMetrics.charWidth(currentChar);
+                        currentCharWidth = (int) paintData.fontMetrics.computeStringWidth(Character.toString(currentChar));
                         nativeWidth = currentCharWidth == paintData.charWidth;
                     }
                 }
@@ -703,7 +696,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
      */
     protected void drawCenteredChar(Graphics g, char[] drawnChars, int charOffset, int charWidthSpace, int startX, int positionY) {
         FontMetrics fontMetrics = codeArea.getFontMetrics();
-        int charWidth = fontMetrics.charWidth(drawnChars[charOffset]);
+        int charWidth = (int) fontMetrics.computeStringWidth(Character.toString(drawnChars[charOffset]));
         drawShiftedChar(g, drawnChars, charOffset, charWidthSpace, startX, positionY, (charWidthSpace + 1 - charWidth) >> 1);
     }
 

@@ -16,7 +16,8 @@
 package org.exbin.deltahex.javafx;
 
 import com.sun.javafx.geom.Rectangle;
-import java.awt.FontMetrics;
+import com.sun.javafx.tk.FontMetrics;
+import com.sun.javafx.tk.Toolkit;
 import java.awt.Graphics2D;
 import java.awt.GraphicsDevice;
 import java.awt.RenderingHints;
@@ -42,7 +43,6 @@ import javafx.scene.Node;
 import javafx.scene.control.Control;
 import javafx.scene.control.ScrollBar;
 import javafx.scene.control.Skin;
-import javafx.scene.layout.Border;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -69,7 +69,7 @@ import org.exbin.utils.binary_data.BinaryData;
  *
  * Also supports binary, octal and decimal codes.
  *
- * @version 0.1.1 2016/09/03
+ * @version 0.1.1 2016/09/04
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeAreaFX extends Control {
@@ -158,6 +158,7 @@ public class CodeAreaFX extends Control {
         caret = new CodeAreaCaret(this);
         painter = new DefaultCodeAreaPainter(this);
         commandHandler = new DefaultCodeAreaCommandHandler(this);
+        this.font = new Font("MONOSPACED", 10);
 
         init();
         setSkin(new CodeAreaFXSkin());
@@ -801,6 +802,10 @@ public class CodeAreaFX extends Control {
         return bytes;
     }
 
+    public Font getFont() {
+        return font;
+    }
+
     public void setFont(Font font) {
         this.font = font;
         computeFontMetrics();
@@ -813,62 +818,58 @@ public class CodeAreaFX extends Control {
 //    }
 
     private void computeFontMetrics() {
-// TODO        Toolkit.getToolkit().getFontLoader().getFontMetrics(myFont); 
-//        Graphics g = getGraphics();
-//        if (g != null) {
-//            Font font = getFont();
-//            paintDataCache.fontMetrics = g.getFontMetrics(font);
-//            /**
-//             * Use small 'w' character to guess normal font width.
-//             */
-//            paintDataCache.charWidth = paintDataCache.fontMetrics.charWidth('w');
-//            /**
-//             * Compare it to small 'i' to detect if font is monospaced.
-//             *
-//             * TODO: Is there better way?
-//             */
-//            paintDataCache.monospaceFont = paintDataCache.charWidth == paintDataCache.fontMetrics.charWidth(' ') && paintDataCache.charWidth == paintDataCache.fontMetrics.charWidth('i');
-//            int fontHeight = font.getSize();
-//            if (paintDataCache.charWidth == 0) {
-//                paintDataCache.charWidth = fontHeight;
-//            }
-//            paintDataCache.lineHeight = fontHeight + subFontSpace;
-//            computePaintData();
-//        }
+        paintDataCache.fontMetrics = Toolkit.getToolkit().getFontLoader().getFontMetrics(font); 
+        /**
+         * Use small 'w' character to guess normal font width.
+         */
+        paintDataCache.charWidth = (int) paintDataCache.fontMetrics.computeStringWidth("w");
+        /**
+         * Compare it to small 'i' to detect if font is monospaced.
+         *
+         * TODO: Is there better way?
+         */
+        paintDataCache.monospaceFont = paintDataCache.charWidth == (int) paintDataCache.fontMetrics.computeStringWidth(" ") && paintDataCache.charWidth == (int) paintDataCache.fontMetrics.computeStringWidth("i");
+        int fontHeight = (int) paintDataCache.fontMetrics.getLineHeight();
+        if (paintDataCache.charWidth == 0) {
+            paintDataCache.charWidth = fontHeight;
+        }
+        paintDataCache.lineHeight = fontHeight + subFontSpace;
+        computePaintData();
     }
 
     public void computePaintData() {
-//        if (paintDataCache.fontMetrics == null) {
-//            return;
-//        }
-//
-//        boolean verticalScrollBarVisible;
-//        boolean horizontalScrollBarVisible;
-//
-//        Insets insets = getInsets();
-//        Dimension size = getSize();
-//        Rectangle compRect = paintDataCache.componentRectangle;
-//        compRect.x = insets.left;
-//        compRect.y = insets.top;
-//        compRect.width = size.width - insets.left - insets.right;
-//        compRect.height = size.height - insets.top - insets.bottom;
-//
-//        switch (lineNumberLength.getLineNumberType()) {
-//            case AUTO: {
-//                double natLog = Math.log(getDataSize());
-//                paintDataCache.lineNumbersLength = (int) Math.ceil(natLog / positionCodeType.getBaseLog());
-//                if (paintDataCache.lineNumbersLength == 0) {
-//                    paintDataCache.lineNumbersLength = 1;
-//                }
-//                break;
-//            }
-//            case SPECIFIED: {
-//                paintDataCache.lineNumbersLength = lineNumberLength.getLineNumberLength();
-//                break;
-//            }
-//        }
-//
-//        int charsPerRect = computeCharsPerRect(compRect.width);
+        if (paintDataCache.fontMetrics == null) {
+            return;
+        }
+
+        boolean verticalScrollBarVisible;
+        boolean horizontalScrollBarVisible;
+
+        Insets insets = getInsets();
+        double width = getWidth();
+        double height = getHeight();
+        Rectangle compRect = paintDataCache.componentRectangle;
+        compRect.x = (int) insets.getLeft();
+        compRect.y = (int) insets.getTop();
+        compRect.width = (int) (width - insets.getLeft() - insets.getRight());
+        compRect.height = (int) (height - insets.getTop() - insets.getBottom());
+
+        switch (lineNumberLength.getLineNumberType()) {
+            case AUTO: {
+                double natLog = Math.log(getDataSize());
+                paintDataCache.lineNumbersLength = (int) Math.ceil(natLog / positionCodeType.getBaseLog());
+                if (paintDataCache.lineNumbersLength == 0) {
+                    paintDataCache.lineNumbersLength = 1;
+                }
+                break;
+            }
+            case SPECIFIED: {
+                paintDataCache.lineNumbersLength = lineNumberLength.getLineNumberLength();
+                break;
+            }
+        }
+
+        int charsPerRect = computeCharsPerRect(compRect.width);
 //        int bytesPerLine;
 //        if (wrapMode) {
 //            bytesPerLine = computeFittingBytes(charsPerRect);
