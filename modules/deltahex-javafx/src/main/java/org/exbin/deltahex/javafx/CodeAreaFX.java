@@ -69,7 +69,7 @@ import org.exbin.utils.binary_data.BinaryData;
  *
  * Also supports binary, octal and decimal codes.
  *
- * @version 0.1.1 2016/09/04
+ * @version 0.1.1 2016/09/15
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeAreaFX extends Control {
@@ -84,6 +84,9 @@ public class CodeAreaFX extends Control {
 
     private BinaryData data;
     private Font font;
+    private final MainAreaControl mainArea = new MainAreaControl();
+    private final HeaderControl headerArea = new HeaderControl();
+    private final LineNumbersControl lineNumbersArea = new LineNumbersControl();
     private CodeAreaPainter painter;
     private CodeAreaCommandHandler commandHandler;
     private final CodeAreaCaret caret;
@@ -160,90 +163,8 @@ public class CodeAreaFX extends Control {
         commandHandler = new DefaultCodeAreaCommandHandler(this);
         this.font = new Font("MONOSPACED", 10);
 
-        init();
         setSkin(new CodeAreaFXSkin());
-    }
-
-    public class CodeAreaFXSkin implements Skin<CodeAreaFX> {
-
-        private Group rootNode;
-
-        public CodeAreaFXSkin() {
-        }
-
-        protected void redraw() {
-            List<Node> nodes = new ArrayList<>();
-
-            Insets insets = getInsets();
-            double width = getWidth();
-            double height = getHeight();
-            Rectangle compRect = new Rectangle(
-                    (int) insets.getLeft(),
-                    (int) insets.getTop(),
-                    (int) (width  - insets.getLeft() - insets.getRight()),
-                    (int) (height - insets.getTop() - insets.getBottom()));
-
-            if (!paintDataCache.componentRectangle.equals(compRect)) {
-                computePaintData();
-            }
-
-//          // TODO No antialiasing not available?
-//            if (charAntialiasingMode != CharAntialiasingMode.OFF && g instanceof Graphics2D) {
-//                Object antialiasingHint = getAntialiasingHint((Graphics2D) g);
-//                ((Graphics2D) g).setRenderingHint(
-//                        RenderingHints.KEY_TEXT_ANTIALIASING,
-//                        antialiasingHint);
-//            }
-//            text.setFontSmoothingType(FontSmoothingType.LCD);
-            
-
-            if (paintDataCache.fontMetrics == null) {
-                computeFontMetrics();
-            }
-
-            Node overall = painter.paintOverall();
-            nodes.add(overall);
-            Text text = new Text("TEST");
-            nodes.add(text);
-            
-//        Rectangle hexRect = paintDataCache.codeSectionRectangle;
-//        if (showHeader) {
-//            g.setClip(clipBounds.createIntersection(new Rectangle(hexRect.x, 0, hexRect.width, hexRect.y)));
-//            painter.paintHeader(g);
-//        }
-//
-//        g.setClip(clipBounds.createIntersection(new Rectangle(0, hexRect.y, hexRect.x + hexRect.width, hexRect.height)));
-//        painter.paintBackground(g);
-//        if (showLineNumbers) {
-//            painter.paintLineNumbers(g);
-//            g.setClip(clipBounds.createIntersection(new Rectangle(hexRect.x, hexRect.y, hexRect.width, hexRect.height)));
-//        }
-//
-//        painter.paintMainArea(g);
-//        painter.paintCursor(g);
-//
-//        g.setClip(clipBounds);
-
-            this.rootNode.getChildren().setAll(nodes);
-        }
-
-        @Override
-        public CodeAreaFX getSkinnable() {
-            return CodeAreaFX.this;
-        }
-
-        @Override
-        public Node getNode() {
-            if (this.rootNode == null) {
-                this.rootNode = new Group();
-                redraw();
-            }
-            return this.rootNode;
-        }
-
-        @Override
-        public void dispose() {
-        }
+        init();
     }
 
     private void init() {
@@ -288,10 +209,285 @@ public class CodeAreaFX extends Control {
 //        addMouseMotionListener(codeAreaMouseListener);
 //        addMouseWheelListener(codeAreaMouseListener);
 //        addKeyListener(new CodeAreaKeyListener());
-
         focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
             repaint();
         });
+    }
+
+    public class CodeAreaFXSkin implements Skin<CodeAreaFX> {
+
+        private Group rootNode;
+
+        public CodeAreaFXSkin() {
+        }
+
+        protected void redraw() {
+            List<Node> nodes = new ArrayList<>();
+
+            Insets insets = getInsets();
+            double width = getWidth();
+            double height = getHeight();
+            Rectangle compRect = new Rectangle(
+                    (int) insets.getLeft(),
+                    (int) insets.getTop(),
+                    (int) (width - insets.getLeft() - insets.getRight()),
+                    (int) (height - insets.getTop() - insets.getBottom()));
+
+            if (!paintDataCache.componentRectangle.equals(compRect)) {
+                computePaintData();
+            }
+
+//          // TODO Antialiasing not available?
+//            if (charAntialiasingMode != CharAntialiasingMode.OFF && g instanceof Graphics2D) {
+//                Object antialiasingHint = getAntialiasingHint((Graphics2D) g);
+//                ((Graphics2D) g).setRenderingHint(
+//                        RenderingHints.KEY_TEXT_ANTIALIASING,
+//                        antialiasingHint);
+//            }
+//            text.setFontSmoothingType(FontSmoothingType.LCD);
+            if (paintDataCache.fontMetrics == null) {
+                computeFontMetrics();
+            }
+
+            Node overall = painter.paintOverall();
+            nodes.add(overall);
+            Text text = new Text("TEST");
+            nodes.add(text);
+
+            Rectangle hexRect = paintDataCache.codeSectionRectangle;
+            if (showHeader) {
+                headerArea.setLayoutX(hexRect.x);
+                headerArea.setLayoutY(hexRect.y);
+                headerArea.setMaxSize(hexRect.width, 20); // TODO
+                nodes.add(headerArea);
+            }
+
+            Node background = painter.paintBackground();
+            if (background != null) {
+                nodes.add(background);
+            }
+
+            if (showLineNumbers) {
+                lineNumbersArea.setLayoutX(hexRect.x);
+                lineNumbersArea.setLayoutY(hexRect.y);
+                lineNumbersArea.setMaxSize(hexRect.width, 20); // TODO
+                nodes.add(lineNumbersArea);
+            }
+//
+//        painter.paintMainArea(g);
+//        painter.paintCursor(g);
+//
+//        g.setClip(clipBounds);
+            this.rootNode.getChildren().setAll(nodes);
+        }
+
+        @Override
+        public CodeAreaFX getSkinnable() {
+            return CodeAreaFX.this;
+        }
+
+        @Override
+        public Node getNode() {
+            if (this.rootNode == null) {
+                this.rootNode = new Group();
+                redraw();
+            }
+            return this.rootNode;
+        }
+
+        @Override
+        public void dispose() {
+        }
+    }
+
+    /**
+     * Hexadecimal viewer/editor JavaFX main area control.
+     */
+    public class MainAreaControl extends Control {
+
+        public MainAreaControl() {
+            super();
+            setSkin(new MainAreaSkin());
+        }
+
+        public class MainAreaSkin implements Skin<MainAreaControl> {
+
+            private Group rootNode;
+
+            public MainAreaSkin() {
+            }
+
+            protected void redraw() {
+                if (paintDataCache == null) {
+                    return;
+                }
+
+                List<Node> nodes = new ArrayList<>();
+
+                Insets insets = getInsets();
+                double width = getWidth();
+                double height = getHeight();
+                Rectangle compRect = new Rectangle(
+                        (int) insets.getLeft(),
+                        (int) insets.getTop(),
+                        (int) (width - insets.getLeft() - insets.getRight()),
+                        (int) (height - insets.getTop() - insets.getBottom()));
+
+                if (!paintDataCache.componentRectangle.equals(compRect)) {
+                    computePaintData();
+                }
+
+//            text.setFontSmoothingType(FontSmoothingType.LCD);
+                if (paintDataCache.fontMetrics == null) {
+                    computeFontMetrics();
+                }
+
+                Node overall = painter.paintOverall();
+                nodes.add(overall);
+                Text text = new Text("TEST");
+                nodes.add(text);
+
+//        Rectangle hexRect = paintDataCache.codeSectionRectangle;
+//        if (showHeader) {
+//            g.setClip(clipBounds.createIntersection(new Rectangle(hexRect.x, 0, hexRect.width, hexRect.y)));
+//            painter.paintHeader(g);
+//        }
+//
+//        g.setClip(clipBounds.createIntersection(new Rectangle(0, hexRect.y, hexRect.x + hexRect.width, hexRect.height)));
+//        painter.paintBackground(g);
+//        if (showLineNumbers) {
+//            painter.paintLineNumbers(g);
+//            g.setClip(clipBounds.createIntersection(new Rectangle(hexRect.x, hexRect.y, hexRect.width, hexRect.height)));
+//        }
+//
+//        painter.paintMainArea(g);
+//        painter.paintCursor(g);
+//
+//        g.setClip(clipBounds);
+                this.rootNode.getChildren().setAll(nodes);
+            }
+
+            @Override
+            public MainAreaControl getSkinnable() {
+                return MainAreaControl.this;
+            }
+
+            @Override
+            public Node getNode() {
+                if (this.rootNode == null) {
+                    this.rootNode = new Group();
+                    redraw();
+                }
+                return this.rootNode;
+            }
+
+            @Override
+            public void dispose() {
+            }
+        }
+    }
+
+    /**
+     * Header control.
+     */
+    public class HeaderControl extends Control {
+
+        public HeaderControl() {
+            super();
+            setSkin(new HeaderSkin());
+        }
+
+        public class HeaderSkin implements Skin<HeaderControl> {
+
+            private Group rootNode;
+
+            public HeaderSkin() {
+            }
+
+            protected void redraw() {
+                if (paintDataCache == null) {
+                    return;
+                }
+
+                List<Node> nodes = new ArrayList<>();
+
+                Node header = painter.paintHeader();
+                if (header != null) {
+                    nodes.add(header);
+                }
+
+                this.rootNode.getChildren().setAll(nodes);
+            }
+
+            @Override
+            public HeaderControl getSkinnable() {
+                return HeaderControl.this;
+            }
+
+            @Override
+            public Node getNode() {
+                if (this.rootNode == null) {
+                    this.rootNode = new Group();
+                    redraw();
+                }
+                return this.rootNode;
+            }
+
+            @Override
+            public void dispose() {
+            }
+        }
+    }
+
+    /**
+     * Line numbers control.
+     */
+    public class LineNumbersControl extends Control {
+
+        public LineNumbersControl() {
+            super();
+            setSkin(new LineNumbersSkin());
+        }
+
+        public class LineNumbersSkin implements Skin<LineNumbersControl> {
+
+            private Group rootNode;
+
+            public LineNumbersSkin() {
+            }
+
+            protected void redraw() {
+                if (paintDataCache == null) {
+                    return;
+                }
+
+                List<Node> nodes = new ArrayList<>();
+
+                Node lineNumbers = painter.paintLineNumbers();
+                if (lineNumbers != null) {
+                    nodes.add(lineNumbers);
+                }
+                this.rootNode.getChildren().setAll(nodes);
+            }
+
+            @Override
+            public LineNumbersControl getSkinnable() {
+                return LineNumbersControl.this;
+            }
+
+            @Override
+            public Node getNode() {
+                if (this.rootNode == null) {
+                    this.rootNode = new Group();
+                    redraw();
+                }
+                return this.rootNode;
+            }
+
+            @Override
+            public void dispose() {
+            }
+        }
     }
 
     public void repaint() {
@@ -409,15 +605,15 @@ public class CodeAreaFX extends Control {
     }
 
     public void notifyCaretMoved() {
-        for (CaretMovedListener caretMovedListener : caretMovedListeners) {
+        caretMovedListeners.stream().forEach((caretMovedListener) -> {
             caretMovedListener.caretMoved(caret.getCaretPosition(), caret.getSection());
-        }
+        });
     }
 
     public void notifyScrolled() {
-        for (ScrollingListener scrollingListener : scrollingListeners) {
+        scrollingListeners.stream().forEach((scrollingListener) -> {
             scrollingListener.scrolled();
-        }
+        });
     }
 
     public void notifyDataChanged() {
@@ -426,9 +622,9 @@ public class CodeAreaFX extends Control {
             notifyCaretMoved();
         }
 
-        for (DataChangedListener dataChangedListener : dataChangedListeners) {
+        dataChangedListeners.stream().forEach((dataChangedListener) -> {
             dataChangedListener.dataChanged();
-        }
+        });
     }
 
     public ScrollPosition getScrollPosition() {
@@ -605,9 +801,9 @@ public class CodeAreaFX extends Control {
     }
 
     private void notifySelectionChanged() {
-        for (SelectionChangedListener selectionChangedListener : selectionChangedListeners) {
+        selectionChangedListeners.stream().forEach((selectionChangedListener) -> {
             selectionChangedListener.selectionChanged(selection);
-        }
+        });
     }
 
     public boolean hasSelection() {
@@ -816,9 +1012,8 @@ public class CodeAreaFX extends Control {
 //        super.setBorder(border);
 //        computePaintData();
 //    }
-
     private void computeFontMetrics() {
-        paintDataCache.fontMetrics = Toolkit.getToolkit().getFontLoader().getFontMetrics(font); 
+        paintDataCache.fontMetrics = Toolkit.getToolkit().getFontLoader().getFontMetrics(font);
         /**
          * Use small 'w' character to guess normal font width.
          */

@@ -63,7 +63,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         Rectangle codeRect = codeArea.getCodeSectionRectangle();
         if (compRect.y < codeRect.y) {
             javafx.scene.shape.Rectangle backgroundRect = new javafx.scene.shape.Rectangle(compRect.x, compRect.y, compRect.x + compRect.width, codeRect.y - compRect.y);
-            backgroundRect.setFill(codeArea.getBackgroundColor());
+//            backgroundRect.setFill(codeArea.getBackgroundColor());
+            backgroundRect.setFill(Color.RED);
             group.getChildren().add(backgroundRect);
         }
 
