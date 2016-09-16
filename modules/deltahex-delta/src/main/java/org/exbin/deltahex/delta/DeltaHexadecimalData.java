@@ -31,7 +31,7 @@ import org.exbin.utils.binary_data.OutOfBoundsException;
  */
 public class DeltaHexadecimalData implements EditableBinaryData {
 
-    private final DeltaDataSource data;
+    private final FileDataSource data;
 
     private long dataLength = 0;
     private long pointerPosition;
@@ -39,7 +39,7 @@ public class DeltaHexadecimalData implements EditableBinaryData {
 
     private final DefaultDoublyLinkedList<DataSegment> segments = new DefaultDoublyLinkedList<>();
 
-    public DeltaHexadecimalData(DeltaDataSource data) throws IOException {
+    public DeltaHexadecimalData(FileDataSource data) throws IOException {
         this.data = data;
         dataLength = data.getFileLength();
         DataSegment fullFileSegment = new DocumentSegment(0, dataLength);
@@ -61,7 +61,7 @@ public class DeltaHexadecimalData implements EditableBinaryData {
         }
     }
 
-    private DeltaHexadecimalData(DeltaDataSource data, long length) {
+    private DeltaHexadecimalData(FileDataSource data, long length) {
         this.data = data;
         if (length > 0) {
             dataLength = length;

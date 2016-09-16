@@ -18,36 +18,19 @@ package org.exbin.deltahex.delta;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.RandomAccessFile;
+import org.exbin.utils.binary_data.EditableBinaryData;
 
 /**
- * Data source for access to resource with keeping list of modifications to it.
+ * Data source for binary data stored in memory.
  *
- * Data source is opened in read only mode and there structure keeping all the
- * changes.
- *
- * @version 0.1.0 2016/06/07
+ * @version 0.1.0 2016/09/16
  * @author ExBin Project (http://exbin.org)
  */
-public class DeltaDataSource {
+public class MemoryDataSource {
 
-    private final RandomAccessFile file;
-    private final DeltaDataPageWindow window;
+    private final EditableBinaryData binaryData;
 
-    public DeltaDataSource(File sourceFile) throws FileNotFoundException, IOException {
-        file = new RandomAccessFile(sourceFile, "rw");
-        window = new DeltaDataPageWindow(this);
-    }
-
-    public long getFileLength() throws IOException {
-        return file.length();
-    }
-
-    RandomAccessFile getFile() {
-        return file;
-    }
-
-    public DeltaDataPageWindow getWindow() {
-        return window;
+    public MemoryDataSource(File sourceFile) throws FileNotFoundException, IOException {
+        binaryData = new MemoryPagedData();
     }
 }

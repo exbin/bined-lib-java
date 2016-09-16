@@ -15,12 +15,18 @@
  */
 package org.exbin.deltahex.delta;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Repository of delta segments.
  *
- * @version 0.1.1 2016/09/14
+ * @version 0.1.1 2016/09/16
  * @author ExBin Project (http://exbin.org)
  */
 public class SegmentsRepository {
+    
+    private final List<FileDataSource> fileSources = new ArrayList<>();
+    private final List<MemoryDataSource> memorySources = new ArrayList<>();
 
 }

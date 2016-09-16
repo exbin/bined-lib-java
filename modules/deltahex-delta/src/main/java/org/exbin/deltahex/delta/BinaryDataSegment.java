@@ -20,7 +20,7 @@ import org.exbin.utils.binary_data.EditableBinaryData;
 /**
  * Data segment with binary data.
  *
- * @version 0.1.0 2016/06/07
+ * @version 0.1.0 2016/09/16
  * @author ExBin Project (http://exbin.org)
  */
 public class BinaryDataSegment extends DataSegment {
