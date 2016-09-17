@@ -25,8 +25,10 @@ import java.util.List;
  * @author ExBin Project (http://exbin.org)
  */
 public class SegmentsRepository {
-    
+
     private final List<FileDataSource> fileSources = new ArrayList<>();
     private final List<MemoryDataSource> memorySources = new ArrayList<>();
 
+    public SegmentsRepository() {
+    }
 }
