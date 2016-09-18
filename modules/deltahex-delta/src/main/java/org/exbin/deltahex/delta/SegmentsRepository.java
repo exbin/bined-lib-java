@@ -16,19 +16,35 @@
 package org.exbin.deltahex.delta;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Repository of delta segments.
  *
- * @version 0.1.1 2016/09/16
+ * @version 0.1.1 2016/09/18
  * @author ExBin Project (http://exbin.org)
  */
 public class SegmentsRepository {
 
     private final List<FileDataSource> fileSources = new ArrayList<>();
     private final List<MemoryDataSource> memorySources = new ArrayList<>();
+    private final Map<FileDataSource, DocumentSegment> fileSegments = new HashMap<>();
+    private final Map<MemoryDataSource, MemoryPagedData> memorySegments = new HashMap<>();
 
     public SegmentsRepository() {
+    }
+
+    public void addFileSource(FileDataSource fileSource) {
+        fileSources.add(fileSource);
+    }
+
+    public void addMemoryDataSource(MemoryDataSource memorySource) {
+        memorySources.add(memorySource);
+    }
+
+    public void closeFileSource(FileDataSource fileSource) {
+        // TODO
     }
 }
