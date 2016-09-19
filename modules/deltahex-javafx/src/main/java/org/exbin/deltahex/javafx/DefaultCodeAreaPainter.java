@@ -862,6 +862,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 //                    long dataSize = codeArea.getDataSize();
 //                    long dataPosition = (line + scrollPosition.getScrollLinePosition()) * codeArea.getBytesPerLine() + charPos - scrollPosition.getLineByteShift();
 //                    if (dataPosition >= dataSize) {
+//                        g.setClip(clip);
 //                        break;
 //                    }
 //
@@ -913,6 +914,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 //                    long dataSize = codeArea.getDataSize();
 //                    long dataPosition = (line + scrollPosition.getScrollLinePosition()) * codeArea.getBytesPerLine() + byteOffset - scrollPosition.getLineByteShift();
 //                    if (dataPosition >= dataSize) {
+//                        g.setClip(clip);
 //                        break;
 //                    }
 //
