@@ -122,19 +122,19 @@ public class CodeAreaCaret {
      */
     public Point getShadowCursorPoint(int bytesPerLine, int lineHeight, int charWidth, int linesPerRect) {
         CodeAreaFX.ScrollPosition scrollPosition = codeArea.getScrollPosition();
-        long dataPosition = caretPosition.getDataPosition();
-        long line = dataPosition / bytesPerLine - scrollPosition.getScrollLinePosition();
+        long shiftedPosition = caretPosition.getDataPosition() + scrollPosition.getLineByteShift();
+        long line = shiftedPosition / bytesPerLine - scrollPosition.getScrollLinePosition();
         if (line < -1 || line + 1 > linesPerRect) {
             return null;
         }
 
-        int byteOffset = (int) (dataPosition % bytesPerLine);
+        int byteOffset = (int) (shiftedPosition % bytesPerLine);
 
         Rectangle rect = codeArea.getCodeSectionRectangle();
         int caretY = (int) (rect.y + line * lineHeight) - scrollPosition.getScrollLineOffset();
         int caretX;
         if (section == Section.TEXT_PREVIEW) {
-            caretX = rect.x + charWidth * (codeArea.computeByteCharPos(byteOffset) + getCodeOffset());
+            caretX = rect.x + charWidth * codeArea.computeByteCharPos(byteOffset);
         } else {
             caretX = codeArea.getPreviewX() + charWidth * byteOffset;
         }
