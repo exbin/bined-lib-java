@@ -134,7 +134,7 @@ public class CodeAreaCaret {
         int caretY = (int) (rect.y + line * lineHeight) - scrollPosition.getScrollLineOffset();
         int caretX;
         if (section == Section.TEXT_PREVIEW) {
-            caretX = rect.x + charWidth * (codeArea.computeByteCharPos(byteOffset) + getCodeOffset());
+            caretX = rect.x + charWidth * codeArea.computeByteCharPos(byteOffset);
         } else {
             caretX = codeArea.getPreviewX() + charWidth * byteOffset;
         }
