@@ -23,15 +23,17 @@ import java.util.Map;
 /**
  * Repository of delta segments.
  *
- * @version 0.1.1 2016/09/18
+ * @version 0.1.1 2016/09/20
  * @author ExBin Project (http://exbin.org)
  */
 public class SegmentsRepository {
 
     private final List<FileDataSource> fileSources = new ArrayList<>();
     private final List<MemoryDataSource> memorySources = new ArrayList<>();
-    private final Map<FileDataSource, DocumentSegment> fileSegments = new HashMap<>();
-    private final Map<MemoryDataSource, MemoryPagedData> memorySegments = new HashMap<>();
+
+    private final List<DeltaDocument> documents = new ArrayList<>();
+    private final Map<FileSegment, FileDataSource> fileSegments = new HashMap<>();
+    private final Map<MemorySegment, MemoryDataSource> memorySegments = new HashMap<>();
 
     public SegmentsRepository() {
     }

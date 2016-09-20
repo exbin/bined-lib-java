@@ -16,17 +16,17 @@
 package org.exbin.deltahex.delta;
 
 /**
- * Data segment pointing to file.
+ * Data segment pointing to memory block.
  *
- * @version 0.1.0 2016/06/07
+ * @version 0.1.0 2016/06/20
  * @author ExBin Project (http://exbin.org)
  */
-public class DocumentSegment extends DataSegment {
+public class MemorySegment extends DataSegment {
 
     private long startPosition;
     private long length;
 
-    public DocumentSegment(long startPosition, long length) {
+    public MemorySegment(long startPosition, long length) {
         this.startPosition = startPosition;
         this.length = length;
     }
@@ -50,6 +50,6 @@ public class DocumentSegment extends DataSegment {
 
     @Override
     public DataSegment copy() {
-        return new DocumentSegment(startPosition, length);
+        return new MemorySegment(startPosition, length);
     }
 }

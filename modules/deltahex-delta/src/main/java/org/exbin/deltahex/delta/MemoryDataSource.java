@@ -15,11 +15,6 @@
  */
 package org.exbin.deltahex.delta;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import org.exbin.utils.binary_data.EditableBinaryData;
-
 /**
  * Data source for binary data stored in memory.
  *
@@ -28,9 +23,8 @@ import org.exbin.utils.binary_data.EditableBinaryData;
  */
 public class MemoryDataSource {
 
-    private final EditableBinaryData binaryData;
+    private final MemoryPagedData pagedData = new MemoryPagedData();
 
-    public MemoryDataSource(File sourceFile) throws FileNotFoundException, IOException {
-        binaryData = new MemoryPagedData();
+    public MemoryDataSource() {
     }
 }

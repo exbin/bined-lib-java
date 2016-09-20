@@ -26,212 +26,206 @@ import org.exbin.utils.binary_data.OutOfBoundsException;
 /**
  * Hexadecimal data using segments of data source.
  *
- * @version 0.1.1 2016/09/02
+ * @version 0.1.1 2016/09/20
  * @author ExBin Project (http://exbin.org)
  */
 public class DeltaHexadecimalData implements EditableBinaryData {
 
-    private final FileDataSource data;
+    private final DeltaDocument document;
+    private final SegmentsRepository repository;
 
-    private long dataLength = 0;
-    private long pointerPosition;
-    private DataSegment pointerSegment;
-
-    private final DefaultDoublyLinkedList<DataSegment> segments = new DefaultDoublyLinkedList<>();
-
-    public DeltaHexadecimalData(FileDataSource data) throws IOException {
-        this.data = data;
-        dataLength = data.getFileLength();
-        DataSegment fullFileSegment = new DocumentSegment(0, dataLength);
-        segments.add(fullFileSegment);
-        pointerPosition = 0;
-        pointerSegment = fullFileSegment;
+    public DeltaHexadecimalData(DeltaDocument document) throws IOException {
+        this.document = document;
+        this.repository = document.getRepository();
     }
 
-    /**
-     * This is copy constructor.
-     *
-     * @param source source object
-     */
-    private DeltaHexadecimalData(DeltaHexadecimalData source) {
-        data = source.data;
-        dataLength = source.dataLength;
-        for (DataSegment segment : segments) {
-            segments.add(segment.copy());
-        }
-    }
-
-    private DeltaHexadecimalData(FileDataSource data, long length) {
-        this.data = data;
-        if (length > 0) {
-            dataLength = length;
-            MemoryPagedData binaryData = new MemoryPagedData();
-            binaryData.insert(0, length);
-            DataSegment fullFileSegment = new BinaryDataSegment(binaryData);
-            segments.add(fullFileSegment);
-        }
-    }
-
-    // Temporary method for accessing data pages
-    public DefaultDoublyLinkedList<DataSegment> getSegments() {
-        return segments;
-    }
+//    /**
+//     * This is copy constructor.
+//     *
+//     * @param source source object
+//     */
+//    private DeltaHexadecimalData(DeltaHexadecimalData source) {
+//        document = source.document;
+//        dataLength = source.dataLength;
+//        for (DataSegment segment : segments) {
+//            segments.add(segment.copy());
+//        }
+//    }
+//
+//    private DeltaHexadecimalData(DeltaDocument document, long length) {
+//        this.document = document;
+//        if (length > 0) {
+//            dataLength = length;
+//            MemoryPagedData binaryData = new MemoryPagedData();
+//            binaryData.insert(0, length);
+//            DataSegment fullFileSegment = new MemorySegment(binaryData);
+//            segments.add(fullFileSegment);
+//        }
+//    }
+//
+//    // Temporary method for accessing data pages
+//    public DefaultDoublyLinkedList<DataSegment> getSegments() {
+//        return segments;
+//    }
 
     @Override
     public boolean isEmpty() {
-        return dataLength == 0;
+//        return dataLength == 0;
+        return true;
     }
 
     @Override
     public long getDataSize() {
-        return dataLength;
+//        return dataLength;
+        return 0;
     }
 
     @Override
     public byte getByte(long position) {
-        focusSegment(position);
-
-        if (pointerSegment instanceof DocumentSegment) {
-            return data.getWindow().getByte(((DocumentSegment) pointerSegment).getStartPosition() + (position - pointerPosition));
-        } else {
-            return ((BinaryDataSegment) pointerSegment).getByte(position - pointerPosition);
-        }
+//        focusSegment(position);
+//
+//        if (pointerSegment instanceof FileSegment) {
+//            return document.getWindow().getByte(((FileSegment) pointerSegment).getStartPosition() + (position - pointerPosition));
+//        } else {
+//            return ((MemorySegment) pointerSegment).getByte(position - pointerPosition);
+//        }
+        return 0;
     }
 
     @Override
     public void setByte(long position, byte value) {
-        focusSegment(position);
-
-        if (pointerSegment instanceof DocumentSegment) {
-            if (pointerPosition != position) {
-                splitSegment(position);
-                focusSegment(position);
-            }
-
-            DataSegment prev = segments.prevTo(pointerSegment);
-            EditableBinaryData binaryData;
-            if (prev instanceof BinaryDataSegment) {
-                binaryData = ((BinaryDataSegment) prev).getBinaryData();
-                binaryData.insert(binaryData.getDataSize(), new byte[]{value});
-            } else {
-                binaryData = new MemoryPagedData();
-                binaryData.insert(0, new byte[]{value});
-                BinaryDataSegment binarySegment = new BinaryDataSegment(binaryData);
-                segments.addBefore(pointerSegment, binarySegment);
-            }
-            pointerPosition++;
-            DocumentSegment documentSegment = ((DocumentSegment) pointerSegment);
-            documentSegment.setStartPosition(documentSegment.getStartPosition() + 1);
-            if (documentSegment.getLength() == 1) {
-                segments.remove(documentSegment);
-            } else {
-                documentSegment.setLength(documentSegment.getLength() - 1);
-            }
-        } else {
-            ((BinaryDataSegment) pointerSegment).setByte(position - pointerPosition, value);
-        }
+//        focusSegment(position);
+//
+//        if (pointerSegment instanceof FileSegment) {
+//            if (pointerPosition != position) {
+//                splitSegment(position);
+//                focusSegment(position);
+//            }
+//
+//            DataSegment prev = segments.prevTo(pointerSegment);
+//            EditableBinaryData binaryData;
+//            if (prev instanceof MemorySegment) {
+//                binaryData = ((MemorySegment) prev).getBinaryData();
+//                binaryData.insert(binaryData.getDataSize(), new byte[]{value});
+//            } else {
+//                binaryData = new MemoryPagedData();
+//                binaryData.insert(0, new byte[]{value});
+//                MemorySegment binarySegment = new MemorySegment(binaryData);
+//                segments.addBefore(pointerSegment, binarySegment);
+//            }
+//            pointerPosition++;
+//            FileSegment documentSegment = ((FileSegment) pointerSegment);
+//            documentSegment.setStartPosition(documentSegment.getStartPosition() + 1);
+//            if (documentSegment.getLength() == 1) {
+//                segments.remove(documentSegment);
+//            } else {
+//                documentSegment.setLength(documentSegment.getLength() - 1);
+//            }
+//        } else {
+//            ((MemorySegment) pointerSegment).setByte(position - pointerPosition, value);
+//        }
     }
 
     @Override
     public void insertUninitialized(long startFrom, long length) {
-        focusSegment(startFrom);
-        if (pointerSegment instanceof BinaryDataSegment) {
-            ((BinaryDataSegment) pointerSegment).getBinaryData().insertUninitialized(startFrom - pointerPosition, length);
-        } else {
-            if (startFrom > pointerPosition) {
-                splitSegment(startFrom);
-                focusSegment(startFrom);
-            }
-            MemoryPagedData binaryData = new MemoryPagedData();
-            binaryData.insertUninitialized(0, length);
-            BinaryDataSegment binarySegment = new BinaryDataSegment(binaryData);
-            segments.addBefore(pointerSegment, binarySegment);
-        }
+//        focusSegment(startFrom);
+//        if (pointerSegment instanceof MemorySegment) {
+//            ((MemorySegment) pointerSegment).getBinaryData().insertUninitialized(startFrom - pointerPosition, length);
+//        } else {
+//            if (startFrom > pointerPosition) {
+//                splitSegment(startFrom);
+//                focusSegment(startFrom);
+//            }
+//            MemoryPagedData binaryData = new MemoryPagedData();
+//            binaryData.insertUninitialized(0, length);
+//            MemorySegment binarySegment = new MemorySegment(binaryData);
+//            segments.addBefore(pointerSegment, binarySegment);
+//        }
     }
 
     @Override
     public void insert(long startFrom, long length) {
-        focusSegment(startFrom);
-        if (pointerSegment instanceof BinaryDataSegment) {
-            ((BinaryDataSegment) pointerSegment).getBinaryData().insert(startFrom - pointerPosition, length);
-        } else {
-            if (startFrom > pointerPosition) {
-                splitSegment(startFrom);
-                focusSegment(startFrom);
-            }
-            MemoryPagedData binaryData = new MemoryPagedData();
-            binaryData.insert(0, length);
-            BinaryDataSegment binarySegment = new BinaryDataSegment(binaryData);
-            segments.addBefore(pointerSegment, binarySegment);
-        }
+//        focusSegment(startFrom);
+//        if (pointerSegment instanceof MemorySegment) {
+//            ((MemorySegment) pointerSegment).getBinaryData().insert(startFrom - pointerPosition, length);
+//        } else {
+//            if (startFrom > pointerPosition) {
+//                splitSegment(startFrom);
+//                focusSegment(startFrom);
+//            }
+//            MemoryPagedData binaryData = new MemoryPagedData();
+//            binaryData.insert(0, length);
+//            MemorySegment binarySegment = new MemorySegment(binaryData);
+//            segments.addBefore(pointerSegment, binarySegment);
+//        }
     }
 
     @Override
     public void insert(long startFrom, byte[] insertedData) {
-        focusSegment(startFrom);
-        if (pointerSegment instanceof BinaryDataSegment) {
-            ((BinaryDataSegment) pointerSegment).getBinaryData().insert(startFrom - pointerPosition, insertedData);
-        } else {
-            if (startFrom > pointerPosition) {
-                splitSegment(startFrom);
-                focusSegment(startFrom);
-            }
-            MemoryPagedData binaryData = new MemoryPagedData();
-            binaryData.insert(0, insertedData);
-            BinaryDataSegment binarySegment = new BinaryDataSegment(binaryData);
-            segments.addBefore(pointerSegment, binarySegment);
-        }
+//        focusSegment(startFrom);
+//        if (pointerSegment instanceof MemorySegment) {
+//            ((MemorySegment) pointerSegment).getBinaryData().insert(startFrom - pointerPosition, insertedData);
+//        } else {
+//            if (startFrom > pointerPosition) {
+//                splitSegment(startFrom);
+//                focusSegment(startFrom);
+//            }
+//            MemoryPagedData binaryData = new MemoryPagedData();
+//            binaryData.insert(0, insertedData);
+//            MemorySegment binarySegment = new MemorySegment(binaryData);
+//            segments.addBefore(pointerSegment, binarySegment);
+//        }
     }
 
     @Override
     public void insert(long startFrom, byte[] insertedData, int insertedDataOffset, int insertedDataLength) {
-        focusSegment(startFrom);
-        if (pointerSegment instanceof BinaryDataSegment) {
-            ((BinaryDataSegment) pointerSegment).getBinaryData().insert(startFrom - pointerPosition, insertedData, insertedDataOffset, insertedDataLength);
-        } else {
-            if (startFrom > pointerPosition) {
-                splitSegment(startFrom);
-                focusSegment(startFrom);
-            }
-            MemoryPagedData binaryData = new MemoryPagedData();
-            binaryData.insert(0, insertedData, insertedDataOffset, insertedDataLength);
-            BinaryDataSegment binarySegment = new BinaryDataSegment(binaryData);
-            segments.addBefore(pointerSegment, binarySegment);
-        }
+//        focusSegment(startFrom);
+//        if (pointerSegment instanceof MemorySegment) {
+//            ((MemorySegment) pointerSegment).getBinaryData().insert(startFrom - pointerPosition, insertedData, insertedDataOffset, insertedDataLength);
+//        } else {
+//            if (startFrom > pointerPosition) {
+//                splitSegment(startFrom);
+//                focusSegment(startFrom);
+//            }
+//            MemoryPagedData binaryData = new MemoryPagedData();
+//            binaryData.insert(0, insertedData, insertedDataOffset, insertedDataLength);
+//            MemorySegment binarySegment = new MemorySegment(binaryData);
+//            segments.addBefore(pointerSegment, binarySegment);
+//        }
     }
 
     @Override
     public void insert(long startFrom, BinaryData insertedData) {
-        focusSegment(startFrom);
-        if (pointerSegment instanceof BinaryDataSegment) {
-            ((BinaryDataSegment) pointerSegment).getBinaryData().insert(startFrom - pointerPosition, insertedData);
-        } else {
-            if (startFrom > pointerPosition) {
-                splitSegment(startFrom);
-                focusSegment(startFrom);
-            }
-            MemoryPagedData binaryData = new MemoryPagedData();
-            binaryData.insert(0, insertedData);
-            BinaryDataSegment binarySegment = new BinaryDataSegment(binaryData);
-            segments.addBefore(pointerSegment, binarySegment);
-        }
+//        focusSegment(startFrom);
+//        if (pointerSegment instanceof MemorySegment) {
+//            ((MemorySegment) pointerSegment).getBinaryData().insert(startFrom - pointerPosition, insertedData);
+//        } else {
+//            if (startFrom > pointerPosition) {
+//                splitSegment(startFrom);
+//                focusSegment(startFrom);
+//            }
+//            MemoryPagedData binaryData = new MemoryPagedData();
+//            binaryData.insert(0, insertedData);
+//            MemorySegment binarySegment = new MemorySegment(binaryData);
+//            segments.addBefore(pointerSegment, binarySegment);
+//        }
     }
 
     @Override
     public void insert(long startFrom, BinaryData insertedData, long insertedDataOffset, long insertedDataLength) {
-        focusSegment(startFrom);
-        if (pointerSegment instanceof BinaryDataSegment) {
-            ((BinaryDataSegment) pointerSegment).getBinaryData().insert(startFrom - pointerPosition, insertedData, insertedDataOffset, insertedDataLength);
-        } else {
-            if (startFrom > pointerPosition) {
-                splitSegment(startFrom);
-                focusSegment(startFrom);
-            }
-            MemoryPagedData binaryData = new MemoryPagedData();
-            binaryData.insert(0, insertedData, insertedDataOffset, insertedDataLength);
-            BinaryDataSegment binarySegment = new BinaryDataSegment(binaryData);
-            segments.addBefore(pointerSegment, binarySegment);
-        }
+//        focusSegment(startFrom);
+//        if (pointerSegment instanceof MemorySegment) {
+//            ((MemorySegment) pointerSegment).getBinaryData().insert(startFrom - pointerPosition, insertedData, insertedDataOffset, insertedDataLength);
+//        } else {
+//            if (startFrom > pointerPosition) {
+//                splitSegment(startFrom);
+//                focusSegment(startFrom);
+//            }
+//            MemoryPagedData binaryData = new MemoryPagedData();
+//            binaryData.insert(0, insertedData, insertedDataOffset, insertedDataLength);
+//            MemorySegment binarySegment = new MemorySegment(binaryData);
+//            segments.addBefore(pointerSegment, binarySegment);
+//        }
     }
 
     @Override
@@ -266,28 +260,28 @@ public class DeltaHexadecimalData implements EditableBinaryData {
 
     @Override
     public void remove(long startFrom, long length) {
-        if (length > 0) {
-            dataLength -= length;
-            focusSegment(startFrom + length);
-            splitSegment(startFrom + length);
-            focusSegment(startFrom);
-            splitSegment(startFrom);
-            focusSegment(startFrom);
-            while (length > 0) {
-                length -= pointerSegment.getLength();
-                DataSegment next = segments.nextTo(pointerSegment);
-                segments.remove(pointerSegment);
-                pointerSegment = next;
-            }
-        }
+//        if (length > 0) {
+//            dataLength -= length;
+//            focusSegment(startFrom + length);
+//            splitSegment(startFrom + length);
+//            focusSegment(startFrom);
+//            splitSegment(startFrom);
+//            focusSegment(startFrom);
+//            while (length > 0) {
+//                length -= pointerSegment.getLength();
+//                DataSegment next = segments.nextTo(pointerSegment);
+//                segments.remove(pointerSegment);
+//                pointerSegment = next;
+//            }
+//        }
     }
 
     @Override
     public void clear() {
-        pointerPosition = 0;
-        pointerSegment = null;
-        dataLength = 0;
-        segments.clear();
+//        pointerPosition = 0;
+//        pointerSegment = null;
+//        dataLength = 0;
+//        segments.clear();
     }
 
     @Override
@@ -307,37 +301,39 @@ public class DeltaHexadecimalData implements EditableBinaryData {
 
     @Override
     public BinaryData copy() {
-        return new DeltaHexadecimalData(this);
+//        return new DeltaHexadecimalData(this);
+        return null;
     }
 
     @Override
     public BinaryData copy(long startFrom, long length) {
-        DeltaHexadecimalData copy = new DeltaHexadecimalData(data, 0);
-        focusSegment(startFrom);
-
-        DataSegment segment = pointerSegment;
-        long offset = startFrom - pointerPosition;
-        while (length > 0) {
-            long segmentLength = segment.getLength();
-            long copyLength = segmentLength - offset;
-            if (copyLength > length) {
-                copyLength = length;
-            }
-
-            if (offset == 0 && copyLength == segmentLength) {
-                copy.segments.add(pointerSegment.copy());
-            } else if (pointerSegment instanceof BinaryDataSegment) {
-                BinaryData partialData = ((BinaryDataSegment) pointerSegment).getBinaryData().copy(offset, copyLength);
-                copy.segments.add(new BinaryDataSegment((EditableBinaryData) partialData));
-            } else {
-                copy.segments.add(new DocumentSegment(((DocumentSegment) segment).getStartPosition() + offset, copyLength));
-            }
-            length -= copyLength;
-            offset = 0;
-            segment = segments.nextTo(segment);
-        }
-
-        return copy;
+//        DeltaHexadecimalData copy = new DeltaHexadecimalData(document, 0);
+//        focusSegment(startFrom);
+//
+//        DataSegment segment = pointerSegment;
+//        long offset = startFrom - pointerPosition;
+//        while (length > 0) {
+//            long segmentLength = segment.getLength();
+//            long copyLength = segmentLength - offset;
+//            if (copyLength > length) {
+//                copyLength = length;
+//            }
+//
+//            if (offset == 0 && copyLength == segmentLength) {
+//                copy.segments.add(pointerSegment.copy());
+//            } else if (pointerSegment instanceof MemorySegment) {
+//                BinaryData partialData = ((MemorySegment) pointerSegment).getBinaryData().copy(offset, copyLength);
+//                copy.segments.add(new MemorySegment((EditableBinaryData) partialData));
+//            } else {
+//                copy.segments.add(new FileSegment(((FileSegment) segment).getStartPosition() + offset, copyLength));
+//            }
+//            length -= copyLength;
+//            offset = 0;
+//            segment = segments.nextTo(segment);
+//        }
+//
+//        return copy;
+        return null;
     }
 
     @Override
@@ -359,20 +355,20 @@ public class DeltaHexadecimalData implements EditableBinaryData {
 
     @Override
     public void setDataSize(long dataSize) {
-        if (dataSize < dataLength) {
-            remove(dataSize, dataLength - dataSize);
-        } else if (dataSize > dataLength) {
-            focusSegment(dataSize);
-            if (pointerSegment instanceof BinaryDataSegment) {
-                EditableBinaryData binaryData = ((BinaryDataSegment) pointerSegment).getBinaryData();
-                binaryData.setDataSize(binaryData.getDataSize() + (dataSize - dataLength));
-            } else {
-                MemoryPagedData binaryData = new MemoryPagedData();
-                binaryData.setDataSize(dataSize - dataLength);
-                BinaryDataSegment emptySegment = new BinaryDataSegment(binaryData);
-                segments.add(emptySegment);
-            }
-        }
+//        if (dataSize < dataLength) {
+//            remove(dataSize, dataLength - dataSize);
+//        } else if (dataSize > dataLength) {
+//            focusSegment(dataSize);
+//            if (pointerSegment instanceof MemorySegment) {
+//                EditableBinaryData binaryData = ((MemorySegment) pointerSegment).getBinaryData();
+//                binaryData.setDataSize(binaryData.getDataSize() + (dataSize - dataLength));
+//            } else {
+//                MemoryPagedData binaryData = new MemoryPagedData();
+//                binaryData.setDataSize(dataSize - dataLength);
+//                MemorySegment emptySegment = new MemorySegment(binaryData);
+//                segments.add(emptySegment);
+//            }
+//        }
     }
 
     /**
@@ -381,60 +377,60 @@ public class DeltaHexadecimalData implements EditableBinaryData {
      * @param position split position
      */
     public void splitSegment(long position) {
-        if (position < pointerPosition || position > pointerPosition + pointerSegment.getLength()) {
-            throw new IllegalStateException("Split position is out of current segment");
-        }
-
-        if (pointerPosition == position) {
-            // No action needed
-            return;
-        }
-
-        long firstPartSize = position - pointerPosition;
-        if (pointerSegment instanceof BinaryDataSegment) {
-            EditableBinaryData binaryData = ((BinaryDataSegment) pointerSegment).getBinaryData();
-            EditableBinaryData copy = (EditableBinaryData) binaryData.copy(firstPartSize, binaryData.getDataSize() - (firstPartSize));
-            BinaryDataSegment newSegment = new BinaryDataSegment(copy);
-            segments.addAfter(pointerSegment, newSegment);
-            if (binaryData instanceof EditableBinaryData) {
-                ((EditableBinaryData) binaryData).setDataSize(firstPartSize);
-            } else {
-                ((BinaryDataSegment) pointerSegment).setBinaryData((EditableBinaryData) binaryData.copy(0, firstPartSize));
-            }
-        } else {
-            DocumentSegment documentSegment = (DocumentSegment) pointerSegment;
-            DocumentSegment newSegment = new DocumentSegment(documentSegment.getStartPosition() + firstPartSize, documentSegment.getLength() - firstPartSize);
-            segments.addAfter(pointerSegment, newSegment);
-            documentSegment.setLength(firstPartSize);
-        }
+//        if (position < pointerPosition || position > pointerPosition + pointerSegment.getLength()) {
+//            throw new IllegalStateException("Split position is out of current segment");
+//        }
+//
+//        if (pointerPosition == position) {
+//            // No action needed
+//            return;
+//        }
+//
+//        long firstPartSize = position - pointerPosition;
+//        if (pointerSegment instanceof MemorySegment) {
+//            EditableBinaryData binaryData = ((MemorySegment) pointerSegment).getBinaryData();
+//            EditableBinaryData copy = (EditableBinaryData) binaryData.copy(firstPartSize, binaryData.getDataSize() - (firstPartSize));
+//            MemorySegment newSegment = new MemorySegment(copy);
+//            segments.addAfter(pointerSegment, newSegment);
+//            if (binaryData instanceof EditableBinaryData) {
+//                ((EditableBinaryData) binaryData).setDataSize(firstPartSize);
+//            } else {
+//                ((MemorySegment) pointerSegment).setBinaryData((EditableBinaryData) binaryData.copy(0, firstPartSize));
+//            }
+//        } else {
+//            FileSegment documentSegment = (FileSegment) pointerSegment;
+//            FileSegment newSegment = new FileSegment(documentSegment.getStartPosition() + firstPartSize, documentSegment.getLength() - firstPartSize);
+//            segments.addAfter(pointerSegment, newSegment);
+//            documentSegment.setLength(firstPartSize);
+//        }
     }
 
     private void focusSegment(long position) {
-        if (pointerSegment == null && position == 0) {
-            pointerPosition = 0;
-            return;
-        }
-
-        if (position < pointerPosition) {
-            while (position < pointerPosition) {
-                pointerSegment = (DataSegment) segments.prevTo(pointerSegment);
-                if (pointerSegment == null) {
-                    throw new OutOfBoundsException("Unable to access previous segment");
-                }
-                pointerPosition -= pointerSegment.getLength();
-            }
-        } else {
-            while (position >= pointerPosition + pointerSegment.getLength()) {
-                if ((pointerSegment.getNext() == null) && (position == pointerPosition + pointerSegment.getLength())) {
-                    break;
-                }
-                pointerPosition += pointerSegment.getLength();
-                pointerSegment = (DataSegment) segments.nextTo(pointerSegment);
-                if (pointerSegment == null) {
-                    throw new OutOfBoundsException("Unable to access next segment");
-                }
-            }
-        }
+//        if (pointerSegment == null && position == 0) {
+//            pointerPosition = 0;
+//            return;
+//        }
+//
+//        if (position < pointerPosition) {
+//            while (position < pointerPosition) {
+//                pointerSegment = (DataSegment) segments.prevTo(pointerSegment);
+//                if (pointerSegment == null) {
+//                    throw new OutOfBoundsException("Unable to access previous segment");
+//                }
+//                pointerPosition -= pointerSegment.getLength();
+//            }
+//        } else {
+//            while (position >= pointerPosition + pointerSegment.getLength()) {
+//                if ((pointerSegment.getNext() == null) && (position == pointerPosition + pointerSegment.getLength())) {
+//                    break;
+//                }
+//                pointerPosition += pointerSegment.getLength();
+//                pointerSegment = (DataSegment) segments.nextTo(pointerSegment);
+//                if (pointerSegment == null) {
+//                    throw new OutOfBoundsException("Unable to access next segment");
+//                }
+//            }
+//        }
     }
 
     /**
@@ -443,30 +439,30 @@ public class DeltaHexadecimalData implements EditableBinaryData {
      * @param position target position
      */
     private void tryMergeSegments(long position) {
-        if (position == 0 || position >= getDataSize()) {
-            return;
-        }
-
-        focusSegment(position);
-        DataSegment nextSegment = pointerSegment;
-        focusSegment(position - 1);
-        DataSegment segment = pointerSegment;
-        if (segment == nextSegment) {
-            return;
-        }
-
-        if (segment instanceof DocumentSegment && nextSegment instanceof DocumentSegment) {
-            if (((DocumentSegment) segment).getStartPosition() + segment.getLength() == ((DocumentSegment) nextSegment).getStartPosition()) {
-                ((DocumentSegment) segment).setLength(segment.getLength() + nextSegment.getLength());
-                segments.remove(nextSegment);
-            }
-        }
-
-        if (segment instanceof BinaryDataSegment && nextSegment instanceof BinaryDataSegment) {
-            EditableBinaryData binaryData = ((BinaryDataSegment) segment).getBinaryData();
-            EditableBinaryData nextBinaryData = ((BinaryDataSegment) nextSegment).getBinaryData();
-            binaryData.insert(binaryData.getDataSize(), nextBinaryData);
-            segments.remove(nextSegment);
-        }
+//        if (position == 0 || position >= getDataSize()) {
+//            return;
+//        }
+//
+//        focusSegment(position);
+//        DataSegment nextSegment = pointerSegment;
+//        focusSegment(position - 1);
+//        DataSegment segment = pointerSegment;
+//        if (segment == nextSegment) {
+//            return;
+//        }
+//
+//        if (segment instanceof FileSegment && nextSegment instanceof FileSegment) {
+//            if (((FileSegment) segment).getStartPosition() + segment.getLength() == ((FileSegment) nextSegment).getStartPosition()) {
+//                ((FileSegment) segment).setLength(segment.getLength() + nextSegment.getLength());
+//                segments.remove(nextSegment);
+//            }
+//        }
+//
+//        if (segment instanceof MemorySegment && nextSegment instanceof MemorySegment) {
+//            EditableBinaryData binaryData = ((MemorySegment) segment).getBinaryData();
+//            EditableBinaryData nextBinaryData = ((MemorySegment) nextSegment).getBinaryData();
+//            binaryData.insert(binaryData.getDataSize(), nextBinaryData);
+//            segments.remove(nextSegment);
+//        }
     }
 }
