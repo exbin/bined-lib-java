@@ -16,13 +16,12 @@
 package org.exbin.deltahex.operation;
 
 import org.exbin.deltahex.swing.CodeArea;
-import org.exbin.deltahex.delta.MemoryPagedData;
 import org.exbin.utils.binary_data.EditableBinaryData;
 
 /**
  * Operation for editing data in delete mode.
  *
- * @version 0.1.0 2015/06/13
+ * @version 0.1.1 2016/09/21
  * @author ExBin Project (http://exbin.org)
  */
 public class DeleteCharEditDataOperation extends CharEditDataOperation {
@@ -31,7 +30,7 @@ public class DeleteCharEditDataOperation extends CharEditDataOperation {
     private static final char DELETE_CHAR = (char) 0x7f;
 
     private long position;
-    private final MemoryPagedData undoData = new MemoryPagedData();
+    private EditableBinaryData undoData = null;
 
     public DeleteCharEditDataOperation(CodeArea codeArea, long startPosition) {
         super(codeArea);
@@ -64,14 +63,22 @@ public class DeleteCharEditDataOperation extends CharEditDataOperation {
             case BACKSPACE_CHAR: {
                 if (position > 0) {
                     position--;
-                    undoData.insert(0, new byte[]{data.getByte(position)});
+                    if (undoData == null) {
+                        undoData = (EditableBinaryData) data.copy(position, 1);
+                    } else {
+                        undoData.insert(0, new byte[]{data.getByte(position)});
+                    }
                     data.remove(position, 1);
                 }
                 break;
             }
             case DELETE_CHAR: {
                 if (position < data.getDataSize()) {
-                    undoData.insert(0, new byte[]{data.getByte(position)});
+                    if (undoData == null) {
+                        undoData = (EditableBinaryData) data.copy(position, 1);
+                    } else {
+                        undoData.insert(0, new byte[]{data.getByte(position)});
+                    }
                     data.remove(position, 1);
                 }
                 break;

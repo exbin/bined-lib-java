@@ -17,13 +17,12 @@ package org.exbin.deltahex.operation;
 
 import org.exbin.deltahex.CodeType;
 import org.exbin.deltahex.swing.CodeArea;
-import org.exbin.deltahex.delta.MemoryPagedData;
 import org.exbin.utils.binary_data.EditableBinaryData;
 
 /**
  * Operation for editing data in delete mode.
  *
- * @version 0.1.0 2015/06/13
+ * @version 0.1.1 2015/09/21
  * @author ExBin Project (http://exbin.org)
  */
 public class DeleteCodeEditDataOperation extends CodeEditDataOperation {
@@ -32,7 +31,7 @@ public class DeleteCodeEditDataOperation extends CodeEditDataOperation {
     private static final char DELETE_CHAR = (char) 0x7f;
 
     private long position;
-    private final MemoryPagedData undoData = new MemoryPagedData();
+    private EditableBinaryData undoData = null;
 
     public DeleteCodeEditDataOperation(CodeArea codeArea, long startPosition) {
         super(codeArea);
@@ -70,14 +69,22 @@ public class DeleteCodeEditDataOperation extends CodeEditDataOperation {
             case BACKSPACE_CHAR: {
                 if (position > 0) {
                     position--;
-                    undoData.insert(0, new byte[]{data.getByte(position)});
+                    if (undoData == null) {
+                        undoData = (EditableBinaryData) data.copy(position, 1);
+                    } else {
+                        undoData.insert(0, new byte[]{data.getByte(position)});
+                    }
                     data.remove(position, 1);
                 }
                 break;
             }
             case DELETE_CHAR: {
                 if (position < data.getDataSize()) {
-                    undoData.insert(0, new byte[]{data.getByte(position)});
+                    if (undoData == null) {
+                        undoData = (EditableBinaryData) data.copy(position, 1);
+                    } else {
+                        undoData.insert(0, new byte[]{data.getByte(position)});
+                    }
                     data.remove(position, 1);
                 }
                 break;

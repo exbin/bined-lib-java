@@ -16,21 +16,19 @@
 package org.exbin.deltahex.operation;
 
 import org.exbin.deltahex.swing.CodeArea;
-import org.exbin.deltahex.delta.MemoryPagedData;
-import org.exbin.utils.binary_data.BinaryData;
 import org.exbin.utils.binary_data.EditableBinaryData;
 
 /**
  * Operation for editing data using overwrite mode.
  *
- * @version 0.1.0 2015/06/13
+ * @version 0.1.1 2016/09/21
  * @author ExBin Project (http://exbin.org)
  */
 public class OverwriteCharEditDataOperation extends CharEditDataOperation {
 
     private final long startPosition;
     private long length = 0;
-    private final MemoryPagedData undoData = new MemoryPagedData();
+    private EditableBinaryData undoData = null;
 
     public OverwriteCharEditDataOperation(CodeArea coreArea, long startPosition) {
         super(coreArea);
@@ -67,8 +65,12 @@ public class OverwriteCharEditDataOperation extends CharEditDataOperation {
             if (overwritten > bytes.length) {
                 overwritten = bytes.length;
             }
-            BinaryData overwrittenData = data.copy(editedDataPosition, overwritten);
-            undoData.insert(undoData.getDataSize(), overwrittenData);
+            EditableBinaryData overwrittenData = (EditableBinaryData) data.copy(editedDataPosition, overwritten);
+            if (undoData == null) {
+                undoData = overwrittenData;
+            } else {
+                undoData.insert(undoData.getDataSize(), overwrittenData);
+            }
             for (int i = 0; i < overwritten; i++) {
                 data.setByte(editedDataPosition + i, bytes[i]);
             }
@@ -93,10 +95,11 @@ public class OverwriteCharEditDataOperation extends CharEditDataOperation {
     @Override
     public CodeAreaOperation[] generateUndo() {
         ModifyDataOperation modifyOperation = null;
-        if (!undoData.isEmpty()) {
+        if (undoData != null && !undoData.isEmpty()) {
             modifyOperation = new ModifyDataOperation(codeArea, startPosition, undoData);
         }
-        RemoveDataOperation removeOperation = new RemoveDataOperation(codeArea, startPosition + undoData.getDataSize(), 0, length - undoData.getDataSize());
+        long undoDataSize = undoData == null ? 0 : undoData.getDataSize();
+        RemoveDataOperation removeOperation = new RemoveDataOperation(codeArea, startPosition + undoDataSize, 0, length - undoDataSize);
 
         if (modifyOperation != null) {
             return new CodeAreaOperation[]{modifyOperation, removeOperation};

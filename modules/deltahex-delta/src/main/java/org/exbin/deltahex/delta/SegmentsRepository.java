@@ -15,38 +15,172 @@
  */
 package org.exbin.deltahex.delta;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.exbin.utils.binary_data.OutOfBoundsException;
 
 /**
  * Repository of delta segments.
  *
- * @version 0.1.1 2016/09/20
+ * @version 0.1.1 2016/09/21
  * @author ExBin Project (http://exbin.org)
  */
 public class SegmentsRepository {
 
-    private final List<FileDataSource> fileSources = new ArrayList<>();
-    private final List<MemoryDataSource> memorySources = new ArrayList<>();
+    private final Map<FileDataSource, List<FileSegment>> fileSources = new HashMap<>();
+    private final Map<MemoryDataSource, List<MemorySegment>> memorySources = new HashMap<>();
 
     private final List<DeltaDocument> documents = new ArrayList<>();
-    private final Map<FileSegment, FileDataSource> fileSegments = new HashMap<>();
-    private final Map<MemorySegment, MemoryDataSource> memorySegments = new HashMap<>();
 
     public SegmentsRepository() {
     }
 
-    public void addFileSource(FileDataSource fileSource) {
-        fileSources.add(fileSource);
-    }
-
-    public void addMemoryDataSource(MemoryDataSource memorySource) {
-        memorySources.add(memorySource);
+    public FileDataSource openFileSource(File sourceFile) throws IOException {
+        FileDataSource fileSource = new FileDataSource(sourceFile);
+        List<FileSegment> fileSegments = new ArrayList<>();
+        fileSources.put(fileSource, fileSegments);
+        return fileSource;
     }
 
     public void closeFileSource(FileDataSource fileSource) {
         // TODO
+    }
+
+    public void saveFileSource(FileDataSource fileSource) {
+        // TODO
+    }
+
+    public MemoryDataSource openMemorySource() {
+        MemoryDataSource memorySource = new MemoryDataSource();
+        List<MemorySegment> memorySegments = new ArrayList<>();
+        memorySources.put(memorySource, memorySegments);
+        return memorySource;
+    }
+
+    public void closeMemorySource(MemoryDataSource memorySource) {
+        // TODO
+    }
+
+    /**
+     * Creates empty delta document.
+     *
+     * @return delta document
+     */
+    public DeltaDocument createDocument() {
+        DeltaDocument document = new DeltaDocument(this);
+        documents.add(document);
+        return document;
+    }
+
+    /**
+     * Creates delta document for given file source.
+     *
+     * @param fileSource file source
+     * @return delta document
+     * @throws IOException if input/output error
+     */
+    public DeltaDocument createDocument(FileDataSource fileSource) throws IOException {
+        DeltaDocument document = new DeltaDocument(this, fileSource);
+        documents.add(document);
+        return document;
+    }
+
+    /**
+     * Creates new file segment on given file source.
+     *
+     * @param fileSource file source
+     * @param startPosition start position
+     * @param length length
+     * @return file segment
+     */
+    public FileSegment createFileSegment(FileDataSource fileSource, long startPosition, long length) {
+        try {
+            if (startPosition + length > fileSource.getFileLength()) {
+                throw new OutOfBoundsException("");
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(SegmentsRepository.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        FileSegment fileSegment = new FileSegment(fileSource, startPosition, length);
+        List<FileSegment> segments = fileSources.get(fileSource);
+        segments.add(fileSegment);
+        return fileSegment;
+    }
+
+    public void dropFileSegment(FileSegment fileSegment) {
+        List<FileSegment> segments = fileSources.get(fileSegment.getSource());
+        segments.remove(fileSegment);
+    }
+
+    /**
+     * Creates new memory segment on given memory source.
+     *
+     * @param memorySource memory source
+     * @param startPosition start position
+     * @param length length
+     * @return memory segment
+     */
+    public MemorySegment createMemorySegment(MemoryDataSource memorySource, long startPosition, long length) {
+        if (startPosition + length > memorySource.getDataSize()) {
+            memorySource.setDataSize(startPosition + length);
+        }
+
+        MemorySegment memorySegment = new MemorySegment(memorySource, startPosition, length);
+        List<MemorySegment> segments = memorySources.get(memorySource);
+        segments.add(memorySegment);
+        return memorySegment;
+    }
+
+    public void dropMemorySegment(MemorySegment memorySegment) {
+        List<MemorySegment> segments = memorySources.get(memorySegment.getSource());
+        segments.remove(memorySegment);
+    }
+
+    /**
+     * Sets byte to given segment.
+     * 
+     * Handles shared memory between multiple segments.
+     *
+     * @param memorySegment memory segment
+     * @param segmentPosition relative position to segment start
+     * @param value value to set
+     */
+    public void setMemoryByte(MemorySegment memorySegment, long segmentPosition, byte value) {
+        MemoryDataSource memorySource = memorySegment.getSource();
+        List<MemorySegment> segments = memorySources.get(memorySource);
+        if (segments.size() > 1) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        if (segmentPosition >= memorySegment.getLength()) {
+            memorySegment.setLength(segmentPosition + 1);
+            if (memorySegment.getStartPosition() + segmentPosition >= memorySource.getDataSize()) {
+                memorySource.setDataSize(memorySegment.getStartPosition() + segmentPosition + 1);
+            }
+        }
+        memorySource.setByte(memorySegment.getStartPosition() + segmentPosition, value);
+    }
+
+    /**
+     * Creates copy of segment.
+     * 
+     * @param segment original segment
+     * @return copy of segment
+     */
+    public DataSegment copySegment(DataSegment segment) {
+        if (segment instanceof MemorySegment) {
+            MemorySegment memorySegment = (MemorySegment) segment;
+            return createMemorySegment(memorySegment.getSource(), memorySegment.getStartPosition(), memorySegment.getLength());
+        } else {
+            FileSegment fileSegment = (FileSegment) segment;
+            return createFileSegment(fileSegment.getSource(), fileSegment.getStartPosition(), fileSegment.getLength());
+        }
     }
 }

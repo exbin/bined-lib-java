@@ -17,13 +17,12 @@ package org.exbin.deltahex.operation;
 
 import org.exbin.deltahex.CodeType;
 import org.exbin.deltahex.swing.CodeArea;
-import org.exbin.deltahex.delta.MemoryPagedData;
 import org.exbin.utils.binary_data.EditableBinaryData;
 
 /**
  * Operation for editing data unsing insert mode.
  *
- * @version 0.1.0 2015/06/17
+ * @version 0.1.1 2016/09/21
  * @author ExBin Project (http://exbin.org)
  */
 public class InsertCodeEditDataOperation extends CodeEditDataOperation {
@@ -31,7 +30,7 @@ public class InsertCodeEditDataOperation extends CodeEditDataOperation {
     private final long startPosition;
     private final int startCodeOffset;
     private boolean trailing = false;
-    private byte trailingValue;
+    private EditableBinaryData trailingValue = null;
     private final CodeType codeType;
 
     private long length;
@@ -105,7 +104,7 @@ public class InsertCodeEditDataOperation extends CodeEditDataOperation {
                 if (trailing) {
                     throw new IllegalStateException("Unexpected trailing flag");
                 }
-                trailingValue = byteValue;
+                trailingValue = (EditableBinaryData) data.copy(editedDataPosition - 1, 1);
                 data.insert(editedDataPosition, 1);
                 data.setByte(editedDataPosition, byteRest);
                 byteValue -= byteRest;
@@ -194,9 +193,7 @@ public class InsertCodeEditDataOperation extends CodeEditDataOperation {
     @Override
     public CodeAreaOperation[] generateUndo() {
         if (trailing) {
-            MemoryPagedData undoData = new MemoryPagedData();
-            undoData.insert(0, new byte[]{trailingValue});
-            ModifyDataOperation modifyDataOperation = new ModifyDataOperation(codeArea, startPosition, undoData);
+            ModifyDataOperation modifyDataOperation = new ModifyDataOperation(codeArea, startPosition, trailingValue);
             return new CodeAreaOperation[]{modifyDataOperation, new RemoveDataOperation(codeArea, startPosition, startCodeOffset, length)};
         }
 

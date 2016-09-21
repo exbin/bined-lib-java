@@ -21,12 +21,9 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 
 /**
- * Data source for access to resource with keeping list of modifications to it.
+ * Data source for access to file resource locking it for exclusive access.
  *
- * Data source is opened in read only mode and there structure keeping all the
- * changes.
- *
- * @version 0.1.0 2016/06/07
+ * @version 0.1.1 2016/09/21
  * @author ExBin Project (http://exbin.org)
  */
 public class FileDataSource {
@@ -47,7 +44,7 @@ public class FileDataSource {
         return file;
     }
 
-    public DeltaDataPageWindow getWindow() {
-        return window;
+    public byte getByte(long position) {
+        return window.getByte(position);
     }
 }

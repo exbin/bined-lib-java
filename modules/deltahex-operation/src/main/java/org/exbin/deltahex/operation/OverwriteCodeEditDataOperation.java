@@ -17,13 +17,12 @@ package org.exbin.deltahex.operation;
 
 import org.exbin.deltahex.CodeType;
 import org.exbin.deltahex.swing.CodeArea;
-import org.exbin.deltahex.delta.MemoryPagedData;
 import org.exbin.utils.binary_data.EditableBinaryData;
 
 /**
  * Operation for editing data using overwrite mode.
  *
- * @version 0.1.0 2015/06/17
+ * @version 0.1.1 2016/09/21
  * @author ExBin Project (http://exbin.org)
  */
 public class OverwriteCodeEditDataOperation extends CodeEditDataOperation {
@@ -31,7 +30,7 @@ public class OverwriteCodeEditDataOperation extends CodeEditDataOperation {
     private final long startPosition;
     private final int startCodeOffset;
     private long length = 0;
-    private final MemoryPagedData undoData = new MemoryPagedData();
+    private EditableBinaryData undoData = null;
     private final CodeType codeType;
 
     private int codeOffset = 0;
@@ -43,7 +42,7 @@ public class OverwriteCodeEditDataOperation extends CodeEditDataOperation {
         this.codeOffset = startCodeOffset;
         this.codeType = codeArea.getCodeType();
         if (startCodeOffset > 0 && codeArea.getDataSize() > startPosition) {
-            undoData.insert(0, new byte[]{codeArea.getData().getByte(startPosition)});
+            undoData = (EditableBinaryData) codeArea.getData().copy(startPosition, 1);
             length++;
         }
     }
@@ -86,8 +85,13 @@ public class OverwriteCodeEditDataOperation extends CodeEditDataOperation {
             editedDataPosition--;
         } else {
             if (editedDataPosition < data.getDataSize()) {
-                byteValue = data.getByte(editedDataPosition);
-                undoData.insert(undoData.getDataSize(), new byte[]{byteValue});
+                if (undoData == null) {
+                    undoData = (EditableBinaryData) data.copy(editedDataPosition, 1);
+                    byteValue = undoData.getByte(0);
+                } else {
+                    byteValue = data.getByte(editedDataPosition);
+                    undoData.insert(undoData.getDataSize(), new byte[]{byteValue});
+                }
             } else {
                 data.insert(editedDataPosition, 1);
             }
@@ -172,10 +176,11 @@ public class OverwriteCodeEditDataOperation extends CodeEditDataOperation {
     @Override
     public CodeAreaOperation[] generateUndo() {
         ModifyDataOperation modifyOperation = null;
-        if (!undoData.isEmpty()) {
+        if (undoData != null && !undoData.isEmpty()) {
             modifyOperation = new ModifyDataOperation(codeArea, startPosition, undoData);
         }
-        RemoveDataOperation removeOperation = new RemoveDataOperation(codeArea, startPosition + undoData.getDataSize(), startCodeOffset, length - undoData.getDataSize());
+        long undoDataSize = undoData == null ? 0 : undoData.getDataSize();
+        RemoveDataOperation removeOperation = new RemoveDataOperation(codeArea, startPosition + undoDataSize, startCodeOffset, length - undoDataSize);
 
         if (modifyOperation != null) {
             return new CodeAreaOperation[]{modifyOperation, removeOperation};
