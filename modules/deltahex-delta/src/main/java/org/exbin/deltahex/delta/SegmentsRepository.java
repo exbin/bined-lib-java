@@ -143,9 +143,22 @@ public class SegmentsRepository {
         segments.remove(memorySegment);
     }
 
+    public void dropSegment(DataSegment segment) {
+        if (segment instanceof FileSegment) {
+            dropFileSegment((FileSegment) segment);
+        } else {
+            dropMemorySegment((MemorySegment) segment);
+        }
+    }
+
+    public void dropDocument(DeltaDocument document) {
+        document.clear();
+        documents.remove(document);
+    }
+
     /**
      * Sets byte to given segment.
-     * 
+     *
      * Handles shared memory between multiple segments.
      *
      * @param memorySegment memory segment
@@ -170,7 +183,7 @@ public class SegmentsRepository {
 
     /**
      * Creates copy of segment.
-     * 
+     *
      * @param segment original segment
      * @return copy of segment
      */

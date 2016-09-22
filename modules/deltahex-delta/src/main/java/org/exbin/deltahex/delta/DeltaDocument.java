@@ -26,7 +26,7 @@ import org.exbin.utils.binary_data.OutOfBoundsException;
 /**
  * Delta document defined as sequence of segments.
  *
- * @version 0.1.1 2016/09/21
+ * @version 0.1.1 2016/09/22
  * @author ExBin Project (http://exbin.org)
  */
 public class DeltaDocument implements EditableBinaryData {
@@ -121,6 +121,7 @@ public class DeltaDocument implements EditableBinaryData {
 
     @Override
     public void insertUninitialized(long startFrom, long length) {
+        throw new UnsupportedOperationException("Not supported yet.");
 //        focusSegment(startFrom);
 //        if (pointerSegment instanceof MemorySegment) {
 //            ((MemorySegment) pointerSegment).getBinaryData().insertUninitialized(startFrom - pointerPosition, length);
@@ -138,6 +139,7 @@ public class DeltaDocument implements EditableBinaryData {
 
     @Override
     public void insert(long startFrom, long length) {
+        throw new UnsupportedOperationException("Not supported yet.");
 //        focusSegment(startFrom);
 //        if (pointerSegment instanceof MemorySegment) {
 //            ((MemorySegment) pointerSegment).getBinaryData().insert(startFrom - pointerPosition, length);
@@ -155,6 +157,7 @@ public class DeltaDocument implements EditableBinaryData {
 
     @Override
     public void insert(long startFrom, byte[] insertedData) {
+        throw new UnsupportedOperationException("Not supported yet.");
 //        focusSegment(startFrom);
 //        if (pointerSegment instanceof MemorySegment) {
 //            ((MemorySegment) pointerSegment).getBinaryData().insert(startFrom - pointerPosition, insertedData);
@@ -172,6 +175,7 @@ public class DeltaDocument implements EditableBinaryData {
 
     @Override
     public void insert(long startFrom, byte[] insertedData, int insertedDataOffset, int insertedDataLength) {
+        throw new UnsupportedOperationException("Not supported yet.");
 //        focusSegment(startFrom);
 //        if (pointerSegment instanceof MemorySegment) {
 //            ((MemorySegment) pointerSegment).getBinaryData().insert(startFrom - pointerPosition, insertedData, insertedDataOffset, insertedDataLength);
@@ -189,6 +193,7 @@ public class DeltaDocument implements EditableBinaryData {
 
     @Override
     public void insert(long startFrom, BinaryData insertedData) {
+        throw new UnsupportedOperationException("Not supported yet.");
 //        focusSegment(startFrom);
 //        if (pointerSegment instanceof MemorySegment) {
 //            ((MemorySegment) pointerSegment).getBinaryData().insert(startFrom - pointerPosition, insertedData);
@@ -206,6 +211,7 @@ public class DeltaDocument implements EditableBinaryData {
 
     @Override
     public void insert(long startFrom, BinaryData insertedData, long insertedDataOffset, long insertedDataLength) {
+        throw new UnsupportedOperationException("Not supported yet.");
 //        focusSegment(startFrom);
 //        if (pointerSegment instanceof MemorySegment) {
 //            ((MemorySegment) pointerSegment).getBinaryData().insert(startFrom - pointerPosition, insertedData, insertedDataOffset, insertedDataLength);
@@ -253,28 +259,36 @@ public class DeltaDocument implements EditableBinaryData {
 
     @Override
     public void remove(long startFrom, long length) {
-//        if (length > 0) {
-//            dataLength -= length;
-//            focusSegment(startFrom + length);
-//            splitSegment(startFrom + length);
-//            focusSegment(startFrom);
-//            splitSegment(startFrom);
-//            focusSegment(startFrom);
-//            while (length > 0) {
-//                length -= pointerSegment.getLength();
-//                DataSegment next = segments.nextTo(pointerSegment);
-//                segments.remove(pointerSegment);
-//                pointerSegment = next;
-//            }
-//        }
+        if (length > 0) {
+            dataLength -= length;
+            focusSegment(startFrom + length);
+            splitSegment(startFrom + length);
+            focusSegment(startFrom);
+            splitSegment(startFrom);
+            focusSegment(startFrom);
+            while (length > 0) {
+                length -= pointerSegment.getLength();
+                DataSegment next = segments.nextTo(pointerSegment);
+                segments.remove(pointerSegment);
+                repository.dropSegment(pointerSegment);
+                pointerSegment = next;
+            }
+        }
     }
 
     @Override
     public void clear() {
-//        pointerPosition = 0;
-//        pointerSegment = null;
-//        dataLength = 0;
-//        segments.clear();
+        pointerPosition = 0;
+        pointerSegment = null;
+        dataLength = 0;
+        for (DataSegment segment : segments) {
+            repository.dropSegment(segment);
+        }
+        segments.clear();
+    }
+
+    public void destroy() {
+        repository.dropDocument(this);
     }
 
     @Override
