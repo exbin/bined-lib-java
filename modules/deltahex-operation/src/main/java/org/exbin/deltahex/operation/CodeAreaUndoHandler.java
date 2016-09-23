@@ -68,7 +68,6 @@ public class CodeAreaUndoHandler implements XBUndoHandler {
     @Override
     public void execute(Command command) throws Exception {
         command.execute();
-
         commandAdded(command);
     }
 

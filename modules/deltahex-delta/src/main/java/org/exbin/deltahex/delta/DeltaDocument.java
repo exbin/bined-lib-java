@@ -26,7 +26,7 @@ import org.exbin.utils.binary_data.OutOfBoundsException;
 /**
  * Delta document defined as sequence of segments.
  *
- * @version 0.1.1 2016/09/22
+ * @version 0.1.1 2016/09/23
  * @author ExBin Project (http://exbin.org)
  */
 public class DeltaDocument implements EditableBinaryData {
@@ -103,6 +103,7 @@ public class DeltaDocument implements EditableBinaryData {
             documentSegment.setStartPosition(documentSegment.getStartPosition() + 1);
             if (documentSegment.getLength() == 1) {
                 segments.remove(documentSegment);
+                repository.dropSegment(documentSegment);
             } else {
                 documentSegment.setLength(documentSegment.getLength() - 1);
             }
@@ -193,20 +194,18 @@ public class DeltaDocument implements EditableBinaryData {
 
     @Override
     public void insert(long startFrom, BinaryData insertedData) {
-        throw new UnsupportedOperationException("Not supported yet.");
-//        focusSegment(startFrom);
-//        if (pointerSegment instanceof MemorySegment) {
-//            ((MemorySegment) pointerSegment).getBinaryData().insert(startFrom - pointerPosition, insertedData);
-//        } else {
-//            if (startFrom > pointerPosition) {
-//                splitSegment(startFrom);
-//                focusSegment(startFrom);
-//            }
-//            MemoryPagedData binaryData = new MemoryPagedData();
-//            binaryData.insert(0, insertedData);
-//            MemorySegment binarySegment = new MemorySegment(binaryData);
-//            segments.addBefore(pointerSegment, binarySegment);
-//        }
+        focusSegment(startFrom);
+        if (pointerSegment instanceof MemorySegment) {
+            repository.insertMemoryData((MemorySegment) pointerSegment, startFrom - pointerPosition, insertedData);
+        } else {
+            if (startFrom > pointerPosition) {
+                splitSegment(startFrom);
+                focusSegment(startFrom);
+            }
+            MemorySegment insertedSegment = repository.createMemorySegment();
+            repository.insertMemoryData((MemorySegment) insertedSegment, 0, insertedData);
+            segments.addBefore(pointerSegment, insertedSegment);
+        }
     }
 
     @Override
@@ -269,8 +268,8 @@ public class DeltaDocument implements EditableBinaryData {
             while (length > 0) {
                 length -= pointerSegment.getLength();
                 DataSegment next = segments.nextTo(pointerSegment);
-                segments.remove(pointerSegment);
                 repository.dropSegment(pointerSegment);
+                segments.remove(pointerSegment);
                 pointerSegment = next;
             }
         }
@@ -319,6 +318,7 @@ public class DeltaDocument implements EditableBinaryData {
     @Override
     public BinaryData copy(long startFrom, long length) {
         DeltaDocument copy = repository.createDocument();
+        copy.dataLength = length;
         focusSegment(startFrom);
 
         DataSegment segment = pointerSegment;
@@ -344,7 +344,6 @@ public class DeltaDocument implements EditableBinaryData {
             segment = segments.nextTo(segment);
         }
 
-        copy.dataLength = length;
         return copy;
     }
 
@@ -449,30 +448,37 @@ public class DeltaDocument implements EditableBinaryData {
      * @param position target position
      */
     private void tryMergeSegments(long position) {
-//        if (position == 0 || position >= getDataSize()) {
-//            return;
-//        }
-//
-//        focusSegment(position);
-//        DataSegment nextSegment = pointerSegment;
-//        focusSegment(position - 1);
-//        DataSegment segment = pointerSegment;
-//        if (segment == nextSegment) {
-//            return;
-//        }
-//
-//        if (segment instanceof FileSegment && nextSegment instanceof FileSegment) {
-//            if (((FileSegment) segment).getStartPosition() + segment.getLength() == ((FileSegment) nextSegment).getStartPosition()) {
-//                ((FileSegment) segment).setLength(segment.getLength() + nextSegment.getLength());
-//                segments.remove(nextSegment);
-//            }
-//        }
-//
-//        if (segment instanceof MemorySegment && nextSegment instanceof MemorySegment) {
-//            EditableBinaryData binaryData = ((MemorySegment) segment).getBinaryData();
-//            EditableBinaryData nextBinaryData = ((MemorySegment) nextSegment).getBinaryData();
-//            binaryData.insert(binaryData.getDataSize(), nextBinaryData);
-//            segments.remove(nextSegment);
-//        }
+        if (position == 0 || position >= getDataSize()) {
+            return;
+        }
+
+        focusSegment(position);
+        DataSegment nextSegment = pointerSegment;
+        focusSegment(position - 1);
+        DataSegment segment = pointerSegment;
+        if (segment == nextSegment) {
+            return;
+        }
+
+        if (segment instanceof FileSegment && nextSegment instanceof FileSegment) {
+            if (((FileSegment) segment).getStartPosition() + segment.getLength() == ((FileSegment) nextSegment).getStartPosition()) {
+                ((FileSegment) segment).setLength(segment.getLength() + nextSegment.getLength());
+                repository.dropSegment(nextSegment);
+                segments.remove(nextSegment);
+            }
+        }
+
+        if (segment instanceof MemorySegment && nextSegment instanceof MemorySegment) {
+            MemorySegment memorySegment = (MemorySegment) segment;
+            MemorySegment nextMemorySegment = (MemorySegment) nextSegment;
+            if (memorySegment.getSource() == nextMemorySegment.getSource()) {
+                if (memorySegment.getStartPosition() + segment.getLength() == nextMemorySegment.getStartPosition()) {
+                    memorySegment.setLength(segment.getLength() + nextSegment.getLength());
+                    repository.dropSegment(nextSegment);
+                    segments.remove(nextSegment);
+                }
+            }
+            // TODO join two single memory segments?
+        }
     }
 }

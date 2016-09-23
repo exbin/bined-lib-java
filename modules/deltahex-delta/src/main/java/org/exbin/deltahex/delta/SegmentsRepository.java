@@ -23,12 +23,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.exbin.utils.binary_data.BinaryData;
 import org.exbin.utils.binary_data.OutOfBoundsException;
 
 /**
  * Repository of delta segments.
  *
- * @version 0.1.1 2016/09/21
+ * @version 0.1.1 2016/09/23
  * @author ExBin Project (http://exbin.org)
  */
 public class SegmentsRepository {
@@ -119,6 +120,10 @@ public class SegmentsRepository {
         segments.remove(fileSegment);
     }
 
+    public MemorySegment createMemorySegment() {
+        return createMemorySegment(openMemorySource(), 0, 0);
+    }
+
     /**
      * Creates new memory segment on given memory source.
      *
@@ -181,6 +186,21 @@ public class SegmentsRepository {
         memorySource.setByte(memorySegment.getStartPosition() + segmentPosition, value);
     }
 
+    public void insertMemoryData(MemorySegment memorySegment, long position, BinaryData insertedData) {
+        List<MemorySegment> memorySegments = memorySources.get(memorySegment.getSource());
+        for (MemorySegment segment : memorySegments) {
+            if (segment != memorySegment) {
+                if (position >= segment.getStartPosition() && position < segment.getStartPosition() + segment.getLength()) {
+                    // TODO: If segments collide, copy on write
+                    throw new UnsupportedOperationException("Not supported yet.");
+                }
+            }
+        }
+        
+        memorySegment.getSource().insert(position, insertedData);
+        memorySegment.setLength(memorySegment.getLength() + insertedData.getDataSize());
+    }
+    
     /**
      * Creates copy of segment.
      *
