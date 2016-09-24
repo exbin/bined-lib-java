@@ -19,6 +19,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Data source for access to file resource locking it for exclusive access.
@@ -30,6 +32,7 @@ public class FileDataSource {
 
     private final RandomAccessFile file;
     private final DeltaDataPageWindow window;
+    private boolean closed = false;
 
     public FileDataSource(File sourceFile) throws FileNotFoundException, IOException {
         file = new RandomAccessFile(sourceFile, "rw");
@@ -37,14 +40,33 @@ public class FileDataSource {
     }
 
     public long getFileLength() throws IOException {
+        checkClosed();
         return file.length();
     }
 
     RandomAccessFile getFile() {
+        checkClosed();
         return file;
     }
 
     public byte getByte(long position) {
+        checkClosed();
         return window.getByte(position);
+    }
+    
+    public void close() {
+        checkClosed();
+        try {
+            file.close();
+        } catch (IOException ex) {
+            Logger.getLogger(FileDataSource.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        closed = true;
+    }
+    
+    private void checkClosed() {
+        if (closed) {
+            throw new IllegalStateException("");
+        }
     }
 }

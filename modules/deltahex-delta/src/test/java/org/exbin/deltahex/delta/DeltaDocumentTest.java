@@ -16,14 +16,14 @@
 package org.exbin.deltahex.delta;
 
 /**
- * Tests for hexadecimal component.
+ * Tests for delta document.
  *
- * @version 0.1.0 2016/05/19
+ * @version 0.1.1 2016/09/24
  * @author ExBin Project (http://exbin.org)
  */
-public class HexadecimalTest {
+public class DeltaDocumentTest {
 
-    public HexadecimalTest() {
+    public DeltaDocumentTest() {
     }
 
 }

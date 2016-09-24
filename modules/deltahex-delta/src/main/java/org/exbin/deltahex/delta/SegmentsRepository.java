@@ -29,7 +29,7 @@ import org.exbin.utils.binary_data.OutOfBoundsException;
 /**
  * Repository of delta segments.
  *
- * @version 0.1.1 2016/09/23
+ * @version 0.1.1 2016/09/24
  * @author ExBin Project (http://exbin.org)
  */
 public class SegmentsRepository {
@@ -50,11 +50,12 @@ public class SegmentsRepository {
     }
 
     public void closeFileSource(FileDataSource fileSource) {
-        // TODO
+        fileSource.close();
     }
 
     public void saveFileSource(FileDataSource fileSource) {
         // TODO
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public MemoryDataSource openMemorySource() {
@@ -187,6 +188,38 @@ public class SegmentsRepository {
     }
 
     public void insertMemoryData(MemorySegment memorySegment, long position, BinaryData insertedData) {
+        detachMemoryArea(memorySegment, position, insertedData.getDataSize());
+        memorySegment.getSource().insert(position, insertedData);
+        memorySegment.setLength(memorySegment.getLength() + insertedData.getDataSize());
+    }
+
+    public void insertMemoryData(MemorySegment memorySegment, long position, byte[] insertedData) {
+        detachMemoryArea(memorySegment, position, insertedData.length);
+        memorySegment.getSource().insert(position, insertedData);
+        memorySegment.setLength(memorySegment.getLength() + insertedData.length);
+    }
+
+    public void insertMemoryData(MemorySegment memorySegment, long position, long length) {
+        detachMemoryArea(memorySegment, position, length);
+        memorySegment.getSource().insert(position, length);
+        memorySegment.setLength(memorySegment.getLength() + length);
+    }
+
+    public void insertUninitializedMemoryData(MemorySegment memorySegment, long position, long length) {
+        detachMemoryArea(memorySegment, position, length);
+        memorySegment.getSource().insertUninitialized(position, length);
+        memorySegment.setLength(memorySegment.getLength() + length);
+    }
+
+    /**
+     * Detaches all other memory segments crossing given area of provided memory
+     * segment.
+     *
+     * @param memorySegment provided memory segment
+     * @param position position
+     * @param length length
+     */
+    public void detachMemoryArea(MemorySegment memorySegment, long position, long length) {
         List<MemorySegment> memorySegments = memorySources.get(memorySegment.getSource());
         for (MemorySegment segment : memorySegments) {
             if (segment != memorySegment) {
@@ -196,11 +229,8 @@ public class SegmentsRepository {
                 }
             }
         }
-        
-        memorySegment.getSource().insert(position, insertedData);
-        memorySegment.setLength(memorySegment.getLength() + insertedData.getDataSize());
     }
-    
+
     /**
      * Creates copy of segment.
      *

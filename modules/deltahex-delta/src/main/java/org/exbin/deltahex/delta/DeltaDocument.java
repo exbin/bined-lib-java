@@ -26,7 +26,7 @@ import org.exbin.utils.binary_data.OutOfBoundsException;
 /**
  * Delta document defined as sequence of segments.
  *
- * @version 0.1.1 2016/09/23
+ * @version 0.1.1 2016/09/24
  * @author ExBin Project (http://exbin.org)
  */
 public class DeltaDocument implements EditableBinaryData {
@@ -122,38 +122,34 @@ public class DeltaDocument implements EditableBinaryData {
 
     @Override
     public void insertUninitialized(long startFrom, long length) {
-        throw new UnsupportedOperationException("Not supported yet.");
-//        focusSegment(startFrom);
-//        if (pointerSegment instanceof MemorySegment) {
-//            ((MemorySegment) pointerSegment).getBinaryData().insertUninitialized(startFrom - pointerPosition, length);
-//        } else {
-//            if (startFrom > pointerPosition) {
-//                splitSegment(startFrom);
-//                focusSegment(startFrom);
-//            }
-//            MemoryPagedData binaryData = new MemoryPagedData();
-//            binaryData.insertUninitialized(0, length);
-//            MemorySegment binarySegment = new MemorySegment(binaryData);
-//            segments.addBefore(pointerSegment, binarySegment);
-//        }
+        focusSegment(startFrom);
+        if (pointerSegment instanceof MemorySegment) {
+            repository.insertUninitializedMemoryData((MemorySegment) pointerSegment, startFrom - pointerPosition, length);
+        } else {
+            if (startFrom > pointerPosition) {
+                splitSegment(startFrom);
+                focusSegment(startFrom);
+            }
+            MemorySegment insertedSegment = repository.createMemorySegment();
+            repository.insertUninitializedMemoryData((MemorySegment) insertedSegment, 0, length);
+            segments.addBefore(pointerSegment, insertedSegment);
+        }
     }
 
     @Override
     public void insert(long startFrom, long length) {
-        throw new UnsupportedOperationException("Not supported yet.");
-//        focusSegment(startFrom);
-//        if (pointerSegment instanceof MemorySegment) {
-//            ((MemorySegment) pointerSegment).getBinaryData().insert(startFrom - pointerPosition, length);
-//        } else {
-//            if (startFrom > pointerPosition) {
-//                splitSegment(startFrom);
-//                focusSegment(startFrom);
-//            }
-//            MemoryPagedData binaryData = new MemoryPagedData();
-//            binaryData.insert(0, length);
-//            MemorySegment binarySegment = new MemorySegment(binaryData);
-//            segments.addBefore(pointerSegment, binarySegment);
-//        }
+        focusSegment(startFrom);
+        if (pointerSegment instanceof MemorySegment) {
+            repository.insertMemoryData((MemorySegment) pointerSegment, startFrom - pointerPosition, length);
+        } else {
+            if (startFrom > pointerPosition) {
+                splitSegment(startFrom);
+                focusSegment(startFrom);
+            }
+            MemorySegment insertedSegment = repository.createMemorySegment();
+            repository.insertMemoryData((MemorySegment) insertedSegment, 0, length);
+            segments.addBefore(pointerSegment, insertedSegment);
+        }
     }
 
     @Override
@@ -176,20 +172,18 @@ public class DeltaDocument implements EditableBinaryData {
 
     @Override
     public void insert(long startFrom, byte[] insertedData, int insertedDataOffset, int insertedDataLength) {
-        throw new UnsupportedOperationException("Not supported yet.");
-//        focusSegment(startFrom);
-//        if (pointerSegment instanceof MemorySegment) {
-//            ((MemorySegment) pointerSegment).getBinaryData().insert(startFrom - pointerPosition, insertedData, insertedDataOffset, insertedDataLength);
-//        } else {
-//            if (startFrom > pointerPosition) {
-//                splitSegment(startFrom);
-//                focusSegment(startFrom);
-//            }
-//            MemoryPagedData binaryData = new MemoryPagedData();
-//            binaryData.insert(0, insertedData, insertedDataOffset, insertedDataLength);
-//            MemorySegment binarySegment = new MemorySegment(binaryData);
-//            segments.addBefore(pointerSegment, binarySegment);
-//        }
+        focusSegment(startFrom);
+        if (pointerSegment instanceof MemorySegment) {
+            repository.insertMemoryData((MemorySegment) pointerSegment, startFrom - pointerPosition, insertedData);
+        } else {
+            if (startFrom > pointerPosition) {
+                splitSegment(startFrom);
+                focusSegment(startFrom);
+            }
+            MemorySegment insertedSegment = repository.createMemorySegment();
+            repository.insertMemoryData((MemorySegment) insertedSegment, 0, insertedData);
+            segments.addBefore(pointerSegment, insertedSegment);
+        }
     }
 
     @Override
