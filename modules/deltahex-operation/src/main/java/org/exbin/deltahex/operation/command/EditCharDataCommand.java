@@ -29,7 +29,7 @@ import org.exbin.deltahex.operation.CodeAreaOperationListener;
 /**
  * Command for editing data in text mode.
  *
- * @version 0.1.0 2016/05/17
+ * @version 0.1.1 2016/09/26
  * @author ExBin Project (http://exbin.org)
  */
 public class EditCharDataCommand extends EditDataCommand {
@@ -66,13 +66,16 @@ public class EditCharDataCommand extends EditDataCommand {
     @Override
     public void undo() throws Exception {
         if (operations.length == 1 && operations[0] instanceof CharEditDataOperation) {
-            CodeAreaOperation operation = operations[0];
-            operations = ((CharEditDataOperation) operation).generateUndo();
+            CharEditDataOperation operation = (CharEditDataOperation) operations[0];
+            operations = operation.generateUndo();
+            operation.dispose();
         }
 
         if (operationPerformed) {
             for (int i = operations.length - 1; i >= 0; i--) {
-                CodeAreaOperation redoOperation = operations[i].executeWithUndo();
+                CodeAreaOperation operation = operations[i];
+                CodeAreaOperation redoOperation = operation.executeWithUndo();
+                operation.dispose();
                 if (codeArea instanceof OperationListener) {
                     ((CodeAreaOperationListener) codeArea).notifyChange(new CodeAreaOperationEvent(operations[i]));
                 }
@@ -88,7 +91,9 @@ public class EditCharDataCommand extends EditDataCommand {
     public void redo() throws Exception {
         if (!operationPerformed) {
             for (int i = 0; i < operations.length; i++) {
-                CodeAreaOperation undoOperation = operations[i].executeWithUndo();
+                CodeAreaOperation operation = operations[i];
+                CodeAreaOperation undoOperation = operation.executeWithUndo();
+                operation.dispose();
                 if (codeArea instanceof OperationListener) {
                     ((CodeAreaOperationListener) codeArea).notifyChange(new CodeAreaOperationEvent(operations[i]));
                 }
@@ -127,5 +132,15 @@ public class EditCharDataCommand extends EditDataCommand {
     @Override
     public boolean wasReverted() {
         return !(operations.length == 1 && operations[0] instanceof CharEditDataOperation);
+    }
+
+    @Override
+    public void dispose() throws Exception {
+        super.dispose();
+        if (operations != null) {
+            for (CodeAreaOperation operation : operations) {
+                operation.dispose();
+            }
+        }
     }
 }

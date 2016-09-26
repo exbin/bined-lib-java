@@ -58,7 +58,7 @@ import org.exbin.utils.binary_data.PagedData;
 /**
  * Command handler for undo/redo aware hexadecimal editor editing.
  *
- * @version 0.1.1 2016/09/01
+ * @version 0.1.1 2016/09/26
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeCommandHandler implements CodeAreaCommandHandler {
@@ -669,7 +669,7 @@ public class CodeCommandHandler implements CodeAreaCommandHandler {
 
                     CodeAreaCommand insertCommand = null;
                     if (pastedData.getDataSize() > 0) {
-                        insertCommand = new InsertDataCommand(codeArea, insertionPosition, pastedData);
+                        insertCommand = new InsertDataCommand(codeArea, insertionPosition, (EditableBinaryData) pastedData);
                     }
 
                     CodeAreaCommand pasteCommand = HexCompoundCommand.buildCompoundCommand(codeArea, deleteSelectionCommand, modifyCommand, insertCommand);

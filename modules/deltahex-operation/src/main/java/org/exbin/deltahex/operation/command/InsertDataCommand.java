@@ -18,12 +18,12 @@ package org.exbin.deltahex.operation.command;
 
 import org.exbin.deltahex.swing.CodeArea;
 import org.exbin.deltahex.operation.InsertDataOperation;
-import org.exbin.utils.binary_data.BinaryData;
+import org.exbin.utils.binary_data.EditableBinaryData;
 
 /**
  * Command for inserting data.
  *
- * @version 0.1.0 2016/05/14
+ * @version 0.1.1 2016/09/26
  * @author ExBin Project (http://exbin.org)
  */
 public class InsertDataCommand extends OpCodeAreaCommand {
@@ -31,7 +31,7 @@ public class InsertDataCommand extends OpCodeAreaCommand {
     private final long position;
     private final long dataLength;
 
-    public InsertDataCommand(CodeArea codeArea, long position, BinaryData data) {
+    public InsertDataCommand(CodeArea codeArea, long position, EditableBinaryData data) {
         super(codeArea);
         this.position = position;
         dataLength = data.getDataSize();

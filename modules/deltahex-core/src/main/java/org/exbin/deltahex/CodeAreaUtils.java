@@ -78,6 +78,15 @@ public class CodeAreaUtils {
         }
     }
 
+    /**
+     * Converts byte value to sequence of characters of given code type.
+     *
+     * @param dataByte byte value
+     * @param codeType code type
+     * @param targetData target array of characters
+     * @param targetPosition target position in array of characters
+     * @param charCase case type for alphabetical characters
+     */
     public static void byteToCharsCode(byte dataByte, CodeType codeType, char[] targetData, int targetPosition, HexCharactersCase charCase) {
         char[] hexCharacters = charCase == HexCharactersCase.UPPER ? CodeAreaUtils.UPPER_HEX_CODES : CodeAreaUtils.LOWER_HEX_CODES;
         switch (codeType) {
@@ -122,6 +131,14 @@ public class CodeAreaUtils {
         }
     }
 
+    /**
+     * Converts string of characters to byte value.
+     *
+     * @param code source text string
+     * @param codeType code type
+     * @return byte value
+     * @throws IllegalArgumentException if code is invalid
+     */
     public static byte stringCodeToByte(String code, CodeType codeType) {
         if (code.length() > codeType.getMaxDigits()) {
             throw new IllegalArgumentException("String code is too long");

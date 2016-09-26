@@ -16,13 +16,12 @@
 package org.exbin.deltahex.operation;
 
 import org.exbin.deltahex.swing.CodeArea;
-import org.exbin.utils.binary_data.BinaryData;
 import org.exbin.utils.binary_data.EditableBinaryData;
 
 /**
  * Operation for deleting child block.
  *
- * @version 0.1.0 2016/06/13
+ * @version 0.1.1 2016/09/26
  * @author ExBin Project (http://exbin.org)
  */
 public class RemoveDataOperation extends CodeAreaOperation {
@@ -56,7 +55,7 @@ public class RemoveDataOperation extends CodeAreaOperation {
     private CodeAreaOperation execute(boolean withUndo) {
         CodeAreaOperation undoOperation = null;
         if (withUndo) {
-            BinaryData undoData = codeArea.getData().copy(position, size);
+            EditableBinaryData undoData = (EditableBinaryData) codeArea.getData().copy(position, size);
             undoOperation = new InsertDataOperation(codeArea, position, codeOffset, undoData);
         }
         ((EditableBinaryData) codeArea.getData()).remove(position, size);

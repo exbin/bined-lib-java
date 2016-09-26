@@ -17,6 +17,8 @@ package org.exbin.deltahex.operation;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.exbin.deltahex.swing.CodeArea;
 import org.exbin.xbup.operation.Command;
 import org.exbin.xbup.operation.undo.XBUndoHandler;
@@ -25,7 +27,7 @@ import org.exbin.xbup.operation.undo.XBUndoUpdateListener;
 /**
  * Undo handler for hexadecimal editor.
  *
- * @version 0.1.0 2016/06/13
+ * @version 0.1.1 2016/09/26
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeAreaUndoHandler implements XBUndoHandler {
@@ -35,7 +37,7 @@ public class CodeAreaUndoHandler implements XBUndoHandler {
     private long usedSize;
     private long commandPosition;
     private long syncPointPosition = -1;
-    private final List<Command> commandList;
+    private final List<Command> commands;
     private final CodeArea codeArea;
     private final List<XBUndoUpdateListener> listeners = new ArrayList<>();
 
@@ -48,7 +50,7 @@ public class CodeAreaUndoHandler implements XBUndoHandler {
         this.codeArea = codeArea;
         undoMaximumCount = 1024;
         undoMaximumSize = 65535;
-        commandList = new ArrayList<>();
+        commands = new ArrayList<>();
         init();
     }
 
@@ -56,7 +58,6 @@ public class CodeAreaUndoHandler implements XBUndoHandler {
         usedSize = 0;
         commandPosition = 0;
         setSyncPoint(0);
-        commandList.clear();
     }
 
     /**
@@ -77,17 +78,23 @@ public class CodeAreaUndoHandler implements XBUndoHandler {
         commandAdded(command);
     }
 
-    private void commandAdded(Command command) {
+    private void commandAdded(Command addedCommand) {
         // TODO: Check for undoOperationsMaximumCount & size
-        while (commandList.size() > commandPosition) {
-            commandList.remove((int) commandPosition);
+        while (commands.size() > commandPosition) {
+            Command command = commands.get((int) commandPosition);
+            try {
+                command.dispose();
+            } catch (Exception ex) {
+                Logger.getLogger(CodeAreaUndoHandler.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            commands.remove(command);
         }
-        commandList.add(command);
+        commands.add(addedCommand);
         commandPosition++;
 
         undoUpdated();
         for (XBUndoUpdateListener listener : listeners) {
-            listener.undoCommandAdded(command);
+            listener.undoCommandAdded(addedCommand);
         }
     }
 
@@ -104,7 +111,7 @@ public class CodeAreaUndoHandler implements XBUndoHandler {
 
     private void performUndoInt() throws Exception {
         commandPosition--;
-        Command command = commandList.get((int) commandPosition);
+        Command command = commands.get((int) commandPosition);
         command.undo();
     }
 
@@ -120,7 +127,7 @@ public class CodeAreaUndoHandler implements XBUndoHandler {
     }
 
     private void performRedoInt() throws Exception {
-        Command command = commandList.get((int) commandPosition);
+        Command command = commands.get((int) commandPosition);
         command.redo();
         commandPosition++;
     }
@@ -151,7 +158,7 @@ public class CodeAreaUndoHandler implements XBUndoHandler {
      */
     @Override
     public void performRedo(int count) throws Exception {
-        if (commandList.size() - commandPosition < count) {
+        if (commands.size() - commandPosition < count) {
             throw new IllegalArgumentException("Unable to perform " + count + " redo steps");
         }
         while (count > 0) {
@@ -163,6 +170,14 @@ public class CodeAreaUndoHandler implements XBUndoHandler {
 
     @Override
     public void clear() {
+        for (Command command : commands) {
+            try {
+                command.dispose();
+            } catch (Exception ex) {
+                Logger.getLogger(CodeAreaUndoHandler.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        commands.clear();
         init();
     }
 
@@ -173,7 +188,7 @@ public class CodeAreaUndoHandler implements XBUndoHandler {
 
     @Override
     public boolean canRedo() {
-        return commandList.size() > commandPosition;
+        return commands.size() > commandPosition;
     }
 
     @Override
@@ -231,7 +246,7 @@ public class CodeAreaUndoHandler implements XBUndoHandler {
 
     @Override
     public List<Command> getCommandList() {
-        return commandList;
+        return commands;
     }
 
     /**

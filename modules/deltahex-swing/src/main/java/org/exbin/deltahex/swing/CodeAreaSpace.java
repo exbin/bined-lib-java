@@ -15,8 +15,6 @@
  */
 package org.exbin.deltahex.swing;
 
-import javax.swing.JComponent;
-
 /**
  * Empty space definition.
  *

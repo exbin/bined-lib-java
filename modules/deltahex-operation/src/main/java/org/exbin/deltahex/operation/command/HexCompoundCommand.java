@@ -25,7 +25,7 @@ import org.exbin.xbup.operation.CompoundCommand;
 /**
  * Class for compound command on hexadecimal document.
  *
- * @version 0.1.0 2016/05/07
+ * @version 0.1.1 2016/09/26
  * @author ExBin Project (http://exbin.org)
  */
 public class HexCompoundCommand extends CodeAreaCommand implements CompoundCommand {
@@ -114,5 +114,13 @@ public class HexCompoundCommand extends CodeAreaCommand implements CompoundComma
     @Override
     public boolean isEmpty() {
         return commands.isEmpty();
+    }
+
+    @Override
+    public void dispose() throws Exception {
+        super.dispose();
+        for (Command command : commands) {
+            command.dispose();
+        }
     }
 }

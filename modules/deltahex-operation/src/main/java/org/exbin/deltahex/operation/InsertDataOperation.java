@@ -22,16 +22,16 @@ import org.exbin.utils.binary_data.EditableBinaryData;
 /**
  * Operation for inserting data.
  *
- * @version 0.1.0 2015/06/13
+ * @version 0.1.1 2015/06/26
  * @author ExBin Project (http://exbin.org)
  */
 public class InsertDataOperation extends CodeAreaOperation {
 
     private final long position;
     private final int codeOffset;
-    private final BinaryData data;
+    private final EditableBinaryData data;
 
-    public InsertDataOperation(CodeArea codeArea, long position, int codeOffset, BinaryData data) {
+    public InsertDataOperation(CodeArea codeArea, long position, int codeOffset, EditableBinaryData data) {
         super(codeArea);
         this.position = position;
         this.codeOffset = codeOffset;
@@ -64,6 +64,12 @@ public class InsertDataOperation extends CodeAreaOperation {
     }
 
     public void appendData(BinaryData appendData) {
-        ((EditableBinaryData) data).insert(data.getDataSize(), appendData);
+        data.insert(data.getDataSize(), appendData);
+    }
+
+    @Override
+    public void dispose() throws Exception {
+        super.dispose();
+        data.clear();
     }
 }

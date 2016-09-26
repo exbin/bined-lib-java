@@ -15,6 +15,8 @@
  */
 package org.exbin.deltahex.operation.command;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.exbin.deltahex.swing.CodeArea;
 import org.exbin.deltahex.operation.CodeAreaOperation;
 import org.exbin.deltahex.operation.CodeAreaOperationEvent;
@@ -24,7 +26,7 @@ import org.exbin.deltahex.operation.CodeAreaOperationListener;
 /**
  * Abstract class for operation on hexadecimal document.
  *
- * @version 0.1.0 2016/05/14
+ * @version 0.1.1 2016/09/26
  * @author ExBin Project (http://exbin.org)
  */
 public abstract class OpCodeAreaCommand extends CodeAreaCommand {
@@ -41,6 +43,13 @@ public abstract class OpCodeAreaCommand extends CodeAreaCommand {
     }
 
     public void setOperation(CodeAreaOperation operation) {
+        if (this.operation != null) {
+            try {
+                this.operation.dispose();
+            } catch (Exception ex) {
+                Logger.getLogger(OpCodeAreaCommand.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
         this.operation = operation;
     }
 
@@ -53,6 +62,7 @@ public abstract class OpCodeAreaCommand extends CodeAreaCommand {
     public void undo() throws Exception {
         if (operationPerformed) {
             CodeAreaOperation redoOperation = operation.executeWithUndo();
+            operation.dispose();
             if (codeArea instanceof OperationListener) {
                 ((CodeAreaOperationListener) codeArea).notifyChange(new CodeAreaOperationEvent(operation));
             }
@@ -68,6 +78,7 @@ public abstract class OpCodeAreaCommand extends CodeAreaCommand {
     public void redo() throws Exception {
         if (!operationPerformed) {
             CodeAreaOperation undoOperation = operation.executeWithUndo();
+            operation.dispose();
             if (codeArea instanceof OperationListener) {
                 ((CodeAreaOperationListener) codeArea).notifyChange(new CodeAreaOperationEvent(operation));
             }
@@ -76,6 +87,14 @@ public abstract class OpCodeAreaCommand extends CodeAreaCommand {
             operationPerformed = true;
         } else {
             throw new UnsupportedOperationException("Not supported yet.");
+        }
+    }
+
+    @Override
+    public void dispose() throws Exception {
+        super.dispose();
+        if (operation != null) {
+            operation.dispose();
         }
     }
 }
