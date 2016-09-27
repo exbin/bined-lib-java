@@ -77,7 +77,7 @@ public class EditCodeDataCommand extends EditDataCommand {
                 CodeAreaOperation redoOperation = operation.executeWithUndo();
                 operation.dispose();
                 if (codeArea instanceof OperationListener) {
-                    ((CodeAreaOperationListener) codeArea).notifyChange(new CodeAreaOperationEvent(operations[i]));
+                    ((CodeAreaOperationListener) codeArea).notifyChange(new CodeAreaOperationEvent(operation));
                 }
                 operations[i] = redoOperation;
             }

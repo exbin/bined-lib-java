@@ -180,7 +180,12 @@ public class OverwriteCodeEditDataOperation extends CodeEditDataOperation {
             modifyOperation = new ModifyDataOperation(codeArea, startPosition, undoData);
         }
         long undoDataSize = undoData == null ? 0 : undoData.getDataSize();
-        RemoveDataOperation removeOperation = new RemoveDataOperation(codeArea, startPosition + undoDataSize, startCodeOffset, length - undoDataSize);
+        long removeLength = length - undoDataSize;
+        RemoveDataOperation removeOperation;
+        if (removeLength == 0) {
+            return new CodeAreaOperation[]{modifyOperation};
+        }
+        removeOperation = new RemoveDataOperation(codeArea, startPosition + undoDataSize, startCodeOffset, removeLength);
 
         if (modifyOperation != null) {
             return new CodeAreaOperation[]{modifyOperation, removeOperation};

@@ -15,8 +15,6 @@
  */
 package org.exbin.deltahex.delta;
 
-import org.exbin.utils.binary_data.BinaryData;
-
 /**
  * Data segment pointing to memory block.
  *
