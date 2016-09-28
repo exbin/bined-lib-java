@@ -33,10 +33,10 @@ import static org.junit.Assert.*;
  */
 public class CodeAreaTest {
 
-    public final static String SAMPLE_FILES_PATH = "/org/exbin/deltahex/resources/test/";
-    public final static String SAMPLE_5BYTES = SAMPLE_FILES_PATH + "5bytes.dat";
-    public final static String SAMPLE_10BYTES = SAMPLE_FILES_PATH + "10bytes.dat";
-    public final static String SAMPLE_ALLBYTES = SAMPLE_FILES_PATH + "allbytes.dat";
+    public static final String SAMPLE_FILES_PATH = "/org/exbin/deltahex/resources/test/";
+    public static final String SAMPLE_5BYTES = SAMPLE_FILES_PATH + "5bytes.dat";
+    public static final String SAMPLE_10BYTES = SAMPLE_FILES_PATH + "10bytes.dat";
+    public static final String SAMPLE_ALLBYTES = SAMPLE_FILES_PATH + "allbytes.dat";
 
     public CodeAreaTest() {
     }

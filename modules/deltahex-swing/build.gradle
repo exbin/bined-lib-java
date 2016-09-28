@@ -30,4 +30,5 @@ dependencies {
     compile moduleDep('DeltahexJava', 'org.exbin.deltahex', 'deltahex-core')
     compile moduleDep('ExbinUtilsJava', 'org.exbin.utils', 'exbin-binary_data')
     testCompile group : 'junit', name: 'junit', version: '4.10'
+    testCompile project(path: moduleDepPath('DeltahexJava', 'deltahex-core'), configuration: 'tests')
 }
