@@ -26,12 +26,13 @@ import org.exbin.utils.binary_data.OutOfBoundsException;
 /**
  * Delta document defined as sequence of segments.
  *
- * @version 0.1.1 2016/09/28
+ * @version 0.1.1 2016/09/29
  * @author ExBin Project (http://exbin.org)
  */
 public class DeltaDocument implements EditableBinaryData {
 
     private final SegmentsRepository repository;
+    private FileDataSource fileSource;
     private final DefaultDoublyLinkedList<DataSegment> segments = new DefaultDoublyLinkedList<>();
 
     private long dataLength = 0;
@@ -40,6 +41,7 @@ public class DeltaDocument implements EditableBinaryData {
 
     public DeltaDocument(SegmentsRepository repository, FileDataSource fileSource) throws IOException {
         this.repository = repository;
+        this.fileSource = fileSource;
         dataLength = fileSource.getFileLength();
         DataSegment fullFileSegment = new FileSegment(fileSource, 0, dataLength);
         segments.add(fullFileSegment);
@@ -232,7 +234,7 @@ public class DeltaDocument implements EditableBinaryData {
                 next = next.getNext();
             }
             pointerSegment = first;
-            tryMergeArea(startFrom, document.getDataSize());
+            tryMergeArea(startFrom, insertedData.getDataSize());
         } else if (pointerSegment instanceof MemorySegment) {
             repository.insertMemoryData((MemorySegment) pointerSegment, startFrom - pointerPosition, insertedData);
         } else {
@@ -325,6 +327,7 @@ public class DeltaDocument implements EditableBinaryData {
             // Set pointer position
             pointerSegment = prevSegment;
             pointerPosition = prevPointerPosition;
+            tryMergeSegments(startFrom);
         }
     }
 
@@ -531,7 +534,15 @@ public class DeltaDocument implements EditableBinaryData {
             }
             // TODO join two single memory segments?
         }
-        
+
         return false;
+    }
+
+    public FileDataSource getFileSource() {
+        return fileSource;
+    }
+
+    public void setFileSource(FileDataSource fileSource) {
+        this.fileSource = fileSource;
     }
 }

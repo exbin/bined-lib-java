@@ -17,10 +17,10 @@ package org.exbin.deltahex.delta;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.exbin.deltahex.delta.list.DefaultDoublyLinkedList;
+import org.exbin.utils.binary_data.BinaryData;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -54,12 +54,15 @@ public class DeltaDocumentTest {
 
         document.clear();
         assertEquals(0, document.getSegments().size());
+        document.destroy();
     }
 
     @Test
-    public void testSetBytesSplit() {
+    public void testSetBytes() {
         DeltaDocument document = openDeltaDocument();
         document.setByte(10, (byte) 0);
+        assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
+
         DefaultDoublyLinkedList<DataSegment> segments = document.getSegments();
         assertEquals(3, segments.size());
 
@@ -77,6 +80,36 @@ public class DeltaDocumentTest {
         assertTrue(segment2 instanceof FileSegment);
         assertEquals(11, ((FileSegment) segment2).getStartPosition());
         assertEquals(SAMPLE_ALLBYTES_SIZE - 11, segment2.getLength());
+
+        document.clear();
+        assertEquals(0, document.getSegments().size());
+        document.destroy();
+    }
+
+    @Test
+    public void testInsertBinaryData() {
+        DeltaDocument document = openDeltaDocument();
+        BinaryData data = new MemoryDataSource(new byte[]{0});
+        document.insert(10, data);
+        assertEquals(SAMPLE_ALLBYTES_SIZE + 1, document.getDataSize());
+
+        DefaultDoublyLinkedList<DataSegment> segments = document.getSegments();
+        assertEquals(3, segments.size());
+
+        DataSegment segment0 = segments.first();
+        assertTrue(segment0 instanceof FileSegment);
+        assertEquals(0, ((FileSegment) segment0).getStartPosition());
+        assertEquals(10, segment0.getLength());
+
+        DataSegment segment1 = segments.get(1);
+        assertTrue(segment1 instanceof MemorySegment);
+        assertEquals(0, ((MemorySegment) segment1).getStartPosition());
+        assertEquals(1, segment1.getLength());
+
+        DataSegment segment2 = segments.get(2);
+        assertTrue(segment2 instanceof FileSegment);
+        assertEquals(10, ((FileSegment) segment2).getStartPosition());
+        assertEquals(SAMPLE_ALLBYTES_SIZE - 10, segment2.getLength());
 
         document.clear();
         assertEquals(0, document.getSegments().size());
