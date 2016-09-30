@@ -29,7 +29,7 @@ import org.exbin.utils.binary_data.OutOfBoundsException;
 /**
  * Repository of delta segments.
  *
- * @version 0.1.1 2016/09/24
+ * @version 0.1.1 2016/09/30
  * @author ExBin Project (http://exbin.org)
  */
 public class SegmentsRepository {
@@ -50,12 +50,8 @@ public class SegmentsRepository {
     }
 
     public void closeFileSource(FileDataSource fileSource) {
-        fileSource.close();
-    }
-
-    public void saveFileSource(FileDataSource fileSource) {
         // TODO
-        throw new UnsupportedOperationException("Not supported yet.");
+        fileSource.close();
     }
 
     public MemoryDataSource openMemorySource() {
@@ -67,6 +63,7 @@ public class SegmentsRepository {
 
     public void closeMemorySource(MemoryDataSource memorySource) {
         // TODO
+        memorySource.clear();
     }
 
     /**
@@ -92,7 +89,35 @@ public class SegmentsRepository {
         documents.add(document);
         return document;
     }
+    
+    /**
+     * Save document to it's source file and update all documents.
+     * 
+     * @param savedDocument document to save
+     * @throws java.io.IOException if input/output error
+     */
+    public void saveDocument(DeltaDocument savedDocument) throws IOException {
+        FileDataSource fileSource = savedDocument.getFileSource();
 
+        // Create transformation document
+        DeltaDocument transformationDocument = new DeltaDocument(this);
+        
+        // Apply inversion to other document
+        for (DeltaDocument document : documents) {
+            if (document != savedDocument) {
+//                applyTransformationDocument(document, transformationDocument);
+            }
+        }
+        
+        // Perform document save
+        
+        
+        // Update document segments
+        savedDocument.clear();
+        DataSegment fullFileSegment = new FileSegment(fileSource, 0, fileSource.getFileLength());
+        savedDocument.getSegments().add(fullFileSegment);
+    }
+    
     /**
      * Creates new file segment on given file source.
      *
