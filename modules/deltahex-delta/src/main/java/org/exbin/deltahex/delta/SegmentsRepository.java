@@ -23,19 +23,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.exbin.deltahex.delta.list.DefaultDoublyLinkedList;
+import org.exbin.deltahex.delta.list.DoublyLinkedItem;
 import org.exbin.utils.binary_data.BinaryData;
 import org.exbin.utils.binary_data.OutOfBoundsException;
 
 /**
  * Repository of delta segments.
  *
- * @version 0.1.1 2016/09/30
+ * @version 0.1.1 2016/10/01
  * @author ExBin Project (http://exbin.org)
  */
 public class SegmentsRepository {
 
-    private final Map<FileDataSource, List<FileSegment>> fileSources = new HashMap<>();
-    private final Map<MemoryDataSource, List<MemorySegment>> memorySources = new HashMap<>();
+    private final Map<FileDataSource, DataSegmentsMap> fileSources = new HashMap<>();
+    private final Map<MemoryDataSource, DataSegmentsMap> memorySources = new HashMap<>();
 
     private final List<DeltaDocument> documents = new ArrayList<>();
 
@@ -44,8 +46,7 @@ public class SegmentsRepository {
 
     public FileDataSource openFileSource(File sourceFile) throws IOException {
         FileDataSource fileSource = new FileDataSource(sourceFile);
-        List<FileSegment> fileSegments = new ArrayList<>();
-        fileSources.put(fileSource, fileSegments);
+        fileSources.put(fileSource, new DataSegmentsMap());
         return fileSource;
     }
 
@@ -56,8 +57,7 @@ public class SegmentsRepository {
 
     public MemoryDataSource openMemorySource() {
         MemoryDataSource memorySource = new MemoryDataSource();
-        List<MemorySegment> memorySegments = new ArrayList<>();
-        memorySources.put(memorySource, memorySegments);
+        memorySources.put(memorySource, new DataSegmentsMap());
         return memorySource;
     }
 
@@ -89,10 +89,10 @@ public class SegmentsRepository {
         documents.add(document);
         return document;
     }
-    
+
     /**
      * Save document to it's source file and update all documents.
-     * 
+     *
      * @param savedDocument document to save
      * @throws java.io.IOException if input/output error
      */
@@ -101,23 +101,21 @@ public class SegmentsRepository {
 
         // Create transformation document
         DeltaDocument transformationDocument = new DeltaDocument(this);
-        
+
         // Apply inversion to other document
         for (DeltaDocument document : documents) {
             if (document != savedDocument) {
 //                applyTransformationDocument(document, transformationDocument);
             }
         }
-        
+
         // Perform document save
-        
-        
         // Update document segments
         savedDocument.clear();
         DataSegment fullFileSegment = new FileSegment(fileSource, 0, fileSource.getFileLength());
         savedDocument.getSegments().add(fullFileSegment);
     }
-    
+
     /**
      * Creates new file segment on given file source.
      *
@@ -136,14 +134,14 @@ public class SegmentsRepository {
         }
 
         FileSegment fileSegment = new FileSegment(fileSource, startPosition, length);
-        List<FileSegment> segments = fileSources.get(fileSource);
-        segments.add(fileSegment);
+        DataSegmentsMap segmentsMap = fileSources.get(fileSource);
+        segmentsMap.add(fileSegment);
         return fileSegment;
     }
 
     public void dropFileSegment(FileSegment fileSegment) {
-        List<FileSegment> segments = fileSources.get(fileSegment.getSource());
-        segments.remove(fileSegment);
+        DataSegmentsMap segmentsMap = fileSources.get(fileSegment.getSource());
+        segmentsMap.remove(fileSegment);
     }
 
     public MemorySegment createMemorySegment() {
@@ -164,14 +162,14 @@ public class SegmentsRepository {
         }
 
         MemorySegment memorySegment = new MemorySegment(memorySource, startPosition, length);
-        List<MemorySegment> segments = memorySources.get(memorySource);
-        segments.add(memorySegment);
+        DataSegmentsMap segmentsMap = memorySources.get(memorySource);
+        segmentsMap.add(memorySegment);
         return memorySegment;
     }
 
     public void dropMemorySegment(MemorySegment memorySegment) {
-        List<MemorySegment> segments = memorySources.get(memorySegment.getSource());
-        segments.remove(memorySegment);
+        DataSegmentsMap segmentsMap = memorySources.get(memorySegment.getSource());
+        segmentsMap.remove(memorySegment);
     }
 
     public void dropSegment(DataSegment segment) {
@@ -198,8 +196,8 @@ public class SegmentsRepository {
      */
     public void setMemoryByte(MemorySegment memorySegment, long segmentPosition, byte value) {
         MemoryDataSource memorySource = memorySegment.getSource();
-        List<MemorySegment> segments = memorySources.get(memorySource);
-        if (segments.size() > 1) {
+        DataSegmentsMap segmentsMap = memorySources.get(memorySource);
+        if (segmentsMap.hasMoreSegments()) {
             throw new UnsupportedOperationException("Not supported yet.");
         }
 
@@ -245,15 +243,16 @@ public class SegmentsRepository {
      * @param length length
      */
     public void detachMemoryArea(MemorySegment memorySegment, long position, long length) {
-        List<MemorySegment> memorySegments = memorySources.get(memorySegment.getSource());
-        for (MemorySegment segment : memorySegments) {
-            if (segment != memorySegment) {
-                if (position >= segment.getStartPosition() && position < segment.getStartPosition() + segment.getLength()) {
-                    // TODO: If segments collide, copy on write
-                    throw new UnsupportedOperationException("Not supported yet.");
-                }
-            }
-        }
+        DataSegmentsMap segmentsMap = memorySources.get(memorySegment.getSource());
+        // TODO
+//        for (MemorySegment segment : segmentsMap.getAllSegments()) {
+//            if (segment != memorySegment) {
+//                if (position >= segment.getStartPosition() && position < segment.getStartPosition() + segment.getLength()) {
+//                    // TODO: If segments collide, copy on write
+//                    throw new UnsupportedOperationException("Not supported yet.");
+//                }
+//            }
+//        }
     }
 
     /**
@@ -269,6 +268,66 @@ public class SegmentsRepository {
         } else {
             FileSegment fileSegment = (FileSegment) segment;
             return createFileSegment(fileSegment.getSource(), fileSegment.getStartPosition(), fileSegment.getLength());
+        }
+    }
+
+    /**
+     * Mapping of segments to data source.
+     *
+     * Segments are suppose to be kept ordered by start position and length with
+     * max position computed.
+     */
+    private class DataSegmentsMap {
+
+        private final DefaultDoublyLinkedList<SegmentRecord> records = new DefaultDoublyLinkedList<>();
+
+        public DataSegmentsMap() {
+        }
+
+        private void add(DataSegment fileSegment) {
+            // TODO throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        private void remove(DataSegment fileSegment) {
+            // TODO throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        private boolean hasMoreSegments() {
+            // TODO throw new UnsupportedOperationException("Not supported yet.");
+            return false;
+        }
+
+    }
+
+    /**
+     * Internal structure for segment and
+     */
+    private static class SegmentRecord implements DoublyLinkedItem {
+        
+        SegmentRecord prev = null;
+        SegmentRecord next = null;
+
+        DataSegment dataSegment;
+        long maxPosition;
+
+        @Override
+        public DoublyLinkedItem getNext() {
+            return next;
+        }
+
+        @Override
+        public void setNext(DoublyLinkedItem next) {
+            this.next = (SegmentRecord) next;
+        }
+
+        @Override
+        public DoublyLinkedItem getPrev() {
+            return prev;
+        }
+
+        @Override
+        public void setPrev(DoublyLinkedItem prev) {
+            this.prev = (SegmentRecord) prev;
         }
     }
 }

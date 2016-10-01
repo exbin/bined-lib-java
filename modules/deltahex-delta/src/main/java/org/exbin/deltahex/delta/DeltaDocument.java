@@ -26,7 +26,7 @@ import org.exbin.utils.binary_data.OutOfBoundsException;
 /**
  * Delta document defined as sequence of segments.
  *
- * @version 0.1.1 2016/09/29
+ * @version 0.1.1 2016/10/01
  * @author ExBin Project (http://exbin.org)
  */
 public class DeltaDocument implements EditableBinaryData {
@@ -139,7 +139,11 @@ public class DeltaDocument implements EditableBinaryData {
             }
             MemorySegment insertedSegment = repository.createMemorySegment();
             repository.insertUninitializedMemoryData((MemorySegment) insertedSegment, 0, length);
-            segments.addBefore(pointerSegment, insertedSegment);
+            if (pointerSegment == null) {
+               segments.add(0, insertedSegment);
+            } else {
+                segments.addBefore(pointerSegment, insertedSegment);
+            }
             pointerSegment = insertedSegment;
         }
     }
@@ -161,7 +165,11 @@ public class DeltaDocument implements EditableBinaryData {
             }
             MemorySegment insertedSegment = repository.createMemorySegment();
             repository.insertMemoryData((MemorySegment) insertedSegment, 0, length);
-            segments.addBefore(pointerSegment, insertedSegment);
+            if (pointerSegment == null) {
+               segments.add(0, insertedSegment);
+            } else {
+                segments.addBefore(pointerSegment, insertedSegment);
+            }
             pointerSegment = insertedSegment;
         }
     }
@@ -183,7 +191,11 @@ public class DeltaDocument implements EditableBinaryData {
             }
             MemorySegment insertedSegment = repository.createMemorySegment();
             repository.insertMemoryData((MemorySegment) insertedSegment, 0, insertedData);
-            segments.addBefore(pointerSegment, insertedSegment);
+            if (pointerSegment == null) {
+               segments.add(0, insertedSegment);
+            } else {
+                segments.addBefore(pointerSegment, insertedSegment);
+            }
             pointerSegment = insertedSegment;
         }
     }
@@ -201,7 +213,11 @@ public class DeltaDocument implements EditableBinaryData {
             }
             MemorySegment insertedSegment = repository.createMemorySegment();
             repository.insertMemoryData((MemorySegment) insertedSegment, 0, insertedData);
-            segments.addBefore(pointerSegment, insertedSegment);
+            if (pointerSegment == null) {
+               segments.add(0, insertedSegment);
+            } else {
+                segments.addBefore(pointerSegment, insertedSegment);
+            }
             pointerSegment = insertedSegment;
         }
     }
@@ -244,7 +260,11 @@ public class DeltaDocument implements EditableBinaryData {
             }
             MemorySegment insertedSegment = repository.createMemorySegment();
             repository.insertMemoryData((MemorySegment) insertedSegment, 0, insertedData);
-            segments.addBefore(pointerSegment, insertedSegment);
+            if (pointerSegment == null) {
+               segments.add(0, insertedSegment);
+            } else {
+                segments.addBefore(pointerSegment, insertedSegment);
+            }
             pointerSegment = insertedSegment;
         }
     }
