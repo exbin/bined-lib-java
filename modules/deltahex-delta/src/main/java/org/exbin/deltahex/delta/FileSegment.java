@@ -37,6 +37,7 @@ public class FileSegment extends DataSegment {
         return source;
     }
 
+    @Override
     public long getStartPosition() {
         return startPosition;
     }

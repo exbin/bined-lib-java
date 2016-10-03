@@ -20,11 +20,11 @@ import java.util.List;
 /**
  * Doubly linked list of items.
  *
- * @version 0.1.0 2016/06/03
+ * @version 0.1.1 2016/10/03
  * @author ExBin Project (http://exbin.org)
  * @param <T> doubly linked list item
  */
-public interface DoublyLinkedList<T extends DoublyLinkedItem> extends List<T> {
+public interface DoublyLinkedList<T> extends List<T> {
 
     /**
      * Returns first item of the list.

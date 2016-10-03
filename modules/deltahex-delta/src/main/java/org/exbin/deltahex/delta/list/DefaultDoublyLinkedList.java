@@ -23,7 +23,7 @@ import java.util.ListIterator;
 /**
  * Default implementation of doubly linked list of items.
  *
- * @version 0.1.1 2016/09/28
+ * @version 0.1.1 2016/10/03
  * @author ExBin Project (http://exbin.org)
  * @param <T> doubly linked list item
  */
@@ -118,9 +118,9 @@ public class DefaultDoublyLinkedList<T extends DoublyLinkedItem> implements Doub
     @Override
     public Iterator<T> iterator() {
         return new Iterator<T>() {
-            
+
             private T current = first;
-            
+
             @Override
             public boolean hasNext() {
                 return current != null;
@@ -161,12 +161,12 @@ public class DefaultDoublyLinkedList<T extends DoublyLinkedItem> implements Doub
     public <T> T[] toArray(T[] template) {
         throw new UnsupportedOperationException("Not supported yet.");
 //        int count = last == null ? 0 : indexOf(last);
-//        T[] result = template.length >= count ? template : (T[]) Array.newInstance(template.getClass(), count);
+//        T[] result = template.length >= count ? template : Arrays.copyOf(template, count);
 //        int index = 0;
 //        T item = (T) first;
 //        while (item != null) {
 //            result[index] = item;
-//            item = nextTo((T) item);
+//            item = nextTo(item);
 //            index++;
 //        }
 //        return result;
@@ -263,7 +263,12 @@ public class DefaultDoublyLinkedList<T extends DoublyLinkedItem> implements Doub
 
     @Override
     public boolean addAll(int index, Collection<? extends T> c) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        for (T t : c) {
+            add(index, t);
+            index++;
+        }
+
+        return true;
     }
 
     @Override

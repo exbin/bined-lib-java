@@ -31,7 +31,7 @@ import org.exbin.utils.binary_data.OutOfBoundsException;
 /**
  * Repository of delta segments.
  *
- * @version 0.1.1 2016/10/01
+ * @version 0.1.1 2016/10/03
  * @author ExBin Project (http://exbin.org)
  */
 public class SegmentsRepository {
@@ -280,30 +280,139 @@ public class SegmentsRepository {
     private class DataSegmentsMap {
 
         private final DefaultDoublyLinkedList<SegmentRecord> records = new DefaultDoublyLinkedList<>();
+        private SegmentRecord pointerRecord = null;
 
         public DataSegmentsMap() {
         }
 
-        private void add(DataSegment fileSegment) {
-            // TODO throw new UnsupportedOperationException("Not supported yet.");
+        private void add(DataSegment segment) {
+            focusSegment(segment.getStartPosition(), segment.getLength());
+            SegmentRecord record = new SegmentRecord();
+            record.dataSegment = segment;
+            long maxPosition = segment.getStartPosition() + segment.getLength();
+            if (pointerRecord == null) {
+                record.maxPosition = maxPosition;
+                records.add(0, record);
+                SegmentRecord nextRecord = record.next;
+                while (nextRecord != null && nextRecord.maxPosition < maxPosition) {
+                    nextRecord.maxPosition = maxPosition;
+                    nextRecord = records.nextTo(nextRecord);
+                }
+            } else {
+                if (pointerRecord.maxPosition > segment.getStartPosition() + segment.getLength()) {
+                    maxPosition = pointerRecord.maxPosition;
+                } else {
+                    SegmentRecord nextRecord = pointerRecord.next;
+                    while (nextRecord != null && nextRecord.maxPosition < maxPosition) {
+                        nextRecord.maxPosition = maxPosition;
+                        nextRecord = records.nextTo(nextRecord);
+                    }
+                }
+                record.maxPosition = maxPosition;
+                records.addAfter(pointerRecord, record);
+            }
         }
 
-        private void remove(DataSegment fileSegment) {
-            // TODO throw new UnsupportedOperationException("Not supported yet.");
+        private void remove(DataSegment segment) {
+            focusSegment(segment.getStartPosition(), segment.getLength());
+            SegmentRecord record = pointerRecord;
+            while (record.dataSegment != segment
+                    && record.dataSegment.getStartPosition() == segment.getStartPosition()
+                    && record.dataSegment.getLength() == segment.getLength()) {
+                record = records.prevTo(record);
+            }
+
+            if (record.dataSegment == segment) {
+                SegmentRecord prevRecord = records.prevTo(record);
+                SegmentRecord nextRecord = records.nextTo(record);
+                records.remove(record);
+                pointerRecord = prevRecord;
+
+                // Update maxPosition cached values
+                if (nextRecord != null) {
+                    long maxPosition = nextRecord.dataSegment.getStartPosition() + nextRecord.dataSegment.getLength();
+                    if (prevRecord != null) {
+                        long prevMaxPosition = prevRecord.dataSegment.getStartPosition() + prevRecord.dataSegment.getLength();
+                        if (prevMaxPosition > maxPosition) {
+                            maxPosition = prevMaxPosition;
+                        }
+                    }
+                    while (nextRecord != null && maxPosition < nextRecord.maxPosition) {
+                        long nextMaxPosition = nextRecord.dataSegment.getStartPosition() + nextRecord.dataSegment.getLength();
+                        if (nextMaxPosition == nextRecord.maxPosition) {
+                            break;
+                        }
+                        if (nextMaxPosition > maxPosition) {
+                            maxPosition = nextMaxPosition;
+                        }
+                        nextRecord.maxPosition = maxPosition;
+                        nextRecord = records.nextTo(nextRecord);
+                    }
+                }
+            } else {
+                throw new IllegalStateException("Segment requested for removal was not found");
+            }
         }
 
         private boolean hasMoreSegments() {
-            // TODO throw new UnsupportedOperationException("Not supported yet.");
-            return false;
+            return records.first() != null && records.first() != records.last();
         }
 
+        private void updateSegment(DataSegment segment) {
+            // TODO optimalization
+            remove(segment);
+            add(segment);
+        }
+
+        /**
+         * Aligns focus segment on last segment at given start position and
+         * length or last segment before given position.
+         *
+         * @param startPosition
+         * @param length
+         */
+        private void focusSegment(long startPosition, long length) {
+            if (pointerRecord == null) {
+                pointerRecord = records.first();
+            }
+
+            if (pointerRecord == null) {
+                return;
+            }
+
+            if (pointerRecord.dataSegment.getStartPosition() < startPosition
+                    || (pointerRecord.dataSegment.getStartPosition() == startPosition && pointerRecord.dataSegment.getLength() <= length)) {
+                // Forward direction traversal
+                SegmentRecord record = pointerRecord;
+                while (record.dataSegment.getStartPosition() < startPosition
+                        || (record.dataSegment.getStartPosition() == startPosition && record.dataSegment.getLength() <= length)) {
+                    pointerRecord = record;
+                    record = records.nextTo(pointerRecord);
+                    if (record == null) {
+                        break;
+                    }
+                }
+            } else {
+                // Backward direction traversal
+                SegmentRecord record = pointerRecord;
+                while (record.dataSegment.getStartPosition() > startPosition
+                        || (record.dataSegment.getStartPosition() == startPosition && record.dataSegment.getLength() > length)) {
+                    pointerRecord = record;
+                    record = records.prevTo(record);
+                    if (record == null) {
+                        pointerRecord = null;
+                        break;
+                    }
+                }
+            }
+        }
     }
 
     /**
-     * Internal structure for segment and
+     * Internal structure for segment and cached maximum position.
      */
     private static class SegmentRecord implements DoublyLinkedItem {
-        
+
         SegmentRecord prev = null;
         SegmentRecord next = null;
 
