@@ -1108,6 +1108,12 @@ public class CodeArea extends JComponent {
             notifyScrolled();
         }
     }
+    
+    private void validateLineOffset() {
+        if (paintDataCache.bytesPerLine > 0 && paintDataCache.bytesPerLine <= scrollPosition.lineByteShift) {
+            scrollPosition.setLineByteShift(scrollPosition.lineByteShift % paintDataCache.bytesPerLine);
+        }
+    }
 
     private int computeCharsPerRect(int width) {
         if (showLineNumbers) {
@@ -1457,6 +1463,7 @@ public class CodeArea extends JComponent {
     public void setWrapMode(boolean wrapMode) {
         this.wrapMode = wrapMode;
         computePaintData();
+        validateLineOffset();
         repaint();
     }
 
@@ -2068,6 +2075,7 @@ public class CodeArea extends JComponent {
         @Override
         public void componentResized(ComponentEvent e) {
             computePaintData();
+            validateLineOffset();
         }
 
         @Override
