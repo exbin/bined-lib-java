@@ -58,7 +58,7 @@ import org.exbin.utils.binary_data.PagedData;
 /**
  * Command handler for undo/redo aware hexadecimal editor editing.
  *
- * @version 0.1.1 2016/09/26
+ * @version 0.1.1 2016/10/05
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeCommandHandler implements CodeAreaCommandHandler {
@@ -129,8 +129,9 @@ public class CodeCommandHandler implements CodeAreaCommandHandler {
                         scrollPosition.setLineByteShift(0);
                     }
 
-                    codeArea.updateScrollBars();
+                    codeArea.computePaintData();
                     codeArea.notifyScrolled();
+                    codeArea.repaint();
                 } else {
                     codeArea.moveLeft(keyEvent.getModifiersEx());
                     caretMoved();
@@ -153,8 +154,9 @@ public class CodeCommandHandler implements CodeAreaCommandHandler {
                         }
                     }
 
-                    codeArea.updateScrollBars();
+                    codeArea.computePaintData();
                     codeArea.notifyScrolled();
+                    codeArea.repaint();
                 } else {
                     codeArea.moveRight(keyEvent.getModifiersEx());
                     caretMoved();
@@ -219,16 +221,21 @@ public class CodeCommandHandler implements CodeAreaCommandHandler {
                 CaretPosition caretPosition = codeArea.getCaretPosition();
                 int bytesPerLine = codeArea.getBytesPerLine();
                 CodeArea.ScrollPosition scrollPosition = codeArea.getScrollPosition();
-                long targetPosition;
-                if ((keyEvent.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) > 0) {
-                    targetPosition = 0;
-                } else {
-                    targetPosition = (caretPosition.getDataPosition() / bytesPerLine) * bytesPerLine - scrollPosition.getLineByteShift();
+                if (caretPosition.getDataPosition() > 0 || caretPosition.getCodeOffset() != 0) {
+                    long targetPosition;
+                    if ((keyEvent.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) > 0) {
+                        targetPosition = 0;
+                    } else {
+                        targetPosition = ((caretPosition.getDataPosition() + scrollPosition.getLineByteShift()) / bytesPerLine) * bytesPerLine - scrollPosition.getLineByteShift();
+                        if (targetPosition < 0) {
+                            targetPosition = 0;
+                        }
+                    }
+                    codeArea.setCaretPosition(targetPosition);
+                    caretMoved();
+                    codeArea.notifyCaretMoved();
+                    codeArea.updateSelection(keyEvent.getModifiersEx(), caretPosition);
                 }
-                codeArea.setCaretPosition(targetPosition);
-                caretMoved();
-                codeArea.notifyCaretMoved();
-                codeArea.updateSelection(keyEvent.getModifiersEx(), caretPosition);
                 codeArea.revealCursor();
                 keyEvent.consume();
                 break;
@@ -236,14 +243,15 @@ public class CodeCommandHandler implements CodeAreaCommandHandler {
             case KeyEvent.VK_END: {
                 CaretPosition caretPosition = codeArea.getCaretPosition();
                 int bytesPerLine = codeArea.getBytesPerLine();
+                CodeArea.ScrollPosition scrollPosition = codeArea.getScrollPosition();
                 long dataSize = codeArea.getDataSize();
                 if ((keyEvent.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) > 0) {
                     codeArea.setCaretPosition(codeArea.getDataSize());
                 } else if (codeArea.getActiveSection() == Section.CODE_MATRIX) {
-                    long newPosition = ((caretPosition.getDataPosition() / bytesPerLine) + 1) * bytesPerLine - 1;
+                    long newPosition = (((caretPosition.getDataPosition() + scrollPosition.getLineByteShift()) / bytesPerLine) + 1) * bytesPerLine - 1 - scrollPosition.getLineByteShift();
                     codeArea.setCaretPosition(newPosition < dataSize ? newPosition : dataSize, newPosition < dataSize ? codeArea.getCodeType().getMaxDigits() - 1 : 0);
                 } else {
-                    long newPosition = ((caretPosition.getDataPosition() / bytesPerLine) + 1) * bytesPerLine - 1;
+                    long newPosition = (((caretPosition.getDataPosition() + scrollPosition.getLineByteShift()) / bytesPerLine) + 1) * bytesPerLine - 1 - scrollPosition.getLineByteShift();
                     codeArea.setCaretPosition(newPosition < dataSize ? newPosition : dataSize);
                 }
                 caretMoved();

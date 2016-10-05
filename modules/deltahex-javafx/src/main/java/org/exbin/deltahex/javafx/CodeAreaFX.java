@@ -69,7 +69,7 @@ import org.exbin.utils.binary_data.BinaryData;
  *
  * Also supports binary, octal and decimal codes.
  *
- * @version 0.1.1 2016/09/15
+ * @version 0.1.1 2016/10/05
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeAreaFX extends Control {
@@ -689,7 +689,7 @@ public class CodeAreaFX extends Control {
 
     public void updateScrollBars() {
         if (scrollPosition.verticalMaxMode) {
-            long lines = (data.getDataSize() / paintDataCache.bytesPerLine) + 1;
+            long lines = ((data.getDataSize() + scrollPosition.lineByteShift) / paintDataCache.bytesPerLine) + 1;
             int scrollValue;
             if (scrollPosition.scrollLinePosition < Long.MAX_VALUE / Integer.MAX_VALUE) {
                 scrollValue = (int) ((scrollPosition.scrollLinePosition * Integer.MAX_VALUE) / lines);
@@ -1074,7 +1074,7 @@ public class CodeAreaFX extends Control {
 //        } else {
 //            bytesPerLine = lineLength;
 //        }
-//        long lines = (data.getDataSize() / bytesPerLine) + 1;
+//        long lines = ((data.getDataSize() + scrollPosition.lineByteShift) / bytesPerLine) + 1;
 //        CodeAreaSpace.SpaceType headerSpaceType = headerSpace.getSpaceType();
 //        switch (headerSpaceType) {
 //            case NONE: {
@@ -1159,7 +1159,7 @@ public class CodeAreaFX extends Control {
 //                if (bytesPerLine <= 0) {
 //                    bytesPerLine = 1;
 //                }
-//                lines = (data.getDataSize() / bytesPerLine) + 1;
+//                lines = ((data.getDataSize() + scrollPosition.lineByteShift) / bytesPerLine) + 1;
 //            }
 //        }
 //
@@ -2242,7 +2242,7 @@ public class CodeAreaFX extends Control {
 //                    notifyScrolled();
 //                }
 //            } else if (e.getWheelRotation() > 0) {
-//                long lines = data.getDataSize() / paintDataCache.bytesPerLine;
+//                long lines = (data.getDataSize() + scrollPosition.lineByteShift) / paintDataCache.bytesPerLine;
 //                if (lines * paintDataCache.bytesPerLine < data.getDataSize()) {
 //                    lines++;
 //                }
@@ -2317,7 +2317,7 @@ public class CodeAreaFX extends Control {
             double scrollBarValue = verticalScrollBar.getValue();
 //            if (scrollPosition.verticalMaxMode) {
 //                int maxValue = Integer.MAX_VALUE - verticalScrollBar.getVisibleAmount();
-//                long lines = (data.getDataSize() / paintDataCache.bytesPerLine) - paintDataCache.linesPerRect + 1;
+//                long lines = ((data.getDataSize() + scrollPosition.lineByteShift) / paintDataCache.bytesPerLine) - paintDataCache.linesPerRect + 1;
 //                long targetLine;
 //                if (scrollBarValue > 0 && lines > maxValue / scrollBarValue) {
 //                    targetLine = scrollBarValue * (lines / maxValue);

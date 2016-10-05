@@ -91,7 +91,7 @@ public class CodeAreaCaret {
         CodeArea.ScrollPosition scrollPosition = codeArea.getScrollPosition();
         long shiftedPosition = caretPosition.getDataPosition() + scrollPosition.getLineByteShift();
         long line = shiftedPosition / bytesPerLine - scrollPosition.getScrollLinePosition();
-        if (line < -1 || line + 1 > linesPerRect) {
+        if (line < -1 || line > linesPerRect) {
             return null;
         }
 
