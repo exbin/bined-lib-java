@@ -26,7 +26,7 @@ import org.exbin.utils.binary_data.OutOfBoundsException;
 /**
  * Delta document defined as sequence of segments.
  *
- * @version 0.1.1 2016/10/01
+ * @version 0.1.1 2016/10/10
  * @author ExBin Project (http://exbin.org)
  */
 public class DeltaDocument implements EditableBinaryData {
@@ -285,6 +285,19 @@ public class DeltaDocument implements EditableBinaryData {
 //            MemorySegment binarySegment = new MemorySegment(binaryData);
 //            segments.addBefore(pointerSegment, binarySegment);
 //        }
+    }
+
+    public void insert(long startFrom, DataSegment segment) {
+        focusSegment(startFrom);
+        if (pointerPosition < startFrom) {
+            splitSegment(startFrom);
+            focusSegment(startFrom);
+        }
+        if (pointerSegment == null) {
+            segments.add(0, segment);
+        } else {
+            segments.addAfter(pointerSegment, segment);
+        }
     }
 
     @Override

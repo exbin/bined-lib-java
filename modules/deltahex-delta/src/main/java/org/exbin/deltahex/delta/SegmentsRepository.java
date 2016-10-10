@@ -31,7 +31,7 @@ import org.exbin.utils.binary_data.OutOfBoundsException;
 /**
  * Repository of delta segments.
  *
- * @version 0.1.1 2016/10/03
+ * @version 0.1.1 2016/10/11
  * @author ExBin Project (http://exbin.org)
  */
 public class SegmentsRepository {
@@ -99,13 +99,13 @@ public class SegmentsRepository {
     public void saveDocument(DeltaDocument savedDocument) throws IOException {
         FileDataSource fileSource = savedDocument.getFileSource();
 
-        // Create transformation document
-        DeltaDocument transformationDocument = new DeltaDocument(this);
+        // Create save transformation
+        Map<DataSegment, Long> saveMap = createSaveTransformation(savedDocument);
 
-        // Apply inversion to other document
+        // Apply transformation to other document
         for (DeltaDocument document : documents) {
             if (document != savedDocument) {
-//                applyTransformationDocument(document, transformationDocument);
+                applySaveMap(document, saveMap, savedDocument.getFileSource());
             }
         }
 
@@ -114,6 +114,42 @@ public class SegmentsRepository {
         savedDocument.clear();
         DataSegment fullFileSegment = new FileSegment(fileSource, 0, fileSource.getFileLength());
         savedDocument.getSegments().add(fullFileSegment);
+    }
+
+    private Map<DataSegment, Long> createSaveTransformation(DeltaDocument savedDocument) {
+        Map<DataSegment, Long> transformation = new HashMap<>();
+        DefaultDoublyLinkedList<DataSegment> segments = savedDocument.getSegments();
+        long position = 0;
+        for (DataSegment segment : segments) {
+            transformation.put(segment, position);
+            position += segment.getLength();
+        }
+
+        return transformation;
+    }
+
+    private void applySaveMap(DeltaDocument document, Map<DataSegment, Long> saveMap, FileDataSource fileSource) {
+        DefaultDoublyLinkedList<DataSegment> segments = document.getSegments();
+        long position = 0;
+        for (DataSegment segment : segments) {
+            Long savePosition = saveMap.get(segment);
+            if (savePosition != null) {
+                // Replace for file segment to after save position
+                FileSegment newSegment = createFileSegment(fileSource, savePosition, segment.getLength());
+                document.remove(position, segment.getLength());
+                document.insert(position, newSegment);
+                dropSegment(segment);
+            } else {
+                // Check for overlays, split if found
+                // TODO
+
+                if (segment instanceof FileSegment) {
+                    // Load data for segment which will not be available after save
+                    // TODO
+                }
+            }
+            position += segment.getLength();
+        }
     }
 
     /**
