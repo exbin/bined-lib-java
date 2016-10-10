@@ -45,7 +45,7 @@ import org.exbin.utils.binary_data.EditableBinaryData;
 /**
  * Default hexadecimal editor command handler.
  *
- * @version 0.1.1 2016/10/05
+ * @version 0.1.1 2016/10/10
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
@@ -113,15 +113,18 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         switch (keyEvent.getKeyCode()) {
             case KeyEvent.VK_LEFT: {
                 if ((keyEvent.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) > 0) {
-                    // Scroll page instead of cursor
+                    // Scroll position offset instead of cursor
                     CodeAreaFX.ScrollPosition scrollPosition = codeArea.getScrollPosition();
                     if (scrollPosition.getLineByteShift() < codeArea.getBytesPerLine() - 1) {
                         scrollPosition.setLineByteShift(scrollPosition.getLineByteShift() + 1);
-                    } else if (scrollPosition.getScrollLinePosition() > 0) {
-                        scrollPosition.setScrollLinePosition(scrollPosition.getScrollLinePosition() - 1);
+                    } else {
+                        if (scrollPosition.getScrollLinePosition() > 0) {
+                            scrollPosition.setScrollLinePosition(scrollPosition.getScrollLinePosition() - 1);
+                        }
                         scrollPosition.setLineByteShift(0);
                     }
 
+                    codeArea.getCaret().resetBlink();
                     codeArea.computePaintData();
                     codeArea.notifyScrolled();
                     codeArea.repaint();
@@ -135,7 +138,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             }
             case KeyEvent.VK_RIGHT: {
                 if ((keyEvent.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) > 0) {
-                    // Scroll page instead of cursor
+                    // Scroll position offset instead of cursor
                     CodeAreaFX.ScrollPosition scrollPosition = codeArea.getScrollPosition();
                     if (scrollPosition.getLineByteShift() > 0) {
                         scrollPosition.setLineByteShift(scrollPosition.getLineByteShift() - 1);
@@ -143,10 +146,11 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                         long dataSize = codeArea.getDataSize();
                         if (scrollPosition.getScrollLinePosition() < dataSize / codeArea.getBytesPerLine()) {
                             scrollPosition.setScrollLinePosition(scrollPosition.getScrollLinePosition() + 1);
-                            scrollPosition.setLineByteShift(codeArea.getBytesPerLine() - 1);
                         }
+                        scrollPosition.setLineByteShift(codeArea.getBytesPerLine() - 1);
                     }
 
+                    codeArea.getCaret().resetBlink();
                     codeArea.computePaintData();
                     codeArea.notifyScrolled();
                     codeArea.repaint();

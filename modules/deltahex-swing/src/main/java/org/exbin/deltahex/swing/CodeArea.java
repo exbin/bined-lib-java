@@ -71,7 +71,7 @@ import org.exbin.utils.binary_data.BinaryData;
  *
  * Also supports binary, octal and decimal codes.
  *
- * @version 0.1.1 2016/10/05
+ * @version 0.1.1 2016/10/10
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeArea extends JComponent {
@@ -1108,7 +1108,7 @@ public class CodeArea extends JComponent {
             notifyScrolled();
         }
     }
-    
+
     private void validateLineOffset() {
         if (paintDataCache.bytesPerLine > 0 && paintDataCache.bytesPerLine <= scrollPosition.lineByteShift) {
             scrollPosition.setLineByteShift(scrollPosition.lineByteShift % paintDataCache.bytesPerLine);
@@ -1744,6 +1744,11 @@ public class CodeArea extends JComponent {
         return commandHandler.canPaste();
     }
 
+    /**
+     * Resets position of cursor and scrollbars.
+     *
+     * Useful for opening new file.
+     */
     public void resetPosition() {
         getScrollPosition().reset();
         updateScrollBars();
