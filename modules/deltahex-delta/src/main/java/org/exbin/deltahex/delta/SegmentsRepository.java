@@ -132,22 +132,36 @@ public class SegmentsRepository {
         DefaultDoublyLinkedList<DataSegment> segments = document.getSegments();
         long position = 0;
         for (DataSegment segment : segments) {
-            Long savePosition = saveMap.get(segment);
-            if (savePosition != null) {
-                // Replace for file segment to after save position
-                FileSegment newSegment = createFileSegment(fileSource, savePosition, segment.getLength());
-                document.remove(position, segment.getLength());
-                document.insert(position, newSegment);
-                dropSegment(segment);
+            long segmentPosition = segment.getStartPosition();
+            long segmentLength = segment.getLength();
+            DataSegmentsMap segmentMap;
+            if (segment instanceof FileSegment) {
+                FileSegment fileSegment = (FileSegment) segment;
+                FileDataSource segmentSource = fileSegment.getSource();
+                segmentMap = fileSources.get(segmentSource);
             } else {
-                // Check for overlays, split if found
-                // TODO
-
-                if (segment instanceof FileSegment) {
-                    // Load data for segment which will not be available after save
-                    // TODO
-                }
+                MemorySegment memorySegment = (MemorySegment) segment;
+                MemoryDataSource segmentSource = memorySegment.getSource();
+                segmentMap = fileSources.get(segmentSource);
             }
+            
+//            segmentMap.focusSegment(segmentPosition, segmentLength);
+//            Long savePosition = saveMap.get(segment);
+//            if (savePosition != null) {
+//                // Replace segment for file segment pointing to after-save position
+//                FileSegment newSegment = createFileSegment(fileSource, savePosition, segment.getLength());
+//                document.remove(position, segment.getLength());
+//                document.insert(position, newSegment);
+//                dropSegment(segment);
+//            } else {
+//                // Check for overlays with saved segments, split segment if any found
+//                
+//
+//                if (segment instanceof FileSegment) {
+//                    // Load data for segment which will not be available after save
+//                    // TODO
+//                }
+//            }
             position += segment.getLength();
         }
     }
@@ -404,8 +418,8 @@ public class SegmentsRepository {
          * Aligns focus segment on last segment at given start position and
          * length or last segment before given position.
          *
-         * @param startPosition
-         * @param length
+         * @param startPosition start position
+         * @param length length
          */
         private void focusSegment(long startPosition, long length) {
             if (pointerRecord == null) {
