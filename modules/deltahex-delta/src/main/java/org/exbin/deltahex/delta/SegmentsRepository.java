@@ -31,7 +31,7 @@ import org.exbin.utils.binary_data.OutOfBoundsException;
 /**
  * Repository of delta segments.
  *
- * @version 0.1.1 2016/10/11
+ * @version 0.1.1 2016/10/12
  * @author ExBin Project (http://exbin.org)
  */
 public class SegmentsRepository {
@@ -144,7 +144,12 @@ public class SegmentsRepository {
                 MemoryDataSource segmentSource = memorySegment.getSource();
                 segmentMap = fileSources.get(segmentSource);
             }
-            
+
+            segmentMap.focusFirstOverlay(segmentPosition, segmentLength);
+            while (segmentLength > 0) {
+
+            }
+
 //            segmentMap.focusSegment(segmentPosition, segmentLength);
 //            Long savePosition = saveMap.get(segment);
 //            if (savePosition != null) {
@@ -447,6 +452,45 @@ public class SegmentsRepository {
                 SegmentRecord record = pointerRecord;
                 while (record.dataSegment.getStartPosition() > startPosition
                         || (record.dataSegment.getStartPosition() == startPosition && record.dataSegment.getLength() > length)) {
+                    pointerRecord = record;
+                    record = records.prevTo(record);
+                    if (record == null) {
+                        pointerRecord = null;
+                        break;
+                    }
+                }
+            }
+        }
+
+        /**
+         * Aligns focus segment on first segment which overlays given area.
+         *
+         * @param startPosition start position
+         * @param length length
+         */
+        private void focusFirstOverlay(long startPosition, long length) {
+            if (pointerRecord == null) {
+                pointerRecord = records.first();
+            }
+
+            if (pointerRecord == null) {
+                return;
+            }
+
+            if (pointerRecord.maxPosition < startPosition) {
+                // Forward direction traversal
+                SegmentRecord record = pointerRecord;
+                while (pointerRecord.maxPosition < startPosition) {
+                    pointerRecord = record;
+                    record = records.nextTo(pointerRecord);
+                    if (record == null) {
+                        break;
+                    }
+                }
+            } else {
+                // Backward direction traversal
+                SegmentRecord record = pointerRecord;
+                while (pointerRecord.maxPosition < startPosition) {
                     pointerRecord = record;
                     record = records.prevTo(record);
                     if (record == null) {
