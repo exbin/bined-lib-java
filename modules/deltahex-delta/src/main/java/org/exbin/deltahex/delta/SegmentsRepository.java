@@ -31,7 +31,7 @@ import org.exbin.utils.binary_data.OutOfBoundsException;
 /**
  * Repository of delta segments.
  *
- * @version 0.1.1 2016/10/12
+ * @version 0.1.1 2016/10/13
  * @author ExBin Project (http://exbin.org)
  */
 public class SegmentsRepository {
@@ -130,7 +130,7 @@ public class SegmentsRepository {
 
     private void applySaveMap(DeltaDocument document, Map<DataSegment, Long> saveMap, FileDataSource fileSource) {
         DefaultDoublyLinkedList<DataSegment> segments = document.getSegments();
-        long position = 0;
+        long processed = 0;
         for (DataSegment segment : segments) {
             long segmentPosition = segment.getStartPosition();
             long segmentLength = segment.getLength();
@@ -142,33 +142,53 @@ public class SegmentsRepository {
             } else {
                 MemorySegment memorySegment = (MemorySegment) segment;
                 MemoryDataSource segmentSource = memorySegment.getSource();
-                segmentMap = fileSources.get(segmentSource);
+                segmentMap = memorySources.get(segmentSource);
             }
 
+            // Split segment by saved file segments
             segmentMap.focusFirstOverlay(segmentPosition, segmentLength);
-            while (segmentLength > 0) {
-
+            SegmentRecord record = segmentMap.pointerRecord;
+            if (record != null) {
+                while (processed < segmentLength && record.dataSegment.getStartPosition() <= segmentPosition + segmentLength) {
+                    Long savePosition = saveMap.get(record.dataSegment);
+                    if (savePosition != null && record.dataSegment.getStartPosition() + record.dataSegment.getLength() >= segmentPosition + processed) {
+                        // Replace segment for file segment pointing to after-save position
+                        long replacedLength = record.dataSegment.getLength();
+                        long startPosition = record.dataSegment.getStartPosition();
+                        if (segmentPosition > startPosition) {
+                            replacedLength -= segmentPosition - startPosition;
+                            startPosition = segmentPosition;
+                        }
+                        if (replacedLength > segmentPosition + segmentLength - record.dataSegment.getStartPosition()) {
+                            replacedLength = segmentPosition + segmentLength - record.dataSegment.getStartPosition();
+                        }
+                            
+                        if (processed < startPosition) {
+                            loadFileSegmentsAsData(document, fileSource, processed, startPosition - processed);
+                        }
+                        
+                        FileSegment newSegment = createFileSegment(fileSource, savePosition + startPosition, replacedLength);
+                        document.remove(startPosition, replacedLength);
+                        document.insert(startPosition, newSegment);
+                    }
+                    
+                    record = segmentMap.records.nextTo(record);
+                    if (record == null) {
+                        break;
+                    }
+                }
             }
-
-//            segmentMap.focusSegment(segmentPosition, segmentLength);
-//            Long savePosition = saveMap.get(segment);
-//            if (savePosition != null) {
-//                // Replace segment for file segment pointing to after-save position
-//                FileSegment newSegment = createFileSegment(fileSource, savePosition, segment.getLength());
-//                document.remove(position, segment.getLength());
-//                document.insert(position, newSegment);
-//                dropSegment(segment);
-//            } else {
-//                // Check for overlays with saved segments, split segment if any found
-//                
-//
-//                if (segment instanceof FileSegment) {
-//                    // Load data for segment which will not be available after save
-//                    // TODO
-//                }
-//            }
-            position += segment.getLength();
         }
+        if (processed < document.getDataSize()) {
+            loadFileSegmentsAsData(document, fileSource, processed, document.getDataSize() - processed);
+        }
+    }
+    
+    /**
+     * Loads data for segments which will not be available after save.
+     */
+    private void loadFileSegmentsAsData(DeltaDocument document, FileDataSource fileSource, long startPosition, long length) {
+        document.getSegment(startPosition);
     }
 
     /**
