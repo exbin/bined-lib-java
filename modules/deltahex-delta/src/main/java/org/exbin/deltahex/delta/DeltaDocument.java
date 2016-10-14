@@ -43,7 +43,7 @@ public class DeltaDocument implements EditableBinaryData {
         this.repository = repository;
         this.fileSource = fileSource;
         dataLength = fileSource.getFileLength();
-        DataSegment fullFileSegment = new FileSegment(fileSource, 0, dataLength);
+        DataSegment fullFileSegment = repository.createFileSegment(fileSource, 0, dataLength);
         segments.add(fullFileSegment);
         pointerPosition = 0;
         pointerSegment = fullFileSegment;
