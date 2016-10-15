@@ -23,7 +23,7 @@ import java.util.ListIterator;
 /**
  * Default implementation of doubly linked list of items.
  *
- * @version 0.1.1 2016/10/03
+ * @version 0.1.1 2016/10/15
  * @author ExBin Project (http://exbin.org)
  * @param <T> doubly linked list item
  */
@@ -208,6 +208,14 @@ public class DefaultDoublyLinkedList<T extends DoublyLinkedItem> implements Doub
             element.setPrev(last);
             element.setNext(null);
             last = element;
+        } else if (index == 0) {
+            if (first == null) {
+                last = element;
+            } else {
+                first.setPrev(element);
+            }
+            element.setNext(first);
+            first = element;
         } else {
             T item = get(index);
             T prevItem = (T) item.getPrev();

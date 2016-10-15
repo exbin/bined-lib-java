@@ -89,11 +89,10 @@ public class OverwriteCodeEditDataOperation extends CodeEditDataOperation {
                     undoData = (EditableBinaryData) data.copy(editedDataPosition, 1);
                     byteValue = undoData.getByte(0);
                 } else {
-                    byteValue = data.getByte(editedDataPosition);
-                    undoData.insert(undoData.getDataSize(), new byte[]{byteValue});
+                    undoData.insert(undoData.getDataSize(), data, editedDataPosition, 1);
                 }
             } else {
-                data.insert(editedDataPosition, 1);
+                throw new IllegalStateException("Cannot overwrite outside of the document");
             }
 
             length++;
