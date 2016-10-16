@@ -31,7 +31,7 @@ import org.exbin.utils.binary_data.OutOfBoundsException;
 /**
  * Repository of delta segments.
  *
- * @version 0.1.1 2016/10/13
+ * @version 0.1.1 2016/10/16
  * @author ExBin Project (http://exbin.org)
  */
 public class SegmentsRepository {
@@ -162,16 +162,16 @@ public class SegmentsRepository {
                         if (replacedLength > segmentPosition + segmentLength - record.dataSegment.getStartPosition()) {
                             replacedLength = segmentPosition + segmentLength - record.dataSegment.getStartPosition();
                         }
-                            
+
                         if (processed < startPosition) {
                             loadFileSegmentsAsData(document, fileSource, processed, startPosition - processed);
                         }
-                        
+
                         FileSegment newSegment = createFileSegment(fileSource, savePosition + startPosition, replacedLength);
                         document.remove(startPosition, replacedLength);
                         document.insert(startPosition, newSegment);
                     }
-                    
+
                     record = segmentMap.records.nextTo(record);
                     if (record == null) {
                         break;
@@ -183,7 +183,7 @@ public class SegmentsRepository {
             loadFileSegmentsAsData(document, fileSource, processed, document.getDataSize() - processed);
         }
     }
-    
+
     /**
      * Loads data for segments which will not be available after save.
      */
@@ -291,10 +291,22 @@ public class SegmentsRepository {
         memorySegment.setLength(memorySegment.getLength() + insertedData.getDataSize());
     }
 
+    public void insertMemoryData(MemorySegment memorySegment, long position, BinaryData insertedData, long insertedDataOffset, long insertedDataLength) {
+        detachMemoryArea(memorySegment, position, insertedData.getDataSize());
+        memorySegment.getSource().insert(position, insertedData, insertedDataOffset, insertedDataLength);
+        memorySegment.setLength(memorySegment.getLength() + insertedDataLength);
+    }
+
     public void insertMemoryData(MemorySegment memorySegment, long position, byte[] insertedData) {
         detachMemoryArea(memorySegment, position, insertedData.length);
         memorySegment.getSource().insert(position, insertedData);
         memorySegment.setLength(memorySegment.getLength() + insertedData.length);
+    }
+
+    public void insertMemoryData(MemorySegment memorySegment, long position, byte[] insertedData, int insertedDataOffset, int insertedDataLength) {
+        detachMemoryArea(memorySegment, position, insertedData.length);
+        memorySegment.getSource().insert(position, insertedData, insertedDataOffset, insertedDataLength);
+        memorySegment.setLength(memorySegment.getLength() + insertedDataLength);
     }
 
     public void insertMemoryData(MemorySegment memorySegment, long position, long length) {
@@ -343,6 +355,24 @@ public class SegmentsRepository {
         } else {
             FileSegment fileSegment = (FileSegment) segment;
             return createFileSegment(fileSegment.getSource(), fileSegment.getStartPosition(), fileSegment.getLength());
+        }
+    }
+
+    /**
+     * Creates copy of segment.
+     *
+     * @param segment original segment
+     * @param offset segment area offset
+     * @param length segment area length
+     * @return copy of segment
+     */
+    public DataSegment copySegment(DataSegment segment, long offset, long length) {
+        if (segment instanceof MemorySegment) {
+            MemorySegment memorySegment = (MemorySegment) segment;
+            return createMemorySegment(memorySegment.getSource(), memorySegment.getStartPosition() + offset, length);
+        } else {
+            FileSegment fileSegment = (FileSegment) segment;
+            return createFileSegment(fileSegment.getSource(), fileSegment.getStartPosition() + offset, length);
         }
     }
 
