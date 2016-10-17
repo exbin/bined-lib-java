@@ -26,7 +26,7 @@ import org.exbin.utils.binary_data.OutOfBoundsException;
 /**
  * Delta document defined as sequence of segments.
  *
- * @version 0.1.1 2016/10/16
+ * @version 0.1.1 2016/10/17
  * @author ExBin Project (http://exbin.org)
  */
 public class DeltaDocument implements EditableBinaryData {
@@ -286,17 +286,20 @@ public class DeltaDocument implements EditableBinaryData {
             // Copy all segments from inserted document
             DeltaDocument document = (DeltaDocument) insertedData;
 
+            long position = insertedDataOffset;
             long length = insertedDataLength;
-            DataSegment segment = document.getSegmentPart(insertedDataOffset);
-            // TODO cut and detach segment
-            DataSegment copy = repository.copySegment(segment);
-            DataSegment first = copy;
-            segments.addBefore(pointerSegment, copy);
+            DataSegment segment = document.getPartCopy(position, length);
+            position += segment.getLength();
+            length -= segment.getLength();
+            DataSegment first = segment;
+            segments.addBefore(pointerSegment, segment);
             DataSegment next = segment.getNext();
-            while (next != null) {
-                DataSegment nextCopy = repository.copySegment(next);
-                segments.addAfter(copy, nextCopy);
-                copy = nextCopy;
+            while (length > 0) {
+                DataSegment nextSegment = document.getPartCopy(position, length);
+                position += nextSegment.getLength();
+                length -= nextSegment.getLength();
+                segments.addAfter(segment, nextSegment);
+                segment = nextSegment;
                 next = next.getNext();
             }
             pointerSegment = first;
@@ -531,18 +534,23 @@ public class DeltaDocument implements EditableBinaryData {
 
     /**
      * Returns segment starting from given position or copy of part of the
-     * segment starting from given position.
+     * segment starting from given position up to the end of length.
      *
      * @param position position
-     * @return segment
+     * @return data segment
      */
-    public DataSegment getSegmentPart(long position) {
+    public DataSegment getPartCopy(long position, long length) {
         focusSegment(position);
-        if (pointerPosition < position) {
-            long offset = position - pointerPosition;
-            return repository.copySegment(pointerSegment, offset, pointerSegment.getLength() - offset);
+        if (pointerSegment == null) {
+            return null;
         }
-        return pointerSegment;
+
+        long offset = position - pointerPosition;
+        long partLength = length;
+        if (pointerSegment.getLength() - offset < partLength) {
+            partLength = pointerSegment.getLength() - offset;
+        }
+        return repository.copySegment(pointerSegment, offset, partLength);
     }
 
     private void focusSegment(long position) {
