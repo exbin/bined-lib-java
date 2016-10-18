@@ -26,7 +26,7 @@ import org.exbin.utils.binary_data.OutOfBoundsException;
 /**
  * Delta document defined as sequence of segments.
  *
- * @version 0.1.1 2016/10/17
+ * @version 0.1.1 2016/10/18
  * @author ExBin Project (http://exbin.org)
  */
 public class DeltaDocument implements EditableBinaryData {
@@ -508,7 +508,7 @@ public class DeltaDocument implements EditableBinaryData {
             throw new IllegalStateException("Split position is out of current segment");
         }
 
-        if (pointerPosition == position) {
+        if (pointerPosition == position || pointerSegment.getStartPosition() + pointerSegment.getLength() == position) {
             // No action needed
             return;
         }
