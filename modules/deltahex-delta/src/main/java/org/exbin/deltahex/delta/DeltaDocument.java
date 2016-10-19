@@ -26,7 +26,7 @@ import org.exbin.utils.binary_data.OutOfBoundsException;
 /**
  * Delta document defined as sequence of segments.
  *
- * @version 0.1.1 2016/10/18
+ * @version 0.1.1 2016/10/19
  * @author ExBin Project (http://exbin.org)
  */
 public class DeltaDocument implements EditableBinaryData {
@@ -36,8 +36,7 @@ public class DeltaDocument implements EditableBinaryData {
     private final DefaultDoublyLinkedList<DataSegment> segments = new DefaultDoublyLinkedList<>();
 
     private long dataLength = 0;
-    private long pointerPosition;
-    private DataSegment pointerSegment;
+    private final DataPointer pointer = new DataPointer();
 
     public DeltaDocument(SegmentsRepository repository, FileDataSource fileSource) throws IOException {
         this.repository = repository;
@@ -45,15 +44,13 @@ public class DeltaDocument implements EditableBinaryData {
         dataLength = fileSource.getFileLength();
         DataSegment fullFileSegment = repository.createFileSegment(fileSource, 0, dataLength);
         segments.add(fullFileSegment);
-        pointerPosition = 0;
-        pointerSegment = fullFileSegment;
+        pointer.setPointer(0, fullFileSegment);
     }
 
     public DeltaDocument(SegmentsRepository repository) {
         this.repository = repository;
         dataLength = 0;
-        pointerPosition = 0;
-        pointerSegment = null;
+        pointer.setPointer(0, null);
     }
 
     // Temporary method for accessing data pages
@@ -75,10 +72,10 @@ public class DeltaDocument implements EditableBinaryData {
     public byte getByte(long position) {
         focusSegment(position);
 
-        if (pointerSegment instanceof FileSegment) {
-            return ((FileSegment) pointerSegment).getByte(((FileSegment) pointerSegment).getStartPosition() + (position - pointerPosition));
+        if (pointer.segment instanceof FileSegment) {
+            return ((FileSegment) pointer.segment).getByte(((FileSegment) pointer.segment).getStartPosition() + (position - pointer.position));
         } else {
-            return ((MemorySegment) pointerSegment).getByte(position - pointerPosition);
+            return ((MemorySegment) pointer.segment).getByte(position - pointer.position);
         }
     }
 
@@ -86,22 +83,22 @@ public class DeltaDocument implements EditableBinaryData {
     public void setByte(long position, byte value) {
         focusSegment(position);
 
-        if (pointerSegment instanceof FileSegment) {
-            if (pointerPosition != position) {
+        if (pointer.segment instanceof FileSegment) {
+            if (pointer.position != position) {
                 splitSegment(position);
                 focusSegment(position);
             }
 
-            DataSegment prev = segments.prevTo(pointerSegment);
+            DataSegment prev = segments.prevTo(pointer.segment);
             if (prev instanceof MemorySegment) {
                 repository.setMemoryByte((MemorySegment) prev, prev.getLength(), value);
             } else {
                 MemorySegment segment = repository.createMemorySegment(repository.openMemorySource(), 0, 0);
                 repository.setMemoryByte(segment, 0, value);
-                segments.addBefore(pointerSegment, segment);
+                segments.addBefore(pointer.segment, segment);
             }
-            pointerPosition++;
-            FileSegment documentSegment = ((FileSegment) pointerSegment);
+            pointer.position++;
+            FileSegment documentSegment = ((FileSegment) pointer.segment);
             documentSegment.setStartPosition(documentSegment.getStartPosition() + 1);
             if (documentSegment.getLength() == 1) {
                 segments.remove(documentSegment);
@@ -110,11 +107,11 @@ public class DeltaDocument implements EditableBinaryData {
                 documentSegment.setLength(documentSegment.getLength() - 1);
             }
         } else {
-            if (pointerSegment == null) {
-                pointerSegment = repository.createMemorySegment(repository.openMemorySource(), 0, 0);
-                segments.add(pointerSegment);
+            if (pointer.segment == null) {
+                pointer.segment = repository.createMemorySegment(repository.openMemorySource(), 0, 0);
+                segments.add(pointer.segment);
             }
-            repository.setMemoryByte((MemorySegment) pointerSegment, position - pointerPosition, value);
+            repository.setMemoryByte((MemorySegment) pointer.segment, position - pointer.position, value);
         }
 
         if (position >= dataLength) {
@@ -130,21 +127,21 @@ public class DeltaDocument implements EditableBinaryData {
 
         focusSegment(startFrom);
         dataLength += length;
-        if (pointerSegment instanceof MemorySegment) {
-            repository.insertUninitializedMemoryData((MemorySegment) pointerSegment, startFrom - pointerPosition, length);
+        if (pointer.segment instanceof MemorySegment) {
+            repository.insertUninitializedMemoryData((MemorySegment) pointer.segment, startFrom - pointer.position, length);
         } else {
-            if (startFrom > pointerPosition) {
+            if (startFrom > pointer.position) {
                 splitSegment(startFrom);
                 focusSegment(startFrom);
             }
             MemorySegment insertedSegment = repository.createMemorySegment();
             repository.insertUninitializedMemoryData((MemorySegment) insertedSegment, 0, length);
-            if (pointerSegment == null) {
+            if (pointer.segment == null) {
                 segments.add(0, insertedSegment);
             } else {
-                segments.addBefore(pointerSegment, insertedSegment);
+                segments.addBefore(pointer.segment, insertedSegment);
             }
-            pointerSegment = insertedSegment;
+            pointer.segment = insertedSegment;
         }
     }
 
@@ -156,21 +153,21 @@ public class DeltaDocument implements EditableBinaryData {
 
         focusSegment(startFrom);
         dataLength += length;
-        if (pointerSegment instanceof MemorySegment) {
-            repository.insertMemoryData((MemorySegment) pointerSegment, startFrom - pointerPosition, length);
+        if (pointer.segment instanceof MemorySegment) {
+            repository.insertMemoryData((MemorySegment) pointer.segment, startFrom - pointer.position, length);
         } else {
-            if (startFrom > pointerPosition) {
+            if (startFrom > pointer.position) {
                 splitSegment(startFrom);
                 focusSegment(startFrom);
             }
             MemorySegment insertedSegment = repository.createMemorySegment();
             repository.insertMemoryData((MemorySegment) insertedSegment, 0, length);
-            if (pointerSegment == null) {
+            if (pointer.segment == null) {
                 segments.add(0, insertedSegment);
             } else {
-                segments.addBefore(pointerSegment, insertedSegment);
+                segments.addBefore(pointer.segment, insertedSegment);
             }
-            pointerSegment = insertedSegment;
+            pointer.segment = insertedSegment;
         }
     }
 
@@ -182,21 +179,21 @@ public class DeltaDocument implements EditableBinaryData {
 
         focusSegment(startFrom);
         dataLength += insertedData.length;
-        if (pointerSegment instanceof MemorySegment) {
-            repository.insertMemoryData((MemorySegment) pointerSegment, startFrom - pointerPosition, insertedData);
+        if (pointer.segment instanceof MemorySegment) {
+            repository.insertMemoryData((MemorySegment) pointer.segment, startFrom - pointer.position, insertedData);
         } else {
-            if (startFrom > pointerPosition) {
+            if (startFrom > pointer.position) {
                 splitSegment(startFrom);
                 focusSegment(startFrom);
             }
             MemorySegment insertedSegment = repository.createMemorySegment();
             repository.insertMemoryData((MemorySegment) insertedSegment, 0, insertedData);
-            if (pointerSegment == null) {
+            if (pointer.segment == null) {
                 segments.add(0, insertedSegment);
             } else {
-                segments.addBefore(pointerSegment, insertedSegment);
+                segments.addBefore(pointer.segment, insertedSegment);
             }
-            pointerSegment = insertedSegment;
+            pointer.segment = insertedSegment;
         }
     }
 
@@ -204,21 +201,21 @@ public class DeltaDocument implements EditableBinaryData {
     public void insert(long startFrom, byte[] insertedData, int insertedDataOffset, int insertedDataLength) {
         focusSegment(startFrom);
         dataLength += insertedDataLength;
-        if (pointerSegment instanceof MemorySegment) {
-            repository.insertMemoryData((MemorySegment) pointerSegment, startFrom - pointerPosition, insertedData);
+        if (pointer.segment instanceof MemorySegment) {
+            repository.insertMemoryData((MemorySegment) pointer.segment, startFrom - pointer.position, insertedData);
         } else {
-            if (startFrom > pointerPosition) {
+            if (startFrom > pointer.position) {
                 splitSegment(startFrom);
                 focusSegment(startFrom);
             }
             MemorySegment insertedSegment = repository.createMemorySegment();
             repository.insertMemoryData((MemorySegment) insertedSegment, 0, insertedData);
-            if (pointerSegment == null) {
+            if (pointer.segment == null) {
                 segments.add(0, insertedSegment);
             } else {
-                segments.addBefore(pointerSegment, insertedSegment);
+                segments.addBefore(pointer.segment, insertedSegment);
             }
-            pointerSegment = insertedSegment;
+            pointer.segment = insertedSegment;
         }
     }
 
@@ -231,7 +228,7 @@ public class DeltaDocument implements EditableBinaryData {
         focusSegment(startFrom);
         dataLength += insertedData.getDataSize();
         if (insertedData instanceof DeltaDocument) {
-            if (pointerPosition < startFrom) {
+            if (pointer.position < startFrom) {
                 splitSegment(startFrom);
                 focusSegment(startFrom);
             }
@@ -241,7 +238,7 @@ public class DeltaDocument implements EditableBinaryData {
             DataSegment segment = document.segments.first();
             DataSegment copy = repository.copySegment(segment);
             DataSegment first = copy;
-            segments.addBefore(pointerSegment, copy);
+            segments.addBefore(pointer.segment, copy);
             DataSegment next = segment.getNext();
             while (next != null) {
                 DataSegment nextCopy = repository.copySegment(next);
@@ -249,23 +246,23 @@ public class DeltaDocument implements EditableBinaryData {
                 copy = nextCopy;
                 next = next.getNext();
             }
-            pointerSegment = first;
+            pointer.segment = first;
             tryMergeArea(startFrom, insertedData.getDataSize());
-        } else if (pointerSegment instanceof MemorySegment) {
-            repository.insertMemoryData((MemorySegment) pointerSegment, startFrom - pointerPosition, insertedData);
+        } else if (pointer.segment instanceof MemorySegment) {
+            repository.insertMemoryData((MemorySegment) pointer.segment, startFrom - pointer.position, insertedData);
         } else {
-            if (pointerPosition < startFrom) {
+            if (pointer.position < startFrom) {
                 splitSegment(startFrom);
                 focusSegment(startFrom);
             }
             MemorySegment insertedSegment = repository.createMemorySegment();
             repository.insertMemoryData((MemorySegment) insertedSegment, 0, insertedData);
-            if (pointerSegment == null) {
+            if (pointer.segment == null) {
                 segments.add(0, insertedSegment);
             } else {
-                segments.addBefore(pointerSegment, insertedSegment);
+                segments.addBefore(pointer.segment, insertedSegment);
             }
-            pointerSegment = insertedSegment;
+            pointer.segment = insertedSegment;
         }
     }
 
@@ -278,7 +275,7 @@ public class DeltaDocument implements EditableBinaryData {
         focusSegment(startFrom);
         dataLength += insertedDataLength;
         if (insertedData instanceof DeltaDocument) {
-            if (pointerPosition < startFrom) {
+            if (pointer.position < startFrom) {
                 splitSegment(startFrom);
                 focusSegment(startFrom);
             }
@@ -292,7 +289,11 @@ public class DeltaDocument implements EditableBinaryData {
             position += segment.getLength();
             length -= segment.getLength();
             DataSegment first = segment;
-            segments.addBefore(pointerSegment, segment);
+            if (pointer.segment == null) {
+                segments.add(segment);
+            } else {
+                segments.addBefore(pointer.segment, segment);
+            }
             DataSegment next = segment.getNext();
             while (length > 0) {
                 DataSegment nextSegment = document.getPartCopy(position, length);
@@ -302,36 +303,36 @@ public class DeltaDocument implements EditableBinaryData {
                 segment = nextSegment;
                 next = next.getNext();
             }
-            pointerSegment = first;
+            pointer.segment = first;
             tryMergeArea(startFrom, insertedData.getDataSize());
-        } else if (pointerSegment instanceof MemorySegment) {
-            repository.insertMemoryData((MemorySegment) pointerSegment, startFrom - pointerPosition, insertedData, insertedDataOffset, insertedDataLength);
+        } else if (pointer.segment instanceof MemorySegment) {
+            repository.insertMemoryData((MemorySegment) pointer.segment, startFrom - pointer.position, insertedData, insertedDataOffset, insertedDataLength);
         } else {
-            if (pointerPosition < startFrom) {
+            if (pointer.position < startFrom) {
                 splitSegment(startFrom);
                 focusSegment(startFrom);
             }
             MemorySegment insertedSegment = repository.createMemorySegment();
             repository.insertMemoryData((MemorySegment) insertedSegment, 0, insertedData, insertedDataOffset, insertedDataLength);
-            if (pointerSegment == null) {
+            if (pointer.segment == null) {
                 segments.add(0, insertedSegment);
             } else {
-                segments.addBefore(pointerSegment, insertedSegment);
+                segments.addBefore(pointer.segment, insertedSegment);
             }
-            pointerSegment = insertedSegment;
+            pointer.segment = insertedSegment;
         }
     }
 
     public void insert(long startFrom, DataSegment segment) {
         focusSegment(startFrom);
-        if (pointerPosition < startFrom) {
+        if (pointer.position < startFrom) {
             splitSegment(startFrom);
             focusSegment(startFrom);
         }
-        if (pointerSegment == null) {
+        if (pointer.segment == null) {
             segments.add(0, segment);
         } else {
-            segments.addAfter(pointerSegment, segment);
+            segments.addAfter(pointer.segment, segment);
         }
     }
 
@@ -380,29 +381,29 @@ public class DeltaDocument implements EditableBinaryData {
             focusSegment(startFrom);
 
             // Save position to return to
-            DataSegment prevSegment = (DataSegment) pointerSegment.getPrev();
-            long prevPointerPosition = prevSegment == null ? 0 : pointerPosition - prevSegment.getLength();
+            DataSegment prevSegment = (DataSegment) pointer.segment.getPrev();
+            long prevPointerPosition = prevSegment == null ? 0 : pointer.position - prevSegment.getLength();
 
             // Drop all segments in given range
             while (length > 0) {
-                length -= pointerSegment.getLength();
-                DataSegment next = segments.nextTo(pointerSegment);
-                repository.dropSegment(pointerSegment);
-                segments.remove(pointerSegment);
-                pointerSegment = next;
+                length -= pointer.segment.getLength();
+                DataSegment next = segments.nextTo(pointer.segment);
+                repository.dropSegment(pointer.segment);
+                segments.remove(pointer.segment);
+                pointer.segment = next;
             }
 
             // Set pointer position
-            pointerSegment = prevSegment;
-            pointerPosition = prevPointerPosition;
+            pointer.segment = prevSegment;
+            pointer.position = prevPointerPosition;
             tryMergeSegments(startFrom);
         }
     }
 
     @Override
     public void clear() {
-        pointerPosition = 0;
-        pointerSegment = null;
+        pointer.position = 0;
+        pointer.segment = null;
         dataLength = 0;
         for (DataSegment segment : segments) {
             repository.dropSegment(segment);
@@ -445,8 +446,8 @@ public class DeltaDocument implements EditableBinaryData {
         copy.dataLength = length;
         focusSegment(startFrom);
 
-        DataSegment segment = pointerSegment;
-        long offset = startFrom - pointerPosition;
+        DataSegment segment = pointer.segment;
+        long offset = startFrom - pointer.position;
         while (length > 0) {
             long segmentLength = segment.getLength();
             long copyLength = segmentLength - offset;
@@ -455,12 +456,12 @@ public class DeltaDocument implements EditableBinaryData {
             }
 
             if (offset == 0 && copyLength == segmentLength) {
-                copy.segments.add(repository.copySegment(pointerSegment));
-            } else if (pointerSegment instanceof MemorySegment) {
-                MemorySegment memorySegment = (MemorySegment) pointerSegment;
+                copy.segments.add(repository.copySegment(pointer.segment));
+            } else if (pointer.segment instanceof MemorySegment) {
+                MemorySegment memorySegment = (MemorySegment) pointer.segment;
                 copy.segments.add(repository.createMemorySegment(memorySegment.getSource(), memorySegment.getStartPosition() + offset, copyLength));
             } else {
-                FileSegment fileSegment = (FileSegment) pointerSegment;
+                FileSegment fileSegment = (FileSegment) pointer.segment;
                 copy.segments.add(repository.createFileSegment(fileSegment.getSource(), fileSegment.getStartPosition() + offset, copyLength));
             }
             length -= copyLength;
@@ -504,32 +505,32 @@ public class DeltaDocument implements EditableBinaryData {
      * @param position split position
      */
     public void splitSegment(long position) {
-        if (position < pointerPosition || position > pointerPosition + pointerSegment.getLength()) {
+        if (position < pointer.position || position > pointer.position + pointer.segment.getLength()) {
             throw new IllegalStateException("Split position is out of current segment");
         }
 
-        if (pointerPosition == position || pointerSegment.getStartPosition() + pointerSegment.getLength() == position) {
+        if (pointer.position == position || pointer.segment.getStartPosition() + pointer.segment.getLength() == position) {
             // No action needed
             return;
         }
 
-        long firstPartSize = position - pointerPosition;
-        if (pointerSegment instanceof MemorySegment) {
-            MemorySegment memorySegment = (MemorySegment) pointerSegment;
+        long firstPartSize = position - pointer.position;
+        if (pointer.segment instanceof MemorySegment) {
+            MemorySegment memorySegment = (MemorySegment) pointer.segment;
             MemorySegment newSegment = repository.createMemorySegment(memorySegment.getSource(), memorySegment.getStartPosition() + firstPartSize, memorySegment.getLength() - firstPartSize);
             memorySegment.setLength(firstPartSize);
-            segments.addAfter(pointerSegment, newSegment);
+            segments.addAfter(pointer.segment, newSegment);
         } else {
-            FileSegment fileSegment = (FileSegment) pointerSegment;
+            FileSegment fileSegment = (FileSegment) pointer.segment;
             FileSegment newSegment = repository.createFileSegment(fileSegment.getSource(), fileSegment.getStartPosition() + firstPartSize, fileSegment.getLength() - firstPartSize);
             fileSegment.setLength(firstPartSize);
-            segments.addAfter(pointerSegment, newSegment);
+            segments.addAfter(pointer.segment, newSegment);
         }
     }
 
     public DataSegment getSegment(long position) {
         focusSegment(position);
-        return pointerSegment;
+        return pointer.segment;
     }
 
     /**
@@ -541,42 +542,65 @@ public class DeltaDocument implements EditableBinaryData {
      */
     public DataSegment getPartCopy(long position, long length) {
         focusSegment(position);
-        if (pointerSegment == null) {
+        if (pointer.segment == null) {
             return null;
         }
 
-        long offset = position - pointerPosition;
+        long offset = position - pointer.position;
         long partLength = length;
-        if (pointerSegment.getLength() - offset < partLength) {
-            partLength = pointerSegment.getLength() - offset;
+        if (pointer.segment.getLength() - offset < partLength) {
+            partLength = pointer.segment.getLength() - offset;
         }
-        return repository.copySegment(pointerSegment, offset, partLength);
+        return repository.copySegment(pointer.segment, offset, partLength);
     }
 
+    /**
+     * Focuses segment starting at or before given position and ending after it.
+     *
+     * Returns null if position is at the end of the document and throws out of
+     * bounds exception otherwise.
+     *
+     * @param position requested position
+     * @throws OutOfBoundsException if position is before or after document
+     */
     private void focusSegment(long position) {
         if (position == 0) {
-            pointerPosition = 0;
-            pointerSegment = segments.first();
+            pointer.position = 0;
+            pointer.segment = segments.first();
             return;
+        } else if (position == dataLength) {
+            pointer.position = dataLength;
+            pointer.segment = null;
+            return;
+        } else if (position < 0 || position > dataLength) {
+            throw new OutOfBoundsException("Position index out of range");
         }
 
-        if (position < pointerPosition) {
-            while (position < pointerPosition) {
-                pointerSegment = (DataSegment) segments.prevTo(pointerSegment);
-                if (pointerSegment == null) {
-                    throw new OutOfBoundsException("Unable to access previous segment");
+        if (position < pointer.position) {
+            if (pointer.segment == null && position == dataLength) {
+                pointer.segment = segments.last();
+                if (pointer.segment == null) {
+                    throw new IllegalStateException("Unexpected null segment");
                 }
-                pointerPosition -= pointerSegment.getLength();
+                pointer.position -= pointer.segment.getLength();
+            }
+
+            while (position < pointer.position) {
+                pointer.segment = (DataSegment) segments.prevTo(pointer.segment);
+                if (pointer.segment == null) {
+                    throw new IllegalStateException("Unexpected null segment");
+                }
+                pointer.position -= pointer.segment.getLength();
             }
         } else {
-            while (position >= pointerPosition + pointerSegment.getLength()) {
-                if ((pointerSegment.getNext() == null) && (position == pointerPosition + pointerSegment.getLength())) {
+            while (position >= pointer.position + pointer.segment.getLength()) {
+                if ((pointer.segment.getNext() == null) && (position == pointer.position + pointer.segment.getLength())) {
                     break;
                 }
-                pointerPosition += pointerSegment.getLength();
-                pointerSegment = (DataSegment) segments.nextTo(pointerSegment);
-                if (pointerSegment == null) {
-                    throw new OutOfBoundsException("Unable to access next segment");
+                pointer.position += pointer.segment.getLength();
+                pointer.segment = (DataSegment) segments.nextTo(pointer.segment);
+                if (pointer.segment == null) {
+                    throw new IllegalStateException("Unexpected null segment");
                 }
             }
         }
@@ -599,9 +623,9 @@ public class DeltaDocument implements EditableBinaryData {
         }
 
         focusSegment(position);
-        DataSegment nextSegment = pointerSegment;
+        DataSegment nextSegment = pointer.segment;
         focusSegment(position - 1);
-        DataSegment segment = pointerSegment;
+        DataSegment segment = pointer.segment;
         if (segment == nextSegment) {
             return false;
         }
@@ -638,5 +662,19 @@ public class DeltaDocument implements EditableBinaryData {
 
     public void setFileSource(FileDataSource fileSource) {
         this.fileSource = fileSource;
+    }
+
+    /**
+     * POJO structure for sliding data pointer.
+     */
+    private static class DataPointer {
+
+        long position;
+        DataSegment segment;
+
+        void setPointer(long position, DataSegment segment) {
+            this.position = position;
+            this.segment = segment;
+        }
     }
 }
