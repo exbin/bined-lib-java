@@ -15,8 +15,6 @@
  */
 package org.exbin.deltahex.delta;
 
-import java.io.InputStream;
-import java.io.OutputStream;
 import org.exbin.deltahex.delta.list.DefaultDoublyLinkedList;
 import org.exbin.utils.binary_data.BinaryData;
 import org.exbin.utils.binary_data.OutOfBoundsException;
@@ -87,8 +85,8 @@ public class DeltaDocumentWindow {
             repository.setMemoryByte((MemorySegment) pointer.segment, position - pointer.position, value);
         }
 
-        if (position >= dataLength) {
-            dataLength = position + 1;
+        if (position >= getDataSize()) {
+            document.setDataLength(position + 1);
         }
     }
 
@@ -101,7 +99,7 @@ public class DeltaDocumentWindow {
         SegmentsRepository repository = document.getRepository();
 
         focusSegment(startFrom);
-        dataLength += length;
+        document.setDataLength(document.getDataSize() + length);
         if (pointer.segment instanceof MemorySegment) {
             repository.insertUninitializedMemoryData((MemorySegment) pointer.segment, startFrom - pointer.position, length);
         } else {
@@ -121,12 +119,14 @@ public class DeltaDocumentWindow {
     }
 
     public void insert(long startFrom, long length) {
+        DefaultDoublyLinkedList<DataSegment> segments = document.getSegments();
+        SegmentsRepository repository = document.getRepository();
         if (length == 0) {
             return;
         }
 
         focusSegment(startFrom);
-        dataLength += length;
+        document.setDataLength(document.getDataSize() + length);
         if (pointer.segment instanceof MemorySegment) {
             repository.insertMemoryData((MemorySegment) pointer.segment, startFrom - pointer.position, length);
         } else {
@@ -146,12 +146,14 @@ public class DeltaDocumentWindow {
     }
 
     public void insert(long startFrom, byte[] insertedData) {
+        DefaultDoublyLinkedList<DataSegment> segments = document.getSegments();
+        SegmentsRepository repository = document.getRepository();
         if (insertedData.length == 0) {
             return;
         }
 
         focusSegment(startFrom);
-        dataLength += insertedData.length;
+        document.setDataLength(document.getDataSize() + insertedData.length);
         if (pointer.segment instanceof MemorySegment) {
             repository.insertMemoryData((MemorySegment) pointer.segment, startFrom - pointer.position, insertedData);
         } else {
@@ -171,8 +173,11 @@ public class DeltaDocumentWindow {
     }
 
     public void insert(long startFrom, byte[] insertedData, int insertedDataOffset, int insertedDataLength) {
+        DefaultDoublyLinkedList<DataSegment> segments = document.getSegments();
+        SegmentsRepository repository = document.getRepository();
+
         focusSegment(startFrom);
-        dataLength += insertedDataLength;
+        document.setDataLength(document.getDataSize() + insertedDataLength);
         if (pointer.segment instanceof MemorySegment) {
             repository.insertMemoryData((MemorySegment) pointer.segment, startFrom - pointer.position, insertedData);
         } else {
@@ -196,17 +201,20 @@ public class DeltaDocumentWindow {
             return;
         }
 
+        DefaultDoublyLinkedList<DataSegment> segments = document.getSegments();
+        SegmentsRepository repository = document.getRepository();
+
         focusSegment(startFrom);
-        dataLength += insertedData.getDataSize();
-        if (insertedData instanceof DeltaDocumentWindow) {
+        document.setDataLength(document.getDataSize() + insertedData.getDataSize());
+        if (insertedData instanceof DeltaDocument) {
             if (pointer.position < startFrom) {
                 splitSegment(startFrom);
                 focusSegment(startFrom);
             }
 
             // Copy all segments from inserted document
-            DeltaDocumentWindow document = (DeltaDocumentWindow) insertedData;
-            DataSegment segment = document.segments.first();
+            DeltaDocument insertedDocument = (DeltaDocument) insertedData;
+            DataSegment segment = insertedDocument.getSegments().first();
             DataSegment copy = repository.copySegment(segment);
             DataSegment first = copy;
             segments.addBefore(pointer.segment, copy);
@@ -237,26 +245,27 @@ public class DeltaDocumentWindow {
         }
     }
 
-    @Override
     public void insert(long startFrom, BinaryData insertedData, long insertedDataOffset, long insertedDataLength) {
         if (insertedDataLength == 0) {
             return;
         }
 
+        DefaultDoublyLinkedList<DataSegment> segments = document.getSegments();
+        SegmentsRepository repository = document.getRepository();
         focusSegment(startFrom);
-        dataLength += insertedDataLength;
-        if (insertedData instanceof DeltaDocumentWindow) {
+        document.setDataLength(document.getDataSize() + insertedDataLength);
+        if (insertedData instanceof DeltaDocument) {
             if (pointer.position < startFrom) {
                 splitSegment(startFrom);
                 focusSegment(startFrom);
             }
 
             // Copy all segments from inserted document
-            DeltaDocumentWindow document = (DeltaDocumentWindow) insertedData;
+            DeltaDocument insertedDocument = (DeltaDocument) insertedData;
 
             long position = insertedDataOffset;
             long length = insertedDataLength;
-            DataSegment segment = document.getPartCopy(position, length);
+            DataSegment segment = insertedDocument.getPartCopy(position, length);
             position += segment.getLength();
             length -= segment.getLength();
             DataSegment first = segment;
@@ -267,7 +276,7 @@ public class DeltaDocumentWindow {
             }
             DataSegment next = segment.getNext();
             while (length > 0) {
-                DataSegment nextSegment = document.getPartCopy(position, length);
+                DataSegment nextSegment = insertedDocument.getPartCopy(position, length);
                 position += nextSegment.getLength();
                 length -= nextSegment.getLength();
                 segments.addAfter(segment, nextSegment);
@@ -295,6 +304,7 @@ public class DeltaDocumentWindow {
     }
 
     public void insert(long startFrom, DataSegment segment) {
+        DefaultDoublyLinkedList<DataSegment> segments = document.getSegments();
         focusSegment(startFrom);
         if (pointer.position < startFrom) {
             splitSegment(startFrom);
@@ -308,12 +318,14 @@ public class DeltaDocumentWindow {
     }
 
     public void remove(long startFrom, long length) {
-        if (startFrom + length > dataLength) {
+        if (startFrom + length > document.getDataSize()) {
             throw new OutOfBoundsException("Removed area is out of bounds");
         }
 
+        DefaultDoublyLinkedList<DataSegment> segments = document.getSegments();
+        SegmentsRepository repository = document.getRepository();
         if (length > 0) {
-            dataLength -= length;
+            document.setDataLength(document.getDataSize() - length);
             focusSegment(startFrom + length);
             splitSegment(startFrom + length);
             focusSegment(startFrom);
@@ -349,19 +361,23 @@ public class DeltaDocumentWindow {
     }
 
     public BinaryData copy() {
-        DeltaDocumentWindow copy = repository.createDocument();
-        copy.dataLength = dataLength;
+        SegmentsRepository repository = document.getRepository();
+        DefaultDoublyLinkedList<DataSegment> segments = document.getSegments();
+        DeltaDocument copy = repository.createDocument();
+        copy.setDataLength(getDataSize());
         for (DataSegment segment : segments) {
-            copy.segments.add(repository.copySegment(segment));
+            copy.getSegments().add(repository.copySegment(segment));
         }
         return copy;
     }
 
     public BinaryData copy(long startFrom, long length) {
-        DeltaDocumentWindow copy = repository.createDocument();
-        copy.dataLength = length;
+        SegmentsRepository repository = document.getRepository();
+        DeltaDocument copy = repository.createDocument();
+        copy.setDataLength(length);
         focusSegment(startFrom);
 
+        DefaultDoublyLinkedList<DataSegment> segments = document.getSegments();
         DataSegment segment = pointer.segment;
         long offset = startFrom - pointer.position;
         while (length > 0) {
@@ -372,13 +388,13 @@ public class DeltaDocumentWindow {
             }
 
             if (offset == 0 && copyLength == segmentLength) {
-                copy.segments.add(repository.copySegment(pointer.segment));
+                copy.getSegments().add(repository.copySegment(pointer.segment));
             } else if (pointer.segment instanceof MemorySegment) {
                 MemorySegment memorySegment = (MemorySegment) pointer.segment;
-                copy.segments.add(repository.createMemorySegment(memorySegment.getSource(), memorySegment.getStartPosition() + offset, copyLength));
+                copy.getSegments().add(repository.createMemorySegment(memorySegment.getSource(), memorySegment.getStartPosition() + offset, copyLength));
             } else {
                 FileSegment fileSegment = (FileSegment) pointer.segment;
-                copy.segments.add(repository.createFileSegment(fileSegment.getSource(), fileSegment.getStartPosition() + offset, copyLength));
+                copy.getSegments().add(repository.createFileSegment(fileSegment.getSource(), fileSegment.getStartPosition() + offset, copyLength));
             }
             length -= copyLength;
             offset = 0;
@@ -391,7 +407,6 @@ public class DeltaDocumentWindow {
     public void copyToArray(long startFrom, byte[] target, int offset, int length) {
         document.copyToArray(startFrom, target, offset, length);
     }
-            
 
     /**
      * Splits current pointer segment on given absolute position.
@@ -408,6 +423,8 @@ public class DeltaDocumentWindow {
             return;
         }
 
+        DefaultDoublyLinkedList<DataSegment> segments = document.getSegments();
+        SegmentsRepository repository = document.getRepository();
         long firstPartSize = position - pointer.position;
         if (pointer.segment instanceof MemorySegment) {
             MemorySegment memorySegment = (MemorySegment) pointer.segment;
@@ -441,6 +458,7 @@ public class DeltaDocumentWindow {
             return null;
         }
 
+        SegmentsRepository repository = document.getRepository();
         long offset = position - pointer.position;
         long partLength = length;
         if (pointer.segment.getLength() - offset < partLength) {
@@ -459,20 +477,22 @@ public class DeltaDocumentWindow {
      * @throws OutOfBoundsException if position is before or after document
      */
     private void focusSegment(long position) {
+        DefaultDoublyLinkedList<DataSegment> segments = document.getSegments();
+        SegmentsRepository repository = document.getRepository();
         if (position == 0) {
             pointer.position = 0;
             pointer.segment = segments.first();
             return;
-        } else if (position == dataLength) {
-            pointer.position = dataLength;
+        } else if (position == getDataSize()) {
+            pointer.position = getDataSize();
             pointer.segment = null;
             return;
-        } else if (position < 0 || position > dataLength) {
+        } else if (position < 0 || position > getDataSize()) {
             throw new OutOfBoundsException("Position index out of range");
         }
 
         if (position < pointer.position) {
-            if (pointer.segment == null && position == dataLength) {
+            if (pointer.segment == null && position == getDataSize()) {
                 pointer.segment = segments.last();
                 if (pointer.segment == null) {
                     throw new IllegalStateException("Unexpected null segment");
@@ -521,6 +541,8 @@ public class DeltaDocumentWindow {
             return false;
         }
 
+        DefaultDoublyLinkedList<DataSegment> segments = document.getSegments();
+        SegmentsRepository repository = document.getRepository();
         focusSegment(position);
         DataSegment nextSegment = pointer.segment;
         focusSegment(position - 1);

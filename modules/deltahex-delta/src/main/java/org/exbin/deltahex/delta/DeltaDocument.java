@@ -57,6 +57,10 @@ public class DeltaDocument implements EditableBinaryData {
         return segments;
     }
 
+    public DataSegment getSegment(long position) {
+        return window.getSegment(position);
+    }
+
     @Override
     public boolean isEmpty() {
         return dataLength == 0;
@@ -225,7 +229,7 @@ public class DeltaDocument implements EditableBinaryData {
      * @return data segment
      */
     public DataSegment getPartCopy(long position, long length) {
-        window.getPartCopy(position, length);
+        return window.getPartCopy(position, length);
     }
 
     public FileDataSource getFileSource() {
