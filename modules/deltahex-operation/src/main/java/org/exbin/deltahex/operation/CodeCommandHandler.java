@@ -24,8 +24,8 @@ import java.awt.datatransfer.FlavorListener;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.KeyEvent;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -58,7 +58,7 @@ import org.exbin.utils.binary_data.PagedData;
 /**
  * Command handler for undo/redo aware hexadecimal editor editing.
  *
- * @version 0.1.1 2016/10/05
+ * @version 0.1.1 2016/10/20
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeCommandHandler implements CodeAreaCommandHandler {
@@ -878,22 +878,25 @@ public class CodeCommandHandler implements CodeAreaCommandHandler {
 
         @Override
         public DataFlavor[] getTransferDataFlavors() {
-            return new DataFlavor[]{appDataFlavor, DataFlavor.stringFlavor};
+            return new DataFlavor[]{appDataFlavor, DataFlavor.getTextPlainUnicodeFlavor()};
         }
 
         @Override
         public boolean isDataFlavorSupported(DataFlavor flavor) {
-            return flavor.equals(appDataFlavor) || flavor.equals(DataFlavor.stringFlavor);
+            return flavor.equals(appDataFlavor) || flavor.equals(DataFlavor.getTextPlainUnicodeFlavor());
         }
 
         @Override
         public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
             if (flavor.equals(appDataFlavor)) {
                 return data;
+            } else if (flavor.equals(DataFlavor.getTextPlainUnicodeFlavor())) {
+                // TODO convert charset
+                // String clipboardCharset = DataTransferer.getTextCharset(flavor);
+                InputStream inputStream = data.getDataInputStream();
+                return inputStream;
             } else {
-                ByteArrayOutputStream byteArrayStream = new ByteArrayOutputStream();
-                data.saveToStream(byteArrayStream);
-                return byteArrayStream.toString("UTF-8");
+                throw new IllegalStateException("Unexpected clipboard flavor");
             }
         }
 

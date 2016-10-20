@@ -31,7 +31,7 @@ import org.exbin.utils.binary_data.OutOfBoundsException;
 /**
  * Repository of delta segments.
  *
- * @version 0.1.1 2016/10/16
+ * @version 0.1.1 2016/10/19
  * @author ExBin Project (http://exbin.org)
  */
 public class SegmentsRepository {
@@ -471,7 +471,8 @@ public class SegmentsRepository {
 
         /**
          * Aligns focus segment on last segment at given start position and
-         * length or last segment before given position.
+         * length or last segment before given position or null if there is no
+         * such segment.
          *
          * @param startPosition start position
          * @param length length
@@ -485,12 +486,12 @@ public class SegmentsRepository {
                 return;
             }
 
-            if (pointerRecord.dataSegment.getStartPosition() < startPosition
-                    || (pointerRecord.dataSegment.getStartPosition() == startPosition && pointerRecord.dataSegment.getLength() <= length)) {
+            if (startPosition > pointerRecord.dataSegment.getStartPosition()
+                    || (pointerRecord.dataSegment.getStartPosition() == startPosition && length >= pointerRecord.dataSegment.getLength())) {
                 // Forward direction traversal
                 SegmentRecord record = pointerRecord;
-                while (record.dataSegment.getStartPosition() < startPosition
-                        || (record.dataSegment.getStartPosition() == startPosition && record.dataSegment.getLength() <= length)) {
+                while (startPosition > record.dataSegment.getStartPosition()
+                        || (record.dataSegment.getStartPosition() == startPosition && length >= record.dataSegment.getLength())) {
                     pointerRecord = record;
                     record = records.nextTo(pointerRecord);
                     if (record == null) {
@@ -499,13 +500,10 @@ public class SegmentsRepository {
                 }
             } else {
                 // Backward direction traversal
-                SegmentRecord record = pointerRecord;
-                while (record.dataSegment.getStartPosition() > startPosition
-                        || (record.dataSegment.getStartPosition() == startPosition && record.dataSegment.getLength() > length)) {
-                    pointerRecord = record;
-                    record = records.prevTo(record);
-                    if (record == null) {
-                        pointerRecord = null;
+                while (startPosition < pointerRecord.dataSegment.getStartPosition()
+                        || (pointerRecord.dataSegment.getStartPosition() == startPosition && length < pointerRecord.dataSegment.getLength())) {
+                    pointerRecord = records.prevTo(pointerRecord);
+                    if (pointerRecord == null) {
                         break;
                     }
                 }
