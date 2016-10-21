@@ -58,7 +58,7 @@ import org.exbin.utils.binary_data.PagedData;
 /**
  * Command handler for undo/redo aware hexadecimal editor editing.
  *
- * @version 0.1.1 2016/10/20
+ * @version 0.1.1 2016/10/21
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeCommandHandler implements CodeAreaCommandHandler {
@@ -658,42 +658,50 @@ public class CodeCommandHandler implements CodeAreaCommandHandler {
             try {
                 Object object = clipboard.getData(appDataFlavor);
                 if (object instanceof BinaryData) {
+                    BinaryData clipboardData = (BinaryData) object;
                     CodeAreaCaret caret = codeArea.getCaret();
                     long dataPosition = caret.getDataPosition();
 
                     CodeAreaCommand modifyCommand = null;
-                    BinaryData pastedData = (BinaryData) object;
-                    long dataSize = pastedData.getDataSize();
+                    BinaryData pastedData = null;
+                    long dataSize = clipboardData.getDataSize();
                     long insertionPosition = dataPosition;
                     if (codeArea.getEditationMode() == EditationMode.OVERWRITE) {
-                        BinaryData modifiedData = pastedData;
+                        BinaryData modifiedData;
                         long toReplace = dataSize;
                         if (insertionPosition + toReplace > codeArea.getDataSize()) {
                             toReplace = codeArea.getDataSize() - insertionPosition;
-                            modifiedData = pastedData.copy(0, toReplace);
+                            modifiedData = clipboardData.copy(0, toReplace);
+                        } else {
+                            modifiedData = clipboardData.copy();
                         }
                         if (toReplace > 0) {
                             modifyCommand = new ModifyDataCommand(codeArea, dataPosition, modifiedData);
-                            pastedData = pastedData.copy(toReplace, pastedData.getDataSize() - toReplace);
+                            pastedData = clipboardData.copy(toReplace, pastedData.getDataSize() - toReplace);
                             insertionPosition += toReplace;
                         }
+                    }
+                    if (pastedData == null) {
+                        pastedData = clipboardData.copy();
                     }
 
                     CodeAreaCommand insertCommand = null;
                     if (pastedData.getDataSize() > 0) {
-                        insertCommand = new InsertDataCommand(codeArea, insertionPosition, (EditableBinaryData) pastedData);
+                        insertCommand = new InsertDataCommand(codeArea, insertionPosition, (EditableBinaryData) pastedData.copy());
                     }
 
                     CodeAreaCommand pasteCommand = HexCompoundCommand.buildCompoundCommand(codeArea, deleteSelectionCommand, modifyCommand, insertCommand);
-                    try {
-                        undoHandler.execute(pasteCommand);
-                    } catch (Exception ex) {
-                        Logger.getLogger(CodeCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+                    if (pasteCommand != null) {
+                        try {
+                            undoHandler.execute(pasteCommand);
+                        } catch (Exception ex) {
+                            Logger.getLogger(CodeCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
+                        }
 
-                    codeArea.notifyDataChanged();
-                    codeArea.updateScrollBars();
-                    codeArea.revealCursor();
+                        codeArea.notifyDataChanged();
+                        codeArea.updateScrollBars();
+                        codeArea.revealCursor();
+                    }
                 }
             } catch (UnsupportedFlavorException | IOException ex) {
                 Logger.getLogger(CodeCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
