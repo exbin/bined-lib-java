@@ -25,7 +25,9 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.KeyEvent;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.logging.Level;
@@ -65,7 +67,7 @@ import org.exbin.utils.binary_data.PagedData;
  */
 public class CodeCommandHandler implements CodeAreaCommandHandler {
 
-    public static final String MIME_CLIPBOARD_HEXADECIMAL = "application/x-deltahex";
+    public static final String DELTAHEX_CLIPBOARD_MIME = "application/x-deltahex";
     public static final String MIME_CLIPBOARD_BINARY = "application/octet-stream";
     public static final String MIME_CHARSET = "charset";
     private static final int CODE_BUFFER_LENGTH = 16;
@@ -77,7 +79,7 @@ public class CodeCommandHandler implements CodeAreaCommandHandler {
     private final CodeArea codeArea;
     private Clipboard clipboard;
     private boolean canPaste = false;
-    private DataFlavor appDataFlavor;
+    private DataFlavor deltahexDataFlavor;
 
     private final XBUndoHandler undoHandler;
     private EditDataCommand editCommand = null;
@@ -98,15 +100,15 @@ public class CodeCommandHandler implements CodeAreaCommandHandler {
         clipboard.addFlavorListener(new FlavorListener() {
             @Override
             public void flavorsChanged(FlavorEvent e) {
-                canPaste = clipboard.isDataFlavorAvailable(appDataFlavor) || clipboard.isDataFlavorAvailable(DataFlavor.stringFlavor);
+                canPaste = clipboard.isDataFlavorAvailable(deltahexDataFlavor) || clipboard.isDataFlavorAvailable(DataFlavor.stringFlavor);
             }
         });
         try {
-            appDataFlavor = new DataFlavor(MIME_CLIPBOARD_HEXADECIMAL);
+            deltahexDataFlavor = new DataFlavor(DELTAHEX_CLIPBOARD_MIME);
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(CodeCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
-        canPaste = clipboard.isDataFlavorAvailable(appDataFlavor) || clipboard.isDataFlavorAvailable(DataFlavor.stringFlavor);
+        canPaste = clipboard.isDataFlavorAvailable(deltahexDataFlavor) || clipboard.isDataFlavorAvailable(DataFlavor.stringFlavor);
     }
 
     @Override
@@ -657,9 +659,9 @@ public class CodeCommandHandler implements CodeAreaCommandHandler {
             }
         }
 
-        if (clipboard.isDataFlavorAvailable(appDataFlavor)) {
+        if (clipboard.isDataFlavorAvailable(deltahexDataFlavor)) {
             try {
-                Object object = clipboard.getData(appDataFlavor);
+                Object object = clipboard.getData(deltahexDataFlavor);
                 if (object instanceof BinaryData) {
                     BinaryData clipboardData = (BinaryData) object;
                     CodeAreaCaret caret = codeArea.getCaret();
@@ -680,7 +682,7 @@ public class CodeCommandHandler implements CodeAreaCommandHandler {
                         }
                         if (toReplace > 0) {
                             modifyCommand = new ModifyDataCommand(codeArea, dataPosition, modifiedData);
-                            pastedData = clipboardData.copy(toReplace, pastedData.getDataSize() - toReplace);
+                            pastedData = clipboardData.copy(toReplace, clipboardData.getDataSize() - toReplace);
                             insertionPosition += toReplace;
                         }
                     }
@@ -709,50 +711,52 @@ public class CodeCommandHandler implements CodeAreaCommandHandler {
             } catch (UnsupportedFlavorException | IOException ex) {
                 Logger.getLogger(CodeCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
             }
-        } else if (clipboard.isDataFlavorAvailable(DataFlavor.stringFlavor)) {
-            Object insertedData;
+        } else if (clipboard.isDataFlavorAvailable(DataFlavor.getTextPlainUnicodeFlavor())) {
+            InputStream insertedData;
             try {
-                insertedData = clipboard.getData(DataFlavor.stringFlavor);
-                if (insertedData instanceof String) {
-                    CodeAreaCaret caret = codeArea.getCaret();
-                    long dataPosition = caret.getDataPosition();
+                insertedData = (InputStream) clipboard.getData(DataFlavor.getTextPlainUnicodeFlavor());
+                CodeAreaCaret caret = codeArea.getCaret();
+                long dataPosition = caret.getDataPosition();
 
-                    CodeAreaCommand modifyCommand = null;
-                    byte[] bytes = ((String) insertedData).getBytes(codeArea.getCharset());
-                    int dataSize = bytes.length;
-                    PagedData pastedData = new PagedData();
-                    pastedData.insert(0, bytes);
-                    long insertionPosition = dataPosition;
-                    if (codeArea.getEditationMode() == EditationMode.OVERWRITE) {
-                        BinaryData modifiedData = pastedData;
-                        long toReplace = dataSize;
-                        if (insertionPosition + toReplace > codeArea.getDataSize()) {
-                            toReplace = codeArea.getDataSize() - insertionPosition;
-                            modifiedData = pastedData.copy(0, toReplace);
-                        }
-                        if (toReplace > 0) {
-                            modifyCommand = new ModifyDataCommand(codeArea, dataPosition, modifiedData);
-                            pastedData = pastedData.copy(toReplace, pastedData.getDataSize() - toReplace);
-                            insertionPosition += toReplace;
-                        }
+                CodeAreaCommand modifyCommand = null;
+                DataFlavor textPlainUnicodeFlavor = DataFlavor.getTextPlainUnicodeFlavor();
+                String charsetName = textPlainUnicodeFlavor.getParameter(MIME_CHARSET);
+                CharsetStreamTranslator translator = new CharsetStreamTranslator(Charset.forName(charsetName), codeArea.getCharset(), insertedData);
+
+                // TODO use stream directly without buffer
+                PagedData pastedData = new PagedData();
+                pastedData.insert(0, translator, -1);
+                long dataSize = pastedData.getDataSize();
+                long insertionPosition = dataPosition;
+                if (codeArea.getEditationMode() == EditationMode.OVERWRITE) {
+                    BinaryData modifiedData = pastedData;
+                    long toReplace = dataSize;
+                    if (insertionPosition + toReplace > codeArea.getDataSize()) {
+                        toReplace = codeArea.getDataSize() - insertionPosition;
+                        modifiedData = pastedData.copy(0, toReplace);
                     }
-
-                    CodeAreaCommand insertCommand = null;
-                    if (pastedData.getDataSize() > 0) {
-                        insertCommand = new InsertDataCommand(codeArea, insertionPosition, pastedData);
+                    if (toReplace > 0) {
+                        modifyCommand = new ModifyDataCommand(codeArea, dataPosition, modifiedData);
+                        pastedData = pastedData.copy(toReplace, dataSize - toReplace);
+                        insertionPosition += toReplace;
                     }
-
-                    CodeAreaCommand pasteCommand = HexCompoundCommand.buildCompoundCommand(codeArea, deleteSelectionCommand, modifyCommand, insertCommand);
-                    try {
-                        undoHandler.execute(pasteCommand);
-                    } catch (Exception ex) {
-                        Logger.getLogger(CodeCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-
-                    codeArea.notifyDataChanged();
-                    codeArea.updateScrollBars();
-                    codeArea.revealCursor();
                 }
+
+                CodeAreaCommand insertCommand = null;
+                if (pastedData.getDataSize() > 0) {
+                    insertCommand = new InsertDataCommand(codeArea, insertionPosition, pastedData);
+                }
+
+                CodeAreaCommand pasteCommand = HexCompoundCommand.buildCompoundCommand(codeArea, deleteSelectionCommand, modifyCommand, insertCommand);
+                try {
+                    undoHandler.execute(pasteCommand);
+                } catch (Exception ex) {
+                    Logger.getLogger(CodeCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+                codeArea.notifyDataChanged();
+                codeArea.updateScrollBars();
+                codeArea.revealCursor();
             } catch (UnsupportedFlavorException | IOException ex) {
                 Logger.getLogger(CodeCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -775,53 +779,39 @@ public class CodeCommandHandler implements CodeAreaCommandHandler {
             }
         }
 
-        if (clipboard.isDataFlavorAvailable(appDataFlavor)) {
+        if (clipboard.isDataFlavorAvailable(deltahexDataFlavor)) {
             paste();
-        } else if (clipboard.isDataFlavorAvailable(DataFlavor.stringFlavor)) {
-            Object insertedData;
+        } else if (clipboard.isDataFlavorAvailable(DataFlavor.getTextPlainUnicodeFlavor())) {
+            InputStream insertedData;
             try {
-                insertedData = clipboard.getData(DataFlavor.stringFlavor);
-                if (insertedData instanceof String) {
-                    CodeAreaCaret caret = codeArea.getCaret();
-                    long dataPosition = caret.getDataPosition();
+                insertedData = (InputStream) clipboard.getData(DataFlavor.getTextPlainUnicodeFlavor());
+                CodeAreaCaret caret = codeArea.getCaret();
+                long dataPosition = caret.getDataPosition();
 
-                    CodeAreaCommand modifyCommand = null;
-                    CodeType codeType = codeArea.getCodeType();
-                    int maxDigits = codeType.getMaxDigits();
-                    String insertedString = (String) insertedData;
-                    ByteArrayEditableData data = new ByteArrayEditableData();
-                    byte[] buffer = new byte[CODE_BUFFER_LENGTH];
-                    int bufferUsage = 0;
-                    int offset = 0;
-                    for (int i = 0; i < insertedString.length(); i++) {
-                        char charAt = insertedString.charAt(i);
-                        if ((charAt == ' ' || charAt == '\t') && offset == i) {
-                            offset++;
-                        } else if (charAt == ' ' || charAt == '\t' || charAt == ',' || charAt == ';' || charAt == ':') {
-                            byte value = CodeAreaUtils.stringCodeToByte(insertedString.substring(offset, i), codeType);
-                            if (bufferUsage < CODE_BUFFER_LENGTH) {
-                                buffer[bufferUsage] = value;
-                                bufferUsage++;
-                            } else {
-                                data.insert(data.getDataSize(), buffer, 0, bufferUsage);
-                                bufferUsage = 0;
-                            }
-                            offset = i + 1;
-                        } else if (i == offset + maxDigits) {
-                            byte value = CodeAreaUtils.stringCodeToByte(insertedString.substring(offset, i), codeType);
-                            if (bufferUsage < CODE_BUFFER_LENGTH) {
-                                buffer[bufferUsage] = value;
-                                bufferUsage++;
-                            } else {
-                                data.insert(data.getDataSize(), buffer, 0, bufferUsage);
-                                bufferUsage = 0;
-                            }
-                            offset = i;
-                        }
-                    }
+                CodeAreaCommand modifyCommand = null;
+                CodeType codeType = codeArea.getCodeType();
+                int maxDigits = codeType.getMaxDigits();
 
-                    if (offset < insertedString.length()) {
-                        byte value = CodeAreaUtils.stringCodeToByte(insertedString.substring(offset), codeType);
+                DataFlavor textPlainUnicodeFlavor = DataFlavor.getTextPlainUnicodeFlavor();
+                String charsetName = textPlainUnicodeFlavor.getParameter(MIME_CHARSET);
+                CharsetStreamTranslator translator = new CharsetStreamTranslator(Charset.forName(charsetName), codeArea.getCharset(), insertedData);
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                byte[] dataBuffer = new byte[1024];
+                int length;
+                while ((length = translator.read(dataBuffer)) != -1) {
+                    outputStream.write(dataBuffer, 0, length);
+                }
+                String insertedString = outputStream.toString(codeArea.getCharset().name());
+                ByteArrayEditableData data = new ByteArrayEditableData();
+                byte[] buffer = new byte[CODE_BUFFER_LENGTH];
+                int bufferUsage = 0;
+                int offset = 0;
+                for (int i = 0; i < insertedString.length(); i++) {
+                    char charAt = insertedString.charAt(i);
+                    if ((charAt == ' ' || charAt == '\t') && offset == i) {
+                        offset++;
+                    } else if (charAt == ' ' || charAt == '\t' || charAt == ',' || charAt == ';' || charAt == ':') {
+                        byte value = CodeAreaUtils.stringCodeToByte(insertedString.substring(offset, i), codeType);
                         if (bufferUsage < CODE_BUFFER_LENGTH) {
                             buffer[bufferUsage] = value;
                             bufferUsage++;
@@ -829,45 +819,67 @@ public class CodeCommandHandler implements CodeAreaCommandHandler {
                             data.insert(data.getDataSize(), buffer, 0, bufferUsage);
                             bufferUsage = 0;
                         }
-                    }
-
-                    if (bufferUsage > 0) {
-                        data.insert(data.getDataSize(), buffer, 0, bufferUsage);
-                    }
-
-                    long dataSize = data.getDataSize();
-                    PagedData pastedData = new PagedData();
-                    pastedData.insert(0, data);
-                    long insertionPosition = dataPosition;
-                    if (codeArea.getEditationMode() == EditationMode.OVERWRITE) {
-                        BinaryData modifiedData = pastedData;
-                        long toReplace = dataSize;
-                        if (insertionPosition + toReplace > codeArea.getDataSize()) {
-                            toReplace = codeArea.getDataSize() - insertionPosition;
-                            modifiedData = pastedData.copy(0, toReplace);
+                        offset = i + 1;
+                    } else if (i == offset + maxDigits) {
+                        byte value = CodeAreaUtils.stringCodeToByte(insertedString.substring(offset, i), codeType);
+                        if (bufferUsage < CODE_BUFFER_LENGTH) {
+                            buffer[bufferUsage] = value;
+                            bufferUsage++;
+                        } else {
+                            data.insert(data.getDataSize(), buffer, 0, bufferUsage);
+                            bufferUsage = 0;
                         }
-                        if (toReplace > 0) {
-                            modifyCommand = new ModifyDataCommand(codeArea, dataPosition, modifiedData);
-                            pastedData = pastedData.copy(toReplace, pastedData.getDataSize() - toReplace);
-                            insertionPosition += toReplace;
-                        }
+                        offset = i;
                     }
-
-                    CodeAreaCommand insertCommand = null;
-                    if (pastedData.getDataSize() > 0) {
-                        insertCommand = new InsertDataCommand(codeArea, insertionPosition, pastedData);
-                    }
-
-                    CodeAreaCommand pasteCommand = HexCompoundCommand.buildCompoundCommand(codeArea, deleteSelectionCommand, modifyCommand, insertCommand);
-                    try {
-                        undoHandler.execute(pasteCommand);
-                    } catch (Exception ex) {
-                        Logger.getLogger(CodeCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-
-                    codeArea.notifyDataChanged();
-                    codeArea.updateScrollBars();
                 }
+
+                if (offset < insertedString.length()) {
+                    byte value = CodeAreaUtils.stringCodeToByte(insertedString.substring(offset), codeType);
+                    if (bufferUsage < CODE_BUFFER_LENGTH) {
+                        buffer[bufferUsage] = value;
+                        bufferUsage++;
+                    } else {
+                        data.insert(data.getDataSize(), buffer, 0, bufferUsage);
+                        bufferUsage = 0;
+                    }
+                }
+
+                if (bufferUsage > 0) {
+                    data.insert(data.getDataSize(), buffer, 0, bufferUsage);
+                }
+
+                long dataSize = data.getDataSize();
+                PagedData pastedData = new PagedData();
+                pastedData.insert(0, data);
+                long insertionPosition = dataPosition;
+                if (codeArea.getEditationMode() == EditationMode.OVERWRITE) {
+                    BinaryData modifiedData = pastedData;
+                    long toReplace = dataSize;
+                    if (insertionPosition + toReplace > codeArea.getDataSize()) {
+                        toReplace = codeArea.getDataSize() - insertionPosition;
+                        modifiedData = pastedData.copy(0, toReplace);
+                    }
+                    if (toReplace > 0) {
+                        modifyCommand = new ModifyDataCommand(codeArea, dataPosition, modifiedData);
+                        pastedData = pastedData.copy(toReplace, pastedData.getDataSize() - toReplace);
+                        insertionPosition += toReplace;
+                    }
+                }
+
+                CodeAreaCommand insertCommand = null;
+                if (pastedData.getDataSize() > 0) {
+                    insertCommand = new InsertDataCommand(codeArea, insertionPosition, pastedData);
+                }
+
+                CodeAreaCommand pasteCommand = HexCompoundCommand.buildCompoundCommand(codeArea, deleteSelectionCommand, modifyCommand, insertCommand);
+                try {
+                    undoHandler.execute(pasteCommand);
+                } catch (Exception ex) {
+                    Logger.getLogger(CodeCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+                codeArea.notifyDataChanged();
+                codeArea.updateScrollBars();
             } catch (UnsupportedFlavorException | IOException ex) {
                 Logger.getLogger(CodeCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -889,17 +901,17 @@ public class CodeCommandHandler implements CodeAreaCommandHandler {
 
         @Override
         public DataFlavor[] getTransferDataFlavors() {
-            return new DataFlavor[]{appDataFlavor, DataFlavor.getTextPlainUnicodeFlavor()};
+            return new DataFlavor[]{deltahexDataFlavor, DataFlavor.getTextPlainUnicodeFlavor()};
         }
 
         @Override
         public boolean isDataFlavorSupported(DataFlavor flavor) {
-            return flavor.equals(appDataFlavor) || flavor.equals(DataFlavor.getTextPlainUnicodeFlavor());
+            return flavor.equals(deltahexDataFlavor) || flavor.equals(DataFlavor.getTextPlainUnicodeFlavor());
         }
 
         @Override
         public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
-            if (flavor.equals(appDataFlavor)) {
+            if (flavor.equals(deltahexDataFlavor)) {
                 return data;
             } else {
                 DataFlavor textPlainUnicodeFlavor = DataFlavor.getTextPlainUnicodeFlavor();
@@ -928,17 +940,17 @@ public class CodeCommandHandler implements CodeAreaCommandHandler {
 
         @Override
         public DataFlavor[] getTransferDataFlavors() {
-            return new DataFlavor[]{appDataFlavor, DataFlavor.getTextPlainUnicodeFlavor()};
+            return new DataFlavor[]{deltahexDataFlavor, DataFlavor.getTextPlainUnicodeFlavor()};
         }
 
         @Override
         public boolean isDataFlavorSupported(DataFlavor flavor) {
-            return flavor.equals(appDataFlavor) || flavor.equals(DataFlavor.getTextPlainUnicodeFlavor());
+            return flavor.equals(deltahexDataFlavor) || flavor.equals(DataFlavor.getTextPlainUnicodeFlavor());
         }
 
         @Override
         public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
-            if (flavor.equals(appDataFlavor)) {
+            if (flavor.equals(deltahexDataFlavor)) {
                 return data;
             } else {
                 int charsPerByte = codeArea.getCodeType().getMaxDigits() + 1;

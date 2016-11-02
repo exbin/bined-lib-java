@@ -25,7 +25,7 @@ import org.exbin.utils.binary_data.EditableBinaryData;
 /**
  * Delta document defined as sequence of segments.
  *
- * @version 0.1.1 2016/10/20
+ * @version 0.1.1 2016/11/02
  * @author ExBin Project (http://exbin.org)
  */
 public class DeltaDocument implements EditableBinaryData {
@@ -116,6 +116,11 @@ public class DeltaDocument implements EditableBinaryData {
     }
 
     @Override
+    public long insert(long l, InputStream in, long l1) throws IOException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
     public void replace(long targetPosition, BinaryData replacingData) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -170,11 +175,6 @@ public class DeltaDocument implements EditableBinaryData {
     }
 
     @Override
-    public long loadFromStream(InputStream in, long l, long l1) throws IOException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
     public void saveToStream(OutputStream out) throws IOException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -215,7 +215,7 @@ public class DeltaDocument implements EditableBinaryData {
             insert(dataLength, dataSize - dataLength);
         }
     }
-    
+
     void setDataLength(long dataSize) {
         this.dataLength = dataSize;
     }

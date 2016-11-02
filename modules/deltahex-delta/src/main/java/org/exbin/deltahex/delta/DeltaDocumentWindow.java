@@ -22,7 +22,7 @@ import org.exbin.utils.binary_data.OutOfBoundsException;
 /**
  * Access window for delta document.
  *
- * @version 0.1.1 2016/10/20
+ * @version 0.1.1 2016/11/02
  * @author ExBin Project (http://exbin.org)
  */
 public class DeltaDocumentWindow {
@@ -99,7 +99,7 @@ public class DeltaDocumentWindow {
         SegmentsRepository repository = document.getRepository();
 
         focusSegment(startFrom);
-        document.setDataLength(document.getDataSize() + length);
+        long targetLength = document.getDataSize() + length;
         if (pointer.segment instanceof MemorySegment) {
             repository.insertUninitializedMemoryData((MemorySegment) pointer.segment, startFrom - pointer.position, length);
         } else {
@@ -110,12 +110,13 @@ public class DeltaDocumentWindow {
             MemorySegment insertedSegment = repository.createMemorySegment();
             repository.insertUninitializedMemoryData((MemorySegment) insertedSegment, 0, length);
             if (pointer.segment == null) {
-                segments.add(0, insertedSegment);
+                segments.add(insertedSegment);
             } else {
                 segments.addBefore(pointer.segment, insertedSegment);
             }
             pointer.segment = insertedSegment;
         }
+        document.setDataLength(targetLength);
     }
 
     public void insert(long startFrom, long length) {
@@ -126,7 +127,7 @@ public class DeltaDocumentWindow {
         }
 
         focusSegment(startFrom);
-        document.setDataLength(document.getDataSize() + length);
+        long targetLength = document.getDataSize() + length;
         if (pointer.segment instanceof MemorySegment) {
             repository.insertMemoryData((MemorySegment) pointer.segment, startFrom - pointer.position, length);
         } else {
@@ -137,12 +138,13 @@ public class DeltaDocumentWindow {
             MemorySegment insertedSegment = repository.createMemorySegment();
             repository.insertMemoryData((MemorySegment) insertedSegment, 0, length);
             if (pointer.segment == null) {
-                segments.add(0, insertedSegment);
+                segments.add(insertedSegment);
             } else {
                 segments.addBefore(pointer.segment, insertedSegment);
             }
             pointer.segment = insertedSegment;
         }
+        document.setDataLength(targetLength);
     }
 
     public void insert(long startFrom, byte[] insertedData) {
@@ -153,7 +155,7 @@ public class DeltaDocumentWindow {
         }
 
         focusSegment(startFrom);
-        document.setDataLength(document.getDataSize() + insertedData.length);
+        long targetLength = document.getDataSize() + insertedData.length;
         if (pointer.segment instanceof MemorySegment) {
             repository.insertMemoryData((MemorySegment) pointer.segment, startFrom - pointer.position, insertedData);
         } else {
@@ -164,12 +166,13 @@ public class DeltaDocumentWindow {
             MemorySegment insertedSegment = repository.createMemorySegment();
             repository.insertMemoryData((MemorySegment) insertedSegment, 0, insertedData);
             if (pointer.segment == null) {
-                segments.add(0, insertedSegment);
+                segments.add(insertedSegment);
             } else {
                 segments.addBefore(pointer.segment, insertedSegment);
             }
             pointer.segment = insertedSegment;
         }
+        document.setDataLength(targetLength);
     }
 
     public void insert(long startFrom, byte[] insertedData, int insertedDataOffset, int insertedDataLength) {
@@ -177,7 +180,7 @@ public class DeltaDocumentWindow {
         SegmentsRepository repository = document.getRepository();
 
         focusSegment(startFrom);
-        document.setDataLength(document.getDataSize() + insertedDataLength);
+        long targetLength = document.getDataSize() + insertedDataLength;
         if (pointer.segment instanceof MemorySegment) {
             repository.insertMemoryData((MemorySegment) pointer.segment, startFrom - pointer.position, insertedData);
         } else {
@@ -188,12 +191,13 @@ public class DeltaDocumentWindow {
             MemorySegment insertedSegment = repository.createMemorySegment();
             repository.insertMemoryData((MemorySegment) insertedSegment, 0, insertedData);
             if (pointer.segment == null) {
-                segments.add(0, insertedSegment);
+                segments.add(insertedSegment);
             } else {
                 segments.addBefore(pointer.segment, insertedSegment);
             }
             pointer.segment = insertedSegment;
         }
+        document.setDataLength(targetLength);
     }
 
     public void insert(long startFrom, BinaryData insertedData) {
@@ -205,7 +209,7 @@ public class DeltaDocumentWindow {
         SegmentsRepository repository = document.getRepository();
 
         focusSegment(startFrom);
-        document.setDataLength(document.getDataSize() + insertedData.getDataSize());
+        long targetLength = document.getDataSize() + insertedData.getDataSize();
         if (insertedData instanceof DeltaDocument) {
             if (pointer.position < startFrom) {
                 splitSegment(startFrom);
@@ -217,7 +221,11 @@ public class DeltaDocumentWindow {
             DataSegment segment = insertedDocument.getSegments().first();
             DataSegment copy = repository.copySegment(segment);
             DataSegment first = copy;
-            segments.addBefore(pointer.segment, copy);
+            if (pointer.segment == null) {
+                segments.add(copy);
+            } else {
+                segments.addBefore(pointer.segment, copy);
+            }
             DataSegment next = segment.getNext();
             while (next != null) {
                 DataSegment nextCopy = repository.copySegment(next);
@@ -237,12 +245,13 @@ public class DeltaDocumentWindow {
             MemorySegment insertedSegment = repository.createMemorySegment();
             repository.insertMemoryData((MemorySegment) insertedSegment, 0, insertedData);
             if (pointer.segment == null) {
-                segments.add(0, insertedSegment);
+                segments.add(insertedSegment);
             } else {
                 segments.addBefore(pointer.segment, insertedSegment);
             }
             pointer.segment = insertedSegment;
         }
+        document.setDataLength(targetLength);
     }
 
     public void insert(long startFrom, BinaryData insertedData, long insertedDataOffset, long insertedDataLength) {
@@ -253,7 +262,7 @@ public class DeltaDocumentWindow {
         DefaultDoublyLinkedList<DataSegment> segments = document.getSegments();
         SegmentsRepository repository = document.getRepository();
         focusSegment(startFrom);
-        document.setDataLength(document.getDataSize() + insertedDataLength);
+        long targetLength = document.getDataSize() + insertedDataLength;
         if (insertedData instanceof DeltaDocument) {
             if (pointer.position < startFrom) {
                 splitSegment(startFrom);
@@ -295,12 +304,13 @@ public class DeltaDocumentWindow {
             MemorySegment insertedSegment = repository.createMemorySegment();
             repository.insertMemoryData((MemorySegment) insertedSegment, 0, insertedData, insertedDataOffset, insertedDataLength);
             if (pointer.segment == null) {
-                segments.add(0, insertedSegment);
+                segments.add(insertedSegment);
             } else {
                 segments.addBefore(pointer.segment, insertedSegment);
             }
             pointer.segment = insertedSegment;
         }
+        document.setDataLength(targetLength);
     }
 
     public void insert(long startFrom, DataSegment segment) {
@@ -311,7 +321,7 @@ public class DeltaDocumentWindow {
             focusSegment(startFrom);
         }
         if (pointer.segment == null) {
-            segments.add(0, segment);
+            segments.add(segment);
         } else {
             segments.addAfter(pointer.segment, segment);
         }
@@ -325,7 +335,7 @@ public class DeltaDocumentWindow {
         DefaultDoublyLinkedList<DataSegment> segments = document.getSegments();
         SegmentsRepository repository = document.getRepository();
         if (length > 0) {
-            document.setDataLength(document.getDataSize() - length);
+            long targetLength = document.getDataSize() - length;
             focusSegment(startFrom + length);
             splitSegment(startFrom + length);
             focusSegment(startFrom);
@@ -349,6 +359,7 @@ public class DeltaDocumentWindow {
             pointer.segment = prevSegment;
             pointer.position = prevPointerPosition;
             tryMergeSegments(startFrom);
+            document.setDataLength(targetLength);
         }
     }
 
@@ -414,11 +425,11 @@ public class DeltaDocumentWindow {
      * @param position split position
      */
     public void splitSegment(long position) {
-        if (position < pointer.position || position > pointer.position + pointer.segment.getLength()) {
+        if (position < pointer.position || (pointer.segment != null && position > pointer.position + pointer.segment.getLength())) {
             throw new IllegalStateException("Split position is out of current segment");
         }
 
-        if (pointer.position == position || pointer.segment.getStartPosition() + pointer.segment.getLength() == position) {
+        if (pointer.position == position || pointer.segment == null || pointer.segment.getStartPosition() + pointer.segment.getLength() == position) {
             // No action needed
             return;
         }
@@ -478,21 +489,26 @@ public class DeltaDocumentWindow {
      */
     private void focusSegment(long position) {
         DefaultDoublyLinkedList<DataSegment> segments = document.getSegments();
-        SegmentsRepository repository = document.getRepository();
+        long dataSize = getDataSize();
         if (position == 0) {
             pointer.position = 0;
             pointer.segment = segments.first();
             return;
-        } else if (position == getDataSize()) {
-            pointer.position = getDataSize();
+        } else if (position == dataSize) {
+            pointer.position = dataSize;
             pointer.segment = null;
             return;
-        } else if (position < 0 || position > getDataSize()) {
+        } else if (position < 0 || position > dataSize) {
             throw new OutOfBoundsException("Position index out of range");
         }
 
+        if (pointer.segment == null) {
+            pointer.segment = segments.last();
+            pointer.position = dataSize - pointer.segment.getLength();
+        }
+
         if (position < pointer.position) {
-            if (pointer.segment == null && position == getDataSize()) {
+            if (pointer.segment == null && position == dataSize) {
                 pointer.segment = segments.last();
                 if (pointer.segment == null) {
                     throw new IllegalStateException("Unexpected null segment");
