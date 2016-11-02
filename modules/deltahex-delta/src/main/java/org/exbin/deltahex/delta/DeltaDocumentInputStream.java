@@ -23,7 +23,7 @@ import org.exbin.utils.binary_data.SeekableStream;
 /**
  * Delta document input stream.
  *
- * @version 0.1.1 2016/10/20
+ * @version 0.1.1 2016/11/02
  * @author ExBin Project (http://exbin.org)
  */
 public class DeltaDocumentInputStream extends InputStream implements SeekableStream, FinishableStream {
@@ -37,6 +37,10 @@ public class DeltaDocumentInputStream extends InputStream implements SeekableStr
 
     @Override
     public int read() throws IOException {
+        if (position >= data.getDataSize()) {
+            return -1;
+        }
+
         try {
             return data.getByte(position++);
         } catch (ArrayIndexOutOfBoundsException ex) {
@@ -58,6 +62,15 @@ public class DeltaDocumentInputStream extends InputStream implements SeekableStr
     public int read(byte[] output, int off, int len) throws IOException {
         if (output.length == 0 || len == 0) {
             return 0;
+        }
+
+        long dataSize = data.getDataSize();
+        if (position >= dataSize) {
+            return -1;
+        }
+
+        if (position + len > dataSize) {
+            len = (int) (dataSize - position);
         }
 
         data.copyToArray(position, output, off, len);

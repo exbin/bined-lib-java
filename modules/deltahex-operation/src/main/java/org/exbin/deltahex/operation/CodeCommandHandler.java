@@ -24,12 +24,14 @@ import java.awt.datatransfer.FlavorListener;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.KeyEvent;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.exbin.deltahex.CaretPosition;
+import org.exbin.deltahex.CharsetStreamTranslator;
 import org.exbin.deltahex.swing.CodeArea;
 import org.exbin.deltahex.swing.CodeAreaCaret;
 import org.exbin.deltahex.operation.command.CodeAreaCommandType;
@@ -58,13 +60,14 @@ import org.exbin.utils.binary_data.PagedData;
 /**
  * Command handler for undo/redo aware hexadecimal editor editing.
  *
- * @version 0.1.1 2016/10/21
+ * @version 0.1.1 2016/11/02
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeCommandHandler implements CodeAreaCommandHandler {
 
     public static final String MIME_CLIPBOARD_HEXADECIMAL = "application/x-deltahex";
     public static final String MIME_CLIPBOARD_BINARY = "application/octet-stream";
+    public static final String MIME_CHARSET = "charset";
     private static final int CODE_BUFFER_LENGTH = 16;
     private static final char BACKSPACE_CHAR = '\b';
     private static final char DELETE_CHAR = (char) 0x7f;
@@ -898,13 +901,14 @@ public class CodeCommandHandler implements CodeAreaCommandHandler {
         public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
             if (flavor.equals(appDataFlavor)) {
                 return data;
-            } else if (flavor.equals(DataFlavor.getTextPlainUnicodeFlavor())) {
-                // TODO convert charset
-                // String clipboardCharset = DataTransferer.getTextCharset(flavor);
-                InputStream inputStream = data.getDataInputStream();
-                return inputStream;
             } else {
-                throw new IllegalStateException("Unexpected clipboard flavor");
+                DataFlavor textPlainUnicodeFlavor = DataFlavor.getTextPlainUnicodeFlavor();
+                if (flavor.equals(textPlainUnicodeFlavor)) {
+                    String charsetName = textPlainUnicodeFlavor.getParameter(MIME_CHARSET);
+                    return new CharsetStreamTranslator(codeArea.getCharset(), Charset.forName(charsetName), data.getDataInputStream());
+                } else {
+                    throw new IllegalStateException("Unexpected clipboard flavor");
+                }
             }
         }
 
@@ -924,12 +928,12 @@ public class CodeCommandHandler implements CodeAreaCommandHandler {
 
         @Override
         public DataFlavor[] getTransferDataFlavors() {
-            return new DataFlavor[]{appDataFlavor, DataFlavor.stringFlavor};
+            return new DataFlavor[]{appDataFlavor, DataFlavor.getTextPlainUnicodeFlavor()};
         }
 
         @Override
         public boolean isDataFlavorSupported(DataFlavor flavor) {
-            return flavor.equals(appDataFlavor) || flavor.equals(DataFlavor.stringFlavor);
+            return flavor.equals(appDataFlavor) || flavor.equals(DataFlavor.getTextPlainUnicodeFlavor());
         }
 
         @Override
@@ -948,7 +952,8 @@ public class CodeCommandHandler implements CodeAreaCommandHandler {
                 for (int i = 0; i < data.getDataSize(); i++) {
                     CodeAreaUtils.byteToCharsCode(data.getByte(i), codeArea.getCodeType(), dataTarget, i * charsPerByte, codeArea.getHexCharactersCase());
                 }
-                return new String(dataTarget);
+                DataFlavor textPlainUnicodeFlavor = DataFlavor.getTextPlainUnicodeFlavor();
+                return new ByteArrayInputStream(new String(dataTarget).getBytes(textPlainUnicodeFlavor.getParameter(MIME_CHARSET)));
             }
         }
 

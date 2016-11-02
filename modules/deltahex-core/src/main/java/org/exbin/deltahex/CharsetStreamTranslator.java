@@ -23,7 +23,6 @@ import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CharsetEncoder;
 import java.nio.charset.CoderResult;
-import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -31,15 +30,13 @@ import java.util.logging.Logger;
  * Input stream translation class which converts from input charset to target
  * charset.
  *
- * @version 0.1.1 2016/11/01
+ * @version 0.1.1 2016/11/02
  * @author ExBin Project (http://exbin.org)
  */
 public class CharsetStreamTranslator extends InputStream {
 
     public static final int BYTE_BUFFER_SIZE = 1024;
 
-    private final Charset inputCharset;
-    private final Charset outputCharset;
     private final CharsetEncoder encoder;
     private final CharsetDecoder decoder;
     private final InputStream source;
@@ -49,21 +46,27 @@ public class CharsetStreamTranslator extends InputStream {
     private final CharBuffer charBuffer;
     private boolean endOfInput = false;
 
-    private int bufferOffset = 0;
     private int maxInputCharSize;
     private int maxOutputCharSize;
 
     public CharsetStreamTranslator(Charset inputCharset, Charset outputCharset, InputStream source, int bufferSize) {
-        this.inputCharset = inputCharset;
-        this.outputCharset = outputCharset;
         this.source = source;
-        encoder = inputCharset.newEncoder();
-        decoder = outputCharset.newDecoder();
-        maxInputCharSize = (int) encoder.maxBytesPerChar();
-        maxOutputCharSize = (int) decoder.maxCharsPerByte();
+        decoder = inputCharset.newDecoder();
+        encoder = outputCharset.newEncoder();
+        maxInputCharSize = (int) decoder.maxCharsPerByte();
+        if (maxInputCharSize < 0) {
+            maxInputCharSize = 1;
+        }
+        maxOutputCharSize = (int) encoder.maxBytesPerChar();
+        if (maxOutputCharSize < 0) {
+            maxOutputCharSize = 1;
+        }
         inputBuffer = ByteBuffer.allocate(bufferSize);
-        outputBuffer = ByteBuffer.allocate(bufferSize);
+        // Use limit as mark of used bytes
+        inputBuffer.limit(0);
         charBuffer = CharBuffer.allocate(bufferSize);
+        outputBuffer = ByteBuffer.allocate(bufferSize * maxOutputCharSize);
+        outputBuffer.limit(0);
     }
 
     public CharsetStreamTranslator(Charset inputCharset, Charset outputCharset, InputStream source) {
@@ -81,7 +84,8 @@ public class CharsetStreamTranslator extends InputStream {
             }
         }
 
-        return outputBuffer.get();
+        byte byteData = outputBuffer.get();
+        return byteData;
     }
 
     public void processNext() {
@@ -118,16 +122,25 @@ public class CharsetStreamTranslator extends InputStream {
                 Logger.getLogger(CharsetStreamTranslator.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        
-        inputBuffer.position(0);
-        
+
+        inputBuffer.rewind();
 
         decoder.reset();
+        charBuffer.limit(charBuffer.capacity());
         CoderResult decodeResult = decoder.decode(inputBuffer, charBuffer, endOfInput);
-        
+        // TODO process errors?
 
         encoder.reset();
-        outputBuffer.reset();
+        outputBuffer.limit(outputBuffer.capacity());
+        outputBuffer.clear();
+        int chars = charBuffer.position();
+        charBuffer.rewind();
+        charBuffer.limit(chars);
         CoderResult encodeResult = encoder.encode(charBuffer, outputBuffer, endOfInput);
+        // TODO process errors?
+
+        int length = outputBuffer.position();
+        outputBuffer.rewind();
+        outputBuffer.limit(length);
     }
 }
