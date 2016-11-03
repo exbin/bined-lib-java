@@ -62,7 +62,7 @@ import org.exbin.utils.binary_data.PagedData;
 /**
  * Command handler for undo/redo aware hexadecimal editor editing.
  *
- * @version 0.1.1 2016/11/02
+ * @version 0.1.1 2016/11/03
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeCommandHandler implements CodeAreaCommandHandler {
@@ -413,9 +413,11 @@ public class CodeCommandHandler implements CodeAreaCommandHandler {
                     throw new IllegalStateException("Unexpected code type " + codeType.name());
             }
             if (validKey) {
-                DeleteSelectionCommand deleteCommand = null;
+                DeleteSelectionCommand deleteSelectionCommand = null;
                 if (codeArea.hasSelection()) {
-                    deleteCommand = new DeleteSelectionCommand(codeArea);
+                    long selectionStart = codeArea.getSelection().getFirst();
+                    deleteSelectionCommand = new DeleteSelectionCommand(codeArea);
+                    codeArea.getCaret().setCaretPosition(selectionStart);
                 }
 
                 int value;
@@ -431,9 +433,9 @@ public class CodeCommandHandler implements CodeAreaCommandHandler {
                 if (codeArea.getEditationMode() == EditationMode.OVERWRITE) {
                     if (editCommand == null || !(editCommand instanceof EditCodeDataCommand) || editCommand.getCommandType() != EditDataCommand.EditCommandType.OVERWRITE) {
                         editCommand = new EditCodeDataCommand(codeArea, EditCodeDataCommand.EditCommandType.OVERWRITE, dataPosition, codeArea.getCodeOffset());
-                        if (deleteCommand != null) {
+                        if (deleteSelectionCommand != null) {
                             HexCompoundCommand compoundCommand = new HexCompoundCommand(codeArea);
-                            compoundCommand.appendCommand(deleteCommand);
+                            compoundCommand.appendCommand(deleteSelectionCommand);
                             try {
                                 undoHandler.execute(compoundCommand);
                             } catch (Exception ex) {
@@ -449,9 +451,9 @@ public class CodeCommandHandler implements CodeAreaCommandHandler {
                 } else {
                     if (editCommand == null || !(editCommand instanceof EditCodeDataCommand) || editCommand.getCommandType() != EditCodeDataCommand.EditCommandType.INSERT) {
                         editCommand = new EditCodeDataCommand(codeArea, EditCharDataCommand.EditCommandType.INSERT, dataPosition, codeArea.getCodeOffset());
-                        if (deleteCommand != null) {
+                        if (deleteSelectionCommand != null) {
                             HexCompoundCommand compoundCommand = new HexCompoundCommand(codeArea);
-                            compoundCommand.appendCommand(deleteCommand);
+                            compoundCommand.appendCommand(deleteSelectionCommand);
                             try {
                                 undoHandler.execute(compoundCommand);
                             } catch (Exception ex) {
@@ -547,9 +549,9 @@ public class CodeCommandHandler implements CodeAreaCommandHandler {
 
     private void deletingAction(char keyChar) {
         if (codeArea.hasSelection()) {
-            DeleteSelectionCommand deleteCommand = new DeleteSelectionCommand(codeArea);
+            DeleteSelectionCommand deleteSelectionCommand = new DeleteSelectionCommand(codeArea);
             try {
-                undoHandler.execute(deleteCommand);
+                undoHandler.execute(deleteSelectionCommand);
                 codeArea.notifyDataChanged();
             } catch (Exception ex) {
                 Logger.getLogger(CodeCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
@@ -649,11 +651,14 @@ public class CodeCommandHandler implements CodeAreaCommandHandler {
             return;
         }
 
+        long dataSize = codeArea.getDataSize();
         DeleteSelectionCommand deleteSelectionCommand = null;
         if (codeArea.hasSelection()) {
             try {
+                long selectionStart = codeArea.getSelection().getFirst();
+                dataSize -= codeArea.getSelection().getLength();
                 deleteSelectionCommand = new DeleteSelectionCommand(codeArea);
-                codeArea.notifyDataChanged();
+                codeArea.getCaret().setCaretPosition(selectionStart);
             } catch (Exception ex) {
                 Logger.getLogger(CodeCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -669,20 +674,20 @@ public class CodeCommandHandler implements CodeAreaCommandHandler {
 
                     CodeAreaCommand modifyCommand = null;
                     BinaryData pastedData = null;
-                    long dataSize = clipboardData.getDataSize();
+                    long clipDataSize = clipboardData.getDataSize();
                     long insertionPosition = dataPosition;
                     if (codeArea.getEditationMode() == EditationMode.OVERWRITE) {
                         BinaryData modifiedData;
-                        long toReplace = dataSize;
-                        if (insertionPosition + toReplace > codeArea.getDataSize()) {
-                            toReplace = codeArea.getDataSize() - insertionPosition;
+                        long toReplace = clipDataSize;
+                        if (insertionPosition + toReplace > dataSize) {
+                            toReplace = dataSize - insertionPosition;
                             modifiedData = clipboardData.copy(0, toReplace);
                         } else {
                             modifiedData = clipboardData.copy();
                         }
                         if (toReplace > 0) {
                             modifyCommand = new ModifyDataCommand(codeArea, dataPosition, modifiedData);
-                            pastedData = clipboardData.copy(toReplace, clipboardData.getDataSize() - toReplace);
+                            pastedData = clipboardData.copy(toReplace, clipDataSize - toReplace);
                             insertionPosition += toReplace;
                         }
                     }
@@ -726,24 +731,24 @@ public class CodeCommandHandler implements CodeAreaCommandHandler {
                 // TODO use stream directly without buffer
                 PagedData pastedData = new PagedData();
                 pastedData.insert(0, translator, -1);
-                long dataSize = pastedData.getDataSize();
+                long clipDataSize = pastedData.getDataSize();
                 long insertionPosition = dataPosition;
                 if (codeArea.getEditationMode() == EditationMode.OVERWRITE) {
                     BinaryData modifiedData = pastedData;
-                    long toReplace = dataSize;
-                    if (insertionPosition + toReplace > codeArea.getDataSize()) {
-                        toReplace = codeArea.getDataSize() - insertionPosition;
+                    long toReplace = clipDataSize;
+                    if (insertionPosition + toReplace > dataSize) {
+                        toReplace = dataSize - insertionPosition;
                         modifiedData = pastedData.copy(0, toReplace);
                     }
                     if (toReplace > 0) {
                         modifyCommand = new ModifyDataCommand(codeArea, dataPosition, modifiedData);
-                        pastedData = pastedData.copy(toReplace, dataSize - toReplace);
+                        pastedData = pastedData.copy(toReplace, clipDataSize - toReplace);
                         insertionPosition += toReplace;
                     }
                 }
 
                 CodeAreaCommand insertCommand = null;
-                if (pastedData.getDataSize() > 0) {
+                if (clipDataSize > 0) {
                     insertCommand = new InsertDataCommand(codeArea, insertionPosition, pastedData);
                 }
 
@@ -769,11 +774,14 @@ public class CodeCommandHandler implements CodeAreaCommandHandler {
             return;
         }
 
+        long dataSize = codeArea.getDataSize();
         DeleteSelectionCommand deleteSelectionCommand = null;
         if (codeArea.hasSelection()) {
             try {
+                long selectionStart = codeArea.getSelection().getFirst();
+                dataSize -= codeArea.getSelection().getLength();
                 deleteSelectionCommand = new DeleteSelectionCommand(codeArea);
-                codeArea.notifyDataChanged();
+                codeArea.getCaret().setCaretPosition(selectionStart);
             } catch (Exception ex) {
                 Logger.getLogger(CodeCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -802,7 +810,7 @@ public class CodeCommandHandler implements CodeAreaCommandHandler {
                     outputStream.write(dataBuffer, 0, length);
                 }
                 String insertedString = outputStream.toString(codeArea.getCharset().name());
-                ByteArrayEditableData data = new ByteArrayEditableData();
+                ByteArrayEditableData clipData = new ByteArrayEditableData();
                 byte[] buffer = new byte[CODE_BUFFER_LENGTH];
                 int bufferUsage = 0;
                 int offset = 0;
@@ -816,7 +824,7 @@ public class CodeCommandHandler implements CodeAreaCommandHandler {
                             buffer[bufferUsage] = value;
                             bufferUsage++;
                         } else {
-                            data.insert(data.getDataSize(), buffer, 0, bufferUsage);
+                            clipData.insert(clipData.getDataSize(), buffer, 0, bufferUsage);
                             bufferUsage = 0;
                         }
                         offset = i + 1;
@@ -826,37 +834,37 @@ public class CodeCommandHandler implements CodeAreaCommandHandler {
                             buffer[bufferUsage] = value;
                             bufferUsage++;
                         } else {
-                            data.insert(data.getDataSize(), buffer, 0, bufferUsage);
+                            clipData.insert(clipData.getDataSize(), buffer, 0, bufferUsage);
                             bufferUsage = 0;
                         }
                         offset = i;
                     }
                 }
 
+                long clipDataSize = clipData.getDataSize();
                 if (offset < insertedString.length()) {
                     byte value = CodeAreaUtils.stringCodeToByte(insertedString.substring(offset), codeType);
                     if (bufferUsage < CODE_BUFFER_LENGTH) {
                         buffer[bufferUsage] = value;
                         bufferUsage++;
                     } else {
-                        data.insert(data.getDataSize(), buffer, 0, bufferUsage);
+                        clipData.insert(clipDataSize, buffer, 0, bufferUsage);
                         bufferUsage = 0;
                     }
                 }
 
                 if (bufferUsage > 0) {
-                    data.insert(data.getDataSize(), buffer, 0, bufferUsage);
+                    clipData.insert(clipDataSize, buffer, 0, bufferUsage);
                 }
 
-                long dataSize = data.getDataSize();
                 PagedData pastedData = new PagedData();
-                pastedData.insert(0, data);
+                pastedData.insert(0, clipData);
                 long insertionPosition = dataPosition;
                 if (codeArea.getEditationMode() == EditationMode.OVERWRITE) {
                     BinaryData modifiedData = pastedData;
-                    long toReplace = dataSize;
-                    if (insertionPosition + toReplace > codeArea.getDataSize()) {
-                        toReplace = codeArea.getDataSize() - insertionPosition;
+                    long toReplace = clipDataSize;
+                    if (insertionPosition + toReplace > dataSize) {
+                        toReplace = dataSize - insertionPosition;
                         modifiedData = pastedData.copy(0, toReplace);
                     }
                     if (toReplace > 0) {
