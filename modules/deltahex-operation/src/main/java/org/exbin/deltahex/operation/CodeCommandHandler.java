@@ -651,14 +651,16 @@ public class CodeCommandHandler implements CodeAreaCommandHandler {
             return;
         }
 
+        if (!clipboard.isDataFlavorAvailable(deltahexDataFlavor) && !clipboard.isDataFlavorAvailable(DataFlavor.getTextPlainUnicodeFlavor())) {
+            return;
+        }
+
         long dataSize = codeArea.getDataSize();
         DeleteSelectionCommand deleteSelectionCommand = null;
         if (codeArea.hasSelection()) {
             try {
-                long selectionStart = codeArea.getSelection().getFirst();
-                dataSize -= codeArea.getSelection().getLength();
                 deleteSelectionCommand = new DeleteSelectionCommand(codeArea);
-                codeArea.getCaret().setCaretPosition(selectionStart);
+                deleteSelectionCommand.execute();
             } catch (Exception ex) {
                 Logger.getLogger(CodeCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -703,7 +705,13 @@ public class CodeCommandHandler implements CodeAreaCommandHandler {
                     CodeAreaCommand pasteCommand = HexCompoundCommand.buildCompoundCommand(codeArea, deleteSelectionCommand, modifyCommand, insertCommand);
                     if (pasteCommand != null) {
                         try {
-                            undoHandler.execute(pasteCommand);
+                            if (modifyCommand != null) {
+                                modifyCommand.execute();
+                            }
+                            if (insertCommand != null) {
+                                insertCommand.execute();
+                            }
+                            undoHandler.addCommand(pasteCommand);
                         } catch (Exception ex) {
                             Logger.getLogger(CodeCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
                         }
@@ -754,7 +762,13 @@ public class CodeCommandHandler implements CodeAreaCommandHandler {
 
                 CodeAreaCommand pasteCommand = HexCompoundCommand.buildCompoundCommand(codeArea, deleteSelectionCommand, modifyCommand, insertCommand);
                 try {
-                    undoHandler.execute(pasteCommand);
+                    if (modifyCommand != null) {
+                        modifyCommand.execute();
+                    }
+                    if (insertCommand != null) {
+                        insertCommand.execute();
+                    }
+                    undoHandler.addCommand(pasteCommand);
                 } catch (Exception ex) {
                     Logger.getLogger(CodeCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -774,22 +788,24 @@ public class CodeCommandHandler implements CodeAreaCommandHandler {
             return;
         }
 
-        long dataSize = codeArea.getDataSize();
-        DeleteSelectionCommand deleteSelectionCommand = null;
-        if (codeArea.hasSelection()) {
-            try {
-                long selectionStart = codeArea.getSelection().getFirst();
-                dataSize -= codeArea.getSelection().getLength();
-                deleteSelectionCommand = new DeleteSelectionCommand(codeArea);
-                codeArea.getCaret().setCaretPosition(selectionStart);
-            } catch (Exception ex) {
-                Logger.getLogger(CodeCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        if (!clipboard.isDataFlavorAvailable(deltahexDataFlavor) && !clipboard.isDataFlavorAvailable(DataFlavor.getTextPlainUnicodeFlavor())) {
+            return;
         }
 
         if (clipboard.isDataFlavorAvailable(deltahexDataFlavor)) {
             paste();
         } else if (clipboard.isDataFlavorAvailable(DataFlavor.getTextPlainUnicodeFlavor())) {
+            long dataSize = codeArea.getDataSize();
+            DeleteSelectionCommand deleteSelectionCommand = null;
+            if (codeArea.hasSelection()) {
+                try {
+                    deleteSelectionCommand = new DeleteSelectionCommand(codeArea);
+                    deleteSelectionCommand.execute();
+                } catch (Exception ex) {
+                    Logger.getLogger(CodeCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+
             InputStream insertedData;
             try {
                 insertedData = (InputStream) clipboard.getData(DataFlavor.getTextPlainUnicodeFlavor());
@@ -881,7 +897,13 @@ public class CodeCommandHandler implements CodeAreaCommandHandler {
 
                 CodeAreaCommand pasteCommand = HexCompoundCommand.buildCompoundCommand(codeArea, deleteSelectionCommand, modifyCommand, insertCommand);
                 try {
-                    undoHandler.execute(pasteCommand);
+                    if (modifyCommand != null) {
+                        modifyCommand.execute();
+                    }
+                    if (insertCommand != null) {
+                        insertCommand.execute();
+                    }
+                    undoHandler.addCommand(pasteCommand);
                 } catch (Exception ex) {
                     Logger.getLogger(CodeCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
                 }
