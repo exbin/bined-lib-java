@@ -22,7 +22,7 @@ import org.exbin.utils.binary_data.EditableBinaryData;
 /**
  * Operation for modifying data.
  *
- * @version 0.1.0 2016/05/25
+ * @version 0.1.0 2016/11/05
  * @author ExBin Project (http://exbin.org)
  */
 public class ModifyDataOperation extends CodeAreaOperation {
@@ -58,10 +58,6 @@ public class ModifyDataOperation extends CodeAreaOperation {
             undoOperation = new ModifyDataOperation(codeArea, position, undoData);
         }
         ((EditableBinaryData) codeArea.getData()).replace(position, data);
-        ((EditableBinaryData) codeArea.getData()).insert(position, data);
-        // TODO replace
-        // ((EditableBinaryData) codeArea.getData()).replace(position, data);
-
         return undoOperation;
     }
 

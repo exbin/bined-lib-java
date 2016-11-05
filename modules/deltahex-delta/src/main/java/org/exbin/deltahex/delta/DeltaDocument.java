@@ -25,7 +25,7 @@ import org.exbin.utils.binary_data.EditableBinaryData;
 /**
  * Delta document defined as sequence of segments.
  *
- * @version 0.1.1 2016/11/02
+ * @version 0.1.1 2016/11/05
  * @author ExBin Project (http://exbin.org)
  */
 public class DeltaDocument implements EditableBinaryData {
@@ -116,28 +116,32 @@ public class DeltaDocument implements EditableBinaryData {
     }
 
     @Override
-    public long insert(long l, InputStream in, long l1) throws IOException {
+    public long insert(long startFrom, InputStream in, long maxDataLength) throws IOException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public void replace(long targetPosition, BinaryData replacingData) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        remove(targetPosition, replacingData.getDataSize());
+        insert(targetPosition, replacingData);
     }
 
     @Override
     public void replace(long targetPosition, BinaryData replacingData, long startFrom, long length) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        remove(targetPosition, length);
+        insert(targetPosition, replacingData, startFrom, length);
     }
 
     @Override
     public void replace(long targetPosition, byte[] replacingData) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        remove(targetPosition, replacingData.length);
+        insert(targetPosition, replacingData);
     }
 
     @Override
     public void replace(long targetPosition, byte[] replacingData, int replacingDataOffset, int length) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        remove(targetPosition, length);
+        insert(targetPosition, replacingData, replacingDataOffset, length);
     }
 
     @Override

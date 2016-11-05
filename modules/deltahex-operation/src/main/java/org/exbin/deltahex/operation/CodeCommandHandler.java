@@ -655,7 +655,6 @@ public class CodeCommandHandler implements CodeAreaCommandHandler {
             return;
         }
 
-        long dataSize = codeArea.getDataSize();
         DeleteSelectionCommand deleteSelectionCommand = null;
         if (codeArea.hasSelection()) {
             try {
@@ -666,6 +665,7 @@ public class CodeCommandHandler implements CodeAreaCommandHandler {
             }
         }
 
+        long dataSize = codeArea.getDataSize();
         if (clipboard.isDataFlavorAvailable(deltahexDataFlavor)) {
             try {
                 Object object = clipboard.getData(deltahexDataFlavor);
@@ -795,7 +795,6 @@ public class CodeCommandHandler implements CodeAreaCommandHandler {
         if (clipboard.isDataFlavorAvailable(deltahexDataFlavor)) {
             paste();
         } else if (clipboard.isDataFlavorAvailable(DataFlavor.getTextPlainUnicodeFlavor())) {
-            long dataSize = codeArea.getDataSize();
             DeleteSelectionCommand deleteSelectionCommand = null;
             if (codeArea.hasSelection()) {
                 try {
@@ -806,6 +805,7 @@ public class CodeCommandHandler implements CodeAreaCommandHandler {
                 }
             }
 
+            long dataSize = codeArea.getDataSize();
             InputStream insertedData;
             try {
                 insertedData = (InputStream) clipboard.getData(DataFlavor.getTextPlainUnicodeFlavor());
