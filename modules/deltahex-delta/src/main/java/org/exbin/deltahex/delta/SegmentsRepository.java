@@ -31,7 +31,7 @@ import org.exbin.utils.binary_data.OutOfBoundsException;
 /**
  * Repository of delta segments.
  *
- * @version 0.1.1 2016/10/19
+ * @version 0.1.1 2016/11/06
  * @author ExBin Project (http://exbin.org)
  */
 public class SegmentsRepository {
@@ -242,6 +242,26 @@ public class SegmentsRepository {
         return memorySegment;
     }
 
+    public void updateSegment(DataSegment segment, long position, long length) {
+        if (segment instanceof MemorySegment) {
+            DataSegmentsMap segmentsMap = memorySources.get(((MemorySegment) segment).getSource());
+            segmentsMap.updateSegment(segment, position, length);
+        } else {
+            DataSegmentsMap segmentsMap = fileSources.get(((FileSegment) segment).getSource());
+            segmentsMap.updateSegment(segment, position, length);
+        }
+    }
+
+    public void updateSegmentLength(DataSegment segment, long length) {
+        if (segment instanceof MemorySegment) {
+            DataSegmentsMap segmentsMap = memorySources.get(((MemorySegment) segment).getSource());
+            segmentsMap.updateSegmentLength(segment, length);
+        } else {
+            DataSegmentsMap segmentsMap = fileSources.get(((FileSegment) segment).getSource());
+            segmentsMap.updateSegmentLength(segment, length);
+        }
+    }
+
     public void dropMemorySegment(MemorySegment memorySegment) {
         DataSegmentsMap segmentsMap = memorySources.get(memorySegment.getSource());
         segmentsMap.remove(memorySegment);
@@ -277,7 +297,7 @@ public class SegmentsRepository {
         }
 
         if (segmentPosition >= memorySegment.getLength()) {
-            memorySegment.setLength(segmentPosition + 1);
+            segmentsMap.updateSegmentLength(memorySegment, segmentPosition + 1);
             if (memorySegment.getStartPosition() + segmentPosition >= memorySource.getDataSize()) {
                 memorySource.setDataSize(memorySegment.getStartPosition() + segmentPosition + 1);
             }
@@ -286,39 +306,51 @@ public class SegmentsRepository {
     }
 
     public void insertMemoryData(MemorySegment memorySegment, long position, BinaryData insertedData) {
+        MemoryDataSource memorySource = memorySegment.getSource();
+        DataSegmentsMap segmentsMap = memorySources.get(memorySource);
         detachMemoryArea(memorySegment, position, insertedData.getDataSize());
         memorySegment.getSource().insert(position, insertedData);
-        memorySegment.setLength(memorySegment.getLength() + insertedData.getDataSize());
+        segmentsMap.updateSegmentLength(memorySegment, memorySegment.getLength() + insertedData.getDataSize());
     }
 
     public void insertMemoryData(MemorySegment memorySegment, long position, BinaryData insertedData, long insertedDataOffset, long insertedDataLength) {
+        MemoryDataSource memorySource = memorySegment.getSource();
+        DataSegmentsMap segmentsMap = memorySources.get(memorySource);
         detachMemoryArea(memorySegment, position, insertedData.getDataSize());
         memorySegment.getSource().insert(position, insertedData, insertedDataOffset, insertedDataLength);
-        memorySegment.setLength(memorySegment.getLength() + insertedDataLength);
+        segmentsMap.updateSegmentLength(memorySegment, memorySegment.getLength() + insertedDataLength);
     }
 
     public void insertMemoryData(MemorySegment memorySegment, long position, byte[] insertedData) {
+        MemoryDataSource memorySource = memorySegment.getSource();
+        DataSegmentsMap segmentsMap = memorySources.get(memorySource);
         detachMemoryArea(memorySegment, position, insertedData.length);
         memorySegment.getSource().insert(position, insertedData);
-        memorySegment.setLength(memorySegment.getLength() + insertedData.length);
+        segmentsMap.updateSegmentLength(memorySegment, memorySegment.getLength() + insertedData.length);
     }
 
     public void insertMemoryData(MemorySegment memorySegment, long position, byte[] insertedData, int insertedDataOffset, int insertedDataLength) {
+        MemoryDataSource memorySource = memorySegment.getSource();
+        DataSegmentsMap segmentsMap = memorySources.get(memorySource);
         detachMemoryArea(memorySegment, position, insertedData.length);
         memorySegment.getSource().insert(position, insertedData, insertedDataOffset, insertedDataLength);
-        memorySegment.setLength(memorySegment.getLength() + insertedDataLength);
+        segmentsMap.updateSegmentLength(memorySegment, memorySegment.getLength() + insertedDataLength);
     }
 
     public void insertMemoryData(MemorySegment memorySegment, long position, long length) {
+        MemoryDataSource memorySource = memorySegment.getSource();
+        DataSegmentsMap segmentsMap = memorySources.get(memorySource);
         detachMemoryArea(memorySegment, position, length);
         memorySegment.getSource().insert(position, length);
-        memorySegment.setLength(memorySegment.getLength() + length);
+        segmentsMap.updateSegmentLength(memorySegment, memorySegment.getLength() + length);
     }
 
     public void insertUninitializedMemoryData(MemorySegment memorySegment, long position, long length) {
+        MemoryDataSource memorySource = memorySegment.getSource();
+        DataSegmentsMap segmentsMap = memorySources.get(memorySource);
         detachMemoryArea(memorySegment, position, length);
         memorySegment.getSource().insertUninitialized(position, length);
-        memorySegment.setLength(memorySegment.getLength() + length);
+        segmentsMap.updateSegmentLength(memorySegment, memorySegment.getLength() + length);
     }
 
     /**
@@ -394,7 +426,13 @@ public class SegmentsRepository {
             focusSegment(segment.getStartPosition(), segment.getLength());
             SegmentRecord record = new SegmentRecord();
             record.dataSegment = segment;
-            long maxPosition = segment.getStartPosition() + segment.getLength();
+            addRecord(record);
+        }
+
+        private void addRecord(SegmentRecord record) {
+            long startPosition = record.dataSegment.getStartPosition();
+            long length = record.dataSegment.getLength();
+            long maxPosition = startPosition + length;
             if (pointerRecord == null) {
                 record.maxPosition = maxPosition;
                 records.add(0, record);
@@ -404,7 +442,7 @@ public class SegmentsRepository {
                     nextRecord = records.nextTo(nextRecord);
                 }
             } else {
-                if (pointerRecord.maxPosition > segment.getStartPosition() + segment.getLength()) {
+                if (pointerRecord.maxPosition > startPosition + length) {
                     maxPosition = pointerRecord.maxPosition;
                 } else {
                     SegmentRecord nextRecord = pointerRecord.next;
@@ -419,6 +457,83 @@ public class SegmentsRepository {
         }
 
         private void remove(DataSegment segment) {
+            SegmentRecord record = findRecord(segment);
+
+            if (record.dataSegment == segment) {
+                removeRecord(record);
+            } else {
+                throw new IllegalStateException("Segment requested for removal was not found");
+            }
+        }
+
+        private void removeRecord(SegmentRecord record) {
+            SegmentRecord prevRecord = records.prevTo(record);
+            SegmentRecord nextRecord = records.nextTo(record);
+            records.remove(record);
+            pointerRecord = prevRecord;
+
+            // Update maxPosition cached values
+            if (nextRecord != null) {
+                long maxPosition = nextRecord.dataSegment.getStartPosition() + nextRecord.dataSegment.getLength();
+                if (prevRecord != null) {
+                    long prevMaxPosition = prevRecord.dataSegment.getStartPosition() + prevRecord.dataSegment.getLength();
+                    if (prevMaxPosition > maxPosition) {
+                        maxPosition = prevMaxPosition;
+                    }
+                }
+                while (nextRecord != null && maxPosition < nextRecord.maxPosition) {
+                    long nextMaxPosition = nextRecord.dataSegment.getStartPosition() + nextRecord.dataSegment.getLength();
+                    if (nextMaxPosition == nextRecord.maxPosition) {
+                        break;
+                    }
+                    if (nextMaxPosition > maxPosition) {
+                        maxPosition = nextMaxPosition;
+                    }
+                    nextRecord.maxPosition = maxPosition;
+                    nextRecord = records.nextTo(nextRecord);
+                }
+            }
+        }
+
+        private boolean hasMoreSegments() {
+            return records.first() != null && records.first() != records.last();
+        }
+
+        private void updateSegment(DataSegment segment, long position, long length) {
+            // TODO optimalization - update only affected records without removing current record
+            SegmentRecord record = findRecord(segment);
+            if (record.dataSegment == segment) {
+                removeRecord(record);
+                if (segment instanceof MemorySegment) {
+                    ((MemorySegment) segment).setStartPosition(position);
+                    ((MemorySegment) segment).setLength(length);
+                } else {
+                    ((FileSegment) segment).setStartPosition(position);
+                    ((FileSegment) segment).setLength(length);
+                }
+                addRecord(record);
+            } else {
+                throw new IllegalStateException("Segment requested for update was not found");
+            }
+        }
+
+        private void updateSegmentLength(DataSegment segment, long length) {
+            // TODO optimalization - update only affected records without removing current record
+            SegmentRecord record = findRecord(segment);
+            if (record.dataSegment == segment) {
+                removeRecord(record);
+                if (segment instanceof MemorySegment) {
+                    ((MemorySegment) segment).setLength(length);
+                } else {
+                    ((FileSegment) segment).setLength(length);
+                }
+                addRecord(record);
+            } else {
+                throw new IllegalStateException("Segment requested for update was not found");
+            }
+        }
+
+        private SegmentRecord findRecord(DataSegment segment) {
             focusSegment(segment.getStartPosition(), segment.getLength());
             SegmentRecord record = pointerRecord;
             while (record.dataSegment != segment
@@ -427,46 +542,7 @@ public class SegmentsRepository {
                 record = records.prevTo(record);
             }
 
-            if (record.dataSegment == segment) {
-                SegmentRecord prevRecord = records.prevTo(record);
-                SegmentRecord nextRecord = records.nextTo(record);
-                records.remove(record);
-                pointerRecord = prevRecord;
-
-                // Update maxPosition cached values
-                if (nextRecord != null) {
-                    long maxPosition = nextRecord.dataSegment.getStartPosition() + nextRecord.dataSegment.getLength();
-                    if (prevRecord != null) {
-                        long prevMaxPosition = prevRecord.dataSegment.getStartPosition() + prevRecord.dataSegment.getLength();
-                        if (prevMaxPosition > maxPosition) {
-                            maxPosition = prevMaxPosition;
-                        }
-                    }
-                    while (nextRecord != null && maxPosition < nextRecord.maxPosition) {
-                        long nextMaxPosition = nextRecord.dataSegment.getStartPosition() + nextRecord.dataSegment.getLength();
-                        if (nextMaxPosition == nextRecord.maxPosition) {
-                            break;
-                        }
-                        if (nextMaxPosition > maxPosition) {
-                            maxPosition = nextMaxPosition;
-                        }
-                        nextRecord.maxPosition = maxPosition;
-                        nextRecord = records.nextTo(nextRecord);
-                    }
-                }
-            } else {
-                throw new IllegalStateException("Segment requested for removal was not found");
-            }
-        }
-
-        private boolean hasMoreSegments() {
-            return records.first() != null && records.first() != records.last();
-        }
-
-        private void updateSegment(DataSegment segment) {
-            // TODO optimalization
-            remove(segment);
-            add(segment);
+            return record;
         }
 
         /**

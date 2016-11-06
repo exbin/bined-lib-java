@@ -22,7 +22,7 @@ import org.exbin.utils.binary_data.OutOfBoundsException;
 /**
  * Access window for delta document.
  *
- * @version 0.1.1 2016/11/02
+ * @version 0.1.1 2016/11/06
  * @author ExBin Project (http://exbin.org)
  */
 public class DeltaDocumentWindow {
@@ -70,12 +70,11 @@ public class DeltaDocumentWindow {
             }
             pointer.position++;
             FileSegment documentSegment = ((FileSegment) pointer.segment);
-            documentSegment.setStartPosition(documentSegment.getStartPosition() + 1);
             if (documentSegment.getLength() == 1) {
                 segments.remove(documentSegment);
                 repository.dropSegment(documentSegment);
             } else {
-                documentSegment.setLength(documentSegment.getLength() - 1);
+                repository.updateSegment(documentSegment, documentSegment.getStartPosition() + 1, documentSegment.getLength() - 1);
             }
         } else {
             if (pointer.segment == null) {
@@ -390,6 +389,9 @@ public class DeltaDocumentWindow {
 
         DefaultDoublyLinkedList<DataSegment> segments = document.getSegments();
         DataSegment segment = pointer.segment;
+        if (segment == null) {
+            throw new NullPointerException("Segment on given position not found");
+        }
         long offset = startFrom - pointer.position;
         while (length > 0) {
             long segmentLength = segment.getLength();
@@ -440,12 +442,12 @@ public class DeltaDocumentWindow {
         if (pointer.segment instanceof MemorySegment) {
             MemorySegment memorySegment = (MemorySegment) pointer.segment;
             MemorySegment newSegment = repository.createMemorySegment(memorySegment.getSource(), memorySegment.getStartPosition() + firstPartSize, memorySegment.getLength() - firstPartSize);
-            memorySegment.setLength(firstPartSize);
+            repository.updateSegmentLength(memorySegment, firstPartSize);
             segments.addAfter(pointer.segment, newSegment);
         } else {
             FileSegment fileSegment = (FileSegment) pointer.segment;
             FileSegment newSegment = repository.createFileSegment(fileSegment.getSource(), fileSegment.getStartPosition() + firstPartSize, fileSegment.getLength() - firstPartSize);
-            fileSegment.setLength(firstPartSize);
+            repository.updateSegmentLength(fileSegment, firstPartSize);
             segments.addAfter(fileSegment, newSegment);
         }
     }
@@ -569,7 +571,7 @@ public class DeltaDocumentWindow {
 
         if (segment instanceof FileSegment && nextSegment instanceof FileSegment) {
             if (((FileSegment) segment).getStartPosition() + segment.getLength() == ((FileSegment) nextSegment).getStartPosition()) {
-                ((FileSegment) segment).setLength(segment.getLength() + nextSegment.getLength());
+                repository.updateSegmentLength(segment, segment.getLength() + nextSegment.getLength());
                 repository.dropSegment(nextSegment);
                 segments.remove(nextSegment);
                 return true;
@@ -583,7 +585,7 @@ public class DeltaDocumentWindow {
             MemorySegment nextMemorySegment = (MemorySegment) nextSegment;
             if (memorySegment.getSource() == nextMemorySegment.getSource()) {
                 if (memorySegment.getStartPosition() + segment.getLength() == nextMemorySegment.getStartPosition()) {
-                    memorySegment.setLength(segment.getLength() + nextSegment.getLength());
+                    repository.updateSegmentLength(memorySegment, segment.getLength() + nextSegment.getLength());
                     repository.dropSegment(nextSegment);
                     segments.remove(nextSegment);
                     return true;
