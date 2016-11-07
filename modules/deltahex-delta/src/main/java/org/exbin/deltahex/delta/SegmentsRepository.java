@@ -102,7 +102,7 @@ public class SegmentsRepository {
         // Create save transformation
         Map<DataSegment, Long> saveMap = createSaveTransformation(savedDocument);
 
-        // Apply transformation to other document
+        // Apply transformation to other documents
         for (DeltaDocument document : documents) {
             if (document != savedDocument) {
                 applySaveMap(document, saveMap, savedDocument.getFileSource());

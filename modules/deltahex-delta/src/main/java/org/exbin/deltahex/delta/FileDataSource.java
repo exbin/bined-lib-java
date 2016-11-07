@@ -30,40 +30,46 @@ import java.util.logging.Logger;
  */
 public class FileDataSource {
 
-    private final RandomAccessFile file;
+    private final File file;
+    private final RandomAccessFile accessFile;
     private final DeltaDataPageWindow window;
     private boolean closed = false;
 
     public FileDataSource(File sourceFile) throws FileNotFoundException, IOException {
-        file = new RandomAccessFile(sourceFile, "rw");
+        file = sourceFile;
+        accessFile = new RandomAccessFile(sourceFile, "rw");
         window = new DeltaDataPageWindow(this);
     }
 
     public long getFileLength() throws IOException {
         checkClosed();
-        return file.length();
+        return accessFile.length();
     }
 
-    RandomAccessFile getFile() {
-        checkClosed();
+    public File getFile() {
         return file;
+    }
+
+    /* package */ RandomAccessFile getAccessFile() {
+        checkClosed();
+        return accessFile;
     }
 
     public byte getByte(long position) {
         checkClosed();
         return window.getByte(position);
     }
-    
+
     public void close() {
         checkClosed();
         try {
-            file.close();
+            accessFile.close();
         } catch (IOException ex) {
             Logger.getLogger(FileDataSource.class.getName()).log(Level.SEVERE, null, ex);
         }
         closed = true;
     }
-    
+
     private void checkClosed() {
         if (closed) {
             throw new IllegalStateException("");

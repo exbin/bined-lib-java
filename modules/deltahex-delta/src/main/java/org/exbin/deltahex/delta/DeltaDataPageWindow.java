@@ -42,7 +42,7 @@ public class DeltaDataPageWindow {
     private void loadPage(int index) {
         long pageIndex = dataPages[index].pageIndex;
         long pagePosition = pageIndex * PAGE_SIZE;
-        RandomAccessFile file = data.getFile();
+        RandomAccessFile file = data.getAccessFile();
         try {
             file.seek(pagePosition);
             byte[] page = dataPages[index].page;

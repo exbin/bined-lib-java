@@ -220,7 +220,16 @@ public class DeltaDocument implements EditableBinaryData {
         }
     }
 
-    void setDataLength(long dataSize) {
+    /**
+     * Performs save to source file.
+     *
+     * @throws java.io.IOException on input/output error
+     */
+    public void save() throws IOException {
+        repository.saveDocument(this);
+    }
+
+    /* package */ void setDataLength(long dataSize) {
         this.dataLength = dataSize;
     }
 
