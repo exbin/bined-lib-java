@@ -256,18 +256,4 @@ public class DeltaDocument implements EditableBinaryData {
     public SegmentsRepository getRepository() {
         return repository;
     }
-
-    /**
-     * POJO structure for sliding data pointer.
-     */
-    private static class DataPointer {
-
-        long position;
-        DataSegment segment;
-
-        void setPointer(long position, DataSegment segment) {
-            this.position = position;
-            this.segment = segment;
-        }
-    }
 }

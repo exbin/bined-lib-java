@@ -469,28 +469,31 @@ public class SegmentsRepository {
         private void removeRecord(SegmentRecord record) {
             SegmentRecord prevRecord = records.prevTo(record);
             SegmentRecord nextRecord = records.nextTo(record);
+            long recordEndPosition = record.dataSegment.getStartPosition() + record.dataSegment.getLength();
             records.remove(record);
             pointerRecord = prevRecord;
+            long prevMaxPosition = 0;
+            if (prevRecord != null) {
+                prevMaxPosition = prevRecord.maxPosition;
+            }
 
             // Update maxPosition cached values
-            if (nextRecord != null) {
-                long maxPosition = nextRecord.dataSegment.getStartPosition() + nextRecord.dataSegment.getLength();
-                if (prevRecord != null) {
-                    long prevMaxPosition = prevRecord.dataSegment.getStartPosition() + prevRecord.dataSegment.getLength();
-                    if (prevMaxPosition > maxPosition) {
-                        maxPosition = prevMaxPosition;
-                    }
+            if (nextRecord != null && prevMaxPosition < recordEndPosition) {
+                long maxPosition =  nextRecord.dataSegment.getStartPosition() + nextRecord.dataSegment.getLength();
+                if (prevMaxPosition > maxPosition) {
+                    maxPosition = prevMaxPosition;
                 }
+
                 while (nextRecord != null && maxPosition < nextRecord.maxPosition) {
-                    long nextMaxPosition = nextRecord.dataSegment.getStartPosition() + nextRecord.dataSegment.getLength();
-                    if (nextMaxPosition == nextRecord.maxPosition) {
-                        break;
-                    }
-                    if (nextMaxPosition > maxPosition) {
-                        maxPosition = nextMaxPosition;
-                    }
                     nextRecord.maxPosition = maxPosition;
                     nextRecord = records.nextTo(nextRecord);
+                    
+                    if (nextRecord != null) {
+                        long nextMaxPosition = nextRecord.dataSegment.getStartPosition() + nextRecord.dataSegment.getLength();
+                        if (nextMaxPosition > maxPosition) {
+                            maxPosition = nextMaxPosition;
+                        }
+                    }
                 }
             }
         }
@@ -511,6 +514,7 @@ public class SegmentsRepository {
                     ((FileSegment) segment).setStartPosition(position);
                     ((FileSegment) segment).setLength(length);
                 }
+                focusSegment(segment.getStartPosition(), segment.getLength());
                 addRecord(record);
             } else {
                 throw new IllegalStateException("Segment requested for update was not found");
