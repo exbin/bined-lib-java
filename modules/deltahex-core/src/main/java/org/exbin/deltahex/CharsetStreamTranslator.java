@@ -81,6 +81,9 @@ public class CharsetStreamTranslator extends InputStream {
                 return -1;
             } else {
                 processNext();
+                if (outputBuffer.remaining() == 0) {
+                    return -1;
+                }
             }
         }
 

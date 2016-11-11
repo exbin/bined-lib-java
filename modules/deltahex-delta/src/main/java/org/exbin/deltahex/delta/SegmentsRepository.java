@@ -31,7 +31,7 @@ import org.exbin.utils.binary_data.OutOfBoundsException;
 /**
  * Repository of delta segments.
  *
- * @version 0.1.1 2016/11/06
+ * @version 0.1.1 2016/11/09
  * @author ExBin Project (http://exbin.org)
  */
 public class SegmentsRepository {
@@ -442,11 +442,11 @@ public class SegmentsRepository {
                     nextRecord = records.nextTo(nextRecord);
                 }
             } else {
-                if (pointerRecord.maxPosition > startPosition + length) {
+                if (pointerRecord.maxPosition > maxPosition) {
                     maxPosition = pointerRecord.maxPosition;
                 } else {
                     SegmentRecord nextRecord = pointerRecord.next;
-                    while (nextRecord != null && nextRecord.maxPosition < maxPosition) {
+                    while (nextRecord != null && maxPosition > nextRecord.maxPosition) {
                         nextRecord.maxPosition = maxPosition;
                         nextRecord = records.nextTo(nextRecord);
                     }
@@ -479,7 +479,7 @@ public class SegmentsRepository {
 
             // Update maxPosition cached values
             if (nextRecord != null && prevMaxPosition < recordEndPosition) {
-                long maxPosition =  nextRecord.dataSegment.getStartPosition() + nextRecord.dataSegment.getLength();
+                long maxPosition = nextRecord.dataSegment.getStartPosition() + nextRecord.dataSegment.getLength();
                 if (prevMaxPosition > maxPosition) {
                     maxPosition = prevMaxPosition;
                 }
@@ -487,7 +487,7 @@ public class SegmentsRepository {
                 while (nextRecord != null && maxPosition < nextRecord.maxPosition) {
                     nextRecord.maxPosition = maxPosition;
                     nextRecord = records.nextTo(nextRecord);
-                    
+
                     if (nextRecord != null) {
                         long nextMaxPosition = nextRecord.dataSegment.getStartPosition() + nextRecord.dataSegment.getLength();
                         if (nextMaxPosition > maxPosition) {

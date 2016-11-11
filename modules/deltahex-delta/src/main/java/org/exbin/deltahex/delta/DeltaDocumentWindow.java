@@ -107,7 +107,7 @@ public class DeltaDocumentWindow {
                 focusSegment(startFrom);
             }
             MemorySegment insertedSegment = repository.createMemorySegment();
-            repository.insertUninitializedMemoryData((MemorySegment) insertedSegment, 0, length);
+            repository.insertUninitializedMemoryData(insertedSegment, 0, length);
             if (pointer.segment == null) {
                 segments.add(insertedSegment);
             } else {
@@ -135,7 +135,7 @@ public class DeltaDocumentWindow {
                 focusSegment(startFrom);
             }
             MemorySegment insertedSegment = repository.createMemorySegment();
-            repository.insertMemoryData((MemorySegment) insertedSegment, 0, length);
+            repository.insertMemoryData(insertedSegment, 0, length);
             if (pointer.segment == null) {
                 segments.add(insertedSegment);
             } else {
@@ -163,7 +163,7 @@ public class DeltaDocumentWindow {
                 focusSegment(startFrom);
             }
             MemorySegment insertedSegment = repository.createMemorySegment();
-            repository.insertMemoryData((MemorySegment) insertedSegment, 0, insertedData);
+            repository.insertMemoryData(insertedSegment, 0, insertedData);
             if (pointer.segment == null) {
                 segments.add(insertedSegment);
             } else {
@@ -188,7 +188,7 @@ public class DeltaDocumentWindow {
                 focusSegment(startFrom);
             }
             MemorySegment insertedSegment = repository.createMemorySegment();
-            repository.insertMemoryData((MemorySegment) insertedSegment, 0, insertedData);
+            repository.insertMemoryData(insertedSegment, 0, insertedData);
             if (pointer.segment == null) {
                 segments.add(insertedSegment);
             } else {
@@ -242,7 +242,7 @@ public class DeltaDocumentWindow {
                 focusSegment(startFrom);
             }
             MemorySegment insertedSegment = repository.createMemorySegment();
-            repository.insertMemoryData((MemorySegment) insertedSegment, 0, insertedData);
+            repository.insertMemoryData(insertedSegment, 0, insertedData);
             if (pointer.segment == null) {
                 segments.add(insertedSegment);
             } else {
@@ -301,7 +301,7 @@ public class DeltaDocumentWindow {
                 focusSegment(startFrom);
             }
             MemorySegment insertedSegment = repository.createMemorySegment();
-            repository.insertMemoryData((MemorySegment) insertedSegment, 0, insertedData, insertedDataOffset, insertedDataLength);
+            repository.insertMemoryData(insertedSegment, 0, insertedData, insertedDataOffset, insertedDataLength);
             if (pointer.segment == null) {
                 segments.add(insertedSegment);
             } else {
@@ -519,7 +519,7 @@ public class DeltaDocumentWindow {
             }
 
             while (position < pointer.position) {
-                pointer.segment = (DataSegment) segments.prevTo(pointer.segment);
+                pointer.segment = segments.prevTo(pointer.segment);
                 if (pointer.segment == null) {
                     throw new IllegalStateException("Unexpected null segment");
                 }
@@ -535,7 +535,7 @@ public class DeltaDocumentWindow {
                     break;
                 }
                 pointer.position += pointer.segment.getLength();
-                pointer.segment = (DataSegment) segments.nextTo(pointer.segment);
+                pointer.segment = segments.nextTo(pointer.segment);
                 if (pointer.segment == null) {
                     throw new IllegalStateException("Unexpected null segment");
                 }
