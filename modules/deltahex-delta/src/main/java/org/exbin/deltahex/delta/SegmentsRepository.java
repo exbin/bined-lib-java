@@ -17,6 +17,7 @@ package org.exbin.deltahex.delta;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -40,6 +41,7 @@ public class SegmentsRepository {
     private final Map<MemoryDataSource, DataSegmentsMap> memorySources = new HashMap<>();
 
     private final List<DeltaDocument> documents = new ArrayList<>();
+    private static final int PROCESSING_PAGE_SIZE = 4096;
 
     public SegmentsRepository() {
     }
@@ -91,7 +93,7 @@ public class SegmentsRepository {
     }
 
     /**
-     * Save document to it's source file and update all documents.
+     * Saves document to it's source file and update all documents.
      *
      * @param savedDocument document to save
      * @throws java.io.IOException if input/output error
@@ -109,11 +111,110 @@ public class SegmentsRepository {
             }
         }
 
-        // Perform document save
+        // Perform document save by pages
+        long position = 0;
+        long documentSize = savedDocument.getDataSize();
+        DefaultDoublyLinkedList<DataSegment> segments = savedDocument.getSegments();
+        while (position < documentSize) {
+            // Scan all segments overlaping current page
+            DataSegmentsMap segmentsMap = fileSources.get(fileSource);
+            segmentsMap.focusFirstOverlay(position, PROCESSING_PAGE_SIZE);
+            SegmentRecord pointerRecord = segmentsMap.pointerRecord;
+            while (pointerRecord != null && pointerRecord.getStartPosition() < position + PROCESSING_PAGE_SIZE && pointerRecord.maxPosition > position) {
+                long segmentPosition = saveMap.get(pointerRecord.dataSegment);
+                if (segments.contains(pointerRecord.dataSegment) && segmentPosition != pointerRecord.dataSegment.getStartPosition()) {
+                    long sectionStart = segmentPosition - position;
+                    long sectionLength = pointerRecord.dataSegment.getLength() - sectionStart;
+                    if (segmentPosition + sectionStart + sectionLength > position + PROCESSING_PAGE_SIZE) {
+                        sectionLength = position + PROCESSING_PAGE_SIZE - segmentPosition - sectionStart;
+                    }
+                    processSegmentSection(pointerRecord.dataSegment, sectionStart, sectionLength);
+                }
+                pointerRecord = pointerRecord.next;
+            }
+
+            position += PROCESSING_PAGE_SIZE;
+        }
+
+        // Save all modified segments
+        DataSegment currentSegment = segments.first();
+        long currentSegmentPosition = 0;
+        while (currentSegment != null) {
+            if (currentSegment instanceof FileSegment) {
+                FileSegment fileSegment = (FileSegment) currentSegment;
+                FileDataSource source = fileSegment.getSource();
+                if (!(source == savedDocument.getFileSource() && currentSegmentPosition == fileSegment.getStartPosition())) {
+                    saveSegment(fileSource, currentSegmentPosition, currentSegment);
+                }
+            } else {
+                saveSegment(fileSource, currentSegmentPosition, currentSegment);
+            }
+
+            currentSegmentPosition += currentSegment.getLength();
+            currentSegment = currentSegment.getNext();
+        }
+
         // Update document segments
         savedDocument.clear();
         DataSegment fullFileSegment = createFileSegment(fileSource, 0, fileSource.getFileLength());
         savedDocument.getSegments().add(fullFileSegment);
+    }
+
+    /**
+     * Processes section of the segment for saving recursivelly.
+     *
+     * @param segment target file segment
+     * @param sectionStart start of the section
+     * @param sectionLength length of the section
+     */
+    private void processSegmentSection(DataSegment segment, long sectionStart, long sectionLength) {
+        // TODO
+    }
+
+    private void saveSegment(FileDataSource fileSource, long targetPosition, DataSegment segment) {
+        RandomAccessFile accessFile = fileSource.getAccessFile();
+        try {
+            accessFile.seek(targetPosition);
+            if (segment instanceof MemorySegment) {
+                MemorySegment memorySegment = (MemorySegment) segment;
+                MemoryDataSource source = memorySegment.getSource();
+
+                long sectionPosition = memorySegment.getStartPosition();
+                long sectionLength = memorySegment.getLength();
+                byte[] buffer = new byte[PROCESSING_PAGE_SIZE];
+                while (sectionLength > 0) {
+                    int length = sectionLength < PROCESSING_PAGE_SIZE ? (int) sectionLength : PROCESSING_PAGE_SIZE;
+                    source.copyToArray(sectionPosition, buffer, 0, length);
+                    accessFile.write(buffer, 0, length);
+                    sectionPosition += length;
+                    sectionLength -= length;
+                }
+            } else {
+                FileSegment fileSegment = (FileSegment) segment;
+                FileDataSource source = fileSegment.getSource();
+                RandomAccessFile sourceFile = source.getAccessFile();
+
+                long sectionPosition = fileSegment.getStartPosition();
+                long sectionLength = fileSegment.getLength();
+                
+                if (source == fileSource && sectionPosition < targetPosition && sectionPosition + sectionLength >= targetPosition) {
+                    // Saved segment overlaps itself, reverse segmentation is needed
+                    // TODO, use double loop
+                } else {
+                    sourceFile.seek(sectionPosition);
+                    byte[] buffer = new byte[PROCESSING_PAGE_SIZE];
+                    while (sectionLength > 0) {
+                        int length = sectionLength < PROCESSING_PAGE_SIZE ? (int) sectionLength : PROCESSING_PAGE_SIZE;
+                        length = sourceFile.read(buffer, 0, length);
+                        accessFile.write(buffer, 0, length);
+                        sectionPosition += length;
+                        sectionLength -= length;
+                    }
+                }
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(SegmentsRepository.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     private Map<DataSegment, Long> createSaveTransformation(DeltaDocument savedDocument) {
@@ -134,20 +235,20 @@ public class SegmentsRepository {
         for (DataSegment segment : segments) {
             long segmentPosition = segment.getStartPosition();
             long segmentLength = segment.getLength();
-            DataSegmentsMap segmentMap;
+            DataSegmentsMap segmentsMap;
             if (segment instanceof FileSegment) {
                 FileSegment fileSegment = (FileSegment) segment;
                 FileDataSource segmentSource = fileSegment.getSource();
-                segmentMap = fileSources.get(segmentSource);
+                segmentsMap = fileSources.get(segmentSource);
             } else {
                 MemorySegment memorySegment = (MemorySegment) segment;
                 MemoryDataSource segmentSource = memorySegment.getSource();
-                segmentMap = memorySources.get(segmentSource);
+                segmentsMap = memorySources.get(segmentSource);
             }
 
             // Split segment by saved file segments
-            segmentMap.focusFirstOverlay(segmentPosition, segmentLength);
-            SegmentRecord record = segmentMap.pointerRecord;
+            segmentsMap.focusFirstOverlay(segmentPosition, segmentLength);
+            SegmentRecord record = segmentsMap.pointerRecord;
             if (record != null) {
                 while (processed < segmentLength && record.dataSegment.getStartPosition() <= segmentPosition + segmentLength) {
                     Long savePosition = saveMap.get(record.dataSegment);
@@ -172,13 +273,14 @@ public class SegmentsRepository {
                         document.insert(startPosition, newSegment);
                     }
 
-                    record = segmentMap.records.nextTo(record);
+                    record = segmentsMap.records.nextTo(record);
                     if (record == null) {
                         break;
                     }
                 }
             }
         }
+
         if (processed < document.getDataSize()) {
             loadFileSegmentsAsData(document, fileSource, processed, document.getDataSize() - processed);
         }
@@ -618,7 +720,8 @@ public class SegmentsRepository {
             } else {
                 // Backward direction traversal
                 SegmentRecord record = pointerRecord;
-                while (pointerRecord.maxPosition < startPosition) {
+                long endPosition = startPosition + length;
+                while (pointerRecord.dataSegment.getStartPosition() > endPosition) {
                     pointerRecord = record;
                     record = records.prevTo(record);
                     if (record == null) {
@@ -644,6 +747,14 @@ public class SegmentsRepository {
         @Override
         public DoublyLinkedItem getNext() {
             return next;
+        }
+
+        public long getStartPosition() {
+            return dataSegment.getStartPosition();
+        }
+
+        public long getLength() {
+            return dataSegment.getLength();
         }
 
         @Override

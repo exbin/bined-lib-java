@@ -27,7 +27,7 @@ public enum CodeType {
 
     private final int maxDigits;
 
-    CodeType(int maxDigits) {
+    private CodeType(int maxDigits) {
         this.maxDigits = maxDigits;
     }
 

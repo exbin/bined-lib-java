@@ -23,5 +23,17 @@ package org.exbin.deltahex;
  */
 public enum EditationAllowed {
 
-    READ_ONLY, OVERWRITE_ONLY, ALLOWED;
+    /**
+     * Document cannot be changed.
+     */
+    READ_ONLY,
+    /**
+     * Only overwrite editation mode is allowed and size of document cannot be
+     * changed.
+     */
+    OVERWRITE_ONLY,
+    /**
+     * All editation modes are allowed.
+     */
+    ALLOWED;
 }

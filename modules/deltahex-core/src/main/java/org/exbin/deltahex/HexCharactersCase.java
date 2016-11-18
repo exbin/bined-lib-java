@@ -23,5 +23,12 @@ package org.exbin.deltahex;
  */
 public enum HexCharactersCase {
 
-    LOWER, UPPER;
+    /**
+     * Lower case, eg. a, b, c, d, e, f.
+     */
+    LOWER,
+    /**
+     * Upper case, eg. A, B, C, D, E, F.
+     */
+    UPPER;
 }
