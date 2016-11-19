@@ -23,7 +23,7 @@ import java.util.logging.Logger;
 /**
  * Access window for delta data.
  *
- * @version 0.1.1 2016/09/02
+ * @version 0.1.1 2016/11/19
  * @author ExBin Project (http://exbin.org)
  */
 public class DeltaDataPageWindow {
@@ -36,7 +36,14 @@ public class DeltaDataPageWindow {
 
     public DeltaDataPageWindow(FileDataSource data) {
         this.data = data;
+        dataPages[0].pageIndex = 0;
         loadPage(0);
+        data.addCacheClearListener(new FileDataSource.CacheClearListener() {
+            @Override
+            public void clearCache() {
+                DeltaDataPageWindow.this.clearCache();
+            }
+        });
     }
 
     private void loadPage(int index) {
@@ -83,6 +90,14 @@ public class DeltaDataPageWindow {
     }
 
     /**
+     * Clears window cache.
+     */
+    public void clearCache() {
+        dataPages[0].pageIndex = -1;
+        dataPages[1].pageIndex = -1;
+    }
+
+    /**
      * Simple structure for data page.
      */
     private static class DataPage {
@@ -91,7 +106,7 @@ public class DeltaDataPageWindow {
             page = new byte[PAGE_SIZE];
         }
 
-        long pageIndex;
+        long pageIndex = -1;
         byte[] page;
     }
 }

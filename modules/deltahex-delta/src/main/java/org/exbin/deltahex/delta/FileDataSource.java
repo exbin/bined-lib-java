@@ -19,6 +19,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -34,6 +36,8 @@ public class FileDataSource {
     private final RandomAccessFile accessFile;
     private final DeltaDataPageWindow window;
     private boolean closed = false;
+
+    private List<CacheClearListener> listeners = new ArrayList<>();
 
     public FileDataSource(File sourceFile) throws FileNotFoundException, IOException {
         file = sourceFile;
@@ -60,6 +64,15 @@ public class FileDataSource {
         return window.getByte(position);
     }
 
+    /**
+     * Clears cache windows.
+     */
+    public void clearCache() {
+        for (CacheClearListener listener : listeners) {
+            listener.clearCache();
+        }
+    }
+    
     public void close() {
         checkClosed();
         try {
@@ -74,5 +87,18 @@ public class FileDataSource {
         if (closed) {
             throw new IllegalStateException("");
         }
+    }
+
+    public void addCacheClearListener(CacheClearListener listener) {
+        listeners.add(listener);
+    }
+            
+    public void removeCacheClearListener(CacheClearListener listener) {
+        listeners.remove(listener);
+    }
+            
+    public static interface CacheClearListener {
+
+        public void clearCache();
     }
 }
