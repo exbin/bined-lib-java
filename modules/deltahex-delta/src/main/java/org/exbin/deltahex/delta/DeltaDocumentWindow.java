@@ -314,6 +314,7 @@ public class DeltaDocumentWindow {
 
     public void insert(long startFrom, DataSegment segment) {
         DefaultDoublyLinkedList<DataSegment> segments = document.getSegments();
+        long targetLength = document.getDataSize() + segment.getLength();
         focusSegment(startFrom);
         if (pointer.position < startFrom) {
             splitSegment(startFrom);
@@ -324,6 +325,7 @@ public class DeltaDocumentWindow {
         } else {
             segments.addAfter(pointer.segment, segment);
         }
+        document.setDataLength(targetLength);
     }
 
     public void remove(long startFrom, long length) {

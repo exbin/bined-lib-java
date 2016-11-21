@@ -57,6 +57,14 @@ public class DeltaDocument implements EditableBinaryData {
         return segments;
     }
 
+    /**
+     * Returns segment starting at or before given position and ending after it.
+     *
+     * Returns null if position is at the end or after then end of the document.
+     *
+     * @param position requested position
+     * @return data segment or null
+     */
     public DataSegment getSegment(long position) {
         return window.getSegment(position);
     }
@@ -142,6 +150,11 @@ public class DeltaDocument implements EditableBinaryData {
     public void replace(long targetPosition, byte[] replacingData, int replacingDataOffset, int length) {
         remove(targetPosition, length);
         insert(targetPosition, replacingData, replacingDataOffset, length);
+    }
+
+    public void replace(long targetPosition, DataSegment segment) {
+        remove(targetPosition, segment.getLength());
+        insert(targetPosition, segment);
     }
 
     @Override
