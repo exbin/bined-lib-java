@@ -33,7 +33,7 @@ import org.exbin.utils.binary_data.OutOfBoundsException;
 /**
  * Repository of delta segments.
  *
- * @version 0.1.1 2016/11/09
+ * @version 0.1.1 2016/11/21
  * @author ExBin Project (http://exbin.org)
  */
 public class SegmentsRepository {
@@ -42,7 +42,10 @@ public class SegmentsRepository {
     private final Map<MemoryDataSource, DataSegmentsMap> memorySources = new HashMap<>();
 
     private final List<DeltaDocument> documents = new ArrayList<>();
-    private static final int PROCESSING_PAGE_SIZE = 4096;
+    /**
+     * Limit for save processing in bytes.
+     */
+    private static final int PROCESSING_LIMIT = 4096;
 
     public SegmentsRepository() {
     }
@@ -128,6 +131,9 @@ public class SegmentsRepository {
                     if (!(source == savedDocument.getFileSource() && currentSegmentPosition == fileSegment.getStartPosition())) {
                         saveSegment = true;
                         releasedSegments.add(new DataArea(currentSegment.getStartPosition(), currentSegment.getLength()));
+                    } else {
+                        long length = currentSegment.getLength();
+                        savedDocument.replace(currentSegmentPosition, new SpaceSegment(length));
                     }
                 } else {
                     saveSegment = true;
@@ -169,50 +175,64 @@ public class SegmentsRepository {
             }
         }
 
-        // TODO Process remaining segments
+        // Save all remaining segments
+        // Load overlaping areas to memory by 
+        currentSegment = segments.first();
+        long currentSegmentPosition = 0;
+        List<DataArea> releasedSegments = new LinkedList<>();
+        while (currentSegment != null) {
+            boolean saveSegment = false;
+            boolean hasOverlaps = hasFileOverlaps(currentSegmentPosition, currentSegment, fileSource);
+            if (!hasOverlaps) {
+                if (currentSegment instanceof FileSegment) {
+                    FileSegment fileSegment = (FileSegment) currentSegment;
+                    FileDataSource source = fileSegment.getSource();
+                    if (!(source == savedDocument.getFileSource() && currentSegmentPosition == fileSegment.getStartPosition())) {
+                        saveSegment = true;
+                        releasedSegments.add(new DataArea(currentSegment.getStartPosition(), currentSegment.getLength()));
+                    } else {
+                        long length = currentSegment.getLength();
+                        savedDocument.replace(currentSegmentPosition, new SpaceSegment(length));
+                    }
+                } else {
+                    saveSegment = true;
+                }
 
-        // Perform document save by pages
-//        long position = 0;
-//        long documentSize = savedDocument.getDataSize();
-//        while (position < documentSize) {
-//            // Scan all segments overlaping current page
-//            DataSegmentsMap segmentsMap = fileSources.get(fileSource);
-//            segmentsMap.focusFirstOverlay(position, PROCESSING_PAGE_SIZE);
-//            SegmentRecord pointerRecord = segmentsMap.pointerRecord;
-//            while (pointerRecord != null && pointerRecord.getStartPosition() < position + PROCESSING_PAGE_SIZE && pointerRecord.maxPosition > position) {
-//                long segmentPosition = saveMap.get(pointerRecord.dataSegment);
-//                if (segments.contains(pointerRecord.dataSegment) && segmentPosition != pointerRecord.dataSegment.getStartPosition()) {
-//                    long sectionStart = segmentPosition - position;
-//                    long sectionLength = pointerRecord.dataSegment.getLength() - sectionStart;
-//                    if (segmentPosition + sectionStart + sectionLength > position + PROCESSING_PAGE_SIZE) {
-//                        sectionLength = position + PROCESSING_PAGE_SIZE - segmentPosition - sectionStart;
-//                    }
-//                    processSegmentSection(pointerRecord.dataSegment, sectionStart, sectionLength);
-//                }
-//                pointerRecord = pointerRecord.next;
-//            }
-//
-//            position += PROCESSING_PAGE_SIZE;
-//        }
-        // Save all modified segments
-//        currentSegment = segments.first();
-//        currentSegmentPosition = 0;
-//        while (currentSegment != null) {
-//            // TODO convert overlapping file segments to memory segments
-//            
-//            if (currentSegment instanceof FileSegment) {
-//                FileSegment fileSegment = (FileSegment) currentSegment;
-//                FileDataSource source = fileSegment.getSource();
-//                if (!(source == savedDocument.getFileSource() && currentSegmentPosition == fileSegment.getStartPosition())) {
-//                    saveSegment(fileSource, currentSegmentPosition, currentSegment);
-//                }
-//            } else {
-//                saveSegment(fileSource, currentSegmentPosition, currentSegment);
-//            }
-//
-//            currentSegmentPosition += currentSegment.getLength();
-//            currentSegment = currentSegment.getNext();
-//        }
+                if (saveSegment) {
+                    saveSegment(fileSource, currentSegmentPosition, currentSegment);
+                    long length = currentSegment.getLength();
+                    savedDocument.replace(currentSegmentPosition, new SpaceSegment(length));
+                }
+            }
+
+            currentSegmentPosition += currentSegment.getLength();
+            currentSegment = currentSegment.getNext();
+        }
+
+        // Process remaining segments by pages
+        long position = 0;
+        long documentSize = savedDocument.getDataSize();
+        while (position < documentSize) {
+            // Scan all segments overlaping current page
+            DataSegmentsMap segmentsMap = fileSources.get(fileSource);
+            segmentsMap.focusFirstOverlay(position, PROCESSING_LIMIT);
+            SegmentRecord pointerRecord = segmentsMap.pointerRecord;
+            while (pointerRecord != null && pointerRecord.getStartPosition() < position + PROCESSING_LIMIT && pointerRecord.maxPosition > position) {
+                long segmentPosition = saveMap.get(pointerRecord.dataSegment);
+                if (segments.contains(pointerRecord.dataSegment) && segmentPosition != pointerRecord.dataSegment.getStartPosition()) {
+                    long sectionStart = segmentPosition - position;
+                    long sectionLength = pointerRecord.dataSegment.getLength() - sectionStart;
+                    if (segmentPosition + sectionStart + sectionLength > position + PROCESSING_LIMIT) {
+                        sectionLength = position + PROCESSING_LIMIT - segmentPosition - sectionStart;
+                    }
+                    processSegmentSection(pointerRecord.dataSegment, sectionStart, sectionLength);
+                }
+                pointerRecord = pointerRecord.next;
+            }
+
+            position += PROCESSING_LIMIT;
+        }
+
         // Update document segments
         savedDocument.clear();
         long fileLength = fileSource.getFileLength();
@@ -255,9 +275,9 @@ public class SegmentsRepository {
                 accessFile.seek(targetPosition);
                 long sectionPosition = memorySegment.getStartPosition();
                 long sectionLength = memorySegment.getLength();
-                byte[] buffer = new byte[PROCESSING_PAGE_SIZE];
+                byte[] buffer = new byte[PROCESSING_LIMIT];
                 while (sectionLength > 0) {
-                    int length = sectionLength < PROCESSING_PAGE_SIZE ? (int) sectionLength : PROCESSING_PAGE_SIZE;
+                    int length = sectionLength < PROCESSING_LIMIT ? (int) sectionLength : PROCESSING_LIMIT;
                     source.copyToArray(sectionPosition, buffer, 0, length);
                     accessFile.write(buffer, 0, length);
                     sectionPosition += length;
@@ -274,9 +294,9 @@ public class SegmentsRepository {
 
                 if (source == fileSource && sectionPosition < targetPosition && sectionPosition + sectionLength >= targetPosition) {
                     // Saved segment overlaps itself, reverse writting is needed
-                    byte[] buffer = new byte[PROCESSING_PAGE_SIZE];
+                    byte[] buffer = new byte[PROCESSING_LIMIT];
                     while (sectionLength > 0) {
-                        int length = sectionLength < PROCESSING_PAGE_SIZE ? (int) sectionLength : PROCESSING_PAGE_SIZE;
+                        int length = sectionLength < PROCESSING_LIMIT ? (int) sectionLength : PROCESSING_LIMIT;
                         int toProcess = length;
                         int processed = 0;
                         while (toProcess > 0) {
@@ -292,9 +312,9 @@ public class SegmentsRepository {
                         sectionProcessed += length;
                     }
                 } else {
-                    byte[] buffer = new byte[PROCESSING_PAGE_SIZE];
+                    byte[] buffer = new byte[PROCESSING_LIMIT];
                     while (sectionLength > 0) {
-                        int length = sectionLength < PROCESSING_PAGE_SIZE ? (int) sectionLength : PROCESSING_PAGE_SIZE;
+                        int length = sectionLength < PROCESSING_LIMIT ? (int) sectionLength : PROCESSING_LIMIT;
                         sourceFile.seek(sectionPosition + sectionProcessed);
                         length = sourceFile.read(buffer, 0, length);
                         accessFile.seek(targetPosition + sectionProcessed);

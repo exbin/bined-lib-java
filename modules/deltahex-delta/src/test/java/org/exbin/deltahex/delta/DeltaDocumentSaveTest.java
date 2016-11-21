@@ -22,6 +22,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.exbin.utils.binary_data.BinaryData;
+import org.exbin.utils.binary_data.EditableBinaryData;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -41,6 +43,7 @@ public class DeltaDocumentSaveTest {
     public static final String SAMPLE_OVERWRITTEN_BEGIN = SAMPLE_FILES_PATH + "overwritten_begin.dat";
     public static final String SAMPLE_OVERWRITTEN_MIDDLE = SAMPLE_FILES_PATH + "overwritten_middle.dat";
     public static final String SAMPLE_OVERWRITTEN_END = SAMPLE_FILES_PATH + "overwritten_end.dat";
+    public static final String SAMPLE_SWAP_HALF = SAMPLE_FILES_PATH + "swap_half.dat";
     public static final int SAMPLE_ALLBYTES_SIZE = 256;
 
     public DeltaDocumentSaveTest() {
@@ -200,6 +203,34 @@ public class DeltaDocumentSaveTest {
             InputStream comparisionFile;
             try (InputStream dataInputStream = document.getDataInputStream()) {
                 comparisionFile = new FileInputStream(DeltaDocumentSaveTest.class.getResource(SAMPLE_OVERWRITTEN_END).getFile());
+                TestUtils.assertEqualsInputStream(comparisionFile, dataInputStream);
+            }
+            comparisionFile.close();
+        } catch (IOException ex) {
+            Logger.getLogger(DeltaDocumentSaveTest.class.getName()).log(Level.SEVERE, null, ex);
+            fail("Exception: " + ex.getMessage());
+        }
+
+        document.clear();
+        assertEquals(0, document.getSegments().size());
+        document.destroy();
+    }
+
+    @Test
+    public void testSwapHalfSaveDocument() {
+        DeltaDocument document = openTempDeltaDocument();
+        assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
+        EditableBinaryData halfCopy = (EditableBinaryData) document.copy(0, 128);
+        document.remove(0, 128);
+        document.insert(128, halfCopy);
+        halfCopy.clear();
+
+        try {
+            document.save();
+
+            InputStream comparisionFile;
+            try (InputStream dataInputStream = document.getDataInputStream()) {
+                comparisionFile = new FileInputStream(DeltaDocumentSaveTest.class.getResource(SAMPLE_SWAP_HALF).getFile());
                 TestUtils.assertEqualsInputStream(comparisionFile, dataInputStream);
             }
             comparisionFile.close();
