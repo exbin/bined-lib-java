@@ -208,8 +208,8 @@ public class SegmentsRepository {
         }
 
         // Update document segments
+        long fileLength = savedDocument.getDataSize();
         savedDocument.clear();
-        long fileLength = fileSource.getFileLength();
         DataSegment fullFileSegment = createFileSegment(fileSource, 0, fileLength);
         savedDocument.getSegments().add(fullFileSegment);
         savedDocument.setDataLength(fileLength);
