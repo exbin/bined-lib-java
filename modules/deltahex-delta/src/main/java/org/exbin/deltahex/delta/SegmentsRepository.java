@@ -933,7 +933,7 @@ public class SegmentsRepository {
     /**
      * Internal structure for segment and cached maximum position.
      */
-    private static class SegmentRecord implements DoublyLinkedItem {
+    private static class SegmentRecord implements DoublyLinkedItem<SegmentRecord> {
 
         SegmentRecord prev = null;
         SegmentRecord next = null;
@@ -942,7 +942,7 @@ public class SegmentsRepository {
         long maxPosition;
 
         @Override
-        public DoublyLinkedItem getNext() {
+        public SegmentRecord getNext() {
             return next;
         }
 
@@ -955,18 +955,18 @@ public class SegmentsRepository {
         }
 
         @Override
-        public void setNext(DoublyLinkedItem next) {
-            this.next = (SegmentRecord) next;
+        public void setNext(SegmentRecord next) {
+            this.next = next;
         }
 
         @Override
-        public DoublyLinkedItem getPrev() {
+        public SegmentRecord getPrev() {
             return prev;
         }
 
         @Override
-        public void setPrev(DoublyLinkedItem prev) {
-            this.prev = (SegmentRecord) prev;
+        public void setPrev(SegmentRecord prev) {
+            this.prev = prev;
         }
     }
 

@@ -20,10 +20,10 @@ import org.exbin.deltahex.delta.list.DoublyLinkedItem;
 /**
  * Abstract data segment of delta data source.
  *
- * @version 0.1.1 2016/10/03
+ * @version 0.1.1 2016/11/22
  * @author ExBin Project (http://exbin.org)
  */
-public abstract class DataSegment implements DoublyLinkedItem {
+public abstract class DataSegment implements DoublyLinkedItem<DataSegment> {
 
     private DataSegment previous;
     private DataSegment next;
@@ -58,17 +58,17 @@ public abstract class DataSegment implements DoublyLinkedItem {
     }
 
     @Override
-    public void setNext(DoublyLinkedItem next) {
-        this.next = (DataSegment) next;
+    public void setNext(DataSegment next) {
+        this.next = next;
     }
 
     @Override
-    public DoublyLinkedItem getPrev() {
+    public DataSegment getPrev() {
         return previous;
     }
 
     @Override
-    public void setPrev(DoublyLinkedItem previous) {
-        this.previous = (DataSegment) previous;
+    public void setPrev(DataSegment previous) {
+        this.previous = previous;
     }
 }

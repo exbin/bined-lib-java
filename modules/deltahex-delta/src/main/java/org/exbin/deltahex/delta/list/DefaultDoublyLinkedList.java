@@ -23,11 +23,11 @@ import java.util.ListIterator;
 /**
  * Default implementation of doubly linked list of items.
  *
- * @version 0.1.1 2016/10/15
+ * @version 0.1.1 2016/11/22
  * @author ExBin Project (http://exbin.org)
  * @param <T> doubly linked list item
  */
-public class DefaultDoublyLinkedList<T extends DoublyLinkedItem> implements DoublyLinkedList<T> {
+public class DefaultDoublyLinkedList<T extends DoublyLinkedItem<T>> implements DoublyLinkedList<T> {
 
     private T first;
 
@@ -228,7 +228,7 @@ public class DefaultDoublyLinkedList<T extends DoublyLinkedItem> implements Doub
     }
 
     public void addAfter(T positionItem, T element) {
-        DoublyLinkedItem next = positionItem.getNext();
+        T next = positionItem.getNext();
         if (next == null) {
             positionItem.setNext(element);
             element.setPrev(positionItem);
@@ -244,7 +244,7 @@ public class DefaultDoublyLinkedList<T extends DoublyLinkedItem> implements Doub
     }
 
     public void addBefore(T positionItem, T element) {
-        DoublyLinkedItem prev = positionItem.getPrev();
+        T prev = positionItem.getPrev();
         if (prev == null) {
             positionItem.setPrev(element);
             element.setNext(positionItem);
@@ -307,6 +307,7 @@ public class DefaultDoublyLinkedList<T extends DoublyLinkedItem> implements Doub
 
     @Override
     public boolean remove(Object o) {
+        @SuppressWarnings("unchecked")
         T item = (T) o;
         if (item != null) {
             removeItem(item);
@@ -341,10 +342,12 @@ public class DefaultDoublyLinkedList<T extends DoublyLinkedItem> implements Doub
     }
 
     @Override
-    public boolean removeAll(Collection<?> c) {
+    public boolean removeAll(Collection<?> collection) {
         boolean result = false;
-        for (Object item : c) {
-            result |= remove((T) item);
+        for (Object item : collection) {
+            @SuppressWarnings("unchecked")
+            T itemList = (T) item;
+            result |= remove(itemList);
         }
 
         return result;

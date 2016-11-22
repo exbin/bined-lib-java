@@ -18,16 +18,37 @@ package org.exbin.deltahex.delta.list;
 /**
  * Interface for item of doubly linked list.
  *
- * @version 0.1.0 2016/06/03
+ * @version 0.1.1 2016/11/22
  * @author ExBin Project (http://exbin.org)
+ * @param <T> instance class
  */
-public interface DoublyLinkedItem {
+public interface DoublyLinkedItem<T> {
 
-    DoublyLinkedItem getNext();
+    /**
+     * Returns next linked item.
+     *
+     * @return next item
+     */
+    T getNext();
 
-    void setNext(DoublyLinkedItem next);
+    /**
+     * Sets next linked item.
+     *
+     * @param next next item
+     */
+    void setNext(T next);
 
-    DoublyLinkedItem getPrev();
+    /**
+     * Returns previous linked item.
+     *
+     * @return next item
+     */
+    T getPrev();
 
-    void setPrev(DoublyLinkedItem previous);
+    /**
+     * Sets previous linked item.
+     *
+     * @param previous previous item
+     */
+    void setPrev(T previous);
 }
