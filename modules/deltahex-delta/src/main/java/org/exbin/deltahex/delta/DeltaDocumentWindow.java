@@ -22,7 +22,7 @@ import org.exbin.utils.binary_data.OutOfBoundsException;
 /**
  * Access window for delta document.
  *
- * @version 0.1.1 2016/11/06
+ * @version 0.1.1 2016/11/22
  * @author ExBin Project (http://exbin.org)
  */
 public class DeltaDocumentWindow {
@@ -312,19 +312,20 @@ public class DeltaDocumentWindow {
         document.setDataLength(targetLength);
     }
 
-    public void insert(long startFrom, DataSegment segment) {
+    public void insert(long startFrom, DataSegment insertedSegment) {
         DefaultDoublyLinkedList<DataSegment> segments = document.getSegments();
-        long targetLength = document.getDataSize() + segment.getLength();
+        long targetLength = document.getDataSize() + insertedSegment.getLength();
         focusSegment(startFrom);
         if (pointer.position < startFrom) {
             splitSegment(startFrom);
             focusSegment(startFrom);
         }
         if (pointer.segment == null) {
-            segments.add(segment);
+            segments.add(insertedSegment);
         } else {
-            segments.addAfter(pointer.segment, segment);
+            segments.addBefore(pointer.segment, insertedSegment);
         }
+        pointer.segment = insertedSegment;
         document.setDataLength(targetLength);
     }
 
