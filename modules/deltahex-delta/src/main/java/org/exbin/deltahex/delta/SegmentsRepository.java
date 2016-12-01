@@ -33,7 +33,7 @@ import org.exbin.utils.binary_data.OutOfBoundsException;
 /**
  * Repository of delta segments.
  *
- * @version 0.1.1 2016/11/22
+ * @version 0.1.1 2016/12/01
  * @author ExBin Project (http://exbin.org)
  */
 public class SegmentsRepository {
@@ -204,7 +204,7 @@ public class SegmentsRepository {
             }
 
             currentSegmentPosition += currentSegment.getLength();
-            currentSegment = currentSegment.getNext();
+            currentSegment = savedDocument.getSegment(currentSegmentPosition);
         }
 
         // Update document segments
@@ -899,30 +899,34 @@ public class SegmentsRepository {
                 return null;
             }
 
-            if (pointerRecord.maxPosition <= startPosition) {
+            long endPosition = startPosition + length;
+            if (pointerRecord.maxPosition < startPosition) {
                 // Forward direction traversal
-                while (pointerRecord.maxPosition <= startPosition) {
-                    pointerRecord = records.nextTo(pointerRecord);
-                    if (pointerRecord == null) {
-                        return null;
-                    }
-                }
+                while (pointerRecord != null) {
+                    SegmentRecord nextRecord = records.nextTo(pointerRecord);
+                    if (nextRecord != null && nextRecord.maxPosition < startPosition) {
+                        pointerRecord = nextRecord;
+                    } else {
+                        if (pointerRecord.getStartPosition() < endPosition) {
+                            return pointerRecord;
+                        }
 
-                if (pointerRecord.getStartPosition() < startPosition + length) {
-                    return pointerRecord;
+                        break;
+                    }
                 }
             } else {
                 // Backward direction traversal
-                long endPosition = startPosition + length;
-                while (pointerRecord.getStartPosition() >= endPosition) {
-                    pointerRecord = records.prevTo(pointerRecord);
-                    if (pointerRecord == null) {
-                        return null;
-                    }
-                }
+                while (pointerRecord != null) {
+                    SegmentRecord nextRecord = records.prevTo(pointerRecord);
+                    if (nextRecord != null && nextRecord.maxPosition >= startPosition) {
+                        pointerRecord = nextRecord;
+                    } else {
+                        if (pointerRecord.getStartPosition() < endPosition) {
+                            return pointerRecord;
+                        }
 
-                if (pointerRecord.getStartPosition() + pointerRecord.getLength() > startPosition) {
-                    return pointerRecord;
+                        break;
+                    }
                 }
             }
 

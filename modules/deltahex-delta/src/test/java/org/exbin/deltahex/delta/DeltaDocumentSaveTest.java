@@ -273,7 +273,7 @@ public class DeltaDocumentSaveTest {
     public void testRemoveEndSaveDocument() {
         DeltaDocument document = openTempDeltaDocument();
         assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
-        document.insert(254, 2);
+        document.remove(254, 2);
 
         try {
             document.save();
@@ -328,7 +328,7 @@ public class DeltaDocumentSaveTest {
         assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
         EditableBinaryData quarterCopy = (EditableBinaryData) document.copy(0, 64);
         document.remove(0, 64);
-        document.insert(196, quarterCopy);
+        document.insert(192, quarterCopy);
         quarterCopy.clear();
 
         try {
