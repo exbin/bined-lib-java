@@ -62,7 +62,7 @@ import org.exbin.utils.binary_data.PagedData;
 /**
  * Command handler for undo/redo aware hexadecimal editor editing.
  *
- * @version 0.1.1 2016/11/03
+ * @version 0.1.1 2016/12/01
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeCommandHandler implements CodeAreaCommandHandler {
@@ -384,6 +384,7 @@ public class CodeCommandHandler implements CodeAreaCommandHandler {
 
         if (codeArea.getActiveSection() == Section.CODE_MATRIX) {
             long dataPosition = codeArea.getDataPosition();
+            long dataSize = codeArea.getDataSize();
             int codeOffset = codeArea.getCodeOffset();
             CodeType codeType = codeArea.getCodeType();
             boolean validKey = false;
@@ -430,7 +431,11 @@ public class CodeCommandHandler implements CodeAreaCommandHandler {
                 if (editCommand != null && editCommand.wasReverted()) {
                     editCommand = null;
                 }
-                if (codeArea.getEditationMode() == EditationMode.OVERWRITE) {
+                if (codeArea.getEditationMode() == EditationMode.OVERWRITE && dataPosition == dataSize) {
+                    // TODO fixed mode
+                }
+
+                if (codeArea.getEditationMode() == EditationMode.OVERWRITE && dataPosition < dataSize) {
                     if (editCommand == null || !(editCommand instanceof EditCodeDataCommand) || editCommand.getCommandType() != EditDataCommand.EditCommandType.OVERWRITE) {
                         editCommand = new EditCodeDataCommand(codeArea, EditCodeDataCommand.EditCommandType.OVERWRITE, dataPosition, codeArea.getCodeOffset());
                         if (deleteSelectionCommand != null) {
