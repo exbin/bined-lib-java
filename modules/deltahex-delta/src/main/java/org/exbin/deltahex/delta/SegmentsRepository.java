@@ -236,7 +236,7 @@ public class SegmentsRepository {
      */
     private void saveSegmentSection(long savePosition, long saveLength, FileDataSource fileSource, Map<DataSegment, Long> saveMap, DeltaDocument savedDocument) {
         DataSegment segment = savedDocument.getSegment(savePosition);
-        long segmentStartPosition = savePosition;
+        long segmentStartPosition = saveMap.get(segment);
         long sectionStart = savePosition - segmentStartPosition;
         DataSegmentsMap segmentsMap = fileSources.get(fileSource);
         SegmentRecord firstRecord = segmentsMap.focusFirstOverlay(segmentStartPosition + sectionStart, saveLength);

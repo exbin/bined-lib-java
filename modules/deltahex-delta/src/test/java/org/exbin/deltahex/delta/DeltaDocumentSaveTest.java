@@ -29,7 +29,7 @@ import static org.junit.Assert.*;
 /**
  * Tests for delta document.
  *
- * @version 0.1.1 2016/11/19
+ * @version 0.1.1 2016/12/06
  * @author ExBin Project (http://exbin.org)
  */
 public class DeltaDocumentSaveTest {
@@ -46,7 +46,8 @@ public class DeltaDocumentSaveTest {
     public static final String SAMPLE_REMOVED_MIDDLE = SAMPLE_FILES_PATH + "removed_middle.dat";
     public static final String SAMPLE_REMOVED_END = SAMPLE_FILES_PATH + "removed_end.dat";
     public static final String SAMPLE_SWAP_HALF = SAMPLE_FILES_PATH + "swaped_half.dat";
-    public static final String SAMPLE_SWAP_QUARTER = SAMPLE_FILES_PATH + "swaped_quarter.dat";
+    public static final String SAMPLE_SWAP_FIRST_QUARTER = SAMPLE_FILES_PATH + "swaped_first_quarter.dat";
+    public static final String SAMPLE_SWAP_LAST_QUARTER = SAMPLE_FILES_PATH + "swaped_last_quarter.dat";
     public static final int SAMPLE_ALLBYTES_SIZE = 256;
 
     public DeltaDocumentSaveTest() {
@@ -323,7 +324,7 @@ public class DeltaDocumentSaveTest {
     }
 
     @Test
-    public void testSwapQuarterSaveDocument() {
+    public void testSwapFirstQuarterSaveDocument() {
         DeltaDocument document = openTempDeltaDocument();
         assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
         EditableBinaryData quarterCopy = (EditableBinaryData) document.copy(0, 64);
@@ -336,7 +337,35 @@ public class DeltaDocumentSaveTest {
 
             InputStream comparisionFile;
             try (InputStream dataInputStream = document.getDataInputStream()) {
-                comparisionFile = new FileInputStream(DeltaDocumentSaveTest.class.getResource(SAMPLE_SWAP_QUARTER).getFile());
+                comparisionFile = new FileInputStream(DeltaDocumentSaveTest.class.getResource(SAMPLE_SWAP_FIRST_QUARTER).getFile());
+                TestUtils.assertEqualsInputStream(comparisionFile, dataInputStream);
+            }
+            comparisionFile.close();
+        } catch (IOException ex) {
+            Logger.getLogger(DeltaDocumentSaveTest.class.getName()).log(Level.SEVERE, null, ex);
+            fail("Exception: " + ex.getMessage());
+        }
+
+        document.clear();
+        assertEquals(0, document.getSegments().size());
+        closeTempDeltaDocument(document);
+    }
+
+    @Test
+    public void testSwapLastQuarterSaveDocument() {
+        DeltaDocument document = openTempDeltaDocument();
+        assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
+        EditableBinaryData quarterCopy = (EditableBinaryData) document.copy(192, 64);
+        document.remove(192, 64);
+        document.insert(0, quarterCopy);
+        quarterCopy.clear();
+
+        try {
+            document.save();
+
+            InputStream comparisionFile;
+            try (InputStream dataInputStream = document.getDataInputStream()) {
+                comparisionFile = new FileInputStream(DeltaDocumentSaveTest.class.getResource(SAMPLE_SWAP_LAST_QUARTER).getFile());
                 TestUtils.assertEqualsInputStream(comparisionFile, dataInputStream);
             }
             comparisionFile.close();

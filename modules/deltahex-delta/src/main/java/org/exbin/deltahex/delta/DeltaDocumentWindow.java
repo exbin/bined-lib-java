@@ -434,7 +434,7 @@ public class DeltaDocumentWindow {
             throw new IllegalStateException("Split position is out of current segment");
         }
 
-        if (pointer.position == position || pointer.segment == null || pointer.segment.getStartPosition() + pointer.segment.getLength() == position) {
+        if (pointer.position == position || pointer.segment == null || pointer.position + pointer.segment.getLength() == position) {
             // No action needed
             return;
         }
