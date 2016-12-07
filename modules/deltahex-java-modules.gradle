@@ -23,12 +23,12 @@ buildscript {
         mavenLocal()
         jcenter()
     }
-    dependencies {
-        classpath("at.bxm.gradleplugins:gradle-svntools-plugin:latest.integration")
-    }
+//    dependencies {
+//        classpath("at.bxm.gradleplugins:gradle-svntools-plugin:latest.integration")
+//    }
 }
 
-['java', 'maven', 'maven-publish', 'at.bxm.svntools', 'signing'].each {
+['java', 'maven', 'maven-publish', 'signing'].each { // 'at.bxm.svntools'
     apply plugin: it
 }
 

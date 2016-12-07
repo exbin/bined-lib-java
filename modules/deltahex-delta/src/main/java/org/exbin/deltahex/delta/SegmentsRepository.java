@@ -287,6 +287,7 @@ public class SegmentsRepository {
                 }
                 long overlapPosition = saveMap.get(firstRecord.dataSegment);
                 preloadSegmentSection(firstRecord.dataSegment, overlapStart, overlapLength, fileSource, saveMap, savedDocument);
+                // TODO: Replace recursion with iteration
                 saveSegmentSection(overlapPosition + overlapStart, overlapLength, fileSource, saveMap, savedDocument);
             }
         }

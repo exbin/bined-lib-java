@@ -29,7 +29,7 @@ import static org.junit.Assert.*;
 /**
  * Tests for delta document.
  *
- * @version 0.1.1 2016/12/06
+ * @version 0.1.2 2016/12/07
  * @author ExBin Project (http://exbin.org)
  */
 public class DeltaDocumentSaveTest {
@@ -46,8 +46,11 @@ public class DeltaDocumentSaveTest {
     public static final String SAMPLE_REMOVED_MIDDLE = SAMPLE_FILES_PATH + "removed_middle.dat";
     public static final String SAMPLE_REMOVED_END = SAMPLE_FILES_PATH + "removed_end.dat";
     public static final String SAMPLE_SWAP_HALF = SAMPLE_FILES_PATH + "swaped_half.dat";
+    public static final String SAMPLE_SWAP_MIDDLE = SAMPLE_FILES_PATH + "swaped_middle.dat";
+    public static final String SAMPLE_SWAP_DOUBLE = SAMPLE_FILES_PATH + "swaped_double.dat";
     public static final String SAMPLE_SWAP_FIRST_QUARTER = SAMPLE_FILES_PATH + "swaped_first_quarter.dat";
     public static final String SAMPLE_SWAP_LAST_QUARTER = SAMPLE_FILES_PATH + "swaped_last_quarter.dat";
+    public static final String SAMPLE_REVERSE = SAMPLE_FILES_PATH + "reversed.dat";
     public static final int SAMPLE_ALLBYTES_SIZE = 256;
 
     public DeltaDocumentSaveTest() {
@@ -324,6 +327,66 @@ public class DeltaDocumentSaveTest {
     }
 
     @Test
+    public void testSwapMiddleSaveDocument() {
+        DeltaDocument document = openTempDeltaDocument();
+        assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
+        EditableBinaryData quarterCopy = (EditableBinaryData) document.copy(64, 64);
+        document.remove(64, 64);
+        document.insert(128, quarterCopy);
+        quarterCopy.clear();
+
+        try {
+            document.save();
+
+            InputStream comparisionFile;
+            try (InputStream dataInputStream = document.getDataInputStream()) {
+                comparisionFile = new FileInputStream(DeltaDocumentSaveTest.class.getResource(SAMPLE_SWAP_MIDDLE).getFile());
+                TestUtils.assertEqualsInputStream(comparisionFile, dataInputStream);
+            }
+            comparisionFile.close();
+        } catch (IOException ex) {
+            Logger.getLogger(DeltaDocumentSaveTest.class.getName()).log(Level.SEVERE, null, ex);
+            fail("Exception: " + ex.getMessage());
+        }
+
+        document.clear();
+        assertEquals(0, document.getSegments().size());
+        closeTempDeltaDocument(document);
+    }
+
+    @Test
+    public void testSwapDoubleSaveDocument() {
+        DeltaDocument document = openTempDeltaDocument();
+        assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
+        EditableBinaryData quarterCopy = (EditableBinaryData) document.copy(0, 64);
+        document.remove(0, 64);
+        document.insert(64, quarterCopy);
+        quarterCopy.clear();
+        EditableBinaryData quarterCopy2 = (EditableBinaryData) document.copy(128, 64);
+        document.remove(128, 64);
+        document.insert(192, quarterCopy2);
+        quarterCopy2.clear();
+
+        try {
+            document.save();
+
+            InputStream comparisionFile;
+            try (InputStream dataInputStream = document.getDataInputStream()) {
+                comparisionFile = new FileInputStream(DeltaDocumentSaveTest.class.getResource(SAMPLE_SWAP_DOUBLE).getFile());
+                TestUtils.assertEqualsInputStream(comparisionFile, dataInputStream);
+            }
+            comparisionFile.close();
+        } catch (IOException ex) {
+            Logger.getLogger(DeltaDocumentSaveTest.class.getName()).log(Level.SEVERE, null, ex);
+            fail("Exception: " + ex.getMessage());
+        }
+
+        document.clear();
+        assertEquals(0, document.getSegments().size());
+        closeTempDeltaDocument(document);
+    }
+
+    @Test
     public void testSwapFirstQuarterSaveDocument() {
         DeltaDocument document = openTempDeltaDocument();
         assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
@@ -366,6 +429,64 @@ public class DeltaDocumentSaveTest {
             InputStream comparisionFile;
             try (InputStream dataInputStream = document.getDataInputStream()) {
                 comparisionFile = new FileInputStream(DeltaDocumentSaveTest.class.getResource(SAMPLE_SWAP_LAST_QUARTER).getFile());
+                TestUtils.assertEqualsInputStream(comparisionFile, dataInputStream);
+            }
+            comparisionFile.close();
+        } catch (IOException ex) {
+            Logger.getLogger(DeltaDocumentSaveTest.class.getName()).log(Level.SEVERE, null, ex);
+            fail("Exception: " + ex.getMessage());
+        }
+
+        document.clear();
+        assertEquals(0, document.getSegments().size());
+        closeTempDeltaDocument(document);
+    }
+
+    @Test
+    public void testReverseSaveDocument() {
+        DeltaDocument document = openTempDeltaDocument();
+        assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
+        for (int i = 0; i < 128; i++) {
+            byte buf = document.getByte(i);
+            document.setByte(i, document.getByte(255 - i));
+            document.setByte(255 - i, buf);
+        }
+
+        try {
+            document.save();
+
+            InputStream comparisionFile;
+            try (InputStream dataInputStream = document.getDataInputStream()) {
+                comparisionFile = new FileInputStream(DeltaDocumentSaveTest.class.getResource(SAMPLE_REVERSE).getFile());
+                TestUtils.assertEqualsInputStream(comparisionFile, dataInputStream);
+            }
+            comparisionFile.close();
+        } catch (IOException ex) {
+            Logger.getLogger(DeltaDocumentSaveTest.class.getName()).log(Level.SEVERE, null, ex);
+            fail("Exception: " + ex.getMessage());
+        }
+
+        document.clear();
+        assertEquals(0, document.getSegments().size());
+        closeTempDeltaDocument(document);
+    }
+
+    @Test
+    public void testSwapReverseSaveDocument() {
+        DeltaDocument document = openTempDeltaDocument();
+        assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
+        for (int i = 0; i < 128; i++) {
+            byte buf = document.getByte(i);
+            document.setByte(i, document.getByte(255 - i));
+            document.setByte(255 -i, buf);
+        }
+
+        try {
+            document.save();
+
+            InputStream comparisionFile;
+            try (InputStream dataInputStream = document.getDataInputStream()) {
+                comparisionFile = new FileInputStream(DeltaDocumentSaveTest.class.getResource(SAMPLE_REVERSE).getFile());
                 TestUtils.assertEqualsInputStream(comparisionFile, dataInputStream);
             }
             comparisionFile.close();
