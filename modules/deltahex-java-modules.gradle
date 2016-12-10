@@ -204,6 +204,7 @@ if (gradle.startParameter.taskNames.contains("uploadArchives") && !version.endsW
                     packaging 'jar'
                     description libraryDescription
                     url libraryUrl
+                    organization 'ExBin Project'
                 
                     scm {
                         url "https://github.com/exbin/${repositoryName}"

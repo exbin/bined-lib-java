@@ -586,9 +586,7 @@ public class SegmentsRepository {
     public void setMemoryByte(MemorySegment memorySegment, long segmentPosition, byte value) {
         MemoryDataSource memorySource = memorySegment.getSource();
         DataSegmentsMap segmentsMap = memorySources.get(memorySource);
-        if (segmentsMap.hasMoreSegments()) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
+        separateSegment(memorySegment);
 
         if (segmentPosition >= memorySegment.getLength()) {
             segmentsMap.updateSegmentLength(memorySegment, segmentPosition + 1);
@@ -700,6 +698,15 @@ public class SegmentsRepository {
             FileSegment fileSegment = (FileSegment) segment;
             return createFileSegment(fileSegment.getSource(), fileSegment.getStartPosition() + offset, length);
         }
+    }
+
+    /**
+     * Separate memory segment for extension or reduction.
+     *
+     * @param segment memory segment
+     */
+    public void separateSegment(MemorySegment segment) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     /**
