@@ -62,7 +62,7 @@ import org.exbin.utils.binary_data.PagedData;
 /**
  * Command handler for undo/redo aware hexadecimal editor editing.
  *
- * @version 0.1.1 2016/12/01
+ * @version 0.1.2 2016/12/12
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeCommandHandler implements CodeAreaCommandHandler {
@@ -96,19 +96,23 @@ public class CodeCommandHandler implements CodeAreaCommandHandler {
         }
         this.metaMask = metaMaskInit;
 
-        clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-        clipboard.addFlavorListener(new FlavorListener() {
-            @Override
-            public void flavorsChanged(FlavorEvent e) {
-                canPaste = clipboard.isDataFlavorAvailable(deltahexDataFlavor) || clipboard.isDataFlavorAvailable(DataFlavor.stringFlavor);
-            }
-        });
         try {
-            deltahexDataFlavor = new DataFlavor(DELTAHEX_CLIPBOARD_MIME);
-        } catch (ClassNotFoundException ex) {
+            clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+            clipboard.addFlavorListener(new FlavorListener() {
+                @Override
+                public void flavorsChanged(FlavorEvent e) {
+                    canPaste = clipboard.isDataFlavorAvailable(deltahexDataFlavor) || clipboard.isDataFlavorAvailable(DataFlavor.stringFlavor);
+                }
+            });
+            try {
+                deltahexDataFlavor = new DataFlavor(DELTAHEX_CLIPBOARD_MIME);
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(CodeCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            canPaste = clipboard.isDataFlavorAvailable(deltahexDataFlavor) || clipboard.isDataFlavorAvailable(DataFlavor.stringFlavor);
+        } catch (java.awt.HeadlessException ex) {
             Logger.getLogger(CodeCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
-        canPaste = clipboard.isDataFlavorAvailable(deltahexDataFlavor) || clipboard.isDataFlavorAvailable(DataFlavor.stringFlavor);
     }
 
     @Override
