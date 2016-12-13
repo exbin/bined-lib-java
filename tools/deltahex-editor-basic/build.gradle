@@ -1,0 +1,66 @@
+apply from: '../tools.gradle'
+
+buildscript {
+    repositories {
+        mavenLocal()
+        jcenter()
+    }
+    dependencies {
+        classpath("at.bxm.gradleplugins:gradle-svntools-plugin:latest.integration")
+    }
+}
+
+if (!hasProperty('mainClass')) {
+    ext.mainClass = 'org.exbin.deltahex.editor.basic.DeltaHexEditorBasic'
+    ext.appArgs = '-dev'
+}
+
+def configureExec(task) {
+    task.main = mainClass
+    task.classpath = sourceSets.main.runtimeClasspath
+    if (hasProperty('appArgs')) {
+        task.args appArgs
+    }
+}
+
+task run(type: JavaExec) {
+    task -> configureExec(task)
+}
+
+task debug(type: JavaExec) {
+    task -> configureExec(task)
+    debug = true
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    flatDir {
+        dirs "../../lib"
+    }
+}
+
+dependencies {
+    compile moduleDep('DeltahexJava', 'org.exbin.deltahex', 'deltahex-swing')
+    compile moduleDep('DeltahexJava', 'org.exbin.deltahex', 'deltahex-operation-swing')
+
+    testCompile group: 'junit', name: 'junit', version: '4.10'
+}
+
+def manifestClassPath() {
+    try {
+        return (configurations.runtime.collect { it.getName() }).join(' ')
+    } catch (Exception) {
+        return ""
+    }
+}
+
+jar {
+    manifest {
+        attributes(
+            'Main-Class': mainClass,
+            'Class-Path': manifestClassPath()
+        )
+    }
+}
+

@@ -11,6 +11,7 @@ include ":modules:deltahex-highlight-swing"
 
 include ":tools:deltahex-swing-example"
 include ":tools:deltahex-javafx-example"
+include ":tools:deltahex-editor-basic"
 
 File placeholder = file("deps/_placeholder")
 if (placeholder.exists()) {

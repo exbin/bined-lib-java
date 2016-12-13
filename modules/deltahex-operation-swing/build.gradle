@@ -28,7 +28,6 @@ repositories {
 
 dependencies {
     compile moduleDep('DeltahexJava', 'org.exbin.deltahex', 'deltahex-swing')
-    compile moduleDep('DeltahexJava', 'org.exbin.deltahex', 'deltahex-delta')
     compile moduleDep('XbupJava', 'org.exbin.xbup', 'xbup-core')
     compile moduleDep('XbupJava', 'org.exbin.xbup', 'xbup-operation')
     compile moduleDep('XbupJava', 'org.exbin.xbup', 'xbup-parser-tree')
