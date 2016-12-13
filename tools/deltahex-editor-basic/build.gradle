@@ -56,6 +56,10 @@ def manifestClassPath() {
 }
 
 jar {
+    from configurations.compile.findAll { it.name == 'deltahex-core-0.1.2-SNAPSHOT.jar' }.collect { it.isDirectory() ? it : zipTree(it) }
+    from configurations.compile.findAll { it.name == 'deltahex-swing-0.1.2-SNAPSHOT.jar' }.collect { it.isDirectory() ? it : zipTree(it) }
+    from configurations.compile.findAll { it.name == 'deltahex-operation-swing-0.1.2-SNAPSHOT.jar' }.collect { it.isDirectory() ? it : zipTree(it) }
+    from configurations.compile.findAll { it.name.startsWith('xbup-operation-0.2.0-SNAPSHOT') && it.name.endsWith('jar') }.collect { it.isDirectory() ? it : zipTree(it) }
     manifest {
         attributes(
             'Main-Class': mainClass,
