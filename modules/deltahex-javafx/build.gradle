@@ -13,9 +13,11 @@ buildscript {
         mavenLocal()
         jcenter()
     }
-    dependencies {
-        classpath("at.bxm.gradleplugins:gradle-svntools-plugin:latest.integration")
-        classpath "org.bitbucket.shemnon.javafxplugin:gradle-javafx-plugin:8.1.1"
+    if (!gradle.startParameter.taskNames.contains("offline")) {
+        dependencies {
+            classpath "org.bitbucket.shemnon.javafxplugin:gradle-javafx-plugin:8.1.1"
+            classpath("at.bxm.gradleplugins:gradle-svntools-plugin:latest.integration")
+        }
     }
 }
 
