@@ -1,5 +1,5 @@
 group = 'org.exbin.deltahex'
-ext.libraryName = 'Delta Hexadecimal Swing Operation Library'
+ext.libraryName = 'Delta Hexadecimal Operation Library'
 ext.libraryDescription = 'Library for hexadecimal editor operations'
 
 apply from: '../deltahex-java-modules.gradle'
@@ -29,8 +29,6 @@ repositories {
 }
 
 dependencies {
-    compile moduleDep('DeltahexJava', 'org.exbin.deltahex', 'deltahex-operation')
-    compile moduleDep('DeltahexJava', 'org.exbin.deltahex', 'deltahex-swing')
     testCompile group : 'junit', name: 'junit', version: '4.10'
     testCompile project(path: moduleDepPath('DeltahexJava', 'deltahex-core'), configuration: 'tests')
 }

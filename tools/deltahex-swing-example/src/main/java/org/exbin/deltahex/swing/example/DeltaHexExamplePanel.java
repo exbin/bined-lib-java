@@ -38,8 +38,6 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.plaf.basic.BasicBorders;
 import org.exbin.deltahex.CaretMovedListener;
 import org.exbin.deltahex.CaretPosition;
-import org.exbin.deltahex.swing.CodeArea;
-import org.exbin.deltahex.swing.CodeAreaCaret;
 import org.exbin.deltahex.CodeAreaLineNumberLength;
 import org.exbin.deltahex.CodeType;
 import org.exbin.deltahex.DataChangedListener;
@@ -52,6 +50,8 @@ import org.exbin.deltahex.Section;
 import org.exbin.deltahex.SelectionChangedListener;
 import org.exbin.deltahex.SelectionRange;
 import org.exbin.deltahex.ViewMode;
+import org.exbin.deltahex.swing.CodeArea;
+import org.exbin.deltahex.swing.CodeAreaCaret;
 import org.exbin.deltahex.swing.CodeAreaSpace.SpaceType;
 import org.exbin.utils.binary_data.EditableBinaryData;
 

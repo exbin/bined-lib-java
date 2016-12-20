@@ -22,8 +22,8 @@ import java.util.logging.Logger;
 import org.exbin.deltahex.EditationMode;
 import org.exbin.utils.binary_data.ByteArrayEditableData;
 import org.exbin.utils.binary_data.EditableBinaryData;
-import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Test;
 
 /**
  * Tests for codeArea component.

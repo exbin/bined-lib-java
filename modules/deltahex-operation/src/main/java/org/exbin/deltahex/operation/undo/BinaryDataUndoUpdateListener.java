@@ -14,26 +14,27 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along this application.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.exbin.deltahex.operation.swing.command;
+package org.exbin.deltahex.operation.undo;
 
-import org.exbin.deltahex.operation.swing.RemoveDataOperation;
-import org.exbin.deltahex.swing.CodeArea;
+import org.exbin.deltahex.operation.BinaryDataCommand;
 
 /**
- * Command for deleting data.
+ * Code area undo update listener.
  *
- * @version 0.1.0 2016/06/13
+ * @version 0.1.2 2016/12/20
  * @author ExBin Project (http://exbin.org)
  */
-public class RemoveDataCommand extends OpCodeAreaCommand {
+public interface BinaryDataUndoUpdateListener {
 
-    public RemoveDataCommand(CodeArea codeArea, long position, int codeOffset, long size) {
-        super(codeArea);
-        super.setOperation(new RemoveDataOperation(codeArea, position, codeOffset, size));
-    }
+    /**
+     * Notifies about change in undo state.
+     */
+    void undoCommandPositionChanged();
 
-    @Override
-    public CodeAreaCommandType getType() {
-        return CodeAreaCommandType.DATA_REMOVED;
-    }
+    /**
+     * Reports new command added to undo sequence.
+     *
+     * @param command added command
+     */
+    void undoCommandAdded(BinaryDataCommand command);
 }

@@ -2,6 +2,7 @@ rootProject.name = 'deltahex-operation-swing'
 
 if (rootProject.path == ':') {
     include ":modules:deltahex-core"
+    include ":modules:deltahex-operation"
     include ":modules:deltahex-swing"
     include ":modules:deltahex-delta"
 }

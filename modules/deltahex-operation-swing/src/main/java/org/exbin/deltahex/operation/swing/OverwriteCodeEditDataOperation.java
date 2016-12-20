@@ -16,13 +16,14 @@
 package org.exbin.deltahex.operation.swing;
 
 import org.exbin.deltahex.CodeType;
+import org.exbin.deltahex.operation.BinaryDataOperationException;
 import org.exbin.deltahex.swing.CodeArea;
 import org.exbin.utils.binary_data.EditableBinaryData;
 
 /**
  * Operation for editing data using overwrite mode.
  *
- * @version 0.1.1 2016/09/21
+ * @version 0.1.2 2016/12/19
  * @author ExBin Project (http://exbin.org)
  */
 public class OverwriteCodeEditDataOperation extends CodeEditDataOperation {
@@ -53,12 +54,12 @@ public class OverwriteCodeEditDataOperation extends CodeEditDataOperation {
     }
 
     @Override
-    public void execute() throws Exception {
+    public void execute() throws BinaryDataOperationException {
         execute(false);
     }
 
     @Override
-    public CodeAreaOperation executeWithUndo() throws Exception {
+    public CodeAreaOperation executeWithUndo() throws BinaryDataOperationException {
         return execute(true);
     }
 
@@ -91,8 +92,10 @@ public class OverwriteCodeEditDataOperation extends CodeEditDataOperation {
                 } else {
                     undoData.insert(undoData.getDataSize(), data, editedDataPosition, 1);
                 }
-            } else {
+            } else if (editedDataPosition > data.getDataSize()) {
                 throw new IllegalStateException("Cannot overwrite outside of the document");
+            } else {
+                data.insertUninitialized(editedDataPosition, 1);
             }
 
             length++;

@@ -1,0 +1,7 @@
+rootProject.name = 'deltahex-operation'
+
+if (rootProject.path == ':') {
+    include ":modules:deltahex-core"
+}
+
+apply from: '../deltahex-java-modules-settings.gradle'

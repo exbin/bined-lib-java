@@ -43,19 +43,19 @@ import org.exbin.deltahex.EditationModeChangedListener;
 import org.exbin.deltahex.Section;
 import org.exbin.deltahex.SelectionChangedListener;
 import org.exbin.deltahex.SelectionRange;
+import org.exbin.deltahex.operation.BinaryDataCommand;
 import org.exbin.deltahex.operation.swing.CodeAreaUndoHandler;
 import org.exbin.deltahex.operation.swing.CodeCommandHandler;
+import org.exbin.deltahex.operation.undo.BinaryDataUndoUpdateListener;
 import org.exbin.deltahex.swing.CodeArea;
 import org.exbin.deltahex.swing.CodeAreaCommandHandler;
 import org.exbin.utils.binary_data.ByteArrayEditableData;
 import org.exbin.utils.binary_data.EditableBinaryData;
-import org.exbin.xbup.operation.Command;
-import org.exbin.xbup.operation.undo.XBUndoUpdateListener;
 
 /**
  * Basic single jar swing version of Delta Hexadecimal editor.
  *
- * @version 0.1.2 2016/12/13
+ * @version 0.1.2 2016/12/20
  * @author ExBin Project (http://exbin.org)
  */
 public class DeltaHexEditorBasic extends javax.swing.JFrame {
@@ -251,7 +251,7 @@ public class DeltaHexEditorBasic extends javax.swing.JFrame {
     private void postInit() {
         codeArea.setComponentPopupMenu(mainPopupMenu);
         setIconImage(new javax.swing.ImageIcon(getClass().getResource("/org/exbin/deltahex/editor/basic/resources/icons/icon.png")).getImage());
-        undoHandler.addUndoUpdateListener(new XBUndoUpdateListener() {
+        undoHandler.addUndoUpdateListener(new BinaryDataUndoUpdateListener() {
             @Override
             public void undoCommandPositionChanged() {
                 updateUndoState();
@@ -259,7 +259,7 @@ public class DeltaHexEditorBasic extends javax.swing.JFrame {
             }
 
             @Override
-            public void undoCommandAdded(Command cmnd) {
+            public void undoCommandAdded(BinaryDataCommand cmnd) {
                 updateUndoState();
                 codeArea.repaint();
             }
