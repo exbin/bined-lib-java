@@ -42,11 +42,11 @@ task debug(type: JavaExec) {
 }
 
 repositories {
-    mavenLocal()
-    mavenCentral()
     flatDir {
         dirs "../../lib"
     }
+    mavenLocal()
+    mavenCentral()
 }
 
 dependencies {
