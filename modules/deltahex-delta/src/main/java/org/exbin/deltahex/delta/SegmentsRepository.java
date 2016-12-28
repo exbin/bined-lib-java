@@ -880,7 +880,11 @@ public class SegmentsRepository {
         private SegmentRecord findRecord(DataSegment segment) {
             focusSegment(segment.getStartPosition(), segment.getLength());
             SegmentRecord record = pointerRecord;
-            while (record.dataSegment != segment
+            if (record == null) {
+                return null;
+            }
+
+            while (record != null && record.dataSegment != segment
                     && record.dataSegment.getStartPosition() == segment.getStartPosition()
                     && record.dataSegment.getLength() == segment.getLength()) {
                 record = records.prevTo(record);
