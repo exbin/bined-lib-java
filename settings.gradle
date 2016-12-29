@@ -3,9 +3,10 @@ rootProject.name = 'deltahex-java'
 include ":deps"
 
 include ":modules:deltahex-core"
-include ":modules:deltahex-javafx"
 include ":modules:deltahex-delta"
 include ":modules:deltahex-swing"
+include ":modules:deltahex-swt"
+include ":modules:deltahex-javafx"
 include ":modules:deltahex-operation"
 include ":modules:deltahex-operation-swing"
 include ":modules:deltahex-highlight-swing"
