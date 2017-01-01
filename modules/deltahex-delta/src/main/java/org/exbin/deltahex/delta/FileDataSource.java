@@ -27,7 +27,7 @@ import java.util.logging.Logger;
 /**
  * Data source for access to file resource locking it for exclusive access.
  *
- * @version 0.1.3 2017/01/01
+ * @version 0.1.2 2017/01/01
  * @author ExBin Project (http://exbin.org)
  */
 public class FileDataSource {
@@ -37,7 +37,7 @@ public class FileDataSource {
     private final DeltaDataPageWindow window;
     private boolean closed = false;
 
-    private List<CacheClearListener> listeners = new ArrayList<>();
+    private final List<CacheClearListener> listeners = new ArrayList<>();
 
     public FileDataSource(File sourceFile) throws FileNotFoundException, IOException {
         file = sourceFile;
