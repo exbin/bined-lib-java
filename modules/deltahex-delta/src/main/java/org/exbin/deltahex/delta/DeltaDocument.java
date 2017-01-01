@@ -27,7 +27,7 @@ import org.exbin.utils.binary_data.EditableBinaryData;
 /**
  * Delta document defined as a sequence of segments.
  *
- * @version 0.1.2 2016/12/07
+ * @version 0.1.2 2017/01/01
  * @author ExBin Project (http://exbin.org)
  */
 public class DeltaDocument implements EditableBinaryData {
@@ -44,8 +44,10 @@ public class DeltaDocument implements EditableBinaryData {
         this.repository = repository;
         this.fileSource = fileSource;
         dataLength = fileSource.getFileLength();
-        DataSegment fullFileSegment = repository.createFileSegment(fileSource, 0, dataLength);
-        segments.add(fullFileSegment);
+        if (dataLength > 0) {
+            DataSegment fullFileSegment = repository.createFileSegment(fileSource, 0, dataLength);
+            segments.add(fullFileSegment);
+        }
         window = new DeltaDocumentWindow(this);
         window.reset();
     }

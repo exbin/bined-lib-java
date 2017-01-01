@@ -33,7 +33,7 @@ import org.exbin.utils.binary_data.OutOfBoundsException;
 /**
  * Repository of delta segments.
  *
- * @version 0.1.2 2016/12/12
+ * @version 0.1.2 2017/01/01
  * @author ExBin Project (http://exbin.org)
  */
 public class SegmentsRepository {
@@ -213,6 +213,7 @@ public class SegmentsRepository {
         DataSegment fullFileSegment = createFileSegment(fileSource, 0, fileLength);
         savedDocument.getSegments().add(fullFileSegment);
         savedDocument.setDataLength(fileLength);
+        fileSource.setFileLength(fileLength);
         fileSource.clearCache();
     }
 
@@ -460,9 +461,11 @@ public class SegmentsRepository {
                             loadFileSegmentsAsData(document, fileSource, processed, startPosition - processed);
                         }
 
-                        FileSegment newSegment = createFileSegment(fileSource, savePosition + startPosition, replacedLength);
-                        document.remove(startPosition, replacedLength);
-                        document.insert(startPosition, newSegment);
+                        if (replacedLength > 0) {
+                            FileSegment newSegment = createFileSegment(fileSource, savePosition + startPosition, replacedLength);
+                            document.remove(startPosition, replacedLength);
+                            document.insert(startPosition, newSegment);
+                        }
                     }
 
                     record = segmentsMap.records.nextTo(record);
@@ -693,7 +696,7 @@ public class SegmentsRepository {
 
     /**
      * Shift all segments after given position in given direction.
-     * 
+     *
      * Operation assumes there are no collisions.
      *
      * @param memorySegment memory segment to keep

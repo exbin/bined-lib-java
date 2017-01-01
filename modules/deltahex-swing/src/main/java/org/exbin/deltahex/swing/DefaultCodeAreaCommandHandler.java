@@ -602,6 +602,9 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         if (codeArea.hasSelection()) {
             deleteSelection();
             codeArea.notifyDataChanged();
+            codeArea.updateScrollBars();
+            codeArea.notifyCaretMoved();
+            codeArea.revealCursor();
         } else {
             CodeAreaCaret caret = codeArea.getCaret();
             long dataPosition = caret.getDataPosition();
@@ -612,6 +615,8 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                     caret.setCodeOffset(0);
                 }
                 codeArea.updateScrollBars();
+                codeArea.notifyCaretMoved();
+                codeArea.revealCursor();
             }
         }
     }
@@ -722,6 +727,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                         caret.setCaretPosition(caret.getDataPosition() + dataSize);
                         caret.setCodeOffset(0);
                         codeArea.updateScrollBars();
+                        codeArea.notifyCaretMoved();
                         codeArea.revealCursor();
                     }
                 } catch (UnsupportedFlavorException | IOException ex) {
@@ -755,6 +761,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                         caret.setCaretPosition(caret.getDataPosition() + length);
                         caret.setCodeOffset(0);
                         codeArea.updateScrollBars();
+                        codeArea.notifyCaretMoved();
                         codeArea.revealCursor();
                     }
                 } catch (UnsupportedFlavorException | IOException ex) {
@@ -859,6 +866,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                         caret.setCaretPosition(caret.getDataPosition() + length);
                         caret.setCodeOffset(0);
                         codeArea.updateScrollBars();
+                        codeArea.notifyCaretMoved();
                         codeArea.revealCursor();
                     }
                 } catch (UnsupportedFlavorException | IOException ex) {
