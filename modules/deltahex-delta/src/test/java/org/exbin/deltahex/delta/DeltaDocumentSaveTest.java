@@ -529,7 +529,7 @@ public class DeltaDocumentSaveTest {
     }
     
     public static void closeTempDeltaDocument(DeltaDocument document) {
-        document.destroy();
+        document.dispose();
         document.getFileSource().close();
         File tempFile = document.getFileSource().getFile();
         tempFile.delete();

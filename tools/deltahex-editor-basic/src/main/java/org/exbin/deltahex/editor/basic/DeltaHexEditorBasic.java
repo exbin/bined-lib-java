@@ -45,7 +45,7 @@ import org.exbin.deltahex.SelectionChangedListener;
 import org.exbin.deltahex.SelectionRange;
 import org.exbin.deltahex.operation.BinaryDataCommand;
 import org.exbin.deltahex.operation.swing.CodeAreaUndoHandler;
-import org.exbin.deltahex.operation.swing.CodeCommandHandler;
+import org.exbin.deltahex.operation.swing.CodeAreaOperationCommandHandler;
 import org.exbin.deltahex.operation.undo.BinaryDataUndoUpdateListener;
 import org.exbin.deltahex.swing.CodeArea;
 import org.exbin.deltahex.swing.CodeAreaCommandHandler;
@@ -55,7 +55,7 @@ import org.exbin.utils.binary_data.EditableBinaryData;
 /**
  * Basic single jar swing version of Delta Hexadecimal editor.
  *
- * @version 0.1.2 2016/12/20
+ * @version 0.1.2 2017/01/02
  * @author ExBin Project (http://exbin.org)
  */
 public class DeltaHexEditorBasic extends javax.swing.JFrame {
@@ -78,9 +78,6 @@ public class DeltaHexEditorBasic extends javax.swing.JFrame {
     private Action deleteEditAction;
     private Action selectAllAction;
 
-    /**
-     * Creates new form DeltaHexEditorBasic
-     */
     public DeltaHexEditorBasic() {
         init();
         initActions();
@@ -92,7 +89,7 @@ public class DeltaHexEditorBasic extends javax.swing.JFrame {
         codeArea = new CodeArea();
         codeArea.setData(new ByteArrayEditableData());
         undoHandler = new CodeAreaUndoHandler(codeArea);
-        commandHandler = new CodeCommandHandler(codeArea, undoHandler);
+        commandHandler = new CodeAreaOperationCommandHandler(codeArea, undoHandler);
         codeArea.setCommandHandler(commandHandler);
         add(codeArea, BorderLayout.CENTER);
 

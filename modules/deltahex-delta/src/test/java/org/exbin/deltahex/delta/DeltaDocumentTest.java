@@ -54,7 +54,7 @@ public class DeltaDocumentTest {
 
         document.clear();
         assertEquals(0, document.getSegments().size());
-        document.destroy();
+        document.dispose();
     }
 
     @Test
@@ -83,7 +83,7 @@ public class DeltaDocumentTest {
 
         document.clear();
         assertEquals(0, document.getSegments().size());
-        document.destroy();
+        document.dispose();
     }
 
     @Test

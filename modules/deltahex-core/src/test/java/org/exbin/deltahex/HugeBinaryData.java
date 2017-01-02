@@ -75,4 +75,8 @@ public class HugeBinaryData implements BinaryData {
     public InputStream getDataInputStream() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+
+    @Override
+    public void dispose() {
+    }
 }

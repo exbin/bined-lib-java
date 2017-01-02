@@ -33,7 +33,7 @@ import org.exbin.utils.binary_data.OutOfBoundsException;
 /**
  * Repository of delta segments.
  *
- * @version 0.1.2 2017/01/01
+ * @version 0.1.2 2017/01/02
  * @author ExBin Project (http://exbin.org)
  */
 public class SegmentsRepository {
@@ -134,7 +134,7 @@ public class SegmentsRepository {
                     } else {
                         long length = currentSegment.getLength();
                         SpaceSegment spaceSegment = new SpaceSegment(length);
-                        savedDocument.replace(currentSegmentPosition, spaceSegment);
+                        savedDocument.replaceSegment(currentSegmentPosition, spaceSegment);
                         saveMap.put(spaceSegment, currentSegmentPosition);
                     }
                 } else {
@@ -145,7 +145,7 @@ public class SegmentsRepository {
                     saveSegment(fileSource, currentSegmentPosition, currentSegment);
                     long length = currentSegment.getLength();
                     SpaceSegment spaceSegment = new SpaceSegment(length);
-                    savedDocument.replace(currentSegmentPosition, spaceSegment);
+                    savedDocument.replaceSegment(currentSegmentPosition, spaceSegment);
                     saveMap.put(spaceSegment, currentSegmentPosition);
                 }
             }
@@ -173,7 +173,7 @@ public class SegmentsRepository {
                         long recordPosition = saveMap.get(segment);
                         saveSegment(fileSource, recordPosition, segment);
                         SpaceSegment spaceSegment = new SpaceSegment(segmentLength);
-                        savedDocument.replace(recordPosition, spaceSegment);
+                        savedDocument.replaceSegment(recordPosition, spaceSegment);
                         saveMap.put(spaceSegment, recordPosition);
                     }
                 }
@@ -306,7 +306,7 @@ public class SegmentsRepository {
                 saveSegment(fileSource, savedSegmentPosition, savedSegment, overlapStart, overlapLength);
                 DataSegment originalSegment = savedDocument.getSegment(savedSegmentPosition + overlapStart);
                 saveMap.remove(originalSegment);
-                savedDocument.replace(savedSegmentPosition + overlapStart, new SpaceSegment(overlapLength));
+                savedDocument.replaceSegment(savedSegmentPosition + overlapStart, new SpaceSegment(overlapLength));
                 if (savedSegmentPosition + overlapStart + overlapLength < segment.getLength()) {
                     DataSegment followingSegment = savedDocument.getSegment(savedSegmentPosition + overlapStart + overlapLength);
                     if (followingSegment != null) {
@@ -337,7 +337,7 @@ public class SegmentsRepository {
         MemorySegment preloadedSegment = createMemorySegment();
         preloadedSegment.setLength(sectionLength);
         preloadedSegment.getSource().insert(0, savedDocument, segmentStartPosition + sectionStart, sectionLength);
-        savedDocument.replace(segmentStartPosition + sectionStart, preloadedSegment);
+        savedDocument.replaceSegment(segmentStartPosition + sectionStart, preloadedSegment);
         saveMap.put(preloadedSegment, segmentStartPosition + sectionStart);
         DataSegment afterSegment = savedDocument.getSegment(segmentStartPosition + sectionStart + sectionLength);
         if (afterSegment != null) {
@@ -464,7 +464,7 @@ public class SegmentsRepository {
                         if (replacedLength > 0) {
                             FileSegment newSegment = createFileSegment(fileSource, savePosition + startPosition, replacedLength);
                             document.remove(startPosition, replacedLength);
-                            document.insert(startPosition, newSegment);
+                            document.insertSegment(startPosition, newSegment);
                         }
                     }
 
@@ -573,6 +573,9 @@ public class SegmentsRepository {
     }
 
     public void dropDocument(DeltaDocument document) {
+        for (DataSegment segment : document.getSegments()) {
+            dropSegment(segment);
+        }
         document.clear();
         documents.remove(document);
     }
@@ -703,7 +706,7 @@ public class SegmentsRepository {
      * @param position position of the shift
      * @param shift direction of the shift
      */
-    public void shiftSegments(MemorySegment memorySegment, long position, long shift) {
+    private void shiftSegments(MemorySegment memorySegment, long position, long shift) {
         MemoryDataSource source = memorySegment.getSource();
         DataSegmentsMap segmentsMap = memorySources.get(memorySegment.getSource());
         SegmentRecord record = segmentsMap.focusFirstOverlay(position, source.getDataSize() - position);
@@ -772,6 +775,11 @@ public class SegmentsRepository {
             addRecord(record);
         }
 
+        /**
+         * Adds record after pointer record.
+         *
+         * @param record record
+         */
         private void addRecord(SegmentRecord record) {
             long startPosition = record.dataSegment.getStartPosition();
             long length = record.dataSegment.getLength();
@@ -874,6 +882,7 @@ public class SegmentsRepository {
                 } else {
                     ((FileSegment) segment).setLength(length);
                 }
+                focusSegment(segment.getStartPosition(), segment.getLength());
                 addRecord(record);
             } else {
                 throw new IllegalStateException("Segment requested for update was not found");
@@ -914,17 +923,20 @@ public class SegmentsRepository {
             }
 
             if (startPosition > pointerRecord.dataSegment.getStartPosition()
-                    || (pointerRecord.dataSegment.getStartPosition() == startPosition && length >= pointerRecord.dataSegment.getLength())) {
+                    || (pointerRecord.dataSegment.getStartPosition() == startPosition && length <= pointerRecord.dataSegment.getLength())) {
                 // Forward direction traversal
-                SegmentRecord record = pointerRecord;
-                while (startPosition > record.dataSegment.getStartPosition()
-                        || (record.dataSegment.getStartPosition() == startPosition && length >= record.dataSegment.getLength())) {
-                    pointerRecord = record;
+                SegmentRecord record;
+                do {
                     record = records.nextTo(pointerRecord);
-                    if (record == null) {
-                        break;
+                    if (record != null) {
+                        if (startPosition > record.dataSegment.getStartPosition()
+                                || (record.dataSegment.getStartPosition() == startPosition && length <= record.dataSegment.getLength())) {
+                            pointerRecord = record;
+                        } else {
+                            break;
+                        }
                     }
-                }
+                } while (record != null);
             } else {
                 // Backward direction traversal
                 while (startPosition < pointerRecord.dataSegment.getStartPosition()

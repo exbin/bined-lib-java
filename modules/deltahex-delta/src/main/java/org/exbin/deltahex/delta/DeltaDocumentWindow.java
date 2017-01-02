@@ -330,7 +330,13 @@ public class DeltaDocumentWindow {
         document.notifyChangeListeners(this);
     }
 
-    public void insert(long startFrom, DataSegment insertedSegment) {
+    /**
+     * Directly inserts segment into given position.
+     *
+     * @param startFrom start position
+     * @param insertedSegment inserted segment
+     */
+    public void insertSegment(long startFrom, DataSegment insertedSegment) {
         DefaultDoublyLinkedList<DataSegment> segments = document.getSegments();
         long targetLength = document.getDataSize() + insertedSegment.getLength();
         focusSegment(startFrom);
@@ -435,6 +441,9 @@ public class DeltaDocumentWindow {
             length -= copyLength;
             offset = 0;
             segment = segments.nextTo(segment);
+            if (length > 0 && segment == null) {
+                throw new NullPointerException("Unexpected end of segments sequence");
+            }
         }
 
         return copy;

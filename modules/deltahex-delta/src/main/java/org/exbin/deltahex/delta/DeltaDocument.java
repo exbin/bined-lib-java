@@ -27,7 +27,7 @@ import org.exbin.utils.binary_data.EditableBinaryData;
 /**
  * Delta document defined as a sequence of segments.
  *
- * @version 0.1.2 2017/01/01
+ * @version 0.1.2 2017/01/02
  * @author ExBin Project (http://exbin.org)
  */
 public class DeltaDocument implements EditableBinaryData {
@@ -126,8 +126,14 @@ public class DeltaDocument implements EditableBinaryData {
         window.insert(startFrom, insertedData, insertedDataOffset, insertedDataLength);
     }
 
-    public void insert(long startFrom, DataSegment segment) {
-        window.insert(startFrom, segment);
+    /**
+     * Directly inserts segment into given position.
+     *
+     * @param startFrom start position
+     * @param segment inserted segment
+     */
+    public void insertSegment(long startFrom, DataSegment segment) {
+        window.insertSegment(startFrom, segment);
     }
 
     @Override
@@ -159,9 +165,15 @@ public class DeltaDocument implements EditableBinaryData {
         insert(targetPosition, replacingData, replacingDataOffset, length);
     }
 
-    public void replace(long targetPosition, DataSegment segment) {
+    /**
+     * Directly replaces segment into given position.
+     *
+     * @param targetPosition target position
+     * @param segment inserted segment
+     */
+    public void replaceSegment(long targetPosition, DataSegment segment) {
         remove(targetPosition, segment.getLength());
-        insert(targetPosition, segment);
+        insertSegment(targetPosition, segment);
     }
 
     @Override
@@ -182,14 +194,12 @@ public class DeltaDocument implements EditableBinaryData {
     @Override
     public void clear() {
         dataLength = 0;
-        for (DataSegment segment : segments) {
-            repository.dropSegment(segment);
-        }
         segments.clear();
         window.reset();
     }
 
-    public void destroy() {
+    @Override
+    public void dispose() {
         repository.dropDocument(this);
     }
 

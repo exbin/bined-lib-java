@@ -23,7 +23,7 @@ import org.exbin.utils.binary_data.EditableBinaryData;
 /**
  * Operation for editing data using overwrite mode.
  *
- * @version 0.1.2 2016/12/19
+ * @version 0.1.2 2017/01/02
  * @author ExBin Project (http://exbin.org)
  */
 public class OverwriteCodeEditDataOperation extends CodeEditDataOperation {
@@ -205,5 +205,13 @@ public class OverwriteCodeEditDataOperation extends CodeEditDataOperation {
 
     public long getLength() {
         return length;
+    }
+
+    @Override
+    public void dispose() throws BinaryDataOperationException {
+        super.dispose();
+        if (undoData != null) {
+            undoData.dispose();
+        }
     }
 }

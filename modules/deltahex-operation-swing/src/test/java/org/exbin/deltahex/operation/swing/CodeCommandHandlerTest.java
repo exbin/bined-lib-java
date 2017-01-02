@@ -32,7 +32,7 @@ public class CodeCommandHandlerTest {
     @Test
     public void testSetHandler() {
         CodeArea codeArea = new CodeArea();
-        CodeCommandHandler commandHandler = new CodeCommandHandler(codeArea, null);
+        CodeAreaOperationCommandHandler commandHandler = new CodeAreaOperationCommandHandler(codeArea, null);
         codeArea.setCommandHandler(commandHandler);
     }
 }
