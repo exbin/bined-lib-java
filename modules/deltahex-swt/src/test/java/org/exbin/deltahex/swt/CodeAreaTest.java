@@ -41,7 +41,6 @@ public class CodeAreaTest {
     public CodeAreaTest() {
     }
 
-    @Test
     public void testDeleteAll() {
         CodeArea codeArea = new CodeArea(null, 0);
         codeArea.setData(getSampleData(SAMPLE_ALLBYTES));
@@ -50,7 +49,6 @@ public class CodeAreaTest {
         assertTrue(codeArea.getDataSize() == 0);
     }
 
-    @Test
     public void testCopyPasteInOverwriteMode() {
         CodeArea codeArea = new CodeArea(null, 0);
         EditableBinaryData sampleData = getSampleData(SAMPLE_ALLBYTES);
@@ -63,7 +61,6 @@ public class CodeAreaTest {
         assertTrue(codeArea.getDataSize() == dataSize);
     }
 
-    @Test
     public void testCopyPasteInInsertMode() {
         CodeArea codeArea = new CodeArea(null, 0);
         codeArea.setEditationMode(EditationMode.INSERT);
@@ -77,7 +74,6 @@ public class CodeAreaTest {
         assertTrue(codeArea.getDataSize() == dataSize * 2);
     }
 
-    @Test
     public void testCopyPasteAtTheEnd() {
         CodeArea codeArea = new CodeArea(null, 0);
         EditableBinaryData sampleData = getSampleData(SAMPLE_ALLBYTES);
