@@ -241,10 +241,11 @@ public class SegmentsRepository {
         long sectionStart = savePosition - segmentStartPosition;
         DataSegmentsMap segmentsMap = fileSources.get(fileSource);
         SegmentRecord firstRecord = segmentsMap.focusFirstOverlay(segmentStartPosition + sectionStart, saveLength);
-        if (firstRecord != null && firstRecord.dataSegment == segment) {
+        while (firstRecord != null && (!saveMap.containsKey(firstRecord.dataSegment) || firstRecord.dataSegment == segment)) {
             firstRecord = firstRecord.next;
             if (firstRecord != null && firstRecord.getStartPosition() >= segmentStartPosition + sectionStart + saveLength) {
                 firstRecord = null;
+                break;
             }
         }
 
@@ -255,8 +256,8 @@ public class SegmentsRepository {
             }
 
             if (record != null) {
+                record = segmentsMap.focusFirstOverlay(segmentStartPosition + sectionStart, saveLength);
                 do {
-                    record = segmentsMap.focusFirstOverlay(segmentStartPosition + sectionStart, saveLength);
                     if (record != null && record.dataSegment == segment) {
                         record = record.next;
                         if (record != null && record.getStartPosition() >= segmentStartPosition + sectionStart + saveLength) {
@@ -264,6 +265,7 @@ public class SegmentsRepository {
                         }
                     }
                     if (record != null) {
+                        SegmentRecord nextRecord = record.next;
                         long overlapLength = record.getLength();
                         long overlapStart = 0;
                         if (segmentStartPosition + sectionStart > record.getStartPosition()) {
@@ -274,6 +276,7 @@ public class SegmentsRepository {
                             overlapLength = segmentStartPosition + sectionStart + saveLength - firstRecord.getStartPosition() - overlapStart;
                         }
                         preloadSegmentSection(record.dataSegment, overlapStart, overlapLength, fileSource, saveMap, savedDocument);
+                        record = nextRecord;
                     }
                 } while (record != null);
             } else {
@@ -329,7 +332,11 @@ public class SegmentsRepository {
      * @param fileSource file source
      */
     private void preloadSegmentSection(DataSegment segment, long sectionStart, long sectionLength, FileDataSource fileSource, Map<DataSegment, Long> saveMap, DeltaDocument savedDocument) {
-        long segmentStartPosition = saveMap.get(segment);
+        Long segmentStartPosition = saveMap.get(segment);
+        if (segmentStartPosition == null) {
+            // Segment is from other document, should be converted elsewhere - skip
+            return;
+        }
         if (segment == null || (!(segment instanceof FileSegment)) || ((FileSegment) segment).getSource() != fileSource) {
             throw new IllegalArgumentException("Segment is not valid for preloading");
         }
