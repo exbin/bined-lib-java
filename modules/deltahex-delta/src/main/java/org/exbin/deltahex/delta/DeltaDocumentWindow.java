@@ -22,7 +22,7 @@ import org.exbin.utils.binary_data.OutOfBoundsException;
 /**
  * Access window for delta document.
  *
- * @version 0.1.2 2016/12/07
+ * @version 0.1.2 2017/01/03
  * @author ExBin Project (http://exbin.org)
  */
 public class DeltaDocumentWindow {
@@ -430,12 +430,12 @@ public class DeltaDocumentWindow {
             }
 
             if (offset == 0 && copyLength == segmentLength) {
-                copy.getSegments().add(repository.copySegment(pointer.segment));
-            } else if (pointer.segment instanceof MemorySegment) {
-                MemorySegment memorySegment = (MemorySegment) pointer.segment;
+                copy.getSegments().add(repository.copySegment(segment));
+            } else if (segment instanceof MemorySegment) {
+                MemorySegment memorySegment = (MemorySegment) segment;
                 copy.getSegments().add(repository.createMemorySegment(memorySegment.getSource(), memorySegment.getStartPosition() + offset, copyLength));
             } else {
-                FileSegment fileSegment = (FileSegment) pointer.segment;
+                FileSegment fileSegment = (FileSegment) segment;
                 copy.getSegments().add(repository.createFileSegment(fileSegment.getSource(), fileSegment.getStartPosition() + offset, copyLength));
             }
             length -= copyLength;

@@ -923,14 +923,14 @@ public class SegmentsRepository {
             }
 
             if (startPosition > pointerRecord.dataSegment.getStartPosition()
-                    || (pointerRecord.dataSegment.getStartPosition() == startPosition && length <= pointerRecord.dataSegment.getLength())) {
+                    || (pointerRecord.dataSegment.getStartPosition() == startPosition && length >= pointerRecord.dataSegment.getLength())) {
                 // Forward direction traversal
                 SegmentRecord record;
                 do {
                     record = records.nextTo(pointerRecord);
                     if (record != null) {
                         if (startPosition > record.dataSegment.getStartPosition()
-                                || (record.dataSegment.getStartPosition() == startPosition && length <= record.dataSegment.getLength())) {
+                                || (record.dataSegment.getStartPosition() == startPosition && length >= record.dataSegment.getLength())) {
                             pointerRecord = record;
                         } else {
                             break;
