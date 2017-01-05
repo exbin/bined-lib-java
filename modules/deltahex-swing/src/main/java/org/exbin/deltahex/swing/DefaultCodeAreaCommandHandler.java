@@ -59,6 +59,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     private Clipboard clipboard;
     private boolean canPaste = false;
     private DataFlavor binaryDataFlavor;
+    private static ClipboardData currentClipboardData = null;
 
     public DefaultCodeAreaCommandHandler(CodeArea codeArea) {
         this.codeArea = codeArea;
@@ -81,6 +82,10 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             clipboard.addFlavorListener(new FlavorListener() {
                 @Override
                 public void flavorsChanged(FlavorEvent e) {
+                    if (currentClipboardData != null && e.getSource() != currentClipboardData) {
+                        clearClipboardData();
+                    }
+
                     updateCanPaste();
                 }
             });
@@ -654,11 +659,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             BinaryData copy = ((EditableBinaryData) codeArea.getData()).copy(first, last - first + 1);
 
             BinaryDataClipboardData binaryData = new BinaryDataClipboardData(copy);
-            try {
-                clipboard.setContents(binaryData, binaryData);
-            } catch (IllegalStateException ex) {
-                // Clipboard not available - ignore
-            }
+            setClipboardContent(binaryData);
         }
     }
 
@@ -672,11 +673,25 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             BinaryData copy = ((EditableBinaryData) codeArea.getData()).copy(first, last - first + 1);
 
             CodeDataClipboardData binaryData = new CodeDataClipboardData(copy);
-            try {
-                clipboard.setContents(binaryData, binaryData);
-            } catch (IllegalStateException ex) {
-                // Clipboard not available - ignore
-            }
+            setClipboardContent(binaryData);
+        }
+    }
+
+    private void setClipboardContent(ClipboardData content) {
+        clearClipboardData();
+        try {
+            currentClipboardData = content;
+            clipboard.setContents(content, content);
+        } catch (IllegalStateException ex) {
+            // Clipboard not available - ignore and clear
+            clearClipboardData();
+        }
+    }
+
+    private void clearClipboardData() {
+        if (currentClipboardData != null) {
+            currentClipboardData.dispose();
+            currentClipboardData = null;
         }
     }
 
@@ -884,7 +899,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         return canPaste;
     }
 
-    public class BinaryDataClipboardData implements Transferable, ClipboardOwner {
+    public class BinaryDataClipboardData implements ClipboardData {
 
         private final BinaryData data;
 
@@ -917,9 +932,14 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         public void lostOwnership(Clipboard clipboard, Transferable contents) {
             // do nothing
         }
+
+        @Override
+        public void dispose() {
+            data.dispose();
+        }
     }
 
-    public class CodeDataClipboardData implements Transferable, ClipboardOwner {
+    public class CodeDataClipboardData implements ClipboardData {
 
         private final BinaryData data;
 
@@ -961,5 +981,15 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         public void lostOwnership(Clipboard clipboard, Transferable contents) {
             // do nothing
         }
+
+        @Override
+        public void dispose() {
+            data.dispose();
+        }
+    }
+
+    public static interface ClipboardData extends Transferable, ClipboardOwner {
+
+        void dispose();
     }
 }
