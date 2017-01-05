@@ -45,7 +45,7 @@ import org.exbin.utils.binary_data.EditableBinaryData;
 /**
  * Default hexadecimal editor command handler.
  *
- * @version 0.1.2 2016/12/19
+ * @version 0.1.2 2017/01/05
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
@@ -371,7 +371,8 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     @Override
     public void keyTyped(KeyEvent keyEvent) {
         char keyValue = keyEvent.getKeyChar();
-        if (keyValue == 0xffff) {
+        // TODO Add support for high unicode codes
+        if (keyValue == KeyEvent.CHAR_UNDEFINED) {
             return;
         }
         if (!codeArea.isEditable()) {

@@ -32,7 +32,7 @@ import org.exbin.utils.binary_data.BinaryData;
 /**
  * Repository of delta segments.
  *
- * @version 0.1.2 2017/01/04
+ * @version 0.1.2 2017/01/05
  * @author ExBin Project (http://exbin.org)
  */
 public class SegmentsRepository {
@@ -199,6 +199,12 @@ public class SegmentsRepository {
 
                     currentSegmentLength -= length;
                     processed += length;
+                    if (currentSegmentLength > 0) {
+                        DataSegment nextSegment = savedDocument.getSegment(currentSegmentPosition + processed);
+                        if (nextSegment != null) {
+                            saveMap.put(nextSegment, currentSegmentDocumentPosition + processed);
+                        }
+                    }
                 }
             }
 
@@ -219,13 +225,15 @@ public class SegmentsRepository {
     private boolean hasFileOverlaps(long startPosition, DataSegment segment, FileDataSource fileSource) {
         DataSegmentsMap segmentsMap = fileSources.get(fileSource);
         SegmentRecord record = segmentsMap.focusFirstOverlay(startPosition, segment.getLength());
-        if (record != null && record.dataSegment == segment) {
-            record = record.next;
-            if (record != null && record.getStartPosition() >= startPosition + segment.getLength()) {
-                record = null;
+        while (record != null && record.getStartPosition() < startPosition + segment.getLength()) {
+            if (record.dataSegment == segment || (record.getStartPosition() + record.getLength() <= startPosition)) {
+                record = record.next;
+            } else {
+                return true;
             }
         }
-        return record != null;
+
+        return false;
     }
 
     /**
@@ -236,7 +244,11 @@ public class SegmentsRepository {
      */
     private void saveSegmentSection(long savePosition, long saveLength, FileDataSource fileSource, Map<DataSegment, Long> saveMap, DeltaDocument savedDocument) {
         DataSegment segment = savedDocument.getSegment(savePosition);
-        long segmentDocumentPosition = saveMap.get(segment);
+        Long segmentSavePosition = saveMap.get(segment);
+        if (segmentSavePosition == null) {
+            throw new IllegalStateException("Unexpected missing save position");
+        }
+        long segmentDocumentPosition = segmentSavePosition;
         long sectionStart = savePosition - segmentDocumentPosition;
         DataSegmentsMap segmentsMap = fileSources.get(fileSource);
         SegmentRecord firstRecord = segmentsMap.focusFirstOverlay(segmentDocumentPosition + sectionStart, saveLength);
@@ -474,9 +486,11 @@ public class SegmentsRepository {
                                 preloadDocumentSection(document, documentPosition + processed, replacedOffset - processed);
                             }
 
-                            FileSegment newSegment = createFileSegment(fileSource, savePosition + replacedOffset, replacedLength);
-                            document.remove(documentPosition + replacedOffset, replacedLength);
-                            document.insertSegment(documentPosition + replacedOffset, newSegment);
+                            if (savePosition + replacedOffset != segmentPosition) {
+                                FileSegment newSegment = createFileSegment(fileSource, savePosition + replacedOffset, replacedLength);
+                                document.remove(documentPosition + replacedOffset, replacedLength);
+                                document.insertSegment(documentPosition + replacedOffset, newSegment);
+                            }
                             processed = replacedOffset + replacedLength;
                         }
                     }
@@ -495,6 +509,7 @@ public class SegmentsRepository {
             documentPosition += segmentLength;
             segment = nextSegment;
         }
+        document.clearCache();
     }
 
     private void preloadDocumentSection(DeltaDocument document, long documentPosition, long sectionLength) {

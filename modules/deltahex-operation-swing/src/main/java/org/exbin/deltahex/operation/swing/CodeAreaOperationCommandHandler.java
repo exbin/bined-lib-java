@@ -64,7 +64,7 @@ import org.exbin.utils.binary_data.PagedData;
 /**
  * Command handler for undo/redo aware hexadecimal editor editing.
  *
- * @version 0.1.2 2017/01/02
+ * @version 0.1.2 2017/01/05
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
@@ -1016,7 +1016,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
 
         @Override
         public void lostOwnership(Clipboard clipboard, Transferable contents) {
-            // do nothing
+            data.dispose();
         }
     }
 
@@ -1061,7 +1061,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
 
         @Override
         public void lostOwnership(Clipboard clipboard, Transferable contents) {
-            // do nothing
+            data.dispose();
         }
     }
 

@@ -259,6 +259,13 @@ public class DeltaDocument implements EditableBinaryData {
         repository.saveDocument(this);
     }
 
+    /**
+     * Resets cached state - needed after change.
+     */
+    public void clearCache() {
+        window.reset();
+    }
+
     /* package */ void setDataLength(long dataSize) {
         this.dataLength = dataSize;
     }
