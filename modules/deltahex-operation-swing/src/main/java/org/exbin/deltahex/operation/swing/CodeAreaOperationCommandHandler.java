@@ -82,7 +82,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
     private Clipboard clipboard;
     private boolean canPaste = false;
     private DataFlavor deltahexDataFlavor;
-    private static ClipboardData currentClipboardData = null;
+    private ClipboardData currentClipboardData = null;
 
     private final BinaryDataUndoHandler undoHandler;
     private EditDataCommand editCommand = null;
@@ -104,10 +104,6 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
             clipboard.addFlavorListener(new FlavorListener() {
                 @Override
                 public void flavorsChanged(FlavorEvent e) {
-                    if (currentClipboardData != null && e.getSource() != currentClipboardData) {
-                        clearClipboardData();
-                    }
-
                     updateCanPaste();
                 }
             });

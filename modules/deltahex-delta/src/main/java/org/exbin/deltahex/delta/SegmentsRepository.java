@@ -117,99 +117,70 @@ public class SegmentsRepository {
         DefaultDoublyLinkedList<DataSegment> segments = savedDocument.getSegments();
 
         // Save all non-overlapping segments
-        DataSegment currentSegment = segments.first();
-        long currentSegmentPosition = 0;
         List<DataArea> releasedSegments = new LinkedList<>();
-        while (currentSegment != null) {
-            boolean saveSegment = false;
-            boolean hasOverlaps = hasFileOverlaps(currentSegmentPosition, currentSegment, fileSource);
-            if (!hasOverlaps) {
-                if (currentSegment instanceof FileSegment) {
-                    FileSegment fileSegment = (FileSegment) currentSegment;
-                    FileDataSource source = fileSegment.getSource();
-                    if (!(source == savedDocument.getFileSource() && currentSegmentPosition == fileSegment.getStartPosition())) {
-                        saveSegment = true;
-                        releasedSegments.add(new DataArea(currentSegment.getStartPosition(), currentSegment.getLength()));
-                    } else {
-                        long length = currentSegment.getLength();
-                        SpaceSegment spaceSegment = new SpaceSegment(length);
-                        savedDocument.replaceSegment(currentSegmentPosition, spaceSegment);
-                        saveMap.put(spaceSegment, currentSegmentPosition);
-                    }
-                } else {
-                    saveSegment = true;
-                }
+        {
+            DataSegment segment = segments.first();
+            long segmentDocumentPosition = 0;
+            while (segment != null) {
+                processSegmentForSave(segment, fileSource, segmentDocumentPosition, savedDocument, saveMap, releasedSegments);
 
-                if (saveSegment) {
-                    saveSegment(fileSource, currentSegmentPosition, currentSegment);
-                    long length = currentSegment.getLength();
-                    SpaceSegment spaceSegment = new SpaceSegment(length);
-                    savedDocument.replaceSegment(currentSegmentPosition, spaceSegment);
-                    saveMap.put(spaceSegment, currentSegmentPosition);
-                }
+                segmentDocumentPosition += segment.getLength();
+                segment = savedDocument.getSegment(segmentDocumentPosition);
             }
-
-            currentSegmentPosition += currentSegment.getLength();
-            currentSegment = savedDocument.getSegment(currentSegmentPosition);
         }
 
         // Handle all released segments
         while (!releasedSegments.isEmpty()) {
-            DataArea dataArea = releasedSegments.remove(0);
+            DataArea dataArea = releasedSegments.remove(releasedSegments.size() - 1);
             DataSegment segment = savedDocument.getSegment(dataArea.startFrom);
-            DataSegmentsMap segmentsMap = fileSources.get(fileSource);
             while (segment != null) {
-                if (!(segment instanceof SpaceSegment)) {
-                    long segmentPosition = saveMap.get(segment);
-                    if (segmentPosition > dataArea.startFrom + dataArea.length) {
-                        break;
-                    }
-
-                    long segmentLength = segment.getLength();
-                    SegmentRecord overlappingRecord = segmentsMap.focusFirstOverlay(segmentPosition, segmentLength);
-                    if (overlappingRecord == null) {
-                        releasedSegments.add(new DataArea(segment.getStartPosition(), segmentLength));
-                        long recordPosition = saveMap.get(segment);
-                        saveSegment(fileSource, recordPosition, segment);
-                        SpaceSegment spaceSegment = new SpaceSegment(segmentLength);
-                        savedDocument.replaceSegment(recordPosition, spaceSegment);
-                        saveMap.put(spaceSegment, recordPosition);
-                    }
+                long segmentPosition = saveMap.get(segment);
+                if (segmentPosition > dataArea.startFrom + dataArea.length) {
+                    break;
                 }
 
-                segment = segment.getNext();
+                DataSegment nextSegment = segment.getNext();
+                if (!(segment instanceof SpaceSegment)) {
+                    long segmentDocumentPosition = saveMap.get(segment);
+                    processSegmentForSave(segment, fileSource, segmentDocumentPosition, savedDocument, saveMap, releasedSegments);
+                }
+
+                segment = nextSegment;
             }
         }
 
         // Save all remaining segments
         // Loads overlaping areas to memory before next segment is saved
-        currentSegment = segments.first();
-        currentSegmentPosition = 0;
-        while (currentSegment != null) {
-            if (!(currentSegment instanceof SpaceSegment)) {
-                long currentSegmentDocumentPosition = saveMap.get(currentSegment);
-                long currentSegmentLength = currentSegment.getLength();
-                long processed = 0;
-                while (currentSegmentLength > 0) {
-                    long length = currentSegmentLength;
-                    if (length > PROCESSING_LIMIT) {
-                        length = PROCESSING_LIMIT;
-                    }
-                    saveSegmentSection(currentSegmentDocumentPosition + processed, length, fileSource, saveMap, savedDocument);
+        {
+            DataSegment segment = segments.first();
+            long segmentDocumentPosition = 0;
+            while (segment != null) {
+                if (!(segment instanceof SpaceSegment)) {
+                    long currentSegmentDocumentPosition = saveMap.get(segment);
+                    long currentSegmentLength = segment.getLength();
+                    long processed = 0;
+                    while (currentSegmentLength > 0) {
+                        long length = currentSegmentLength;
+                        if (length > PROCESSING_LIMIT) {
+                            length = PROCESSING_LIMIT;
+                        }
 
-                    currentSegmentLength -= length;
-                    processed += length;
-                    if (currentSegmentLength > 0) {
-                        DataSegment nextSegment = savedDocument.getSegment(currentSegmentPosition + processed);
-                        if (nextSegment != null) {
-                            saveMap.put(nextSegment, currentSegmentDocumentPosition + processed);
+                        saveSegmentSection(currentSegmentDocumentPosition + processed, length, fileSource, saveMap, savedDocument);
+
+                        currentSegmentLength -= length;
+                        processed += length;
+                        if (currentSegmentLength > 0) {
+                            DataSegment nextSegment = savedDocument.getSegment(segmentDocumentPosition + processed);
+                            if (nextSegment != null) {
+                                saveMap.put(nextSegment, currentSegmentDocumentPosition + processed);
+                            }
                         }
                     }
                 }
-            }
 
-            currentSegmentPosition += currentSegment.getLength();
-            currentSegment = savedDocument.getSegment(currentSegmentPosition);
+                segmentDocumentPosition += segment.getLength();
+                segment = savedDocument.getSegment(segmentDocumentPosition);
+            }
         }
 
         // Update document segments
@@ -220,6 +191,35 @@ public class SegmentsRepository {
         savedDocument.setDataLength(fileLength);
         fileSource.setFileLength(fileLength);
         fileSource.clearCache();
+    }
+
+    private void processSegmentForSave(DataSegment segment, FileDataSource fileSource, long segmentDocumentPosition, DeltaDocument savedDocument, Map<DataSegment, Long> saveMap, List<DataArea> releasedSegments) {
+        boolean saveSegment = true;
+        boolean hasOverlaps = hasFileOverlaps(segmentDocumentPosition, segment, fileSource);
+        if (!hasOverlaps) {
+            if (segment instanceof FileSegment) {
+                FileSegment fileSegment = (FileSegment) segment;
+                long segmentLength = segment.getLength();
+                FileDataSource source = fileSegment.getSource();
+                if (source == savedDocument.getFileSource() && segmentDocumentPosition == fileSegment.getStartPosition()) {
+                    // Segment points to the original position, replace with empty space placeholder without saving
+                    SpaceSegment spaceSegment = new SpaceSegment(segmentLength);
+                    savedDocument.replaceSegment(segmentDocumentPosition, spaceSegment);
+                    saveMap.put(spaceSegment, segmentDocumentPosition);
+                    saveSegment = false;
+                } else {
+                    releasedSegments.add(new DataArea(segment.getStartPosition(), segmentLength));
+                }
+            }
+
+            if (saveSegment) {
+                // Save segment to file and replace it with placeholder
+                saveSegment(fileSource, segmentDocumentPosition, segment);
+                SpaceSegment spaceSegment = new SpaceSegment(segment.getLength());
+                savedDocument.replaceSegment(segmentDocumentPosition, spaceSegment);
+                saveMap.put(spaceSegment, segmentDocumentPosition);
+            }
+        }
     }
 
     private boolean hasFileOverlaps(long startPosition, DataSegment segment, FileDataSource fileSource) {
@@ -318,7 +318,10 @@ public class SegmentsRepository {
             long overlapStart = savePosition - savedSegmentPosition;
 
             if (!(savedSegment instanceof SpaceSegment)) {
-                saveSegment(fileSource, savedSegmentPosition, savedSegment, overlapStart, overlapLength);
+                if (!(savedSegment instanceof FileSegment && ((FileSegment) savedSegment).getSource() == fileSource && savedSegmentPosition == savedSegment.getStartPosition())) {
+                    // Save only if there is actual change
+                    saveSegment(fileSource, savedSegmentPosition, savedSegment, overlapStart, overlapLength);
+                }
                 DataSegment originalSegment = savedDocument.getSegment(savedSegmentPosition + overlapStart);
                 saveMap.remove(originalSegment);
                 savedDocument.replaceSegment(savedSegmentPosition + overlapStart, new SpaceSegment(overlapLength));

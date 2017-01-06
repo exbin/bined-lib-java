@@ -45,7 +45,7 @@ import org.exbin.utils.binary_data.EditableBinaryData;
 /**
  * Default hexadecimal editor command handler.
  *
- * @version 0.1.2 2017/01/05
+ * @version 0.1.2 2017/01/06
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
@@ -59,7 +59,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     private Clipboard clipboard;
     private boolean canPaste = false;
     private DataFlavor binaryDataFlavor;
-    private static ClipboardData currentClipboardData = null;
+    private ClipboardData currentClipboardData = null;
 
     public DefaultCodeAreaCommandHandler(CodeArea codeArea) {
         this.codeArea = codeArea;
@@ -82,10 +82,6 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             clipboard.addFlavorListener(new FlavorListener() {
                 @Override
                 public void flavorsChanged(FlavorEvent e) {
-                    if (currentClipboardData != null && e.getSource() != currentClipboardData) {
-                        clearClipboardData();
-                    }
-
                     updateCanPaste();
                 }
             });
