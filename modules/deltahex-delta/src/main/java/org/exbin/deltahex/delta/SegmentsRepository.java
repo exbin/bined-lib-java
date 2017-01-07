@@ -32,7 +32,7 @@ import org.exbin.utils.binary_data.BinaryData;
 /**
  * Repository of delta segments.
  *
- * @version 0.1.2 2017/01/05
+ * @version 0.1.2 2017/01/07
  * @author ExBin Project (http://exbin.org)
  */
 public class SegmentsRepository {
@@ -634,7 +634,7 @@ public class SegmentsRepository {
         DataSegmentsMap segmentsMap = memorySources.get(memorySource);
         detachMemoryArea(memorySegment, position, 0);
         shiftSegments(memorySegment, position, insertedData.getDataSize());
-        memorySegment.getSource().insert(position, insertedData);
+        memorySource.insert(position, insertedData);
         segmentsMap.updateSegmentLength(memorySegment, memorySegment.getLength() + insertedData.getDataSize());
     }
 
@@ -643,7 +643,7 @@ public class SegmentsRepository {
         DataSegmentsMap segmentsMap = memorySources.get(memorySource);
         detachMemoryArea(memorySegment, position, 0);
         shiftSegments(memorySegment, position, insertedDataLength);
-        memorySegment.getSource().insert(position, insertedData, insertedDataOffset, insertedDataLength);
+        memorySource.insert(position, insertedData, insertedDataOffset, insertedDataLength);
         segmentsMap.updateSegmentLength(memorySegment, memorySegment.getLength() + insertedDataLength);
     }
 
@@ -652,7 +652,7 @@ public class SegmentsRepository {
         DataSegmentsMap segmentsMap = memorySources.get(memorySource);
         detachMemoryArea(memorySegment, position, 0);
         shiftSegments(memorySegment, position, insertedData.length);
-        memorySegment.getSource().insert(position, insertedData);
+        memorySource.insert(position, insertedData);
         segmentsMap.updateSegmentLength(memorySegment, memorySegment.getLength() + insertedData.length);
     }
 
@@ -661,7 +661,7 @@ public class SegmentsRepository {
         DataSegmentsMap segmentsMap = memorySources.get(memorySource);
         detachMemoryArea(memorySegment, position, 0);
         shiftSegments(memorySegment, position, insertedDataLength);
-        memorySegment.getSource().insert(position, insertedData, insertedDataOffset, insertedDataLength);
+        memorySource.insert(position, insertedData, insertedDataOffset, insertedDataLength);
         segmentsMap.updateSegmentLength(memorySegment, memorySegment.getLength() + insertedDataLength);
     }
 
@@ -670,7 +670,7 @@ public class SegmentsRepository {
         DataSegmentsMap segmentsMap = memorySources.get(memorySource);
         detachMemoryArea(memorySegment, position, 0);
         shiftSegments(memorySegment, position, length);
-        memorySegment.getSource().insert(position, length);
+        memorySource.insert(position, length);
         segmentsMap.updateSegmentLength(memorySegment, memorySegment.getLength() + length);
     }
 
@@ -679,7 +679,7 @@ public class SegmentsRepository {
         DataSegmentsMap segmentsMap = memorySources.get(memorySource);
         detachMemoryArea(memorySegment, position, 0);
         shiftSegments(memorySegment, position, length);
-        memorySegment.getSource().insertUninitialized(position, length);
+        memorySource.insertUninitialized(position, length);
         segmentsMap.updateSegmentLength(memorySegment, memorySegment.getLength() + length);
     }
 
@@ -699,16 +699,18 @@ public class SegmentsRepository {
 
         SegmentRecord record = segmentsMap.focusFirstOverlay(position, length);
         while (record != null) {
+            SegmentRecord nextRecord = record.getNext();
             if (record.getStartPosition() > position + length) {
                 break;
             }
             if (record.getStartPosition() + record.getLength() > position) {
                 DataSegment segment = record.dataSegment;
-                record = record.getNext();
-                detachSegment((MemorySegment) segment);
-            } else {
-                record = record.getNext();
+                if (segment != memorySegment) {
+                    detachSegment((MemorySegment) segment);
+                }
             }
+
+            record = nextRecord;
         }
     }
 
@@ -724,7 +726,8 @@ public class SegmentsRepository {
     }
 
     /**
-     * Shift all segments after given position in given direction.
+     * Shift all segments after given position in given direction except given
+     * segment.
      *
      * Operation assumes there are no collisions.
      *
@@ -734,15 +737,16 @@ public class SegmentsRepository {
      */
     private void shiftSegments(MemorySegment memorySegment, long position, long shift) {
         MemoryDataSource source = memorySegment.getSource();
-        DataSegmentsMap segmentsMap = memorySources.get(memorySegment.getSource());
+        DataSegmentsMap segmentsMap = memorySources.get(source);
         SegmentRecord record = segmentsMap.focusFirstOverlay(position, source.getDataSize() - position);
         while (record != null) {
-            if (record.getStartPosition() >= position) {
+            SegmentRecord nextRecord = record.getNext();
+            if (record.dataSegment != memorySegment && record.getStartPosition() >= position) {
                 MemorySegment segment = (MemorySegment) record.dataSegment;
                 segment.setStartPosition(segment.getStartPosition() + shift);
                 record.maxPosition += shift;
             }
-            record = record.getNext();
+            record = nextRecord;
         }
     }
 
