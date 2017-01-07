@@ -1,7 +1,7 @@
 Delta Hexadecimal Library
 =========================
 
-Hexadecimal viewer/editor component library for Java / Swing.
+Hexadecimal viewer/editor component library for Java.
 
 Homepage: http://deltahex.exbin.org  
 
@@ -18,10 +18,6 @@ Features
 - Codes can be also binary, octal or decimal
 - Support for code and matching highlighting
 - Support for huge files
-
-Todo
-----
-
 - Delta mode - Only changes are stored in memory
 
 License

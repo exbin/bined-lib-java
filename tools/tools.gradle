@@ -1,19 +1,13 @@
 // Shared tools build
 
-version = '0.1.2-SNAPSHOT'
+version = '0.1.2'
 def repositoryName = "deltahex-java"
 def libraryUrl = 'http://deltahex.exbin.org'
 
 ext.depsExbinUtilsJava = [
     githubProfile: 'exbin',
     githubRepo: 'exbin-utils-java',
-    version: '0.1.2-SNAPSHOT'
-]
-
-ext.depsXbupJava = [
-    githubProfile: 'exbin',
-    githubRepo: 'xbup-java',
-    version: '0.2.0-SNAPSHOT'
+    version: '0.1.2'
 ]
 
 ext.depsThis = 'DeltahexJava'
