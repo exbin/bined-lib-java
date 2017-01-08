@@ -56,11 +56,11 @@ def manifestClassPath() {
 }
 
 jar {
-    from configurations.compile.findAll { it.name == 'deltahex-core-0.1.2.jar' }.collect { it.isDirectory() ? it : zipTree(it) }
-    from configurations.compile.findAll { it.name == 'deltahex-swing-0.1.2.jar' }.collect { it.isDirectory() ? it : zipTree(it) }
-    from configurations.compile.findAll { it.name == 'deltahex-operation-swing-0.1.2.jar' }.collect { it.isDirectory() ? it : zipTree(it) }
-    from configurations.compile.findAll { it.name == 'deltahex-operation-0.1.2.jar' }.collect { it.isDirectory() ? it : zipTree(it) }
-    from configurations.compile.findAll { it.name.startsWith('exbin-binary_data-0.1.2') && it.name.endsWith('jar') }.collect { it.isDirectory() ? it : zipTree(it) }
+    from configurations.compile.findAll { it.name == 'deltahex-core-0.1.3-SNAPSHOT.jar' }.collect { it.isDirectory() ? it : zipTree(it) }
+    from configurations.compile.findAll { it.name == 'deltahex-swing-0.1.3-SNAPSHOT.jar' }.collect { it.isDirectory() ? it : zipTree(it) }
+    from configurations.compile.findAll { it.name == 'deltahex-operation-swing-0.1.3-SNAPSHOT.jar' }.collect { it.isDirectory() ? it : zipTree(it) }
+    from configurations.compile.findAll { it.name == 'deltahex-operation-0.1.3-SNAPSHOT.jar' }.collect { it.isDirectory() ? it : zipTree(it) }
+    from configurations.compile.findAll { it.name.startsWith('exbin-binary_data-0.1.3-SNAPSHOT') && it.name.endsWith('jar') }.collect { it.isDirectory() ? it : zipTree(it) }
     manifest {
         attributes(
             'Main-Class': mainClass,

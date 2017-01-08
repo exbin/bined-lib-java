@@ -1,7 +1,7 @@
 Delta Hexadecimal Library
 =========================
 
-Hexadecimal viewer/editor component library for Java.
+Hexadecimal viewer/editor component library written in Java.
 
 Homepage: http://deltahex.exbin.org  
 
