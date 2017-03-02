@@ -31,6 +31,7 @@ import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 import javax.swing.border.BevelBorder;
+import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
@@ -58,7 +59,7 @@ import org.exbin.utils.binary_data.EditableBinaryData;
 /**
  * Hexadecimal editor example panel.
  *
- * @version 0.1.1 2016/08/31
+ * @version 0.1.3 2017/03/02
  * @author ExBin Project (http://exbin.org)
  */
 public class DeltaHexExamplePanel extends javax.swing.JPanel {
@@ -97,10 +98,10 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
         dataSizeTextField.setText(String.valueOf(codeArea.getDataSize()));
         headerSpaceComboBox.setSelectedIndex(codeArea.getHeaderSpaceType().ordinal());
         headerSpaceSpinner.setValue(codeArea.getHeaderSpaceSize());
-        lineNumberSpaceComboBox.setSelectedIndex(codeArea.getLineNumberSpaceType().ordinal());
-        lineNumberSpaceSpinner.setValue(codeArea.getLineNumberSpaceSize());
-        lineNumberLengthComboBox.setSelectedIndex(codeArea.getLineNumberType().ordinal());
-        lineNumberLengthSpinner.setValue(codeArea.getLineNumberSpecifiedLength());
+        lineNumbersSpaceComboBox.setSelectedIndex(codeArea.getLineNumberSpaceType().ordinal());
+        lineNumbersSpaceSpinner.setValue(codeArea.getLineNumberSpaceSize());
+        lineNumbersLengthComboBox.setSelectedIndex(codeArea.getLineNumberType().ordinal());
+        lineNumbersLengthSpinner.setValue(codeArea.getLineNumberSpecifiedLength());
         cursorRenderingModeComboBox.setSelectedIndex(codeArea.getCaret().getRenderingMode().ordinal());
         cursorInsertShapeComboBox.setSelectedIndex(codeArea.getCaret().getInsertCursorShape().ordinal());
         cursorOverwriteShapeComboBox.setSelectedIndex(codeArea.getCaret().getOverwriteCursorShape().ordinal());
@@ -212,12 +213,12 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
         lineLengthSpinner = new javax.swing.JSpinner();
         lineNumbersPanel = new javax.swing.JPanel();
         showLineNumbersCheckBox = new javax.swing.JCheckBox();
-        lineNumberLengthLabel = new javax.swing.JLabel();
-        lineNumberLengthComboBox = new javax.swing.JComboBox<>();
-        lineNumberLengthSpinner = new javax.swing.JSpinner();
-        lineNumberSpaceLabel = new javax.swing.JLabel();
-        lineNumberSpaceComboBox = new javax.swing.JComboBox<>();
-        lineNumberSpaceSpinner = new javax.swing.JSpinner();
+        lineNumbersLengthLabel = new javax.swing.JLabel();
+        lineNumbersLengthComboBox = new javax.swing.JComboBox<>();
+        lineNumbersLengthSpinner = new javax.swing.JSpinner();
+        lineNumbersSpaceLabel = new javax.swing.JLabel();
+        lineNumbersSpaceComboBox = new javax.swing.JComboBox<>();
+        lineNumbersSpaceSpinner = new javax.swing.JSpinner();
         wrapLineModeCheckBox = new javax.swing.JCheckBox();
         headerPanel = new javax.swing.JPanel();
         showHeaderCheckBox = new javax.swing.JCheckBox();
@@ -622,38 +623,38 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
             }
         });
 
-        lineNumberLengthLabel.setText("Line Numbers Length");
+        lineNumbersLengthLabel.setText("Line Numbers Length");
 
-        lineNumberLengthComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "AUTO", "SPECIFIED" }));
-        lineNumberLengthComboBox.setSelectedIndex(1);
-        lineNumberLengthComboBox.addActionListener(new java.awt.event.ActionListener() {
+        lineNumbersLengthComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "AUTO", "SPECIFIED" }));
+        lineNumbersLengthComboBox.setSelectedIndex(1);
+        lineNumbersLengthComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                lineNumberLengthComboBoxActionPerformed(evt);
+                lineNumbersLengthComboBoxActionPerformed(evt);
             }
         });
 
-        lineNumberLengthSpinner.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1));
-        lineNumberLengthSpinner.setValue(8);
-        lineNumberLengthSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
+        lineNumbersLengthSpinner.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1));
+        lineNumbersLengthSpinner.setValue(8);
+        lineNumbersLengthSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                lineNumberLengthSpinnerStateChanged(evt);
+                lineNumbersLengthSpinnerStateChanged(evt);
             }
         });
 
-        lineNumberSpaceLabel.setText("Line Numbers Space");
+        lineNumbersSpaceLabel.setText("Line Numbers Space");
 
-        lineNumberSpaceComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "NONE", "SPECIFIED", "QUARTER_UNIT", "HALF_UNIT", "ONE_UNIT", "ONE_AND_HALF_UNIT", "DOUBLE_UNIT" }));
-        lineNumberSpaceComboBox.setSelectedIndex(4);
-        lineNumberSpaceComboBox.addActionListener(new java.awt.event.ActionListener() {
+        lineNumbersSpaceComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "NONE", "SPECIFIED", "QUARTER_UNIT", "HALF_UNIT", "ONE_UNIT", "ONE_AND_HALF_UNIT", "DOUBLE_UNIT" }));
+        lineNumbersSpaceComboBox.setSelectedIndex(4);
+        lineNumbersSpaceComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                lineNumberSpaceComboBoxActionPerformed(evt);
+                lineNumbersSpaceComboBoxActionPerformed(evt);
             }
         });
 
-        lineNumberSpaceSpinner.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1));
-        lineNumberSpaceSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
+        lineNumbersSpaceSpinner.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1));
+        lineNumbersSpaceSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                lineNumberSpaceSpinnerStateChanged(evt);
+                lineNumbersSpaceSpinnerStateChanged(evt);
             }
         });
 
@@ -668,18 +669,18 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(lineNumbersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(lineNumbersPanelLayout.createSequentialGroup()
-                        .addComponent(lineNumberLengthComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(lineNumbersLengthComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lineNumberLengthSpinner))
+                        .addComponent(lineNumbersLengthSpinner))
                     .addGroup(lineNumbersPanelLayout.createSequentialGroup()
                         .addGroup(lineNumbersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lineNumberLengthLabel)
-                            .addComponent(lineNumberSpaceLabel))
+                            .addComponent(lineNumbersLengthLabel)
+                            .addComponent(lineNumbersSpaceLabel))
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(lineNumbersPanelLayout.createSequentialGroup()
-                        .addComponent(lineNumberSpaceComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(lineNumbersSpaceComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lineNumberSpaceSpinner)))
+                        .addComponent(lineNumbersSpaceSpinner)))
                 .addContainerGap())
         );
         lineNumbersPanelLayout.setVerticalGroup(
@@ -687,17 +688,17 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
             .addGroup(lineNumbersPanelLayout.createSequentialGroup()
                 .addComponent(showLineNumbersCheckBox)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lineNumberLengthLabel)
+                .addComponent(lineNumbersLengthLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(lineNumbersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lineNumberLengthComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lineNumberLengthSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(lineNumbersLengthComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lineNumbersLengthSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lineNumberSpaceLabel)
+                .addComponent(lineNumbersSpaceLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(lineNumbersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lineNumberSpaceComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lineNumberSpaceSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(lineNumbersSpaceComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lineNumbersSpaceSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -1398,40 +1399,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
     }//GEN-LAST:event_saveDataButtonActionPerformed
 
     private void borderTypeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_borderTypeComboBoxActionPerformed
-        switch (borderTypeComboBox.getSelectedIndex()) {
-            case 0: {
-                codeArea.setBorder(null);
-                break;
-            }
-            case 1: {
-                codeArea.setBorder(new EmptyBorder(5, 5, 5, 5));
-                break;
-            }
-            case 2: {
-                codeArea.setBorder(new BasicBorders.MarginBorder());
-                break;
-            }
-            case 3: {
-                codeArea.setBorder(new BevelBorder(BevelBorder.RAISED));
-                break;
-            }
-            case 4: {
-                codeArea.setBorder(new BevelBorder(BevelBorder.LOWERED));
-                break;
-            }
-            case 5: {
-                codeArea.setBorder(new EtchedBorder(EtchedBorder.RAISED));
-                break;
-            }
-            case 6: {
-                codeArea.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
-                break;
-            }
-            case 7: {
-                codeArea.setBorder(new LineBorder(Color.BLACK));
-                break;
-            }
-        }
+        codeArea.setBorder(getBorderByType(borderTypeComboBox.getSelectedIndex()));
     }//GEN-LAST:event_borderTypeComboBoxActionPerformed
 
     private void decoratorHeaderLineCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_decoratorHeaderLineCheckBoxItemStateChanged
@@ -1446,13 +1414,13 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
         codeArea.setHeaderSpaceType(SpaceType.values()[headerSpaceComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_headerSpaceComboBoxActionPerformed
 
-    private void lineNumberSpaceComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lineNumberSpaceComboBoxActionPerformed
-        codeArea.setLineNumberSpaceType(SpaceType.values()[lineNumberSpaceComboBox.getSelectedIndex()]);
-    }//GEN-LAST:event_lineNumberSpaceComboBoxActionPerformed
+    private void lineNumbersSpaceComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lineNumbersSpaceComboBoxActionPerformed
+        codeArea.setLineNumberSpaceType(SpaceType.values()[lineNumbersSpaceComboBox.getSelectedIndex()]);
+    }//GEN-LAST:event_lineNumbersSpaceComboBoxActionPerformed
 
-    private void lineNumberLengthComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lineNumberLengthComboBoxActionPerformed
-        codeArea.setLineNumberType(CodeAreaLineNumberLength.LineNumberType.values()[lineNumberLengthComboBox.getSelectedIndex()]);
-    }//GEN-LAST:event_lineNumberLengthComboBoxActionPerformed
+    private void lineNumbersLengthComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lineNumbersLengthComboBoxActionPerformed
+        codeArea.setLineNumberType(CodeAreaLineNumberLength.LineNumberType.values()[lineNumbersLengthComboBox.getSelectedIndex()]);
+    }//GEN-LAST:event_lineNumbersLengthComboBoxActionPerformed
 
     private void positionCodeTypeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_positionCodeTypeComboBoxActionPerformed
         codeArea.setPositionCodeType(PositionCodeType.values()[positionCodeTypeComboBox.getSelectedIndex()]);
@@ -1462,13 +1430,13 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
         codeArea.setHeaderSpaceSize((Integer) headerSpaceSpinner.getValue());
     }//GEN-LAST:event_headerSpaceSpinnerStateChanged
 
-    private void lineNumberSpaceSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_lineNumberSpaceSpinnerStateChanged
-        codeArea.setLineNumberSpaceSize((Integer) lineNumberSpaceSpinner.getValue());
-    }//GEN-LAST:event_lineNumberSpaceSpinnerStateChanged
+    private void lineNumbersSpaceSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_lineNumbersSpaceSpinnerStateChanged
+        codeArea.setLineNumberSpaceSize((Integer) lineNumbersSpaceSpinner.getValue());
+    }//GEN-LAST:event_lineNumbersSpaceSpinnerStateChanged
 
-    private void lineNumberLengthSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_lineNumberLengthSpinnerStateChanged
-        codeArea.setLineNumberSpecifiedLength((Integer) lineNumberLengthSpinner.getValue());
-    }//GEN-LAST:event_lineNumberLengthSpinnerStateChanged
+    private void lineNumbersLengthSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_lineNumbersLengthSpinnerStateChanged
+        codeArea.setLineNumberSpecifiedLength((Integer) lineNumbersLengthSpinner.getValue());
+    }//GEN-LAST:event_lineNumbersLengthSpinnerStateChanged
 
     private void fontFamilyComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fontFamilyComboBoxActionPerformed
         int size = codeArea.getFont().getSize();
@@ -1621,14 +1589,14 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
     private javax.swing.JPanel layoutTab;
     private javax.swing.JLabel lineLengthLabel;
     private javax.swing.JSpinner lineLengthSpinner;
-    private javax.swing.JComboBox<String> lineNumberLengthComboBox;
-    private javax.swing.JLabel lineNumberLengthLabel;
-    private javax.swing.JSpinner lineNumberLengthSpinner;
-    private javax.swing.JComboBox<String> lineNumberSpaceComboBox;
-    private javax.swing.JLabel lineNumberSpaceLabel;
-    private javax.swing.JSpinner lineNumberSpaceSpinner;
     private javax.swing.JCheckBox lineNumbersBackgroundCheckBox;
+    private javax.swing.JComboBox<String> lineNumbersLengthComboBox;
+    private javax.swing.JLabel lineNumbersLengthLabel;
+    private javax.swing.JSpinner lineNumbersLengthSpinner;
     private javax.swing.JPanel lineNumbersPanel;
+    private javax.swing.JComboBox<String> lineNumbersSpaceComboBox;
+    private javax.swing.JLabel lineNumbersSpaceLabel;
+    private javax.swing.JSpinner lineNumbersSpaceSpinner;
     private javax.swing.JPanel linesPanel;
     private javax.swing.JButton loadDataButton;
     private javax.swing.JPanel modePanel;
@@ -1667,4 +1635,35 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
     private javax.swing.JLabel viewModeScrollModeLabel;
     private javax.swing.JCheckBox wrapLineModeCheckBox;
     // End of variables declaration//GEN-END:variables
+
+    private Border getBorderByType(int borderTypeIndex) {
+        switch (borderTypeIndex) {
+            case 0: {
+                return null;
+            }
+            case 1: {
+                return new EmptyBorder(5, 5, 5, 5);
+            }
+            case 2: {
+                return new BasicBorders.MarginBorder();
+            }
+            case 3: {
+                return new BevelBorder(BevelBorder.RAISED);
+            }
+            case 4: {
+                return new BevelBorder(BevelBorder.LOWERED);
+            }
+            case 5: {
+                return new EtchedBorder(EtchedBorder.RAISED);
+            }
+            case 6: {
+                return new EtchedBorder(EtchedBorder.LOWERED);
+            }
+            case 7: {
+                return new LineBorder(Color.BLACK);
+            }
+        }
+
+        return null;
+    }
 }
