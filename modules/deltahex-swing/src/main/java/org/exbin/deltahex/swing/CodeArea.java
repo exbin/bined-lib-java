@@ -71,7 +71,7 @@ import org.exbin.utils.binary_data.BinaryData;
  *
  * Also supports binary, octal and decimal codes.
  *
- * @version 0.1.3 2017/03/07
+ * @version 0.1.3 2017/03/08
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeArea extends JComponent {
@@ -1142,14 +1142,14 @@ public class CodeArea extends JComponent {
             } else {
                 fittingBytes = spaceGroupSize
                         * (int) ((charsPerRect - 1) / (long) ((codeType.getMaxDigits() + 1) * spaceGroupSize + 2));
-                int remains = (int) ((charsPerRect - 1) % (long) ((codeType.getMaxDigits() + 1) * spaceGroupSize + 2));
-                fittingBytes += (int) remains / (long) (codeType.getMaxDigits() + 1);
+                int remains = (int) ((charsPerRect - 1) % (long) ((codeType.getMaxDigits() + 1) * spaceGroupSize + 2)) / (codeType.getMaxDigits() + 1);
+                fittingBytes += remains;
             }
         } else if (spaceGroupSize == 0) {
             fittingBytes = byteGroupSize
                     * (int) ((charsPerRect - 1) / (long) ((codeType.getMaxDigits() + 1) * byteGroupSize + 1));
-            int remains = (int) ((charsPerRect - 1) % (long) ((codeType.getMaxDigits() + 1) * byteGroupSize + 1));
-            fittingBytes += (int) remains / (long) (codeType.getMaxDigits() + 1);
+            int remains = (int) ((charsPerRect - 1) % (long) ((codeType.getMaxDigits() + 1) * byteGroupSize + 1)) / (codeType.getMaxDigits() + 1);
+            fittingBytes += remains;
         } else {
             fittingBytes = 0;
             int charsPerLine = 1;
@@ -1192,14 +1192,20 @@ public class CodeArea extends JComponent {
             } else {
                 byteOffset = spaceGroupSize
                         * (int) (charOffset / (long) (codeType.getMaxDigits() * spaceGroupSize + 2));
-                int remains = (int) (charOffset % (long) (codeType.getMaxDigits() * spaceGroupSize + 2));
-                byteOffset += (int) remains / (long) codeType.getMaxDigits();
+                int remains = (int) (charOffset % (long) (codeType.getMaxDigits() * spaceGroupSize + 2)) / codeType.getMaxDigits();
+                if (remains >= spaceGroupSize) {
+                    remains = spaceGroupSize - 1;
+                }
+                byteOffset += remains;
             }
         } else if (spaceGroupSize == 0) {
             byteOffset = byteGroupSize
                     * (int) (charOffset / (long) (codeType.getMaxDigits() * byteGroupSize + 1));
-            int remains = (int) (charOffset % (long) (codeType.getMaxDigits() * byteGroupSize + 1));
-            byteOffset += (int) remains / (long) codeType.getMaxDigits();
+            int remains = (int) (charOffset % (long) (codeType.getMaxDigits() * byteGroupSize + 1)) / codeType.getMaxDigits();
+            if (remains >= byteGroupSize) {
+                remains = byteGroupSize - 1;
+            }
+            byteOffset += remains;
         } else {
             byteOffset = 0;
             int charsPerLine = 0;
