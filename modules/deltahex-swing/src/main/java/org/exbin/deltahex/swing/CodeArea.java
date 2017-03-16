@@ -71,7 +71,7 @@ import org.exbin.utils.binary_data.BinaryData;
  *
  * Also supports binary, octal and decimal codes.
  *
- * @version 0.1.3 2017/03/08
+ * @version 0.1.3 2017/03/16
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeArea extends JComponent {
@@ -1289,19 +1289,19 @@ public class CodeArea extends JComponent {
     }
 
     public ColorsGroup getMainColors() {
-        return new ColorsGroup(mainColors);
+        return mainColors;
     }
 
     public ColorsGroup getAlternateColors() {
-        return new ColorsGroup(alternateColors);
+        return alternateColors;
     }
 
     public ColorsGroup getSelectionColors() {
-        return new ColorsGroup(selectionColors);
+        return selectionColors;
     }
 
     public ColorsGroup getMirrorSelectionColors() {
-        return new ColorsGroup(mirrorSelectionColors);
+        return mirrorSelectionColors;
     }
 
     public void setMainColors(ColorsGroup colorsGroup) {
