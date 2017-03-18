@@ -118,14 +118,14 @@ public class DeltaDocumentWindow {
                 && pointer.segment.getPrev().getStartPosition() + pointer.segment.getPrev().getLength() == ((MemorySegment) pointer.segment.getPrev()).getSource().getDataSize()) {
             MemorySegment prevSegment = (MemorySegment) pointer.segment.getPrev();
             prevSegment.getSource().insertUninitialized(prevSegment.getSource().getDataSize(), 1);
-            prevSegment.setLength(prevSegment.getLength() + 1);
+            repository.updateSegmentLength(prevSegment, prevSegment.getLength() + 1);
             pointer.position++;
             document.setDataLength(targetLength);
         } else if (pointer.segment == null && segments.last() instanceof MemorySegment
                 && segments.last().getStartPosition() + segments.last().getLength() == ((MemorySegment) segments.last()).getSource().getDataSize()) {
             MemorySegment prevSegment = (MemorySegment) segments.last();
             prevSegment.getSource().insertUninitialized(prevSegment.getSource().getDataSize(), 1);
-            prevSegment.setLength(prevSegment.getLength() + 1);
+            repository.updateSegmentLength(prevSegment, prevSegment.getLength() + 1);
             pointer.position++;
             document.setDataLength(targetLength);
         } else {
@@ -163,14 +163,14 @@ public class DeltaDocumentWindow {
                 && pointer.segment.getPrev().getStartPosition() + pointer.segment.getPrev().getLength() == ((MemorySegment) pointer.segment.getPrev()).getSource().getDataSize()) {
             MemorySegment prevSegment = (MemorySegment) pointer.segment.getPrev();
             prevSegment.getSource().insert(prevSegment.getSource().getDataSize(), 1);
-            prevSegment.setLength(prevSegment.getLength() + 1);
+            repository.updateSegmentLength(prevSegment, prevSegment.getLength() + 1);
             pointer.position++;
             document.setDataLength(targetLength);
         } else if (pointer.segment == null && segments.last() instanceof MemorySegment
                 && segments.last().getStartPosition() + segments.last().getLength() == ((MemorySegment) segments.last()).getSource().getDataSize()) {
             MemorySegment prevSegment = (MemorySegment) segments.last();
             prevSegment.getSource().insert(prevSegment.getSource().getDataSize(), 1);
-            prevSegment.setLength(prevSegment.getLength() + 1);
+            repository.updateSegmentLength(prevSegment, prevSegment.getLength() + 1);
             pointer.position++;
             document.setDataLength(targetLength);
         } else {
