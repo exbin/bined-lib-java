@@ -16,17 +16,20 @@
 package org.exbin.deltahex;
 
 /**
- * Selection range is selection between two points where begin represents
- * originating point. End of the selection can be before or after begin.
+ * Selection range is selection between two positions where begin represents
+ * originating point and end of the selection can be before or after begin.
  *
- * @version 0.1.1 2016/11/03
+ * @version 0.2.0 2017/04/02
  * @author ExBin Project (http://exbin.org)
  */
 public class SelectionRange {
 
-    private long start;
-    private long end;
+    private long start = 0;
+    private long end = 0;
 
+    /**
+     * Creates empty selection range.
+     */
     public SelectionRange() {
     }
 
@@ -76,5 +79,14 @@ public class SelectionRange {
      */
     public long getLength() {
         return end >= start ? end - start : start - end;
+    }
+
+    /**
+     * Returns true if selection is empty;
+     *
+     * @return true if selection is empty
+     */
+    public boolean isEmpty() {
+        return start == end;
     }
 }

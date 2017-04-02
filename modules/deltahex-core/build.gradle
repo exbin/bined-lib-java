@@ -30,5 +30,6 @@ repositories {
 
 dependencies {
     compile moduleDep('ExbinUtilsJava', 'org.exbin.utils', 'exbin-binary_data')
+    compile group: 'javax.validation', name: 'validation-api', version: '1.1.0.Final'
     testCompile group : 'junit', name: 'junit', version: '4.10'
 }

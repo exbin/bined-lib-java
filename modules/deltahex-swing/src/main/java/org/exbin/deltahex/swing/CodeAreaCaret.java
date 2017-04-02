@@ -21,13 +21,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.Timer;
 import org.exbin.deltahex.CaretPosition;
+import org.exbin.deltahex.CodeAreaSection;
 import org.exbin.deltahex.EditationMode;
-import org.exbin.deltahex.Section;
 
 /**
  * Code area caret.
  *
- * @version 0.1.1 2016/09/19
+ * @version 0.2.0 2017/04/02
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeAreaCaret {
@@ -37,12 +37,11 @@ public class CodeAreaCaret {
     private static final int DEFAULT_BLINK_RATE = 450;
 
     private final CodeArea codeArea;
-
     private final CaretPosition caretPosition = new CaretPosition();
+
     private int blinkRate = 0;
     private Timer blinkTimer = null;
     private boolean cursorVisible = true;
-    private Section section = Section.CODE_MATRIX;
     private CursorShape insertCursorShape = CursorShape.DOUBLE_LEFT;
     private CursorShape overwriteCursorShape = CursorShape.BOX;
     private CursorRenderingMode renderingMode = CursorRenderingMode.NEGATIVE;
@@ -97,10 +96,10 @@ public class CodeAreaCaret {
 
         int byteOffset = (int) (shiftedPosition % bytesPerLine);
 
-        Rectangle rect = codeArea.getCodeSectionRectangle();
+        Rectangle rect = codeArea.getCodeCodeAreaSectionRectangle();
         int caretY = (int) (rect.y + line * lineHeight) - scrollPosition.getScrollLineOffset();
         int caretX;
-        if (section == Section.TEXT_PREVIEW) {
+        if (section == CodeAreaSection.TEXT_PREVIEW) {
             caretX = codeArea.getPreviewX() + charWidth * byteOffset;
         } else {
             caretX = rect.x + charWidth * (codeArea.computeByteCharPos(byteOffset) + getCodeOffset());
@@ -130,10 +129,10 @@ public class CodeAreaCaret {
 
         int byteOffset = (int) (shiftedPosition % bytesPerLine);
 
-        Rectangle rect = codeArea.getCodeSectionRectangle();
+        Rectangle rect = codeArea.getCodeCodeAreaSectionRectangle();
         int caretY = (int) (rect.y + line * lineHeight) - scrollPosition.getScrollLineOffset();
         int caretX;
-        if (section == Section.TEXT_PREVIEW) {
+        if (section == CodeAreaSection.TEXT_PREVIEW) {
             caretX = rect.x + charWidth * codeArea.computeByteCharPos(byteOffset);
         } else {
             caretX = codeArea.getPreviewX() + charWidth * byteOffset;
@@ -235,10 +234,6 @@ public class CodeAreaCaret {
         this.caretPosition.setCodeOffset(caretPosition == null ? 0 : caretPosition.getCodeOffset());
     }
 
-    public long getDataPosition() {
-        return caretPosition.getDataPosition();
-    }
-
     public void setCaretPosition(long dataPosition) {
         caretPosition.setDataPosition(dataPosition);
         caretPosition.setCodeOffset(0);
@@ -251,6 +246,22 @@ public class CodeAreaCaret {
         resetBlink();
     }
 
+    public void setCaretPosition(long dataPosition, int codeOffset, CodeAreaSection section) {
+        caretPosition.setDataPosition(dataPosition);
+        caretPosition.setCodeOffset(codeOffset);
+        caretPosition.setSection(section);
+        resetBlink();
+    }
+
+    public long getDataPosition() {
+        return caretPosition.getDataPosition();
+    }
+
+    public void setDataPosition(long dataPosition) {
+        caretPosition.setDataPosition(dataPosition);
+        resetBlink();
+    }
+
     public int getCodeOffset() {
         return caretPosition.getCodeOffset();
     }
@@ -260,12 +271,12 @@ public class CodeAreaCaret {
         resetBlink();
     }
 
-    public Section getSection() {
-        return section;
+    public CodeAreaSection getSection() {
+        return caretPosition.getSection();
     }
 
-    public void setSection(Section section) {
-        this.section = section;
+    public void setSection(CodeAreaSection section) {
+        caretPosition.setSection(section);
         resetBlink();
     }
 
@@ -348,6 +359,9 @@ public class CodeAreaCaret {
         }
     }
 
+    /**
+     * Enumeration of supported cursor shapes.
+     */
     public static enum CursorShape {
         /*
          * Single line cursor shapes.
@@ -397,10 +411,35 @@ public class CodeAreaCaret {
         }
     }
 
+    /**
+     * Width of the cursor paint object.
+     */
     public static enum CursorShapeWidth {
-        LINE, DOUBLE, QUARTER, HALF, FULL
+        /**
+         * Single pixel width line.
+         */
+        LINE,
+        /**
+         * Two pixels width line.
+         */
+        DOUBLE,
+        /**
+         * One quarter of cursor size.
+         */
+        QUARTER,
+        /**
+         * Half of cursor size.
+         */
+        HALF,
+        /**
+         * Full cursor size.
+         */
+        FULL
     }
 
+    /**
+     * Method for rendering cursor into CodeArea component.
+     */
     public static enum CursorRenderingMode {
         /**
          * Cursor is just painted.

@@ -30,7 +30,7 @@ import java.util.logging.Logger;
  * Input stream translation class which converts from input charset to target
  * charset.
  *
- * @version 0.1.1 2016/11/02
+ * @version 0.2.0 2017/04/02
  * @author ExBin Project (http://exbin.org)
  */
 public class CharsetStreamTranslator extends InputStream {
@@ -49,6 +49,14 @@ public class CharsetStreamTranslator extends InputStream {
     private int maxInputCharSize;
     private int maxOutputCharSize;
 
+    /**
+     * Initializes class with given source stream and charsets.
+     *
+     * @param inputCharset input charset
+     * @param outputCharset output charset
+     * @param source input data source
+     * @param bufferSize character buffer size
+     */
     public CharsetStreamTranslator(Charset inputCharset, Charset outputCharset, InputStream source, int bufferSize) {
         this.source = source;
         decoder = inputCharset.newDecoder();
@@ -69,10 +77,23 @@ public class CharsetStreamTranslator extends InputStream {
         outputBuffer.limit(0);
     }
 
+    /**
+     * Initializes class with given source stream and charsets with default buffer size.
+     * 
+     * @param inputCharset input charset
+     * @param outputCharset output charset
+     * @param source input data source
+     */
     public CharsetStreamTranslator(Charset inputCharset, Charset outputCharset, InputStream source) {
         this(inputCharset, outputCharset, source, BYTE_BUFFER_SIZE);
     }
 
+    /**
+     * Reads next translated byte from the stream.
+     * 
+     * @return
+     * @throws IOException 
+     */
     @Override
     public int read() throws IOException {
         boolean dataReady = outputBuffer.remaining() > 0;
@@ -91,6 +112,9 @@ public class CharsetStreamTranslator extends InputStream {
         return byteData;
     }
 
+    /**
+     * Processes next character in buffer.
+     */
     public void processNext() {
         byte[] buffer = inputBuffer.array();
         if (inputBuffer.remaining() > 0) {

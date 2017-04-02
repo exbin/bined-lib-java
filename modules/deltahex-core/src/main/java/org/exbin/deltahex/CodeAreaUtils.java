@@ -15,6 +15,8 @@
  */
 package org.exbin.deltahex;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * Hexadecimal editor component utilities.
  *
@@ -32,6 +34,7 @@ public class CodeAreaUtils {
      * @param value byte value
      * @return sequence of two hexadecimal chars with upper case
      */
+    @NotNull
     public static char[] byteToHexChars(byte value) {
         char[] result = new char[2];
         byteToHexChars(result, value);
@@ -44,7 +47,7 @@ public class CodeAreaUtils {
      * @param target target char array
      * @param value byte value
      */
-    public static void byteToHexChars(char[] target, byte value) {
+    public static void byteToHexChars(@NotNull char[] target, byte value) {
         target[0] = UPPER_HEX_CODES[(value >> 4) & 15];
         target[1] = UPPER_HEX_CODES[value & 15];
     }
@@ -57,6 +60,7 @@ public class CodeAreaUtils {
      * @param length length of the target sequence
      * @return hexadecimal characters
      */
+    @NotNull
     public static char[] longToHexChars(long value, int length) {
         char[] result = new char[length];
         longToHexChars(result, value, length);
@@ -71,7 +75,7 @@ public class CodeAreaUtils {
      * @param value long value
      * @param length length of the target sequence
      */
-    public static void longToHexChars(char[] target, long value, int length) {
+    public static void longToHexChars(@NotNull char[] target, long value, int length) {
         for (int i = length - 1; i >= 0; i--) {
             target[i] = UPPER_HEX_CODES[(int) (value & 15)];
             value = value >> 4;
@@ -87,7 +91,7 @@ public class CodeAreaUtils {
      * @param targetPosition target position in array of characters
      * @param charCase case type for alphabetical characters
      */
-    public static void byteToCharsCode(byte dataByte, CodeType codeType, char[] targetData, int targetPosition, HexCharactersCase charCase) {
+    public static void byteToCharsCode(byte dataByte, @NotNull CodeType codeType, char[] targetData, int targetPosition, @NotNull HexCharactersCase charCase) {
         char[] hexCharacters = charCase == HexCharactersCase.UPPER ? CodeAreaUtils.UPPER_HEX_CODES : CodeAreaUtils.LOWER_HEX_CODES;
         switch (codeType) {
             case BINARY: {
@@ -139,7 +143,7 @@ public class CodeAreaUtils {
      * @return byte value
      * @throws IllegalArgumentException if code is invalid
      */
-    public static byte stringCodeToByte(String code, CodeType codeType) {
+    public static byte stringCodeToByte(String code, @NotNull CodeType codeType) {
         if (code.length() > codeType.getMaxDigits()) {
             throw new IllegalArgumentException("String code is too long");
         }

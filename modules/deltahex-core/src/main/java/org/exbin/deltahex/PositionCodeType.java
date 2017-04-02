@@ -18,7 +18,7 @@ package org.exbin.deltahex;
 /**
  * Enumeration of supported position code types.
  *
- * @version 0.1.1 2016/08/31
+ * @version 0.2.0 2017/04/02
  * @author ExBin Project (http://exbin.org)
  */
 public enum PositionCodeType {
@@ -33,10 +33,20 @@ public enum PositionCodeType {
         baseLog = Math.log(base);
     }
 
+    /**
+     * Returns numerical base.
+     *
+     * @return numerical base
+     */
     public int getBase() {
         return base;
     }
 
+    /**
+     * Returns natural logarithm of the base.
+     *
+     * @return natural logarithm of the base
+     */
     public double getBaseLog() {
         return baseLog;
     }

@@ -15,6 +15,8 @@
  */
 package org.exbin.deltahex;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * Interface for editation mode change listener.
  *
@@ -28,5 +30,5 @@ public interface EditationModeChangedListener {
      *
      * @param editationMode new editation mode
      */
-    void editationModeChanged(EditationMode editationMode);
+    void editationModeChanged(@NotNull EditationMode editationMode);
 }

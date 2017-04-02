@@ -18,10 +18,21 @@ package org.exbin.deltahex;
 /**
  * Enumeration of scrollbar visibility modes.
  *
- * @version 0.1.1 2016/08/31
+ * @version 0.2.0 2017/04/02
  * @author ExBin Project (http://exbin.org)
  */
 public enum ScrollBarVisibility {
 
-    NEVER, IF_NEEDED, ALWAYS;
+    /**
+     * Never show scrollbars even when area is bigger then available space.
+     */
+    NEVER,
+    /**
+     * Show scrollbars only if area is bigger then available space.
+     */
+    IF_NEEDED,
+    /**
+     * Always show scrollbar regardless of the available space.
+     */
+    ALWAYS;
 }

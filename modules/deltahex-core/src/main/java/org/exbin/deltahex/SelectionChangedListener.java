@@ -15,10 +15,12 @@
  */
 package org.exbin.deltahex;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * Interface for selection change listener.
  *
- * @version 0.1.1 2016/08/31
+ * @version 0.2.0 2017/04/02
  * @author ExBin Project (http://exbin.org)
  */
 public interface SelectionChangedListener {
@@ -29,5 +31,5 @@ public interface SelectionChangedListener {
      *
      * @param selection new selection range or null if selection is empty
      */
-    void selectionChanged(SelectionRange selection);
+    void selectionChanged(@NotNull SelectionRange selection);
 }

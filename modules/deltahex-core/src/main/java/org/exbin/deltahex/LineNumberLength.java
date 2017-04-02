@@ -16,30 +16,36 @@
 package org.exbin.deltahex;
 
 import javax.swing.JComponent;
+import javax.validation.constraints.NotNull;
 
 /**
  * Line number length.
  *
- * @version 0.1.0 2016/06/20
+ * @version 0.2.0 2017/04/02
  * @author ExBin Project (http://exbin.org)
  */
-public class CodeAreaLineNumberLength extends JComponent {
+public class LineNumberLength extends JComponent {
 
     private LineNumberType lineNumberType = LineNumberType.SPECIFIED;
     private int lineNumberLength = 8;
 
-    public CodeAreaLineNumberLength() {
+    public LineNumberLength() {
     }
 
+    @NotNull
     public LineNumberType getSpaceType() {
         return lineNumberType;
     }
 
+    @NotNull
     public LineNumberType getLineNumberType() {
         return lineNumberType;
     }
 
-    public void setLineNumberType(LineNumberType lineNumberType) {
+    public void setLineNumberType(@NotNull LineNumberType lineNumberType) {
+        if (lineNumberType == null) {
+            throw new NullPointerException();
+        }
         this.lineNumberType = lineNumberType;
     }
 
@@ -51,11 +57,17 @@ public class CodeAreaLineNumberLength extends JComponent {
         this.lineNumberLength = lineNumberLength;
     }
 
+    /**
+     * Enumeration of line number types.
+     */
     public static enum LineNumberType {
         /**
-         * Line number is computed from data size and position code type.
+         * Line number length is computed from data size and position code type.
          */
         AUTO,
+        /**
+         * Line number length is specified as fixed number of figures.
+         */
         SPECIFIED
     }
 }

@@ -13,33 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.deltahex.operation.swing;
-
-import org.exbin.deltahex.swing.CodeArea;
+package org.exbin.deltahex;
 
 /**
- * Abstract operation for editing data.
+ * Enumeration of cursor position section.
  *
- * @version 0.1.0 2015/05/16
+ * @version 0.2.0 2017/04/02
  * @author ExBin Project (http://exbin.org)
  */
-public abstract class CharEditDataOperation extends CodeAreaOperation {
-
-    public CharEditDataOperation(CodeArea hexadecimal) {
-        super(hexadecimal);
-    }
+public enum CodeAreaSection {
 
     /**
-     * Appends next character value in editing action sequence.
-     *
-     * @param value character
+     * Section of code area with codes for binary data representation.
      */
-    public abstract void appendEdit(char value);
-
+    CODE_MATRIX,
     /**
-     * Generates undo operation for combined editing action.
-     *
-     * @return hexadecimal operation
+     * Section of code area with textual preview characters.
      */
-    public abstract CodeAreaOperation[] generateUndo();
+    TEXT_PREVIEW
 }

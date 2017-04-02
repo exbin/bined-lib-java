@@ -15,16 +15,19 @@
  */
 package org.exbin.deltahex;
 
+import javax.validation.constraints.NotNull;
+
 /**
- * Specifies caret position as combination of data position and code offset in
- * single byte representation.
+ * Specifies caret position as combination of data position, section and code
+ * offset of code representation.
  *
- * @version 0.1.0 2016/06/13
+ * @version 0.2.0 2017/04/02
  * @author ExBin Project (http://exbin.org)
  */
 public class CaretPosition {
 
     private long dataPosition = 0;
+    private CodeAreaSection section = CodeAreaSection.CODE_MATRIX;
     private int codeOffset = 0;
 
     public CaretPosition() {
@@ -51,8 +54,20 @@ public class CaretPosition {
         this.codeOffset = codeOffset;
     }
 
-    public void setPosition(CaretPosition position) {
+    public void setPosition(@NotNull CaretPosition position) {
         dataPosition = position.dataPosition;
         codeOffset = position.codeOffset;
+    }
+
+    @NotNull
+    public CodeAreaSection getSection() {
+        return section;
+    }
+
+    public void setSection(@NotNull CodeAreaSection section) {
+        if (section == null) {
+            throw new NullPointerException();
+        }
+        this.section = section;
     }
 }

@@ -18,11 +18,15 @@ package org.exbin.deltahex;
 /**
  * Enumeration of editation modes.
  *
- * @version 0.1.1 2016/08/31
+ * @version 0.2.0 2017/04/02
  * @author ExBin Project (http://exbin.org)
  */
 public enum EditationMode {
 
+    /**
+     * Document cannot be changed.
+     */
+    READ_ONLY,
     /**
      * Data are inserted at cursor position.
      *
@@ -38,5 +42,10 @@ public enum EditationMode {
      * in "overwrite only" mode, document is extended so that inserted data will
      * fit in.
      */
-    OVERWRITE;
+    OVERWRITE,
+    /**
+     * Only overwrite editation mode is allowed and size of document cannot be
+     * changed.
+     */
+    INPLACE;
 }

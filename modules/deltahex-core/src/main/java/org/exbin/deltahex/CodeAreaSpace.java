@@ -13,12 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.deltahex.swt;
+package org.exbin.deltahex;
+
+import javax.validation.constraints.NotNull;
 
 /**
  * Empty space definition.
  *
- * @version 0.1.2 2016/12/14
+ * @version 0.2.0 2017/04/02
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeAreaSpace {
@@ -29,10 +31,14 @@ public class CodeAreaSpace {
     public CodeAreaSpace() {
     }
 
-    public CodeAreaSpace(SpaceType spaceType) {
+    public CodeAreaSpace(@NotNull SpaceType spaceType) {
+        if (spaceType == null) {
+            throw new NullPointerException();
+        }
         this.spaceType = spaceType;
     }
 
+    @NotNull
     public SpaceType getSpaceType() {
         return spaceType;
     }
@@ -49,13 +55,37 @@ public class CodeAreaSpace {
         this.spaceSize = spaceSize;
     }
 
+    /**
+     * Enumeration of space types.
+     */
     public static enum SpaceType {
+        /**
+         * Space is empty.
+         */
         NONE,
+        /**
+         * Space size is specified as fixed value by pixels.
+         */
         SPECIFIED,
+        /**
+         * 1/4 of space unit.
+         */
         QUARTER_UNIT,
+        /**
+         * 1/2 of space unit.
+         */
         HALF_UNIT,
+        /**
+         * One space unit.
+         */
         ONE_UNIT,
+        /**
+         * 1.5 of space unit.
+         */
         ONE_AND_HALF_UNIT,
+        /**
+         * 2 space units.
+         */
         DOUBLE_UNIT
     }
 }

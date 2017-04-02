@@ -15,10 +15,12 @@
  */
 package org.exbin.deltahex;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * Interface for caret moved listener.
  *
- * @version 0.1.1 2016/08/31
+ * @version 0.2.0 2017/04/02
  * @author ExBin Project (http://exbin.org)
  */
 public interface CaretMovedListener {
@@ -27,7 +29,6 @@ public interface CaretMovedListener {
      * Fires notification each time caret is moved or section is changed.
      *
      * @param caretPosition caret position
-     * @param section active section
      */
-    void caretMoved(CaretPosition caretPosition, Section section);
+    void caretMoved(@NotNull CaretPosition caretPosition);
 }
