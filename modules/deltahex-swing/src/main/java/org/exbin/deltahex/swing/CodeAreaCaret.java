@@ -99,7 +99,7 @@ public class CodeAreaCaret {
         Rectangle rect = codeArea.getCodeCodeAreaSectionRectangle();
         int caretY = (int) (rect.y + line * lineHeight) - scrollPosition.getScrollLineOffset();
         int caretX;
-        if (section == CodeAreaSection.TEXT_PREVIEW) {
+        if (caretPosition.getSection() == CodeAreaSection.TEXT_PREVIEW) {
             caretX = codeArea.getPreviewX() + charWidth * byteOffset;
         } else {
             caretX = rect.x + charWidth * (codeArea.computeByteCharPos(byteOffset) + getCodeOffset());
@@ -120,7 +120,7 @@ public class CodeAreaCaret {
      * @return cursor position or null
      */
     public Point getShadowCursorPoint(int bytesPerLine, int lineHeight, int charWidth, int linesPerRect) {
-        CodeArea.ScrollPosition scrollPosition = codeArea.getScrollPosition();
+        CodeAreaScrollPosition scrollPosition = codeArea.getScrollPosition();
         long shiftedPosition = caretPosition.getDataPosition() + scrollPosition.getLineByteShift();
         long line = shiftedPosition / bytesPerLine - scrollPosition.getScrollLinePosition();
         if (line < -1 || line + 1 > linesPerRect) {
@@ -132,7 +132,7 @@ public class CodeAreaCaret {
         Rectangle rect = codeArea.getCodeCodeAreaSectionRectangle();
         int caretY = (int) (rect.y + line * lineHeight) - scrollPosition.getScrollLineOffset();
         int caretX;
-        if (section == CodeAreaSection.TEXT_PREVIEW) {
+        if (caretPosition.getSection() == CodeAreaSection.TEXT_PREVIEW) {
             caretX = rect.x + charWidth * codeArea.computeByteCharPos(byteOffset);
         } else {
             caretX = codeArea.getPreviewX() + charWidth * byteOffset;

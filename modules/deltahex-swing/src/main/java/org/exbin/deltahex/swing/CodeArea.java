@@ -15,6 +15,7 @@
  */
 package org.exbin.deltahex.swing;
 
+import java.awt.Rectangle;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.FocusEvent;
@@ -23,6 +24,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JComponent;
@@ -45,7 +47,7 @@ import org.exbin.utils.binary_data.BinaryData;
 /**
  * Hexadecimal viewer/editor component.
  *
- * @version 0.2.0 2017/04/02
+ * @version 0.2.0 2017/04/03
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeArea extends JComponent implements CodeAreaControl {
@@ -55,6 +57,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
     private CodeAreaCaret caret;
     private SelectionRange selection;
     private JScrollPane scrollPanel;
+    private CodeAreaDataView dataView;
 
     private CodeAreaPainter painter;
     private CodeAreaCommandHandler commandHandler;
@@ -81,29 +84,50 @@ public class CodeArea extends JComponent implements CodeAreaControl {
         caret = new CodeAreaCaret(this);
         scrollPanel = new JScrollPane();
         add(scrollPanel);
+        dataView = new CodeAreaDataView(this);
+        scrollPanel.setViewportView(dataView);
 //        painter = new DefaultCodeAreaPainter(this);
 //        commandHandler = new DefaultCodeAreaCommandHandler(this);
 
         // TODO buildColors();
-//        verticalScrollBar = new JScrollBar(Scrollbar.VERTICAL);
-//        verticalScrollBar.setVisible(false);
-//        verticalScrollBar.setIgnoreRepaint(true);
-//        verticalScrollBar.addAdjustmentListener(new VerticalAdjustmentListener());
-//        add(verticalScrollBar);
-//        horizontalScrollBar = new JScrollBar(Scrollbar.HORIZONTAL);
-//        horizontalScrollBar.setIgnoreRepaint(true);
-//        horizontalScrollBar.setVisible(false);
-//        horizontalScrollBar.addAdjustmentListener(new HorizontalAdjustmentListener());
-//        add(horizontalScrollBar);
         setFocusable(true);
         setFocusTraversalKeysEnabled(false);
-        addComponentListener(new CodeAreaComponentListener());
+        addComponentListener(new ComponentListener() {
+
+            @Override
+            public void componentResized(ComponentEvent e) {
+//              computePaintData();
+//              validateLineOffset();
+            }
+
+            @Override
+            public void componentMoved(ComponentEvent e) {
+            }
+
+            @Override
+            public void componentShown(ComponentEvent e) {
+            }
+
+            @Override
+            public void componentHidden(ComponentEvent e) {
+            }
+        });
 
         CodeAreaMouseListener codeAreaMouseListener = new CodeAreaMouseListener(this);
         addMouseListener(codeAreaMouseListener);
         addMouseMotionListener(codeAreaMouseListener);
         addMouseWheelListener(codeAreaMouseListener);
-        addKeyListener(new CodeAreaKeyListener());
+        addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyTyped(KeyEvent keyEvent) {
+                commandHandler.keyTyped(keyEvent);
+            }
+
+            @Override
+            public void keyPressed(KeyEvent keyEvent) {
+                commandHandler.keyPressed(keyEvent);
+            }
+        });
 
         addFocusListener(new FocusListener() {
             @Override
@@ -188,43 +212,137 @@ public class CodeArea extends JComponent implements CodeAreaControl {
         return !selection.isEmpty();
     }
 
-    private class CodeAreaKeyListener extends KeyAdapter {
+    public BinaryData getData() {
+        return data;
+    }
 
-        public CodeAreaKeyListener() {
+    public void setData(BinaryData data) {
+        this.data = data;
+        notifyDataChanged();
+        computePaintData();
+        repaint();
+    }
+
+    public long getDataSize() {
+        return data == null ? 0 : data.getDataSize();
+    }
+
+    public Charset getCharset() {
+        return charset;
+    }
+
+    public void setCharset(Charset charset) {
+        this.charset = charset;
+        repaint();
+    }
+
+    public CodeAreaPainter getPainter() {
+        return painter;
+    }
+
+    public void setPainter(CodeAreaPainter painter) {
+        if (painter == null) {
+            throw new NullPointerException("Painter cannot be null");
         }
 
-        @Override
-        public void keyTyped(KeyEvent keyEvent) {
-            commandHandler.keyTyped(keyEvent);
-        }
+        this.painter = painter;
+        repaint();
+    }
 
-        @Override
-        public void keyPressed(KeyEvent keyEvent) {
-            commandHandler.keyPressed(keyEvent);
+    public void setViewMode(ViewMode viewMode) {
+        this.viewMode = viewMode;
+        if (viewMode == ViewMode.CODE_MATRIX) {
+            caret.setSection(CodeAreaSection.CODE_MATRIX);
+            notifyCaretMoved();
+        } else if (viewMode == ViewMode.TEXT_PREVIEW) {
+            caret.setSection(CodeAreaSection.TEXT_PREVIEW);
+            notifyCaretMoved();
+        }
+        computePaintData();
+        repaint();
+    }
+
+    public void notifyCaretMoved() {
+        for (CaretMovedListener caretMovedListener : caretMovedListeners) {
+            caretMovedListener.caretMoved(caret.getCaretPosition(), caret.getSection());
         }
     }
 
-    private class CodeAreaComponentListener implements ComponentListener {
+    public void notifyScrolled() {
+        for (ScrollingListener scrollingListener : scrollingListeners) {
+            scrollingListener.scrolled();
+        }
+    }
 
-        public CodeAreaComponentListener() {
+    public void notifyDataChanged() {
+        if (caret.getDataPosition() > data.getDataSize()) {
+            caret.setCaretPosition(0);
+            notifyCaretMoved();
+        }
+        computePaintData();
+
+        for (DataChangedListener dataChangedListener : dataChangedListeners) {
+            dataChangedListener.dataChanged();
+        }
+    }
+
+    public ScrollPosition getScrollPosition() {
+        return scrollPosition;
+    }
+
+    public void revealCursor() {
+        revealPosition(caret.getCaretPosition().getDataPosition(), caret.getSection());
+    }
+
+    public void revealPosition(long position, CodeAreaSection section) {
+        if (paintDataCache.fontMetrics == null) {
+            // Ignore if no font data is available
+            return;
+        }
+        boolean scrolled = false;
+        Rectangle hexRect = paintDataCache.codeSectionRectangle;
+        long caretLine = position / paintDataCache.bytesPerLine;
+
+        int positionByte;
+        if (section == CodeAreaSection.CODE_MATRIX) {
+            positionByte = computeByteCharPos((int) (position % paintDataCache.bytesPerLine)) + caret.getCodeOffset();
+        } else {
+            positionByte = (int) (position % paintDataCache.bytesPerLine);
+            if (viewMode == ViewMode.DUAL) {
+                positionByte += paintDataCache.previewStartChar;
+            }
         }
 
-        @Override
-        public void componentResized(ComponentEvent e) {
-//            computePaintData();
-//            validateLineOffset();
+        if (caretLine <= scrollPosition.scrollLinePosition) {
+            scrollPosition.scrollLinePosition = caretLine;
+            scrollPosition.scrollLineOffset = 0;
+            scrolled = true;
+        } else if (caretLine >= scrollPosition.scrollLinePosition + paintDataCache.linesPerRect) {
+            scrollPosition.scrollLinePosition = caretLine - paintDataCache.linesPerRect;
+            if (verticalScrollMode == VerticalScrollMode.PIXEL) {
+                scrollPosition.scrollLineOffset = paintDataCache.lineHeight - (hexRect.height % paintDataCache.lineHeight);
+            } else {
+                scrollPosition.scrollLinePosition++;
+            }
+            scrolled = true;
+        }
+        if (positionByte <= scrollPosition.scrollCharPosition) {
+            scrollPosition.scrollCharPosition = positionByte;
+            scrollPosition.scrollCharOffset = 0;
+            scrolled = true;
+        } else if (positionByte >= scrollPosition.scrollCharPosition + paintDataCache.bytesPerRect) {
+            scrollPosition.scrollCharPosition = positionByte - paintDataCache.bytesPerRect;
+            if (horizontalScrollMode == HorizontalScrollMode.PIXEL) {
+                scrollPosition.scrollCharOffset = paintDataCache.charWidth - (hexRect.width % paintDataCache.charWidth);
+            } else {
+                scrollPosition.scrollCharPosition++;
+            }
+            scrolled = true;
         }
 
-        @Override
-        public void componentMoved(ComponentEvent e) {
-        }
-
-        @Override
-        public void componentShown(ComponentEvent e) {
-        }
-
-        @Override
-        public void componentHidden(ComponentEvent e) {
+        if (scrolled) {
+            updateScrollBars();
+            notifyScrolled();
         }
     }
 }
