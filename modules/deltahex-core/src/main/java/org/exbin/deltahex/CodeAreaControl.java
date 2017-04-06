@@ -20,7 +20,7 @@ import javax.validation.constraints.NotNull;
 /**
  * Code Area control interface.
  *
- * @version 0.2.0 2017/04/02
+ * @version 0.2.0 2017/04/06
  * @author ExBin Project (http://exbin.org)
  */
 public interface CodeAreaControl {
@@ -54,6 +54,11 @@ public interface CodeAreaControl {
      * Deletes selected section.
      */
     void delete();
+
+    /**
+     * Expands selection to all data.
+     */
+    void selectAll();
 
     /**
      * Returns true if content of the clipboard is valid for paste operation.

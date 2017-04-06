@@ -59,6 +59,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
     private SelectionRange selection;
     private JScrollPane scrollPanel;
     private CodeAreaDataView dataView;
+    private Charset charset = Charset.defaultCharset();
 
     private CodeAreaPainter painter;
     private CodeAreaCommandHandler commandHandler;
@@ -211,6 +212,11 @@ public class CodeArea extends JComponent implements CodeAreaControl {
     }
 
     @Override
+    public void selectAll() {
+        commandHandler.selectAll();
+    }
+
+    @Override
     public boolean canPaste() {
         return commandHandler.canPaste();
     }
@@ -279,18 +285,6 @@ public class CodeArea extends JComponent implements CodeAreaControl {
     }
 
     public void setEditationMode(EditationMode editationMode) {
-        switch (editationAllowed) {
-            case READ_ONLY: {
-                editationMode = EditationMode.INSERT;
-                break;
-            }
-            case OVERWRITE_ONLY: {
-                editationMode = EditationMode.OVERWRITE;
-                break;
-            }
-            default: // ignore
-        }
-
         boolean changed = editationMode != this.editationMode;
         this.editationMode = editationMode;
         if (changed) {

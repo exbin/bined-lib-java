@@ -18,9 +18,9 @@ package org.exbin.deltahex.swing;
 import java.awt.Graphics;
 
 /**
- * Hexadecimal editor painter.
+ * Hexadecimal editor painter interface.
  *
- * @version 0.1.1 2016/09/02
+ * @version 0.2.0 2017/04/06
  * @author ExBin Project (http://exbin.org)
  */
 public interface CodeAreaPainter {

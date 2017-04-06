@@ -77,8 +77,8 @@ public class CodeAreaDataView extends JComponent {
                 scrollPosition.scrollLineOffset = scrollBarValue % paintDataCache.lineHeight;
             }
 
-            repaint();
-            notifyScrolled();
+            codeArea.repaint();
+            codeArea.notifyScrolled();
         }
     }
 
@@ -95,8 +95,8 @@ public class CodeAreaDataView extends JComponent {
                 scrollPosition.scrollCharPosition = horizontalScrollBar.getValue() / paintDataCache.charWidth;
                 scrollPosition.scrollCharOffset = horizontalScrollBar.getValue() % paintDataCache.charWidth;
             }
-            repaint();
-            notifyScrolled();
+            codeArea.repaint();
+            codeArea.notifyScrolled();
         }
     }
 }

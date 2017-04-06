@@ -20,7 +20,7 @@ import java.awt.event.KeyEvent;
 /**
  * Interface for code area data manipulation.
  *
- * @version 0.1.2 2016/12/19
+ * @version 0.2.0 2017/04/06
  * @author ExBin Project (http://exbin.org)
  */
 public interface CodeAreaCommandHandler {
@@ -78,6 +78,11 @@ public interface CodeAreaCommandHandler {
      * Pastes content of clipboard to cursor area.
      */
     void paste();
+
+    /**
+     * Expands selection to all data.
+     */
+    void selectAll();
 
     /**
      * Pastes content of clipboard to cursor area analyzing string code.
