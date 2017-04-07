@@ -15,6 +15,7 @@
  */
 package org.exbin.deltahex.swing;
 
+import com.sun.istack.internal.NotNull;
 import java.awt.Rectangle;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
@@ -22,6 +23,7 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.nio.charset.Charset;
@@ -44,6 +46,7 @@ import org.exbin.deltahex.SelectionChangedListener;
 import org.exbin.deltahex.SelectionRange;
 import org.exbin.deltahex.ViewMode;
 import org.exbin.utils.binary_data.BinaryData;
+import sun.swing.SwingUtilities2.Section;
 
 /**
  * Hexadecimal viewer/editor component.
@@ -217,6 +220,11 @@ public class CodeArea extends JComponent implements CodeAreaControl {
     }
 
     @Override
+    public void clearSelection() {
+        commandHandler.clearSelection();
+    }
+
+    @Override
     public boolean canPaste() {
         return commandHandler.canPaste();
     }
@@ -241,11 +249,26 @@ public class CodeArea extends JComponent implements CodeAreaControl {
         return data == null ? 0 : data.getDataSize();
     }
 
+    /**
+     * Returns currently used charset.
+     *
+     * @return charset
+     */
+    @NotNull
     public Charset getCharset() {
         return charset;
     }
 
-    public void setCharset(Charset charset) {
+    /**
+     * Sets charset to use for characters decoding.
+     *
+     * @param charset charset
+     */
+    public void setCharset(@NotNull Charset charset) {
+        if (charset == null) {
+            throw new NullPointerException("Charset cannot be null");
+        }
+
         this.charset = charset;
         repaint();
     }
@@ -254,7 +277,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
         return painter;
     }
 
-    public void setPainter(CodeAreaPainter painter) {
+    public void setPainter(@NotNull CodeAreaPainter painter) {
         if (painter == null) {
             throw new NullPointerException("Painter cannot be null");
         }
@@ -263,11 +286,12 @@ public class CodeArea extends JComponent implements CodeAreaControl {
         repaint();
     }
 
+    @NotNull
     public ViewMode getViewMode() {
         return viewMode;
     }
 
-    public void setViewMode(ViewMode viewMode) {
+    public void setViewMode(@NotNull ViewMode viewMode) {
         this.viewMode = viewMode;
         if (viewMode == ViewMode.CODE_MATRIX) {
             caret.setSection(CodeAreaSection.CODE_MATRIX);
@@ -280,11 +304,12 @@ public class CodeArea extends JComponent implements CodeAreaControl {
         repaint();
     }
 
+    @NotNull
     public EditationMode getEditationMode() {
         return editationMode;
     }
 
-    public void setEditationMode(EditationMode editationMode) {
+    public void setEditationMode(@NotNull EditationMode editationMode) {
         boolean changed = editationMode != this.editationMode;
         this.editationMode = editationMode;
         if (changed) {
@@ -294,6 +319,68 @@ public class CodeArea extends JComponent implements CodeAreaControl {
             caret.resetBlink();
             repaint();
         }
+    }
+
+    private void moveCaret(MouseEvent me, int modifiers) {
+        Rectangle hexRect = paintDataCache.codeSectionRectangle;
+        int bytesPerLine = paintDataCache.bytesPerLine;
+        int mouseX = me.getX();
+        if (mouseX < hexRect.x) {
+            mouseX = hexRect.x;
+        }
+        int cursorCharX = (mouseX - hexRect.x + scrollPosition.scrollCharOffset) / paintDataCache.charWidth + scrollPosition.scrollCharPosition;
+        long cursorLineY = (me.getY() - hexRect.y + scrollPosition.scrollLineOffset) / paintDataCache.lineHeight + scrollPosition.scrollLinePosition;
+        if (cursorLineY < 0) {
+            cursorLineY = 0;
+        }
+        if (cursorCharX < 0) {
+            cursorCharX = 0;
+        }
+
+        long dataPosition;
+        int codeOffset = 0;
+        int byteOnLine;
+        if ((viewMode == ViewMode.DUAL && cursorCharX < paintDataCache.previewStartChar) || viewMode == ViewMode.CODE_MATRIX) {
+            caret.setSection(Section.CODE_MATRIX);
+            byteOnLine = computeByteOffsetPerCodeCharOffset(cursorCharX);
+            if (byteOnLine >= bytesPerLine) {
+                codeOffset = 0;
+            } else {
+                codeOffset = cursorCharX - computeByteCharPos(byteOnLine);
+                if (codeOffset >= codeType.getMaxDigits()) {
+                    codeOffset = codeType.getMaxDigits() - 1;
+                }
+            }
+        } else {
+            caret.setSection(Section.TEXT_PREVIEW);
+            byteOnLine = cursorCharX;
+            if (viewMode == ViewMode.DUAL) {
+                byteOnLine -= paintDataCache.previewStartChar;
+            }
+        }
+
+        if (byteOnLine >= bytesPerLine) {
+            byteOnLine = bytesPerLine - 1;
+        }
+
+        dataPosition = byteOnLine + (cursorLineY * bytesPerLine) - scrollPosition.lineByteShift;
+        if (dataPosition < 0) {
+            dataPosition = 0;
+            codeOffset = 0;
+        }
+
+        long dataSize = data.getDataSize();
+        if (dataPosition >= dataSize) {
+            dataPosition = dataSize;
+            codeOffset = 0;
+        }
+
+        CaretPosition caretPosition = caret.getCaretPosition();
+        caret.setCaretPosition(dataPosition, codeOffset);
+        notifyCaretMoved();
+        commandHandler.sequenceBreak();
+
+        updateSelection(modifiers, caretPosition);
     }
 
     public void notifyCaretMoved() {
@@ -405,7 +492,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
     }
 
     /**
-     * Enumeration for vertical scrolling unit size.
+     * Enumeration of vertical scrolling unit sizes.
      */
     public static enum VerticalScrollUnit {
         /**
@@ -419,7 +506,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
     }
 
     /**
-     * Enumeration for horizontal scrolling unit size.
+     * Enumeration of horizontal scrolling unit sizes.
      */
     public static enum HorizontalScrollUnit {
         /**
@@ -433,7 +520,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
     }
 
     /**
-     * Enumeration for vertical overflow mode.
+     * Enumeration of vertical overflow modes.
      */
     public static enum VerticalOverflowMode {
         /**

@@ -15,12 +15,10 @@
  */
 package org.exbin.deltahex;
 
-import javax.validation.constraints.NotNull;
-
 /**
  * Code Area control interface.
  *
- * @version 0.2.0 2017/04/06
+ * @version 0.2.0 2017/04/07
  * @author ExBin Project (http://exbin.org)
  */
 public interface CodeAreaControl {
@@ -73,4 +71,9 @@ public interface CodeAreaControl {
      * @return true if selection is not empty
      */
     boolean hasSelection();
+
+    /**
+     * Clears data selection.
+     */
+    void clearSelection();
 }

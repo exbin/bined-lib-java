@@ -85,6 +85,11 @@ public interface CodeAreaCommandHandler {
     void selectAll();
 
     /**
+     * Clears data selection.
+     */
+    void clearSelection();
+
+    /**
      * Pastes content of clipboard to cursor area analyzing string code.
      */
     void pasteFromCode();
