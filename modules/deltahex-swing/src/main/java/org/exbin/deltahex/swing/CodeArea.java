@@ -17,6 +17,8 @@ package org.exbin.deltahex.swing;
 
 import com.sun.istack.internal.NotNull;
 import java.awt.Rectangle;
+import java.awt.event.AdjustmentEvent;
+import java.awt.event.AdjustmentListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.FocusEvent;
@@ -30,6 +32,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JComponent;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.UIManager;
 import org.exbin.deltahex.CaretMovedListener;
@@ -46,12 +49,11 @@ import org.exbin.deltahex.SelectionChangedListener;
 import org.exbin.deltahex.SelectionRange;
 import org.exbin.deltahex.ViewMode;
 import org.exbin.utils.binary_data.BinaryData;
-import sun.swing.SwingUtilities2.Section;
 
 /**
  * Hexadecimal viewer/editor component.
  *
- * @version 0.2.0 2017/04/04
+ * @version 0.2.0 2017/04/09
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeArea extends JComponent implements CodeAreaControl {
@@ -78,7 +80,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
     private final CodeAreaScrollPosition scrollPosition = new CodeAreaScrollPosition();
     private VerticalOverflowMode verticalOverflowMode = VerticalOverflowMode.NORMAL;
 
-    /**
+    /*
      * Listeners.
      */
     private final List<SelectionChangedListener> selectionChangedListeners = new ArrayList<>();
@@ -87,23 +89,48 @@ public class CodeArea extends JComponent implements CodeAreaControl {
     private final List<DataChangedListener> dataChangedListeners = new ArrayList<>();
     private final List<ScrollingListener> scrollingListeners = new ArrayList<>();
 
+    /**
+     * Creates new instance with default command handler and painter.
+     */
     public CodeArea() {
+        this(new DefaultCodeAreaCommandHandler(this), new DefaultCodeAreaPainter(this));
+    }
+
+    /**
+     * Creates new instance with command handler and painter.
+     *
+     * @param commandHandler command handler
+     * @param painter painter
+     */
+    public CodeArea(@NotNull CodeAreaCommandHandler commandHandler, @NotNull CodeAreaPainter painter) {
         super();
+        this.commandHandler = commandHandler;
+        this.painter = painter;
         init();
     }
 
     private void init() {
         caret = new CodeAreaCaret(this);
         scrollPanel = new JScrollPane();
+        JScrollBar verticalScrollBar = scrollPanel.getVerticalScrollBar();
+        verticalScrollBar.setVisible(false);
+        verticalScrollBar.setIgnoreRepaint(true);
+        verticalScrollBar.addAdjustmentListener(new VerticalAdjustmentListener());
+        JScrollBar horizontalScrollBar = scrollPanel.getHorizontalScrollBar();
+        horizontalScrollBar.setIgnoreRepaint(true);
+        horizontalScrollBar.setVisible(false);
+        horizontalScrollBar.addAdjustmentListener(new HorizontalAdjustmentListener());
         add(scrollPanel);
         dataView = new CodeAreaDataView(this);
         scrollPanel.setViewportView(dataView);
-//        painter = new DefaultCodeAreaPainter(this);
-//        commandHandler = new DefaultCodeAreaCommandHandler(this);
 
         // TODO buildColors();
         setFocusable(true);
         setFocusTraversalKeysEnabled(false);
+        registerControlListeners();
+    }
+
+    private void registerControlListeners() {
         addComponentListener(new ComponentListener() {
 
             @Override
@@ -491,10 +518,63 @@ public class CodeArea extends JComponent implements CodeAreaControl {
         repaint();
     }
 
+    private class VerticalAdjustmentListener implements AdjustmentListener {
+
+        public VerticalAdjustmentListener() {
+        }
+
+        @Override
+        public void adjustmentValueChanged(AdjustmentEvent e) {
+            int scrollBarValue = verticalScrollBar.getValue();
+            if (verticalOverflowMode) {
+                int maxValue = Integer.MAX_VALUE - verticalScrollBar.getVisibleAmount();
+                long lines = ((data.getDataSize() + scrollPosition.lineByteShift) / paintDataCache.bytesPerLine) - paintDataCache.linesPerRect + 1;
+                long targetLine;
+                if (scrollBarValue > 0 && lines > maxValue / scrollBarValue) {
+                    targetLine = scrollBarValue * (lines / maxValue);
+                    long rest = lines % maxValue;
+                    targetLine += (rest * scrollBarValue) / maxValue;
+                } else {
+                    targetLine = (scrollBarValue * lines) / Integer.MAX_VALUE;
+                }
+                scrollPosition.setScrollLinePosition(targetLine);
+                if (verticalScrollMode != VerticalScrollUnit.LINE) {
+                    scrollPosition.setScrollLineOffset(0);
+                }
+            } else if (verticalScrollMode == VerticalScrollUnit.LINE) {
+                scrollPosition.setScrollLinePosition(scrollBarValue);
+            } else {
+                scrollPosition.setScrollLinePosition(scrollBarValue / paintDataCache.lineHeight);
+                scrollPosition.setScrollLineOffset(scrollBarValue % paintDataCache.lineHeight);
+            }
+
+            repaint();
+            notifyScrolled();
+        }
+    }
+
+    private class HorizontalAdjustmentListener implements AdjustmentListener {
+
+        public HorizontalAdjustmentListener() {
+        }
+
+        @Override
+        public void adjustmentValueChanged(AdjustmentEvent e) {
+            if (horizontalScrollMode == HorizontalScrollMode.PER_CHAR) {
+                scrollPosition.scrollCharPosition = horizontalScrollBar.getValue();
+            } else {
+                scrollPosition.scrollCharPosition = horizontalScrollBar.getValue() / paintDataCache.charWidth;
+                scrollPosition.scrollCharOffset = horizontalScrollBar.getValue() % paintDataCache.charWidth;
+            }
+            codeArea.repaint();
+            codeArea.notifyScrolled();
+        }
+    }
+
     /**
      * Enumeration of vertical scrolling unit sizes.
      */
-    public static enum VerticalScrollUnit {
+    public enum VerticalScrollUnit {
         /**
          * Sroll per whole line.
          */
@@ -508,7 +588,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
     /**
      * Enumeration of horizontal scrolling unit sizes.
      */
-    public static enum HorizontalScrollUnit {
+    public enum HorizontalScrollUnit {
         /**
          * Sroll per whole character.
          */
@@ -522,7 +602,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
     /**
      * Enumeration of vertical overflow modes.
      */
-    public static enum VerticalOverflowMode {
+    public enum VerticalOverflowMode {
         /**
          * Normal ratio 1 on 1.
          */
@@ -532,5 +612,4 @@ public class CodeArea extends JComponent implements CodeAreaControl {
          */
         OVERFLOW
     }
-
 }

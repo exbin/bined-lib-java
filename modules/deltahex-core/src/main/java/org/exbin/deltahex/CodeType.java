@@ -18,12 +18,35 @@ package org.exbin.deltahex;
 /**
  * Enumeration of supported code types.
  *
- * @version 0.1.1 2016/08/31
+ * @version 0.2.0 2017/04/09
  * @author ExBin Project (http://exbin.org)
  */
 public enum CodeType {
 
-    BINARY(8), OCTAL(3), DECIMAL(3), HEXADECIMAL(2);
+    /**
+     * Represent code as number in base 2.
+     *
+     * Code is represented as 8 characters each of range 0 to 1.
+     */
+    BINARY(8),
+    /**
+     * Represent code as number in base 8.
+     *
+     * Code is represented as 3 characters of range 0 to 7 with limit 377.
+     */
+    OCTAL(3),
+    /**
+     * Represent code as number in base 10.
+     *
+     * Code is represented as 3 characters of range 0 to 9 with limit 255.
+     */
+    DECIMAL(3),
+    /**
+     * Represent code as number in base 16.
+     *
+     * Code is represented as 2 characters of range 0 to 9 and A to F.
+     */
+    HEXADECIMAL(2);
 
     private final int maxDigits;
 

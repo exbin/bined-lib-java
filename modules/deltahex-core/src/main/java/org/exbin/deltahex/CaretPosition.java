@@ -21,7 +21,7 @@ import javax.validation.constraints.NotNull;
  * Specifies caret position as combination of data position, section and code
  * offset of code representation.
  *
- * @version 0.2.0 2017/04/02
+ * @version 0.2.0 2017/04/09
  * @author ExBin Project (http://exbin.org)
  */
 public class CaretPosition {
@@ -54,11 +54,6 @@ public class CaretPosition {
         this.codeOffset = codeOffset;
     }
 
-    public void setPosition(@NotNull CaretPosition position) {
-        dataPosition = position.dataPosition;
-        codeOffset = position.codeOffset;
-    }
-
     @NotNull
     public CodeAreaSection getSection() {
         return section;
@@ -69,5 +64,15 @@ public class CaretPosition {
             throw new NullPointerException();
         }
         this.section = section;
+    }
+
+    /**
+     * Sets caret position according to given position.
+     *
+     * @param position source position
+     */
+    public void setPosition(@NotNull CaretPosition position) {
+        dataPosition = position.dataPosition;
+        codeOffset = position.codeOffset;
     }
 }

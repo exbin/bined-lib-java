@@ -25,10 +25,11 @@ import java.nio.charset.CharsetEncoder;
 import java.nio.charset.CoderResult;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.validation.constraints.NotNull;
 
 /**
- * Input stream translation class which converts from input charset to target
- * charset.
+ * Input stream translation class which converts data bytes from input charset
+ * to target charset.
  *
  * @version 0.2.0 2017/04/02
  * @author ExBin Project (http://exbin.org)
@@ -57,7 +58,10 @@ public class CharsetStreamTranslator extends InputStream {
      * @param source input data source
      * @param bufferSize character buffer size
      */
-    public CharsetStreamTranslator(Charset inputCharset, Charset outputCharset, InputStream source, int bufferSize) {
+    public CharsetStreamTranslator(@NotNull Charset inputCharset, @NotNull Charset outputCharset, @NotNull InputStream source, int bufferSize) {
+        if (source == null) {
+            throw new NullPointerException("Stream cannot be null");
+        }
         this.source = source;
         decoder = inputCharset.newDecoder();
         encoder = outputCharset.newEncoder();
@@ -78,21 +82,22 @@ public class CharsetStreamTranslator extends InputStream {
     }
 
     /**
-     * Initializes class with given source stream and charsets with default buffer size.
-     * 
+     * Initializes class with given source stream and charsets with default
+     * buffer size.
+     *
      * @param inputCharset input charset
      * @param outputCharset output charset
      * @param source input data source
      */
-    public CharsetStreamTranslator(Charset inputCharset, Charset outputCharset, InputStream source) {
+    public CharsetStreamTranslator(@NotNull Charset inputCharset, @NotNull Charset outputCharset, @NotNull InputStream source) {
         this(inputCharset, outputCharset, source, BYTE_BUFFER_SIZE);
     }
 
     /**
      * Reads next translated byte from the stream.
-     * 
+     *
      * @return
-     * @throws IOException 
+     * @throws IOException
      */
     @Override
     public int read() throws IOException {

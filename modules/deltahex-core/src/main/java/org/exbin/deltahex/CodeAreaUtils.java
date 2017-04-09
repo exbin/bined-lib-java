@@ -143,7 +143,7 @@ public class CodeAreaUtils {
      * @return byte value
      * @throws IllegalArgumentException if code is invalid
      */
-    public static byte stringCodeToByte(String code, @NotNull CodeType codeType) {
+    public static byte stringCodeToByte(@NotNull String code, @NotNull CodeType codeType) {
         if (code.length() > codeType.getMaxDigits()) {
             throw new IllegalArgumentException("String code is too long");
         }
@@ -244,7 +244,7 @@ public class CodeAreaUtils {
      * @param upperCase upper case for values greater than 9
      * @return offset of characters position
      */
-    public static int longToBaseCode(char[] target, int targetOffset, long value, int base, int lengthLimit, boolean fillZeros, boolean upperCase) {
+    public static int longToBaseCode(@NotNull char[] target, int targetOffset, long value, int base, int lengthLimit, boolean fillZeros, boolean upperCase) {
         char[] codes = upperCase ? UPPER_HEX_CODES : LOWER_HEX_CODES;
         for (int i = lengthLimit - 1; i >= 0; i--) {
             target[targetOffset + i] = codes[(int) (value % base)];

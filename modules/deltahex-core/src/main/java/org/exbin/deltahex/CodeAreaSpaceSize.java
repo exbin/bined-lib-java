@@ -18,20 +18,20 @@ package org.exbin.deltahex;
 import javax.validation.constraints.NotNull;
 
 /**
- * Empty space definition.
+ * Empty space size definition.
  *
- * @version 0.2.0 2017/04/02
+ * @version 0.2.0 2017/04/09
  * @author ExBin Project (http://exbin.org)
  */
-public class CodeAreaSpace {
+public class CodeAreaSpaceSize {
 
-    private SpaceType spaceType = SpaceType.ONE_UNIT;
+    private SpaceSizeType spaceType = SpaceSizeType.ONE_UNIT;
     private int spaceSize;
 
-    public CodeAreaSpace() {
+    public CodeAreaSpaceSize() {
     }
 
-    public CodeAreaSpace(@NotNull SpaceType spaceType) {
+    public CodeAreaSpaceSize(@NotNull SpaceSizeType spaceType) {
         if (spaceType == null) {
             throw new NullPointerException();
         }
@@ -39,11 +39,14 @@ public class CodeAreaSpace {
     }
 
     @NotNull
-    public SpaceType getSpaceType() {
+    public SpaceSizeType getSpaceType() {
         return spaceType;
     }
 
-    public void setSpaceType(SpaceType spaceType) {
+    public void setSpaceType(@NotNull SpaceSizeType spaceType) {
+        if (spaceType == null) {
+            throw new IllegalArgumentException("Space type cannot be null");
+        }
         this.spaceType = spaceType;
     }
 
@@ -56,9 +59,9 @@ public class CodeAreaSpace {
     }
 
     /**
-     * Enumeration of space types.
+     * Enumeration of space size types.
      */
-    public static enum SpaceType {
+    public static enum SpaceSizeType {
         /**
          * Space is empty.
          */

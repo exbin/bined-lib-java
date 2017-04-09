@@ -18,12 +18,29 @@ package org.exbin.deltahex;
 /**
  * Enumeration of supported position code types.
  *
- * @version 0.2.0 2017/04/02
+ * @version 0.2.0 2017/04/09
  * @author ExBin Project (http://exbin.org)
  */
 public enum PositionCodeType {
 
-    OCTAL(8), DECIMAL(10), HEXADECIMAL(16);
+    /**
+     * Represent code as number in base 8.
+     *
+     * Code is represented as characters of range 0 to 7.
+     */
+    OCTAL(8),
+    /**
+     * Represent code as number in base 10.
+     *
+     * Code is represented as characters of range 0 to 9.
+     */
+    DECIMAL(10),
+    /**
+     * Represent code as number in base 16.
+     *
+     * Code is represented as characters of range 0 to 9 and A to F.
+     */
+    HEXADECIMAL(16);
 
     private final int base;
     private final double baseLog;

@@ -15,8 +15,6 @@
  */
 package org.exbin.deltahex.swing;
 
-import java.awt.event.AdjustmentEvent;
-import java.awt.event.AdjustmentListener;
 import javax.swing.JComponent;
 
 /**
@@ -35,68 +33,6 @@ public class CodeAreaDataView extends JComponent {
     }
 
     private void init() {
-//        verticalScrollBar = new JScrollBar(Scrollbar.VERTICAL);
-//        verticalScrollBar.setVisible(false);
-//        verticalScrollBar.setIgnoreRepaint(true);
-//        verticalScrollBar.addAdjustmentListener(new VerticalAdjustmentListener());
-//        add(verticalScrollBar);
-//        horizontalScrollBar = new JScrollBar(Scrollbar.HORIZONTAL);
-//        horizontalScrollBar.setIgnoreRepaint(true);
-//        horizontalScrollBar.setVisible(false);
-//        horizontalScrollBar.addAdjustmentListener(new HorizontalAdjustmentListener());
-//        add(horizontalScrollBar);
     }
 
-    private class VerticalAdjustmentListener implements AdjustmentListener {
-
-        public VerticalAdjustmentListener() {
-        }
-
-        @Override
-        public void adjustmentValueChanged(AdjustmentEvent e) {
-            int scrollBarValue = verticalScrollBar.getValue();
-            if (scrollPosition.verticalMaxMode) {
-                int maxValue = Integer.MAX_VALUE - verticalScrollBar.getVisibleAmount();
-                long lines = ((data.getDataSize() + scrollPosition.lineByteShift) / paintDataCache.bytesPerLine) - paintDataCache.linesPerRect + 1;
-                long targetLine;
-                if (scrollBarValue > 0 && lines > maxValue / scrollBarValue) {
-                    targetLine = scrollBarValue * (lines / maxValue);
-                    long rest = lines % maxValue;
-                    targetLine += (rest * scrollBarValue) / maxValue;
-                } else {
-                    targetLine = (scrollBarValue * lines) / Integer.MAX_VALUE;
-                }
-                scrollPosition.scrollLinePosition = targetLine;
-                if (verticalScrollMode != VerticalScrollMode.PER_LINE) {
-                    scrollPosition.scrollLineOffset = 0;
-                }
-            } else if (verticalScrollMode == VerticalScrollMode.PER_LINE) {
-                scrollPosition.scrollLinePosition = scrollBarValue;
-            } else {
-                scrollPosition.scrollLinePosition = scrollBarValue / paintDataCache.lineHeight;
-                scrollPosition.scrollLineOffset = scrollBarValue % paintDataCache.lineHeight;
-            }
-
-            codeArea.repaint();
-            codeArea.notifyScrolled();
-        }
-    }
-
-    private class HorizontalAdjustmentListener implements AdjustmentListener {
-
-        public HorizontalAdjustmentListener() {
-        }
-
-        @Override
-        public void adjustmentValueChanged(AdjustmentEvent e) {
-            if (horizontalScrollMode == HorizontalScrollMode.PER_CHAR) {
-                scrollPosition.scrollCharPosition = horizontalScrollBar.getValue();
-            } else {
-                scrollPosition.scrollCharPosition = horizontalScrollBar.getValue() / paintDataCache.charWidth;
-                scrollPosition.scrollCharOffset = horizontalScrollBar.getValue() % paintDataCache.charWidth;
-            }
-            codeArea.repaint();
-            codeArea.notifyScrolled();
-        }
-    }
 }
