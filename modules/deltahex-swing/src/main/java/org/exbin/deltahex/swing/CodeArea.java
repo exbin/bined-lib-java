@@ -53,7 +53,7 @@ import org.exbin.utils.binary_data.BinaryData;
 /**
  * Hexadecimal viewer/editor component.
  *
- * @version 0.2.0 2017/04/09
+ * @version 0.2.0 2017/04/10
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeArea extends JComponent implements CodeAreaControl {
@@ -345,6 +345,291 @@ public class CodeArea extends JComponent implements CodeAreaControl {
             }
             caret.resetBlink();
             repaint();
+        }
+    }
+
+    public void computePaintData() {
+        if (paintDataCache.fontMetrics == null) {
+            return;
+        }
+
+        boolean verticalScrollBarVisible;
+        boolean horizontalScrollBarVisible;
+
+        Insets insets = getInsets();
+        Dimension size = getSize();
+        Rectangle compRect = paintDataCache.componentRectangle;
+        compRect.x = insets.left;
+        compRect.y = insets.top;
+        compRect.width = size.width - insets.left - insets.right;
+        compRect.height = size.height - insets.top - insets.bottom;
+
+        switch (lineNumberLength.getLineNumberType()) {
+            case AUTO: {
+                long dataSize = getDataSize();
+                if (dataSize > 0) {
+                    double natLog = Math.log(dataSize);
+                    paintDataCache.lineNumbersLength = (int) Math.ceil(natLog / positionCodeType.getBaseLog());
+                    if (paintDataCache.lineNumbersLength == 0) {
+                        paintDataCache.lineNumbersLength = 1;
+                    }
+                } else {
+                    paintDataCache.lineNumbersLength = 1;
+                }
+                break;
+            }
+            case SPECIFIED: {
+                paintDataCache.lineNumbersLength = lineNumberLength.getLineNumberLength();
+                break;
+            }
+        }
+
+        int charsPerRect = computeCharsPerRect(compRect.width);
+        int bytesPerLine;
+        if (wrapMode) {
+            bytesPerLine = computeFittingBytes(charsPerRect);
+            if (bytesPerLine == 0) {
+                bytesPerLine = 1;
+            }
+        } else {
+            bytesPerLine = lineLength;
+        }
+        long lines = ((data.getDataSize() + scrollPosition.lineByteShift) / bytesPerLine) + 1;
+        CodeAreaSpace.SpaceType headerSpaceType = headerSpace.getSpaceType();
+        switch (headerSpaceType) {
+            case NONE: {
+                paintDataCache.headerSpace = 0;
+                break;
+            }
+            case SPECIFIED: {
+                paintDataCache.headerSpace = headerSpace.getSpaceSize();
+                break;
+            }
+            case QUARTER_UNIT: {
+                paintDataCache.headerSpace = paintDataCache.lineHeight / 4;
+                break;
+            }
+            case HALF_UNIT: {
+                paintDataCache.headerSpace = paintDataCache.lineHeight / 2;
+                break;
+            }
+            case ONE_UNIT: {
+                paintDataCache.headerSpace = paintDataCache.lineHeight;
+                break;
+            }
+            case ONE_AND_HALF_UNIT: {
+                paintDataCache.headerSpace = (int) (paintDataCache.lineHeight * 1.5f);
+                break;
+            }
+            case DOUBLE_UNIT: {
+                paintDataCache.headerSpace = paintDataCache.lineHeight * 2;
+                break;
+            }
+            default:
+                throw new IllegalStateException("Unexpected header space type " + headerSpaceType.name());
+        }
+
+        CodeAreaSpace.SpaceType lineNumberSpaceType = lineNumberSpace.getSpaceType();
+        switch (lineNumberSpaceType) {
+            case NONE: {
+                paintDataCache.lineNumberSpace = 0;
+                break;
+            }
+            case SPECIFIED: {
+                paintDataCache.lineNumberSpace = lineNumberSpace.getSpaceSize();
+                break;
+            }
+            case QUARTER_UNIT: {
+                paintDataCache.lineNumberSpace = paintDataCache.charWidth / 4;
+                break;
+            }
+            case HALF_UNIT: {
+                paintDataCache.lineNumberSpace = paintDataCache.charWidth / 2;
+                break;
+            }
+            case ONE_UNIT: {
+                paintDataCache.lineNumberSpace = paintDataCache.charWidth;
+                break;
+            }
+            case ONE_AND_HALF_UNIT: {
+                paintDataCache.lineNumberSpace = (int) (paintDataCache.charWidth * 1.5f);
+                break;
+            }
+            case DOUBLE_UNIT: {
+                paintDataCache.lineNumberSpace = paintDataCache.charWidth * 2;
+                break;
+            }
+            default:
+                throw new IllegalStateException("Unexpected line number space type " + lineNumberSpaceType.name());
+        }
+
+        Rectangle hexRect = paintDataCache.codeSectionRectangle;
+        hexRect.y = insets.top + (showHeader ? paintDataCache.lineHeight + paintDataCache.headerSpace : 0);
+        hexRect.x = insets.left + (showLineNumbers ? paintDataCache.charWidth * paintDataCache.lineNumbersLength + paintDataCache.lineNumberSpace : 0);
+
+        if (verticalScrollBarVisibility == ScrollBarVisibility.IF_NEEDED) {
+            verticalScrollBarVisible = lines > paintDataCache.linesPerRect;
+        } else {
+            verticalScrollBarVisible = verticalScrollBarVisibility == ScrollBarVisibility.ALWAYS;
+        }
+        if (verticalScrollBarVisible) {
+            charsPerRect = computeCharsPerRect(compRect.x + compRect.width - paintDataCache.scrollBarThickness);
+            if (wrapMode) {
+                bytesPerLine = computeFittingBytes(charsPerRect);
+                if (bytesPerLine <= 0) {
+                    bytesPerLine = 1;
+                }
+                lines = ((data.getDataSize() + scrollPosition.lineByteShift) / bytesPerLine) + 1;
+            }
+        }
+
+        paintDataCache.bytesPerLine = bytesPerLine;
+        paintDataCache.charsPerLine = computeCharsPerLine(bytesPerLine);
+
+        int maxWidth = compRect.x + compRect.width - hexRect.x;
+        if (verticalScrollBarVisible) {
+            maxWidth -= paintDataCache.scrollBarThickness;
+        }
+
+        if (horizontalScrollBarVisibility == ScrollBarVisibility.IF_NEEDED) {
+            horizontalScrollBarVisible = paintDataCache.charsPerLine * paintDataCache.charWidth > maxWidth;
+        } else {
+            horizontalScrollBarVisible = horizontalScrollBarVisibility == ScrollBarVisibility.ALWAYS;
+        }
+        if (horizontalScrollBarVisible) {
+            paintDataCache.linesPerRect = (hexRect.height - paintDataCache.scrollBarThickness) / paintDataCache.lineHeight;
+        }
+
+        hexRect.width = compRect.x + compRect.width - hexRect.x;
+        if (verticalScrollBarVisible) {
+            hexRect.width -= paintDataCache.scrollBarThickness;
+        }
+        hexRect.height = compRect.y + compRect.height - hexRect.y;
+        if (horizontalScrollBarVisible) {
+            hexRect.height -= paintDataCache.scrollBarThickness;
+        }
+
+        paintDataCache.bytesPerRect = hexRect.width / paintDataCache.charWidth;
+        paintDataCache.linesPerRect = hexRect.height / paintDataCache.lineHeight;
+
+        // Compute sections positions
+        paintDataCache.previewStartChar = 0;
+        if (viewMode == ViewMode.CODE_MATRIX) {
+            paintDataCache.previewX = -1;
+        } else {
+            paintDataCache.previewX = hexRect.x;
+            if (viewMode == ViewMode.DUAL) {
+                paintDataCache.previewStartChar = paintDataCache.charsPerLine - paintDataCache.bytesPerLine;
+                paintDataCache.previewX += (paintDataCache.charsPerLine - paintDataCache.bytesPerLine) * paintDataCache.charWidth;
+            }
+        }
+
+        // Compute scrollbar positions
+        boolean scrolled = false;
+        verticalScrollBar.setVisible(verticalScrollBarVisible);
+        if (verticalScrollBarVisible) {
+            int verticalScrollBarHeight = compRect.y + compRect.height - hexRect.y;
+            if (horizontalScrollBarVisible) {
+                verticalScrollBarHeight -= paintDataCache.scrollBarThickness - 2;
+            }
+            verticalScrollBar.setBounds(compRect.x + compRect.width - paintDataCache.scrollBarThickness, hexRect.y, paintDataCache.scrollBarThickness, verticalScrollBarHeight);
+
+            int verticalVisibleAmount;
+            scrollPosition.verticalMaxMode = false;
+            int verticalMaximum;
+            if (verticalScrollMode == VerticalScrollMode.PIXEL) {
+                if (lines * paintDataCache.lineHeight > Integer.MAX_VALUE) {
+                    scrollPosition.verticalMaxMode = true;
+                    verticalMaximum = Integer.MAX_VALUE;
+                    verticalVisibleAmount = (int) (hexRect.height * Integer.MAX_VALUE / lines);
+                } else {
+                    verticalMaximum = (int) (lines * paintDataCache.lineHeight);
+                    verticalVisibleAmount = hexRect.height;
+                }
+            } else if (lines > Integer.MAX_VALUE) {
+                scrollPosition.verticalMaxMode = true;
+                verticalMaximum = Integer.MAX_VALUE;
+                verticalVisibleAmount = (int) (hexRect.height * Integer.MAX_VALUE / paintDataCache.lineHeight / lines);
+            } else {
+                verticalMaximum = (int) lines;
+                verticalVisibleAmount = hexRect.height / paintDataCache.lineHeight;
+            }
+            if (verticalVisibleAmount == 0) {
+                verticalVisibleAmount = 1;
+            }
+            verticalScrollBar.setMaximum(verticalMaximum);
+            verticalScrollBar.setVisibleAmount(verticalVisibleAmount);
+
+            // Cap vertical scrolling
+            if (!scrollPosition.verticalMaxMode && verticalVisibleAmount < verticalMaximum) {
+                long maxLineScroll = verticalMaximum - verticalVisibleAmount;
+                if (verticalScrollMode == VerticalScrollMode.PER_LINE) {
+                    long lineScroll = scrollPosition.scrollLinePosition;
+                    if (lineScroll > maxLineScroll) {
+                        scrollPosition.scrollLinePosition = maxLineScroll;
+                        scrolled = true;
+                    }
+                } else {
+                    long lineScroll = scrollPosition.scrollLinePosition * paintDataCache.lineHeight + scrollPosition.scrollLineOffset;
+                    if (lineScroll > maxLineScroll) {
+                        scrollPosition.scrollLinePosition = maxLineScroll / paintDataCache.lineHeight;
+                        scrollPosition.scrollLineOffset = (int) (maxLineScroll % paintDataCache.lineHeight);
+                        scrolled = true;
+                    }
+                }
+            }
+        } else if (scrollPosition.scrollLinePosition > 0 || scrollPosition.scrollLineOffset > 0) {
+            scrollPosition.scrollLinePosition = 0;
+            scrollPosition.scrollLineOffset = 0;
+            scrolled = true;
+        }
+
+        horizontalScrollBar.setVisible(horizontalScrollBarVisible);
+        if (horizontalScrollBarVisible) {
+            int horizontalScrollBarWidth = compRect.x + compRect.width - hexRect.x;
+            if (verticalScrollBarVisible) {
+                horizontalScrollBarWidth -= paintDataCache.scrollBarThickness - 2;
+            }
+            horizontalScrollBar.setBounds(hexRect.x, compRect.y + compRect.height - paintDataCache.scrollBarThickness, horizontalScrollBarWidth, paintDataCache.scrollBarThickness);
+
+            int horizontalVisibleAmount;
+            int horizontalMaximum = paintDataCache.charsPerLine;
+            if (horizontalScrollMode == HorizontalScrollMode.PIXEL) {
+                horizontalVisibleAmount = hexRect.width;
+                horizontalMaximum *= paintDataCache.charWidth;
+            } else {
+                horizontalVisibleAmount = hexRect.width / paintDataCache.charWidth;
+            }
+            horizontalScrollBar.setMaximum(horizontalMaximum);
+            horizontalScrollBar.setVisibleAmount(horizontalVisibleAmount);
+
+            // Cap horizontal scrolling
+            int maxByteScroll = horizontalMaximum - horizontalVisibleAmount;
+            if (horizontalVisibleAmount < horizontalMaximum) {
+                if (horizontalScrollMode == HorizontalScrollMode.PIXEL) {
+                    int byteScroll = scrollPosition.scrollCharPosition * paintDataCache.charWidth + scrollPosition.scrollCharOffset;
+                    if (byteScroll > maxByteScroll) {
+                        scrollPosition.scrollCharPosition = maxByteScroll / paintDataCache.charWidth;
+                        scrollPosition.scrollCharOffset = maxByteScroll % paintDataCache.charWidth;
+                        scrolled = true;
+                    }
+                } else {
+                    int byteScroll = scrollPosition.scrollCharPosition;
+                    if (byteScroll > maxByteScroll) {
+                        scrollPosition.scrollCharPosition = maxByteScroll;
+                        scrolled = true;
+                    }
+                }
+            }
+        } else if (scrollPosition.scrollCharPosition > 0 || scrollPosition.scrollCharOffset > 0) {
+            scrollPosition.scrollCharPosition = 0;
+            scrollPosition.scrollCharOffset = 0;
+            scrolled = true;
+        }
+
+        if (scrolled) {
+            updateScrollBars();
+            notifyScrolled();
         }
     }
 
