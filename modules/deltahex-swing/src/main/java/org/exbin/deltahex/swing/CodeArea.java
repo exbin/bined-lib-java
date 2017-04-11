@@ -187,6 +187,10 @@ public class CodeArea extends JComponent implements CodeAreaControl {
         });
     }
 
+    public CodeAreaCaret getCaret() {
+        return caret;
+    }
+
     public long getDataPosition() {
         return caret.getDataPosition();
     }

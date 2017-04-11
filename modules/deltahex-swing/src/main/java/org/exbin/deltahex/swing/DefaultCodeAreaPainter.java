@@ -32,15 +32,13 @@ import java.util.Map;
 import org.exbin.deltahex.CodeAreaUtils;
 import org.exbin.deltahex.EditationMode;
 import org.exbin.deltahex.HexCharactersCase;
-import org.exbin.deltahex.Section;
 import org.exbin.deltahex.SelectionRange;
 import org.exbin.deltahex.ViewMode;
-import sun.swing.SwingUtilities2.Section;
 
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2017/04/10
+ * @version 0.2.0 2017/04/11
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaPainter implements CodeAreaPainter {
@@ -463,14 +461,14 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         ColorsGroup.ColorType renderColorType = null;
         Color renderColor = null;
         for (int charOnLine = paintData.visibleCharStart; charOnLine < paintData.visibleCharEnd; charOnLine++) {
-            Section section;
+            CodeAreaSection section;
             int byteOnLine;
             if (charOnLine >= paintData.previewCharPos && paintData.viewMode != ViewMode.CODE_MATRIX) {
                 byteOnLine = charOnLine - paintData.previewCharPos;
                 section = Section.TEXT_PREVIEW;
             } else {
                 byteOnLine = codeArea.computeByteOffsetPerCodeCharOffset(charOnLine);
-                section = Section.CODE_MATRIX;
+                section = CodeAreaSection.CODE_MATRIX;
             }
             boolean sequenceBreak = false;
 

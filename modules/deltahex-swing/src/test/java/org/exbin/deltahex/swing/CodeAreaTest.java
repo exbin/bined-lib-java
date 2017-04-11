@@ -28,7 +28,7 @@ import org.junit.Test;
 /**
  * Tests for codeArea component.
  *
- * @version 0.1.0 2016/06/13
+ * @version 0.2.0 2017/04/11
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeAreaTest {
