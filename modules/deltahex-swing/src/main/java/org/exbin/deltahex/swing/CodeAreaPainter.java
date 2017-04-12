@@ -20,7 +20,7 @@ import java.awt.Graphics;
 /**
  * Hexadecimal editor painter interface.
  *
- * @version 0.2.0 2017/04/06
+ * @version 0.2.0 2017/04/12
  * @author ExBin Project (http://exbin.org)
  */
 public interface CodeAreaPainter {
@@ -66,4 +66,19 @@ public interface CodeAreaPainter {
      * @param g graphics
      */
     void paintCursor(Graphics g);
+
+    /**
+     * Rebuilds colors after UIManager change.
+     */
+    void rebuildColors();
+
+    /**
+     * Invokes inmediate paint of cursor.
+     */
+    void paintCursor();
+
+    /**
+     * Notifies that component was modified.
+     */
+    void notifyModified();
 }

@@ -217,16 +217,7 @@ public class CodeAreaCaret {
     }
 
     private void cursorRepaint() {
-        int bytesPerLine = codeArea.getBytesPerLine();
-        if (bytesPerLine > 0) {
-            int lineHeight = codeArea.getLineHeight();
-            int charWidth = codeArea.getCharWidth();
-            int linesPerRect = codeArea.getLinesPerRect();
-            Rectangle cursorRect = getCursorRect(bytesPerLine, lineHeight, charWidth, linesPerRect);
-            if (cursorRect != null) {
-                codeArea.paintImmediately(cursorRect);
-            }
-        }
+        codeArea.getPainter().paintCursor();
     }
 
     public void setCaretPosition(CaretPosition caretPosition) {
