@@ -15,6 +15,7 @@
  */
 package org.exbin.deltahex.swing;
 
+import org.exbin.deltahex.swing.color.CodeAreaColorProfile;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.FontMetrics;
@@ -39,7 +40,7 @@ import org.exbin.deltahex.ViewMode;
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2017/04/11
+ * @version 0.2.0 2017/04/14
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaPainter implements CodeAreaPainter {
@@ -59,6 +60,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     public static final int MOUSE_SCROLL_LINES = 3;
 
     protected final CodeArea codeArea;
+    private CodeAreaColorProfile colorProfile = null;
 
     private Charset charMappingCharset = null;
     protected final char[] charMapping = new char[256];
