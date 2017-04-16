@@ -31,11 +31,10 @@ import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.exbin.deltahex.CaretPosition;
+import org.exbin.deltahex.CodeAreaSection;
 import org.exbin.deltahex.CodeAreaUtils;
 import org.exbin.deltahex.CodeType;
-import org.exbin.deltahex.EditationAllowed;
 import org.exbin.deltahex.EditationMode;
-import org.exbin.deltahex.Section;
 import org.exbin.deltahex.SelectionRange;
 import org.exbin.deltahex.ViewMode;
 import org.exbin.utils.binary_data.BinaryData;
@@ -45,7 +44,7 @@ import org.exbin.utils.binary_data.EditableBinaryData;
 /**
  * Default hexadecimal editor command handler.
  *
- * @version 0.2.0 2017/04/10
+ * @version 0.2.0 2017/04/16
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
@@ -252,7 +251,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                 if (caretPosition.getDataPosition() < dataSize) {
                     if ((keyEvent.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) > 0) {
                         codeArea.setCaretPosition(codeArea.getDataSize());
-                    } else if (codeArea.getActiveSection() == Section.CODE_MATRIX) {
+                    } else if (codeArea.getActiveSection() == CodeAreaSection.CODE_MATRIX) {
                         long newPosition = (((caretPosition.getDataPosition() + scrollPosition.getLineByteShift()) / bytesPerLine) + 1) * bytesPerLine - 1 - scrollPosition.getLineByteShift();
                         codeArea.setCaretPosition(newPosition < dataSize ? newPosition : dataSize, newPosition < dataSize ? codeArea.getCodeType().getMaxDigits() - 1 : 0);
                     } else {
@@ -324,8 +323,8 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             }
             case KeyEvent.VK_TAB: {
                 if (codeArea.getViewMode() == ViewMode.DUAL) {
-                    Section activeSection = codeArea.getActiveSection() == Section.CODE_MATRIX ? Section.TEXT_PREVIEW : Section.CODE_MATRIX;
-                    if (activeSection == Section.TEXT_PREVIEW) {
+                    CodeAreaSection activeSection = codeArea.getActiveSection() == Section.CODE_MATRIX ? Section.TEXT_PREVIEW : Section.CODE_MATRIX;
+                    if (activeSection == CodeAreaSection.TEXT_PREVIEW) {
                         codeArea.getCaretPosition().setCodeOffset(0);
                     }
                     codeArea.setActiveSection(activeSection);
@@ -380,7 +379,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             return;
         }
 
-        if (codeArea.getActiveSection() == Section.CODE_MATRIX) {
+        if (codeArea.getActiveSection() == CodeAreaSection.CODE_MATRIX) {
             long dataPosition = codeArea.getDataPosition();
             int codeOffset = codeArea.getCodeOffset();
             CodeType codeType = codeArea.getCodeType();

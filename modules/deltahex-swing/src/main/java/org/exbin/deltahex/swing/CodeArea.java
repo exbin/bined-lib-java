@@ -53,7 +53,7 @@ import org.exbin.utils.binary_data.BinaryData;
 /**
  * Hexadecimal viewer/editor component.
  *
- * @version 0.2.0 2017/04/12
+ * @version 0.2.0 2017/04/16
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeArea extends JComponent implements CodeAreaControl {
@@ -73,11 +73,11 @@ public class CodeArea extends JComponent implements CodeAreaControl {
     private CodeType codeType = CodeType.HEXADECIMAL;
     private EditationMode editationMode = EditationMode.OVERWRITE;
 
-    private ScrollBarVisibility verticalScrollBarVisibility = ScrollBarVisibility.IF_NEEDED;
-    private VerticalScrollUnit verticalScrollMode = VerticalScrollUnit.LINE;
-    private ScrollBarVisibility horizontalScrollBarVisibility = ScrollBarVisibility.IF_NEEDED;
-    private HorizontalScrollUnit horizontalScrollMode = HorizontalScrollUnit.PIXEL;
     private final CodeAreaScrollPosition scrollPosition = new CodeAreaScrollPosition();
+    private ScrollBarVisibility verticalScrollBarVisibility = ScrollBarVisibility.IF_NEEDED;
+    private VerticalScrollUnit verticalScrollUnit = VerticalScrollUnit.LINE;
+    private ScrollBarVisibility horizontalScrollBarVisibility = ScrollBarVisibility.IF_NEEDED;
+    private HorizontalScrollUnit horizontalScrollUnit = HorizontalScrollUnit.PIXEL;
     private VerticalOverflowMode verticalOverflowMode = VerticalOverflowMode.NORMAL;
 
     /*
@@ -332,9 +332,23 @@ public class CodeArea extends JComponent implements CodeAreaControl {
         repaint();
     }
 
+    public CodeType getCodeType() {
+        return codeType;
+    }
+
+    public void setCodeType(CodeType codeType) {
+        this.codeType = codeType;
+        computePaintData();
+        repaint();
+    }
+
     @NotNull
     public EditationMode getEditationMode() {
         return editationMode;
+    }
+
+    public boolean isEditable() {
+        return editationMode != EditationMode.READ_ONLY;
     }
 
     public void setEditationMode(@NotNull EditationMode editationMode) {
@@ -349,6 +363,58 @@ public class CodeArea extends JComponent implements CodeAreaControl {
         }
     }
 
+    public ScrollBarVisibility getVerticalScrollBarVisibility() {
+        return verticalScrollBarVisibility;
+    }
+
+    public void setVerticalScrollBarVisibility(ScrollBarVisibility verticalScrollBarVisibility) {
+        this.verticalScrollBarVisibility = verticalScrollBarVisibility;
+        computePaintData();
+        updateScrollBars();
+    }
+
+    public VerticalScrollUnit getVerticalScrollUnit() {
+        return verticalScrollUnit;
+    }
+
+    public void setVerticalScrollUnit(VerticalScrollUnit verticalScrollUnit) {
+        this.verticalScrollUnit = verticalScrollUnit;
+        long linePosition = scrollPosition.getScrollLinePosition();
+        if (verticalScrollUnit == VerticalScrollUnit.LINE) {
+            scrollPosition.setScrollLineOffset(0);
+        }
+        computePaintData();
+        scrollPosition.setScrollLinePosition(linePosition);
+        updateScrollBars();
+        notifyScrolled();
+    }
+
+    public ScrollBarVisibility getHorizontalScrollBarVisibility() {
+        return horizontalScrollBarVisibility;
+    }
+
+    public void setHorizontalScrollBarVisibility(ScrollBarVisibility horizontalScrollBarVisibility) {
+        this.horizontalScrollBarVisibility = horizontalScrollBarVisibility;
+        computePaintData();
+        updateScrollBars();
+    }
+
+    public HorizontalScrollUnit getHorizontalScrollUnit() {
+        return horizontalScrollUnit;
+    }
+
+    public void setHorizontalScrollUnit(HorizontalScrollUnit horizontalScrollUnit) {
+        this.horizontalScrollUnit = horizontalScrollUnit;
+        int bytePosition = scrollPosition.getScrollCharPosition();
+        if (horizontalScrollUnit == HorizontalScrollUnit.CHARACTER) {
+            scrollPosition.setScrollCharOffset(0);
+        }
+        computePaintData();
+        scrollPosition.setScrollCharPosition(bytePosition);
+        updateScrollBars();
+        notifyScrolled();
+    }
+
     private void moveCaret(MouseEvent me, int modifiers) {
         Rectangle hexRect = paintDataCache.codeSectionRectangle;
         int bytesPerLine = paintDataCache.bytesPerLine;
@@ -356,8 +422,8 @@ public class CodeArea extends JComponent implements CodeAreaControl {
         if (mouseX < hexRect.x) {
             mouseX = hexRect.x;
         }
-        int cursorCharX = (mouseX - hexRect.x + scrollPosition.scrollCharOffset) / paintDataCache.charWidth + scrollPosition.scrollCharPosition;
-        long cursorLineY = (me.getY() - hexRect.y + scrollPosition.scrollLineOffset) / paintDataCache.lineHeight + scrollPosition.scrollLinePosition;
+        int cursorCharX = (mouseX - hexRect.x + scrollPosition.getScrollCharOffset()) / paintDataCache.charWidth + scrollPosition.getScrollCharPosition();
+        long cursorLineY = (me.getY() - hexRect.y + scrollPosition.getScrollLineOffset()) / paintDataCache.lineHeight + scrollPosition.getScrollLinePosition();
         if (cursorLineY < 0) {
             cursorLineY = 0;
         }
@@ -369,7 +435,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
         int codeOffset = 0;
         int byteOnLine;
         if ((viewMode == ViewMode.DUAL && cursorCharX < paintDataCache.previewStartChar) || viewMode == ViewMode.CODE_MATRIX) {
-            caret.setSection(Section.CODE_MATRIX);
+            caret.setSection(CodeAreaSection.CODE_MATRIX);
             byteOnLine = computeByteOffsetPerCodeCharOffset(cursorCharX);
             if (byteOnLine >= bytesPerLine) {
                 codeOffset = 0;
@@ -380,7 +446,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
                 }
             }
         } else {
-            caret.setSection(Section.TEXT_PREVIEW);
+            caret.setSection(CodeAreaSection.TEXT_PREVIEW);
             byteOnLine = cursorCharX;
             if (viewMode == ViewMode.DUAL) {
                 byteOnLine -= paintDataCache.previewStartChar;
@@ -468,7 +534,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
             scrolled = true;
         } else if (caretLine >= scrollPosition.getScrollLinePosition() + paintDataCache.linesPerRect) {
             scrollPosition.setScrollLinePosition(caretLine - paintDataCache.linesPerRect);
-            if (verticalScrollMode == VerticalScrollUnit.PIXEL) {
+            if (verticalScrollUnit == VerticalScrollUnit.PIXEL) {
                 scrollPosition.setScrollLineOffset(paintDataCache.lineHeight - (hexRect.height % paintDataCache.lineHeight));
             } else {
                 scrollPosition.setScrollLinePosition(scrollPosition.getScrollLinePosition() + 1);
@@ -481,7 +547,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
             scrolled = true;
         } else if (positionByte >= scrollPosition.getScrollCharPosition() + paintDataCache.bytesPerRect) {
             scrollPosition.setScrollCharPosition(positionByte - paintDataCache.bytesPerRect);
-            if (horizontalScrollMode == HorizontalScrollUnit.PIXEL) {
+            if (horizontalScrollUnit == HorizontalScrollUnit.PIXEL) {
                 scrollPosition.setScrollCharOffset(paintDataCache.charWidth - (hexRect.width % paintDataCache.charWidth));
             } else {
                 scrollPosition.setScrollCharPosition(scrollPosition.getScrollCharPosition() + 1);
@@ -505,13 +571,13 @@ public class CodeArea extends JComponent implements CodeAreaControl {
                 scrollValue = (int) (scrollPosition.getScrollLinePosition() / (lines / Integer.MAX_VALUE));
             }
             scrollPanel.getVerticalScrollBar().setValue(scrollValue);
-        } else if (verticalScrollMode == VerticalScrollUnit.LINE) {
+        } else if (verticalScrollUnit == VerticalScrollUnit.LINE) {
             scrollPanel.getVerticalScrollBar().setValue((int) scrollPosition.getScrollLinePosition());
         } else {
             scrollPanel.getVerticalScrollBar().setValue((int) (scrollPosition.getScrollLinePosition() * paintDataCache.lineHeight + scrollPosition.getScrollLineOffset()));
         }
 
-        if (horizontalScrollMode == HorizontalScrollUnit.CHARACTER) {
+        if (horizontalScrollUnit == HorizontalScrollUnit.CHARACTER) {
             scrollPanel.getHorizontalScrollBar().setValue(scrollPosition.getScrollCharPosition());
         } else {
             scrollPanel.getHorizontalScrollBar().setValue(scrollPosition.getScrollCharPosition() * paintDataCache.charWidth + scrollPosition.getScrollCharOffset());
@@ -527,7 +593,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
         @Override
         public void adjustmentValueChanged(AdjustmentEvent e) {
             int scrollBarValue = verticalScrollBar.getValue();
-            if (verticalOverflowMode) {
+            if (verticalOverflowMode == VerticalOverflowMode.OVERFLOW) {
                 int maxValue = Integer.MAX_VALUE - verticalScrollBar.getVisibleAmount();
                 long lines = ((data.getDataSize() + scrollPosition.lineByteShift) / paintDataCache.bytesPerLine) - paintDataCache.linesPerRect + 1;
                 long targetLine;
@@ -539,10 +605,10 @@ public class CodeArea extends JComponent implements CodeAreaControl {
                     targetLine = (scrollBarValue * lines) / Integer.MAX_VALUE;
                 }
                 scrollPosition.setScrollLinePosition(targetLine);
-                if (verticalScrollMode != VerticalScrollUnit.LINE) {
+                if (verticalScrollUnit != VerticalScrollUnit.LINE) {
                     scrollPosition.setScrollLineOffset(0);
                 }
-            } else if (verticalScrollMode == VerticalScrollUnit.LINE) {
+            } else if (verticalScrollUnit == VerticalScrollUnit.LINE) {
                 scrollPosition.setScrollLinePosition(scrollBarValue);
             } else {
                 scrollPosition.setScrollLinePosition(scrollBarValue / paintDataCache.lineHeight);
@@ -561,11 +627,11 @@ public class CodeArea extends JComponent implements CodeAreaControl {
 
         @Override
         public void adjustmentValueChanged(AdjustmentEvent e) {
-            if (horizontalScrollMode == HorizontalScrollUnit.CHARACTER) {
-                scrollPosition.setScrollCharPosition(horizontalScrollBar.getValue());
+            if (horizontalScrollUnit == HorizontalScrollUnit.CHARACTER) {
+                scrollPosition.setScrollCharPosition(scrollPanel.getHorizontalScrollBar().getValue());
             } else {
-                scrollPosition.setScrollCharPosition(horizontalScrollBar.getValue() / paintDataCache.charWidth);
-                scrollPosition.setScrollCharOffset(horizontalScrollBar.getValue() % paintDataCache.charWidth);
+                scrollPosition.setScrollCharPosition(scrollPanel.getHorizontalScrollBar().getValue() / paintDataCache.charWidth);
+                scrollPosition.setScrollCharOffset(scrollPanel.getHorizontalScrollBar().getValue() % paintDataCache.charWidth);
             }
             repaint();
             notifyScrolled();
