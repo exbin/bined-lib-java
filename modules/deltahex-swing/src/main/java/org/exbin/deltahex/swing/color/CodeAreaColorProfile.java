@@ -21,7 +21,7 @@ import javax.validation.constraints.NotNull;
 /**
  * Interface for code area color profile.
  *
- * @version 0.2.0 2017/04/14
+ * @version 0.2.0 2017/04/17
  * @author ExBin Project (http://exbin.org)
  */
 public interface CodeAreaColorProfile {
@@ -43,14 +43,6 @@ public interface CodeAreaColorProfile {
     CodeAreaColorsGroup getMainColors();
 
     /**
-     * Returns colors group for alternate areas.
-     *
-     * @return colors group
-     */
-//    @NotNull
-//    CodeAreaColorsGroup getAlternateColors();
-
-    /**
      * Returns colors group for selection.
      *
      * @return colors group
@@ -58,12 +50,27 @@ public interface CodeAreaColorProfile {
     @NotNull
     CodeAreaColorsGroup getSelectionColors();
 
+    /**
+     * Returns colors group for selection in nonactive section.
+     *
+     * @return colors group
+     */
     @NotNull
     CodeAreaColorsGroup getMirrorSelectionColors();
 
+    /**
+     * Returns primary color.
+     *
+     * @return color
+     */
     @NotNull
     Color getPrimaryColor();
 
+    /**
+     * Returns primary background.
+     *
+     * @return color
+     */
     @NotNull
-    Color getPrimaryBackground();
+    Color getPrimaryBackgroundColor();
 }

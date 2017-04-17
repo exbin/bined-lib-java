@@ -1282,7 +1282,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         protected ViewMode viewMode;
         protected CodeArea.BackgroundMode backgroundMode;
         protected Rectangle codeSectionRect;
-        protected CodeArea.ScrollPosition scrollPosition;
+        protected CodeAreaScrollPosition scrollPosition;
         protected int charWidth;
         protected int bytesPerLine;
         protected int lineHeight;

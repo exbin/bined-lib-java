@@ -44,12 +44,14 @@ import org.exbin.utils.binary_data.EditableBinaryData;
 /**
  * Default hexadecimal editor command handler.
  *
- * @version 0.2.0 2017/04/16
+ * @version 0.2.0 2017/04/17
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
     public static final String MIME_CLIPBOARD_BINARY = "application/octet-stream";
+    public static final String FALLBACK_CLIPBOARD = "clipboard";
+    public static final String DEFAULT_ENCODING = "UTF-8";
     private static final int CODE_BUFFER_LENGTH = 16;
 
     private final int metaMask;
@@ -75,7 +77,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         } catch (java.awt.HeadlessException ex) {
             // Create clipboard if system one not available
-            clipboard = new Clipboard("clipboard");
+            clipboard = new Clipboard(FALLBACK_CLIPBOARD);
         }
         try {
             clipboard.addFlavorListener(new FlavorListener() {
@@ -315,15 +317,23 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                 break;
             }
             case KeyEvent.VK_INSERT: {
-                if (codeArea.getEditationAllowed() == EditationAllowed.ALLOWED) {
-                    codeArea.setEditationMode(codeArea.getEditationMode() == EditationMode.INSERT ? EditationMode.OVERWRITE : EditationMode.INSERT);
+                switch (codeArea.getEditationMode()) {
+                    case INSERT: {
+                        codeArea.setEditationMode(EditationMode.OVERWRITE);
+                        keyEvent.consume();
+                        break;
+                    }
+                    case OVERWRITE: {
+                        codeArea.setEditationMode(EditationMode.INSERT);
+                        keyEvent.consume();
+                        break;
+                    }
                 }
-                keyEvent.consume();
                 break;
             }
             case KeyEvent.VK_TAB: {
                 if (codeArea.getViewMode() == ViewMode.DUAL) {
-                    CodeAreaSection activeSection = codeArea.getActiveSection() == Section.CODE_MATRIX ? Section.TEXT_PREVIEW : Section.CODE_MATRIX;
+                    CodeAreaSection activeSection = codeArea.getActiveSection() == CodeAreaSection.CODE_MATRIX ? Section.TEXT_PREVIEW : Section.CODE_MATRIX;
                     if (activeSection == CodeAreaSection.TEXT_PREVIEW) {
                         codeArea.getCaretPosition().setCodeOffset(0);
                     }
@@ -757,7 +767,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                         CodeAreaCaret caret = codeArea.getCaret();
                         long dataPosition = caret.getDataPosition();
 
-                        byte[] bytes = ((String) insertedData).getBytes(Charset.forName("UTF-8"));
+                        byte[] bytes = ((String) insertedData).getBytes(Charset.forName(DEFAULT_ENCODING));
                         int length = bytes.length;
                         if (codeArea.getEditationMode() == EditationMode.OVERWRITE) {
                             long toRemove = length;
@@ -919,7 +929,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             } else {
                 ByteArrayOutputStream byteArrayStream = new ByteArrayOutputStream();
                 data.saveToStream(byteArrayStream);
-                return byteArrayStream.toString("UTF-8");
+                return byteArrayStream.toString(DEFAULT_ENCODING);
             }
         }
 
@@ -934,7 +944,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         }
     }
 
-    public class CodeDataClipboardData implements ClipboardData {
+    private class CodeDataClipboardData implements ClipboardData {
 
         private final BinaryData data;
 
@@ -983,7 +993,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         }
     }
 
-    public static interface ClipboardData extends Transferable, ClipboardOwner {
+    private static interface ClipboardData extends Transferable, ClipboardOwner {
 
         void dispose();
     }

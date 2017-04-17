@@ -53,7 +53,7 @@ import org.exbin.utils.binary_data.BinaryData;
 /**
  * Hexadecimal viewer/editor component.
  *
- * @version 0.2.0 2017/04/16
+ * @version 0.2.0 2017/04/17
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeArea extends JComponent implements CodeAreaControl {
@@ -93,7 +93,10 @@ public class CodeArea extends JComponent implements CodeAreaControl {
      * Creates new instance with default command handler and painter.
      */
     public CodeArea() {
-        this(new DefaultCodeAreaCommandHandler(this), new DefaultCodeAreaPainter(this));
+        super();
+        this.commandHandler = new DefaultCodeAreaCommandHandler(this);
+        this.painter = new DefaultCodeAreaPainter(this);
+        init();
     }
 
     /**
@@ -131,7 +134,6 @@ public class CodeArea extends JComponent implements CodeAreaControl {
 
     private void registerControlListeners() {
         addComponentListener(new ComponentListener() {
-
             @Override
             public void componentResized(ComponentEvent e) {
                 painter.notifyModified();
@@ -185,7 +187,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
         });
     }
 
-    public CodeAreaCaret getCaret() {
+    public @NotNull CodeAreaCaret getCaret() {
         return caret;
     }
 
@@ -197,7 +199,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
         return caret.getCodeOffset();
     }
 
-    public CodeAreaSection getActiveSection() {
+    public @NotNull CodeAreaSection getActiveSection() {
         return caret.getSection();
     }
 
@@ -415,7 +417,16 @@ public class CodeArea extends JComponent implements CodeAreaControl {
         notifyScrolled();
     }
 
-    private void moveCaret(MouseEvent me, int modifiers) {
+    /**
+     * Returns rectangle of the data view area.
+     *
+     * @return rectangle
+     */
+    public Rectangle getDataViewRectangle() {
+        return dataView.getBounds();
+    }
+
+    public void moveCaret(MouseEvent me, int modifiers) {
         Rectangle hexRect = paintDataCache.codeSectionRectangle;
         int bytesPerLine = paintDataCache.bytesPerLine;
         int mouseX = me.getX();
@@ -489,6 +500,9 @@ public class CodeArea extends JComponent implements CodeAreaControl {
         }
     }
 
+    /**
+     * Notifies component, that internal data was changed.
+     */
     public void notifyDataChanged() {
         if (caret.getDataPosition() > data.getDataSize()) {
             caret.setCaretPosition(0);
@@ -592,9 +606,9 @@ public class CodeArea extends JComponent implements CodeAreaControl {
 
         @Override
         public void adjustmentValueChanged(AdjustmentEvent e) {
-            int scrollBarValue = verticalScrollBar.getValue();
+            int scrollBarValue = scrollPanel.getVerticalScrollBar().getValue();
             if (verticalOverflowMode == VerticalOverflowMode.OVERFLOW) {
-                int maxValue = Integer.MAX_VALUE - verticalScrollBar.getVisibleAmount();
+                int maxValue = Integer.MAX_VALUE - scrollPanel.getVerticalScrollBar().getVisibleAmount();
                 long lines = ((data.getDataSize() + scrollPosition.lineByteShift) / paintDataCache.bytesPerLine) - paintDataCache.linesPerRect + 1;
                 long targetLine;
                 if (scrollBarValue > 0 && lines > maxValue / scrollBarValue) {

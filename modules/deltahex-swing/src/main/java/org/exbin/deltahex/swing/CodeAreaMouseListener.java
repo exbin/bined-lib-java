@@ -28,7 +28,7 @@ import java.awt.event.MouseWheelListener;
 /**
  * Code Area component mouse listener.
  *
- * @version 0.2.0 2017/04/02
+ * @version 0.2.0 2017/04/17
  * @author ExBin Project (http://exbin.org)
  */
 /* package */ class CodeAreaMouseListener extends MouseAdapter implements MouseMotionListener, MouseWheelListener {
@@ -78,8 +78,8 @@ import java.awt.event.MouseWheelListener;
 
     private void updateMouseCursor(@NotNull MouseEvent e) {
         Cursor newCursor = defaultCursor;
-        Rectangle hexRect = paintDataCache.codeSectionRectangle;
-        if (e.getX() >= hexRect.x && e.getY() >= hexRect.y) {
+        Rectangle dataViewRectangle = codeArea.getDataViewRectangle();
+        if (e.getX() >= dataViewRectangle.x && e.getY() >= dataViewRectangle.y) {
             newCursor = textCursor;
         }
 
@@ -100,7 +100,7 @@ import java.awt.event.MouseWheelListener;
 
     @Override
     public void mouseWheelMoved(@NotNull MouseWheelEvent e) {
-        if (!isEnabled() || e.getWheelRotation() == 0) {
+        if (!codeArea.isEnabled() || e.getWheelRotation() == 0) {
             return;
         }
 

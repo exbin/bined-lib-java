@@ -206,6 +206,7 @@ public class CodeAreaCaret {
     }
 
     public CaretPosition getCaretPosition() {
+        // TODO: Make immutable / cache?
         return new CaretPosition(caretPosition.getDataPosition(), caretPosition.getCodeOffset());
     }
 

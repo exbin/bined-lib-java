@@ -18,23 +18,18 @@ package org.exbin.deltahex.swing.color;
 import javax.validation.constraints.NotNull;
 
 /**
- * Interface for code area color profile.
+ * Interface for extended code area color profile.
  *
  * @version 0.2.0 2017/04/17
  * @author ExBin Project (http://exbin.org)
  */
-public interface CodeAreaColorType {
+public interface CodeAreaColorProfileEx {
 
     /**
-     * Returns preferences identifier.
+     * Returns colors group for alternate areas.
      *
-     * Unique string ID should be returned.
-     *
-     * Custom implementations should start with full package name to avoid
-     * collisions.
-     *
-     * @return preferences ID key
+     * @return colors group
      */
     @NotNull
-    String getPreferencesId();
+    CodeAreaColorsGroup getAlternateColors();
 }
