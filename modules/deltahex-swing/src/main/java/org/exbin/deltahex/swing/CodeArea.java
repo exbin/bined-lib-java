@@ -187,7 +187,8 @@ public class CodeArea extends JComponent implements CodeAreaControl {
         });
     }
 
-    public @NotNull CodeAreaCaret getCaret() {
+    public @NotNull
+    CodeAreaCaret getCaret() {
         return caret;
     }
 
@@ -199,7 +200,8 @@ public class CodeArea extends JComponent implements CodeAreaControl {
         return caret.getCodeOffset();
     }
 
-    public @NotNull CodeAreaSection getActiveSection() {
+    public @NotNull
+    CodeAreaSection getActiveSection() {
         return caret.getSection();
     }
 
@@ -340,7 +342,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
 
     public void setCodeType(CodeType codeType) {
         this.codeType = codeType;
-        computePaintData();
+        painter.notifyModified();
         repaint();
     }
 
@@ -371,7 +373,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
 
     public void setVerticalScrollBarVisibility(ScrollBarVisibility verticalScrollBarVisibility) {
         this.verticalScrollBarVisibility = verticalScrollBarVisibility;
-        computePaintData();
+        painter.notifyModified();
         updateScrollBars();
     }
 
@@ -385,7 +387,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
         if (verticalScrollUnit == VerticalScrollUnit.LINE) {
             scrollPosition.setScrollLineOffset(0);
         }
-        computePaintData();
+        painter.notifyModified();
         scrollPosition.setScrollLinePosition(linePosition);
         updateScrollBars();
         notifyScrolled();
@@ -397,7 +399,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
 
     public void setHorizontalScrollBarVisibility(ScrollBarVisibility horizontalScrollBarVisibility) {
         this.horizontalScrollBarVisibility = horizontalScrollBarVisibility;
-        computePaintData();
+        painter.notifyModified();
         updateScrollBars();
     }
 
@@ -411,7 +413,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
         if (horizontalScrollUnit == HorizontalScrollUnit.CHARACTER) {
             scrollPosition.setScrollCharOffset(0);
         }
-        computePaintData();
+        painter.notifyModified();
         scrollPosition.setScrollCharPosition(bytePosition);
         updateScrollBars();
         notifyScrolled();
