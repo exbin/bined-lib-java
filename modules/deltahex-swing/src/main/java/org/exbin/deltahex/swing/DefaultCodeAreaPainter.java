@@ -95,7 +95,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
     @Override
     public void paintHeader(Graphics g) {
-        CodeArea.ScrollPosition scrollPosition = codeArea.getScrollPosition();
+        CodeAreaScrollPosition scrollPosition = codeArea.getScrollPosition();
         Rectangle compRect = codeArea.getComponentRectangle();
         Rectangle codeRect = codeArea.getCodeSectionRectangle();
         boolean monospaceFont = codeArea.isMonospaceFontDetected();
@@ -270,7 +270,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             g.fillRect(startX, clipBounds.y, width, clipBounds.height);
         }
 
-        CodeArea.ScrollPosition scrollPosition = codeArea.getScrollPosition();
+        CodeAreaScrollPosition scrollPosition = codeArea.getScrollPosition();
         long line = scrollPosition.getScrollLinePosition();
         long maxDataPosition = codeArea.getDataSize();
         int maxY = clipBounds.y + clipBounds.height;
@@ -301,7 +301,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         int bytesPerLine = codeArea.getBytesPerLine();
         int lineHeight = codeArea.getLineHeight();
 
-        CodeArea.ScrollPosition scrollPosition = codeArea.getScrollPosition();
+        CodeAreaScrollPosition scrollPosition = codeArea.getScrollPosition();
         long line = scrollPosition.getScrollLinePosition();
         long maxDataPosition = codeArea.getDataSize();
         int maxY = clipBounds.y + clipBounds.height + lineHeight;
@@ -841,7 +841,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                 }
                 Shape clip = g.getClip();
                 g.setClip(intersection.x, intersection.y, intersection.width, intersection.height);
-                CodeArea.ScrollPosition scrollPosition = codeArea.getScrollPosition();
+                CodeAreaScrollPosition scrollPosition = codeArea.getScrollPosition();
                 g.fillRect(x, y, width, height);
                 g.setColor(codeArea.getNegativeCursorColor());
                 Rectangle codeRect = codeArea.getCodeSectionRectangle();
@@ -1411,7 +1411,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             return codeSectionRect;
         }
 
-        public CodeArea.ScrollPosition getScrollPosition() {
+        public CodeAreaScrollPosition getScrollPosition() {
             return scrollPosition;
         }
 

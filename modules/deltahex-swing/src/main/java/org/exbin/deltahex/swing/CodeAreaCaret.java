@@ -27,7 +27,7 @@ import org.exbin.deltahex.EditationMode;
 /**
  * Code area caret.
  *
- * @version 0.2.0 2017/04/04
+ * @version 0.2.0 2017/04/21
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeAreaCaret {
@@ -96,13 +96,13 @@ public class CodeAreaCaret {
 
         int byteOffset = (int) (shiftedPosition % bytesPerLine);
 
-        Rectangle rect = codeArea.getCodeCodeAreaSectionRectangle();
-        int caretY = (int) (rect.y + line * lineHeight) - scrollPosition.getScrollLineOffset();
+        Rectangle dataViewRect = codeArea.getDataViewRectangle();
+        int caretY = (int) (dataViewRect.y + line * lineHeight) - scrollPosition.getScrollLineOffset();
         int caretX;
         if (caretPosition.getSection() == CodeAreaSection.TEXT_PREVIEW) {
             caretX = codeArea.getPreviewX() + charWidth * byteOffset;
         } else {
-            caretX = rect.x + charWidth * (codeArea.computeByteCharPos(byteOffset) + getCodeOffset());
+            caretX = dataViewRect.x + charWidth * (codeArea.computeByteCharPos(byteOffset) + getCodeOffset());
         }
         caretX -= scrollPosition.getScrollCharPosition() * charWidth + scrollPosition.getScrollCharOffset();
 
@@ -129,11 +129,11 @@ public class CodeAreaCaret {
 
         int byteOffset = (int) (shiftedPosition % bytesPerLine);
 
-        Rectangle rect = codeArea.getCodeCodeAreaSectionRectangle();
-        int caretY = (int) (rect.y + line * lineHeight) - scrollPosition.getScrollLineOffset();
+        Rectangle dataViewRect = codeArea.getDataViewRectangle();
+        int caretY = (int) (dataViewRect.y + line * lineHeight) - scrollPosition.getScrollLineOffset();
         int caretX;
         if (caretPosition.getSection() == CodeAreaSection.TEXT_PREVIEW) {
-            caretX = rect.x + charWidth * codeArea.computeByteCharPos(byteOffset);
+            caretX = dataViewRect.x + charWidth * codeArea.computeByteCharPos(byteOffset);
         } else {
             caretX = codeArea.getPreviewX() + charWidth * byteOffset;
         }

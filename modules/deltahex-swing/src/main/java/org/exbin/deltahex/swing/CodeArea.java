@@ -53,7 +53,7 @@ import org.exbin.utils.binary_data.BinaryData;
 /**
  * Hexadecimal viewer/editor component.
  *
- * @version 0.2.0 2017/04/17
+ * @version 0.2.0 2017/04/21
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeArea extends JComponent implements CodeAreaControl {
@@ -426,6 +426,36 @@ public class CodeArea extends JComponent implements CodeAreaControl {
      */
     public Rectangle getDataViewRectangle() {
         return dataView.getBounds();
+    }
+
+    /**
+     * Returns rectangle of the data view area.
+     *
+     * @return rectangle
+     */
+    public int getPreviewX() {
+        return painter.getPreviewX();
+    }
+    
+    public int getBytesPerRectangle() {
+        return painter.getBytesPerRectangle();
+    }
+    
+    public int getLinesPerRectangle() {
+        return painter.getLinesPerRectangle();
+    }
+
+    public int getBytesPerLine() {
+        return painter.getBytesPerLine();
+    }
+
+    public int getCharactersPerLine() {
+        return painter.getCharactersPerLine();
+    }
+    
+    boolean isHorizontalScrollBarVisible() {
+        // TODO
+        return scrollPanel.getHorizontalScrollBar().isVisible();
     }
 
     public void moveCaret(MouseEvent me, int modifiers) {

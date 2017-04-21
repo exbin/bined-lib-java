@@ -28,7 +28,7 @@ import java.awt.event.MouseWheelListener;
 /**
  * Code Area component mouse listener.
  *
- * @version 0.2.0 2017/04/17
+ * @version 0.2.0 2017/04/21
  * @author ExBin Project (http://exbin.org)
  */
 /* package */ class CodeAreaMouseListener extends MouseAdapter implements MouseMotionListener, MouseWheelListener {
@@ -104,50 +104,52 @@ import java.awt.event.MouseWheelListener;
             return;
         }
 
-        if (e.isShiftDown() && horizontalScrollBar.isVisible()) {
+        CodeAreaScrollPosition scrollPosition = codeArea.getScrollPosition();
+
+        if (e.isShiftDown() && codeArea.isHorizontalScrollBarVisible()) {
             if (e.getWheelRotation() > 0) {
-                if (paintDataCache.bytesPerRect < paintDataCache.charsPerLine) {
-                    int maxScroll = paintDataCache.charsPerLine - paintDataCache.bytesPerRect;
-                    if (scrollPosition.scrollCharPosition < maxScroll - MOUSE_SCROLL_LINES) {
-                        scrollPosition.scrollCharPosition += MOUSE_SCROLL_LINES;
+                if (codeArea.getBytesPerRectangle() < codeArea.getCharactersPerLine()) {
+                    int maxScroll = codeArea.getCharactersPerLine() - codeArea.getBytesPerRectangle();
+                    if (scrollPosition.getScrollCharPosition() < maxScroll - DefaultCodeAreaPainter.MOUSE_SCROLL_LINES) {
+                        scrollPosition.setScrollCharPosition(scrollPosition.getScrollCharPosition() + DefaultCodeAreaPainter.MOUSE_SCROLL_LINES);
                     } else {
-                        scrollPosition.scrollCharPosition = maxScroll;
+                        scrollPosition.setScrollCharPosition(maxScroll);
                     }
-                    updateScrollBars();
-                    notifyScrolled();
+                    codeArea.updateScrollBars();
+                    codeArea.notifyScrolled();
                 }
-            } else if (scrollPosition.scrollCharPosition > 0) {
-                if (scrollPosition.scrollCharPosition > MOUSE_SCROLL_LINES) {
-                    scrollPosition.scrollCharPosition -= MOUSE_SCROLL_LINES;
+            } else if (scrollPosition.getScrollCharPosition() > 0) {
+                if (scrollPosition.getScrollCharPosition() > DefaultCodeAreaPainter.MOUSE_SCROLL_LINES) {
+                    scrollPosition.setScrollCharPosition(scrollPosition.getScrollCharPosition() - DefaultCodeAreaPainter.MOUSE_SCROLL_LINES);
                 } else {
-                    scrollPosition.scrollCharPosition = 0;
+                    scrollPosition.setScrollCharPosition(0);
                 }
-                updateScrollBars();
-                notifyScrolled();
+                codeArea.updateScrollBars();
+                codeArea.notifyScrolled();
             }
         } else if (e.getWheelRotation() > 0) {
-            long lines = (data.getDataSize() + scrollPosition.lineByteShift) / paintDataCache.bytesPerLine;
-            if (lines * paintDataCache.bytesPerLine < data.getDataSize()) {
+            long lines = (codeArea.getDataSize() + scrollPosition.getDataOffset()) / codeArea.getBytesPerLine();
+            if (lines * codeArea.getBytesPerLine() < codeArea.getDataSize()) {
                 lines++;
             }
-            lines -= paintDataCache.linesPerRect;
-            if (scrollPosition.scrollLinePosition < lines) {
-                if (scrollPosition.scrollLinePosition < lines - MOUSE_SCROLL_LINES) {
-                    scrollPosition.scrollLinePosition += MOUSE_SCROLL_LINES;
+            lines -= codeArea.getLinesPerRectangle();
+            if (scrollPosition.getScrollLinePosition() < lines) {
+                if (scrollPosition.getScrollLinePosition() < lines - DefaultCodeAreaPainter.MOUSE_SCROLL_LINES) {
+                    scrollPosition.setScrollLinePosition(scrollPosition.getScrollLinePosition() + DefaultCodeAreaPainter.MOUSE_SCROLL_LINES);
                 } else {
-                    scrollPosition.scrollLinePosition = lines;
+                    scrollPosition.setScrollLinePosition(lines);
                 }
-                updateScrollBars();
-                notifyScrolled();
+                codeArea.updateScrollBars();
+                codeArea.notifyScrolled();
             }
-        } else if (scrollPosition.scrollLinePosition > 0) {
-            if (scrollPosition.scrollLinePosition > MOUSE_SCROLL_LINES) {
-                scrollPosition.scrollLinePosition -= MOUSE_SCROLL_LINES;
+        } else if (scrollPosition.getScrollLinePosition() > 0) {
+            if (scrollPosition.getScrollLinePosition() > DefaultCodeAreaPainter.MOUSE_SCROLL_LINES) {
+                scrollPosition.setScrollLinePosition(scrollPosition.getScrollLinePosition() - DefaultCodeAreaPainter.MOUSE_SCROLL_LINES);
             } else {
-                scrollPosition.scrollLinePosition = 0;
+                scrollPosition.setScrollLinePosition(0);
             }
-            updateScrollBars();
-            notifyScrolled();
+            codeArea.updateScrollBars();
+            codeArea.notifyScrolled();
         }
     }
 }

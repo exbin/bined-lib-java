@@ -904,6 +904,16 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         return canPaste;
     }
 
+    @Override
+    public void selectAll() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void clearSelection() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
     public class BinaryDataClipboardData implements ClipboardData {
 
         private final BinaryData data;

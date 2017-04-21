@@ -68,6 +68,13 @@ public interface CodeAreaPainter {
     void paintCursor(Graphics g);
 
     /**
+     * Returns previews section position.
+     *
+     * @return previews X position
+     */
+    int getPreviewX();
+
+    /**
      * Rebuilds colors after UIManager change.
      */
     void rebuildColors();

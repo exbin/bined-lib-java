@@ -18,7 +18,7 @@ package org.exbin.deltahex.swing;
 /**
  * Code Area scrolling position.
  *
- * @version 0.2.0 2017/04/02
+ * @version 0.2.0 2017/04/21
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeAreaScrollPosition {
@@ -27,18 +27,26 @@ public class CodeAreaScrollPosition {
      * Scrollbar document line position.
      */
     private long scrollLinePosition = 0;
+
     /**
      * Scrollbar document line pixel offset position.
      */
     private int scrollLineOffset = 0;
+
     /**
      * Scrollbar document character position.
      */
     private int scrollCharPosition = 0;
+
     /**
      * Scrollbar document character pixel offset position.
      */
     private int scrollCharOffset = 0;
+
+    /**
+     * Relative data offset.
+     */
+    private int dataOffset = 0;
 
     public long getScrollLinePosition() {
         return scrollLinePosition;
@@ -72,6 +80,14 @@ public class CodeAreaScrollPosition {
         this.scrollCharOffset = scrollCharOffset;
     }
 
+    public int getDataOffset() {
+        return dataOffset;
+    }
+
+    public void setDataOffset(int dataOffset) {
+        this.dataOffset = dataOffset;
+    }
+
     /**
      * Resets scrolling position to top left corner.
      */
@@ -80,5 +96,6 @@ public class CodeAreaScrollPosition {
         scrollLineOffset = 0;
         scrollCharPosition = 0;
         scrollCharOffset = 0;
+        dataOffset = 0;
     }
 }
