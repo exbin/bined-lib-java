@@ -20,7 +20,7 @@ import java.awt.Graphics;
 /**
  * Hexadecimal editor painter interface.
  *
- * @version 0.2.0 2017/04/12
+ * @version 0.2.0 2017/04/22
  * @author ExBin Project (http://exbin.org)
  */
 public interface CodeAreaPainter {
@@ -88,4 +88,32 @@ public interface CodeAreaPainter {
      * Notifies that component was modified.
      */
     void notifyModified();
+
+    /**
+     * Returns how many bytes is visible in data view rectangle.
+     * 
+     * @return number of bytes visible in data view rectangle
+     */
+    int getBytesPerRectangle();
+    
+    /**
+     * Returns how many lines is visible in data view rectangle.
+     * 
+     * @return number of lines visible in data view rectangle
+     */
+    int getLinesPerRectangle();
+
+    /**
+     * Returns how many bytes is shown per single line.
+     * 
+     * @return number of bytes shown per single line
+     */
+    int getBytesPerLine();
+
+    /**
+     * Returns how characters is shown per single line.
+     * 
+     * @return number of characters shown per single line
+     */
+    int getCharactersPerLine();
 }

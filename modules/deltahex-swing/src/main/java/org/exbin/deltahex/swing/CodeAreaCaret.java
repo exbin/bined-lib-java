@@ -27,7 +27,7 @@ import org.exbin.deltahex.EditationMode;
 /**
  * Code area caret.
  *
- * @version 0.2.0 2017/04/21
+ * @version 0.2.0 2017/04/22
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeAreaCaret {
@@ -88,7 +88,7 @@ public class CodeAreaCaret {
      */
     public Point getCursorPoint(int bytesPerLine, int lineHeight, int charWidth, int linesPerRect) {
         CodeAreaScrollPosition scrollPosition = codeArea.getScrollPosition();
-        long shiftedPosition = caretPosition.getDataPosition() + scrollPosition.getLineByteShift();
+        long shiftedPosition = caretPosition.getDataPosition() + scrollPosition.getDataOffset();
         long line = shiftedPosition / bytesPerLine - scrollPosition.getScrollLinePosition();
         if (line < -1 || line > linesPerRect) {
             return null;
@@ -121,7 +121,7 @@ public class CodeAreaCaret {
      */
     public Point getShadowCursorPoint(int bytesPerLine, int lineHeight, int charWidth, int linesPerRect) {
         CodeAreaScrollPosition scrollPosition = codeArea.getScrollPosition();
-        long shiftedPosition = caretPosition.getDataPosition() + scrollPosition.getLineByteShift();
+        long shiftedPosition = caretPosition.getDataPosition() + scrollPosition.getDataOffset();
         long line = shiftedPosition / bytesPerLine - scrollPosition.getScrollLinePosition();
         if (line < -1 || line + 1 > linesPerRect) {
             return null;

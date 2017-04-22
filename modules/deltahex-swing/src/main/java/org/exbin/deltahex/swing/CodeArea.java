@@ -25,7 +25,6 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.nio.charset.Charset;
@@ -456,68 +455,6 @@ public class CodeArea extends JComponent implements CodeAreaControl {
     boolean isHorizontalScrollBarVisible() {
         // TODO
         return scrollPanel.getHorizontalScrollBar().isVisible();
-    }
-
-    public void moveCaret(MouseEvent me, int modifiers) {
-        Rectangle hexRect = paintDataCache.codeSectionRectangle;
-        int bytesPerLine = paintDataCache.bytesPerLine;
-        int mouseX = me.getX();
-        if (mouseX < hexRect.x) {
-            mouseX = hexRect.x;
-        }
-        int cursorCharX = (mouseX - hexRect.x + scrollPosition.getScrollCharOffset()) / paintDataCache.charWidth + scrollPosition.getScrollCharPosition();
-        long cursorLineY = (me.getY() - hexRect.y + scrollPosition.getScrollLineOffset()) / paintDataCache.lineHeight + scrollPosition.getScrollLinePosition();
-        if (cursorLineY < 0) {
-            cursorLineY = 0;
-        }
-        if (cursorCharX < 0) {
-            cursorCharX = 0;
-        }
-
-        long dataPosition;
-        int codeOffset = 0;
-        int byteOnLine;
-        if ((viewMode == ViewMode.DUAL && cursorCharX < paintDataCache.previewStartChar) || viewMode == ViewMode.CODE_MATRIX) {
-            caret.setSection(CodeAreaSection.CODE_MATRIX);
-            byteOnLine = computeByteOffsetPerCodeCharOffset(cursorCharX);
-            if (byteOnLine >= bytesPerLine) {
-                codeOffset = 0;
-            } else {
-                codeOffset = cursorCharX - computeByteCharPos(byteOnLine);
-                if (codeOffset >= codeType.getMaxDigits()) {
-                    codeOffset = codeType.getMaxDigits() - 1;
-                }
-            }
-        } else {
-            caret.setSection(CodeAreaSection.TEXT_PREVIEW);
-            byteOnLine = cursorCharX;
-            if (viewMode == ViewMode.DUAL) {
-                byteOnLine -= paintDataCache.previewStartChar;
-            }
-        }
-
-        if (byteOnLine >= bytesPerLine) {
-            byteOnLine = bytesPerLine - 1;
-        }
-
-        dataPosition = byteOnLine + (cursorLineY * bytesPerLine) - scrollPosition.lineByteShift;
-        if (dataPosition < 0) {
-            dataPosition = 0;
-            codeOffset = 0;
-        }
-
-        long dataSize = data.getDataSize();
-        if (dataPosition >= dataSize) {
-            dataPosition = dataSize;
-            codeOffset = 0;
-        }
-
-        CaretPosition caretPosition = caret.getCaretPosition();
-        caret.setCaretPosition(dataPosition, codeOffset);
-        notifyCaretMoved();
-        commandHandler.sequenceBreak();
-
-        updateSelection(modifiers, caretPosition);
     }
 
     public void notifyCaretMoved() {

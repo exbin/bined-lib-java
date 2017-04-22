@@ -15,6 +15,7 @@
  */
 package org.exbin.deltahex.swing;
 
+import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.ClipboardOwner;
@@ -24,6 +25,7 @@ import java.awt.datatransfer.FlavorListener;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -122,7 +124,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             case KeyEvent.VK_LEFT: {
                 if ((keyEvent.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) > 0) {
                     // Scroll position offset instead of cursor
-                    CodeArea.ScrollPosition scrollPosition = codeArea.getScrollPosition();
+                    CodeAreaScrollPosition scrollPosition = codeArea.getScrollPosition();
                     if (scrollPosition.getLineByteShift() < codeArea.getBytesPerLine() - 1) {
                         scrollPosition.setLineByteShift(scrollPosition.getLineByteShift() + 1);
                     } else {
@@ -147,7 +149,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             case KeyEvent.VK_RIGHT: {
                 if ((keyEvent.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) > 0) {
                     // Scroll position offset instead of cursor
-                    CodeArea.ScrollPosition scrollPosition = codeArea.getScrollPosition();
+                    CodeAreaScrollPosition scrollPosition = codeArea.getScrollPosition();
                     if (scrollPosition.getLineByteShift() > 0) {
                         scrollPosition.setLineByteShift(scrollPosition.getLineByteShift() - 1);
                     } else {
@@ -175,7 +177,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                 int bytesPerLine = codeArea.getBytesPerLine();
                 if ((keyEvent.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) > 0) {
                     // Scroll page instead of cursor
-                    CodeArea.ScrollPosition scrollPosition = codeArea.getScrollPosition();
+                    CodeAreaScrollPosition scrollPosition = codeArea.getScrollPosition();
                     if (scrollPosition.getScrollLinePosition() > 0) {
                         scrollPosition.setScrollLinePosition(scrollPosition.getScrollLinePosition() - 1);
                         codeArea.updateScrollBars();
@@ -201,7 +203,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                 long dataSize = codeArea.getDataSize();
                 if ((keyEvent.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) > 0) {
                     // Scroll page instead of cursor
-                    CodeArea.ScrollPosition scrollPosition = codeArea.getScrollPosition();
+                    CodeAreaScrollPosition scrollPosition = codeArea.getScrollPosition();
                     if (scrollPosition.getScrollLinePosition() < dataSize / codeArea.getBytesPerLine()) {
                         scrollPosition.setScrollLinePosition(scrollPosition.getScrollLinePosition() + 1);
                         codeArea.updateScrollBars();
@@ -225,7 +227,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             case KeyEvent.VK_HOME: {
                 CaretPosition caretPosition = codeArea.getCaretPosition();
                 int bytesPerLine = codeArea.getBytesPerLine();
-                CodeArea.ScrollPosition scrollPosition = codeArea.getScrollPosition();
+                CodeAreaScrollPosition scrollPosition = codeArea.getScrollPosition();
                 if (caretPosition.getDataPosition() > 0 || caretPosition.getCodeOffset() != 0) {
                     long targetPosition;
                     if ((keyEvent.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) > 0) {
@@ -248,7 +250,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             case KeyEvent.VK_END: {
                 CaretPosition caretPosition = codeArea.getCaretPosition();
                 int bytesPerLine = codeArea.getBytesPerLine();
-                CodeArea.ScrollPosition scrollPosition = codeArea.getScrollPosition();
+                CodeAreaScrollPosition scrollPosition = codeArea.getScrollPosition();
                 long dataSize = codeArea.getDataSize();
                 if (caretPosition.getDataPosition() < dataSize) {
                     if ((keyEvent.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) > 0) {
@@ -270,7 +272,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             case KeyEvent.VK_PAGE_UP: {
                 CaretPosition caretPosition = codeArea.getCaretPosition();
                 int bytesStep = codeArea.getBytesPerLine() * codeArea.getLinesPerRect();
-                CodeArea.ScrollPosition scrollPosition = codeArea.getScrollPosition();
+                CodeAreaScrollPosition scrollPosition = codeArea.getScrollPosition();
                 if (scrollPosition.getScrollLinePosition() > codeArea.getLinesPerRect()) {
                     scrollPosition.setScrollLinePosition(scrollPosition.getScrollLinePosition() - codeArea.getLinesPerRect());
                     codeArea.updateScrollBars();
@@ -293,7 +295,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                 CaretPosition caretPosition = codeArea.getCaretPosition();
                 int bytesStep = codeArea.getBytesPerLine() * codeArea.getLinesPerRect();
                 long dataSize = codeArea.getDataSize();
-                CodeArea.ScrollPosition scrollPosition = codeArea.getScrollPosition();
+                CodeAreaScrollPosition scrollPosition = codeArea.getScrollPosition();
                 if (scrollPosition.getScrollLinePosition() < dataSize / codeArea.getBytesPerLine() - codeArea.getLinesPerRect() * 2) {
                     scrollPosition.setScrollLinePosition(scrollPosition.getScrollLinePosition() + codeArea.getLinesPerRect());
                     codeArea.updateScrollBars();
@@ -912,6 +914,68 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     @Override
     public void clearSelection() {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void moveCaret(MouseEvent me, int modifiers) {
+        Rectangle hexRect = paintDataCache.codeSectionRectangle;
+        int bytesPerLine = paintDataCache.bytesPerLine;
+        int mouseX = me.getX();
+        if (mouseX < hexRect.x) {
+            mouseX = hexRect.x;
+        }
+        int cursorCharX = (mouseX - hexRect.x + scrollPosition.getScrollCharOffset()) / paintDataCache.charWidth + scrollPosition.getScrollCharPosition();
+        long cursorLineY = (me.getY() - hexRect.y + scrollPosition.getScrollLineOffset()) / paintDataCache.lineHeight + scrollPosition.getScrollLinePosition();
+        if (cursorLineY < 0) {
+            cursorLineY = 0;
+        }
+        if (cursorCharX < 0) {
+            cursorCharX = 0;
+        }
+
+        long dataPosition;
+        int codeOffset = 0;
+        int byteOnLine;
+        if ((viewMode == ViewMode.DUAL && cursorCharX < paintDataCache.previewStartChar) || viewMode == ViewMode.CODE_MATRIX) {
+            caret.setSection(CodeAreaSection.CODE_MATRIX);
+            byteOnLine = computeByteOffsetPerCodeCharOffset(cursorCharX);
+            if (byteOnLine >= bytesPerLine) {
+                codeOffset = 0;
+            } else {
+                codeOffset = cursorCharX - computeByteCharPos(byteOnLine);
+                if (codeOffset >= codeType.getMaxDigits()) {
+                    codeOffset = codeType.getMaxDigits() - 1;
+                }
+            }
+        } else {
+            caret.setSection(CodeAreaSection.TEXT_PREVIEW);
+            byteOnLine = cursorCharX;
+            if (viewMode == ViewMode.DUAL) {
+                byteOnLine -= paintDataCache.previewStartChar;
+            }
+        }
+
+        if (byteOnLine >= bytesPerLine) {
+            byteOnLine = bytesPerLine - 1;
+        }
+
+        dataPosition = byteOnLine + (cursorLineY * bytesPerLine) - scrollPosition.lineByteShift;
+        if (dataPosition < 0) {
+            dataPosition = 0;
+            codeOffset = 0;
+        }
+
+        long dataSize = data.getDataSize();
+        if (dataPosition >= dataSize) {
+            dataPosition = dataSize;
+            codeOffset = 0;
+        }
+
+        CaretPosition caretPosition = caret.getCaretPosition();
+        caret.setCaretPosition(dataPosition, codeOffset);
+        notifyCaretMoved();
+        commandHandler.sequenceBreak();
+
+        updateSelection(modifiers, caretPosition);
     }
 
     public class BinaryDataClipboardData implements ClipboardData {
