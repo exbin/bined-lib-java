@@ -20,10 +20,17 @@ import java.awt.Graphics;
 /**
  * Hexadecimal editor painter interface.
  *
- * @version 0.2.0 2017/04/22
+ * @version 0.2.0 2017/04/23
  * @author ExBin Project (http://exbin.org)
  */
 public interface CodeAreaPainter {
+
+    /**
+     * Returns true if painter was initialized.
+     *
+     * @return true if initialized
+     */
+    boolean isInitialized();
 
     /**
      * Paints overall hexadecimal editor parts.
@@ -91,29 +98,46 @@ public interface CodeAreaPainter {
 
     /**
      * Returns how many bytes is visible in data view rectangle.
-     * 
+     *
      * @return number of bytes visible in data view rectangle
      */
     int getBytesPerRectangle();
-    
+
     /**
      * Returns how many lines is visible in data view rectangle.
-     * 
+     *
      * @return number of lines visible in data view rectangle
      */
     int getLinesPerRectangle();
 
     /**
      * Returns how many bytes is shown per single line.
-     * 
+     *
      * @return number of bytes shown per single line
      */
     int getBytesPerLine();
 
     /**
      * Returns how characters is shown per single line.
-     * 
+     *
      * @return number of characters shown per single line
      */
     int getCharactersPerLine();
+
+    int getLineHeight();
+
+    int getCharacterWidth();
+
+    int getPositionByte(int lineCharPosition);
+    
+    /**
+     * Computes character position for byte code of given offset position.
+     * 
+     * TODO: hide?
+     *
+     * @param byteOffset byte start offset
+     * @return characters position
+     */
+    public int computeByteCharPos(int byteOffset);
+    
 }

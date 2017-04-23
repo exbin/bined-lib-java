@@ -28,7 +28,7 @@ import java.awt.event.MouseWheelListener;
 /**
  * Code Area component mouse listener.
  *
- * @version 0.2.0 2017/04/21
+ * @version 0.2.0 2017/04/23
  * @author ExBin Project (http://exbin.org)
  */
 /* package */ class CodeAreaMouseListener extends MouseAdapter implements MouseMotionListener, MouseWheelListener {
@@ -49,7 +49,7 @@ import java.awt.event.MouseWheelListener;
     public void mousePressed(@NotNull MouseEvent me) {
         codeArea.requestFocus();
         if (codeArea.isEnabled() && me.getButton() == MouseEvent.BUTTON1) {
-            codeArea.moveCaret(me, me.getModifiersEx());
+            codeArea.getCommandHandler().moveCaret(me, me.getModifiersEx());
             codeArea.revealCursor();
             mouseDown = true;
         }
@@ -93,7 +93,7 @@ import java.awt.event.MouseWheelListener;
     public void mouseDragged(@NotNull MouseEvent me) {
         updateMouseCursor(me);
         if (codeArea.isEnabled() && mouseDown) {
-            codeArea.moveCaret(me, KeyEvent.SHIFT_DOWN_MASK);
+            codeArea.getCommandHandler().moveCaret(me, KeyEvent.SHIFT_DOWN_MASK);
             codeArea.revealCursor();
         }
     }

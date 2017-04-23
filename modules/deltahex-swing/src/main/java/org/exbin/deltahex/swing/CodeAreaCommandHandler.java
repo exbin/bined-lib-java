@@ -16,17 +16,18 @@
 package org.exbin.deltahex.swing;
 
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 
 /**
  * Interface for code area data manipulation.
  *
- * @version 0.2.0 2017/04/06
+ * @version 0.2.0 2017/04/23
  * @author ExBin Project (http://exbin.org)
  */
 public interface CodeAreaCommandHandler {
 
     /**
-     * Notifies command handler about end of sequence appendable commands.
+     * Notifies command handler about end of sequence of appendable commands.
      */
     void sequenceBreak();
 
@@ -100,4 +101,12 @@ public interface CodeAreaCommandHandler {
      * @return true if paste is possible
      */
     boolean canPaste();
+
+    /**
+     * Move caret with mouse event.
+     *
+     * @param mouseEvent mouse event
+     * @param modifiers modifiers
+     */
+    void moveCaret(MouseEvent mouseEvent, int modifiers);
 }

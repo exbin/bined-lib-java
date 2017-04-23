@@ -18,7 +18,7 @@ package org.exbin.deltahex.swing;
 /**
  * Code Area scrolling position.
  *
- * @version 0.2.0 2017/04/21
+ * @version 0.2.0 2017/04/23
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeAreaScrollPosition {
@@ -47,6 +47,8 @@ public class CodeAreaScrollPosition {
      * Relative data offset.
      */
     private int dataOffset = 0;
+
+    private VerticalOverflowMode verticalOverflowMode = VerticalOverflowMode.NORMAL;
 
     public long getScrollLinePosition() {
         return scrollLinePosition;
@@ -88,6 +90,14 @@ public class CodeAreaScrollPosition {
         this.dataOffset = dataOffset;
     }
 
+    public VerticalOverflowMode getVerticalOverflowMode() {
+        return verticalOverflowMode;
+    }
+
+    public void setVerticalOverflowMode(VerticalOverflowMode verticalOverflowMode) {
+        this.verticalOverflowMode = verticalOverflowMode;
+    }
+
     /**
      * Resets scrolling position to top left corner.
      */
@@ -97,5 +107,19 @@ public class CodeAreaScrollPosition {
         scrollCharPosition = 0;
         scrollCharOffset = 0;
         dataOffset = 0;
+    }
+
+    /**
+     * Enumeration of vertical overflow modes.
+     */
+    public enum VerticalOverflowMode {
+        /**
+         * Normal ratio 1 on 1.
+         */
+        NORMAL,
+        /**
+         * Height is more than available precision and scaled.
+         */
+        OVERFLOW
     }
 }

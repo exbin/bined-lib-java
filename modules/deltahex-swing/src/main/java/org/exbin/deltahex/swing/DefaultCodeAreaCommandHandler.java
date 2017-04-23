@@ -125,13 +125,13 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                 if ((keyEvent.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) > 0) {
                     // Scroll position offset instead of cursor
                     CodeAreaScrollPosition scrollPosition = codeArea.getScrollPosition();
-                    if (scrollPosition.getLineByteShift() < codeArea.getBytesPerLine() - 1) {
-                        scrollPosition.setLineByteShift(scrollPosition.getLineByteShift() + 1);
+                    if (scrollPosition.getDataOffset() < codeArea.getBytesPerLine() - 1) {
+                        scrollPosition.setLineByteShift(scrollPosition.getDataOffset() + 1);
                     } else {
                         if (scrollPosition.getScrollLinePosition() > 0) {
                             scrollPosition.setScrollLinePosition(scrollPosition.getScrollLinePosition() - 1);
                         }
-                        scrollPosition.setLineByteShift(0);
+                        scrollPosition.setDataOffset(0);
                     }
 
                     codeArea.getCaret().resetBlink();
@@ -916,6 +916,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    @Override
     public void moveCaret(MouseEvent me, int modifiers) {
         Rectangle hexRect = paintDataCache.codeSectionRectangle;
         int bytesPerLine = paintDataCache.bytesPerLine;

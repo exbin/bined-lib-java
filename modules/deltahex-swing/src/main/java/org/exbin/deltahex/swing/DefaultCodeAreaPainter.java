@@ -30,6 +30,7 @@ import java.nio.charset.CharsetEncoder;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import org.exbin.deltahex.CodeAreaSection;
 import org.exbin.deltahex.CodeAreaUtils;
 import org.exbin.deltahex.EditationMode;
 import org.exbin.deltahex.HexCharactersCase;
@@ -42,7 +43,7 @@ import org.exbin.deltahex.swing.color.CodeAreaColorsGroup;
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2017/04/14
+ * @version 0.2.0 2017/04/23
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaPainter implements CodeAreaPainter {
@@ -965,7 +966,62 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         validateLineOffset();
     }
 
-    public void computePaintData() {
+    @Override
+    public int getPreviewX() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public int getBytesPerRectangle() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public int getLinesPerRectangle() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public int getBytesPerLine() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public int getCharactersPerLine() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public int getPositionByte(int lineCharPosition) {
+        int positionByte;
+        if (codeArea.getActiveSection() == CodeAreaSection.CODE_MATRIX) {
+            positionByte = computeByteCharPos(lineCharPosition) + codeArea.getCaret().getCodeOffset();
+        } else {
+            positionByte = lineCharPosition;
+            if (codeArea.getViewMode() == ViewMode.DUAL) {
+                positionByte += paintDataCache.previewStartChar;
+            }
+        }
+        
+        return positionByte;
+    }
+
+    @Override
+    public boolean isInitialized() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public int getLineHeight() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public int getCharacterWidth() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    private void computePaintData() {
         if (paintDataCache.fontMetrics == null) {
             return;
         }

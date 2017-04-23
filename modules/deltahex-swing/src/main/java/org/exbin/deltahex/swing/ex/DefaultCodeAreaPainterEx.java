@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.deltahex.swing.rich;
+package org.exbin.deltahex.swing.ex;
 
 import org.exbin.deltahex.swing.color.CodeAreaColorProfile;
 import java.awt.BasicStroke;
@@ -36,15 +36,18 @@ import org.exbin.deltahex.HexCharactersCase;
 import org.exbin.deltahex.ScrollBarVisibility;
 import org.exbin.deltahex.SelectionRange;
 import org.exbin.deltahex.ViewMode;
+import org.exbin.deltahex.swing.CodeArea;
+import org.exbin.deltahex.swing.CodeAreaCaret;
 import org.exbin.deltahex.swing.CodeAreaPainter;
+import org.exbin.deltahex.swing.CodeAreaScrollPosition;
 
 /**
- * Rich code area component default painter.
+ * Extended code area component default painter.
  *
- * @version 0.2.0 2017/04/20
+ * @version 0.2.0 2017/04/23
  * @author ExBin Project (http://exbin.org)
  */
-public class DefaultCodeAreaPainterRich extends CodeAreaPainter {
+public class DefaultCodeAreaPainterEx extends CodeAreaPainter {
 
     public static final int NO_MODIFIER = 0;
     public static final int DECORATION_HEADER_LINE = 1;
@@ -60,7 +63,7 @@ public class DefaultCodeAreaPainterRich extends CodeAreaPainter {
     protected final char[] charMapping = new char[256];
     protected Map<Character, Character> unprintableCharactersMapping = null;
 
-    public DefaultCodeAreaPainterRich(CodeArea codeArea) {
+    public DefaultCodeAreaPainterEx(CodeArea codeArea) {
         this.codeArea = codeArea;
     }
 
@@ -961,6 +964,179 @@ public class DefaultCodeAreaPainterRich extends CodeAreaPainter {
     public void notifyModified() {
         computePaintData();
         validateLineOffset();
+    }
+
+    private int computeCharsPerRect(int width) {
+        if (showLineNumbers) {
+            width -= paintDataCache.charWidth * paintDataCache.lineNumbersLength + getLineNumberSpace();
+        }
+
+        return width / paintDataCache.charWidth;
+    }
+
+    /**
+     * Computes how many bytes would fit into given number of characters.
+     *
+     * @param charsPerRect available characters space
+     * @return maximum byte offset index
+     */
+    public int computeFittingBytes(int charsPerRect) {
+        if (viewMode == ViewMode.TEXT_PREVIEW) {
+            return charsPerRect;
+        }
+
+        int fittingBytes;
+        if (byteGroupSize == 0) {
+            if (spaceGroupSize == 0) {
+                fittingBytes = (charsPerRect - 1)
+                        / (codeType.getMaxDigits() + 1);
+            } else {
+                fittingBytes = spaceGroupSize
+                        * (int) ((charsPerRect - 1) / (long) ((codeType.getMaxDigits() + 1) * spaceGroupSize + 2));
+                int remains = (int) ((charsPerRect - 1) % (long) ((codeType.getMaxDigits() + 1) * spaceGroupSize + 2)) / (codeType.getMaxDigits() + 1);
+                fittingBytes += remains;
+            }
+        } else if (spaceGroupSize == 0) {
+            fittingBytes = byteGroupSize
+                    * (int) ((charsPerRect - 1) / (long) ((codeType.getMaxDigits() + 1) * byteGroupSize + 1));
+            int remains = (int) ((charsPerRect - 1) % (long) ((codeType.getMaxDigits() + 1) * byteGroupSize + 1)) / (codeType.getMaxDigits() + 1);
+            fittingBytes += remains;
+        } else {
+            fittingBytes = 0;
+            int charsPerLine = 1;
+            while (charsPerLine < charsPerRect) {
+                charsPerLine += codeType.getMaxDigits() + 1;
+                fittingBytes++;
+                if ((fittingBytes % byteGroupSize) == 0) {
+                    if ((fittingBytes % spaceGroupSize) == 0) {
+                        charsPerLine += 2;
+                    } else {
+                        charsPerLine++;
+                    }
+                } else if ((fittingBytes % spaceGroupSize) == 0) {
+                    charsPerLine += 2;
+                }
+                if (charsPerLine > charsPerRect) {
+                    return fittingBytes - 1;
+                }
+            }
+
+            if (computeCharsPerLine(fittingBytes + 1) <= charsPerRect) {
+                fittingBytes++;
+            }
+        }
+
+        return fittingBytes;
+    }
+
+    /**
+     * Computes byte offset index for given code line offset.
+     *
+     * @param charOffset char offset position
+     * @return byte offset index
+     */
+    public int computeByteOffsetPerCodeCharOffset(int charOffset) {
+        int byteOffset;
+        if (byteGroupSize == 0) {
+            if (spaceGroupSize == 0) {
+                byteOffset = charOffset / codeType.getMaxDigits();
+            } else {
+                byteOffset = spaceGroupSize
+                        * (int) (charOffset / (long) (codeType.getMaxDigits() * spaceGroupSize + 2));
+                int remains = (int) (charOffset % (long) (codeType.getMaxDigits() * spaceGroupSize + 2)) / codeType.getMaxDigits();
+                if (remains >= spaceGroupSize) {
+                    remains = spaceGroupSize - 1;
+                }
+                byteOffset += remains;
+            }
+        } else if (spaceGroupSize == 0) {
+            byteOffset = byteGroupSize
+                    * (int) (charOffset / (long) (codeType.getMaxDigits() * byteGroupSize + 1));
+            int remains = (int) (charOffset % (long) (codeType.getMaxDigits() * byteGroupSize + 1)) / codeType.getMaxDigits();
+            if (remains >= byteGroupSize) {
+                remains = byteGroupSize - 1;
+            }
+            byteOffset += remains;
+        } else {
+            byteOffset = 0;
+            int charsPerLine = 0;
+            while (charsPerLine < charOffset) {
+                charsPerLine += codeType.getMaxDigits();
+                byteOffset++;
+                if ((byteOffset % byteGroupSize) == 0) {
+                    if ((byteOffset % spaceGroupSize) == 0) {
+                        charsPerLine += 2;
+                    } else {
+                        charsPerLine++;
+                    }
+                } else if ((byteOffset % spaceGroupSize) == 0) {
+                    charsPerLine += 2;
+                }
+                if (charsPerLine > charOffset) {
+                    return byteOffset - 1;
+                }
+            }
+        }
+
+        return byteOffset;
+    }
+
+    /**
+     * Computes number of characters for given number of bytes / offset.
+     *
+     * @param bytesPerLine number of bytes per line
+     * @return characters count
+     */
+    public int computeCharsPerLine(int bytesPerLine) {
+        if (viewMode == ViewMode.TEXT_PREVIEW) {
+            return bytesPerLine;
+        }
+
+        int charsPerLine = computeByteCharPos(bytesPerLine, false);
+
+        if (viewMode == ViewMode.DUAL) {
+            charsPerLine += bytesPerLine + 1;
+        }
+
+        return charsPerLine;
+    }
+
+    /**
+     * Computes character position for byte code of given offset position.
+     *
+     * @param byteOffset byte start offset
+     * @return characters position
+     */
+    public int computeByteCharPos(int byteOffset) {
+        return computeByteCharPos(byteOffset, true);
+    }
+
+    public int computeByteCharPos(int byteOffset, boolean includeTail) {
+        int charsPerLine = codeType.getMaxDigits() * byteOffset;
+        if (!includeTail) {
+            byteOffset--;
+        }
+        if (byteGroupSize == 0) {
+            if (spaceGroupSize != 0) {
+                charsPerLine += (byteOffset / spaceGroupSize) * 2;
+            }
+        } else if (spaceGroupSize == 0) {
+            charsPerLine += (byteOffset / byteGroupSize);
+        } else {
+            for (int index = 1; index <= byteOffset; index++) {
+                if ((index % byteGroupSize) == 0) {
+                    if ((index % spaceGroupSize) == 0) {
+                        charsPerLine += 2;
+                    } else {
+                        charsPerLine++;
+                    }
+                } else if ((index % spaceGroupSize) == 0) {
+                    charsPerLine += 2;
+                }
+            }
+        }
+
+        return charsPerLine;
     }
 
     public void computePaintData() {
