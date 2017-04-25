@@ -46,7 +46,7 @@ import org.exbin.utils.binary_data.EditableBinaryData;
 /**
  * Default hexadecimal editor command handler.
  *
- * @version 0.2.0 2017/04/17
+ * @version 0.2.0 2017/04/25
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
@@ -125,13 +125,13 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                 if ((keyEvent.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) > 0) {
                     // Scroll position offset instead of cursor
                     CodeAreaScrollPosition scrollPosition = codeArea.getScrollPosition();
-                    if (scrollPosition.getDataOffset() < codeArea.getBytesPerLine() - 1) {
-                        scrollPosition.setLineByteShift(scrollPosition.getDataOffset() + 1);
+                    if (scrollPosition.getLineDataOffset() < codeArea.getBytesPerLine() - 1) {
+                        scrollPosition.setLineDataOffset(scrollPosition.getLineDataOffset() + 1);
                     } else {
                         if (scrollPosition.getScrollLinePosition() > 0) {
                             scrollPosition.setScrollLinePosition(scrollPosition.getScrollLinePosition() - 1);
                         }
-                        scrollPosition.setDataOffset(0);
+                        scrollPosition.setLineDataOffset(0);
                     }
 
                     codeArea.getCaret().resetBlink();
@@ -139,7 +139,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                     codeArea.notifyScrolled();
                     codeArea.repaint();
                 } else {
-                    codeArea.moveLeft(keyEvent.getModifiersEx());
+                    moveLeft(keyEvent.getModifiersEx());
                     sequenceBreak();
                     codeArea.revealCursor();
                 }
@@ -150,14 +150,14 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                 if ((keyEvent.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) > 0) {
                     // Scroll position offset instead of cursor
                     CodeAreaScrollPosition scrollPosition = codeArea.getScrollPosition();
-                    if (scrollPosition.getLineByteShift() > 0) {
-                        scrollPosition.setLineByteShift(scrollPosition.getLineByteShift() - 1);
+                    if (scrollPosition.getLineDataOffset() > 0) {
+                        scrollPosition.setLineByteShift(scrollPosition.getLineDataOffset() - 1);
                     } else {
                         long dataSize = codeArea.getDataSize();
                         if (scrollPosition.getScrollLinePosition() < dataSize / codeArea.getBytesPerLine()) {
                             scrollPosition.setScrollLinePosition(scrollPosition.getScrollLinePosition() + 1);
                         }
-                        scrollPosition.setLineByteShift(codeArea.getBytesPerLine() - 1);
+                        scrollPosition.setLineDataOffset(codeArea.getBytesPerLine() - 1);
                     }
 
                     codeArea.getCaret().resetBlink();
@@ -165,7 +165,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                     codeArea.notifyScrolled();
                     codeArea.repaint();
                 } else {
-                    codeArea.moveRight(keyEvent.getModifiersEx());
+                    moveRight(keyEvent.getModifiersEx());
                     sequenceBreak();
                     codeArea.revealCursor();
                 }
@@ -916,6 +916,34 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    public void updateSelection(int modifiers, CaretPosition caretPosition) {
+        if ((modifiers & KeyEvent.SHIFT_DOWN_MASK) > 0) {
+            long currentPosition = caret.getDataPosition();
+            long end = currentPosition;
+            long start;
+            if (selection != null) {
+                start = selection.getStart();
+                if (start == currentPosition) {
+                    clearSelection();
+                } else {
+                    selection.setEnd(start < currentPosition ? end - 1 : end);
+                }
+            } else {
+                start = caretPosition.getDataPosition();
+                if (start == currentPosition) {
+                    clearSelection();
+                } else {
+                    selection = new SelectionRange(start, start < currentPosition ? end - 1 : end);
+                }
+            }
+
+            notifySelectionChanged();
+        } else {
+            clearSelection();
+        }
+        repaint();
+    }
+
     @Override
     public void moveCaret(MouseEvent me, int modifiers) {
         Rectangle hexRect = paintDataCache.codeSectionRectangle;
@@ -977,6 +1005,48 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         commandHandler.sequenceBreak();
 
         updateSelection(modifiers, caretPosition);
+    }
+
+    public void moveRight(int modifiers) {
+        CaretPosition caretPosition = caret.getCaretPosition();
+        if (caretPosition.getDataPosition() < data.getDataSize()) {
+            if (caret.getSection() == Section.CODE_MATRIX) {
+                int codeOffset = caret.getCodeOffset();
+                if (caretPosition.getDataPosition() < data.getDataSize()) {
+                    if (codeOffset < codeType.getMaxDigits() - 1) {
+                        caret.setCodeOffset(codeOffset + 1);
+                    } else {
+                        caret.setCaretPosition(caretPosition.getDataPosition() + 1, 0);
+                    }
+                    updateSelection(modifiers, caretPosition);
+                    notifyCaretMoved();
+                }
+            } else {
+                caret.setCaretPosition(caretPosition.getDataPosition() + 1);
+                updateSelection(modifiers, caretPosition);
+                notifyCaretMoved();
+            }
+        }
+    }
+
+    public void moveLeft(int modifiers) {
+        CaretPosition caretPosition = caret.getCaretPosition();
+        if (caret.getSection() == Section.CODE_MATRIX) {
+            int codeOffset = caret.getCodeOffset();
+            if (codeOffset > 0) {
+                caret.setCodeOffset(codeOffset - 1);
+                updateSelection(modifiers, caretPosition);
+                notifyCaretMoved();
+            } else if (caretPosition.getDataPosition() > 0) {
+                caret.setCaretPosition(caretPosition.getDataPosition() - 1, codeType.getMaxDigits() - 1);
+                updateSelection(modifiers, caretPosition);
+                notifyCaretMoved();
+            }
+        } else if (caretPosition.getDataPosition() > 0) {
+            caret.setCaretPosition(caretPosition.getDataPosition() - 1);
+            updateSelection(modifiers, caretPosition);
+            notifyCaretMoved();
+        }
     }
 
     public class BinaryDataClipboardData implements ClipboardData {

@@ -128,7 +128,7 @@ import java.awt.event.MouseWheelListener;
                 codeArea.notifyScrolled();
             }
         } else if (e.getWheelRotation() > 0) {
-            long lines = (codeArea.getDataSize() + scrollPosition.getDataOffset()) / codeArea.getBytesPerLine();
+            long lines = (codeArea.getDataSize() + scrollPosition.getLineDataOffset()) / codeArea.getBytesPerLine();
             if (lines * codeArea.getBytesPerLine() < codeArea.getDataSize()) {
                 lines++;
             }

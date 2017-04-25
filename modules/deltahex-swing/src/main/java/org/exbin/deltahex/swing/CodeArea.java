@@ -265,6 +265,10 @@ public class CodeArea extends JComponent implements CodeAreaControl {
         return !selection.isEmpty();
     }
 
+    public SelectionRange getSelection() {
+        return selection;
+    }
+
     public BinaryData getData() {
         return data;
     }
@@ -543,7 +547,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
     // TODO move to painter?
     public void updateScrollBars() {
         if (scrollPosition.getVerticalOverflowMode() == CodeAreaScrollPosition.VerticalOverflowMode.OVERFLOW) {
-            long lines = ((data.getDataSize() + scrollPosition.getDataOffset()) / painter.getBytesPerLine()) + 1;
+            long lines = ((data.getDataSize() + scrollPosition.getLineDataOffset()) / painter.getBytesPerLine()) + 1;
             int scrollValue;
             if (scrollPosition.getScrollCharPosition() < Long.MAX_VALUE / Integer.MAX_VALUE) {
                 scrollValue = (int) ((scrollPosition.getScrollLinePosition() * Integer.MAX_VALUE) / lines);
@@ -575,7 +579,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
             int scrollBarValue = scrollPanel.getVerticalScrollBar().getValue();
             if (scrollPosition.getVerticalOverflowMode() == CodeAreaScrollPosition.VerticalOverflowMode.OVERFLOW) {
                 int maxValue = Integer.MAX_VALUE - scrollPanel.getVerticalScrollBar().getVisibleAmount();
-                long lines = ((data.getDataSize() + scrollPosition.getDataOffset()) / painter.getBytesPerLine()) - painter.getLinesPerRectangle() + 1;
+                long lines = ((data.getDataSize() + scrollPosition.getLineDataOffset()) / painter.getBytesPerLine()) - painter.getLinesPerRectangle() + 1;
                 long targetLine;
                 if (scrollBarValue > 0 && lines > maxValue / scrollBarValue) {
                     targetLine = scrollBarValue * (lines / maxValue);

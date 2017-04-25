@@ -88,7 +88,7 @@ public class CodeAreaCaret {
      */
     public Point getCursorPoint(int bytesPerLine, int lineHeight, int charWidth, int linesPerRect) {
         CodeAreaScrollPosition scrollPosition = codeArea.getScrollPosition();
-        long shiftedPosition = caretPosition.getDataPosition() + scrollPosition.getDataOffset();
+        long shiftedPosition = caretPosition.getDataPosition() + scrollPosition.getLineDataOffset();
         long line = shiftedPosition / bytesPerLine - scrollPosition.getScrollLinePosition();
         if (line < -1 || line > linesPerRect) {
             return null;
@@ -121,7 +121,7 @@ public class CodeAreaCaret {
      */
     public Point getShadowCursorPoint(int bytesPerLine, int lineHeight, int charWidth, int linesPerRect) {
         CodeAreaScrollPosition scrollPosition = codeArea.getScrollPosition();
-        long shiftedPosition = caretPosition.getDataPosition() + scrollPosition.getDataOffset();
+        long shiftedPosition = caretPosition.getDataPosition() + scrollPosition.getLineDataOffset();
         long line = shiftedPosition / bytesPerLine - scrollPosition.getScrollLinePosition();
         if (line < -1 || line + 1 > linesPerRect) {
             return null;
