@@ -207,6 +207,21 @@ public class CodeArea extends JComponent implements CodeAreaControl {
         return caret.getCaretPosition();
     }
 
+    public void setCaretPosition(CaretPosition caretPosition) {
+        caret.setCaretPosition(caretPosition);
+        notifyCaretMoved();
+    }
+
+    public void setCaretPosition(long dataPosition) {
+        caret.setCaretPosition(dataPosition);
+        notifyCaretMoved();
+    }
+
+    public void setCaretPosition(long dataPosition, int codeOffset) {
+        caret.setCaretPosition(dataPosition, codeOffset);
+        notifyCaretMoved();
+    }
+
     public CodeAreaCommandHandler getCommandHandler() {
         return commandHandler;
     }

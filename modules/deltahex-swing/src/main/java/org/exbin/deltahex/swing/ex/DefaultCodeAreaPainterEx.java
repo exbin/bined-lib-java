@@ -49,7 +49,6 @@ import org.exbin.deltahex.swing.CodeAreaScrollPosition;
  */
 public class DefaultCodeAreaPainterEx extends CodeAreaPainter {
 
-    public static final int NO_MODIFIER = 0;
     public static final int DECORATION_HEADER_LINE = 1;
     public static final int DECORATION_LINENUM_LINE = 2;
     public static final int DECORATION_PREVIEW_LINE = 4;
