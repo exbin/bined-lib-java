@@ -234,7 +234,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                     if ((keyEvent.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) > 0) {
                         targetPosition = 0;
                     } else {
-                        targetPosition = ((caretPosition.getDataPosition() + scrollPosition.getLineByteShift()) / bytesPerLine) * bytesPerLine - scrollPosition.getLineByteShift();
+                        targetPosition = ((caretPosition.getDataPosition() + scrollPosition.getLineDataOffset()) / bytesPerLine) * bytesPerLine - scrollPosition.getLineDataOffset();
                         if (targetPosition < 0) {
                             targetPosition = 0;
                         }
@@ -257,10 +257,10 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                     if ((keyEvent.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) > 0) {
                         codeArea.getCaret().setCaretPosition(codeArea.getDataSize());
                     } else if (codeArea.getActiveSection() == CodeAreaSection.CODE_MATRIX) {
-                        long newPosition = (((caretPosition.getDataPosition() + scrollPosition.getLineByteShift()) / bytesPerLine) + 1) * bytesPerLine - 1 - scrollPosition.getLineByteShift();
+                        long newPosition = (((caretPosition.getDataPosition() + scrollPosition.getLineDataOffset()) / bytesPerLine) + 1) * bytesPerLine - 1 - scrollPosition.getLineDataOffset();
                         codeArea.getCaret().setCaretPosition(newPosition < dataSize ? newPosition : dataSize, newPosition < dataSize ? codeArea.getCodeType().getMaxDigits() - 1 : 0);
                     } else {
-                        long newPosition = (((caretPosition.getDataPosition() + scrollPosition.getLineByteShift()) / bytesPerLine) + 1) * bytesPerLine - 1 - scrollPosition.getLineByteShift();
+                        long newPosition = (((caretPosition.getDataPosition() + scrollPosition.getLineDataOffset()) / bytesPerLine) + 1) * bytesPerLine - 1 - scrollPosition.getLineDataOffset();
                         codeArea.getCaret().setCaretPosition(newPosition < dataSize ? newPosition : dataSize);
                     }
                     sequenceBreak();
@@ -336,7 +336,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             }
             case KeyEvent.VK_TAB: {
                 if (codeArea.getViewMode() == ViewMode.DUAL) {
-                    CodeAreaSection activeSection = codeArea.getActiveSection() == CodeAreaSection.CODE_MATRIX ? Section.TEXT_PREVIEW : Section.CODE_MATRIX;
+                    CodeAreaSection activeSection = codeArea.getActiveSection() == CodeAreaSection.CODE_MATRIX ? CodeAreaSection.TEXT_PREVIEW : CodeAreaSection.CODE_MATRIX;
                     if (activeSection == CodeAreaSection.TEXT_PREVIEW) {
                         codeArea.getCaretPosition().setCodeOffset(0);
                     }

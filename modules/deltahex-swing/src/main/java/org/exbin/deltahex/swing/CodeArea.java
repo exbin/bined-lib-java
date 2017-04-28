@@ -64,6 +64,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
     private JScrollPane scrollPanel;
     private CodeAreaDataView dataView;
     private Charset charset = Charset.defaultCharset();
+    private boolean handleClipboard = true;
 
     private CodeAreaPainter painter;
     private CodeAreaCommandHandler commandHandler;
@@ -473,6 +474,14 @@ public class CodeArea extends JComponent implements CodeAreaControl {
     boolean isHorizontalScrollBarVisible() {
         // TODO
         return scrollPanel.getHorizontalScrollBar().isVisible();
+    }
+
+    public boolean isHandleClipboard() {
+        return handleClipboard;
+    }
+
+    public void setHandleClipboard(boolean handleClipboard) {
+        this.handleClipboard = handleClipboard;
     }
 
     public void notifyCaretMoved() {
