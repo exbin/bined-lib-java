@@ -961,7 +961,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     }
 
     @Override
-    public void notifyModified() {
+    public void clearCache() {
         computePaintData();
         validateLineOffset();
     }

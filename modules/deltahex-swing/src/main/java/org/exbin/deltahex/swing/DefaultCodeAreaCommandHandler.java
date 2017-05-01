@@ -28,6 +28,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.logging.Level;
@@ -136,7 +137,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                     }
 
                     codeArea.getCaret().resetBlink();
-                    codeArea.computePaintData();
+                    codeArea.clearChache();
                     codeArea.notifyScrolled();
                     codeArea.repaint();
                 } else {
@@ -162,7 +163,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                     }
 
                     codeArea.getCaret().resetBlink();
-                    codeArea.computePaintData();
+                    codeArea.clearChache();
                     codeArea.notifyScrolled();
                     codeArea.repaint();
                 } else {
@@ -479,11 +480,11 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             }
         } else {
             char keyChar = keyValue;
-            if (keyChar > 31 && codeArea.isValidChar(keyValue)) {
+            if (keyChar > 31 && isValidChar(keyValue)) {
                 BinaryData data = codeArea.getData();
                 CaretPosition caretPosition = codeArea.getCaretPosition();
                 long dataPosition = caretPosition.getDataPosition();
-                byte[] bytes = codeArea.charToBytes(keyChar);
+                byte[] bytes = charToBytes(keyChar);
                 if (codeArea.getEditationMode() == EditationMode.OVERWRITE) {
                     if (dataPosition < codeArea.getDataSize()) {
                         int length = bytes.length;
@@ -938,17 +939,17 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                 }
             }
 
-            notifySelectionChanged();
+            codeArea.notifySelectionChanged();
         } else {
             clearSelection();
         }
-        repaint();
+        codeArea.repaint();
     }
 
     @Override
     public void moveCaret(MouseEvent me, int modifiers) {
-        Rectangle hexRect = paintDataCache.codeSectionRectangle;
-        int bytesPerLine = paintDataCache.bytesPerLine;
+        Rectangle hexRect = codeArea.getDataViewRectangle();
+        int bytesPerLine = codeArea.getBytesPerLine();
         int mouseX = me.getX();
         if (mouseX < hexRect.x) {
             mouseX = hexRect.x;
@@ -1050,6 +1051,17 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             updateSelection(modifiers, caretPosition);
             notifyCaretMoved();
         }
+    }
+
+    public boolean isValidChar(char value) {
+        return codeArea.getCharset().canEncode();
+    }
+
+    public byte[] charToBytes(char value) {
+        ByteBuffer buffer = codeArea.getCharset().encode(Character.toString(value));
+        byte[] bytes = new byte[buffer.remaining()];
+        buffer.get(bytes, 0, bytes.length);
+        return bytes;
     }
 
     public class BinaryDataClipboardData implements ClipboardData {

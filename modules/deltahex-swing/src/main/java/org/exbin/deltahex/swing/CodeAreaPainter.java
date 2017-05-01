@@ -94,7 +94,7 @@ public interface CodeAreaPainter {
     /**
      * Notifies that component was modified.
      */
-    void notifyModified();
+    void clearCache();
 
     /**
      * Returns how many bytes is visible in data view rectangle.

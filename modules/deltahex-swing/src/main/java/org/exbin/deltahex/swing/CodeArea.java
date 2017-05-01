@@ -52,7 +52,7 @@ import org.exbin.utils.binary_data.BinaryData;
 /**
  * Hexadecimal viewer/editor component.
  *
- * @version 0.2.0 2017/04/23
+ * @version 0.2.0 2017/05/01
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeArea extends JComponent implements CodeAreaControl {
@@ -135,7 +135,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
         addComponentListener(new ComponentListener() {
             @Override
             public void componentResized(ComponentEvent e) {
-                painter.notifyModified();
+                clearChache();
             }
 
             @Override
@@ -350,7 +350,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
             caret.setSection(CodeAreaSection.TEXT_PREVIEW);
             notifyCaretMoved();
         }
-        painter.notifyModified();
+        clearChache();
         repaint();
     }
 
@@ -360,7 +360,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
 
     public void setCodeType(CodeType codeType) {
         this.codeType = codeType;
-        painter.notifyModified();
+        clearChache();
         repaint();
     }
 
@@ -391,7 +391,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
 
     public void setVerticalScrollBarVisibility(ScrollBarVisibility verticalScrollBarVisibility) {
         this.verticalScrollBarVisibility = verticalScrollBarVisibility;
-        painter.notifyModified();
+        clearChache();
         updateScrollBars();
     }
 
@@ -405,7 +405,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
         if (verticalScrollUnit == VerticalScrollUnit.LINE) {
             scrollPosition.setScrollLineOffset(0);
         }
-        painter.notifyModified();
+        clearChache();
         scrollPosition.setScrollLinePosition(linePosition);
         updateScrollBars();
         notifyScrolled();
@@ -417,7 +417,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
 
     public void setHorizontalScrollBarVisibility(ScrollBarVisibility horizontalScrollBarVisibility) {
         this.horizontalScrollBarVisibility = horizontalScrollBarVisibility;
-        painter.notifyModified();
+        clearChache();
         updateScrollBars();
     }
 
@@ -431,7 +431,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
         if (horizontalScrollUnit == HorizontalScrollUnit.CHARACTER) {
             scrollPosition.setScrollCharOffset(0);
         }
-        painter.notifyModified();
+        clearChache();
         scrollPosition.setScrollCharPosition(bytePosition);
         updateScrollBars();
         notifyScrolled();
@@ -504,11 +504,15 @@ public class CodeArea extends JComponent implements CodeAreaControl {
             caret.setCaretPosition(0);
             notifyCaretMoved();
         }
-        painter.notifyModified();
+        clearChache();
 
         for (DataChangedListener dataChangedListener : dataChangedListeners) {
             dataChangedListener.dataChanged();
         }
+    }
+
+    public void clearChache() {
+        painter.clearCache();
     }
 
     public CodeAreaScrollPosition getScrollPosition() {
