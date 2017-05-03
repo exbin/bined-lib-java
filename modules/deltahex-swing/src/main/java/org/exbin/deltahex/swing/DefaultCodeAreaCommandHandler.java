@@ -47,7 +47,7 @@ import org.exbin.utils.binary_data.EditableBinaryData;
 /**
  * Default hexadecimal editor command handler.
  *
- * @version 0.2.0 2017/04/27
+ * @version 0.2.0 2017/05/03
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
@@ -915,10 +915,12 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
     @Override
     public void clearSelection() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        codeArea.setSelection(new SelectionRange());
     }
 
     public void updateSelection(int modifiers, CaretPosition caretPosition) {
+        CodeAreaCaret caret = codeArea.getCaret();
+        SelectionRange selection = codeArea.getSelection();
         if ((modifiers & KeyEvent.SHIFT_DOWN_MASK) > 0) {
             long currentPosition = caret.getDataPosition();
             long end = currentPosition;
@@ -928,18 +930,16 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                 if (start == currentPosition) {
                     clearSelection();
                 } else {
-                    selection.setEnd(start < currentPosition ? end - 1 : end);
+                    codeArea.setSelection(new SelectionRange(selection.getStart(), start < currentPosition ? end - 1 : end));
                 }
             } else {
                 start = caretPosition.getDataPosition();
                 if (start == currentPosition) {
                     clearSelection();
                 } else {
-                    selection = new SelectionRange(start, start < currentPosition ? end - 1 : end);
+                    codeArea.setSelection(new SelectionRange(start, start < currentPosition ? end - 1 : end));
                 }
             }
-
-            codeArea.notifySelectionChanged();
         } else {
             clearSelection();
         }

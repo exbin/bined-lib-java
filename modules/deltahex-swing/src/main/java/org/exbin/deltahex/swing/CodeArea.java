@@ -52,7 +52,7 @@ import org.exbin.utils.binary_data.BinaryData;
 /**
  * Hexadecimal viewer/editor component.
  *
- * @version 0.2.0 2017/05/01
+ * @version 0.2.0 2017/05/03
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeArea extends JComponent implements CodeAreaControl {
@@ -285,6 +285,11 @@ public class CodeArea extends JComponent implements CodeAreaControl {
         return selection;
     }
 
+    public void setSelection(SelectionRange selection) {
+        this.selection = selection;
+        notifySelectionChanged();
+    }
+
     public BinaryData getData() {
         return data;
     }
@@ -509,6 +514,52 @@ public class CodeArea extends JComponent implements CodeAreaControl {
         for (DataChangedListener dataChangedListener : dataChangedListeners) {
             dataChangedListener.dataChanged();
         }
+    }
+
+    public void notifySelectionChanged() {
+        for (SelectionChangedListener selectionChangedListener : selectionChangedListeners) {
+            selectionChangedListener.selectionChanged(selection);
+        }
+    }
+
+    public void addSelectionChangedListener(SelectionChangedListener selectionChangedListener) {
+        selectionChangedListeners.add(selectionChangedListener);
+    }
+
+    public void removeSelectionChangedListener(SelectionChangedListener selectionChangedListener) {
+        selectionChangedListeners.remove(selectionChangedListener);
+    }
+
+    public void addCaretMovedListener(CaretMovedListener caretMovedListener) {
+        caretMovedListeners.add(caretMovedListener);
+    }
+
+    public void removeCaretMovedListener(CaretMovedListener caretMovedListener) {
+        caretMovedListeners.remove(caretMovedListener);
+    }
+
+    public void addEditationModeChangedListener(EditationModeChangedListener editationModeChangedListener) {
+        editationModeChangedListeners.add(editationModeChangedListener);
+    }
+
+    public void removeEditationModeChangedListener(EditationModeChangedListener editationModeChangedListener) {
+        editationModeChangedListeners.remove(editationModeChangedListener);
+    }
+
+    public void addDataChangedListener(DataChangedListener dataChangedListener) {
+        dataChangedListeners.add(dataChangedListener);
+    }
+
+    public void removeDataChangedListener(DataChangedListener dataChangedListener) {
+        dataChangedListeners.remove(dataChangedListener);
+    }
+
+    public void addScrollingListener(ScrollingListener scrollingListener) {
+        scrollingListeners.add(scrollingListener);
+    }
+
+    public void removeScrollingListener(ScrollingListener scrollingListener) {
+        scrollingListeners.remove(scrollingListener);
     }
 
     public void clearChache() {
