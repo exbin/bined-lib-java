@@ -47,7 +47,7 @@ import org.exbin.utils.binary_data.EditableBinaryData;
 /**
  * Default hexadecimal editor command handler.
  *
- * @version 0.2.0 2017/05/03
+ * @version 0.2.0 2017/05/04
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
@@ -949,6 +949,9 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     @Override
     public void moveCaret(MouseEvent me, int modifiers) {
         Rectangle hexRect = codeArea.getDataViewRectangle();
+        ViewMode viewMode = codeArea.getViewMode();
+        CodeAreaScrollPosition scrollPosition = codeArea.getScrollPosition();
+        CodeAreaCaret caret = codeArea.getCaret();
         int bytesPerLine = codeArea.getBytesPerLine();
         int mouseX = me.getX();
         if (mouseX < hexRect.x) {
@@ -995,7 +998,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             codeOffset = 0;
         }
 
-        long dataSize = data.getDataSize();
+        long dataSize = codeArea.getDataSize();
         if (dataPosition >= dataSize) {
             dataPosition = dataSize;
             codeOffset = 0;
@@ -1003,8 +1006,8 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
         CaretPosition caretPosition = caret.getCaretPosition();
         caret.setCaretPosition(dataPosition, codeOffset);
-        notifyCaretMoved();
-        commandHandler.sequenceBreak();
+        codeArea.notifyCaretMoved();
+        sequenceBreak();
 
         updateSelection(modifiers, caretPosition);
     }
@@ -1022,12 +1025,12 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                         caret.setCaretPosition(caretPosition.getDataPosition() + 1, 0);
                     }
                     updateSelection(modifiers, caretPosition);
-                    notifyCaretMoved();
+                    codeArea.notifyCaretMoved();
                 }
             } else {
                 caret.setCaretPosition(caretPosition.getDataPosition() + 1);
                 updateSelection(modifiers, caretPosition);
-                notifyCaretMoved();
+                codeArea.notifyCaretMoved();
             }
         }
     }
@@ -1040,16 +1043,16 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             if (codeOffset > 0) {
                 caret.setCodeOffset(codeOffset - 1);
                 updateSelection(modifiers, caretPosition);
-                notifyCaretMoved();
+                codeArea.notifyCaretMoved();
             } else if (caretPosition.getDataPosition() > 0) {
                 caret.setCaretPosition(caretPosition.getDataPosition() - 1, codeType.getMaxDigits() - 1);
                 updateSelection(modifiers, caretPosition);
-                notifyCaretMoved();
+                codeArea.notifyCaretMoved();
             }
         } else if (caretPosition.getDataPosition() > 0) {
             caret.setCaretPosition(caretPosition.getDataPosition() - 1);
             updateSelection(modifiers, caretPosition);
-            notifyCaretMoved();
+            codeArea.notifyCaretMoved();
         }
     }
 
