@@ -18,7 +18,9 @@ package org.exbin.deltahex;
 /**
  * Selection range is selection between two positions where begin represents
  * originating point and end of the selection can be before or after begin.
- *
+ * 
+ * Class is immutable.
+ * 
  * @version 0.2.0 2017/05/03
  * @author ExBin Project (http://exbin.org)
  */

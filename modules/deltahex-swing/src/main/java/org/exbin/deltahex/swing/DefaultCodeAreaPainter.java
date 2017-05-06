@@ -43,7 +43,7 @@ import org.exbin.deltahex.swing.color.CodeAreaColorsGroup;
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2017/04/23
+ * @version 0.2.0 2017/05/06
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaPainter implements CodeAreaPainter {
@@ -78,20 +78,10 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         }
 
         // Draw decoration lines
-        int decorationMode = codeArea.getDecorationMode();
-        if ((decorationMode & DECORATION_LINENUM_LINE) > 0) {
-            g.setColor(codeArea.getDecorationLineColor());
-            int lineX = codeRect.x - 1 - codeArea.getLineNumberSpace() / 2;
-            g.drawLine(lineX, compRect.y, lineX, codeRect.y);
-        }
-        if ((decorationMode & DECORATION_HEADER_LINE) > 0) {
-            g.setColor(codeArea.getDecorationLineColor());
-            g.drawLine(compRect.x, codeRect.y - 1, compRect.x + compRect.width, codeRect.y - 1);
-        }
-        if ((decorationMode & DECORATION_BOX) > 0) {
-            g.setColor(codeArea.getDecorationLineColor());
-            g.drawLine(codeRect.x - 1, codeRect.y - 1, codeRect.x + codeRect.width, codeRect.y - 1);
-        }
+        g.setColor(codeArea.getDecorationLineColor());
+        int lineX = codeRect.x - 1 - codeArea.getLineNumberSpace() / 2;
+        g.drawLine(lineX, compRect.y, lineX, codeRect.y);
+        g.drawLine(compRect.x, codeRect.y - 1, compRect.x + compRect.width, codeRect.y - 1);
     }
 
     @Override
@@ -227,20 +217,12 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         }
 
         int decorationMode = codeArea.getDecorationMode();
-        if ((decorationMode & DECORATION_HEADER_LINE) > 0) {
+        g.setColor(codeArea.getDecorationLineColor());
+        g.drawLine(compRect.x, codeRect.y - 1, compRect.x + compRect.width, codeRect.y - 1);
+        int lineX = codeArea.getPreviewX() - scrollPosition.getScrollCharPosition() * codeArea.getCharWidth() - scrollPosition.getScrollCharOffset() - codeArea.getCharWidth() / 2;
+        if (lineX >= codeRect.x) {
             g.setColor(codeArea.getDecorationLineColor());
-            g.drawLine(compRect.x, codeRect.y - 1, compRect.x + compRect.width, codeRect.y - 1);
-        }
-        if ((decorationMode & DECORATION_BOX) > 0) {
-            g.setColor(codeArea.getDecorationLineColor());
-            g.drawLine(codeRect.x - 1, codeRect.y - 1, codeRect.x + codeRect.width, codeRect.y - 1);
-        }
-        if ((decorationMode & DECORATION_PREVIEW_LINE) > 0) {
-            int lineX = codeArea.getPreviewX() - scrollPosition.getScrollCharPosition() * codeArea.getCharWidth() - scrollPosition.getScrollCharOffset() - codeArea.getCharWidth() / 2;
-            if (lineX >= codeRect.x) {
-                g.setColor(codeArea.getDecorationLineColor());
-                g.drawLine(lineX, compRect.y, lineX, codeRect.y);
-            }
+            g.drawLine(lineX, compRect.y, lineX, codeRect.y);
         }
     }
 
@@ -1002,7 +984,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                 positionByte += paintDataCache.previewStartChar;
             }
         }
-        
+
         return positionByte;
     }
 

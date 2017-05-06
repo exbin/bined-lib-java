@@ -950,6 +950,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     public void moveCaret(MouseEvent me, int modifiers) {
         Rectangle hexRect = codeArea.getDataViewRectangle();
         ViewMode viewMode = codeArea.getViewMode();
+        CodeType codeType = codeArea.getCodeType();
         CodeAreaScrollPosition scrollPosition = codeArea.getScrollPosition();
         CodeAreaCaret caret = codeArea.getCaret();
         int bytesPerLine = codeArea.getBytesPerLine();
@@ -992,7 +993,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             byteOnLine = bytesPerLine - 1;
         }
 
-        dataPosition = byteOnLine + (cursorLineY * bytesPerLine) - scrollPosition.lineByteShift;
+        dataPosition = byteOnLine + (cursorLineY * bytesPerLine) - scrollPosition.getLineDataOffset();
         if (dataPosition < 0) {
             dataPosition = 0;
             codeOffset = 0;
@@ -1015,10 +1016,11 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     public void moveRight(int modifiers) {
         CodeAreaCaret caret = codeArea.getCaret();
         CaretPosition caretPosition = caret.getCaretPosition();
-        if (caretPosition.getDataPosition() < data.getDataSize()) {
+        CodeType codeType = codeArea.getCodeType();
+        if (caretPosition.getDataPosition() < codeArea.getDataSize()) {
             if (caret.getSection() == CodeAreaSection.CODE_MATRIX) {
                 int codeOffset = caret.getCodeOffset();
-                if (caretPosition.getDataPosition() < data.getDataSize()) {
+                if (caretPosition.getDataPosition() < codeArea.getDataSize()) {
                     if (codeOffset < codeType.getMaxDigits() - 1) {
                         caret.setCodeOffset(codeOffset + 1);
                     } else {
@@ -1038,6 +1040,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     public void moveLeft(int modifiers) {
         CodeAreaCaret caret = codeArea.getCaret();
         CaretPosition caretPosition = caret.getCaretPosition();
+        CodeType codeType = codeArea.getCodeType();
         if (caret.getSection() == CodeAreaSection.CODE_MATRIX) {
             int codeOffset = caret.getCodeOffset();
             if (codeOffset > 0) {
