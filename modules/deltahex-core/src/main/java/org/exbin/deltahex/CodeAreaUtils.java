@@ -15,12 +15,12 @@
  */
 package org.exbin.deltahex;
 
-import javax.validation.constraints.NotNull;
+import javax.annotation.Nonnull;
 
 /**
  * Hexadecimal editor component utilities.
  *
- * @version 0.1.1 2016/08/31
+ * @version 0.2.0 2017/05/07
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeAreaUtils {
@@ -34,7 +34,7 @@ public class CodeAreaUtils {
      * @param value byte value
      * @return sequence of two hexadecimal chars with upper case
      */
-    @NotNull
+    @Nonnull
     public static char[] byteToHexChars(byte value) {
         char[] result = new char[2];
         byteToHexChars(result, value);
@@ -47,7 +47,7 @@ public class CodeAreaUtils {
      * @param target target char array
      * @param value byte value
      */
-    public static void byteToHexChars(@NotNull char[] target, byte value) {
+    public static void byteToHexChars(@Nonnull char[] target, byte value) {
         target[0] = UPPER_HEX_CODES[(value >> 4) & 15];
         target[1] = UPPER_HEX_CODES[value & 15];
     }
@@ -60,7 +60,7 @@ public class CodeAreaUtils {
      * @param length length of the target sequence
      * @return hexadecimal characters
      */
-    @NotNull
+    @Nonnull
     public static char[] longToHexChars(long value, int length) {
         char[] result = new char[length];
         longToHexChars(result, value, length);
@@ -75,7 +75,7 @@ public class CodeAreaUtils {
      * @param value long value
      * @param length length of the target sequence
      */
-    public static void longToHexChars(@NotNull char[] target, long value, int length) {
+    public static void longToHexChars(@Nonnull char[] target, long value, int length) {
         for (int i = length - 1; i >= 0; i--) {
             target[i] = UPPER_HEX_CODES[(int) (value & 15)];
             value = value >> 4;
@@ -91,7 +91,7 @@ public class CodeAreaUtils {
      * @param targetPosition target position in array of characters
      * @param charCase case type for alphabetical characters
      */
-    public static void byteToCharsCode(byte dataByte, @NotNull CodeType codeType, char[] targetData, int targetPosition, @NotNull HexCharactersCase charCase) {
+    public static void byteToCharsCode(byte dataByte, @Nonnull CodeType codeType, char[] targetData, int targetPosition, @Nonnull HexCharactersCase charCase) {
         char[] hexCharacters = charCase == HexCharactersCase.UPPER ? CodeAreaUtils.UPPER_HEX_CODES : CodeAreaUtils.LOWER_HEX_CODES;
         switch (codeType) {
             case BINARY: {
@@ -143,7 +143,7 @@ public class CodeAreaUtils {
      * @return byte value
      * @throws IllegalArgumentException if code is invalid
      */
-    public static byte stringCodeToByte(@NotNull String code, @NotNull CodeType codeType) {
+    public static byte stringCodeToByte(@Nonnull String code, @Nonnull CodeType codeType) {
         if (code.length() > codeType.getMaxDigits()) {
             throw new IllegalArgumentException("String code is too long");
         }
@@ -241,11 +241,11 @@ public class CodeAreaUtils {
      * @param base target numerical base, supported values are 1 to 16
      * @param lengthLimit length limit
      * @param fillZeros flag if rest of the value should be filled with zeros
-     * @param upperCase upper case for values greater than 9
+     * @param characterCase upper case for values greater than 9
      * @return offset of characters position
      */
-    public static int longToBaseCode(@NotNull char[] target, int targetOffset, long value, int base, int lengthLimit, boolean fillZeros, boolean upperCase) {
-        char[] codes = upperCase ? UPPER_HEX_CODES : LOWER_HEX_CODES;
+    public static int longToBaseCode(@Nonnull char[] target, int targetOffset, long value, int base, int lengthLimit, boolean fillZeros, @Nonnull HexCharactersCase characterCase) {
+        char[] codes = characterCase == HexCharactersCase.UPPER ? UPPER_HEX_CODES : LOWER_HEX_CODES;
         for (int i = lengthLimit - 1; i >= 0; i--) {
             target[targetOffset + i] = codes[(int) (value % base)];
             if (!fillZeros && value == 0) {

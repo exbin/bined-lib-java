@@ -16,7 +16,7 @@
 package org.exbin.deltahex.swing.color;
 
 import java.awt.Color;
-import javax.validation.constraints.NotNull;
+import javax.annotation.Nonnull;
 
 /**
  * Interface for code area color profile.
@@ -31,7 +31,7 @@ public interface CodeAreaColorProfile {
      *
      * @return colors group
      */
-    @NotNull
+    @Nonnull
     CodeAreaColorsGroup getDefaultColors();
 
     /**
@@ -39,7 +39,7 @@ public interface CodeAreaColorProfile {
      *
      * @return colors group
      */
-    @NotNull
+    @Nonnull
     CodeAreaColorsGroup getMainColors();
 
     /**
@@ -47,7 +47,7 @@ public interface CodeAreaColorProfile {
      *
      * @return colors group
      */
-    @NotNull
+    @Nonnull
     CodeAreaColorsGroup getSelectionColors();
 
     /**
@@ -55,7 +55,7 @@ public interface CodeAreaColorProfile {
      *
      * @return colors group
      */
-    @NotNull
+    @Nonnull
     CodeAreaColorsGroup getMirrorSelectionColors();
 
     /**
@@ -63,7 +63,7 @@ public interface CodeAreaColorProfile {
      *
      * @return color
      */
-    @NotNull
+    @Nonnull
     Color getPrimaryColor();
 
     /**
@@ -71,6 +71,6 @@ public interface CodeAreaColorProfile {
      *
      * @return color
      */
-    @NotNull
+    @Nonnull
     Color getPrimaryBackgroundColor();
 }

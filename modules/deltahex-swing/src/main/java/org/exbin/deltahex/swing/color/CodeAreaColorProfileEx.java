@@ -15,7 +15,7 @@
  */
 package org.exbin.deltahex.swing.color;
 
-import javax.validation.constraints.NotNull;
+import javax.annotation.Nonnull;
 
 /**
  * Interface for extended code area color profile.
@@ -30,6 +30,6 @@ public interface CodeAreaColorProfileEx {
      *
      * @return colors group
      */
-    @NotNull
+    @Nonnull
     CodeAreaColorsGroup getAlternateColors();
 }

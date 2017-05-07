@@ -25,7 +25,7 @@ import java.nio.charset.CharsetEncoder;
 import java.nio.charset.CoderResult;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.validation.constraints.NotNull;
+import javax.annotation.Nonnull;
 
 /**
  * Input stream translation class which converts data bytes from input charset
@@ -58,21 +58,24 @@ public class CharsetStreamTranslator extends InputStream {
      * @param source input data source
      * @param bufferSize character buffer size
      */
-    public CharsetStreamTranslator(@NotNull Charset inputCharset, @NotNull Charset outputCharset, @NotNull InputStream source, int bufferSize) {
+    public CharsetStreamTranslator(@Nonnull Charset inputCharset, @Nonnull Charset outputCharset, @Nonnull InputStream source, int bufferSize) {
         if (source == null) {
             throw new NullPointerException("Stream cannot be null");
         }
         this.source = source;
         decoder = inputCharset.newDecoder();
         encoder = outputCharset.newEncoder();
+
         maxInputCharSize = (int) decoder.maxCharsPerByte();
         if (maxInputCharSize < 0) {
             maxInputCharSize = 1;
         }
+
         maxOutputCharSize = (int) encoder.maxBytesPerChar();
         if (maxOutputCharSize < 0) {
             maxOutputCharSize = 1;
         }
+
         inputBuffer = ByteBuffer.allocate(bufferSize);
         // Use limit as mark of used bytes
         inputBuffer.limit(0);
@@ -89,7 +92,7 @@ public class CharsetStreamTranslator extends InputStream {
      * @param outputCharset output charset
      * @param source input data source
      */
-    public CharsetStreamTranslator(@NotNull Charset inputCharset, @NotNull Charset outputCharset, @NotNull InputStream source) {
+    public CharsetStreamTranslator(@Nonnull Charset inputCharset, @Nonnull Charset outputCharset, @Nonnull InputStream source) {
         this(inputCharset, outputCharset, source, BYTE_BUFFER_SIZE);
     }
 

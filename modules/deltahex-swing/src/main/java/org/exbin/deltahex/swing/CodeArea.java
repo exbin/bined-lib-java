@@ -15,7 +15,6 @@
  */
 package org.exbin.deltahex.swing;
 
-import com.sun.istack.internal.NotNull;
 import java.awt.Rectangle;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
@@ -30,6 +29,7 @@ import java.beans.PropertyChangeListener;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Nonnull;
 import javax.swing.JComponent;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
@@ -104,7 +104,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
      * @param commandHandler command handler
      * @param painter painter
      */
-    public CodeArea(@NotNull CodeAreaCommandHandler commandHandler, @NotNull CodeAreaPainter painter) {
+    public CodeArea(@Nonnull CodeAreaCommandHandler commandHandler, @Nonnull CodeAreaPainter painter) {
         super();
         this.commandHandler = commandHandler;
         this.painter = painter;
@@ -186,8 +186,8 @@ public class CodeArea extends JComponent implements CodeAreaControl {
         });
     }
 
-    public @NotNull
-    CodeAreaCaret getCaret() {
+    @Nonnull
+    public CodeAreaCaret getCaret() {
         return caret;
     }
 
@@ -199,16 +199,17 @@ public class CodeArea extends JComponent implements CodeAreaControl {
         return caret.getCodeOffset();
     }
 
-    public @NotNull
-    CodeAreaSection getActiveSection() {
+    @Nonnull
+    public CodeAreaSection getActiveSection() {
         return caret.getSection();
     }
 
+    @Nonnull
     public CaretPosition getCaretPosition() {
         return caret.getCaretPosition();
     }
 
-    public void setCaretPosition(CaretPosition caretPosition) {
+    public void setCaretPosition(@Nonnull CaretPosition caretPosition) {
         caret.setCaretPosition(caretPosition);
         notifyCaretMoved();
     }
@@ -308,7 +309,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
         return painter;
     }
 
-    public void setPainter(@NotNull CodeAreaPainter painter) {
+    public void setPainter(@Nonnull CodeAreaPainter painter) {
         if (painter == null) {
             throw new NullPointerException("Painter cannot be null");
         }
@@ -322,7 +323,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
      *
      * @return charset
      */
-    @NotNull
+    @Nonnull
     public Charset getCharset() {
         return charset;
     }
@@ -332,7 +333,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
      *
      * @param charset charset
      */
-    public void setCharset(@NotNull Charset charset) {
+    public void setCharset(@Nonnull Charset charset) {
         if (charset == null) {
             throw new NullPointerException("Charset cannot be null");
         }
@@ -341,12 +342,12 @@ public class CodeArea extends JComponent implements CodeAreaControl {
         repaint();
     }
 
-    @NotNull
+    @Nonnull
     public ViewMode getViewMode() {
         return viewMode;
     }
 
-    public void setViewMode(@NotNull ViewMode viewMode) {
+    public void setViewMode(@Nonnull ViewMode viewMode) {
         this.viewMode = viewMode;
         if (viewMode == ViewMode.CODE_MATRIX) {
             caret.setSection(CodeAreaSection.CODE_MATRIX);
@@ -369,7 +370,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
         repaint();
     }
 
-    @NotNull
+    @Nonnull
     public EditationMode getEditationMode() {
         return editationMode;
     }
@@ -378,7 +379,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
         return editationMode != EditationMode.READ_ONLY;
     }
 
-    public void setEditationMode(@NotNull EditationMode editationMode) {
+    public void setEditationMode(@Nonnull EditationMode editationMode) {
         boolean changed = editationMode != this.editationMode;
         this.editationMode = editationMode;
         if (changed) {

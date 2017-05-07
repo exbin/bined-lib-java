@@ -19,6 +19,8 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.swing.Timer;
 import org.exbin.deltahex.CaretPosition;
 import org.exbin.deltahex.CodeAreaSection;
@@ -205,6 +207,7 @@ public class CodeAreaCaret {
         }
     }
 
+    @Nonnull
     public CaretPosition getCaretPosition() {
         // TODO: Make immutable / cache?
         return new CaretPosition(caretPosition.getDataPosition(), caretPosition.getCodeOffset());
@@ -221,7 +224,7 @@ public class CodeAreaCaret {
         codeArea.getPainter().paintCursor();
     }
 
-    public void setCaretPosition(CaretPosition caretPosition) {
+    public void setCaretPosition(@Nullable CaretPosition caretPosition) {
         this.caretPosition.setDataPosition(caretPosition == null ? 0 : caretPosition.getDataPosition());
         this.caretPosition.setCodeOffset(caretPosition == null ? 0 : caretPosition.getCodeOffset());
     }

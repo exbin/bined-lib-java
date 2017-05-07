@@ -15,7 +15,7 @@
  */
 package org.exbin.deltahex;
 
-import javax.validation.constraints.NotNull;
+import javax.annotation.Nonnull;
 
 /**
  * Specifies caret position as combination of data position, section and code
@@ -27,6 +27,7 @@ import javax.validation.constraints.NotNull;
 public class CaretPosition {
 
     private long dataPosition = 0;
+    @Nonnull
     private CodeAreaSection section = CodeAreaSection.CODE_MATRIX;
     private int codeOffset = 0;
 
@@ -54,15 +55,16 @@ public class CaretPosition {
         this.codeOffset = codeOffset;
     }
 
-    @NotNull
+    @Nonnull
     public CodeAreaSection getSection() {
         return section;
     }
 
-    public void setSection(@NotNull CodeAreaSection section) {
+    public void setSection(@Nonnull CodeAreaSection section) {
         if (section == null) {
             throw new NullPointerException();
         }
+
         this.section = section;
     }
 
@@ -71,7 +73,7 @@ public class CaretPosition {
      *
      * @param position source position
      */
-    public void setPosition(@NotNull CaretPosition position) {
+    public void setPosition(@Nonnull CaretPosition position) {
         dataPosition = position.dataPosition;
         codeOffset = position.codeOffset;
     }

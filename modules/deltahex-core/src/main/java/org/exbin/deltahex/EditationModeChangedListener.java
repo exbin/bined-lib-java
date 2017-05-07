@@ -15,12 +15,12 @@
  */
 package org.exbin.deltahex;
 
-import javax.validation.constraints.NotNull;
+import javax.annotation.Nonnull;
 
 /**
  * Interface for editation mode change listener.
  *
- * @version 0.1.1 2016/08/31
+ * @version 0.2.0 2017/05/07
  * @author ExBin Project (http://exbin.org)
  */
 public interface EditationModeChangedListener {
@@ -30,5 +30,5 @@ public interface EditationModeChangedListener {
      *
      * @param editationMode new editation mode
      */
-    void editationModeChanged(@NotNull EditationMode editationMode);
+    void editationModeChanged(@Nonnull EditationMode editationMode);
 }

@@ -15,37 +15,33 @@
  */
 package org.exbin.deltahex;
 
-import javax.swing.JComponent;
-import javax.validation.constraints.NotNull;
+import javax.annotation.Nonnull;
 
 /**
  * Line number length.
  *
- * @version 0.2.0 2017/04/02
+ * @version 0.2.0 2017/05/07
  * @author ExBin Project (http://exbin.org)
  */
-public class LineNumberLength extends JComponent {
+public class LineNumberLength {
 
+    @Nonnull
     private LineNumberType lineNumberType = LineNumberType.SPECIFIED;
     private int lineNumberLength = 8;
 
     public LineNumberLength() {
     }
 
-    @NotNull
-    public LineNumberType getSpaceType() {
-        return lineNumberType;
-    }
-
-    @NotNull
+    @Nonnull
     public LineNumberType getLineNumberType() {
         return lineNumberType;
     }
 
-    public void setLineNumberType(@NotNull LineNumberType lineNumberType) {
+    public void setLineNumberType(@Nonnull LineNumberType lineNumberType) {
         if (lineNumberType == null) {
             throw new NullPointerException();
         }
+
         this.lineNumberType = lineNumberType;
     }
 

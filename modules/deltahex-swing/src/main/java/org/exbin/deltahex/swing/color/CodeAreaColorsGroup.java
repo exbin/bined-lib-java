@@ -16,7 +16,7 @@
 package org.exbin.deltahex.swing.color;
 
 import java.awt.Color;
-import javax.validation.constraints.Null;
+import javax.annotation.Nullable;
 
 /**
  * Interface for code area color profile.
@@ -32,6 +32,6 @@ public interface CodeAreaColorsGroup {
      * @param colorType color type
      * @return color
      */
-    @Null
+    @Nullable
     Color getColor(CodeAreaColorType colorType);
 }

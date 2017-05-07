@@ -15,7 +15,7 @@
  */
 package org.exbin.deltahex;
 
-import javax.validation.constraints.NotNull;
+import javax.annotation.Nonnull;
 
 /**
  * Empty space size definition.
@@ -25,28 +25,31 @@ import javax.validation.constraints.NotNull;
  */
 public class CodeAreaSpaceSize {
 
+    @Nonnull
     private SpaceSizeType spaceType = SpaceSizeType.ONE_UNIT;
     private int spaceSize;
 
     public CodeAreaSpaceSize() {
     }
 
-    public CodeAreaSpaceSize(@NotNull SpaceSizeType spaceType) {
+    public CodeAreaSpaceSize(@Nonnull SpaceSizeType spaceType) {
         if (spaceType == null) {
             throw new NullPointerException();
         }
+
         this.spaceType = spaceType;
     }
 
-    @NotNull
+    @Nonnull
     public SpaceSizeType getSpaceType() {
         return spaceType;
     }
 
-    public void setSpaceType(@NotNull SpaceSizeType spaceType) {
+    public void setSpaceType(@Nonnull SpaceSizeType spaceType) {
         if (spaceType == null) {
             throw new IllegalArgumentException("Space type cannot be null");
         }
+
         this.spaceType = spaceType;
     }
 

@@ -15,7 +15,7 @@
  */
 package org.exbin.deltahex;
 
-import javax.validation.constraints.NotNull;
+import javax.annotation.Nonnull;
 
 /**
  * Interface for caret moved listener.
@@ -30,5 +30,5 @@ public interface CaretMovedListener {
      *
      * @param caretPosition caret position
      */
-    void caretMoved(@NotNull CaretPosition caretPosition);
+    void caretMoved(@Nonnull CaretPosition caretPosition);
 }
