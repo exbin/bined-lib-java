@@ -20,7 +20,7 @@ import java.awt.Graphics;
 /**
  * Hexadecimal editor painter interface.
  *
- * @version 0.2.0 2017/04/23
+ * @version 0.2.0 2017/05/08
  * @author ExBin Project (http://exbin.org)
  */
 public interface CodeAreaPainter {
@@ -129,15 +129,31 @@ public interface CodeAreaPainter {
     int getCharacterWidth();
 
     int getPositionByte(int lineCharPosition);
-    
+
+    /**
+     * Returns character position in code area by pixel value.
+     *
+     * @param pixelX position x in pixels
+     * @return character x position
+     */
+    int computeCodeAreaCharacter(int pixelX);
+
+    /**
+     * Returns line position in code area by pixel value.
+     *
+     * @param pixelY position y in pixels
+     * @return character y position
+     */
+    int computeCodeAreaLine(int pixelY);
+
     /**
      * Computes character position for byte code of given offset position.
-     * 
+     *
      * TODO: hide?
      *
      * @param byteOffset byte start offset
      * @return characters position
      */
     public int computeByteCharPos(int byteOffset);
-    
+
 }

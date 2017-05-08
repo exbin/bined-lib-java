@@ -43,7 +43,7 @@ import org.exbin.deltahex.swing.color.CodeAreaColorsGroup;
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2017/05/06
+ * @version 0.2.0 2017/05/08
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaPainter implements CodeAreaPainter {
@@ -59,6 +59,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     protected final CodeArea codeArea;
     private CodeAreaColorProfile colorProfile = null;
 
+    private PaintDataCache paintDataCache;
     private Charset charMappingCharset = null;
     protected final char[] charMapping = new char[256];
     protected Map<Character, Character> unprintableCharactersMapping = null;
@@ -90,7 +91,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         Rectangle compRect = codeArea.getComponentRectangle();
         Rectangle codeRect = codeArea.getCodeSectionRectangle();
         boolean monospaceFont = codeArea.isMonospaceFontDetected();
-        FontMetrics fontMetrics = codeArea.getFontMetrics();
         int codeDigits = codeArea.getCodeType().getMaxDigits();
         if (codeArea.getViewMode() != ViewMode.TEXT_PREVIEW) {
             int charWidth = codeArea.getCharWidth();
@@ -324,11 +324,11 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
     @Override
     public void paintMainArea(Graphics g) {
-        PaintData paintData = new PaintData(codeArea);
+        PaintDataCache paintData = new PaintDataCache(codeArea);
         paintMainArea(g, paintData);
     }
 
-    public void paintMainArea(Graphics g, PaintData paintData) {
+    public void paintMainArea(Graphics g, PaintDataCache paintData) {
         if (paintData.viewMode != ViewMode.TEXT_PREVIEW && codeArea.getBackgroundMode() == CodeArea.BackgroundMode.GRIDDED) {
             g.setColor(paintData.alternateColors.getBackgroundColor());
             int positionX = paintData.codeSectionRect.x - paintData.scrollPosition.getScrollCharOffset() - paintData.scrollPosition.getScrollCharPosition() * paintData.charWidth;
@@ -438,7 +438,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         }
     }
 
-    public void paintLineBackground(Graphics g, int linePositionX, int linePositionY, PaintData paintData) {
+    public void paintLineBackground(Graphics g, int linePositionX, int linePositionY, PaintDataCache paintData) {
         int renderOffset = paintData.visibleCharStart;
         CodeAreaColorType renderColorType = null;
         Color renderColor = null;
@@ -501,7 +501,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         return (color == null && comparedColor == null) || (color != null && color.equals(comparedColor));
     }
 
-    public void paintLineText(Graphics g, int linePositionX, int linePositionY, PaintData paintData) {
+    public void paintLineText(Graphics g, int linePositionX, int linePositionY, PaintDataCache paintData) {
         int positionY = linePositionY + paintData.lineHeight - codeArea.getSubFontSpace();
 
         int renderOffset = paintData.visibleCharStart;
@@ -619,7 +619,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
      * @param paintData cached paint data
      * @return color
      */
-    public Color getPositionColor(int byteOnLine, int charOnLine, Section section, CodeAreaColorType colorType, PaintData paintData) {
+    public Color getPositionColor(int byteOnLine, int charOnLine, Section section, CodeAreaColorType colorType, PaintDataCache paintData) {
         long dataPosition = paintData.lineDataPosition + byteOnLine;
         SelectionRange selection = codeArea.getSelection();
         if (selection != null && dataPosition >= selection.getFirst() && dataPosition <= selection.getLast() && (section == Section.TEXT_PREVIEW || charOnLine < paintData.charsPerCodeArea)) {
@@ -647,7 +647,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
      *
      * Doesn't include character at offset end.
      */
-    private void renderCharSequence(Graphics g, int startOffset, int endOffset, int linePositionX, int positionY, CodeAreaColorType colorType, PaintData paintData) {
+    private void renderCharSequence(Graphics g, int startOffset, int endOffset, int linePositionX, int positionY, CodeAreaColorType colorType, PaintDataCache paintData) {
         if (colorType == CodeAreaColorType.UNPRINTABLES) {
             g.drawChars(paintData.unprintableChars, startOffset, endOffset - startOffset, linePositionX + startOffset * paintData.charWidth, positionY);
         } else {
@@ -660,7 +660,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
      *
      * Doesn't include character at offset end.
      */
-    private void renderBackgroundSequence(Graphics g, int startOffset, int endOffset, int linePositionX, int positionY, PaintData paintData) {
+    private void renderBackgroundSequence(Graphics g, int startOffset, int endOffset, int linePositionX, int positionY, PaintDataCache paintData) {
         g.fillRect(linePositionX + startOffset * paintData.charWidth, positionY, (endOffset - startOffset) * paintData.charWidth, paintData.lineHeight);
     }
 
@@ -1311,7 +1311,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
      *
      * Data copied from CodeArea for faster access + array space for line data.
      */
-    protected static class PaintData {
+    protected static class PaintDataCache {
 
         protected ViewMode viewMode;
         protected CodeArea.BackgroundMode backgroundMode;
@@ -1359,7 +1359,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
          */
         protected char[] unprintableChars;
 
-        public PaintData(CodeArea codeArea) {
+        public PaintDataCache(CodeArea codeArea) {
             viewMode = codeArea.getViewMode();
             backgroundMode = codeArea.getBackgroundMode();
             codeSectionRect = codeArea.getCodeSectionRectangle();

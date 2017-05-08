@@ -910,7 +910,12 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
     @Override
     public void selectAll() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        long dataSize = codeArea.getDataSize();
+        if (dataSize > 0) {
+            codeArea.setSelection(new SelectionRange(0, dataSize - 1));
+            codeArea.notifySelectionChanged();
+            codeArea.repaint();
+        }
     }
 
     @Override
@@ -958,8 +963,8 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         if (mouseX < hexRect.x) {
             mouseX = hexRect.x;
         }
-        int cursorCharX = (mouseX - hexRect.x + scrollPosition.getScrollCharOffset()) / paintDataCache.charWidth + scrollPosition.getScrollCharPosition();
-        long cursorLineY = (me.getY() - hexRect.y + scrollPosition.getScrollLineOffset()) / paintDataCache.lineHeight + scrollPosition.getScrollLinePosition();
+        int cursorCharX = codeArea.computeCodeAreaCharacter(mouseX - hexRect.x + scrollPosition.getScrollCharOffset()) + scrollPosition.getScrollCharPosition();
+        long cursorLineY = codeArea.computeCodeAreaLine(me.getY() - hexRect.y + scrollPosition.getScrollLineOffset()) + scrollPosition.getScrollLinePosition();
         if (cursorLineY < 0) {
             cursorLineY = 0;
         }
