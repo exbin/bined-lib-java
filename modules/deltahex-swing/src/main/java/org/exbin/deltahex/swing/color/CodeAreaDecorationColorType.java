@@ -22,6 +22,7 @@ package org.exbin.deltahex.swing.color;
  * @author ExBin Project (http://exbin.org)
  */
 public enum CodeAreaDecorationColorType implements CodeAreaColorType {
+
     LINE("decoration.line");
 
     private CodeAreaDecorationColorType(String preferencesId) {

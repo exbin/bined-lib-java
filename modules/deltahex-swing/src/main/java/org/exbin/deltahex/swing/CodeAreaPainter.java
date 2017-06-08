@@ -16,6 +16,9 @@
 package org.exbin.deltahex.swing;
 
 import java.awt.Graphics;
+import javax.annotation.Nullable;
+import org.exbin.deltahex.CaretPosition;
+import org.exbin.utils.binary_data.OutOfBoundsException;
 
 /**
  * Hexadecimal editor painter interface.
@@ -154,6 +157,25 @@ public interface CodeAreaPainter {
      * @param byteOffset byte start offset
      * @return characters position
      */
-    public int computeByteCharPos(int byteOffset);
+    int computeByteCharPos(int byteOffset);
 
+    /**
+     * Returns data position for given cursor position.
+     *
+     * @param line index of line starting from 0
+     * @param byteOffset index of byte on starting from 0
+     * @return data position
+     */
+    long cursorPositionToDataPosition(long line, int byteOffset) throws OutOfBoundsException;
+
+    /**
+     * Returns orthogonally closest cursor caret position for given relative
+     * mouse position in current scroll window.
+     *
+     * @param mouseX mouse X position
+     * @param mouseY mouse Y position
+     * @return caret position
+     */
+    @Nullable
+    CaretPosition mousePositionToCaretPosition(long mouseX, long mouseY);
 }

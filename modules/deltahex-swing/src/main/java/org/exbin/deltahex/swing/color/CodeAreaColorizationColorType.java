@@ -22,6 +22,7 @@ package org.exbin.deltahex.swing.color;
  * @author ExBin Project (http://exbin.org)
  */
 public enum CodeAreaColorizationColorType implements CodeAreaColorType {
+
     CONTROL_CODES("colorization.control_codes"),
     UPPER_CODES("colorization.upper_codes");
 

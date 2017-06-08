@@ -22,6 +22,7 @@ package org.exbin.deltahex.swing.color;
  * @author ExBin Project (http://exbin.org)
  */
 public enum CodeAreaUnprintablesColorType implements CodeAreaColorType {
+
     UNPRINTABLE("unprintable.color");
 
     private CodeAreaUnprintablesColorType(String preferencesId) {
