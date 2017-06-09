@@ -43,7 +43,7 @@ import org.exbin.deltahex.swing.color.CodeAreaColorsGroup;
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2017/05/08
+ * @version 0.2.0 2017/06/09
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaPainter implements CodeAreaPainter {
@@ -77,12 +77,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             g.setColor(codeArea.getBackground());
             g.fillRect(compRect.x, compRect.y, compRect.x + compRect.width, codeRect.y - compRect.y);
         }
-
-        // Draw decoration lines
-        g.setColor(codeArea.getDecorationLineColor());
-        int lineX = codeRect.x - 1 - codeArea.getLineNumberSpace() / 2;
-        g.drawLine(lineX, compRect.y, lineX, codeRect.y);
-        g.drawLine(compRect.x, codeRect.y - 1, compRect.x + compRect.width, codeRect.y - 1);
     }
 
     @Override
@@ -109,15 +103,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             }
             int visibleStart = codeArea.computeByteOffsetPerCodeCharOffset(visibleCharStart);
             int visibleEnd = codeArea.computeByteOffsetPerCodeCharOffset(visibleCharEnd - 1) + 1;
-
-            if (codeArea.getBackgroundMode() == CodeArea.BackgroundMode.GRIDDED) {
-                CodeAreaColorsGroup stripColors = codeArea.getAlternateColors();
-                g.setColor(stripColors.getBackgroundColor());
-                int positionX = codeRect.x - scrollPosition.getScrollCharOffset() - scrollPosition.getScrollCharPosition() * charWidth;
-                for (int i = visibleStart / 2; i < visibleEnd / 2; i++) {
-                    g.fillRect(positionX + charWidth * codeArea.computeByteCharPos(i * 2 + 1), compRect.y, charWidth * codeDigits, codeRect.y - compRect.y);
-                }
-            }
 
             g.setColor(codeArea.getForeground());
             char[] headerChars = new char[charsPerLine];
@@ -255,25 +240,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
         CodeAreaScrollPosition scrollPosition = codeArea.getScrollPosition();
         long line = scrollPosition.getScrollLinePosition();
-        long maxDataPosition = codeArea.getDataSize();
-        int maxY = clipBounds.y + clipBounds.height;
-
-        int positionY;
-        long dataPosition = line * bytesPerLine;
-        if (codeArea.getBackgroundMode() == CodeArea.BackgroundMode.STRIPPED || codeArea.getBackgroundMode() == CodeArea.BackgroundMode.GRIDDED) {
-            g.setColor(stripColors.getBackgroundColor());
-
-            positionY = codeRect.y - scrollPosition.getScrollLineOffset();
-            if ((line & 1) == 0) {
-                positionY += lineHeight;
-                dataPosition += bytesPerLine;
-            }
-            while (positionY <= maxY && dataPosition < maxDataPosition) {
-                g.fillRect(startX, positionY, width, lineHeight);
-                positionY += lineHeight * 2;
-                dataPosition += bytesPerLine * 2;
-            }
-        }
     }
 
     @Override
@@ -308,18 +274,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             positionY += lineHeight;
             dataPosition += bytesPerLine;
         }
-
-        // Draw decoration lines
-        int decorationMode = codeArea.getDecorationMode();
-        if ((decorationMode & DECORATION_LINENUM_LINE) > 0) {
-            g.setColor(codeArea.getDecorationLineColor());
-            int lineX = codeRect.x - 1 - codeArea.getLineNumberSpace() / 2;
-            g.drawLine(lineX, compRect.y, lineX, codeRect.y + codeRect.height);
-        }
-        if ((decorationMode & DECORATION_BOX) > 0) {
-            g.setColor(codeArea.getDecorationLineColor());
-            g.drawLine(codeRect.x - 1, codeRect.y - 1, codeRect.x - 1, codeRect.y + codeRect.height);
-        }
     }
 
     @Override
@@ -329,14 +283,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     }
 
     public void paintMainArea(Graphics g, PaintDataCache paintData) {
-        if (paintData.viewMode != ViewMode.TEXT_PREVIEW && codeArea.getBackgroundMode() == CodeArea.BackgroundMode.GRIDDED) {
-            g.setColor(paintData.alternateColors.getBackgroundColor());
-            int positionX = paintData.codeSectionRect.x - paintData.scrollPosition.getScrollCharOffset() - paintData.scrollPosition.getScrollCharPosition() * paintData.charWidth;
-            for (int i = paintData.visibleCodeStart / 2; i < paintData.visibleCodeEnd / 2; i++) {
-                g.fillRect(positionX + paintData.charWidth * codeArea.computeByteCharPos(i * 2 + 1), paintData.codeSectionRect.y, paintData.charWidth * paintData.codeDigits, paintData.codeSectionRect.height);
-            }
-        }
-
         int positionY = paintData.codeSectionRect.y - paintData.scrollPosition.getScrollLineOffset();
         paintData.line = paintData.scrollPosition.getScrollLinePosition();
         int positionX = paintData.codeSectionRect.x - paintData.scrollPosition.getScrollCharPosition() * paintData.charWidth - paintData.scrollPosition.getScrollCharOffset();
@@ -426,16 +372,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             paintData.line++;
             positionY += paintData.lineHeight;
         } while (positionY - paintData.lineHeight < paintData.codeSectionRect.y + paintData.codeSectionRect.height);
-
-        // Draw decoration lines
-        int decorationMode = codeArea.getDecorationMode();
-        if ((decorationMode & CodeArea.DECORATION_PREVIEW_LINE) > 0) {
-            int lineX = codeArea.getPreviewX() - paintData.scrollPosition.getScrollCharPosition() * codeArea.getCharWidth() - paintData.scrollPosition.getScrollCharOffset() - codeArea.getCharWidth() / 2;
-            if (lineX >= paintData.codeSectionRect.x) {
-                g.setColor(codeArea.getDecorationLineColor());
-                g.drawLine(lineX, paintData.codeSectionRect.y, lineX, paintData.codeSectionRect.y + paintData.codeSectionRect.height);
-            }
-        }
     }
 
     public void paintLineBackground(Graphics g, int linePositionX, int linePositionY, PaintDataCache paintData) {
@@ -633,10 +569,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         if (colorType == CodeAreaColorType.BACKGROUND) {
             // Background is prepainted
             return null;
-        }
-        if (((paintData.backgroundMode == CodeArea.BackgroundMode.STRIPPED || paintData.backgroundMode == CodeArea.BackgroundMode.GRIDDED) && (paintData.line & 1) > 0)
-                || (paintData.backgroundMode == CodeArea.BackgroundMode.GRIDDED && ((byteOnLine & 1) > 0)) && section == Section.CODE_MATRIX) {
-            return codeArea.getAlternateColors().getColor(colorType);
         }
 
         return codeArea.getMainColors().getColor(colorType);
@@ -916,11 +848,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             charMapping[i] = new String(new byte[]{(byte) i}, charset).charAt(0);
         }
         charMappingCharset = charset;
-    }
-
-    @Override
-    public void buildColors() {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
