@@ -30,6 +30,7 @@ import java.nio.charset.CharsetEncoder;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import org.exbin.deltahex.CaretPosition;
 import org.exbin.deltahex.CodeAreaSection;
 import org.exbin.deltahex.CodeAreaUtils;
 import org.exbin.deltahex.EditationMode;
@@ -39,6 +40,7 @@ import org.exbin.deltahex.SelectionRange;
 import org.exbin.deltahex.ViewMode;
 import org.exbin.deltahex.swing.color.CodeAreaColorType;
 import org.exbin.deltahex.swing.color.CodeAreaColorsGroup;
+import org.exbin.utils.binary_data.OutOfBoundsException;
 
 /**
  * Code area component default painter.
@@ -1231,6 +1233,31 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         unprintableCharactersMapping.put('\n', Character.toChars(182)[0]);
         // Ideographic Space -> Degree Sign
         unprintableCharactersMapping.put(Character.toChars(127)[0], Character.toChars(176)[0]);
+    }
+
+    @Override
+    public int computeCodeAreaCharacter(int pixelX) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public int computeCodeAreaLine(int pixelY) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public int computeByteCharPos(int byteOffset) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public long cursorPositionToDataPosition(long line, int byteOffset) throws OutOfBoundsException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public CaretPosition mousePositionToCaretPosition(long mouseX, long mouseY) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     /**

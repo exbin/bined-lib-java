@@ -829,53 +829,8 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                         long dataPosition = caret.getDataPosition();
 
                         CodeType codeType = codeArea.getCodeType();
-                        int maxDigits = codeType.getMaxDigits();
-                        String insertedString = (String) insertedData;
                         ByteArrayEditableData data = new ByteArrayEditableData();
-                        byte[] buffer = new byte[CODE_BUFFER_LENGTH];
-                        int bufferUsage = 0;
-                        int offset = 0;
-                        for (int i = 0; i < insertedString.length(); i++) {
-                            char charAt = insertedString.charAt(i);
-                            if ((charAt == ' ' || charAt == '\t') && offset == i) {
-                                offset++;
-                            } else if (charAt == ' ' || charAt == '\t' || charAt == ',' || charAt == ';' || charAt == ':') {
-                                byte value = CodeAreaUtils.stringCodeToByte(insertedString.substring(offset, i), codeType);
-                                if (bufferUsage < CODE_BUFFER_LENGTH) {
-                                    buffer[bufferUsage] = value;
-                                    bufferUsage++;
-                                } else {
-                                    data.insert(data.getDataSize(), buffer, 0, bufferUsage);
-                                    bufferUsage = 0;
-                                }
-                                offset = i + 1;
-                            } else if (i == offset + maxDigits) {
-                                byte value = CodeAreaUtils.stringCodeToByte(insertedString.substring(offset, i), codeType);
-                                if (bufferUsage < CODE_BUFFER_LENGTH) {
-                                    buffer[bufferUsage] = value;
-                                    bufferUsage++;
-                                } else {
-                                    data.insert(data.getDataSize(), buffer, 0, bufferUsage);
-                                    bufferUsage = 0;
-                                }
-                                offset = i;
-                            }
-                        }
-
-                        if (offset < insertedString.length()) {
-                            byte value = CodeAreaUtils.stringCodeToByte(insertedString.substring(offset), codeType);
-                            if (bufferUsage < CODE_BUFFER_LENGTH) {
-                                buffer[bufferUsage] = value;
-                                bufferUsage++;
-                            } else {
-                                data.insert(data.getDataSize(), buffer, 0, bufferUsage);
-                                bufferUsage = 0;
-                            }
-                        }
-
-                        if (bufferUsage > 0) {
-                            data.insert(data.getDataSize(), buffer, 0, bufferUsage);
-                        }
+                        insertHexStringIntoData((String) insertedData, data, codeType);
 
                         long length = data.getDataSize();
                         if (codeArea.getEditationMode() == EditationMode.OVERWRITE) {
@@ -900,6 +855,54 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             }
         } catch (IllegalStateException ex) {
             // Clipboard not available - ignore
+        }
+    }
+
+    private void insertHexStringIntoData(String insertedString, EditableBinaryData data, CodeType codeType) {
+        int maxDigits = codeType.getMaxDigits();
+        byte[] buffer = new byte[CODE_BUFFER_LENGTH];
+        int bufferUsage = 0;
+        int offset = 0;
+        for (int i = 0; i < insertedString.length(); i++) {
+            char charAt = insertedString.charAt(i);
+            if ((charAt == ' ' || charAt == '\t') && offset == i) {
+                offset++;
+            } else if (charAt == ' ' || charAt == '\t' || charAt == ',' || charAt == ';' || charAt == ':') {
+                byte value = CodeAreaUtils.stringCodeToByte(insertedString.substring(offset, i), codeType);
+                if (bufferUsage < CODE_BUFFER_LENGTH) {
+                    buffer[bufferUsage] = value;
+                    bufferUsage++;
+                } else {
+                    data.insert(data.getDataSize(), buffer, 0, bufferUsage);
+                    bufferUsage = 0;
+                }
+                offset = i + 1;
+            } else if (i == offset + maxDigits) {
+                byte value = CodeAreaUtils.stringCodeToByte(insertedString.substring(offset, i), codeType);
+                if (bufferUsage < CODE_BUFFER_LENGTH) {
+                    buffer[bufferUsage] = value;
+                    bufferUsage++;
+                } else {
+                    data.insert(data.getDataSize(), buffer, 0, bufferUsage);
+                    bufferUsage = 0;
+                }
+                offset = i;
+            }
+        }
+
+        if (offset < insertedString.length()) {
+            byte value = CodeAreaUtils.stringCodeToByte(insertedString.substring(offset), codeType);
+            if (bufferUsage < CODE_BUFFER_LENGTH) {
+                buffer[bufferUsage] = value;
+                bufferUsage++;
+            } else {
+                data.insert(data.getDataSize(), buffer, 0, bufferUsage);
+                bufferUsage = 0;
+            }
+        }
+
+        if (bufferUsage > 0) {
+            data.insert(data.getDataSize(), buffer, 0, bufferUsage);
         }
     }
 
