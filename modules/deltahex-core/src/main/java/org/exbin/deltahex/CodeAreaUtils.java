@@ -20,13 +20,16 @@ import javax.annotation.Nonnull;
 /**
  * Hexadecimal editor component utilities.
  *
- * @version 0.2.0 2017/05/07
+ * @version 0.2.0 2017/05/17
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeAreaUtils {
 
     public static final char[] UPPER_HEX_CODES = "0123456789ABCDEF".toCharArray();
     public static final char[] LOWER_HEX_CODES = "0123456789abcdef".toCharArray();
+
+    private CodeAreaUtils() {
+    }
 
     /**
      * Converts byte value to sequence of hexadecimal characters.
