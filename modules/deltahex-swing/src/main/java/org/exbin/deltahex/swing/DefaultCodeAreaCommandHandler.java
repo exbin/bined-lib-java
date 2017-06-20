@@ -978,47 +978,48 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         long dataPosition;
         int codeOffset = 0;
         int byteOnLine;
-        if ((viewMode == ViewMode.DUAL && cursorCharX < paintDataCache.previewStartChar) || viewMode == ViewMode.CODE_MATRIX) {
-            caret.setSection(CodeAreaSection.CODE_MATRIX);
-            byteOnLine = computeByteOffsetPerCodeCharOffset(cursorCharX);
-            if (byteOnLine >= bytesPerLine) {
-                codeOffset = 0;
-            } else {
-                codeOffset = cursorCharX - computeByteCharPos(byteOnLine);
-                if (codeOffset >= codeType.getMaxDigits()) {
-                    codeOffset = codeType.getMaxDigits() - 1;
-                }
-            }
-        } else {
-            caret.setSection(CodeAreaSection.TEXT_PREVIEW);
-            byteOnLine = cursorCharX;
-            if (viewMode == ViewMode.DUAL) {
-                byteOnLine -= paintDataCache.previewStartChar;
-            }
-        }
-
-        if (byteOnLine >= bytesPerLine) {
-            byteOnLine = bytesPerLine - 1;
-        }
-
-        dataPosition = byteOnLine + (cursorLineY * bytesPerLine) - scrollPosition.getLineDataOffset();
-        if (dataPosition < 0) {
-            dataPosition = 0;
-            codeOffset = 0;
-        }
-
-        long dataSize = codeArea.getDataSize();
-        if (dataPosition >= dataSize) {
-            dataPosition = dataSize;
-            codeOffset = 0;
-        }
-
-        CaretPosition caretPosition = caret.getCaretPosition();
-        caret.setCaretPosition(dataPosition, codeOffset);
-        codeArea.notifyCaretMoved();
-        sequenceBreak();
-
-        updateSelection(modifiers, caretPosition);
+        throw new UnsupportedOperationException("Not supported yet.");
+//        if ((viewMode == ViewMode.DUAL && cursorCharX < paintDataCache.previewStartChar) || viewMode == ViewMode.CODE_MATRIX) {
+//            caret.setSection(CodeAreaSection.CODE_MATRIX);
+//            byteOnLine = computeByteOffsetPerCodeCharOffset(cursorCharX);
+//            if (byteOnLine >= bytesPerLine) {
+//                codeOffset = 0;
+//            } else {
+//                codeOffset = cursorCharX - computeByteCharPos(byteOnLine);
+//                if (codeOffset >= codeType.getMaxDigits()) {
+//                    codeOffset = codeType.getMaxDigits() - 1;
+//                }
+//            }
+//        } else {
+//            caret.setSection(CodeAreaSection.TEXT_PREVIEW);
+//            byteOnLine = cursorCharX;
+//            if (viewMode == ViewMode.DUAL) {
+//                byteOnLine -= paintDataCache.previewStartChar;
+//            }
+//        }
+//
+//        if (byteOnLine >= bytesPerLine) {
+//            byteOnLine = bytesPerLine - 1;
+//        }
+//
+//        dataPosition = byteOnLine + (cursorLineY * bytesPerLine) - scrollPosition.getLineDataOffset();
+//        if (dataPosition < 0) {
+//            dataPosition = 0;
+//            codeOffset = 0;
+//        }
+//
+//        long dataSize = codeArea.getDataSize();
+//        if (dataPosition >= dataSize) {
+//            dataPosition = dataSize;
+//            codeOffset = 0;
+//        }
+//
+//        CaretPosition caretPosition = caret.getCaretPosition();
+//        caret.setCaretPosition(dataPosition, codeOffset);
+//        codeArea.notifyCaretMoved();
+//        sequenceBreak();
+//
+//        updateSelection(modifiers, caretPosition);
     }
 
     public void moveRight(int modifiers) {
@@ -1149,10 +1150,11 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
                 char[] targetData = new char[textLength];
                 Arrays.fill(targetData, ' ');
-                for (int i = 0; i < data.getDataSize(); i++) {
-                    CodeAreaUtils.byteToCharsCode(data.getByte(i), codeArea.getCodeType(), targetData, i * charsPerByte, codeArea.getHexCharactersCase());
-                }
-                return new String(targetData);
+                throw new UnsupportedOperationException("Not supported yet.");
+//                for (int i = 0; i < data.getDataSize(); i++) {
+//                    CodeAreaUtils.byteToCharsCode(data.getByte(i), codeArea.getCodeType(), targetData, i * charsPerByte, codeArea.getHexCharactersCase());
+//                }
+//                return new String(targetData);
             }
         }
 

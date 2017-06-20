@@ -39,28 +39,25 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.plaf.basic.BasicBorders;
 import org.exbin.deltahex.CaretMovedListener;
 import org.exbin.deltahex.CaretPosition;
-import org.exbin.deltahex.CodeAreaLineNumberLength;
+import org.exbin.deltahex.CodeAreaSection;
 import org.exbin.deltahex.CodeType;
 import org.exbin.deltahex.DataChangedListener;
-import org.exbin.deltahex.EditationAllowed;
 import org.exbin.deltahex.HexCharactersCase;
 import org.exbin.deltahex.PositionCodeType;
 import org.exbin.deltahex.ScrollBarVisibility;
 import org.exbin.deltahex.ScrollingListener;
-import org.exbin.deltahex.Section;
 import org.exbin.deltahex.SelectionChangedListener;
 import org.exbin.deltahex.SelectionRange;
 import org.exbin.deltahex.ViewMode;
 import org.exbin.deltahex.swing.CodeArea;
 import org.exbin.deltahex.swing.CodeAreaCaret;
 import org.exbin.deltahex.swing.CodeAreaScrollPosition;
-import org.exbin.deltahex.swing.CodeAreaSpace.SpaceType;
 import org.exbin.utils.binary_data.EditableBinaryData;
 
 /**
  * Hexadecimal editor example panel.
  *
- * @version 0.1.3 2017/03/02
+ * @version 0.2.0 2017/06/20
  * @author ExBin Project (http://exbin.org)
  */
 public class DeltaHexExamplePanel extends javax.swing.JPanel {
@@ -78,51 +75,51 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
         splitPane.setRightComponent(codeArea);
         viewModeComboBox.setSelectedIndex(codeArea.getViewMode().ordinal());
         codeTypeComboBox.setSelectedIndex(codeArea.getCodeType().ordinal());
-        positionCodeTypeComboBox.setSelectedIndex(codeArea.getPositionCodeType().ordinal());
+//        positionCodeTypeComboBox.setSelectedIndex(codeArea.getPositionCodeType().ordinal());
         activeSectionComboBox.setSelectedIndex(codeArea.getActiveSection().ordinal());
-        backgroundModeComboBox.setSelectedIndex(codeArea.getBackgroundMode().ordinal());
-        lineNumbersBackgroundCheckBox.setSelected(codeArea.isLineNumberBackground());
-        charRenderingComboBox.setSelectedIndex(codeArea.getCharRenderingMode().ordinal());
-        charAntialiasingComboBox.setSelectedIndex(codeArea.getCharAntialiasingMode().ordinal());
+//        backgroundModeComboBox.setSelectedIndex(codeArea.getBackgroundMode().ordinal());
+//        lineNumbersBackgroundCheckBox.setSelected(codeArea.isLineNumberBackground());
+//        charRenderingComboBox.setSelectedIndex(codeArea.getCharRenderingMode().ordinal());
+//        charAntialiasingComboBox.setSelectedIndex(codeArea.getCharAntialiasingMode().ordinal());
         verticalScrollBarVisibilityComboBox.setSelectedIndex(codeArea.getVerticalScrollBarVisibility().ordinal());
-        verticalScrollModeComboBox.setSelectedIndex(codeArea.getVerticalScrollMode().ordinal());
+//        verticalScrollModeComboBox.setSelectedIndex(codeArea.getVerticalScrollMode().ordinal());
         horizontalScrollBarVisibilityComboBox.setSelectedIndex(codeArea.getHorizontalScrollBarVisibility().ordinal());
-        horizontalScrollModeComboBox.setSelectedIndex(codeArea.getHorizontalScrollMode().ordinal());
-        hexCharactersModeComboBox.setSelectedIndex(codeArea.getHexCharactersCase().ordinal());
-        showLineNumbersCheckBox.setSelected(codeArea.isShowLineNumbers());
-        showHeaderCheckBox.setSelected(codeArea.isShowHeader());
-        showNonprintableCharactersCheckBox.setSelected(codeArea.isShowUnprintableCharacters());
-        showShadowCursorCheckBox.setSelected(codeArea.isShowShadowCursor());
-        editationAllowedComboBox.setSelectedIndex(codeArea.getEditationAllowed().ordinal());
-        wrapLineModeCheckBox.setSelected(codeArea.isWrapMode());
-        lineLengthSpinner.setValue(codeArea.getLineLength());
+//        horizontalScrollModeComboBox.setSelectedIndex(codeArea.getHorizontalScrollMode().ordinal());
+//        hexCharactersModeComboBox.setSelectedIndex(codeArea.getHexCharactersCase().ordinal());
+//        showLineNumbersCheckBox.setSelected(codeArea.isShowLineNumbers());
+//        showHeaderCheckBox.setSelected(codeArea.isShowHeader());
+//        showNonprintableCharactersCheckBox.setSelected(codeArea.isShowUnprintableCharacters());
+//        showShadowCursorCheckBox.setSelected(codeArea.isShowShadowCursor());
+//        editationAllowedComboBox.setSelectedIndex(codeArea.getEditationAllowed().ordinal());
+//        wrapLineModeCheckBox.setSelected(codeArea.isWrapMode());
+//        lineLengthSpinner.setValue(codeArea.getLineLength());
         dataSizeTextField.setText(String.valueOf(codeArea.getDataSize()));
-        headerSpaceComboBox.setSelectedIndex(codeArea.getHeaderSpaceType().ordinal());
-        headerSpaceSpinner.setValue(codeArea.getHeaderSpaceSize());
-        lineNumbersSpaceComboBox.setSelectedIndex(codeArea.getLineNumberSpaceType().ordinal());
-        lineNumbersSpaceSpinner.setValue(codeArea.getLineNumberSpaceSize());
-        lineNumbersLengthComboBox.setSelectedIndex(codeArea.getLineNumberType().ordinal());
-        lineNumbersLengthSpinner.setValue(codeArea.getLineNumberSpecifiedLength());
+//        headerSpaceComboBox.setSelectedIndex(codeArea.getHeaderSpaceType().ordinal());
+//        headerSpaceSpinner.setValue(codeArea.getHeaderSpaceSize());
+//        lineNumbersSpaceComboBox.setSelectedIndex(codeArea.getLineNumberSpaceType().ordinal());
+//        lineNumbersSpaceSpinner.setValue(codeArea.getLineNumberSpaceSize());
+//        lineNumbersLengthComboBox.setSelectedIndex(codeArea.getLineNumberType().ordinal());
+//        lineNumbersLengthSpinner.setValue(codeArea.getLineNumberSpecifiedLength());
         cursorRenderingModeComboBox.setSelectedIndex(codeArea.getCaret().getRenderingMode().ordinal());
         cursorInsertShapeComboBox.setSelectedIndex(codeArea.getCaret().getInsertCursorShape().ordinal());
         cursorOverwriteShapeComboBox.setSelectedIndex(codeArea.getCaret().getOverwriteCursorShape().ordinal());
         cursorBlinkingRateSpinner.setValue(codeArea.getCaret().getBlinkRate());
-        byteGroupSizeSpinner.setValue(codeArea.getByteGroupSize());
-        spaceGroupSizeSpinner.setValue(codeArea.getSpaceGroupSize());
+//        byteGroupSizeSpinner.setValue(codeArea.getByteGroupSize());
+//        spaceGroupSizeSpinner.setValue(codeArea.getSpaceGroupSize());
 
-        int decorationMode = codeArea.getDecorationMode();
-        decoratorHeaderLineCheckBox.setSelected((decorationMode & CodeArea.DECORATION_HEADER_LINE) > 0);
-        decoratorLineNumLineCheckBox.setSelected((decorationMode & CodeArea.DECORATION_LINENUM_LINE) > 0);
-        decoratorSplitLineCheckBox.setSelected((decorationMode & CodeArea.DECORATION_PREVIEW_LINE) > 0);
-        decoratorBoxCheckBox.setSelected((decorationMode & CodeArea.DECORATION_BOX) > 0);
-        codeArea.addCaretMovedListener(new CaretMovedListener() {
-            @Override
-            public void caretMoved(CaretPosition caretPosition, Section section) {
-                positionTextField.setText(String.valueOf(caretPosition.getDataPosition()));
-                codeOffsetTextField.setText(String.valueOf(caretPosition.getCodeOffset()));
-                activeSectionComboBox.setSelectedIndex(section.ordinal());
-            }
-        });
+//        int decorationMode = codeArea.getDecorationMode();
+//        decoratorHeaderLineCheckBox.setSelected((decorationMode & CodeArea.DECORATION_HEADER_LINE) > 0);
+//        decoratorLineNumLineCheckBox.setSelected((decorationMode & CodeArea.DECORATION_LINENUM_LINE) > 0);
+//        decoratorSplitLineCheckBox.setSelected((decorationMode & CodeArea.DECORATION_PREVIEW_LINE) > 0);
+//        decoratorBoxCheckBox.setSelected((decorationMode & CodeArea.DECORATION_BOX) > 0);
+//        codeArea.addCaretMovedListener(new CaretMovedListener() {
+//            @Override
+//            public void caretMoved(CaretPosition caretPosition, CodeAreaSection section) {
+//                positionTextField.setText(String.valueOf(caretPosition.getDataPosition()));
+//                codeOffsetTextField.setText(String.valueOf(caretPosition.getCodeOffset()));
+//                activeSectionComboBox.setSelectedIndex(section.ordinal());
+//            }
+//        });
         codeArea.addSelectionChangedListener(new SelectionChangedListener() {
             @Override
             public void selectionChanged(SelectionRange selection) {
@@ -149,7 +146,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
                 CodeAreaScrollPosition scrollPosition = codeArea.getScrollPosition();
                 verticalPositionTextField.setText(scrollPosition.getScrollLinePosition() + ":" + scrollPosition.getScrollLineOffset());
                 horizontalPositionTextField.setText(scrollPosition.getScrollCharPosition() + ":" + scrollPosition.getScrollCharOffset());
-                horizontalByteShiftTextField.setText(String.valueOf(scrollPosition.getLineByteShift()));
+                horizontalByteShiftTextField.setText(String.valueOf(scrollPosition.getLineDataOffset()));
             }
         });
 
@@ -293,6 +290,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
         charRenderingScrollModeLabel.setText("Character Rendering");
 
         charRenderingComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "AUTO", "LINE_AT_ONCE", "TOP_LEFT", "CENTER" }));
+        charRenderingComboBox.setEnabled(false);
         charRenderingComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 charRenderingComboBoxActionPerformed(evt);
@@ -302,6 +300,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
         charAntialiasingScrollModeLabel.setText("Character Antialiasing");
 
         charAntialiasingComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "OFF", "AUTO", "DEFAULT", "BASIC", "GASP", "LCD_HRGB", "LCD_HBGR", "LCD_VRGB", "LCD_VBGR" }));
+        charAntialiasingComboBox.setEnabled(false);
         charAntialiasingComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 charAntialiasingComboBoxActionPerformed(evt);
@@ -1271,78 +1270,78 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
     }//GEN-LAST:event_viewModeComboBoxActionPerformed
 
     private void lineLengthSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_lineLengthSpinnerStateChanged
-        int value = (Integer) lineLengthSpinner.getValue();
-        if (value > 0) {
-            codeArea.setLineLength(value);
-        }
+//        int value = (Integer) lineLengthSpinner.getValue();
+//        if (value > 0) {
+//            codeArea.setLineLength(value);
+//        }
     }//GEN-LAST:event_lineLengthSpinnerStateChanged
 
     private void charRenderingComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_charRenderingComboBoxActionPerformed
-        codeArea.setCharRenderingMode(CodeArea.CharRenderingMode.values()[charRenderingComboBox.getSelectedIndex()]);
+//        codeArea.setCharRenderingMode(CodeArea.CharRenderingMode.values()[charRenderingComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_charRenderingComboBoxActionPerformed
 
     private void backgroundModeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backgroundModeComboBoxActionPerformed
-        codeArea.setBackgroundMode(CodeArea.BackgroundMode.values()[backgroundModeComboBox.getSelectedIndex()]);
+//        codeArea.setBackgroundMode(CodeArea.BackgroundMode.values()[backgroundModeComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_backgroundModeComboBoxActionPerformed
 
     private void charAntialiasingComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_charAntialiasingComboBoxActionPerformed
-        codeArea.setCharAntialiasingMode(CodeArea.CharAntialiasingMode.values()[charAntialiasingComboBox.getSelectedIndex()]);
+//        codeArea.setCharAntialiasingMode(CodeArea.CharAntialiasingMode.values()[charAntialiasingComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_charAntialiasingComboBoxActionPerformed
 
     private void decoratorLineNumLineCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_decoratorLineNumLineCheckBoxItemStateChanged
-        int decorationMode = codeArea.getDecorationMode();
-        boolean selected = decoratorLineNumLineCheckBox.isSelected();
-        if (((decorationMode & CodeArea.DECORATION_LINENUM_LINE) > 0) != selected) {
-            codeArea.setDecorationMode(decorationMode ^ CodeArea.DECORATION_LINENUM_LINE);
-        }
+//        int decorationMode = codeArea.getDecorationMode();
+//        boolean selected = decoratorLineNumLineCheckBox.isSelected();
+//        if (((decorationMode & CodeArea.DECORATION_LINENUM_LINE) > 0) != selected) {
+//            codeArea.setDecorationMode(decorationMode ^ CodeArea.DECORATION_LINENUM_LINE);
+//        }
     }//GEN-LAST:event_decoratorLineNumLineCheckBoxItemStateChanged
 
     private void decoratorSplitLineCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_decoratorSplitLineCheckBoxItemStateChanged
-        int decorationMode = codeArea.getDecorationMode();
-        boolean selected = decoratorSplitLineCheckBox.isSelected();
-        if (((decorationMode & CodeArea.DECORATION_PREVIEW_LINE) > 0) != selected) {
-            codeArea.setDecorationMode(decorationMode ^ CodeArea.DECORATION_PREVIEW_LINE);
-        }
+//        int decorationMode = codeArea.getDecorationMode();
+//        boolean selected = decoratorSplitLineCheckBox.isSelected();
+//        if (((decorationMode & CodeArea.DECORATION_PREVIEW_LINE) > 0) != selected) {
+//            codeArea.setDecorationMode(decorationMode ^ CodeArea.DECORATION_PREVIEW_LINE);
+//        }
     }//GEN-LAST:event_decoratorSplitLineCheckBoxItemStateChanged
 
     private void decoratorBoxCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_decoratorBoxCheckBoxItemStateChanged
-        int decorationMode = codeArea.getDecorationMode();
-        boolean selected = decoratorBoxCheckBox.isSelected();
-        if (((decorationMode & CodeArea.DECORATION_BOX) > 0) != selected) {
-            codeArea.setDecorationMode(decorationMode ^ CodeArea.DECORATION_BOX);
-        }
+//        int decorationMode = codeArea.getDecorationMode();
+//        boolean selected = decoratorBoxCheckBox.isSelected();
+//        if (((decorationMode & CodeArea.DECORATION_BOX) > 0) != selected) {
+//            codeArea.setDecorationMode(decorationMode ^ CodeArea.DECORATION_BOX);
+//        }
     }//GEN-LAST:event_decoratorBoxCheckBoxItemStateChanged
 
     private void showHeaderCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_showHeaderCheckBoxItemStateChanged
-        codeArea.setShowHeader(showHeaderCheckBox.isSelected());
+//        codeArea.setShowHeader(showHeaderCheckBox.isSelected());
     }//GEN-LAST:event_showHeaderCheckBoxItemStateChanged
 
     private void showLineNumbersCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_showLineNumbersCheckBoxItemStateChanged
-        codeArea.setShowLineNumbers(showLineNumbersCheckBox.isSelected());
+//        codeArea.setShowLineNumbers(showLineNumbersCheckBox.isSelected());
     }//GEN-LAST:event_showLineNumbersCheckBoxItemStateChanged
 
     private void wrapLineModeCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_wrapLineModeCheckBoxItemStateChanged
-        codeArea.setWrapMode(wrapLineModeCheckBox.isSelected());
+//        codeArea.setWrapMode(wrapLineModeCheckBox.isSelected());
     }//GEN-LAST:event_wrapLineModeCheckBoxItemStateChanged
 
     private void lineNumbersBackgroundCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_lineNumbersBackgroundCheckBoxItemStateChanged
-        codeArea.setLineNumberBackground(lineNumbersBackgroundCheckBox.isSelected());
+//        codeArea.setLineNumberBackground(lineNumbersBackgroundCheckBox.isSelected());
     }//GEN-LAST:event_lineNumbersBackgroundCheckBoxItemStateChanged
 
     private void showShadowCursorCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_showShadowCursorCheckBoxItemStateChanged
-        codeArea.setShowShadowCursor(showShadowCursorCheckBox.isSelected());
+//        codeArea.setShowShadowCursor(showShadowCursorCheckBox.isSelected());
     }//GEN-LAST:event_showShadowCursorCheckBoxItemStateChanged
 
     private void hexCharactersModeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hexCharactersModeComboBoxActionPerformed
-        codeArea.setHexCharactersCase(HexCharactersCase.values()[hexCharactersModeComboBox.getSelectedIndex()]);
+//        codeArea.setHexCharactersCase(HexCharactersCase.values()[hexCharactersModeComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_hexCharactersModeComboBoxActionPerformed
 
     private void codeTypeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_codeTypeComboBoxActionPerformed
-        codeArea.setCodeType(CodeType.values()[codeTypeComboBox.getSelectedIndex()]);
+//        codeArea.setCodeType(CodeType.values()[codeTypeComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_codeTypeComboBoxActionPerformed
 
     private void activeSectionComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_activeSectionComboBoxActionPerformed
-        codeArea.setActiveSection(Section.values()[activeSectionComboBox.getSelectedIndex()]);
+//        codeArea.setActiveSection(Section.values()[activeSectionComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_activeSectionComboBoxActionPerformed
 
     private void loadDataButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadDataButtonActionPerformed
@@ -1365,7 +1364,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
                 try (FileInputStream stream = new FileInputStream(selectedFile)) {
                     ((EditableBinaryData) codeArea.getData()).loadFromStream(stream);
                     codeArea.notifyDataChanged();
-                    codeArea.resetPosition();
+//                    codeArea.resetPosition();
                 }
             } catch (IOException ex) {
                 Logger.getLogger(DeltaHexExamplePanel.class.getName()).log(Level.SEVERE, null, ex);
@@ -1404,39 +1403,39 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
     }//GEN-LAST:event_borderTypeComboBoxActionPerformed
 
     private void decoratorHeaderLineCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_decoratorHeaderLineCheckBoxItemStateChanged
-        int decorationMode = codeArea.getDecorationMode();
-        boolean selected = decoratorHeaderLineCheckBox.isSelected();
-        if (((decorationMode & CodeArea.DECORATION_HEADER_LINE) > 0) != selected) {
-            codeArea.setDecorationMode(decorationMode ^ CodeArea.DECORATION_HEADER_LINE);
-        }
+//        int decorationMode = codeArea.getDecorationMode();
+//        boolean selected = decoratorHeaderLineCheckBox.isSelected();
+//        if (((decorationMode & CodeArea.DECORATION_HEADER_LINE) > 0) != selected) {
+//            codeArea.setDecorationMode(decorationMode ^ CodeArea.DECORATION_HEADER_LINE);
+//        }
     }//GEN-LAST:event_decoratorHeaderLineCheckBoxItemStateChanged
 
     private void headerSpaceComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_headerSpaceComboBoxActionPerformed
-        codeArea.setHeaderSpaceType(SpaceType.values()[headerSpaceComboBox.getSelectedIndex()]);
+//        codeArea.setHeaderSpaceType(SpaceType.values()[headerSpaceComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_headerSpaceComboBoxActionPerformed
 
     private void lineNumbersSpaceComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lineNumbersSpaceComboBoxActionPerformed
-        codeArea.setLineNumberSpaceType(SpaceType.values()[lineNumbersSpaceComboBox.getSelectedIndex()]);
+//        codeArea.setLineNumberSpaceType(SpaceType.values()[lineNumbersSpaceComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_lineNumbersSpaceComboBoxActionPerformed
 
     private void lineNumbersLengthComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lineNumbersLengthComboBoxActionPerformed
-        codeArea.setLineNumberType(CodeAreaLineNumberLength.LineNumberType.values()[lineNumbersLengthComboBox.getSelectedIndex()]);
+//        codeArea.setLineNumberType(CodeAreaLineNumberLength.LineNumberType.values()[lineNumbersLengthComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_lineNumbersLengthComboBoxActionPerformed
 
     private void positionCodeTypeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_positionCodeTypeComboBoxActionPerformed
-        codeArea.setPositionCodeType(PositionCodeType.values()[positionCodeTypeComboBox.getSelectedIndex()]);
+//        codeArea.setPositionCodeType(PositionCodeType.values()[positionCodeTypeComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_positionCodeTypeComboBoxActionPerformed
 
     private void headerSpaceSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_headerSpaceSpinnerStateChanged
-        codeArea.setHeaderSpaceSize((Integer) headerSpaceSpinner.getValue());
+//        codeArea.setHeaderSpaceSize((Integer) headerSpaceSpinner.getValue());
     }//GEN-LAST:event_headerSpaceSpinnerStateChanged
 
     private void lineNumbersSpaceSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_lineNumbersSpaceSpinnerStateChanged
-        codeArea.setLineNumberSpaceSize((Integer) lineNumbersSpaceSpinner.getValue());
+//        codeArea.setLineNumberSpaceSize((Integer) lineNumbersSpaceSpinner.getValue());
     }//GEN-LAST:event_lineNumbersSpaceSpinnerStateChanged
 
     private void lineNumbersLengthSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_lineNumbersLengthSpinnerStateChanged
-        codeArea.setLineNumberSpecifiedLength((Integer) lineNumbersLengthSpinner.getValue());
+//        codeArea.setLineNumberSpecifiedLength((Integer) lineNumbersLengthSpinner.getValue());
     }//GEN-LAST:event_lineNumbersLengthSpinnerStateChanged
 
     private void fontFamilyComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fontFamilyComboBoxActionPerformed
@@ -1462,7 +1461,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
     }//GEN-LAST:event_charsetComboBoxActionPerformed
 
     private void editationAllowedComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editationAllowedComboBoxActionPerformed
-        codeArea.setEditationAllowed(EditationAllowed.values()[editationAllowedComboBox.getSelectedIndex()]);
+//        codeArea.setEditationAllowed(EditationAllowed.values()[editationAllowedComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_editationAllowedComboBoxActionPerformed
 
     private void tabbedPaneStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_tabbedPaneStateChanged
@@ -1478,7 +1477,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
     }//GEN-LAST:event_tabbedPaneStateChanged
 
     private void verticalScrollModeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_verticalScrollModeComboBoxActionPerformed
-        codeArea.setVerticalScrollMode(CodeArea.VerticalScrollMode.values()[verticalScrollModeComboBox.getSelectedIndex()]);
+//        codeArea.setVerticalScrollMode(CodeArea.VerticalScrollMode.values()[verticalScrollModeComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_verticalScrollModeComboBoxActionPerformed
 
     private void verticalScrollBarVisibilityComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_verticalScrollBarVisibilityComboBoxActionPerformed
@@ -1486,7 +1485,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
     }//GEN-LAST:event_verticalScrollBarVisibilityComboBoxActionPerformed
 
     private void horizontalScrollModeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_horizontalScrollModeComboBoxActionPerformed
-        codeArea.setHorizontalScrollMode(CodeArea.HorizontalScrollMode.values()[horizontalScrollModeComboBox.getSelectedIndex()]);
+//        codeArea.setHorizontalScrollMode(CodeArea.HorizontalScrollMode.values()[horizontalScrollModeComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_horizontalScrollModeComboBoxActionPerformed
 
     private void horizontalScrollBarVisibilityComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_horizontalScrollBarVisibilityComboBoxActionPerformed
@@ -1510,11 +1509,11 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
     }//GEN-LAST:event_cursorBlinkingRateSpinnerStateChanged
 
     private void byteGroupSizeSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_byteGroupSizeSpinnerStateChanged
-        codeArea.setByteGroupSize((Integer) byteGroupSizeSpinner.getValue());
+//        codeArea.setByteGroupSize((Integer) byteGroupSizeSpinner.getValue());
     }//GEN-LAST:event_byteGroupSizeSpinnerStateChanged
 
     private void spaceGroupSizeSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spaceGroupSizeSpinnerStateChanged
-        codeArea.setSpaceGroupSize((Integer) spaceGroupSizeSpinner.getValue());
+//        codeArea.setSpaceGroupSize((Integer) spaceGroupSizeSpinner.getValue());
     }//GEN-LAST:event_spaceGroupSizeSpinnerStateChanged
 
     private void fontSizeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fontSizeComboBoxActionPerformed
@@ -1524,7 +1523,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
     }//GEN-LAST:event_fontSizeComboBoxActionPerformed
 
     private void showNonprintableCharactersCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_showNonprintableCharactersCheckBoxItemStateChanged
-        codeArea.setShowUnprintableCharacters(showNonprintableCharactersCheckBox.isSelected());
+//        codeArea.setShowUnprintableCharacters(showNonprintableCharactersCheckBox.isSelected());
     }//GEN-LAST:event_showNonprintableCharactersCheckBoxItemStateChanged
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

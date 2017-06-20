@@ -108,6 +108,7 @@
                 <StringItem index="3" value="CENTER"/>
               </StringArray>
             </Property>
+            <Property name="enabled" type="boolean" value="false"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="charRenderingComboBoxActionPerformed"/>
@@ -136,6 +137,7 @@
                 <StringItem index="8" value="LCD_VBGR"/>
               </StringArray>
             </Property>
+            <Property name="enabled" type="boolean" value="false"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="charAntialiasingComboBoxActionPerformed"/>
