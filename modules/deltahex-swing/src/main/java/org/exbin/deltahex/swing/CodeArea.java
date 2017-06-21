@@ -15,6 +15,8 @@
  */
 package org.exbin.deltahex.swing;
 
+import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
@@ -126,6 +128,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
         dataView = new CodeAreaDataView(this);
         scrollPanel.setViewportView(dataView);
 
+        setBackground(Color.GREEN);
         setFocusable(true);
         setFocusTraversalKeysEnabled(false);
         registerControlListeners();
@@ -317,6 +320,12 @@ public class CodeArea extends JComponent implements CodeAreaControl {
         this.painter = painter;
         repaint();
     }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        painter.paintBackground(g);
+    }
+
 
     public int computeCodeAreaCharacter(int pixelX) {
         return painter.computeCodeAreaCharacter(pixelX);
