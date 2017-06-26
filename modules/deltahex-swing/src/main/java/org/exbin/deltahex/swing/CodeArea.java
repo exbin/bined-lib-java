@@ -35,6 +35,7 @@ import javax.annotation.Nonnull;
 import javax.swing.JComponent;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.UIManager;
 import org.exbin.deltahex.CaretMovedListener;
 import org.exbin.deltahex.CaretPosition;
@@ -54,7 +55,7 @@ import org.exbin.utils.binary_data.BinaryData;
 /**
  * Hexadecimal viewer/editor component.
  *
- * @version 0.2.0 2017/05/08
+ * @version 0.2.0 2017/06/26
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeArea extends JComponent implements CodeAreaControl {
@@ -63,8 +64,6 @@ public class CodeArea extends JComponent implements CodeAreaControl {
 
     private CodeAreaCaret caret;
     private SelectionRange selection;
-    private JScrollPane scrollPanel;
-    private CodeAreaDataView dataView;
     private Charset charset = Charset.defaultCharset();
     private boolean handleClipboard = true;
 
@@ -75,6 +74,11 @@ public class CodeArea extends JComponent implements CodeAreaControl {
     private CodeType codeType = CodeType.HEXADECIMAL;
     private EditationMode editationMode = EditationMode.OVERWRITE;
 
+    /**
+     * Scrollbars handling.
+     */
+    private JScrollPane scrollPanel;
+    private CodeAreaDataView dataView;
     private final CodeAreaScrollPosition scrollPosition = new CodeAreaScrollPosition();
     private ScrollBarVisibility verticalScrollBarVisibility = ScrollBarVisibility.IF_NEEDED;
     private VerticalScrollUnit verticalScrollUnit = VerticalScrollUnit.LINE;
@@ -116,13 +120,15 @@ public class CodeArea extends JComponent implements CodeAreaControl {
     private void init() {
         caret = new CodeAreaCaret(this);
         scrollPanel = new JScrollPane();
+        scrollPanel.setBorder(null);
         JScrollBar verticalScrollBar = scrollPanel.getVerticalScrollBar();
         verticalScrollBar.setVisible(false);
         verticalScrollBar.setIgnoreRepaint(true);
         verticalScrollBar.addAdjustmentListener(new VerticalAdjustmentListener());
         JScrollBar horizontalScrollBar = scrollPanel.getHorizontalScrollBar();
-        horizontalScrollBar.setIgnoreRepaint(true);
-        horizontalScrollBar.setVisible(false);
+        scrollPanel.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+        horizontalScrollBar.setIgnoreRepaint(false);
+        horizontalScrollBar.setVisible(true);
         horizontalScrollBar.addAdjustmentListener(new HorizontalAdjustmentListener());
         add(scrollPanel);
         dataView = new CodeAreaDataView(this);
@@ -132,13 +138,14 @@ public class CodeArea extends JComponent implements CodeAreaControl {
         setFocusable(true);
         setFocusTraversalKeysEnabled(false);
         registerControlListeners();
+        scrollPanel.setBounds(20, 20, 80, 80);
     }
 
     private void registerControlListeners() {
         addComponentListener(new ComponentListener() {
             @Override
             public void componentResized(ComponentEvent e) {
-                clearChache();
+                resetPainter();
             }
 
             @Override
@@ -158,6 +165,10 @@ public class CodeArea extends JComponent implements CodeAreaControl {
         addMouseListener(codeAreaMouseListener);
         addMouseMotionListener(codeAreaMouseListener);
         addMouseWheelListener(codeAreaMouseListener);
+        dataView.addMouseListener(codeAreaMouseListener);
+        dataView.addMouseMotionListener(codeAreaMouseListener);
+        dataView.addMouseWheelListener(codeAreaMouseListener);
+        
         addKeyListener(new KeyAdapter() {
             @Override
             public void keyTyped(KeyEvent keyEvent) {
@@ -324,13 +335,13 @@ public class CodeArea extends JComponent implements CodeAreaControl {
     @Override
     protected void paintComponent(Graphics g) {
         painter.paintBackground(g);
+        super.paintComponent(g);
     }
-
 
     public int computeCodeAreaCharacter(int pixelX) {
         return painter.computeCodeAreaCharacter(pixelX);
     }
-    
+
     public int computeCodeAreaLine(int pixelY) {
         return painter.computeCodeAreaLine(pixelY);
     }
@@ -373,7 +384,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
             caret.setSection(CodeAreaSection.TEXT_PREVIEW);
             notifyCaretMoved();
         }
-        clearChache();
+        resetPainter();
         repaint();
     }
 
@@ -383,7 +394,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
 
     public void setCodeType(CodeType codeType) {
         this.codeType = codeType;
-        clearChache();
+        resetPainter();
         repaint();
     }
 
@@ -414,7 +425,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
 
     public void setVerticalScrollBarVisibility(ScrollBarVisibility verticalScrollBarVisibility) {
         this.verticalScrollBarVisibility = verticalScrollBarVisibility;
-        clearChache();
+        resetPainter();
         updateScrollBars();
     }
 
@@ -428,7 +439,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
         if (verticalScrollUnit == VerticalScrollUnit.LINE) {
             scrollPosition.setScrollLineOffset(0);
         }
-        clearChache();
+        resetPainter();
         scrollPosition.setScrollLinePosition(linePosition);
         updateScrollBars();
         notifyScrolled();
@@ -440,7 +451,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
 
     public void setHorizontalScrollBarVisibility(ScrollBarVisibility horizontalScrollBarVisibility) {
         this.horizontalScrollBarVisibility = horizontalScrollBarVisibility;
-        clearChache();
+        resetPainter();
         updateScrollBars();
     }
 
@@ -454,7 +465,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
         if (horizontalScrollUnit == HorizontalScrollUnit.CHARACTER) {
             scrollPosition.setScrollCharOffset(0);
         }
-        clearChache();
+        resetPainter();
         scrollPosition.setScrollCharPosition(bytePosition);
         updateScrollBars();
         notifyScrolled();
@@ -527,7 +538,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
             caret.setCaretPosition(0);
             notifyCaretMoved();
         }
-        clearChache();
+        resetPainter();
 
         for (DataChangedListener dataChangedListener : dataChangedListeners) {
             dataChangedListener.dataChanged();
@@ -580,8 +591,8 @@ public class CodeArea extends JComponent implements CodeAreaControl {
         scrollingListeners.remove(scrollingListener);
     }
 
-    public void clearChache() {
-        painter.clearCache();
+    public void resetPainter() {
+        painter.reset();
     }
 
     public CodeAreaScrollPosition getScrollPosition() {
@@ -590,6 +601,10 @@ public class CodeArea extends JComponent implements CodeAreaControl {
 
     public void revealCursor() {
         revealPosition(caret.getCaretPosition().getDataPosition(), caret.getSection());
+    }
+
+    public void repaintCursor() {
+        painter.repaintCursor();
     }
 
     // TODO move to painter?

@@ -137,7 +137,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                     }
 
                     codeArea.getCaret().resetBlink();
-                    codeArea.clearChache();
+                    codeArea.resetPainter();
                     codeArea.notifyScrolled();
                     codeArea.repaint();
                 } else {
@@ -163,7 +163,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                     }
 
                     codeArea.getCaret().resetBlink();
-                    codeArea.clearChache();
+                    codeArea.resetPainter();
                     codeArea.notifyScrolled();
                     codeArea.repaint();
                 } else {

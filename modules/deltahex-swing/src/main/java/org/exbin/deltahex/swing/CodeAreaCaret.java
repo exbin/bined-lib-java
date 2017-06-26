@@ -221,7 +221,7 @@ public class CodeAreaCaret {
     }
 
     private void cursorRepaint() {
-        codeArea.getPainter().paintCursor();
+        codeArea.repaintCursor();
     }
 
     public void setCaretPosition(@Nullable CaretPosition caretPosition) {

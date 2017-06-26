@@ -25,6 +25,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.Stroke;
+import java.awt.geom.Rectangle2D;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 import java.util.Arrays;
@@ -45,7 +46,7 @@ import org.exbin.utils.binary_data.OutOfBoundsException;
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2017/06/17
+ * @version 0.2.0 2017/06/26
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaPainter implements CodeAreaPainter {
@@ -53,13 +54,24 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     protected final CodeArea codeArea;
     private CodeAreaColorProfile colorProfile = null;
 
-//    private PaintDataCache paintDataCache;
+    private PainterState state = null;
     private Charset charMappingCharset = null;
-//    protected final char[] charMapping = new char[256];
-//    protected Map<Character, Character> unprintableCharactersMapping = null;
+    protected final char[] charMapping = new char[256];
 
     public DefaultCodeAreaPainter(CodeArea codeArea) {
         this.codeArea = codeArea;
+    }
+
+    @Override
+    public void reset() {
+        if (state == null) {
+            state = new PainterState();
+        }
+        
+        state.areaWidth = codeArea.getWidth();
+        state.areaHeight = codeArea.getHeight();
+        state.viewMode = codeArea.getViewMode();
+        state.charset = codeArea.getCharset();
     }
 
 //    @Override
@@ -1246,7 +1258,14 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 //    public CaretPosition mousePositionToCaretPosition(long mouseX, long mouseY) {
 //        throw new UnsupportedOperationException("Not supported yet.");
 //    }
-//
+    private static class PainterState {
+
+        int areaWidth;
+        int areaHeight;
+        ViewMode viewMode;
+        Charset charset;
+    }
+
 //    /**
 //     * Paint cache data structure for single paint operation.
 //     *
@@ -1254,7 +1273,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 //     */
 //    protected static class PaintDataCache {
 //
-//        protected ViewMode viewMode;
 //        protected CodeArea.BackgroundMode backgroundMode;
 //        protected Rectangle codeSectionRect;
 //        protected CodeAreaScrollPosition scrollPosition;
@@ -1265,7 +1283,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 //        protected int byteGroupSize;
 //        protected int spaceGroupSize;
 //        protected int charsPerLine;
-//        protected Charset charset;
 //        protected int maxCharLength;
 //        protected boolean showUnprintableCharacters;
 //        protected CodeArea.CharRenderingMode charRenderingMode;
@@ -1377,110 +1394,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 //                visiblePreviewEnd = -1;
 //            }
 //        }
-//
-//        public ViewMode getViewMode() {
-//            return viewMode;
-//        }
-//
-//        public CodeArea.BackgroundMode getBackgroundMode() {
-//            return backgroundMode;
-//        }
-//
-//        public Rectangle getCodeSectionRect() {
-//            return codeSectionRect;
-//        }
-//
-//        public CodeAreaScrollPosition getScrollPosition() {
-//            return scrollPosition;
-//        }
-//
-//        public CodeArea.CharRenderingMode getCharRenderingMode() {
-//            return charRenderingMode;
-//        }
-//
-//        public int getCharWidth() {
-//            return charWidth;
-//        }
-//
-//        public int getBytesPerLine() {
-//            return bytesPerLine;
-//        }
-//
-//        public int getByteGroupSize() {
-//            return byteGroupSize;
-//        }
-//
-//        public int getSpaceGroupSize() {
-//            return spaceGroupSize;
-//        }
-//
-//        public int getLineHeight() {
-//            return lineHeight;
-//        }
-//
-//        public int getCodeDigits() {
-//            return codeDigits;
-//        }
-//
-//        public int getCharsPerLine() {
-//            return charsPerLine;
-//        }
-//
-//        public Charset getCharset() {
-//            return charset;
-//        }
-//
-//        public int getMaxCharLength() {
-//            return maxCharLength;
-//        }
-//
-//        public int getPreviewCharPos() {
-//            return previewCharPos;
-//        }
-//
-//        public boolean isShowUnprintableCharacters() {
-//            return showUnprintableCharacters;
-//        }
-//
-//        public CodeAreaColorsGroup getMainColors() {
-//            return mainColors;
-//        }
-//
-//        public CodeAreaColorsGroup getStripColors() {
-//            return alternateColors;
-//        }
-//
-//        public long getLineDataPosition() {
-//            return lineDataPosition;
-//        }
-//
-//        public long getLine() {
-//            return line;
-//        }
-//
-//        public int getVisibleCharStart() {
-//            return visibleCharStart;
-//        }
-//
-//        public int getVisibleCharEnd() {
-//            return visibleCharEnd;
-//        }
-//
-//        public int getVisibleCodeStart() {
-//            return visibleCodeStart;
-//        }
-//
-//        public int getVisibleCodeEnd() {
-//            return visibleCodeEnd;
-//        }
-//
-//        public int getVisiblePreviewStart() {
-//            return visiblePreviewStart;
-//        }
-//
-//        public int getVisiblePreviewEnd() {
-//            return visiblePreviewEnd;
-//        }
 //    }
 
     @Override
@@ -1489,30 +1402,17 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     }
 
     @Override
-    public void paintOverall(Graphics g) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public void paintHeader(Graphics g) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
     public void paintBackground(Graphics g) {
-        g.setColor(Color.GREEN);
         Rectangle clipBounds = g.getClipBounds();
-        g.fillRect(clipBounds.x, clipBounds.y, clipBounds.width - 5, clipBounds.height);
-    }
-
-    @Override
-    public void paintLineNumbers(Graphics g) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        g.setColor(Color.WHITE);
+        g.fillRect(clipBounds.x, clipBounds.y, clipBounds.width, clipBounds.height);
     }
 
     @Override
     public void paintMainArea(Graphics g) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        Rectangle clipBounds = g.getClipBounds();
+        g.setColor(Color.LIGHT_GRAY);
+        g.fillRect(clipBounds.x, clipBounds.y, clipBounds.width, clipBounds.height);
     }
 
     @Override
@@ -1529,11 +1429,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     }
 
     @Override
-    public void paintCursor() {
-    }
-
-    @Override
-    public void clearCache() {
+    public void repaintCursor() {
     }
 
     @Override

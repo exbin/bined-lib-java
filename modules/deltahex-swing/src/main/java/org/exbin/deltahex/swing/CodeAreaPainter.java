@@ -23,7 +23,7 @@ import org.exbin.utils.binary_data.OutOfBoundsException;
 /**
  * Hexadecimal editor painter interface.
  *
- * @version 0.2.0 2017/05/08
+ * @version 0.2.0 2017/06/26
  * @author ExBin Project (http://exbin.org)
  */
 public interface CodeAreaPainter {
@@ -36,32 +36,11 @@ public interface CodeAreaPainter {
     boolean isInitialized();
 
     /**
-     * Paints overall hexadecimal editor parts.
-     *
-     * @param g graphics
-     */
-    void paintOverall(Graphics g);
-
-    /**
-     * Paints header for hexadecimal editor.
-     *
-     * @param g graphics
-     */
-    void paintHeader(Graphics g);
-
-    /**
      * Paints background.
      *
      * @param g graphics
      */
     void paintBackground(Graphics g);
-
-    /**
-     * Paints line number.
-     *
-     * @param g graphics
-     */
-    void paintLineNumbers(Graphics g);
 
     /**
      * Paints main hexadecimal data section of the component.
@@ -92,12 +71,12 @@ public interface CodeAreaPainter {
     /**
      * Invokes inmediate paint of cursor.
      */
-    void paintCursor();
+    void repaintCursor();
 
     /**
-     * Notifies that component was modified.
+     * Resets painter state for new painting.
      */
-    void clearCache();
+    void reset();
 
     /**
      * Returns how many bytes is visible in data view rectangle.
