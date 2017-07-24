@@ -36,7 +36,7 @@ public class CodeAreaSwingUtils {
      * Detect if character is in unicode range covered by monospace fonts width
      * exactly full width.
      *
-     * @param character
+     * @param character input character
      * @return true if character is suppose to have exactly full width
      */
     public static boolean isMonospaceFullWidthCharater(char character) {

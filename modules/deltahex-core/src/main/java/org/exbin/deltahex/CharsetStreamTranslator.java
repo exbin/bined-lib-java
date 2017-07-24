@@ -99,8 +99,8 @@ public class CharsetStreamTranslator extends InputStream {
     /**
      * Reads next translated byte from the stream.
      *
-     * @return
-     * @throws IOException
+     * @return next translated byte or -1 if not available
+     * @throws IOException if input/output error
      */
     @Override
     public int read() throws IOException {
