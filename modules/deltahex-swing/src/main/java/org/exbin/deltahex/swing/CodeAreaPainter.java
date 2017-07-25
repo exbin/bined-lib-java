@@ -17,13 +17,14 @@ package org.exbin.deltahex.swing;
 
 import java.awt.Graphics;
 import javax.annotation.Nullable;
+import javax.swing.JScrollPane;
 import org.exbin.deltahex.CaretPosition;
 import org.exbin.utils.binary_data.OutOfBoundsException;
 
 /**
  * Hexadecimal editor painter interface.
  *
- * @version 0.2.0 2017/06/26
+ * @version 0.2.0 2017/07/27
  * @author ExBin Project (http://exbin.org)
  */
 public interface CodeAreaPainter {
@@ -75,8 +76,10 @@ public interface CodeAreaPainter {
 
     /**
      * Resets painter state for new painting.
+     *
+     * @param scrollPanel scroll panel
      */
-    void reset();
+    void reset(JScrollPane scrollPanel);
 
     /**
      * Returns how many bytes is visible in data view rectangle.

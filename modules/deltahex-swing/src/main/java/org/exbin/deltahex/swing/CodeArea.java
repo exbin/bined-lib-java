@@ -55,7 +55,7 @@ import org.exbin.utils.binary_data.BinaryData;
 /**
  * Hexadecimal viewer/editor component.
  *
- * @version 0.2.0 2017/06/26
+ * @version 0.2.0 2017/07/27
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeArea extends JComponent implements CodeAreaControl {
@@ -138,7 +138,6 @@ public class CodeArea extends JComponent implements CodeAreaControl {
         setFocusable(true);
         setFocusTraversalKeysEnabled(false);
         registerControlListeners();
-        scrollPanel.setBounds(20, 20, 80, 80);
     }
 
     private void registerControlListeners() {
@@ -592,7 +591,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
     }
 
     public void resetPainter() {
-        painter.reset();
+        painter.reset(scrollPanel);
     }
 
     public CodeAreaScrollPosition getScrollPosition() {

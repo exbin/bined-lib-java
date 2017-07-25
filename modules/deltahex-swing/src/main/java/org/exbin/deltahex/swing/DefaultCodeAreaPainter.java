@@ -31,6 +31,7 @@ import java.nio.charset.CharsetEncoder;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import javax.swing.JScrollPane;
 import org.exbin.deltahex.CaretPosition;
 import org.exbin.deltahex.CodeAreaSection;
 import org.exbin.deltahex.CodeAreaUtils;
@@ -46,7 +47,7 @@ import org.exbin.utils.binary_data.OutOfBoundsException;
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2017/06/26
+ * @version 0.2.0 2017/07/27
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaPainter implements CodeAreaPainter {
@@ -63,15 +64,19 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     }
 
     @Override
-    public void reset() {
+    public void reset(JScrollPane scrollPanel) {
         if (state == null) {
             state = new PainterState();
         }
-        
+
         state.areaWidth = codeArea.getWidth();
         state.areaHeight = codeArea.getHeight();
+        state.lineNumbersAreaWidth = 20;
+        state.headerAreaHeight = 20;
         state.viewMode = codeArea.getViewMode();
         state.charset = codeArea.getCharset();
+
+        scrollPanel.setBounds(state.lineNumbersAreaWidth, state.headerAreaHeight, state.areaWidth - state.lineNumbersAreaWidth, state.areaHeight - state.headerAreaHeight);
     }
 
 //    @Override
@@ -1264,6 +1269,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         int areaHeight;
         ViewMode viewMode;
         Charset charset;
+        private int lineNumbersAreaWidth;
+        private int headerAreaHeight;
     }
 
 //    /**
@@ -1395,7 +1402,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 //            }
 //        }
 //    }
-
     @Override
     public boolean isInitialized() {
         throw new UnsupportedOperationException("Not supported yet.");
