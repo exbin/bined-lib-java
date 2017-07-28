@@ -333,8 +333,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
 
     @Override
     protected void paintComponent(Graphics g) {
-        painter.paintBackground(g);
-        super.paintComponent(g);
+        painter.paintComponent(g);
     }
 
     public int computeCodeAreaCharacter(int pixelX) {
@@ -603,7 +602,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
     }
 
     public void repaintCursor() {
-        painter.repaintCursor();
+        painter.paintCursor(dataView.getGraphics());
     }
 
     // TODO move to painter?

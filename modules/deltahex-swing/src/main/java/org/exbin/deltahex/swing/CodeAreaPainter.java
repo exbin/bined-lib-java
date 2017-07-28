@@ -16,6 +16,7 @@
 package org.exbin.deltahex.swing;
 
 import java.awt.Graphics;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.swing.JScrollPane;
 import org.exbin.deltahex.CaretPosition;
@@ -24,7 +25,7 @@ import org.exbin.utils.binary_data.OutOfBoundsException;
 /**
  * Hexadecimal editor painter interface.
  *
- * @version 0.2.0 2017/07/27
+ * @version 0.2.0 2017/07/28
  * @author ExBin Project (http://exbin.org)
  */
 public interface CodeAreaPainter {
@@ -37,25 +38,25 @@ public interface CodeAreaPainter {
     boolean isInitialized();
 
     /**
-     * Paints background.
+     * Paints the main component.
      *
      * @param g graphics
      */
-    void paintBackground(Graphics g);
+    void paintComponent(@Nonnull Graphics g);
 
     /**
      * Paints main hexadecimal data section of the component.
      *
      * @param g graphics
      */
-    void paintMainArea(Graphics g);
+    void paintMainArea(@Nonnull Graphics g);
 
     /**
      * Paints cursor symbol.
      *
      * @param g graphics
      */
-    void paintCursor(Graphics g);
+    void paintCursor(@Nonnull Graphics g);
 
     /**
      * Returns previews section position.
@@ -70,16 +71,11 @@ public interface CodeAreaPainter {
     void rebuildColors();
 
     /**
-     * Invokes inmediate paint of cursor.
-     */
-    void repaintCursor();
-
-    /**
      * Resets painter state for new painting.
      *
      * @param scrollPanel scroll panel
      */
-    void reset(JScrollPane scrollPanel);
+    void reset(@Nonnull JScrollPane scrollPanel);
 
     /**
      * Returns how many bytes is visible in data view rectangle.
