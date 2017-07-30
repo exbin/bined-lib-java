@@ -50,7 +50,7 @@ import org.exbin.utils.binary_data.OutOfBoundsException;
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2017/07/28
+ * @version 0.2.0 2017/07/30
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaPainter implements CodeAreaPainter {
@@ -69,7 +69,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     }
 
     @Override
-    public void reset(@Nullable JScrollPane scrollPanel) {
+    public void reset() {
         if (state == null) {
             state = new PainterState();
         }
@@ -85,19 +85,15 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         state.linesPerRect = getLinesPerRectangle();
         state.bytesPerLine = getBytesPerLine();
         state.characterRenderingMode = characterRenderingMode;
-
-        if (scrollPanel != null) {
-            scrollPanel.setBounds(state.lineNumbersAreaWidth, state.headerAreaHeight, state.areaWidth - state.lineNumbersAreaWidth, state.areaHeight - state.headerAreaHeight);
-        }
     }
     
     public void resetFont(@Nonnull Graphics g) {
         if (state == null) {
-            reset(null);
+            reset();
         }
 
-        Font font = null; // TODO getFont();
-        state.fontMetrics = g.getFontMetrics(font);
+        state.font = codeArea.getFont();
+        state.fontMetrics = g.getFontMetrics(state.font);
         /**
          * Use small 'w' character to guess normal font width.
          */
@@ -638,6 +634,12 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     @Override
     public CaretPosition mousePositionToCaretPosition(long mouseX, long mouseY) {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Rectangle getDataViewRect() {
+        // TODO cache
+        return new Rectangle(state.lineNumbersAreaWidth, state.headerAreaHeight, state.areaWidth - state.lineNumbersAreaWidth, state.areaHeight - state.headerAreaHeight);
     }
 
 //    @Override
@@ -1228,6 +1230,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         int linesPerRect;
         CharacterRenderingMode characterRenderingMode;
         int bytesPerLine;
+        Font font;
     }
 
 //    /**

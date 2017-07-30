@@ -590,7 +590,10 @@ public class CodeArea extends JComponent implements CodeAreaControl {
     }
 
     public void resetPainter() {
-        painter.reset(scrollPanel);
+        painter.reset();
+        
+        // TODO on resize only
+        scrollPanel.setBounds(painter.getDataViewRect());
     }
 
     public CodeAreaScrollPosition getScrollPosition() {
