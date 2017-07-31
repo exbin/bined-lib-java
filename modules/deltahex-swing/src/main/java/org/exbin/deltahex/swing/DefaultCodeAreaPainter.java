@@ -86,7 +86,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         state.bytesPerLine = getBytesPerLine();
         state.characterRenderingMode = characterRenderingMode;
     }
-    
+
     public void resetFont(@Nonnull Graphics g) {
         if (state == null) {
             reset();
@@ -121,6 +121,9 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     @Override
     public void paintComponent(Graphics g) {
         if (state == null) {
+            reset();
+        }
+        if (state.font == null) {
             resetFont(g);
         }
 
@@ -135,7 +138,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     }
 
     private void paintLineNumbers(Graphics g) {
-        g.setColor(Color.WHITE);
+        g.setColor(Color.BLACK);
         int lineNumberLength = 8; // TODO codeArea.getLineNumberLength();
         char[] lineNumberCode = new char[lineNumberLength];
         long dataPosition = 0;
@@ -151,11 +154,11 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                     drawCenteredChar(g, lineNumberCode, digitIndex, state.characterWidth, compRect.x + state.characterWidth * digitIndex, positionY);
                 }
             }
-            
+
             positionY += state.lineHeight;
             dataPosition += state.bytesPerLine;
         }
-        
+
 //    @Override
 //    public void paintLineNumbers(Graphics g) {
 //        Rectangle clipBounds = g.getClipBounds();
@@ -193,18 +196,25 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
     @Override
     public void paintMainArea(Graphics g) {
+        if (state == null) {
+            reset();
+        }
+        if (state.font == null) {
+            resetFont(g);
+        }
+
         Rectangle clipBounds = g.getClipBounds();
         g.setColor(Color.LIGHT_GRAY);
         g.fillRect(clipBounds.x, clipBounds.y, clipBounds.width, clipBounds.height);
-        
+
         for (int i = 0; i < 10; i++) {
             paintLine(g, 0, i * getLineHeight(), 0);
         }
     }
-    
-    private void paintLine(Graphics g, int linePositionX, int linePositionY, long dataPosition ) {
+
+    private void paintLine(Graphics g, int linePositionX, int linePositionY, long dataPosition) {
         int positionY = linePositionY + state.lineHeight; // - codeArea.getSubFontSpace();
-        
+
         g.setColor(Color.BLACK);
         g.drawString("Test", linePositionX, positionY);
 
@@ -1214,8 +1224,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 //            notifyScrolled();
 //        }
 //    }
-
     private static class PainterState {
+
         boolean monospaceFont;
         int characterWidth;
 
