@@ -135,6 +135,9 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         Rectangle clipBounds = g.getClipBounds();
         g.setColor(Color.WHITE);
         g.fillRect(clipBounds.x, clipBounds.y, clipBounds.width, clipBounds.height);
+        g.setColor(Color.BLACK);
+        char[] headerCode = "TEST".toCharArray();
+        g.drawChars(headerCode, 0, 4, 100, 0);
     }
 
     private void paintLineNumbers(Graphics g) {
