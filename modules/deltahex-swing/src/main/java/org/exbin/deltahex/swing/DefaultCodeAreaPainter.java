@@ -57,6 +57,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
     protected final CodeArea codeArea;
     private CodeAreaColorProfile colorProfile = null;
+    private int subFontSpace = 3;
 
     private PainterState state = null;
 
@@ -76,15 +77,17 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
         state.areaWidth = codeArea.getWidth();
         state.areaHeight = codeArea.getHeight();
+
         state.lineNumbersAreaWidth = 20;
         state.headerAreaHeight = 20;
+
         state.viewMode = codeArea.getViewMode();
         state.charset = codeArea.getCharset();
-        state.lineHeight = getLineHeight();
-        state.characterWidth = getCharacterWidth();
+        state.characterRenderingMode = characterRenderingMode;
+
         state.linesPerRect = getLinesPerRectangle();
         state.bytesPerLine = getBytesPerLine();
-        state.characterRenderingMode = characterRenderingMode;
+
     }
 
     public void resetFont(@Nonnull Graphics g) {
@@ -104,12 +107,9 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
          * TODO: Is there better way?
          */
         state.monospaceFont = state.characterWidth == state.fontMetrics.charWidth(' ') && state.characterWidth == state.fontMetrics.charWidth('i');
-//        int fontHeight = font.getSize();
-//        if (paintDataCache.charWidth == 0) {
-//            paintDataCache.charWidth = fontHeight;
-//        }
-//        paintDataCache.lineHeight = fontHeight + subFontSpace;
-//        computePaintData();
+        int fontSize = state.font.getSize();
+        state.characterWidth = fontSize;
+        state.lineHeight = fontSize + subFontSpace;
     }
 
     @Override
