@@ -50,7 +50,7 @@ import org.exbin.utils.binary_data.OutOfBoundsException;
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2017/07/30
+ * @version 0.2.0 2017/08/04
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaPainter implements CodeAreaPainter {
@@ -77,9 +77,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
         state.areaWidth = codeArea.getWidth();
         state.areaHeight = codeArea.getHeight();
-
-        state.lineNumbersAreaWidth = 20;
-        state.headerAreaHeight = 20;
 
         state.viewMode = codeArea.getViewMode();
         state.charset = codeArea.getCharset();
@@ -108,8 +105,10 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
          */
         state.monospaceFont = state.characterWidth == state.fontMetrics.charWidth(' ') && state.characterWidth == state.fontMetrics.charWidth('i');
         int fontSize = state.font.getSize();
-        state.characterWidth = fontSize;
         state.lineHeight = fontSize + subFontSpace;
+
+        state.lineNumbersAreaWidth = 20;
+        state.headerAreaHeight = 20;
     }
 
     @Override
