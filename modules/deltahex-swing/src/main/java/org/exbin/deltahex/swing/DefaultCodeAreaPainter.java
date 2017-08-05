@@ -107,7 +107,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         int fontSize = state.font.getSize();
         state.lineHeight = fontSize + subFontSpace;
 
-        state.lineNumbersAreaWidth = 20;
+        state.lineNumbersLength = getLineNumberLength();
+        state.lineNumbersAreaWidth = state.characterWidth * (state.lineNumbersLength + 1);
         state.headerAreaHeight = 20;
     }
 
@@ -141,11 +142,11 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
     private void paintLineNumbers(Graphics g) {
         g.setColor(Color.BLACK);
-        int lineNumberLength = 8; // TODO codeArea.getLineNumberLength();
+        int lineNumberLength = state.lineNumbersLength;
         char[] lineNumberCode = new char[lineNumberLength];
         long dataPosition = 0;
         Rectangle compRect = new Rectangle();
-        int positionY = 16; //codeRect.y - codeArea.getSubFontSpace() - scrollPosition.getScrollLineOffset() + codeArea.getLineHeight();
+        int positionY = 32; //codeRect.y - codeArea.getSubFontSpace() - scrollPosition.getScrollLineOffset() + codeArea.getLineHeight();
 
         for (int line = 0; line < state.linesPerRect; line++) {
             CodeAreaUtils.longToBaseCode(lineNumberCode, 0, dataPosition < 0 ? 0 : dataPosition, 16, lineNumberLength, true, HexCharactersCase.UPPER);
@@ -595,7 +596,11 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
     @Override
     public int getLinesPerRectangle() {
-        return 16;
+        if (state.lineHeight == 0) {
+            return 0;
+        }
+
+        return state.areaHeight / state.lineHeight + 1;
     }
 
     @Override
@@ -652,6 +657,10 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     public Rectangle getDataViewRect() {
         // TODO cache
         return new Rectangle(state.lineNumbersAreaWidth, state.headerAreaHeight, state.areaWidth - state.lineNumbersAreaWidth, state.areaHeight - state.headerAreaHeight);
+    }
+
+    private int getLineNumberLength() {
+        return 8;
     }
 
 //    @Override
@@ -1235,6 +1244,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         int areaHeight;
         ViewMode viewMode;
         Charset charset;
+        int lineNumbersLength;
         int lineNumbersAreaWidth;
         int headerAreaHeight;
         int lineHeight;
