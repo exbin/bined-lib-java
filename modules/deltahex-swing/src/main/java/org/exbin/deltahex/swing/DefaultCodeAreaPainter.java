@@ -127,20 +127,27 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             resetFont(g);
         }
 
+        paintOutsiteArea(g);
         paintHeader(g);
         paintLineNumbers(g);
     }
 
-    private void paintHeader(Graphics g) {
+    public void paintOutsiteArea(Graphics g) {
+    }
+
+    public void paintHeader(Graphics g) {
         Rectangle clipBounds = g.getClipBounds();
+        Rectangle headerArea = new Rectangle(state.lineNumbersAreaWidth, 0, state.areaWidth - state.lineNumbersAreaWidth, state.headerAreaHeight);
+        g.setClip(headerArea.intersection(clipBounds));
         g.setColor(Color.WHITE);
-        g.fillRect(clipBounds.x, clipBounds.y, clipBounds.width, clipBounds.height);
+        g.fillRect(headerArea.x, headerArea.y, headerArea.width, headerArea.height);
         g.setColor(Color.BLACK);
         char[] headerCode = "TEST".toCharArray();
         g.drawChars(headerCode, 0, 4, 100, 0);
+        g.setClip(clipBounds);
     }
 
-    private void paintLineNumbers(Graphics g) {
+    public void paintLineNumbers(Graphics g) {
         g.setColor(Color.BLACK);
         int lineNumberLength = state.lineNumbersLength;
         char[] lineNumberCode = new char[lineNumberLength];
