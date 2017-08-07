@@ -137,7 +137,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
     public void paintHeader(Graphics g) {
         Rectangle clipBounds = g.getClipBounds();
-        Rectangle headerArea = new Rectangle(state.lineNumbersAreaWidth, 0, state.areaWidth - state.lineNumbersAreaWidth, state.headerAreaHeight);
+        Rectangle headerArea = new Rectangle(state.lineNumbersAreaWidth, 0, state.areaWidth - state.lineNumbersAreaWidth, state.headerAreaHeight); // TODO minus scrollbar width
         g.setClip(headerArea.intersection(clipBounds));
         g.setColor(Color.WHITE);
         g.fillRect(headerArea.x, headerArea.y, headerArea.width, headerArea.height);
@@ -148,6 +148,9 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     }
 
     public void paintLineNumbers(Graphics g) {
+        Rectangle clipBounds = g.getClipBounds();
+        Rectangle lineNumbersArea = new Rectangle(0, state.headerAreaHeight, state.lineNumbersAreaWidth, state.areaHeight - state.headerAreaHeight); // TODO minus scrollbar height
+        g.setClip(lineNumbersArea.intersection(clipBounds));
         g.setColor(Color.BLACK);
         int lineNumberLength = state.lineNumbersLength;
         char[] lineNumberCode = new char[lineNumberLength];
@@ -168,6 +171,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             positionY += state.lineHeight;
             dataPosition += state.bytesPerLine;
         }
+        g.setClip(clipBounds);
 
 //    @Override
 //    public void paintLineNumbers(Graphics g) {
