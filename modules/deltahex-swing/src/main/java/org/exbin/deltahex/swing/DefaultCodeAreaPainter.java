@@ -151,13 +151,20 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         Rectangle clipBounds = g.getClipBounds();
         Rectangle lineNumbersArea = new Rectangle(0, state.headerAreaHeight, state.lineNumbersAreaWidth, state.areaHeight - state.headerAreaHeight); // TODO minus scrollbar height
         g.setClip(lineNumbersArea.intersection(clipBounds));
-        g.setColor(Color.BLACK);
         int lineNumberLength = state.lineNumbersLength;
         char[] lineNumberCode = new char[lineNumberLength];
         long dataPosition = 0;
         Rectangle compRect = new Rectangle();
-        int positionY = 32; //codeRect.y - codeArea.getSubFontSpace() - scrollPosition.getScrollLineOffset() + codeArea.getLineHeight();
 
+        int positionY = state.headerAreaHeight; //codeRect.y - codeArea.getSubFontSpace() - scrollPosition.getScrollLineOffset() + codeArea.getLineHeight();
+        g.setColor(Color.LIGHT_GRAY);
+        for (int line = 0; line < state.linesPerRect; line += 2) {
+            g.fillRect(0, positionY, state.lineNumbersAreaWidth - 1, positionY + state.lineHeight - 1);
+            positionY += state.lineHeight;
+        }
+
+        positionY = state.headerAreaHeight;
+        g.setColor(Color.BLACK);
         for (int line = 0; line < state.linesPerRect; line++) {
             CodeAreaUtils.longToBaseCode(lineNumberCode, 0, dataPosition < 0 ? 0 : dataPosition, 16, lineNumberLength, true, HexCharactersCase.UPPER);
             if (state.characterRenderingMode == CharacterRenderingMode.LINE_AT_ONCE) {
