@@ -159,11 +159,11 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         int positionY = state.headerAreaHeight; //codeRect.y - codeArea.getSubFontSpace() - scrollPosition.getScrollLineOffset() + codeArea.getLineHeight();
         g.setColor(Color.LIGHT_GRAY);
         for (int line = 0; line < state.linesPerRect; line += 2) {
-            g.fillRect(0, positionY, state.lineNumbersAreaWidth - 1, positionY + state.lineHeight - 1);
-            positionY += state.lineHeight;
+            g.fillRect(0, positionY, state.lineNumbersAreaWidth - 1, state.lineHeight);
+            positionY += state.lineHeight * 2;
         }
 
-        positionY = state.headerAreaHeight;
+        positionY = state.headerAreaHeight + state.lineHeight - 3;
         g.setColor(Color.BLACK);
         for (int line = 0; line < state.linesPerRect; line++) {
             CodeAreaUtils.longToBaseCode(lineNumberCode, 0, dataPosition < 0 ? 0 : dataPosition, 16, lineNumberLength, true, HexCharactersCase.UPPER);
