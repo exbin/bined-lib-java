@@ -727,8 +727,12 @@ public class CodeArea extends JComponent implements CodeAreaControl {
             if (horizontalScrollUnit == HorizontalScrollUnit.CHARACTER) {
                 scrollPosition.setScrollCharPosition(scrollPanel.getHorizontalScrollBar().getValue());
             } else {
-                scrollPosition.setScrollCharPosition(scrollPanel.getHorizontalScrollBar().getValue() / painter.getCharacterWidth());
-                scrollPosition.setScrollCharOffset(scrollPanel.getHorizontalScrollBar().getValue() % painter.getCharacterWidth());
+                int characterWidth = painter.getCharacterWidth();
+                if (characterWidth > 0) {
+                    int horizontalScroll = scrollPanel.getHorizontalScrollBar().getValue();
+                    scrollPosition.setScrollCharPosition(horizontalScroll / characterWidth);
+                    scrollPosition.setScrollCharOffset(horizontalScroll % characterWidth);
+                }
             }
             repaint();
             notifyScrolled();

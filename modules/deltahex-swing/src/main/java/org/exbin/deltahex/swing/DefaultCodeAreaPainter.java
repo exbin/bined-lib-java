@@ -50,7 +50,7 @@ import org.exbin.utils.binary_data.OutOfBoundsException;
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2017/08/04
+ * @version 0.2.0 2017/08/10
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaPainter implements CodeAreaPainter {
@@ -108,8 +108,14 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         state.lineHeight = fontSize + subFontSpace;
 
         state.lineNumbersLength = getLineNumberLength();
+        updateSizes();
+    }
+    
+    private void updateSizes() {
         state.lineNumbersAreaWidth = state.characterWidth * (state.lineNumbersLength + 1);
         state.headerAreaHeight = 20;
+        state.mainAreaWidth = state.areaWidth - state.lineNumbersAreaWidth;
+        state.mainAreaHeight = state.areaHeight - state.headerAreaHeight;
     }
 
     @Override
@@ -224,13 +230,38 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             resetFont(g);
         }
 
+        paintLines(g);
+    }
+    
+    private void paintLines(Graphics g) {
         Rectangle clipBounds = g.getClipBounds();
         g.setColor(Color.LIGHT_GRAY);
         g.fillRect(clipBounds.x, clipBounds.y, clipBounds.width, clipBounds.height);
 
-        for (int i = 0; i < 10; i++) {
-            paintLine(g, 0, i * getLineHeight(), 0);
+        int positionY = state.headerAreaHeight; //codeRect.y - codeArea.getSubFontSpace() - scrollPosition.getScrollLineOffset() + codeArea.getLineHeight();
+        g.setColor(Color.RED);
+        for (int line = 0; line < state.linesPerRect; line += 2) {
+            g.fillRect(0, positionY, state.mainAreaWidth - 1, state.lineHeight);
+            positionY += state.lineHeight * 2;
         }
+
+        positionY = state.headerAreaHeight + state.lineHeight - 3;
+        g.setColor(Color.BLACK);
+        for (int line = 0; line < state.linesPerRect; line++) {
+            // paintLine(g, 0, positionY, 0);
+//            CodeAreaUtils.longToBaseCode(lineNumberCode, 0, dataPosition < 0 ? 0 : dataPosition, 16, lineNumberLength, true, HexCharactersCase.UPPER);
+//            if (state.characterRenderingMode == CharacterRenderingMode.LINE_AT_ONCE) {
+//                g.drawChars(lineNumberCode, 0, lineNumberLength, compRect.x, positionY);
+//            } else {
+//                for (int digitIndex = 0; digitIndex < lineNumberLength; digitIndex++) {
+//                    drawCenteredChar(g, lineNumberCode, digitIndex, state.characterWidth, compRect.x + state.characterWidth * digitIndex, positionY);
+//                }
+//            }
+
+            positionY += state.lineHeight;
+//            dataPosition += state.bytesPerLine;
+        }
+        
     }
 
     private void paintLine(Graphics g, int linePositionX, int linePositionY, long dataPosition) {
@@ -633,12 +664,12 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
     @Override
     public int getLineHeight() {
-        return 16;
+        return state.lineHeight;
     }
 
     @Override
     public int getCharacterWidth() {
-        return 16;
+        return state.characterWidth;
     }
 
     @Override
@@ -1260,6 +1291,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
         int areaWidth;
         int areaHeight;
+        int mainAreaWidth;
+        int mainAreaHeight;
         ViewMode viewMode;
         Charset charset;
         int lineNumbersLength;
