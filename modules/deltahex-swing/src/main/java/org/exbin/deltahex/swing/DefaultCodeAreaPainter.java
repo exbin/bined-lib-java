@@ -139,14 +139,21 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     }
 
     public void paintOutsiteArea(Graphics g) {
+        g.setColor(Color.BLACK);
+        g.fillRect(0, state.headerAreaHeight - 1, state.lineNumbersAreaWidth, 1);
     }
 
     public void paintHeader(Graphics g) {
         Rectangle clipBounds = g.getClipBounds();
         Rectangle headerArea = new Rectangle(state.lineNumbersAreaWidth, 0, state.areaWidth - state.lineNumbersAreaWidth, state.headerAreaHeight); // TODO minus scrollbar width
         g.setClip(headerArea.intersection(clipBounds));
+
         g.setColor(Color.WHITE);
         g.fillRect(headerArea.x, headerArea.y, headerArea.width, headerArea.height);
+
+        g.setColor(Color.BLACK);
+        g.fillRect(0, state.headerAreaHeight - 1, state.areaWidth, 1);
+
         g.setColor(Color.BLACK);
         char[] headerCode = "TEST".toCharArray();
         g.drawChars(headerCode, 0, 4, 100, 0);
@@ -162,10 +169,10 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         long dataPosition = 0;
         Rectangle compRect = new Rectangle();
 
-        int positionY = state.headerAreaHeight; //codeRect.y - codeArea.getSubFontSpace() - scrollPosition.getScrollLineOffset() + codeArea.getLineHeight();
+        int positionY = state.headerAreaHeight + state.lineHeight; //codeRect.y - codeArea.getSubFontSpace() - scrollPosition.getScrollLineOffset() + codeArea.getLineHeight();
         g.setColor(Color.LIGHT_GRAY);
         for (int line = 0; line < state.linesPerRect; line += 2) {
-            g.fillRect(0, positionY, state.lineNumbersAreaWidth - 1, state.lineHeight);
+            g.fillRect(0, positionY, state.lineNumbersAreaWidth, state.lineHeight);
             positionY += state.lineHeight * 2;
         }
 
@@ -235,13 +242,13 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     
     private void paintLines(Graphics g) {
         Rectangle clipBounds = g.getClipBounds();
-        g.setColor(Color.LIGHT_GRAY);
+        g.setColor(Color.WHITE);
         g.fillRect(clipBounds.x, clipBounds.y, clipBounds.width, clipBounds.height);
 
-        int positionY = state.headerAreaHeight; //codeRect.y - codeArea.getSubFontSpace() - scrollPosition.getScrollLineOffset() + codeArea.getLineHeight();
-        g.setColor(Color.RED);
+        int positionY = state.lineHeight; //codeRect.y - codeArea.getSubFontSpace() - scrollPosition.getScrollLineOffset() + codeArea.getLineHeight();
+        g.setColor(Color.LIGHT_GRAY);
         for (int line = 0; line < state.linesPerRect; line += 2) {
-            g.fillRect(0, positionY, state.mainAreaWidth - 1, state.lineHeight);
+            g.fillRect(0, positionY, state.mainAreaWidth, state.lineHeight);
             positionY += state.lineHeight * 2;
         }
 
