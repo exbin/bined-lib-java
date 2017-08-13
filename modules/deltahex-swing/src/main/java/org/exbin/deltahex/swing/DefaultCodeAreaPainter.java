@@ -50,7 +50,7 @@ import org.exbin.utils.binary_data.OutOfBoundsException;
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2017/08/10
+ * @version 0.2.0 2017/08/13
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaPainter implements CodeAreaPainter {
@@ -252,10 +252,11 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             positionY += state.lineHeight * 2;
         }
 
-        positionY = state.headerAreaHeight + state.lineHeight - 3;
+        long dataPosition = 0;
+        positionY = state.lineHeight - 3;
         g.setColor(Color.BLACK);
         for (int line = 0; line < state.linesPerRect; line++) {
-            // paintLine(g, 0, positionY, 0);
+            paintLine(g, 0, positionY, dataPosition);
 //            CodeAreaUtils.longToBaseCode(lineNumberCode, 0, dataPosition < 0 ? 0 : dataPosition, 16, lineNumberLength, true, HexCharactersCase.UPPER);
 //            if (state.characterRenderingMode == CharacterRenderingMode.LINE_AT_ONCE) {
 //                g.drawChars(lineNumberCode, 0, lineNumberLength, compRect.x, positionY);
@@ -266,13 +267,13 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 //            }
 
             positionY += state.lineHeight;
-//            dataPosition += state.bytesPerLine;
+            dataPosition += state.bytesPerLine;
         }
         
     }
 
     private void paintLine(Graphics g, int linePositionX, int linePositionY, long dataPosition) {
-        int positionY = linePositionY + state.lineHeight; // - codeArea.getSubFontSpace();
+        int positionY = linePositionY; // - codeArea.getSubFontSpace();
 
         g.setColor(Color.BLACK);
         g.drawString("Test", linePositionX, positionY);
