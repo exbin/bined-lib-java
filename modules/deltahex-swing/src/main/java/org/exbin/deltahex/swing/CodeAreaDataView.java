@@ -18,6 +18,7 @@ package org.exbin.deltahex.swing;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Rectangle;
 import javax.swing.JComponent;
 
 /**
@@ -38,6 +39,10 @@ public class CodeAreaDataView extends JComponent {
     private void init() {
         setBackground(Color.RED);
         setBorder(null);
+        setLayout(null);
+        
+        Dimension dimension = new Dimension(5000, 5000);
+        setPreferredSize(dimension);
     }
 
     @Override

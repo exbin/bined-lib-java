@@ -276,7 +276,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         int positionY = linePositionY; // - codeArea.getSubFontSpace();
 
         g.setColor(Color.BLACK);
-        g.drawString("Test", linePositionX, positionY);
+        Rectangle dataViewRectangle = codeArea.getDataViewRectangle();
+        g.drawString("[" + String.valueOf(dataViewRectangle.x) + "," + String.valueOf(dataViewRectangle.y) + "," + String.valueOf(dataViewRectangle.width) + "," + String.valueOf(dataViewRectangle.height) + "]", linePositionX, positionY);
 
 //    public void paintLineText(Graphics g, int linePositionX, int linePositionY, PaintDataCache paintData) {
 //        int positionY = linePositionY + paintData.lineHeight - codeArea.getSubFontSpace();

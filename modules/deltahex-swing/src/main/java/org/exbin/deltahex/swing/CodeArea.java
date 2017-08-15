@@ -35,7 +35,6 @@ import javax.annotation.Nonnull;
 import javax.swing.JComponent;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
-import javax.swing.ScrollPaneConstants;
 import javax.swing.UIManager;
 import org.exbin.deltahex.CaretMovedListener;
 import org.exbin.deltahex.CaretPosition;
@@ -126,7 +125,6 @@ public class CodeArea extends JComponent implements CodeAreaControl {
         verticalScrollBar.setIgnoreRepaint(true);
         verticalScrollBar.addAdjustmentListener(new VerticalAdjustmentListener());
         JScrollBar horizontalScrollBar = scrollPanel.getHorizontalScrollBar();
-        scrollPanel.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
         horizontalScrollBar.setIgnoreRepaint(false);
         horizontalScrollBar.setVisible(true);
         horizontalScrollBar.addAdjustmentListener(new HorizontalAdjustmentListener());
@@ -594,6 +592,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
         
         // TODO on resize only
         scrollPanel.setBounds(painter.getDataViewRect());
+        scrollPanel.revalidate();
     }
 
     public CodeAreaScrollPosition getScrollPosition() {
