@@ -15,7 +15,7 @@
  */
 package org.exbin.deltahex.delta.swing;
 
-import org.exbin.deltahex.highlight.swing.HighlightCodeAreaPainter;
+//import org.exbin.deltahex.highlight.swing.HighlightCodeAreaPainter;
 import org.exbin.deltahex.swing.CodeArea;
 import org.junit.Test;
 
@@ -33,7 +33,7 @@ public class HighlightCodeAreaPainterTest {
     @Test
     public void testSetPainter() {
         CodeArea codeArea = new CodeArea();
-        HighlightCodeAreaPainter painter = new HighlightCodeAreaPainter(codeArea);
-        codeArea.setPainter(painter);
+//        HighlightCodeAreaPainter painter = new HighlightCodeAreaPainter(codeArea);
+//        codeArea.setPainter(painter);
     }
 }

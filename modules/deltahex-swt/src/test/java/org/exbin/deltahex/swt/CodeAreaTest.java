@@ -40,7 +40,7 @@ public class CodeAreaTest {
 
     public CodeAreaTest() {
     }
-
+/*
     public void testDeleteAll() {
         CodeArea codeArea = new CodeArea(null, 0);
         codeArea.setData(getSampleData(SAMPLE_ALLBYTES));
@@ -86,7 +86,7 @@ public class CodeAreaTest {
         codeArea.paste();
         assertTrue(codeArea.getDataSize() == (dataSize / 2 + dataSize));
     }
-
+*/
     private EditableBinaryData getSampleData(String dataPath) {
         ByteArrayEditableData data = new ByteArrayEditableData();
         try (InputStream stream = CodeAreaTest.class.getResourceAsStream(dataPath)) {

@@ -21,7 +21,7 @@ package org.exbin.deltahex;
  * @version 0.1.1 2016/08/31
  * @author ExBin Project (http://exbin.org)
  */
-public enum ViewMode {
+public enum CodeAreaViewMode {
 
     /**
      * Show both numerical codes and textual preview.

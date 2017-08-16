@@ -42,7 +42,7 @@ import org.exbin.deltahex.EditationMode;
 import org.exbin.deltahex.HexCharactersCase;
 import org.exbin.deltahex.ScrollBarVisibility;
 import org.exbin.deltahex.SelectionRange;
-import org.exbin.deltahex.ViewMode;
+import org.exbin.deltahex.CodeAreaViewMode;
 import org.exbin.deltahex.swing.color.CodeAreaColorType;
 import org.exbin.deltahex.swing.color.CodeAreaColorsGroup;
 import org.exbin.utils.binary_data.OutOfBoundsException;
@@ -50,7 +50,7 @@ import org.exbin.utils.binary_data.OutOfBoundsException;
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2017/08/13
+ * @version 0.2.0 2017/08/16
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaPainter implements CodeAreaPainter {
@@ -84,7 +84,56 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
         state.linesPerRect = getLinesPerRectangle();
         state.bytesPerLine = getBytesPerLine();
-
+        
+        computeCharPositions();
+    }
+    
+    private void computeCharPositions() {
+//        state.charactersPerRect = codeArea.computeByteCharPos(state.bytesPerLine, false);
+//        // Compute first and last visible character of the code area
+//        if (state.viewMode == CodeAreaViewMode.DUAL) {
+//            state.previewCharPos = state.charactersPerRect + 1;
+//        } else {
+//            state.previewCharPos = 0;
+//        }
+//
+//        if (state.viewMode == CodeAreaViewMode.DUAL || state.viewMode == CodeAreaViewMode.CODE_MATRIX) {
+//            state.visibleCharStart = (scrollPosition.getScrollCharPosition() * state.characterWidth + scrollPosition.getScrollCharOffset()) / state.characterWidth;
+//            if (state.visibleCharStart < 0) {
+//                state.visibleCharStart = 0;
+//            }
+//            state.visibleCharEnd = (codeSectionRect.width + (scrollPosition.getScrollCharPosition() + charsPerLine) * charWidth + scrollPosition.getScrollCharOffset()) / charWidth;
+//            if (state.visibleCharEnd > state.charsPerCodeArea) {
+//                state.visibleCharEnd = state.charsPerCodeArea;
+//            }
+//            state.visibleCodeStart = codeArea.computeByteOffsetPerCodeCharOffset(visibleCharStart);
+//            state.visibleCodeEnd = codeArea.computeByteOffsetPerCodeCharOffset(visibleCharEnd - 1) + 1;
+//        } else {
+//            state.visibleCharStart = 0;
+//            state.visibleCharEnd = -1;
+//            state.visibleCodeStart = 0;
+//            state.visibleCodeEnd = -1;
+//        }
+//
+//        if (state.viewMode == CodeAreaViewMode.DUAL || state.viewMode == CodeAreaViewMode.TEXT_PREVIEW) {
+//            state.visiblePreviewStart = (scrollPosition.getScrollCharPosition() * charWidth + scrollPosition.getScrollCharOffset()) / charWidth - previewCharPos;
+//            if (state.visiblePreviewStart < 0) {
+//                state.visiblePreviewStart = 0;
+//            }
+//            if (state.visibleCodeEnd < 0) {
+//                state.visibleCharStart = state.visiblePreviewStart + state.previewCharPos;
+//            }
+//            state.visiblePreviewEnd = (codeSectionRect.width + (scrollPosition.getScrollCharPosition() + 1) * charWidth + scrollPosition.getScrollCharOffset()) / charWidth - previewCharPos;
+//            if (state.visiblePreviewEnd > bytesPerLine) {
+//                state.visiblePreviewEnd = bytesPerLine;
+//            }
+//            if (state.visiblePreviewEnd >= 0) {
+//                state.visibleCharEnd = state.visiblePreviewEnd + state.previewCharPos;
+//            }
+//        } else {
+//            state.visiblePreviewStart = 0;
+//            state.visiblePreviewEnd = -1;
+//        }
     }
 
     public void resetFont(@Nonnull Graphics g) {
@@ -277,27 +326,27 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
         g.setColor(Color.BLACK);
         Rectangle dataViewRectangle = codeArea.getDataViewRectangle();
-        g.drawString("[" + String.valueOf(dataViewRectangle.x) + "," + String.valueOf(dataViewRectangle.y) + "," + String.valueOf(dataViewRectangle.width) + "," + String.valueOf(dataViewRectangle.height) + "]", linePositionX, positionY);
+//        g.drawString("[" + String.valueOf(dataViewRectangle.x) + "," + String.valueOf(dataViewRectangle.y) + "," + String.valueOf(dataViewRectangle.width) + "," + String.valueOf(dataViewRectangle.height) + "]", linePositionX, positionY);
 
 //    public void paintLineText(Graphics g, int linePositionX, int linePositionY, PaintDataCache paintData) {
 //        int positionY = linePositionY + paintData.lineHeight - codeArea.getSubFontSpace();
 //
-//        int renderOffset = paintData.visibleCharStart;
-//        CodeAreaColorType renderColorType = null;
-//        Color renderColor = null;
-//        for (int charOnLine = paintData.visibleCharStart; charOnLine < paintData.visibleCharEnd; charOnLine++) {
-//            Section section;
-//            int byteOnLine;
-//            if (charOnLine >= paintData.previewCharPos) {
-//                byteOnLine = charOnLine - paintData.previewCharPos;
-//                section = Section.TEXT_PREVIEW;
-//            } else {
+        int renderOffset = state.visibleCharStart;
+        CodeAreaColorType renderColorType = null;
+        Color renderColor = null;
+        for (int charOnLine = state.visibleCharStart; charOnLine < state.visibleCharEnd; charOnLine++) {
+            CodeAreaSection section;
+            int byteOnLine;
+            if (charOnLine >= state.previewCharPos) {
+                byteOnLine = charOnLine - state.previewCharPos;
+                section = CodeAreaSection.TEXT_PREVIEW;
+            } else {
 //                byteOnLine = codeArea.computeByteOffsetPerCodeCharOffset(charOnLine);
-//                section = Section.CODE_MATRIX;
-//            }
-//            boolean sequenceBreak = false;
-//            boolean nativeWidth = true;
-//
+                section = CodeAreaSection.CODE_MATRIX;
+            }
+            boolean sequenceBreak = false;
+            boolean nativeWidth = true;
+
 //            int currentCharWidth = 0;
 //            CodeAreaColorType colorType = CodeAreaColorType.TEXT;
 //            if (paintData.charRenderingMode != CodeArea.CharRenderingMode.LINE_AT_ONCE) {
@@ -381,7 +430,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 //        if (renderOffset < paintData.charsPerLine) {
 //            renderCharSequence(g, renderOffset, paintData.charsPerLine, linePositionX, positionY, renderColorType, paintData);
 //        }
-//    }
+        }
     }
 
     @Override
@@ -1302,17 +1351,28 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         int areaHeight;
         int mainAreaWidth;
         int mainAreaHeight;
-        ViewMode viewMode;
+        CodeAreaViewMode viewMode;
         Charset charset;
+
         int lineNumbersLength;
         int lineNumbersAreaWidth;
         int headerAreaHeight;
         int lineHeight;
-        FontMetrics fontMetrics;
         int linesPerRect;
-        CharacterRenderingMode characterRenderingMode;
         int bytesPerLine;
+        int charactersPerRect;
+
+        int previewCharPos;
+        int visibleCharStart;
+        int visibleCharEnd;
+        int visiblePreviewStart;
+        int visiblePreviewEnd;
+        int visibleCodeStart;
+        int visibleCodeEnd;
+
         Font font;
+        FontMetrics fontMetrics;
+        CharacterRenderingMode characterRenderingMode;
     }
 
 //    /**
@@ -1396,52 +1456,5 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 //            if (showUnprintableCharacters) {
 //                unprintableChars = new char[charsPerLine];
 //            }
-//
-//            charsPerCodeArea = codeArea.computeByteCharPos(bytesPerLine, false);
-//            // Compute first and last visible character of the code area
-//            if (viewMode == ViewMode.DUAL) {
-//                previewCharPos = charsPerCodeArea + 1;
-//            } else {
-//                previewCharPos = 0;
-//            }
-//
-//            if (viewMode == ViewMode.DUAL || viewMode == ViewMode.CODE_MATRIX) {
-//                visibleCharStart = (scrollPosition.getScrollCharPosition() * charWidth + scrollPosition.getScrollCharOffset()) / charWidth;
-//                if (visibleCharStart < 0) {
-//                    visibleCharStart = 0;
-//                }
-//                visibleCharEnd = (codeSectionRect.width + (scrollPosition.getScrollCharPosition() + charsPerLine) * charWidth + scrollPosition.getScrollCharOffset()) / charWidth;
-//                if (visibleCharEnd > charsPerCodeArea) {
-//                    visibleCharEnd = charsPerCodeArea;
-//                }
-//                visibleCodeStart = codeArea.computeByteOffsetPerCodeCharOffset(visibleCharStart);
-//                visibleCodeEnd = codeArea.computeByteOffsetPerCodeCharOffset(visibleCharEnd - 1) + 1;
-//            } else {
-//                visibleCharStart = 0;
-//                visibleCharEnd = -1;
-//                visibleCodeStart = 0;
-//                visibleCodeEnd = -1;
-//            }
-//
-//            if (viewMode == ViewMode.DUAL || viewMode == ViewMode.TEXT_PREVIEW) {
-//                visiblePreviewStart = (scrollPosition.getScrollCharPosition() * charWidth + scrollPosition.getScrollCharOffset()) / charWidth - previewCharPos;
-//                if (visiblePreviewStart < 0) {
-//                    visiblePreviewStart = 0;
-//                }
-//                if (visibleCodeEnd < 0) {
-//                    visibleCharStart = visiblePreviewStart + previewCharPos;
-//                }
-//                visiblePreviewEnd = (codeSectionRect.width + (scrollPosition.getScrollCharPosition() + 1) * charWidth + scrollPosition.getScrollCharOffset()) / charWidth - previewCharPos;
-//                if (visiblePreviewEnd > bytesPerLine) {
-//                    visiblePreviewEnd = bytesPerLine;
-//                }
-//                if (visiblePreviewEnd >= 0) {
-//                    visibleCharEnd = visiblePreviewEnd + previewCharPos;
-//                }
-//            } else {
-//                visiblePreviewStart = 0;
-//                visiblePreviewEnd = -1;
-//            }
-//        }
 //    }
 }

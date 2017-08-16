@@ -39,7 +39,7 @@ import org.exbin.deltahex.CodeAreaUtils;
 import org.exbin.deltahex.CodeType;
 import org.exbin.deltahex.EditationMode;
 import org.exbin.deltahex.SelectionRange;
-import org.exbin.deltahex.ViewMode;
+import org.exbin.deltahex.CodeAreaViewMode;
 import org.exbin.utils.binary_data.BinaryData;
 import org.exbin.utils.binary_data.ByteArrayEditableData;
 import org.exbin.utils.binary_data.EditableBinaryData;
@@ -336,7 +336,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                 break;
             }
             case KeyEvent.VK_TAB: {
-                if (codeArea.getViewMode() == ViewMode.DUAL) {
+                if (codeArea.getViewMode() == CodeAreaViewMode.DUAL) {
                     CodeAreaSection activeSection = codeArea.getActiveSection() == CodeAreaSection.CODE_MATRIX ? CodeAreaSection.TEXT_PREVIEW : CodeAreaSection.CODE_MATRIX;
                     if (activeSection == CodeAreaSection.TEXT_PREVIEW) {
                         codeArea.getCaretPosition().setCodeOffset(0);
@@ -957,7 +957,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     @Override
     public void moveCaret(MouseEvent me, int modifiers) {
         Rectangle hexRect = codeArea.getDataViewRectangle();
-        ViewMode viewMode = codeArea.getViewMode();
+        CodeAreaViewMode viewMode = codeArea.getViewMode();
         CodeType codeType = codeArea.getCodeType();
         CodeAreaScrollPosition scrollPosition = codeArea.getScrollPosition();
         CodeAreaCaret caret = codeArea.getCaret();

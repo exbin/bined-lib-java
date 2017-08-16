@@ -48,7 +48,7 @@ import org.exbin.deltahex.ScrollBarVisibility;
 import org.exbin.deltahex.ScrollingListener;
 import org.exbin.deltahex.SelectionChangedListener;
 import org.exbin.deltahex.SelectionRange;
-import org.exbin.deltahex.ViewMode;
+import org.exbin.deltahex.CodeAreaViewMode;
 import org.exbin.utils.binary_data.BinaryData;
 
 /**
@@ -69,7 +69,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
     private CodeAreaPainter painter;
     private CodeAreaCommandHandler commandHandler;
 
-    private ViewMode viewMode = ViewMode.DUAL;
+    private CodeAreaViewMode viewMode = CodeAreaViewMode.DUAL;
     private CodeType codeType = CodeType.HEXADECIMAL;
     private EditationMode editationMode = EditationMode.OVERWRITE;
 
@@ -367,16 +367,16 @@ public class CodeArea extends JComponent implements CodeAreaControl {
     }
 
     @Nonnull
-    public ViewMode getViewMode() {
+    public CodeAreaViewMode getViewMode() {
         return viewMode;
     }
 
-    public void setViewMode(@Nonnull ViewMode viewMode) {
+    public void setViewMode(@Nonnull CodeAreaViewMode viewMode) {
         this.viewMode = viewMode;
-        if (viewMode == ViewMode.CODE_MATRIX) {
+        if (viewMode == CodeAreaViewMode.CODE_MATRIX) {
             caret.setSection(CodeAreaSection.CODE_MATRIX);
             notifyCaretMoved();
-        } else if (viewMode == ViewMode.TEXT_PREVIEW) {
+        } else if (viewMode == CodeAreaViewMode.TEXT_PREVIEW) {
             caret.setSection(CodeAreaSection.TEXT_PREVIEW);
             notifyCaretMoved();
         }

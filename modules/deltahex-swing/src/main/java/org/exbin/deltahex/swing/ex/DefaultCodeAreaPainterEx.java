@@ -38,7 +38,7 @@ import org.exbin.deltahex.EditationMode;
 import org.exbin.deltahex.HexCharactersCase;
 import org.exbin.deltahex.ScrollBarVisibility;
 import org.exbin.deltahex.SelectionRange;
-import org.exbin.deltahex.ViewMode;
+import org.exbin.deltahex.CodeAreaViewMode;
 import org.exbin.deltahex.swing.CodeArea;
 import org.exbin.deltahex.swing.CodeAreaCaret;
 import org.exbin.deltahex.swing.CodeAreaScrollPosition;
