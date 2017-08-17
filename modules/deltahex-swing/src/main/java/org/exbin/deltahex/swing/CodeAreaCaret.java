@@ -104,7 +104,7 @@ public class CodeAreaCaret {
         if (caretPosition.getSection() == CodeAreaSection.TEXT_PREVIEW) {
             caretX = codeArea.getPreviewX() + charWidth * byteOffset;
         } else {
-            caretX = dataViewRect.x + charWidth * (codeArea.getPainter().computeByteCharPos(byteOffset) + getCodeOffset());
+            caretX = dataViewRect.x + charWidth * (codeArea.getPainter().computeFirstCharPos(byteOffset) + getCodeOffset());
         }
         caretX -= scrollPosition.getScrollCharPosition() * charWidth + scrollPosition.getScrollCharOffset();
 
@@ -135,7 +135,7 @@ public class CodeAreaCaret {
         int caretY = (int) (dataViewRect.y + line * lineHeight) - scrollPosition.getScrollLineOffset();
         int caretX;
         if (caretPosition.getSection() == CodeAreaSection.TEXT_PREVIEW) {
-            caretX = dataViewRect.x + charWidth * codeArea.getPainter().computeByteCharPos(byteOffset);
+            caretX = dataViewRect.x + charWidth * codeArea.getPainter().computeFirstCharPos(byteOffset);
         } else {
             caretX = codeArea.getPreviewX() + charWidth * byteOffset;
         }

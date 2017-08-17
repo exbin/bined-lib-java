@@ -126,14 +126,24 @@ public interface CodeAreaPainter {
     int computeCodeAreaLine(int pixelY);
 
     /**
-     * Computes character position for byte code of given offset position.
+     * Computes first character position for byte code of given offset position.
      *
      * TODO: hide?
      *
      * @param byteOffset byte start offset
      * @return characters position
      */
-    int computeByteCharPos(int byteOffset);
+    int computeFirstCharPos(int byteOffset);
+    
+    /**
+     * Computes last character position for byte code of given offset position.
+     *
+     * TODO: hide?
+     *
+     * @param byteOffset byte start offset
+     * @return characters position
+     */
+    int computeLastCharPos(int byteOffset);
 
     /**
      * Returns data position for given cursor position.
