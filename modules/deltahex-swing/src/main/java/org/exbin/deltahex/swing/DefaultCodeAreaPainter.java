@@ -134,6 +134,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             state.visiblePreviewStart = 0;
             state.visiblePreviewEnd = -1;
         }
+
+        state.lineNumberCode = new char[state.lineNumbersLength];
     }
 
     public void resetFont(@Nonnull Graphics g) {
@@ -215,7 +217,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         Rectangle lineNumbersArea = new Rectangle(0, state.headerAreaHeight, state.lineNumbersAreaWidth, state.areaHeight - state.headerAreaHeight); // TODO minus scrollbar height
         g.setClip(lineNumbersArea.intersection(clipBounds));
         int lineNumberLength = state.lineNumbersLength;
-        char[] lineNumberCode = new char[lineNumberLength];
         long dataPosition = 0;
         Rectangle compRect = new Rectangle();
 
@@ -229,12 +230,12 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         positionY = state.headerAreaHeight + state.lineHeight - 3;
         g.setColor(Color.BLACK);
         for (int line = 0; line < state.linesPerRect; line++) {
-            CodeAreaUtils.longToBaseCode(lineNumberCode, 0, dataPosition < 0 ? 0 : dataPosition, 16, lineNumberLength, true, HexCharactersCase.UPPER);
+            CodeAreaUtils.longToBaseCode(state.lineNumberCode, 0, dataPosition < 0 ? 0 : dataPosition, 16, lineNumberLength, true, HexCharactersCase.UPPER);
             if (state.characterRenderingMode == CharacterRenderingMode.LINE_AT_ONCE) {
-                g.drawChars(lineNumberCode, 0, lineNumberLength, compRect.x, positionY);
+                g.drawChars(state.lineNumberCode, 0, lineNumberLength, compRect.x, positionY);
             } else {
                 for (int digitIndex = 0; digitIndex < lineNumberLength; digitIndex++) {
-                    drawCenteredChar(g, lineNumberCode, digitIndex, state.characterWidth, compRect.x + state.characterWidth * digitIndex, positionY);
+                    drawCenteredChar(g, state.lineNumberCode, digitIndex, state.characterWidth, compRect.x + state.characterWidth * digitIndex, positionY);
                 }
             }
 
@@ -1382,6 +1383,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         Font font;
         FontMetrics fontMetrics;
         CharacterRenderingMode characterRenderingMode;
+        char[] lineNumberCode;
     }
 
 //    /**
