@@ -102,12 +102,12 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             if (state.visibleCharStart < 0) {
                 state.visibleCharStart = 0;
             }
-//            state.visibleCharEnd = (codeSectionRect.width + (state.scrollPosition.getScrollCharPosition() + state.charactersPerLine) * state.characterWidth + state.scrollPosition.getScrollCharOffset()) / state.characterWidth;
-//            if (state.visibleCharEnd > state.charsPerCodeArea) {
-//                state.visibleCharEnd = state.charsPerCodeArea;
-//            }
-//            state.visibleCodeStart = codeArea.computeByteOffsetPerCodeCharOffset(visibleCharStart);
-//            state.visibleCodeEnd = codeArea.computeByteOffsetPerCodeCharOffset(visibleCharEnd - 1) + 1;
+            state.visibleCharEnd = (state.mainAreaWidth + (state.scrollPosition.getScrollCharPosition() + state.charactersPerLine) * state.characterWidth + state.scrollPosition.getScrollCharOffset()) / state.characterWidth;
+            if (state.visibleCharEnd > state.charactersPerRect) {
+                state.visibleCharEnd = state.charactersPerRect;
+            }
+//            state.visibleCodeStart = computeByteOffsetPerCodeCharOffset(visibleCharStart);
+//            state.visibleCodeEnd = computeByteOffsetPerCodeCharOffset(visibleCharEnd - 1) + 1;
         } else {
             state.visibleCharStart = 0;
             state.visibleCharEnd = -1;
@@ -123,13 +123,13 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             if (state.visibleCodeEnd < 0) {
                 state.visibleCharStart = state.visiblePreviewStart + state.previewCharPos;
             }
-//            state.visiblePreviewEnd = (codeSectionRect.width + (scrollPosition.getScrollCharPosition() + 1) * charWidth + scrollPosition.getScrollCharOffset()) / charWidth - previewCharPos;
-//            if (state.visiblePreviewEnd > bytesPerLine) {
-//                state.visiblePreviewEnd = bytesPerLine;
-//            }
-//            if (state.visiblePreviewEnd >= 0) {
-//                state.visibleCharEnd = state.visiblePreviewEnd + state.previewCharPos;
-//            }
+            state.visiblePreviewEnd = (state.mainAreaWidth + (state.scrollPosition.getScrollCharPosition() + 1) * state.characterWidth + state.scrollPosition.getScrollCharOffset()) / state.characterWidth - state.previewCharPos;
+            if (state.visiblePreviewEnd > state.bytesPerLine) {
+                state.visiblePreviewEnd = state.bytesPerLine;
+            }
+            if (state.visiblePreviewEnd >= 0) {
+                state.visibleCharEnd = state.visiblePreviewEnd + state.previewCharPos;
+            }
         } else {
             state.visiblePreviewStart = 0;
             state.visiblePreviewEnd = -1;
@@ -441,11 +441,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             return;
         }
 
-//        CodeAreaCaret caret = codeArea.getCaret();
-//        int bytesPerLine = codeArea.getBytesPerLine();
-//        int lineHeight = codeArea.getLineHeight();
-//        int charWidth = codeArea.getCharWidth();
-//        int linesPerRect = codeArea.getLinesPerRect();
+        CodeAreaCaret caret = codeArea.getCaret();
 //        int codeDigits = codeArea.getCodeType().getMaxDigits();
 //        Point cursorPoint = caret.getCursorPoint(bytesPerLine, lineHeight, charWidth, linesPerRect);
 //        boolean cursorVisible = caret.isCursorVisible();
