@@ -86,6 +86,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         state.linesPerRect = getLinesPerRectangle();
         state.bytesPerLine = getBytesPerLine();
         state.charactersPerLine = getCharactersPerLine();
+        state.maxDigits = codeArea.getCodeType().getMaxDigits();
     }
     
     private void computeCharPositions() {
@@ -327,7 +328,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         int positionY = linePositionY; // - codeArea.getSubFontSpace();
 
         g.setColor(Color.BLACK);
-        Rectangle dataViewRectangle = codeArea.getDataViewRectangle();
+//        Rectangle dataViewRectangle = codeArea.getDataViewRectangle();
 //        g.drawString("[" + String.valueOf(dataViewRectangle.x) + "," + String.valueOf(dataViewRectangle.y) + "," + String.valueOf(dataViewRectangle.width) + "," + String.valueOf(dataViewRectangle.height) + "]", linePositionX, positionY);
 
 //    public void paintLineText(Graphics g, int linePositionX, int linePositionY, PaintDataCache paintData) {
@@ -729,8 +730,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     }
 
     @Override
-    public int getPositionByte(int lineCharPosition) {
-        return 16;
+    public int computePositionByte(int lineCharPosition) {
+        return lineCharPosition / state.maxDigits;
     }
 
     @Override
@@ -745,8 +746,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
     @Override
     public int computeFirstCharPos(int byteOffset) {
-        int maxDigits = codeArea.getCodeType().getMaxDigits();
-        return byteOffset * (maxDigits + 1);
+        return byteOffset * (state.maxDigits + 1);
     }
 
     @Override
@@ -1346,6 +1346,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 //            notifyScrolled();
 //        }
 //    }
+
     private static class PainterState {
 
         boolean monospaceFont;
@@ -1366,6 +1367,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         int bytesPerLine;
         int charactersPerRect;
         int charactersPerLine;
+        int maxDigits;
 
         int previewCharPos;
         int visibleCharStart;

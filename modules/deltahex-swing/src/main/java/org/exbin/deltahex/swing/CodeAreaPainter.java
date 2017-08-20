@@ -107,7 +107,7 @@ public interface CodeAreaPainter {
 
     int getCharacterWidth();
 
-    int getPositionByte(int lineCharPosition);
+    int computePositionByte(int lineCharPosition);
 
     /**
      * Returns character position in code area by pixel value.

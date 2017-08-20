@@ -621,7 +621,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
         int bytesPerLine = painter.getBytesPerLine();
         long caretLine = position / bytesPerLine;
 
-        int positionByte = painter.getPositionByte((int) (position % bytesPerLine));
+        int positionByte = painter.computePositionByte((int) (position % bytesPerLine));
 
         if (caretLine <= scrollPosition.getScrollLinePosition()) {
             scrollPosition.setScrollLinePosition(caretLine);
