@@ -88,7 +88,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         state.charactersPerLine = getCharactersPerLine();
         state.maxDigits = codeArea.getCodeType().getMaxDigits();
     }
-    
+
     private void computeCharPositions() {
         state.charactersPerRect = computeLastCharPos(state.bytesPerLine);
         // Compute first and last visible character of the code area
@@ -107,8 +107,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             if (state.visibleCharEnd > state.charactersPerRect) {
                 state.visibleCharEnd = state.charactersPerRect;
             }
-//            state.visibleCodeStart = computeByteOffsetPerCodeCharOffset(visibleCharStart);
-//            state.visibleCodeEnd = computeByteOffsetPerCodeCharOffset(visibleCharEnd - 1) + 1;
+            state.visibleCodeStart = computePositionByte(state.visibleCharStart);
+            state.visibleCodeEnd = computePositionByte(state.visibleCharEnd - 1) + 1;
         } else {
             state.visibleCharStart = 0;
             state.visibleCharEnd = -1;
@@ -137,6 +137,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         }
 
         state.lineNumberCode = new char[state.lineNumbersLength];
+        state.lineCharacters = new char[state.charactersPerLine];
     }
 
     public void resetFont(@Nonnull Graphics g) {
@@ -163,7 +164,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         updateSizes();
         computeCharPositions();
     }
-    
+
     private void updateSizes() {
         state.lineNumbersAreaWidth = state.characterWidth * (state.lineNumbersLength + 1);
         state.headerAreaHeight = 20;
@@ -291,7 +292,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
         paintLines(g);
     }
-    
+
     private void paintLines(Graphics g) {
         Rectangle clipBounds = g.getClipBounds();
         g.setColor(Color.WHITE);
@@ -321,7 +322,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             positionY += state.lineHeight;
             dataPosition += state.bytesPerLine;
         }
-        
+
     }
 
     private void paintLine(Graphics g, int linePositionX, int linePositionY, long dataPosition) {
@@ -336,7 +337,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 //
         int renderOffset = state.visibleCharStart;
         CodeAreaColorType renderColorType = null;
-        Color renderColor = null;
         for (int charOnLine = state.visibleCharStart; charOnLine < state.visibleCharEnd; charOnLine++) {
             CodeAreaSection section;
             int byteOnLine;
@@ -344,95 +344,57 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                 byteOnLine = charOnLine - state.previewCharPos;
                 section = CodeAreaSection.TEXT_PREVIEW;
             } else {
-//                byteOnLine = codeArea.computeByteOffsetPerCodeCharOffset(charOnLine);
+                byteOnLine = computePositionByte(charOnLine);
                 section = CodeAreaSection.CODE_MATRIX;
             }
             boolean sequenceBreak = false;
             boolean nativeWidth = true;
 
-//            int currentCharWidth = 0;
-//            CodeAreaColorType colorType = CodeAreaColorType.TEXT;
-//            if (paintData.charRenderingMode != CodeArea.CharRenderingMode.LINE_AT_ONCE) {
-//                char currentChar = ' ';
-//                if (paintData.showUnprintableCharacters) {
-//                    currentChar = paintData.unprintableChars[charOnLine];
-//                    if (currentChar != ' ') {
-//                        colorType = CodeAreaColorType.UNPRINTABLES;
-//                    }
-//                }
-//                if (colorType == CodeAreaColorType.TEXT) {
-//                    currentChar = paintData.lineChars[charOnLine];
-//                }
-//                if (currentChar == ' ' && renderOffset == charOnLine) {
-//                    renderOffset++;
-//                    continue;
-//                }
-//                if (paintData.charRenderingMode == CodeArea.CharRenderingMode.AUTO && paintData.monospaceFont) {
-//                    // Detect if character is in unicode range covered by monospace fonts
-//                    if (CodeAreaSwingUtils.isMonospaceFullWidthCharater(currentChar)) {
-//                        currentCharWidth = paintData.charWidth;
-//                    }
-//                }
-//
-//                if (currentCharWidth == 0) {
-//                    currentCharWidth = paintData.fontMetrics.charWidth(currentChar);
-//                    nativeWidth = currentCharWidth == paintData.charWidth;
-//                }
-//            } else {
-//                currentCharWidth = paintData.charWidth;
-//                if (paintData.showUnprintableCharacters) {
-//                    char currentChar = paintData.unprintableChars[charOnLine];
-//                    if (currentChar != ' ') {
-//                        colorType = CodeAreaColorType.UNPRINTABLES;
-//                        currentCharWidth = paintData.fontMetrics.charWidth(currentChar);
-//                        nativeWidth = currentCharWidth == paintData.charWidth;
-//                    }
-//                }
-//            }
-//
-//            Color color = getPositionColor(byteOnLine, charOnLine, section, colorType, paintData);
-//            if (renderColorType == null) {
-//                renderColorType = colorType;
-//                renderColor = color;
-//                g.setColor(color);
-//            }
-//
-//            if (!nativeWidth || !areSameColors(color, renderColor) || !colorType.equals(renderColorType)) {
-//                sequenceBreak = true;
-//            }
-//            if (sequenceBreak) {
-//                if (renderOffset < charOnLine) {
-//                    renderCharSequence(g, renderOffset, charOnLine, linePositionX, positionY, renderColorType, paintData);
-//                }
-//
-//                if (!colorType.equals(renderColorType)) {
-//                    renderColorType = colorType;
-//                }
-//                if (!areSameColors(color, renderColor)) {
-//                    renderColor = color;
-//                    g.setColor(color);
-//                }
-//
-//                if (!nativeWidth) {
-//                    renderOffset = charOnLine + 1;
-//                    if (paintData.charRenderingMode == CodeArea.CharRenderingMode.TOP_LEFT) {
-//                        g.drawChars(
-//                                renderColorType == CodeAreaColorType.UNPRINTABLES ? paintData.unprintableChars : paintData.lineChars,
-//                                charOnLine, 1, linePositionX + charOnLine * paintData.charWidth, positionY);
-//                    } else {
-//                        drawShiftedChar(g,
-//                                renderColorType == CodeAreaColorType.UNPRINTABLES ? paintData.unprintableChars : paintData.lineChars,
-//                                charOnLine, paintData.charWidth, linePositionX + charOnLine * paintData.charWidth, positionY, (paintData.charWidth + 1 - currentCharWidth) >> 1);
-//                    }
-//                } else {
-//                    renderOffset = charOnLine;
-//                }
-//            }
-//        }
-//
-//        if (renderOffset < paintData.charsPerLine) {
-//            renderCharSequence(g, renderOffset, paintData.charsPerLine, linePositionX, positionY, renderColorType, paintData);
-//        }
+            int currentCharWidth = 0;
+            if (state.characterRenderingMode != CharacterRenderingMode.LINE_AT_ONCE) {
+                char currentChar = state.lineCharacters[charOnLine];
+                if (currentChar == ' ' && renderOffset == charOnLine) {
+                    renderOffset++;
+                    continue;
+                }
+                if (state.characterRenderingMode == CharacterRenderingMode.AUTO && state.monospaceFont) {
+                    // Detect if character is in unicode range covered by monospace fonts
+                    if (CodeAreaSwingUtils.isMonospaceFullWidthCharater(currentChar)) {
+                        currentCharWidth = state.characterWidth;
+                    }
+                }
+
+                if (currentCharWidth == 0) {
+                    currentCharWidth = state.fontMetrics.charWidth(currentChar);
+                    nativeWidth = currentCharWidth == state.characterWidth;
+                }
+            } else {
+                currentCharWidth = state.characterWidth;
+            }
+
+            if (!nativeWidth) {
+                sequenceBreak = true;
+            }
+            if (sequenceBreak) {
+                if (renderOffset < charOnLine) {
+                    renderCharSequence(g, renderOffset, charOnLine, linePositionX, positionY);
+                }
+
+                if (!nativeWidth) {
+                    renderOffset = charOnLine + 1;
+                    if (state.characterRenderingMode == CharacterRenderingMode.TOP_LEFT) {
+                        g.drawChars(state.lineCharacters, charOnLine, 1, linePositionX + charOnLine * state.characterWidth, positionY);
+                    } else {
+                        drawShiftedChar(g, state.lineCharacters, charOnLine, state.characterWidth, linePositionX + charOnLine * state.characterWidth, positionY, (state.characterWidth + 1 - currentCharWidth) >> 1);
+                    }
+                } else {
+                    renderOffset = charOnLine;
+                }
+            }
+        }
+
+        if (renderOffset < state.charactersPerLine) {
+            renderCharSequence(g, renderOffset, state.charactersPerLine, linePositionX, positionY);
         }
     }
 
@@ -716,7 +678,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
     @Override
     public int getCharactersPerLine() {
-        return 16;
+        return 128;
     }
 
     @Override
@@ -753,7 +715,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     public int computeLastCharPos(int byteOffset) {
         return computeFirstCharPos(byteOffset + 1) - 1;
     }
-    
+
     @Override
     public long cursorPositionToDataPosition(long line, int byteOffset) throws OutOfBoundsException {
         return 16;
@@ -970,10 +932,10 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 //        }
 //    }
 //
-//    private boolean areSameColors(Color color, Color comparedColor) {
-//        return (color == null && comparedColor == null) || (color != null && color.equals(comparedColor));
-//    }
-//
+    private static boolean areSameColors(Color color, Color comparedColor) {
+        return (color == null && comparedColor == null) || (color != null && color.equals(comparedColor));
+    }
+
 //    /**
 //     * Returns color of given type for specified position.
 //     *
@@ -1005,18 +967,14 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 //        return codeArea.getMainColors().getColor(colorType);
 //    }
 //
-//    /**
-//     * Render sequence of characters.
-//     *
-//     * Doesn't include character at offset end.
-//     */
-//    private void renderCharSequence(Graphics g, int startOffset, int endOffset, int linePositionX, int positionY, CodeAreaColorType colorType, PaintDataCache paintData) {
-//        if (colorType == CodeAreaColorType.UNPRINTABLES) {
-//            g.drawChars(paintData.unprintableChars, startOffset, endOffset - startOffset, linePositionX + startOffset * paintData.charWidth, positionY);
-//        } else {
-//            g.drawChars(paintData.lineChars, startOffset, endOffset - startOffset, linePositionX + startOffset * paintData.charWidth, positionY);
-//        }
-//    }
+    /**
+     * Render sequence of characters.
+     *
+     * Doesn't include character at offset end.
+     */
+    private void renderCharSequence(Graphics g, int startOffset, int endOffset, int linePositionX, int positionY) {
+        g.drawChars(state.lineCharacters, startOffset, endOffset - startOffset, linePositionX + startOffset * state.characterWidth, positionY);
+    }
 //
 //    /**
 //     * Render sequence of background rectangles.
@@ -1382,6 +1340,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         FontMetrics fontMetrics;
         CharacterRenderingMode characterRenderingMode;
         char[] lineNumberCode;
+        char[] lineCharacters;
     }
 
 //    /**
