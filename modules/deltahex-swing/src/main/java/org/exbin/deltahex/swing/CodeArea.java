@@ -711,7 +711,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
                 scrollPosition.setScrollLineOffset(scrollBarValue % painter.getLineHeight());
             }
 
-            repaint();
+            painter.dataViewScrolled(getGraphics());
             notifyScrolled();
         }
     }
@@ -733,7 +733,8 @@ public class CodeArea extends JComponent implements CodeAreaControl {
                     scrollPosition.setScrollCharOffset(horizontalScroll % characterWidth);
                 }
             }
-            repaint();
+
+            painter.dataViewScrolled(getGraphics());
             notifyScrolled();
         }
     }

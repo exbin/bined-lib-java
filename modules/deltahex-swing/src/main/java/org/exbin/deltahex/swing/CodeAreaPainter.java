@@ -59,6 +59,13 @@ public interface CodeAreaPainter {
     void paintCursor(@Nonnull Graphics g);
 
     /**
+     * Notifies painter that data view was scrolled.
+     *
+     * @param g graphics
+     */
+    void dataViewScrolled(@Nonnull Graphics g);
+
+    /**
      * Returns previews section position.
      *
      * @return previews X position
@@ -134,7 +141,7 @@ public interface CodeAreaPainter {
      * @return characters position
      */
     int computeFirstCharPos(int byteOffset);
-    
+
     /**
      * Computes last character position for byte code of given offset position.
      *

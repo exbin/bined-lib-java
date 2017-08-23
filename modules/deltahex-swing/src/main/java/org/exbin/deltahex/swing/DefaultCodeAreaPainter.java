@@ -37,7 +37,7 @@ import org.exbin.utils.binary_data.OutOfBoundsException;
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2017/08/22
+ * @version 0.2.0 2017/08/23
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaPainter implements CodeAreaPainter {
@@ -64,7 +64,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
         state.areaWidth = codeArea.getWidth();
         state.areaHeight = codeArea.getHeight();
-        state.scrollPosition = codeArea.getScrollPosition();
+        resetScrollState();
 
         state.viewMode = codeArea.getViewMode();
         state.characterRenderingMode = characterRenderingMode;
@@ -78,7 +78,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         state.dataSize = codeArea.getDataSize();
     }
 
-    private void computeCharPositions() {
+    private void resetCharPositions() {
         state.charactersPerRect = computeLastCharPos(state.bytesPerLine);
         // Compute first and last visible character of the code area
         if (state.viewMode == CodeAreaViewMode.DUAL) {
@@ -156,7 +156,26 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
         state.lineNumbersLength = getLineNumberLength();
         updateSizes();
-        computeCharPositions();
+        resetCharPositions();
+    }
+
+    @Override
+    public void dataViewScrolled(@Nonnull Graphics g) {
+        if (!isInitialized()) {
+            return;
+        }
+
+        resetScrollState();
+        if (state.characterWidth > 0) {
+            resetCharPositions();
+            paintOutsiteArea(g);
+            paintHeader(g);
+            paintLineNumbers(g);
+        }
+    }
+
+    private void resetScrollState() {
+        state.scrollPosition = codeArea.getScrollPosition();
     }
 
     private void updateSizes() {
@@ -168,8 +187,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
     @Override
     public boolean isInitialized() {
-        // TODO
-        return true;
+        return state != null;
     }
 
     @Override
@@ -194,36 +212,39 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     public void paintHeader(Graphics g) {
         Rectangle clipBounds = g.getClipBounds();
         Rectangle headerArea = new Rectangle(state.lineNumbersAreaWidth, 0, state.areaWidth - state.lineNumbersAreaWidth, state.headerAreaHeight); // TODO minus scrollbar width
-        g.setClip(headerArea.intersection(clipBounds));
+        g.setClip(clipBounds != null ? headerArea.intersection(clipBounds) : headerArea);
 
-        g.setColor(Color.WHITE);
+        Color randomColor = new Color((float) Math.random(), (float) Math.random(), (float) Math.random());
+        g.setColor(randomColor);
         g.fillRect(headerArea.x, headerArea.y, headerArea.width, headerArea.height);
 
+        // Black line
         g.setColor(Color.BLACK);
         g.fillRect(0, state.headerAreaHeight - 1, state.areaWidth, 1);
 
         g.setColor(Color.BLACK);
-        char[] headerCode = "TEST".toCharArray();
-        g.drawChars(headerCode, 0, 4, 100, 0);
+        char[] headerCode = (String.valueOf(state.scrollPosition.getScrollCharPosition()) + ": " + String.valueOf(state.scrollPosition.getScrollLinePosition())).toCharArray();
+        g.drawChars(headerCode, 0, headerCode.length, 100, state.lineHeight);
         g.setClip(clipBounds);
     }
 
     public void paintLineNumbers(Graphics g) {
         Rectangle clipBounds = g.getClipBounds();
         Rectangle lineNumbersArea = new Rectangle(0, state.headerAreaHeight, state.lineNumbersAreaWidth, state.areaHeight - state.headerAreaHeight); // TODO minus scrollbar height
-        g.setClip(lineNumbersArea.intersection(clipBounds));
+        g.setClip(clipBounds != null ? lineNumbersArea.intersection(clipBounds) : lineNumbersArea);
+
         int lineNumberLength = state.lineNumbersLength;
-        long dataPosition = 0;
+        long dataPosition = state.bytesPerLine * state.scrollPosition.getScrollLinePosition();
         Rectangle compRect = new Rectangle();
 
-        int positionY = state.headerAreaHeight + state.lineHeight; //codeRect.y - codeArea.getSubFontSpace() - scrollPosition.getScrollLineOffset() + codeArea.getLineHeight();
+        int stripPositionY = state.headerAreaHeight + state.lineHeight;
         g.setColor(Color.LIGHT_GRAY);
         for (int line = 0; line < state.linesPerRect; line += 2) {
-            g.fillRect(0, positionY, state.lineNumbersAreaWidth, state.lineHeight);
-            positionY += state.lineHeight * 2;
+            g.fillRect(0, stripPositionY, state.lineNumbersAreaWidth, state.lineHeight);
+            stripPositionY += state.lineHeight * 2;
         }
 
-        positionY = state.headerAreaHeight + state.lineHeight - 3;
+        int positionY = state.headerAreaHeight + state.lineHeight - subFontSpace - state.scrollPosition.getScrollLineOffset();
         g.setColor(Color.BLACK);
         for (int line = 0; line < state.linesPerRect; line++) {
             CodeAreaUtils.longToBaseCode(state.lineNumberCode, 0, dataPosition < 0 ? 0 : dataPosition, 16, lineNumberLength, true, HexCharactersCase.UPPER);
@@ -255,8 +276,13 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
     private void paintLines(Graphics g) {
         Rectangle clipBounds = g.getClipBounds();
-        g.setColor(Color.WHITE);
-        g.fillRect(clipBounds.x, clipBounds.y, clipBounds.width, clipBounds.height);
+        Color randomColor = new Color((float) Math.random(), (float) Math.random(), (float) Math.random());
+        g.setColor(randomColor);
+        if (clipBounds != null) {
+            g.fillRect(clipBounds.x, clipBounds.y, clipBounds.width, clipBounds.height);
+        } else {
+            g.fillRect(0, 0, state.areaWidth, state.areaHeight);
+        }
 
         int positionY = state.lineHeight; //codeRect.y - codeArea.getSubFontSpace() - scrollPosition.getScrollLineOffset() + codeArea.getLineHeight();
         g.setColor(Color.LIGHT_GRAY);
@@ -966,7 +992,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     private void renderBackgroundSequence(Graphics g, int startOffset, int endOffset, int linePositionX, int positionY) {
         g.fillRect(linePositionX + startOffset * state.characterWidth, positionY, (endOffset - startOffset) * state.characterWidth, state.lineHeight);
     }
-    
+
 //    @Override
 //    public void paintCursor() {
 //        int bytesPerLine = codeArea.getBytesPerLine();
