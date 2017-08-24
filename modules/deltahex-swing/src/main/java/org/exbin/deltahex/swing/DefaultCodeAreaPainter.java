@@ -79,10 +79,10 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     }
 
     private void resetCharPositions() {
-        state.charactersPerRect = computeLastCharPos(state.bytesPerLine);
+        state.charactersPerRect = computeLastCharPos(state.bytesPerLine - 1);
         // Compute first and last visible character of the code area
         if (state.viewMode == CodeAreaViewMode.DUAL) {
-            state.previewCharPos = state.charactersPerRect + 1;
+            state.previewCharPos = state.charactersPerRect + 2;
         } else {
             state.previewCharPos = 0;
         }
@@ -223,7 +223,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         g.fillRect(0, state.headerAreaHeight - 1, state.areaWidth, 1);
 
         g.setColor(Color.BLACK);
-        char[] headerCode = (String.valueOf(state.scrollPosition.getScrollCharPosition()) + ": " + String.valueOf(state.scrollPosition.getScrollLinePosition())).toCharArray();
+        char[] headerCode = (String.valueOf(state.scrollPosition.getScrollCharPosition()) + "+" + String.valueOf(state.scrollPosition.getScrollCharOffset()) + " : " + String.valueOf(state.scrollPosition.getScrollLinePosition()) + "+" + String.valueOf(state.scrollPosition.getScrollLineOffset())).toCharArray();
         g.drawChars(headerCode, 0, headerCode.length, 100, state.lineHeight);
         g.setClip(clipBounds);
     }
@@ -233,9 +233,12 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         Rectangle lineNumbersArea = new Rectangle(0, state.headerAreaHeight, state.lineNumbersAreaWidth, state.areaHeight - state.headerAreaHeight); // TODO minus scrollbar height
         g.setClip(clipBounds != null ? lineNumbersArea.intersection(clipBounds) : lineNumbersArea);
 
+        Color randomColor = new Color((float) Math.random(), (float) Math.random(), (float) Math.random());
+        g.setColor(randomColor);
+        g.fillRect(lineNumbersArea.x, lineNumbersArea.y, lineNumbersArea.width, lineNumbersArea.height);
+
         int lineNumberLength = state.lineNumbersLength;
         long dataPosition = state.bytesPerLine * state.scrollPosition.getScrollLinePosition();
-        Rectangle compRect = new Rectangle();
 
         int stripPositionY = state.headerAreaHeight + state.lineHeight;
         g.setColor(Color.LIGHT_GRAY);
@@ -246,6 +249,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
         int positionY = state.headerAreaHeight + state.lineHeight - subFontSpace - state.scrollPosition.getScrollLineOffset();
         g.setColor(Color.BLACK);
+        Rectangle compRect = new Rectangle();
         for (int line = 0; line < state.linesPerRect; line++) {
             CodeAreaUtils.longToBaseCode(state.lineNumberCode, 0, dataPosition < 0 ? 0 : dataPosition, 16, lineNumberLength, true, HexCharactersCase.UPPER);
             if (state.characterRenderingMode == CharacterRenderingMode.LINE_AT_ONCE) {
@@ -284,7 +288,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             g.fillRect(0, 0, state.areaWidth, state.areaHeight);
         }
 
-        int positionY = state.lineHeight; //codeRect.y - codeArea.getSubFontSpace() - scrollPosition.getScrollLineOffset() + codeArea.getLineHeight();
+        int positionY = state.lineHeight - (int) (state.scrollPosition.getScrollLinePosition() * state.lineHeight); //codeRect.y - codeArea.getSubFontSpace() - scrollPosition.getScrollLineOffset() + codeArea.getLineHeight();
         g.setColor(Color.LIGHT_GRAY);
         for (int line = 0; line < state.linesPerRect; line += 2) {
             g.fillRect(0, positionY, state.mainAreaWidth, state.lineHeight);
@@ -292,7 +296,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         }
 
         long dataPosition = 0;
-        int linePositionY = state.lineHeight - 3;
+        int linePositionY = state.lineHeight - subFontSpace - (int) (state.scrollPosition.getScrollLinePosition() * state.lineHeight);
         g.setColor(Color.BLACK);
         for (int line = 0; line < state.linesPerRect; line++) {
             prepareLineData(dataPosition);
@@ -812,7 +816,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
     @Override
     public int computeLastCharPos(int byteOffset) {
-        return computeFirstCharPos(byteOffset + 1) - 1;
+        return computeFirstCharPos(byteOffset + 1) - 2;
     }
 
     @Override
