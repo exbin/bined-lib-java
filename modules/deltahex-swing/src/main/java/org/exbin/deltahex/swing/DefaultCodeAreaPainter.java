@@ -296,7 +296,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         }
 
         long dataPosition = 0;
-        int linePositionY = state.lineHeight - subFontSpace - (int) (state.scrollPosition.getScrollLinePosition() * state.lineHeight);
+        int linePositionY = state.lineHeight - subFontSpace - (int) (state.scrollPosition.getScrollLinePosition() * (state.lineHeight - 1));
         g.setColor(Color.BLACK);
         for (int line = 0; line < state.linesPerRect; line++) {
             prepareLineData(dataPosition);
