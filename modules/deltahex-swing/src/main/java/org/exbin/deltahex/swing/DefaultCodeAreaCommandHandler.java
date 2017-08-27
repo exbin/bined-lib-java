@@ -259,7 +259,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                         codeArea.getCaret().setCaretPosition(codeArea.getDataSize());
                     } else if (codeArea.getActiveSection() == CodeAreaSection.CODE_MATRIX) {
                         long newPosition = (((caretPosition.getDataPosition() + scrollPosition.getLineDataOffset()) / bytesPerLine) + 1) * bytesPerLine - 1 - scrollPosition.getLineDataOffset();
-                        codeArea.getCaret().setCaretPosition(newPosition < dataSize ? newPosition : dataSize, newPosition < dataSize ? codeArea.getCodeType().getMaxDigits() - 1 : 0);
+                        codeArea.getCaret().setCaretPosition(newPosition < dataSize ? newPosition : dataSize, newPosition < dataSize ? codeArea.getCodeType().getMaxDigitsForByte() - 1 : 0);
                     } else {
                         long newPosition = (((caretPosition.getDataPosition() + scrollPosition.getLineDataOffset()) / bytesPerLine) + 1) * bytesPerLine - 1 - scrollPosition.getLineDataOffset();
                         codeArea.getCaret().setCaretPosition(newPosition < dataSize ? newPosition : dataSize);
@@ -859,7 +859,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     }
 
     private void insertHexStringIntoData(String insertedString, EditableBinaryData data, CodeType codeType) {
-        int maxDigits = codeType.getMaxDigits();
+        int maxDigits = codeType.getMaxDigitsForByte();
         byte[] buffer = new byte[CODE_BUFFER_LENGTH];
         int bufferUsage = 0;
         int offset = 0;
@@ -1030,7 +1030,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             if (caret.getSection() == CodeAreaSection.CODE_MATRIX) {
                 int codeOffset = caret.getCodeOffset();
                 if (caretPosition.getDataPosition() < codeArea.getDataSize()) {
-                    if (codeOffset < codeType.getMaxDigits() - 1) {
+                    if (codeOffset < codeType.getMaxDigitsForByte() - 1) {
                         caret.setCodeOffset(codeOffset + 1);
                     } else {
                         caret.setCaretPosition(caretPosition.getDataPosition() + 1, 0);
@@ -1057,7 +1057,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                 updateSelection(modifiers, caretPosition);
                 codeArea.notifyCaretMoved();
             } else if (caretPosition.getDataPosition() > 0) {
-                caret.setCaretPosition(caretPosition.getDataPosition() - 1, codeType.getMaxDigits() - 1);
+                caret.setCaretPosition(caretPosition.getDataPosition() - 1, codeType.getMaxDigitsForByte() - 1);
                 updateSelection(modifiers, caretPosition);
                 codeArea.notifyCaretMoved();
             }
@@ -1142,7 +1142,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             if (flavor.equals(binaryDataFlavor)) {
                 return data;
             } else {
-                int charsPerByte = codeArea.getCodeType().getMaxDigits() + 1;
+                int charsPerByte = codeArea.getCodeType().getMaxDigitsForByte() + 1;
                 int textLength = (int) (data.getDataSize() * charsPerByte);
                 if (textLength > 0) {
                     textLength--;

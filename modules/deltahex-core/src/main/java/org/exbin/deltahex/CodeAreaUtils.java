@@ -147,7 +147,7 @@ public class CodeAreaUtils {
      * @throws IllegalArgumentException if code is invalid
      */
     public static byte stringCodeToByte(@Nonnull String code, @Nonnull CodeType codeType) {
-        if (code.length() > codeType.getMaxDigits()) {
+        if (code.length() > codeType.getMaxDigitsForByte()) {
             throw new IllegalArgumentException("String code is too long");
         }
         byte result = 0;

@@ -37,7 +37,7 @@ import org.exbin.utils.binary_data.OutOfBoundsException;
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2017/08/23
+ * @version 0.2.0 2017/08/27
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaPainter implements CodeAreaPainter {
@@ -73,7 +73,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         state.bytesPerLine = getBytesPerLine();
         state.charactersPerLine = getCharactersPerLine();
         state.codeType = codeArea.getCodeType();
-        state.maxDigits = state.codeType.getMaxDigits();
+        state.maxDigits = state.codeType.getMaxDigitsForByte();
         state.hexCharactersCase = HexCharactersCase.UPPER;
         state.dataSize = codeArea.getDataSize();
     }
@@ -242,7 +242,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
         int stripPositionY = state.headerAreaHeight + state.lineHeight;
         g.setColor(Color.LIGHT_GRAY);
-        for (int line = 0; line < state.linesPerRect; line += 2) {
+        for (int line = (int) ((dataPosition / state.bytesPerLine) % 2); line < state.linesPerRect; line += 2) {
             g.fillRect(0, stripPositionY, state.lineNumbersAreaWidth, state.lineHeight);
             stripPositionY += state.lineHeight * 2;
         }
@@ -251,7 +251,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         g.setColor(Color.BLACK);
         Rectangle compRect = new Rectangle();
         for (int line = 0; line < state.linesPerRect; line++) {
-            CodeAreaUtils.longToBaseCode(state.lineNumberCode, 0, dataPosition < 0 ? 0 : dataPosition, 16, lineNumberLength, true, HexCharactersCase.UPPER);
+            CodeAreaUtils.longToBaseCode(state.lineNumberCode, 0, dataPosition < 0 ? 0 : dataPosition, state.codeType.getBase(), lineNumberLength, true, HexCharactersCase.UPPER);
             if (state.characterRenderingMode == CharacterRenderingMode.LINE_AT_ONCE) {
                 g.drawChars(state.lineNumberCode, 0, lineNumberLength, compRect.x, positionY);
             } else {
@@ -288,7 +288,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             g.fillRect(0, 0, state.areaWidth, state.areaHeight);
         }
 
-        int positionY = state.lineHeight - (int) (state.scrollPosition.getScrollLinePosition() * state.lineHeight); //codeRect.y - codeArea.getSubFontSpace() - scrollPosition.getScrollLineOffset() + codeArea.getLineHeight();
+        int positionY = state.lineHeight - (int) (state.scrollPosition.getScrollLinePosition() * (state.lineHeight - 1)); //codeRect.y - codeArea.getSubFontSpace() - scrollPosition.getScrollLineOffset() + codeArea.getLineHeight();
         g.setColor(Color.LIGHT_GRAY);
         for (int line = 0; line < state.linesPerRect; line += 2) {
             g.fillRect(0, positionY, state.mainAreaWidth, state.lineHeight);

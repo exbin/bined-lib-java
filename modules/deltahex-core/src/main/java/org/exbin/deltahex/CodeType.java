@@ -18,7 +18,7 @@ package org.exbin.deltahex;
 /**
  * Enumeration of supported code types.
  *
- * @version 0.2.0 2017/04/09
+ * @version 0.2.0 2017/08/27
  * @author ExBin Project (http://exbin.org)
  */
 public enum CodeType {
@@ -28,30 +28,41 @@ public enum CodeType {
      *
      * Code is represented as 8 characters each of range 0 to 1.
      */
-    BINARY(8),
+    BINARY(2, 8),
     /**
      * Represent code as number in base 8.
      *
      * Code is represented as 3 characters of range 0 to 7 with limit 377.
      */
-    OCTAL(3),
+    OCTAL(8, 3),
     /**
      * Represent code as number in base 10.
      *
      * Code is represented as 3 characters of range 0 to 9 with limit 255.
      */
-    DECIMAL(3),
+    DECIMAL(10, 3),
     /**
      * Represent code as number in base 16.
      *
      * Code is represented as 2 characters of range 0 to 9 and A to F.
      */
-    HEXADECIMAL(2);
+    HEXADECIMAL(16, 2);
 
-    private final int maxDigits;
+    private final int base;
+    private final int maxDigitsForByte;
 
-    private CodeType(int maxDigits) {
-        this.maxDigits = maxDigits;
+    private CodeType(int base, int maxDigitsForByte) {
+        this.base = base;
+        this.maxDigitsForByte = maxDigitsForByte;
+    }
+
+    /**
+     * Return numeric base for current code type.
+     *
+     * @return base
+     */
+    public int getBase() {
+        return base;
     }
 
     /**
@@ -59,7 +70,7 @@ public enum CodeType {
      *
      * @return number of digits
      */
-    public int getMaxDigits() {
-        return maxDigits;
+    public int getMaxDigitsForByte() {
+        return maxDigitsForByte;
     }
 }
