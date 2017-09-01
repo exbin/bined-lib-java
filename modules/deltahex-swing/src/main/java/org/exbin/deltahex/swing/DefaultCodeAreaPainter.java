@@ -37,7 +37,7 @@ import org.exbin.utils.binary_data.OutOfBoundsException;
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2017/08/27
+ * @version 0.2.0 2017/09/01
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaPainter implements CodeAreaPainter {
@@ -240,17 +240,17 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         int lineNumberLength = state.lineNumbersLength;
         long dataPosition = state.bytesPerLine * state.scrollPosition.getScrollLinePosition();
 
-        int stripPositionY = state.headerAreaHeight + state.lineHeight;
+        int stripePositionY = state.headerAreaHeight + ((state.scrollPosition.getScrollLinePosition() & 1) > 0 ? 0 : state.lineHeight);
         g.setColor(Color.LIGHT_GRAY);
-        for (int line = (int) ((dataPosition / state.bytesPerLine) % 2); line < state.linesPerRect; line += 2) {
-            g.fillRect(0, stripPositionY, state.lineNumbersAreaWidth, state.lineHeight);
-            stripPositionY += state.lineHeight * 2;
+        for (int line = 0; line <= state.linesPerRect / 2; line++) {
+            g.fillRect(0, stripePositionY, state.lineNumbersAreaWidth, state.lineHeight);
+            stripePositionY += state.lineHeight * 2;
         }
 
         int positionY = state.headerAreaHeight + state.lineHeight - subFontSpace - state.scrollPosition.getScrollLineOffset();
         g.setColor(Color.BLACK);
         Rectangle compRect = new Rectangle();
-        for (int line = 0; line < state.linesPerRect; line++) {
+        for (int line = 0; line <= state.linesPerRect; line++) {
             CodeAreaUtils.longToBaseCode(state.lineNumberCode, 0, dataPosition < 0 ? 0 : dataPosition, state.codeType.getBase(), lineNumberLength, true, HexCharactersCase.UPPER);
             if (state.characterRenderingMode == CharacterRenderingMode.LINE_AT_ONCE) {
                 g.drawChars(state.lineNumberCode, 0, lineNumberLength, compRect.x, positionY);
@@ -288,17 +288,17 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             g.fillRect(0, 0, state.areaWidth, state.areaHeight);
         }
 
-        int positionY = state.lineHeight - (int) (state.scrollPosition.getScrollLinePosition() * (state.lineHeight - 1)); //codeRect.y - codeArea.getSubFontSpace() - scrollPosition.getScrollLineOffset() + codeArea.getLineHeight();
+        int stripePositionY = (int) (state.scrollPosition.getScrollLinePosition()) + ((state.scrollPosition.getScrollLinePosition() & 1) > 0 ? 0 : state.lineHeight);
         g.setColor(Color.LIGHT_GRAY);
-        for (int line = 0; line < state.linesPerRect; line += 2) {
-            g.fillRect(0, positionY, state.mainAreaWidth, state.lineHeight);
-            positionY += state.lineHeight * 2;
+        for (int line = 0; line <= state.linesPerRect / 2; line++) {
+            g.fillRect(0, stripePositionY, state.mainAreaWidth, state.lineHeight);
+            stripePositionY += state.lineHeight * 2;
         }
 
-        long dataPosition = 0;
-        int linePositionY = state.lineHeight - subFontSpace - (int) (state.scrollPosition.getScrollLinePosition() * (state.lineHeight - 1));
+        long dataPosition = state.scrollPosition.getScrollLinePosition() * state.bytesPerLine;
+        int linePositionY = state.lineHeight - subFontSpace + (int) (state.scrollPosition.getScrollLinePosition());
         g.setColor(Color.BLACK);
-        for (int line = 0; line < state.linesPerRect; line++) {
+        for (int line = 0; line <= state.linesPerRect; line++) {
             prepareLineData(dataPosition);
             paintLineBackground(g, 0, linePositionY);
             paintLineText(g, 0, linePositionY);
