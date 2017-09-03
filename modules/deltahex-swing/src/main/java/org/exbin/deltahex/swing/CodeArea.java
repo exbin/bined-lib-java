@@ -166,7 +166,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
         dataView.addMouseListener(codeAreaMouseListener);
         dataView.addMouseMotionListener(codeAreaMouseListener);
         dataView.addMouseWheelListener(codeAreaMouseListener);
-        
+
         addKeyListener(new KeyAdapter() {
             @Override
             public void keyTyped(KeyEvent keyEvent) {
@@ -590,7 +590,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
 
     public void resetPainter() {
         painter.reset();
-        
+
         // TODO on resize only
         scrollPanel.setBounds(painter.getDataViewRect());
         scrollPanel.revalidate();
@@ -605,7 +605,10 @@ public class CodeArea extends JComponent implements CodeAreaControl {
     }
 
     public void repaintCursor() {
-        painter.paintCursor(dataView.getGraphics());
+        Graphics graphics = dataView.getGraphics();
+        if (graphics != null) {
+            painter.paintCursor(graphics);
+        }
     }
 
     // TODO move to painter?

@@ -46,7 +46,7 @@ public class CodeAreaCaret {
     private boolean cursorVisible = true;
     private CursorShape insertCursorShape = CursorShape.DOUBLE_LEFT;
     private CursorShape overwriteCursorShape = CursorShape.BOX;
-    private CursorRenderingMode renderingMode = CursorRenderingMode.NEGATIVE;
+    private CursorRenderingMode renderingMode = CursorRenderingMode.PAINT; //NEGATIVE;
 
     public CodeAreaCaret(CodeArea codeArea) {
         this.codeArea = codeArea;
