@@ -114,6 +114,14 @@ public interface CodeAreaPainter {
 
     int getCharacterWidth();
 
+    /**
+     * Returns byte offset position for code section.
+     *
+     * TODO: other section?
+     *
+     * @param lineCharPosition
+     * @return byte offset on the current line or -1
+     */
     int computePositionByte(int lineCharPosition);
 
     /**
@@ -140,7 +148,7 @@ public interface CodeAreaPainter {
      * @param byteOffset byte start offset
      * @return characters position
      */
-    int computeFirstCharPos(int byteOffset);
+    int computeFirstCodeCharPos(int byteOffset);
 
     /**
      * Computes last character position for byte code of given offset position.
@@ -150,7 +158,7 @@ public interface CodeAreaPainter {
      * @param byteOffset byte start offset
      * @return characters position
      */
-    int computeLastCharPos(int byteOffset);
+    int computeLastCodeCharPos(int byteOffset);
 
     /**
      * Returns data position for given cursor position.
