@@ -119,7 +119,7 @@ public interface CodeAreaPainter {
      *
      * TODO: other section?
      *
-     * @param lineCharPosition
+     * @param lineCharPosition character position on line
      * @return byte offset on the current line or -1
      */
     int computePositionByte(int lineCharPosition);

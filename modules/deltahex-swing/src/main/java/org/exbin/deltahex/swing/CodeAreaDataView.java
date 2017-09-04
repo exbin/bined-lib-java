@@ -18,15 +18,15 @@ package org.exbin.deltahex.swing;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import javax.swing.JComponent;
+import javax.swing.JViewport;
 
 /**
  * Hexadecimal viewer/editor inner data view component.
  *
- * @version 0.2.0 2017/06/21
+ * @version 0.2.0 2017/09/04
  * @author ExBin Project (http://exbin.org)
  */
-public class CodeAreaDataView extends JComponent {
+public class CodeAreaDataView extends JViewport {
 
     private final CodeArea codeArea;
 
@@ -39,13 +39,14 @@ public class CodeAreaDataView extends JComponent {
         setBackground(Color.RED);
         setBorder(null);
         setLayout(null);
-        
+
         Dimension dimension = new Dimension(5000, 5000);
         setPreferredSize(dimension);
     }
 
     @Override
     protected void paintComponent(Graphics g) {
-        codeArea.getPainter().paintMainArea(g);
+        super.paintComponent(g);
+//        codeArea.getPainter().paintMainArea(g);
     }
 }

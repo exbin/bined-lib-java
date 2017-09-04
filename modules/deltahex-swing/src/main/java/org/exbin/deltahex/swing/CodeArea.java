@@ -130,11 +130,13 @@ public class CodeArea extends JComponent implements CodeAreaControl {
         horizontalScrollBar.addAdjustmentListener(new HorizontalAdjustmentListener());
         add(scrollPanel);
         dataView = new CodeAreaDataView(this);
+        dataView.setOpaque(false);
+        scrollPanel.setOpaque(false);
+        scrollPanel.setBackground(Color.RED);
         scrollPanel.setViewportView(dataView);
 
         setBackground(Color.WHITE);
         setFocusable(true);
-        setDoubleBuffered(true);
         setFocusTraversalKeysEnabled(false);
         registerControlListeners();
     }
@@ -332,6 +334,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
 
     @Override
     protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
         painter.paintComponent(g);
     }
 
@@ -607,7 +610,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
     public void repaintCursor() {
         Graphics graphics = dataView.getGraphics();
         if (graphics != null) {
-            painter.paintCursor(graphics);
+            // TODO painter.paintCursor(graphics);
         }
     }
 

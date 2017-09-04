@@ -193,9 +193,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         resetScrollState();
         if (state.characterWidth > 0) {
             resetCharPositions();
-            paintOutsiteArea(g);
-            paintHeader(g);
-            paintLineNumbers(g);
+            paintMainArea(g);
         }
     }
 
@@ -286,12 +284,17 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         paintOutsiteArea(g);
         paintHeader(g);
         paintLineNumbers(g);
+        paintMainArea(g);
         paintCounter++;
     }
 
     public void paintOutsiteArea(Graphics g) {
+        g.setColor(Color.WHITE);
+        g.fillRect(0, 0, state.areaWidth, state.areaWidth);
         g.setColor(Color.BLACK);
         g.fillRect(0, state.headerAreaHeight - 1, state.lineNumbersAreaWidth, 1);
+
+        paintCounter++;
     }
 
     public void paintHeader(Graphics g) {
@@ -384,9 +387,10 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     public void paintBackground(Graphics g) {
 //        Color randomColor = new Color((float) Math.random(), (float) Math.random(), (float) Math.random());
 //        g.setColor(randomColor);
+        int linePositionX = state.lineNumbersAreaWidth;
         g.setColor(state.colors.background);
         if (borderPaintMode != BorderPaintMode.TRANSPARENT) {
-            g.fillRect(state.mainAreaX, state.mainAreaY, state.mainAreaWidth, state.mainAreaHeight);
+            g.fillRect(linePositionX, state.mainAreaY, state.mainAreaWidth, state.mainAreaHeight);
         }
 
         if (borderPaintMode == BorderPaintMode.STRIPED) {
@@ -398,7 +402,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                     break;
                 }
 
-                g.fillRect(state.mainAreaX, stripePositionY, state.mainAreaWidth, state.lineHeight);
+                g.fillRect(linePositionX, stripePositionY, state.mainAreaWidth, state.lineHeight);
                 stripePositionY += state.lineHeight * 2;
                 dataPosition += state.bytesPerLine * 2;
             }
@@ -410,12 +414,13 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         Color randomColor = new Color((float) Math.random(), (float) Math.random(), (float) Math.random());
         g.setColor(randomColor);
         long dataPosition = state.scrollPosition.getScrollLinePosition() * state.bytesPerLine;
-        int linePositionY = state.lineHeight - subFontSpace + (int) (state.scrollPosition.getScrollLinePosition());
+        int linePositionX = state.lineNumbersAreaWidth;
+        int linePositionY = state.headerAreaHeight + state.lineHeight - subFontSpace;
         g.setColor(Color.BLACK);
         for (int line = 0; line <= state.linesPerRect; line++) {
             prepareLineData(dataPosition);
-            paintLineBackground(g, 0, linePositionY);
-            paintLineText(g, 0, linePositionY);
+            paintLineBackground(g, linePositionX, linePositionY);
+            paintLineText(g, linePositionX, linePositionY);
 //            CodeAreaUtils.longToBaseCode(lineNumberCode, 0, dataPosition < 0 ? 0 : dataPosition, 16, lineNumberLength, true, HexCharactersCase.UPPER);
 //            if (state.characterRenderingMode == CharacterRenderingMode.LINE_AT_ONCE) {
 //                g.drawChars(lineNumberCode, 0, lineNumberLength, compRect.x, positionY);
@@ -951,142 +956,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         return 8;
     }
 
-//    @Override
-//    public void paintOverall(Graphics g) {
-//        // Fill header area background
-//        Rectangle compRect = codeArea.getComponentRectangle();
-//        Rectangle codeRect = codeArea.getCodeSectionRectangle();
-//        if (compRect.y < codeRect.y) {
-//            g.setColor(codeArea.getBackground());
-//            g.fillRect(compRect.x, compRect.y, compRect.x + compRect.width, codeRect.y - compRect.y);
-//        }
-//    }
-//
-//    @Override
-//    public void paintBackground(Graphics g) {
-//        Rectangle clipBounds = g.getClipBounds();
-//        Rectangle codeRect = codeArea.getCodeSectionRectangle();
-//        CodeAreaColorsGroup mainColors = codeArea.getMainColors();
-//        CodeAreaColorsGroup stripColors = codeArea.getAlternateColors();
-//        int bytesPerLine = codeArea.getBytesPerLine();
-//        int lineHeight = codeArea.getLineHeight();
-//        int startX = clipBounds.x;
-//        int width = clipBounds.width;
-//        if (!codeArea.isLineNumberBackground() && codeArea.isShowLineNumbers()) {
-//            int lineNumberWidth = codeRect.x - 1 - codeArea.getLineNumberSpace() / 2;
-//            if (startX < lineNumberWidth) {
-//                int diff = lineNumberWidth - startX;
-//                startX = lineNumberWidth;
-//                width -= diff;
-//            }
-//        }
-//        if (codeArea.getBackgroundMode() != CodeArea.BackgroundMode.NONE) {
-//            g.setColor(mainColors.getBackgroundColor());
-//            g.fillRect(startX, clipBounds.y, width, clipBounds.height);
-//        }
-//
-//        CodeAreaScrollPosition scrollPosition = codeArea.getScrollPosition();
-//        long line = scrollPosition.getScrollLinePosition();
-//    }
-//
-//
-//    @Override
-//    public void paintMainArea(Graphics g) {
-//        PaintDataCache paintData = new PaintDataCache(codeArea);
-//        paintMainArea(g, paintData);
-//    }
-//
-//    public void paintMainArea(Graphics g, PaintDataCache paintData) {
-//        int positionY = paintData.codeSectionRect.y - paintData.scrollPosition.getScrollLineOffset();
-//        paintData.line = paintData.scrollPosition.getScrollLinePosition();
-//        int positionX = paintData.codeSectionRect.x - paintData.scrollPosition.getScrollCharPosition() * paintData.charWidth - paintData.scrollPosition.getScrollCharOffset();
-//        paintData.lineDataPosition = paintData.line * paintData.bytesPerLine - paintData.scrollPosition.getLineByteShift();
-//        long dataSize = codeArea.getDataSize();
-//
-//        do {
-//            if (paintData.showUnprintableCharacters) {
-//                Arrays.fill(paintData.unprintableChars, ' ');
-//            }
-//            int lineBytesLimit = paintData.bytesPerLine;
-//            if (paintData.lineDataPosition < dataSize) {
-//                int lineDataSize = paintData.bytesPerLine + paintData.maxCharLength - 1;
-//                if (paintData.lineDataPosition + lineDataSize > dataSize) {
-//                    lineDataSize = (int) (dataSize - paintData.lineDataPosition);
-//                }
-//                if (paintData.lineDataPosition < 0) {
-//                    paintData.lineStart = (int) -paintData.lineDataPosition;
-//                } else {
-//                    paintData.lineStart = 0;
-//                }
-//                codeArea.getData().copyToArray(paintData.lineDataPosition + paintData.lineStart, paintData.lineData, paintData.lineStart, lineDataSize - paintData.lineStart);
-//                if (paintData.lineDataPosition + lineBytesLimit > dataSize) {
-//                    lineBytesLimit = (int) (dataSize - paintData.lineDataPosition);
-//                }
-//            } else {
-//                lineBytesLimit = 0;
-//            }
-//
-//            // Fill codes
-//            if (paintData.viewMode != ViewMode.TEXT_PREVIEW) {
-//                for (int byteOnLine = Math.max(paintData.visibleCodeStart, paintData.lineStart); byteOnLine < Math.min(paintData.visibleCodeEnd, lineBytesLimit); byteOnLine++) {
-//                    byte dataByte = paintData.lineData[byteOnLine];
-//                    CodeAreaUtils.byteToCharsCode(dataByte, codeArea.getCodeType(), paintData.lineChars, codeArea.computeByteCharPos(byteOnLine), codeArea.getHexCharactersCase());
-//                }
-//                if (paintData.bytesPerLine > lineBytesLimit) {
-//                    Arrays.fill(paintData.lineChars, codeArea.computeByteCharPos(lineBytesLimit), paintData.lineChars.length, ' ');
-//                }
-//            }
-//
-//            // Fill preview characters
-//            if (paintData.viewMode != ViewMode.CODE_MATRIX) {
-//                for (int byteOnLine = paintData.visiblePreviewStart; byteOnLine < Math.min(paintData.visiblePreviewEnd, lineBytesLimit); byteOnLine++) {
-//                    byte dataByte = paintData.lineData[byteOnLine];
-//
-//                    if (paintData.maxCharLength > 1) {
-//                        if (paintData.lineDataPosition + paintData.maxCharLength > dataSize) {
-//                            paintData.maxCharLength = (int) (dataSize - paintData.lineDataPosition);
-//                        }
-//
-//                        int charDataLength = paintData.maxCharLength;
-//                        if (byteOnLine + charDataLength > paintData.lineData.length) {
-//                            charDataLength = paintData.lineData.length - byteOnLine;
-//                        }
-//                        String displayString = new String(paintData.lineData, byteOnLine, charDataLength, paintData.charset);
-//                        if (!displayString.isEmpty()) {
-//                            paintData.lineChars[paintData.previewCharPos + byteOnLine] = displayString.charAt(0);
-//                        }
-//                    } else {
-//                        if (charMappingCharset == null || charMappingCharset != paintData.charset) {
-//                            buildCharMapping(paintData.charset);
-//                        }
-//
-//                        paintData.lineChars[paintData.previewCharPos + byteOnLine] = charMapping[dataByte & 0xFF];
-//                    }
-//
-//                    if (paintData.showUnprintableCharacters || paintData.charRenderingMode == CodeArea.CharRenderingMode.LINE_AT_ONCE) {
-//                        if (unprintableCharactersMapping == null) {
-//                            buildUnprintableCharactersMapping();
-//                        }
-//                        Character replacement = unprintableCharactersMapping.get(paintData.lineChars[paintData.previewCharPos + byteOnLine]);
-//                        if (replacement != null) {
-//                            if (paintData.showUnprintableCharacters) {
-//                                paintData.unprintableChars[paintData.previewCharPos + byteOnLine] = replacement;
-//                            }
-//                            paintData.lineChars[paintData.previewCharPos + byteOnLine] = ' ';
-//                        }
-//                    }
-//                }
-//                if (paintData.bytesPerLine > lineBytesLimit) {
-//                    Arrays.fill(paintData.lineChars, paintData.previewCharPos + lineBytesLimit, paintData.previewCharPos + paintData.bytesPerLine, ' ');
-//                }
-//            }
-//            paintLineBackground(g, positionX, positionY, paintData);
-//            paintLineText(g, positionX, positionY, paintData);
-//            paintData.lineDataPosition += paintData.bytesPerLine;
-//            paintData.line++;
-//            positionY += paintData.lineHeight;
-//        } while (positionY - paintData.lineHeight < paintData.codeSectionRect.y + paintData.codeSectionRect.height);
-//    }
     private static boolean areSameColors(Color color, Color comparedColor) {
         return (color == null && comparedColor == null) || (color != null && color.equals(comparedColor));
     }
@@ -1109,325 +978,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         g.fillRect(linePositionX + startOffset * state.characterWidth, positionY, (endOffset - startOffset) * state.characterWidth, state.lineHeight);
     }
 
-//    @Override
-//    public void paintCursor() {
-//        int bytesPerLine = codeArea.getBytesPerLine();
-//        if (bytesPerLine > 0) {
-//            int lineHeight = codeArea.getLineHeight();
-//            int charWidth = codeArea.getCharWidth();
-//            int linesPerRect = codeArea.getLinesPerRect();
-//            Rectangle cursorRect = getCursorRect(bytesPerLine, lineHeight, charWidth, linesPerRect);
-//            if (cursorRect != null) {
-//                codeArea.paintImmediately(cursorRect);
-//            }
-//        }
-//    }
-//
-//    @Override
-//    public void clearCache() {
-//        computePaintData();
-//        validateLineOffset();
-//    }
-//
-//    @Override
-//    public int getPositionByte(int lineCharPosition) {
-//        int positionByte;
-//        if (codeArea.getActiveSection() == CodeAreaSection.CODE_MATRIX) {
-//            positionByte = computeByteCharPos(lineCharPosition) + codeArea.getCaret().getCodeOffset();
-//        } else {
-//            positionByte = lineCharPosition;
-//            if (codeArea.getViewMode() == ViewMode.DUAL) {
-//                positionByte += paintDataCache.previewStartChar;
-//            }
-//        }
-//
-//        return positionByte;
-//    }
-//
-//    private void computePaintData() {
-//        if (paintDataCache.fontMetrics == null) {
-//            return;
-//        }
-//
-//        boolean verticalScrollBarVisible;
-//        boolean horizontalScrollBarVisible;
-//
-//        Insets insets = getInsets();
-//        Dimension size = getSize();
-//        Rectangle compRect = paintDataCache.componentRectangle;
-//        compRect.x = insets.left;
-//        compRect.y = insets.top;
-//        compRect.width = size.width - insets.left - insets.right;
-//        compRect.height = size.height - insets.top - insets.bottom;
-//
-//        switch (lineNumberLength.getLineNumberType()) {
-//            case AUTO: {
-//                long dataSize = getDataSize();
-//                if (dataSize > 0) {
-//                    double natLog = Math.log(dataSize);
-//                    paintDataCache.lineNumbersLength = (int) Math.ceil(natLog / positionCodeType.getBaseLog());
-//                    if (paintDataCache.lineNumbersLength == 0) {
-//                        paintDataCache.lineNumbersLength = 1;
-//                    }
-//                } else {
-//                    paintDataCache.lineNumbersLength = 1;
-//                }
-//                break;
-//            }
-//            case SPECIFIED: {
-//                paintDataCache.lineNumbersLength = lineNumberLength.getLineNumberLength();
-//                break;
-//            }
-//        }
-//
-//        int charsPerRect = computeCharsPerRect(compRect.width);
-//        int bytesPerLine;
-//        if (wrapMode) {
-//            bytesPerLine = computeFittingBytes(charsPerRect);
-//            if (bytesPerLine == 0) {
-//                bytesPerLine = 1;
-//            }
-//        } else {
-//            bytesPerLine = lineLength;
-//        }
-//        long lines = ((data.getDataSize() + scrollPosition.lineByteShift) / bytesPerLine) + 1;
-//        CodeAreaSpace.SpaceType headerSpaceType = headerSpace.getSpaceType();
-//        switch (headerSpaceType) {
-//            case NONE: {
-//                paintDataCache.headerSpace = 0;
-//                break;
-//            }
-//            case SPECIFIED: {
-//                paintDataCache.headerSpace = headerSpace.getSpaceSize();
-//                break;
-//            }
-//            case QUARTER_UNIT: {
-//                paintDataCache.headerSpace = paintDataCache.lineHeight / 4;
-//                break;
-//            }
-//            case HALF_UNIT: {
-//                paintDataCache.headerSpace = paintDataCache.lineHeight / 2;
-//                break;
-//            }
-//            case ONE_UNIT: {
-//                paintDataCache.headerSpace = paintDataCache.lineHeight;
-//                break;
-//            }
-//            case ONE_AND_HALF_UNIT: {
-//                paintDataCache.headerSpace = (int) (paintDataCache.lineHeight * 1.5f);
-//                break;
-//            }
-//            case DOUBLE_UNIT: {
-//                paintDataCache.headerSpace = paintDataCache.lineHeight * 2;
-//                break;
-//            }
-//            default:
-//                throw new IllegalStateException("Unexpected header space type " + headerSpaceType.name());
-//        }
-//
-//        CodeAreaSpace.SpaceType lineNumberSpaceType = lineNumberSpace.getSpaceType();
-//        switch (lineNumberSpaceType) {
-//            case NONE: {
-//                paintDataCache.lineNumberSpace = 0;
-//                break;
-//            }
-//            case SPECIFIED: {
-//                paintDataCache.lineNumberSpace = lineNumberSpace.getSpaceSize();
-//                break;
-//            }
-//            case QUARTER_UNIT: {
-//                paintDataCache.lineNumberSpace = paintDataCache.charWidth / 4;
-//                break;
-//            }
-//            case HALF_UNIT: {
-//                paintDataCache.lineNumberSpace = paintDataCache.charWidth / 2;
-//                break;
-//            }
-//            case ONE_UNIT: {
-//                paintDataCache.lineNumberSpace = paintDataCache.charWidth;
-//                break;
-//            }
-//            case ONE_AND_HALF_UNIT: {
-//                paintDataCache.lineNumberSpace = (int) (paintDataCache.charWidth * 1.5f);
-//                break;
-//            }
-//            case DOUBLE_UNIT: {
-//                paintDataCache.lineNumberSpace = paintDataCache.charWidth * 2;
-//                break;
-//            }
-//            default:
-//                throw new IllegalStateException("Unexpected line number space type " + lineNumberSpaceType.name());
-//        }
-//
-//        Rectangle hexRect = paintDataCache.codeSectionRectangle;
-//        hexRect.y = insets.top + (showHeader ? paintDataCache.lineHeight + paintDataCache.headerSpace : 0);
-//        hexRect.x = insets.left + (showLineNumbers ? paintDataCache.charWidth * paintDataCache.lineNumbersLength + paintDataCache.lineNumberSpace : 0);
-//
-//        if (verticalScrollBarVisibility == ScrollBarVisibility.IF_NEEDED) {
-//            verticalScrollBarVisible = lines > paintDataCache.linesPerRect;
-//        } else {
-//            verticalScrollBarVisible = verticalScrollBarVisibility == ScrollBarVisibility.ALWAYS;
-//        }
-//        if (verticalScrollBarVisible) {
-//            charsPerRect = computeCharsPerRect(compRect.x + compRect.width - paintDataCache.scrollBarThickness);
-//            if (wrapMode) {
-//                bytesPerLine = computeFittingBytes(charsPerRect);
-//                if (bytesPerLine <= 0) {
-//                    bytesPerLine = 1;
-//                }
-//                lines = ((data.getDataSize() + scrollPosition.lineByteShift) / bytesPerLine) + 1;
-//            }
-//        }
-//
-//        paintDataCache.bytesPerLine = bytesPerLine;
-//        paintDataCache.charsPerLine = computeCharsPerLine(bytesPerLine);
-//
-//        int maxWidth = compRect.x + compRect.width - hexRect.x;
-//        if (verticalScrollBarVisible) {
-//            maxWidth -= paintDataCache.scrollBarThickness;
-//        }
-//
-//        if (horizontalScrollBarVisibility == ScrollBarVisibility.IF_NEEDED) {
-//            horizontalScrollBarVisible = paintDataCache.charsPerLine * paintDataCache.charWidth > maxWidth;
-//        } else {
-//            horizontalScrollBarVisible = horizontalScrollBarVisibility == ScrollBarVisibility.ALWAYS;
-//        }
-//        if (horizontalScrollBarVisible) {
-//            paintDataCache.linesPerRect = (hexRect.height - paintDataCache.scrollBarThickness) / paintDataCache.lineHeight;
-//        }
-//
-//        hexRect.width = compRect.x + compRect.width - hexRect.x;
-//        if (verticalScrollBarVisible) {
-//            hexRect.width -= paintDataCache.scrollBarThickness;
-//        }
-//        hexRect.height = compRect.y + compRect.height - hexRect.y;
-//        if (horizontalScrollBarVisible) {
-//            hexRect.height -= paintDataCache.scrollBarThickness;
-//        }
-//
-//        paintDataCache.bytesPerRect = hexRect.width / paintDataCache.charWidth;
-//        paintDataCache.linesPerRect = hexRect.height / paintDataCache.lineHeight;
-//
-//        // Compute sections positions
-//        paintDataCache.previewStartChar = 0;
-//        if (viewMode == ViewMode.CODE_MATRIX) {
-//            paintDataCache.previewX = -1;
-//        } else {
-//            paintDataCache.previewX = hexRect.x;
-//            if (viewMode == ViewMode.DUAL) {
-//                paintDataCache.previewStartChar = paintDataCache.charsPerLine - paintDataCache.bytesPerLine;
-//                paintDataCache.previewX += (paintDataCache.charsPerLine - paintDataCache.bytesPerLine) * paintDataCache.charWidth;
-//            }
-//        }
-//
-//        // Compute scrollbar positions
-//        boolean scrolled = false;
-//        verticalScrollBar.setVisible(verticalScrollBarVisible);
-//        if (verticalScrollBarVisible) {
-//            int verticalScrollBarHeight = compRect.y + compRect.height - hexRect.y;
-//            if (horizontalScrollBarVisible) {
-//                verticalScrollBarHeight -= paintDataCache.scrollBarThickness - 2;
-//            }
-//            verticalScrollBar.setBounds(compRect.x + compRect.width - paintDataCache.scrollBarThickness, hexRect.y, paintDataCache.scrollBarThickness, verticalScrollBarHeight);
-//
-//            int verticalVisibleAmount;
-//            scrollPosition.verticalMaxMode = false;
-//            int verticalMaximum;
-//            if (verticalScrollMode == VerticalScrollMode.PIXEL) {
-//                if (lines * paintDataCache.lineHeight > Integer.MAX_VALUE) {
-//                    scrollPosition.verticalMaxMode = true;
-//                    verticalMaximum = Integer.MAX_VALUE;
-//                    verticalVisibleAmount = (int) (hexRect.height * Integer.MAX_VALUE / lines);
-//                } else {
-//                    verticalMaximum = (int) (lines * paintDataCache.lineHeight);
-//                    verticalVisibleAmount = hexRect.height;
-//                }
-//            } else if (lines > Integer.MAX_VALUE) {
-//                scrollPosition.verticalMaxMode = true;
-//                verticalMaximum = Integer.MAX_VALUE;
-//                verticalVisibleAmount = (int) (hexRect.height * Integer.MAX_VALUE / paintDataCache.lineHeight / lines);
-//            } else {
-//                verticalMaximum = (int) lines;
-//                verticalVisibleAmount = hexRect.height / paintDataCache.lineHeight;
-//            }
-//            if (verticalVisibleAmount == 0) {
-//                verticalVisibleAmount = 1;
-//            }
-//            verticalScrollBar.setMaximum(verticalMaximum);
-//            verticalScrollBar.setVisibleAmount(verticalVisibleAmount);
-//
-//            // Cap vertical scrolling
-//            if (!scrollPosition.verticalMaxMode && verticalVisibleAmount < verticalMaximum) {
-//                long maxLineScroll = verticalMaximum - verticalVisibleAmount;
-//                if (verticalScrollMode == VerticalScrollMode.PER_LINE) {
-//                    long lineScroll = scrollPosition.scrollLinePosition;
-//                    if (lineScroll > maxLineScroll) {
-//                        scrollPosition.scrollLinePosition = maxLineScroll;
-//                        scrolled = true;
-//                    }
-//                } else {
-//                    long lineScroll = scrollPosition.scrollLinePosition * paintDataCache.lineHeight + scrollPosition.scrollLineOffset;
-//                    if (lineScroll > maxLineScroll) {
-//                        scrollPosition.scrollLinePosition = maxLineScroll / paintDataCache.lineHeight;
-//                        scrollPosition.scrollLineOffset = (int) (maxLineScroll % paintDataCache.lineHeight);
-//                        scrolled = true;
-//                    }
-//                }
-//            }
-//        } else if (scrollPosition.scrollLinePosition > 0 || scrollPosition.scrollLineOffset > 0) {
-//            scrollPosition.scrollLinePosition = 0;
-//            scrollPosition.scrollLineOffset = 0;
-//            scrolled = true;
-//        }
-//
-//        horizontalScrollBar.setVisible(horizontalScrollBarVisible);
-//        if (horizontalScrollBarVisible) {
-//            int horizontalScrollBarWidth = compRect.x + compRect.width - hexRect.x;
-//            if (verticalScrollBarVisible) {
-//                horizontalScrollBarWidth -= paintDataCache.scrollBarThickness - 2;
-//            }
-//            horizontalScrollBar.setBounds(hexRect.x, compRect.y + compRect.height - paintDataCache.scrollBarThickness, horizontalScrollBarWidth, paintDataCache.scrollBarThickness);
-//
-//            int horizontalVisibleAmount;
-//            int horizontalMaximum = paintDataCache.charsPerLine;
-//            if (horizontalScrollMode == HorizontalScrollMode.PIXEL) {
-//                horizontalVisibleAmount = hexRect.width;
-//                horizontalMaximum *= paintDataCache.charWidth;
-//            } else {
-//                horizontalVisibleAmount = hexRect.width / paintDataCache.charWidth;
-//            }
-//            horizontalScrollBar.setMaximum(horizontalMaximum);
-//            horizontalScrollBar.setVisibleAmount(horizontalVisibleAmount);
-//
-//            // Cap horizontal scrolling
-//            int maxByteScroll = horizontalMaximum - horizontalVisibleAmount;
-//            if (horizontalVisibleAmount < horizontalMaximum) {
-//                if (horizontalScrollMode == HorizontalScrollMode.PIXEL) {
-//                    int byteScroll = scrollPosition.scrollCharPosition * paintDataCache.charWidth + scrollPosition.scrollCharOffset;
-//                    if (byteScroll > maxByteScroll) {
-//                        scrollPosition.scrollCharPosition = maxByteScroll / paintDataCache.charWidth;
-//                        scrollPosition.scrollCharOffset = maxByteScroll % paintDataCache.charWidth;
-//                        scrolled = true;
-//                    }
-//                } else {
-//                    int byteScroll = scrollPosition.scrollCharPosition;
-//                    if (byteScroll > maxByteScroll) {
-//                        scrollPosition.scrollCharPosition = maxByteScroll;
-//                        scrolled = true;
-//                    }
-//                }
-//            }
-//        } else if (scrollPosition.scrollCharPosition > 0 || scrollPosition.scrollCharOffset > 0) {
-//            scrollPosition.scrollCharPosition = 0;
-//            scrollPosition.scrollCharOffset = 0;
-//            scrolled = true;
-//        }
-//
-//        if (scrolled) {
-//            updateScrollBars();
-//            notifyScrolled();
-//        }
-//    }
     private static Color createOddColor(Color color) {
         return new Color(
                 computeOddColorComponent(color.getRed()),
