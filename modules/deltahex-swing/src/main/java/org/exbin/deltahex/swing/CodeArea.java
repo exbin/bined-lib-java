@@ -134,6 +134,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
         scrollPanel.setOpaque(false);
         scrollPanel.setBackground(Color.RED);
         scrollPanel.setViewportView(dataView);
+        scrollPanel.getViewport().setOpaque(false);
 
         setBackground(Color.WHITE);
         setFocusable(true);
