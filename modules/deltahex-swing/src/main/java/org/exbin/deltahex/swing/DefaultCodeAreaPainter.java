@@ -193,7 +193,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         resetScrollState();
         if (state.characterWidth > 0) {
             resetCharPositions();
-            paintMainArea(g);
+            paintComponent(g);
         }
     }
 
@@ -390,12 +390,12 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         int linePositionX = state.lineNumbersAreaWidth;
         g.setColor(state.colors.background);
         if (borderPaintMode != BorderPaintMode.TRANSPARENT) {
-            g.fillRect(linePositionX, state.mainAreaY, state.mainAreaWidth, state.mainAreaHeight);
+            g.fillRect(linePositionX, state.headerAreaHeight, state.mainAreaWidth, state.mainAreaHeight);
         }
 
         if (borderPaintMode == BorderPaintMode.STRIPED) {
             long dataPosition = state.scrollPosition.getScrollLinePosition() * state.bytesPerLine;
-            int stripePositionY = state.mainAreaY + (int) ((state.scrollPosition.getScrollLinePosition() & 1) > 0 ? 0 : state.lineHeight);
+            int stripePositionY = state.headerAreaHeight + (int) ((state.scrollPosition.getScrollLinePosition() & 1) > 0 ? 0 : state.lineHeight);
             g.setColor(state.colors.stripes);
             for (int line = 0; line <= state.linesPerRect / 2; line++) {
                 if (dataPosition >= state.dataSize) {
