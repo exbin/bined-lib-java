@@ -290,7 +290,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
     public void paintOutsiteArea(Graphics g) {
         g.setColor(Color.WHITE);
-        g.fillRect(0, 0, state.areaWidth, state.areaWidth);
+        g.fillRect(0, 0, state.areaWidth, state.headerAreaHeight);
         g.setColor(Color.BLACK);
         g.fillRect(0, state.headerAreaHeight - 1, state.lineNumbersAreaWidth, 1);
 
@@ -374,9 +374,13 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             resetFont(g);
         }
 
+        Rectangle clipBounds = g.getClipBounds();
+        Rectangle mainArea = new Rectangle(state.lineNumbersAreaWidth, state.headerAreaHeight, state.areaWidth - state.lineNumbersAreaWidth - 20, state.areaHeight - state.headerAreaHeight - 20);
+        g.setClip(clipBounds != null ? mainArea.intersection(clipBounds) : mainArea);
         paintBackground(g);
         paintLines(g);
         paintCounter++;
+        g.setClip(clipBounds);
     }
 
     /**
@@ -410,7 +414,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     }
 
     public void paintLines(Graphics g) {
-        Rectangle clipBounds = g.getClipBounds();
         Color randomColor = new Color((float) Math.random(), (float) Math.random(), (float) Math.random());
         g.setColor(randomColor);
         long dataPosition = state.scrollPosition.getScrollLinePosition() * state.bytesPerLine;
