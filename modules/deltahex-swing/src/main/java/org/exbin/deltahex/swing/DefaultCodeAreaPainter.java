@@ -302,8 +302,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         Rectangle headerArea = new Rectangle(state.lineNumbersAreaWidth, 0, state.areaWidth - state.lineNumbersAreaWidth, state.headerAreaHeight); // TODO minus scrollbar width
         g.setClip(clipBounds != null ? headerArea.intersection(clipBounds) : headerArea);
 
-        Color randomColor = new Color((float) Math.random(), (float) Math.random(), (float) Math.random());
-        g.setColor(randomColor);
+        g.setColor(state.colors.background);
         g.fillRect(headerArea.x, headerArea.y, headerArea.width, headerArea.height);
 
         // Black line
@@ -416,8 +415,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     public void paintLines(Graphics g) {
         Color randomColor = new Color((float) Math.random(), (float) Math.random(), (float) Math.random());
         g.setColor(randomColor);
-        long dataPosition = state.scrollPosition.getScrollLinePosition() * state.bytesPerLine;
-        int linePositionX = state.lineNumbersAreaWidth;
+        long dataPosition = state.scrollPosition.getScrollLinePosition() * state.bytesPerLine + state.scrollPosition.getLineDataOffset();
+        int linePositionX = state.lineNumbersAreaWidth - state.scrollPosition.getScrollCharPosition() * state.characterWidth - state.scrollPosition.getScrollCharOffset();
         int linePositionY = state.headerAreaHeight + state.lineHeight - subFontSpace;
         g.setColor(Color.BLACK);
         for (int line = 0; line <= state.linesPerRect; line++) {
