@@ -54,7 +54,7 @@ import org.exbin.utils.binary_data.BinaryData;
 /**
  * Hexadecimal viewer/editor component.
  *
- * @version 0.2.0 2017/07/27
+ * @version 0.2.0 2017/08/09
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeArea extends JComponent implements CodeAreaControl {
@@ -129,6 +129,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
         horizontalScrollBar.setVisible(true);
         horizontalScrollBar.addAdjustmentListener(new HorizontalAdjustmentListener());
         add(scrollPanel);
+        setDoubleBuffered(true);
         dataView = new CodeAreaDataView(this);
         dataView.setOpaque(false);
         scrollPanel.setOpaque(false);
@@ -609,9 +610,9 @@ public class CodeArea extends JComponent implements CodeAreaControl {
     }
 
     public void repaintCursor() {
-        Graphics graphics = dataView.getGraphics();
+        Graphics graphics = getGraphics();
         if (graphics != null) {
-            // TODO painter.paintCursor(graphics);
+            painter.paintCursor(graphics);
         }
     }
 

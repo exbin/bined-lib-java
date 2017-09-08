@@ -43,7 +43,7 @@ import org.exbin.utils.binary_data.OutOfBoundsException;
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2017/09/03
+ * @version 0.2.0 2017/09/08
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaPainter implements CodeAreaPainter {
@@ -293,8 +293,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         g.fillRect(0, 0, state.areaWidth, state.headerAreaHeight);
         g.setColor(Color.BLACK);
         g.fillRect(0, state.headerAreaHeight - 1, state.lineNumbersAreaWidth, 1);
-
-        paintCounter++;
     }
 
     public void paintHeader(Graphics g) {
@@ -378,7 +376,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         g.setClip(clipBounds != null ? mainArea.intersection(clipBounds) : mainArea);
         paintBackground(g);
         paintLines(g);
-        paintCounter++;
         g.setClip(clipBounds);
     }
 
@@ -388,8 +385,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
      * @param g graphics
      */
     public void paintBackground(Graphics g) {
-//        Color randomColor = new Color((float) Math.random(), (float) Math.random(), (float) Math.random());
-//        g.setColor(randomColor);
         int linePositionX = state.lineNumbersAreaWidth;
         g.setColor(state.colors.background);
         if (borderPaintMode != BorderPaintMode.TRANSPARENT) {
