@@ -629,6 +629,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         int characterWidth = getCharacterWidth();
         int linesPerRect = getLinesPerRectangle();
         Point cursorPoint = caret.getCursorPoint(bytesPerLine, lineHeight, characterWidth, linesPerRect);
+        cursorPoint.setLocation(cursorPoint.x + state.lineNumbersAreaWidth, cursorPoint.y + state.headerAreaHeight);
         boolean cursorVisible = caret.isCursorVisible();
         CodeAreaCaret.CursorRenderingMode renderingMode = caret.getRenderingMode();
 
@@ -724,6 +725,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         if (codeArea.getViewMode() == CodeAreaViewMode.DUAL && showShadowCursor) {
             g.setColor(state.colors.cursor);
             Point shadowCursorPoint = caret.getShadowCursorPoint(bytesPerLine, lineHeight, characterWidth, linesPerRect);
+            shadowCursorPoint.setLocation(shadowCursorPoint.x + state.lineNumbersAreaWidth, shadowCursorPoint.y + state.headerAreaHeight);
             if (shadowCursorPoint != null) {
                 Graphics2D g2d = (Graphics2D) g.create();
                 Stroke dashed = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{2}, 0);

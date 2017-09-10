@@ -610,10 +610,12 @@ public class CodeArea extends JComponent implements CodeAreaControl {
     }
 
     public void repaintCursor() {
-        Graphics graphics = getGraphics();
-        if (graphics != null) {
-            painter.paintCursor(graphics);
-        }
+        repaint();
+        // TODO
+//        Graphics graphics = getGraphics();
+//        if (graphics != null) {
+//            painter.paintCursor(graphics);
+//        }
     }
 
     // TODO move to painter?
