@@ -377,6 +377,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         paintBackground(g);
         paintLines(g);
         g.setClip(clipBounds);
+        paintCursor(g);
     }
 
     /**
@@ -768,7 +769,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                 g.fillRect(x, y, width, height);
                 g.setColor(state.colors.negativeCursor);
                 Rectangle codeRect = getDataViewRect();
-                int previewX = codeArea.getPreviewX();
+                int previewX = getPreviewX();
                 int charWidth = getCharacterWidth();
                 int lineHeight = getLineHeight();
                 int line = (y + scrollPosition.getScrollLineOffset() - codeRect.y) / lineHeight;
@@ -869,7 +870,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
     @Override
     public int getPreviewX() {
-        return 0;
+        return computeFirstCodeCharPos(getBytesPerLine()) * getCharacterWidth();
     }
 
     @Override
