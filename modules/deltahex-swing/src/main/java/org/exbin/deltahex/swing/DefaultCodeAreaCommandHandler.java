@@ -47,7 +47,7 @@ import org.exbin.utils.binary_data.EditableBinaryData;
 /**
  * Default hexadecimal editor command handler.
  *
- * @version 0.2.0 2017/05/04
+ * @version 0.2.0 2017/09/20
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
@@ -956,6 +956,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
     @Override
     public void moveCaret(MouseEvent me, int modifiers) {
+        CodeAreaPainter painter = codeArea.getPainter();
         Rectangle hexRect = codeArea.getDataViewRectangle();
         CodeAreaViewMode viewMode = codeArea.getViewMode();
         CodeType codeType = codeArea.getCodeType();
@@ -978,48 +979,47 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         long dataPosition;
         int codeOffset = 0;
         int byteOnLine;
-        throw new UnsupportedOperationException("Not supported yet.");
-//        if ((viewMode == ViewMode.DUAL && cursorCharX < paintDataCache.previewStartChar) || viewMode == ViewMode.CODE_MATRIX) {
-//            caret.setSection(CodeAreaSection.CODE_MATRIX);
-//            byteOnLine = computeByteOffsetPerCodeCharOffset(cursorCharX);
-//            if (byteOnLine >= bytesPerLine) {
-//                codeOffset = 0;
-//            } else {
-//                codeOffset = cursorCharX - computeByteCharPos(byteOnLine);
-//                if (codeOffset >= codeType.getMaxDigits()) {
-//                    codeOffset = codeType.getMaxDigits() - 1;
-//                }
-//            }
-//        } else {
-//            caret.setSection(CodeAreaSection.TEXT_PREVIEW);
-//            byteOnLine = cursorCharX;
-//            if (viewMode == ViewMode.DUAL) {
-//                byteOnLine -= paintDataCache.previewStartChar;
-//            }
-//        }
-//
-//        if (byteOnLine >= bytesPerLine) {
-//            byteOnLine = bytesPerLine - 1;
-//        }
-//
-//        dataPosition = byteOnLine + (cursorLineY * bytesPerLine) - scrollPosition.getLineDataOffset();
-//        if (dataPosition < 0) {
-//            dataPosition = 0;
-//            codeOffset = 0;
-//        }
-//
-//        long dataSize = codeArea.getDataSize();
-//        if (dataPosition >= dataSize) {
-//            dataPosition = dataSize;
-//            codeOffset = 0;
-//        }
-//
-//        CaretPosition caretPosition = caret.getCaretPosition();
-//        caret.setCaretPosition(dataPosition, codeOffset);
-//        codeArea.notifyCaretMoved();
-//        sequenceBreak();
-//
-//        updateSelection(modifiers, caretPosition);
+        if ((viewMode == CodeAreaViewMode.DUAL && cursorCharX < painter.getPreviewFirstChar()) || viewMode == CodeAreaViewMode.CODE_MATRIX) {
+            caret.setSection(CodeAreaSection.CODE_MATRIX);
+            byteOnLine = painter.computePositionByte(cursorCharX);
+            if (byteOnLine >= bytesPerLine) {
+                codeOffset = 0;
+            } else {
+                codeOffset = cursorCharX - painter.computeFirstCodeCharPos(byteOnLine);
+                if (codeOffset >= codeType.getMaxDigitsForByte()) {
+                    codeOffset = codeType.getMaxDigitsForByte() - 1;
+                }
+            }
+        } else {
+            caret.setSection(CodeAreaSection.TEXT_PREVIEW);
+            byteOnLine = cursorCharX;
+            if (viewMode == CodeAreaViewMode.DUAL) {
+                byteOnLine -= painter.getPreviewFirstChar();
+            }
+        }
+
+        if (byteOnLine >= bytesPerLine) {
+            byteOnLine = bytesPerLine - 1;
+        }
+
+        dataPosition = byteOnLine + (cursorLineY * bytesPerLine) - scrollPosition.getLineDataOffset();
+        if (dataPosition < 0) {
+            dataPosition = 0;
+            codeOffset = 0;
+        }
+
+        long dataSize = codeArea.getDataSize();
+        if (dataPosition >= dataSize) {
+            dataPosition = dataSize;
+            codeOffset = 0;
+        }
+
+        CaretPosition caretPosition = caret.getCaretPosition();
+        caret.setCaretPosition(dataPosition, codeOffset);
+        codeArea.notifyCaretMoved();
+        sequenceBreak();
+
+        updateSelection(modifiers, caretPosition);
     }
 
     public void moveRight(int modifiers) {

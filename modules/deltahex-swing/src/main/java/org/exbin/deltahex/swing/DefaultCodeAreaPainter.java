@@ -43,7 +43,7 @@ import org.exbin.utils.binary_data.OutOfBoundsException;
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2017/09/08
+ * @version 0.2.0 2017/09/20
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaPainter implements CodeAreaPainter {
@@ -874,6 +874,11 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     }
 
     @Override
+    public int getPreviewFirstChar() {
+        return computeLastCodeCharPos(getBytesPerLine());
+    }
+
+    @Override
     public void rebuildColors() {
     }
 
@@ -918,12 +923,12 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
     @Override
     public int computeCodeAreaCharacter(int pixelX) {
-        return 16;
+        return pixelX / getCharacterWidth();
     }
 
     @Override
     public int computeCodeAreaLine(int pixelY) {
-        return 16;
+        return pixelY / getLineHeight();
     }
 
     @Override

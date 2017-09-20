@@ -73,6 +73,13 @@ public interface CodeAreaPainter {
     int getPreviewX();
 
     /**
+     * Returns first character of preview section.
+     *
+     * @return previews X position
+     */
+    int getPreviewFirstChar();
+
+    /**
      * Rebuilds colors after UIManager change.
      */
     void rebuildColors();
