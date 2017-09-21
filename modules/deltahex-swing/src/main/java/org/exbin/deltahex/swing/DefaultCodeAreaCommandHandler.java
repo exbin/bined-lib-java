@@ -956,69 +956,10 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
     @Override
     public void moveCaret(MouseEvent me, int modifiers) {
-        CodeAreaPainter painter = codeArea.getPainter();
-        Rectangle hexRect = codeArea.getDataViewRectangle();
-        CodeAreaViewMode viewMode = codeArea.getViewMode();
-        CodeType codeType = codeArea.getCodeType();
-        CodeAreaScrollPosition scrollPosition = codeArea.getScrollPosition();
-        CodeAreaCaret caret = codeArea.getCaret();
-        int bytesPerLine = codeArea.getBytesPerLine();
-        int mouseX = me.getX();
-        if (mouseX < hexRect.x) {
-            mouseX = hexRect.x;
-        }
-        int cursorCharX = codeArea.computeCodeAreaCharacter(mouseX - hexRect.x + scrollPosition.getScrollCharOffset()) + scrollPosition.getScrollCharPosition();
-        long cursorLineY = codeArea.computeCodeAreaLine(me.getY() - hexRect.y + scrollPosition.getScrollLineOffset()) + scrollPosition.getScrollLinePosition();
-        if (cursorLineY < 0) {
-            cursorLineY = 0;
-        }
-        if (cursorCharX < 0) {
-            cursorCharX = 0;
-        }
-
-        long dataPosition;
-        int codeOffset = 0;
-        int byteOnLine;
-        if ((viewMode == CodeAreaViewMode.DUAL && cursorCharX < painter.getPreviewFirstChar()) || viewMode == CodeAreaViewMode.CODE_MATRIX) {
-            caret.setSection(CodeAreaSection.CODE_MATRIX);
-            byteOnLine = painter.computePositionByte(cursorCharX);
-            if (byteOnLine >= bytesPerLine) {
-                codeOffset = 0;
-            } else {
-                codeOffset = cursorCharX - painter.computeFirstCodeCharPos(byteOnLine);
-                if (codeOffset >= codeType.getMaxDigitsForByte()) {
-                    codeOffset = codeType.getMaxDigitsForByte() - 1;
-                }
-            }
-        } else {
-            caret.setSection(CodeAreaSection.TEXT_PREVIEW);
-            byteOnLine = cursorCharX;
-            if (viewMode == CodeAreaViewMode.DUAL) {
-                byteOnLine -= painter.getPreviewFirstChar();
-            }
-        }
-
-        if (byteOnLine >= bytesPerLine) {
-            byteOnLine = bytesPerLine - 1;
-        }
-
-        dataPosition = byteOnLine + (cursorLineY * bytesPerLine) - scrollPosition.getLineDataOffset();
-        if (dataPosition < 0) {
-            dataPosition = 0;
-            codeOffset = 0;
-        }
-
-        long dataSize = codeArea.getDataSize();
-        if (dataPosition >= dataSize) {
-            dataPosition = dataSize;
-            codeOffset = 0;
-        }
-
-        CaretPosition caretPosition = caret.getCaretPosition();
-        caret.setCaretPosition(dataPosition, codeOffset);
         codeArea.notifyCaretMoved();
         sequenceBreak();
 
+        CaretPosition caretPosition = codeArea.getPainter().mousePositionToCaretPosition(me.getX(), me.getY());
         updateSelection(modifiers, caretPosition);
     }
 

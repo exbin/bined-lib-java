@@ -185,7 +185,7 @@ public interface CodeAreaPainter {
      * @return caret position
      */
     @Nullable
-    CaretPosition mousePositionToCaretPosition(long mouseX, long mouseY);
+    CaretPosition mousePositionToCaretPosition(int mouseX, int mouseY);
 
     /**
      * Returns rectangle of data view.
