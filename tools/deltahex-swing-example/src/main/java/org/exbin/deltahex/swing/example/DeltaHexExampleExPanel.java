@@ -60,13 +60,13 @@ import org.exbin.utils.binary_data.EditableBinaryData;
  * @version 0.2.0 2017/06/20
  * @author ExBin Project (http://exbin.org)
  */
-public class DeltaHexExamplePanel extends javax.swing.JPanel {
+public class DeltaHexExampleExPanel extends javax.swing.JPanel {
 
     private CodeArea codeArea;
     private final Map<JPanel, JPanel> tabMap = new HashMap<>();
     private JPanel activeTab;
 
-    public DeltaHexExamplePanel() {
+    public DeltaHexExampleExPanel() {
         initComponents();
     }
 
@@ -1367,7 +1367,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
 //                    codeArea.resetPosition();
                 }
             } catch (IOException ex) {
-                Logger.getLogger(DeltaHexExamplePanel.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(DeltaHexExampleExPanel.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }//GEN-LAST:event_loadDataButtonActionPerformed
@@ -1393,7 +1393,7 @@ public class DeltaHexExamplePanel extends javax.swing.JPanel {
                     codeArea.getData().saveToStream(stream);
                 }
             } catch (IOException ex) {
-                Logger.getLogger(DeltaHexExamplePanel.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(DeltaHexExampleExPanel.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }//GEN-LAST:event_saveDataButtonActionPerformed
