@@ -43,7 +43,7 @@ import org.exbin.utils.binary_data.OutOfBoundsException;
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2017/09/20
+ * @version 0.2.0 2017/09/25
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaPainter implements CodeAreaPainter {
@@ -307,9 +307,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         g.setColor(Color.BLACK);
         g.fillRect(0, state.headerAreaHeight - 1, state.areaWidth, 1);
 
-        g.setColor(Color.BLACK);
-        char[] headerCode = (String.valueOf(state.scrollPosition.getScrollCharPosition()) + "+" + String.valueOf(state.scrollPosition.getScrollCharOffset()) + " : " + String.valueOf(state.scrollPosition.getScrollLinePosition()) + "+" + String.valueOf(state.scrollPosition.getScrollLineOffset()) + " P: " + String.valueOf(paintCounter)).toCharArray();
-        g.drawChars(headerCode, 0, headerCode.length, 100, state.lineHeight);
         g.setClip(clipBounds);
     }
 
@@ -378,6 +375,16 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         paintLines(g);
         g.setClip(clipBounds);
         paintCursor(g);
+
+        
+        // TODO: Remove later
+        int x = state.areaWidth - state.lineNumbersAreaWidth - 220;
+        int y = state.areaHeight - state.headerAreaHeight - 20;
+        g.setColor(Color.YELLOW);
+        g.fillRect(x, y, 200, 16);
+        g.setColor(Color.BLACK);
+        char[] headerCode = (String.valueOf(state.scrollPosition.getScrollCharPosition()) + "+" + String.valueOf(state.scrollPosition.getScrollCharOffset()) + " : " + String.valueOf(state.scrollPosition.getScrollLinePosition()) + "+" + String.valueOf(state.scrollPosition.getScrollLineOffset()) + " P: " + String.valueOf(paintCounter)).toCharArray();
+        g.drawChars(headerCode, 0, headerCode.length, x, y + state.lineHeight);
     }
 
     /**
@@ -1007,7 +1014,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
         CaretPosition caretPosition = caret.getCaretPosition();
         caret.setCaretPosition(dataPosition, codeOffset);
-        
+
         return caretPosition;
     }
 
@@ -1071,6 +1078,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         Color selectionMirrorBackground;
         Color cursor;
         Color negativeCursor;
+        Color cursorMirror;
+        Color negativeCursorMirror;
         Color decorationLine;
         Color stripes;
     }

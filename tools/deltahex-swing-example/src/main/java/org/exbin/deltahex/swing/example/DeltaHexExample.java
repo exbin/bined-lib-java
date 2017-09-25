@@ -87,6 +87,7 @@ public class DeltaHexExample {
 //            }
 //        });
         frame.add(tabbedPane);
+        basicCodeArea.requestFocus();
 
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override

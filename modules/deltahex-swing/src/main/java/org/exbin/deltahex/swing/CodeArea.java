@@ -129,7 +129,6 @@ public class CodeArea extends JComponent implements CodeAreaControl {
         horizontalScrollBar.setVisible(true);
         horizontalScrollBar.addAdjustmentListener(new HorizontalAdjustmentListener());
         add(scrollPanel);
-        setDoubleBuffered(true);
         dataView = new CodeAreaDataView(this);
         dataView.setOpaque(false);
         scrollPanel.setOpaque(false);
@@ -137,6 +136,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
         scrollPanel.setViewportView(dataView);
         scrollPanel.getViewport().setOpaque(false);
 
+        // TODO: Use swing color instead
         setBackground(Color.WHITE);
         setFocusable(true);
         setFocusTraversalKeysEnabled(false);
