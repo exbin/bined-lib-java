@@ -43,7 +43,7 @@ import org.exbin.utils.binary_data.OutOfBoundsException;
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2017/09/25
+ * @version 0.2.0 2017/09/27
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaPainter implements CodeAreaPainter {
@@ -307,6 +307,132 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         g.setColor(Color.BLACK);
         g.fillRect(0, state.headerAreaHeight - 1, state.areaWidth, 1);
 
+        if (state.viewMode != CodeAreaViewMode.TEXT_PREVIEW) {
+            int charsPerLine = computeFirstCodeCharPos(state.bytesPerLine);
+            int headerX = state.lineNumbersAreaWidth + state.mainAreaX - state.scrollPosition.getScrollCharPosition() * state.characterWidth - state.scrollPosition.getScrollCharOffset();
+            int headerY = codeArea.getInsets().top + state.lineHeight - subFontSpace;
+
+            int visibleCharStart = (state.scrollPosition.getScrollCharPosition() * state.characterWidth + state.scrollPosition.getScrollCharOffset()) / state.characterWidth;
+            if (visibleCharStart < 0) {
+                visibleCharStart = 0;
+            }
+            int visibleCharEnd = (state.mainAreaWidth + (state.scrollPosition.getScrollCharPosition() + charsPerLine) * state.characterWidth + state.scrollPosition.getScrollCharOffset()) / state.characterWidth;
+            if (visibleCharEnd > charsPerLine) {
+                visibleCharEnd = charsPerLine;
+            }
+            int visibleStart = computePositionByte(visibleCharStart);
+            int visibleEnd = computePositionByte(visibleCharEnd - 1) + 1;
+
+            g.setColor(codeArea.getForeground());
+            char[] headerChars = new char[charsPerLine];
+            Arrays.fill(headerChars, ' ');
+
+            boolean interleaving = false;
+            int lastPos = 0;
+            for (int index = visibleStart; index < visibleEnd; index++) {
+                int codePos = computeFirstCodeCharPos(index);
+                if (codePos == lastPos + 2 && !interleaving) {
+                    interleaving = true;
+                } else {
+                    CodeAreaUtils.longToBaseCode(headerChars, codePos, index, 16, 2, true, state.hexCharactersCase);
+                    lastPos = codePos;
+                    interleaving = false;
+                }
+            }
+
+            int renderOffset = visibleCharStart;
+//            ColorsGroup.ColorType renderColorType = null;
+            Color renderColor = null;
+            for (int characterOnLine = visibleCharStart; characterOnLine < visibleCharEnd; characterOnLine++) {
+                int byteOnLine;
+                byteOnLine = computePositionByte(characterOnLine);
+                boolean sequenceBreak = false;
+                boolean nativeWidth = true;
+
+                int currentCharWidth = 0;
+//                ColorsGroup.ColorType colorType = ColorsGroup.ColorType.TEXT;
+                if (characterRenderingMode != CharacterRenderingMode.LINE_AT_ONCE) {
+                    char currentChar = ' ';
+//                    if (colorType == ColorsGroup.ColorType.TEXT) {
+                    currentChar = headerChars[characterOnLine];
+//                    }
+                    if (currentChar == ' ' && renderOffset == characterOnLine) {
+                        renderOffset++;
+                        continue;
+                    }
+                    if (characterRenderingMode == CharacterRenderingMode.AUTO && state.monospaceFont) {
+                        // Detect if character is in unicode range covered by monospace fonts
+                        if (CodeAreaSwingUtils.isMonospaceFullWidthCharater(currentChar)) {
+                            currentCharWidth = state.characterWidth;
+                        }
+                    }
+
+                    if (currentCharWidth == 0) {
+                        currentCharWidth = state.fontMetrics.charWidth(currentChar);
+                        nativeWidth = currentCharWidth == state.characterWidth;
+                    }
+                } else {
+                    currentCharWidth = state.characterWidth;
+                }
+
+                Color color = Color.BLACK;
+//                getHeaderPositionColor(byteOnLine, charOnLine);
+//                if (renderColorType == null) {
+//                    renderColorType = colorType;
+//                    renderColor = color;
+//                    g.setColor(color);
+//                }
+
+                if (!nativeWidth || !areSameColors(color, renderColor)) { // || !colorType.equals(renderColorType)
+                    sequenceBreak = true;
+                }
+                if (sequenceBreak) {
+                    if (renderOffset < characterOnLine) {
+                        g.drawChars(headerChars, renderOffset, characterOnLine - renderOffset, headerX + renderOffset * state.characterWidth, headerY);
+                    }
+
+//                    if (!colorType.equals(renderColorType)) {
+//                        renderColorType = colorType;
+//                    }
+                    if (!areSameColors(color, renderColor)) {
+                        renderColor = color;
+                        g.setColor(color);
+                    }
+
+                    if (!nativeWidth) {
+                        renderOffset = characterOnLine + 1;
+                        if (characterRenderingMode == CharacterRenderingMode.TOP_LEFT) {
+                            g.drawChars(headerChars, characterOnLine, 1, headerX + characterOnLine * state.characterWidth, headerY);
+                        } else {
+                            drawShiftedChar(g, headerChars, characterOnLine, state.characterWidth, headerX + characterOnLine * state.characterWidth, headerY, (state.characterWidth + 1 - currentCharWidth) >> 1);
+                        }
+                    } else {
+                        renderOffset = characterOnLine;
+                    }
+                }
+            }
+
+            if (renderOffset < charsPerLine) {
+                g.drawChars(headerChars, renderOffset, charsPerLine - renderOffset, headerX + renderOffset * state.characterWidth, headerY);
+            }
+        }
+
+//        int decorationMode = codeArea.getDecorationMode();
+//        if ((decorationMode & CodeArea.DECORATION_HEADER_LINE) > 0) {
+//            g.setColor(codeArea.getDecorationLineColor());
+//            g.drawLine(compRect.x, codeRect.y - 1, compRect.x + compRect.width, codeRect.y - 1);
+//        }
+//        if ((decorationMode & CodeArea.DECORATION_BOX) > 0) {
+//            g.setColor(codeArea.getDecorationLineColor());
+//            g.drawLine(codeRect.x - 1, codeRect.y - 1, codeRect.x + codeRect.width, codeRect.y - 1);
+//        }
+//        if ((decorationMode & CodeArea.DECORATION_PREVIEW_LINE) > 0) {
+//            int lineX = codeArea.getPreviewX() - scrollPosition.getScrollCharPosition() * codeArea.getCharWidth() - scrollPosition.getScrollCharOffset() - codeArea.getCharWidth() / 2;
+//            if (lineX >= codeRect.x) {
+//                g.setColor(codeArea.getDecorationLineColor());
+//                g.drawLine(lineX, compRect.y, lineX, codeRect.y);
+//            }
+//        }
         g.setClip(clipBounds);
     }
 
@@ -376,7 +502,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         g.setClip(clipBounds);
         paintCursor(g);
 
-        
         // TODO: Remove later
         int x = state.areaWidth - state.lineNumbersAreaWidth - 220;
         int y = state.areaHeight - state.headerAreaHeight - 20;
@@ -734,13 +859,11 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             g.setColor(state.colors.cursor);
             Point shadowCursorPoint = caret.getShadowCursorPoint(bytesPerLine, lineHeight, characterWidth, linesPerRect);
             shadowCursorPoint.setLocation(shadowCursorPoint.x + state.lineNumbersAreaWidth, shadowCursorPoint.y + state.headerAreaHeight);
-            if (shadowCursorPoint != null) {
-                Graphics2D g2d = (Graphics2D) g.create();
-                Stroke dashed = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{2}, 0);
-                g2d.setStroke(dashed);
-                g2d.drawRect(shadowCursorPoint.x, shadowCursorPoint.y,
-                        characterWidth * (codeArea.getActiveSection() == CodeAreaSection.TEXT_PREVIEW ? codeDigits : 1), lineHeight - 1);
-            }
+            Graphics2D g2d = (Graphics2D) g.create();
+            Stroke dashed = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{2}, 0);
+            g2d.setStroke(dashed);
+            g2d.drawRect(shadowCursorPoint.x, shadowCursorPoint.y,
+                    characterWidth * (codeArea.getActiveSection() == CodeAreaSection.TEXT_PREVIEW ? codeDigits : 1), lineHeight - 1);
         }
     }
 
