@@ -28,7 +28,7 @@ import org.exbin.utils.binary_data.ByteArrayEditableData;
 /**
  * Example Swing GUI demonstration application of the deltahex component.
  *
- * @version 0.2.0 2017/09/23
+ * @version 0.2.0 2017/09/28
  * @author ExBin Project (http://exbin.org)
  */
 public class DeltaHexExample {
@@ -44,6 +44,7 @@ public class DeltaHexExample {
         frame.setSize(1000, 600);
         frame.setLocationRelativeTo(null);
         final JTabbedPane tabbedPane = new JTabbedPane();
+        tabbedPane.setFocusable(false);
 
         final DeltaHexExampleBasicPanel basicPanel = new DeltaHexExampleBasicPanel();
         final CodeArea basicCodeArea = new CodeArea();
@@ -71,23 +72,24 @@ public class DeltaHexExample {
         tabbedPane.addTab("Extended", extendedPanel);
 
         // TODO Keep only current tab populated
-//        tabbedPane.addChangeListener(new ChangeListener() {
-//            @Override
-//            public void stateChanged(ChangeEvent e) {
-//                switch (tabbedPane.getSelectedIndex()) {
-//                    case 0: {
+        tabbedPane.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                switch (tabbedPane.getSelectedIndex()) {
+                    case 0: {
 //                        tabbedPane.setSelectedComponent(basicPanel);
-//                        break;
-//                    }
-//                    case 1: {
+                        basicCodeArea.requestFocus();
+                        break;
+                    }
+                    case 1: {
 //                        tabbedPane.setSelectedComponent(extendedPanel);
-//                        break;
-//                    }
-//                }
-//            }
-//        });
+                        extendedCodeArea.requestFocus();
+                        break;
+                    }
+                }
+            }
+        });
         frame.add(tabbedPane);
-        basicCodeArea.requestFocus();
 
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
@@ -101,7 +103,7 @@ public class DeltaHexExample {
                     }
                 });
                 frame.setVisible(true);
-                tabbedPane.requestFocus();
+                basicCodeArea.requestFocus();
             }
         });
     }

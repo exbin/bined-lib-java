@@ -43,7 +43,7 @@ import org.exbin.utils.binary_data.OutOfBoundsException;
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2017/09/27
+ * @version 0.2.0 2017/09/28
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaPainter implements CodeAreaPainter {
@@ -762,11 +762,11 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         int characterWidth = getCharacterWidth();
         int linesPerRect = getLinesPerRectangle();
         Point cursorPoint = caret.getCursorPoint(bytesPerLine, lineHeight, characterWidth, linesPerRect);
-        cursorPoint.setLocation(cursorPoint.x + state.lineNumbersAreaWidth, cursorPoint.y + state.headerAreaHeight);
         boolean cursorVisible = caret.isCursorVisible();
         CodeAreaCaret.CursorRenderingMode renderingMode = caret.getRenderingMode();
 
         if (cursorVisible && cursorPoint != null) {
+            cursorPoint.setLocation(cursorPoint.x + state.lineNumbersAreaWidth, cursorPoint.y + state.headerAreaHeight);
             g.setColor(state.colors.cursor);
             if (renderingMode == CodeAreaCaret.CursorRenderingMode.XOR) {
                 g.setXORMode(Color.WHITE);
