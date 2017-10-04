@@ -79,6 +79,7 @@ public class DeltaDocumentSaveTest {
         DeltaDocument document = openTempDeltaDocument();
         assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
         document.insert(0, new byte[]{0x40, 0x41});
+        document.validatePointerPosition();
 
         try {
             document.save();
@@ -94,6 +95,7 @@ public class DeltaDocumentSaveTest {
             fail("Exception: " + ex.getMessage());
         }
 
+        document.validatePointerPosition();
         document.clear();
         assertEquals(0, document.getSegments().size());
         closeTempDeltaDocument(document);
@@ -104,6 +106,7 @@ public class DeltaDocumentSaveTest {
         DeltaDocument document = openTempDeltaDocument();
         assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
         document.insert(120, new byte[]{0x40, 0x41});
+        document.validatePointerPosition();
 
         try {
             document.save();
@@ -119,6 +122,7 @@ public class DeltaDocumentSaveTest {
             fail("Exception: " + ex.getMessage());
         }
 
+        document.validatePointerPosition();
         document.clear();
         assertEquals(0, document.getSegments().size());
         closeTempDeltaDocument(document);
@@ -129,6 +133,7 @@ public class DeltaDocumentSaveTest {
         DeltaDocument document = openTempDeltaDocument();
         assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
         document.insert(256, new byte[]{0x40, 0x41});
+        document.validatePointerPosition();
 
         try {
             document.save();
@@ -144,6 +149,7 @@ public class DeltaDocumentSaveTest {
             fail("Exception: " + ex.getMessage());
         }
 
+        document.validatePointerPosition();
         document.clear();
         assertEquals(0, document.getSegments().size());
         closeTempDeltaDocument(document);
@@ -155,6 +161,7 @@ public class DeltaDocumentSaveTest {
         assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
         BinaryData copy = document.copy(0x40, 2);
         document.insert(0, copy);
+        document.validatePointerPosition();
         copy.dispose();
 
         try {
@@ -171,6 +178,7 @@ public class DeltaDocumentSaveTest {
             fail("Exception: " + ex.getMessage());
         }
 
+        document.validatePointerPosition();
         document.clear();
         assertEquals(0, document.getSegments().size());
         closeTempDeltaDocument(document);
@@ -182,6 +190,7 @@ public class DeltaDocumentSaveTest {
         assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
         BinaryData copy = document.copy(0x40, 2);
         document.insert(120, copy);
+        document.validatePointerPosition();
         copy.dispose();
 
         try {
@@ -198,6 +207,7 @@ public class DeltaDocumentSaveTest {
             fail("Exception: " + ex.getMessage());
         }
 
+        document.validatePointerPosition();
         document.clear();
         assertEquals(0, document.getSegments().size());
         closeTempDeltaDocument(document);
@@ -209,6 +219,7 @@ public class DeltaDocumentSaveTest {
         assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
         BinaryData copy = document.copy(0x40, 2);
         document.insert(256, copy);
+        document.validatePointerPosition();
         copy.dispose();
 
         try {
@@ -225,6 +236,7 @@ public class DeltaDocumentSaveTest {
             fail("Exception: " + ex.getMessage());
         }
 
+        document.validatePointerPosition();
         document.clear();
         assertEquals(0, document.getSegments().size());
         closeTempDeltaDocument(document);
@@ -235,6 +247,7 @@ public class DeltaDocumentSaveTest {
         DeltaDocument document = openTempDeltaDocument();
         assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
         document.replace(0, new byte[]{0x40, 0x41});
+        document.validatePointerPosition();
 
         try {
             document.save();
@@ -250,6 +263,7 @@ public class DeltaDocumentSaveTest {
             fail("Exception: " + ex.getMessage());
         }
 
+        document.validatePointerPosition();
         document.clear();
         assertEquals(0, document.getSegments().size());
         closeTempDeltaDocument(document);
@@ -260,6 +274,7 @@ public class DeltaDocumentSaveTest {
         DeltaDocument document = openTempDeltaDocument();
         assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
         document.replace(120, new byte[]{0x40, 0x41});
+        document.validatePointerPosition();
 
         try {
             document.save();
@@ -275,6 +290,7 @@ public class DeltaDocumentSaveTest {
             fail("Exception: " + ex.getMessage());
         }
 
+        document.validatePointerPosition();
         document.clear();
         assertEquals(0, document.getSegments().size());
         closeTempDeltaDocument(document);
@@ -285,6 +301,7 @@ public class DeltaDocumentSaveTest {
         DeltaDocument document = openTempDeltaDocument();
         assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
         document.replace(254, new byte[]{0x40, 0x41});
+        document.validatePointerPosition();
 
         try {
             document.save();
@@ -300,6 +317,7 @@ public class DeltaDocumentSaveTest {
             fail("Exception: " + ex.getMessage());
         }
 
+        document.validatePointerPosition();
         document.clear();
         assertEquals(0, document.getSegments().size());
         closeTempDeltaDocument(document);
@@ -311,6 +329,7 @@ public class DeltaDocumentSaveTest {
         assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
         BinaryData copy = document.copy(0x40, 2);
         document.replace(0, copy);
+        document.validatePointerPosition();
         copy.dispose();
 
         try {
@@ -327,6 +346,7 @@ public class DeltaDocumentSaveTest {
             fail("Exception: " + ex.getMessage());
         }
 
+        document.validatePointerPosition();
         document.clear();
         assertEquals(0, document.getSegments().size());
         closeTempDeltaDocument(document);
@@ -338,6 +358,7 @@ public class DeltaDocumentSaveTest {
         assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
         BinaryData copy = document.copy(0x40, 2);
         document.replace(120, copy);
+        document.validatePointerPosition();
         copy.dispose();
 
         try {
@@ -354,6 +375,7 @@ public class DeltaDocumentSaveTest {
             fail("Exception: " + ex.getMessage());
         }
 
+        document.validatePointerPosition();
         document.clear();
         assertEquals(0, document.getSegments().size());
         closeTempDeltaDocument(document);
@@ -365,6 +387,7 @@ public class DeltaDocumentSaveTest {
         assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
         BinaryData copy = document.copy(0x40, 2);
         document.replace(254, copy);
+        document.validatePointerPosition();
         copy.dispose();
 
         try {
@@ -381,6 +404,7 @@ public class DeltaDocumentSaveTest {
             fail("Exception: " + ex.getMessage());
         }
 
+        document.validatePointerPosition();
         document.clear();
         assertEquals(0, document.getSegments().size());
         closeTempDeltaDocument(document);
@@ -391,6 +415,7 @@ public class DeltaDocumentSaveTest {
         DeltaDocument document = openTempDeltaDocument();
         assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
         document.remove(0, 2);
+        document.validatePointerPosition();
 
         try {
             document.save();
@@ -406,6 +431,7 @@ public class DeltaDocumentSaveTest {
             fail("Exception: " + ex.getMessage());
         }
 
+        document.validatePointerPosition();
         document.clear();
         assertEquals(0, document.getSegments().size());
         closeTempDeltaDocument(document);
@@ -416,6 +442,7 @@ public class DeltaDocumentSaveTest {
         DeltaDocument document = openTempDeltaDocument();
         assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
         document.remove(120, 2);
+        document.validatePointerPosition();
 
         try {
             document.save();
@@ -431,6 +458,7 @@ public class DeltaDocumentSaveTest {
             fail("Exception: " + ex.getMessage());
         }
 
+        document.validatePointerPosition();
         document.clear();
         assertEquals(0, document.getSegments().size());
         closeTempDeltaDocument(document);
@@ -441,6 +469,7 @@ public class DeltaDocumentSaveTest {
         DeltaDocument document = openTempDeltaDocument();
         assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
         document.remove(254, 2);
+        document.validatePointerPosition();
 
         try {
             document.save();
@@ -456,6 +485,7 @@ public class DeltaDocumentSaveTest {
             fail("Exception: " + ex.getMessage());
         }
 
+        document.validatePointerPosition();
         document.clear();
         assertEquals(0, document.getSegments().size());
         closeTempDeltaDocument(document);
@@ -467,7 +497,9 @@ public class DeltaDocumentSaveTest {
         assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
         EditableBinaryData halfCopy = (EditableBinaryData) document.copy(0, 128);
         document.remove(0, 128);
+        document.validatePointerPosition();
         document.insert(128, halfCopy);
+        document.validatePointerPosition();
         halfCopy.dispose();
 
         try {
@@ -484,6 +516,7 @@ public class DeltaDocumentSaveTest {
             fail("Exception: " + ex.getMessage());
         }
 
+        document.validatePointerPosition();
         document.clear();
         assertEquals(0, document.getSegments().size());
         closeTempDeltaDocument(document);
@@ -495,7 +528,9 @@ public class DeltaDocumentSaveTest {
         assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
         EditableBinaryData quarterCopy = (EditableBinaryData) document.copy(64, 64);
         document.remove(64, 64);
+        document.validatePointerPosition();
         document.insert(128, quarterCopy);
+        document.validatePointerPosition();
         quarterCopy.dispose();
 
         try {
@@ -512,6 +547,7 @@ public class DeltaDocumentSaveTest {
             fail("Exception: " + ex.getMessage());
         }
 
+        document.validatePointerPosition();
         document.clear();
         assertEquals(0, document.getSegments().size());
         closeTempDeltaDocument(document);
@@ -523,11 +559,15 @@ public class DeltaDocumentSaveTest {
         assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
         EditableBinaryData quarterCopy = (EditableBinaryData) document.copy(0, 64);
         document.remove(0, 64);
+        document.validatePointerPosition();
         document.insert(64, quarterCopy);
+        document.validatePointerPosition();
         quarterCopy.dispose();
         EditableBinaryData quarterCopy2 = (EditableBinaryData) document.copy(128, 64);
         document.remove(128, 64);
+        document.validatePointerPosition();
         document.insert(192, quarterCopy2);
+        document.validatePointerPosition();
         quarterCopy2.dispose();
 
         try {
@@ -544,6 +584,7 @@ public class DeltaDocumentSaveTest {
             fail("Exception: " + ex.getMessage());
         }
 
+        document.validatePointerPosition();
         document.clear();
         assertEquals(0, document.getSegments().size());
         closeTempDeltaDocument(document);
@@ -555,7 +596,9 @@ public class DeltaDocumentSaveTest {
         assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
         EditableBinaryData quarterCopy = (EditableBinaryData) document.copy(0, 64);
         document.remove(0, 64);
+        document.validatePointerPosition();
         document.insert(192, quarterCopy);
+        document.validatePointerPosition();
         quarterCopy.dispose();
 
         try {
@@ -572,6 +615,7 @@ public class DeltaDocumentSaveTest {
             fail("Exception: " + ex.getMessage());
         }
 
+        document.validatePointerPosition();
         document.clear();
         assertEquals(0, document.getSegments().size());
         closeTempDeltaDocument(document);
@@ -583,7 +627,9 @@ public class DeltaDocumentSaveTest {
         assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
         EditableBinaryData quarterCopy = (EditableBinaryData) document.copy(192, 64);
         document.remove(192, 64);
+        document.validatePointerPosition();
         document.insert(0, quarterCopy);
+        document.validatePointerPosition();
         quarterCopy.dispose();
 
         try {
@@ -600,6 +646,7 @@ public class DeltaDocumentSaveTest {
             fail("Exception: " + ex.getMessage());
         }
 
+        document.validatePointerPosition();
         document.clear();
         assertEquals(0, document.getSegments().size());
         closeTempDeltaDocument(document);
@@ -612,7 +659,9 @@ public class DeltaDocumentSaveTest {
         for (int i = 0; i < 128; i++) {
             byte buf = document.getByte(i);
             document.setByte(i, document.getByte(255 - i));
+            document.validatePointerPosition();
             document.setByte(255 - i, buf);
+            document.validatePointerPosition();
         }
 
         try {
@@ -629,6 +678,7 @@ public class DeltaDocumentSaveTest {
             fail("Exception: " + ex.getMessage());
         }
 
+        document.validatePointerPosition();
         document.clear();
         assertEquals(0, document.getSegments().size());
         closeTempDeltaDocument(document);
@@ -642,7 +692,9 @@ public class DeltaDocumentSaveTest {
             BinaryData copy1 = document.copy(i, 1);
             BinaryData copy2 = document.copy(255 - i, 1);
             document.replace(i, copy2);
+            document.validatePointerPosition();
             document.replace(255 - i, copy1);
+            document.validatePointerPosition();
             copy1.dispose();
             copy2.dispose();
         }
@@ -661,6 +713,7 @@ public class DeltaDocumentSaveTest {
             fail("Exception: " + ex.getMessage());
         }
 
+        document.validatePointerPosition();
         document.clear();
         assertEquals(0, document.getSegments().size());
         closeTempDeltaDocument(document);

@@ -52,6 +52,7 @@ public class DeltaDocumentTest {
         assertEquals(0, ((FileSegment) segment0).getStartPosition());
         assertEquals(SAMPLE_ALLBYTES_SIZE, segment0.getLength());
 
+        document.validate();
         document.clear();
         assertEquals(0, document.getSegments().size());
         document.dispose();
@@ -81,6 +82,7 @@ public class DeltaDocumentTest {
         assertEquals(11, ((FileSegment) segment2).getStartPosition());
         assertEquals(SAMPLE_ALLBYTES_SIZE - 11, segment2.getLength());
 
+        document.validatePointerPosition();
         document.clear();
         assertEquals(0, document.getSegments().size());
         document.dispose();
@@ -111,6 +113,7 @@ public class DeltaDocumentTest {
         assertEquals(10, ((FileSegment) segment2).getStartPosition());
         assertEquals(SAMPLE_ALLBYTES_SIZE - 10, segment2.getLength());
 
+        document.validatePointerPosition();
         document.clear();
         assertEquals(0, document.getSegments().size());
     }
