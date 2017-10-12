@@ -42,7 +42,9 @@ public class DeltaDocumentInputStream extends InputStream implements SeekableStr
         }
 
         try {
-            return data.getByte(position++);
+            int value = data.getByte(position) & 0xFF;
+            position++;
+            return value;
         } catch (ArrayIndexOutOfBoundsException ex) {
             return -1;
         }
@@ -55,7 +57,8 @@ public class DeltaDocumentInputStream extends InputStream implements SeekableStr
 
     @Override
     public int available() throws IOException {
-        return (int) (data.getDataSize() - position);
+        long available = data.getDataSize()  - position;
+        return (available > Integer.MAX_VALUE) ? Integer.MAX_VALUE : (int) available;
     }
 
     @Override
