@@ -52,6 +52,8 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
     public static final String MIME_CLIPBOARD_BINARY = "application/octet-stream";
     private static final int CODE_BUFFER_LENGTH = 16;
+    private static final char BACKSPACE_CHAR = '\b';
+    private static final char DELETE_CHAR = (char) 0x7f;
 
     private final int metaMask;
 
@@ -467,7 +469,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             }
         } else {
             char keyChar = keyValue;
-            if (keyChar > 31 && codeArea.isValidChar(keyValue)) {
+            if (keyChar > 31 && keyChar != DELETE_CHAR && codeArea.isValidChar(keyValue)) {
                 BinaryData data = codeArea.getData();
                 CaretPosition caretPosition = codeArea.getCaretPosition();
                 long dataPosition = caretPosition.getDataPosition();
