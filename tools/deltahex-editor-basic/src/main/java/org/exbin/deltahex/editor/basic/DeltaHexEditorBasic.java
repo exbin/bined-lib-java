@@ -593,7 +593,7 @@ public class DeltaHexEditorBasic extends javax.swing.JFrame {
 
     private void aboutMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aboutMenuItemActionPerformed
         JOptionPane.showMessageDialog(this,
-                "Delta Hexadecimal Editor - Basic Editor\nhttp://deltahex.exbin.org",
+                "Delta Hexadecimal Editor - Basic Editor\nVersion 0.1.3\nhttp://deltahex.exbin.org",
                 "About application",
                 JOptionPane.PLAIN_MESSAGE);
     }//GEN-LAST:event_aboutMenuItemActionPerformed
@@ -606,7 +606,7 @@ public class DeltaHexEditorBasic extends javax.swing.JFrame {
             } else {
                 editationMode = EditationMode.INSERT;
             }
-            codeArea.setEditationMode(editationMode);
+             codeArea.setEditationMode(editationMode);
         }
     }//GEN-LAST:event_editationModeLabelMouseClicked
 

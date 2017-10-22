@@ -604,7 +604,6 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
 
                 ((EditCharDataCommand) editCommand).appendEdit(keyChar);
             }
-            sequenceBreak();
             codeArea.notifyDataChanged();
         }
     }
