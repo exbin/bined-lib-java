@@ -614,7 +614,7 @@ public class DeltaHexEditorBasic extends javax.swing.JFrame {
         EncodingSelectionDialog dialog = new EncodingSelectionDialog(this, true);
         dialog.setEncoding(codeArea.getCharset().name());
         dialog.setVisible(true);
-        if (dialog.getReturnStatus() == EncodingSelectionDialog.RET_OK) {
+        if (dialog.getReturnStatus() == EncodingSelectionDialog.ReturnStatus.OK) {
             String encoding = dialog.getEncoding();
             if (encoding != null) {
                 codeArea.setCharset(Charset.forName(encoding));

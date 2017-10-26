@@ -27,21 +27,12 @@ import javax.swing.JComponent;
 import javax.swing.KeyStroke;
 
 /**
- * Basic single jar swing version of Delta Hexadecimal editor.
+ * Basic encoding selection dialog.
  *
  * @version 0.1.2 2016/12/13
  * @author ExBin Project (http://exbin.org)
  */
 public class EncodingSelectionDialog extends javax.swing.JDialog {
-
-    /**
-     * A return status code - returned if Cancel button has been pressed
-     */
-    public static final int RET_CANCEL = 0;
-    /**
-     * A return status code - returned if OK button has been pressed
-     */
-    public static final int RET_OK = 1;
 
     /**
      * Creates new form EncodingSelectionDialog
@@ -64,7 +55,7 @@ public class EncodingSelectionDialog extends javax.swing.JDialog {
         actionMap.put(cancelName, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                doClose(RET_CANCEL);
+                doClose(ReturnStatus.CANCEL);
             }
         });
 
@@ -79,7 +70,7 @@ public class EncodingSelectionDialog extends javax.swing.JDialog {
     /**
      * @return the return status of this dialog - one of RET_OK or RET_CANCEL
      */
-    public int getReturnStatus() {
+    public ReturnStatus getReturnStatus() {
         return returnStatus;
     }
 
@@ -164,21 +155,18 @@ public class EncodingSelectionDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
-        doClose(RET_OK);
+        doClose(ReturnStatus.OK);
     }//GEN-LAST:event_okButtonActionPerformed
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
-        doClose(RET_CANCEL);
+        doClose(ReturnStatus.CANCEL);
     }//GEN-LAST:event_cancelButtonActionPerformed
 
-    /**
-     * Closes the dialog
-     */
     private void closeDialog(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_closeDialog
-        doClose(RET_CANCEL);
+        doClose(ReturnStatus.CANCEL);
     }//GEN-LAST:event_closeDialog
 
-    private void doClose(int retStatus) {
+    private void doClose(ReturnStatus retStatus) {
         returnStatus = retStatus;
         setVisible(false);
         dispose();
@@ -238,5 +226,9 @@ public class EncodingSelectionDialog extends javax.swing.JDialog {
     private javax.swing.JButton okButton;
     // End of variables declaration//GEN-END:variables
 
-    private int returnStatus = RET_CANCEL;
+    private ReturnStatus returnStatus = ReturnStatus.CANCEL;
+    
+    public enum ReturnStatus {
+        CANCEL, OK
+    }
 }
