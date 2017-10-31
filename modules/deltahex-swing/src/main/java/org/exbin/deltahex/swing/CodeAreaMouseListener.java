@@ -15,7 +15,6 @@
  */
 package org.exbin.deltahex.swing;
 
-import com.sun.istack.internal.NotNull;
 import java.awt.Cursor;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
@@ -24,11 +23,12 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import javax.annotation.Nonnull;
 
 /**
  * Code Area component mouse listener.
  *
- * @version 0.2.0 2017/06/17
+ * @version 0.2.0 2017/10/31
  * @author ExBin Project (http://exbin.org)
  */
 /* package */ class CodeAreaMouseListener extends MouseAdapter implements MouseMotionListener, MouseWheelListener {
@@ -48,7 +48,7 @@ import java.awt.event.MouseWheelListener;
     }
 
     @Override
-    public void mousePressed(@NotNull MouseEvent me) {
+    public void mousePressed(@Nonnull MouseEvent me) {
         codeArea.requestFocus();
         if (codeArea.isEnabled() && me.getButton() == MouseEvent.BUTTON1) {
             codeArea.getCommandHandler().moveCaret(me, me.getModifiersEx());
@@ -58,27 +58,27 @@ import java.awt.event.MouseWheelListener;
     }
 
     @Override
-    public void mouseReleased(@NotNull MouseEvent me) {
+    public void mouseReleased(@Nonnull MouseEvent me) {
         mouseDown = false;
     }
 
     @Override
-    public void mouseExited(@NotNull MouseEvent e) {
+    public void mouseExited(@Nonnull MouseEvent e) {
         currentCursor = defaultCursor;
         codeArea.setCursor(defaultCursor);
     }
 
     @Override
-    public void mouseEntered(@NotNull MouseEvent e) {
+    public void mouseEntered(@Nonnull MouseEvent e) {
         updateMouseCursor(e);
     }
 
     @Override
-    public void mouseMoved(@NotNull MouseEvent e) {
+    public void mouseMoved(@Nonnull MouseEvent e) {
         updateMouseCursor(e);
     }
 
-    private void updateMouseCursor(@NotNull MouseEvent e) {
+    private void updateMouseCursor(@Nonnull MouseEvent e) {
         Cursor newCursor = defaultCursor;
         Rectangle dataViewRectangle = codeArea.getDataViewRectangle();
         if (e.getX() >= dataViewRectangle.x && e.getY() >= dataViewRectangle.y) {
@@ -92,7 +92,7 @@ import java.awt.event.MouseWheelListener;
     }
 
     @Override
-    public void mouseDragged(@NotNull MouseEvent me) {
+    public void mouseDragged(@Nonnull MouseEvent me) {
         updateMouseCursor(me);
         if (codeArea.isEnabled() && mouseDown) {
             codeArea.getCommandHandler().moveCaret(me, KeyEvent.SHIFT_DOWN_MASK);
@@ -101,7 +101,7 @@ import java.awt.event.MouseWheelListener;
     }
 
     @Override
-    public void mouseWheelMoved(@NotNull MouseWheelEvent e) {
+    public void mouseWheelMoved(@Nonnull MouseWheelEvent e) {
         if (!codeArea.isEnabled() || e.getWheelRotation() == 0) {
             return;
         }
