@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.deltahex.swing;
+package org.exbin.deltahex.swing.basic;
 
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
@@ -39,6 +39,10 @@ import org.exbin.deltahex.CodeType;
 import org.exbin.deltahex.EditationMode;
 import org.exbin.deltahex.SelectionRange;
 import org.exbin.deltahex.CodeAreaViewMode;
+import org.exbin.deltahex.swing.CodeArea;
+import org.exbin.deltahex.swing.CodeAreaCaret;
+import org.exbin.deltahex.swing.CodeAreaCommandHandler;
+import org.exbin.deltahex.swing.CodeAreaScrollPosition;
 import org.exbin.utils.binary_data.BinaryData;
 import org.exbin.utils.binary_data.ByteArrayEditableData;
 import org.exbin.utils.binary_data.EditableBinaryData;
@@ -258,7 +262,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                         codeArea.getCaret().setCaretPosition(codeArea.getDataSize());
                     } else if (codeArea.getActiveSection() == CodeAreaSection.CODE_MATRIX) {
                         long newPosition = (((caretPosition.getDataPosition() + scrollPosition.getLineDataOffset()) / bytesPerLine) + 1) * bytesPerLine - 1 - scrollPosition.getLineDataOffset();
-                        codeArea.getCaret().setCaretPosition(newPosition < dataSize ? newPosition : dataSize, newPosition < dataSize ? codeArea.getCodeType().getMaxDigitsForByte() - 1 : 0);
+                        codeArea.getCaret().setCaretPosition(newPosition < dataSize ? newPosition : dataSize, newPosition < dataSize ? codeArea.getPainter().getCodeType().getMaxDigitsForByte() - 1 : 0);
                     } else {
                         long newPosition = (((caretPosition.getDataPosition() + scrollPosition.getLineDataOffset()) / bytesPerLine) + 1) * bytesPerLine - 1 - scrollPosition.getLineDataOffset();
                         codeArea.getCaret().setCaretPosition(newPosition < dataSize ? newPosition : dataSize);

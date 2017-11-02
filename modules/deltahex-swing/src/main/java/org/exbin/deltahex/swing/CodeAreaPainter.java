@@ -20,6 +20,7 @@ import java.awt.Rectangle;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.exbin.deltahex.CaretPosition;
+import org.exbin.deltahex.CodeAreaSection;
 import org.exbin.utils.binary_data.OutOfBoundsException;
 
 /**
@@ -193,4 +194,6 @@ public interface CodeAreaPainter {
      * @return rectangle
      */
     Rectangle getDataViewRect();
+
+    void revealPosition(long position, @Nonnull CodeAreaSection section);
 }

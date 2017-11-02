@@ -15,10 +15,13 @@
  */
 package org.exbin.deltahex.swing;
 
+import java.awt.Color;
+import javax.annotation.Nonnull;
+
 /**
  * Hexadecimal editor component swing utilities.
  *
- * @version 0.2.0 2017/06/17
+ * @version 0.2.0 2017/11/02
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeAreaSwingUtils {
@@ -43,5 +46,25 @@ public class CodeAreaSwingUtils {
         return (character > MIN_MONOSPACE_CODE_POINT && (int) character < MAX_MONOSPACE_CODE_POINT
                 && character != INV_SPACE_CODE_POINT
                 && character != EXCEPTION1_CODE_POINT && character != EXCEPTION2_CODE_POINT);
+    }
+
+    @Nonnull
+    public static Color createOddColor(@Nonnull Color color) {
+        return new Color(
+                computeOddColorComponent(color.getRed()),
+                computeOddColorComponent(color.getGreen()),
+                computeOddColorComponent(color.getBlue()));
+    }
+
+    public static int computeOddColorComponent(int colorComponent) {
+        return colorComponent + (colorComponent > 64 ? - 16 : 16);
+    }
+
+    @Nonnull
+    public static Color createNegativeColor(@Nonnull Color color) {
+        return new Color(
+                255 - color.getRed(),
+                255 - color.getGreen(),
+                255 - color.getBlue());
     }
 }

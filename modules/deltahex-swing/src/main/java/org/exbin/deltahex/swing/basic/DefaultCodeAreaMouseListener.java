@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.deltahex.swing;
+package org.exbin.deltahex.swing.basic;
 
 import java.awt.Cursor;
 import java.awt.Rectangle;
@@ -24,6 +24,8 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import javax.annotation.Nonnull;
+import org.exbin.deltahex.swing.CodeArea;
+import org.exbin.deltahex.swing.CodeAreaScrollPosition;
 
 /**
  * Code Area component mouse listener.
@@ -31,7 +33,7 @@ import javax.annotation.Nonnull;
  * @version 0.2.0 2017/10/31
  * @author ExBin Project (http://exbin.org)
  */
-/* package */ class CodeAreaMouseListener extends MouseAdapter implements MouseMotionListener, MouseWheelListener {
+/* package */ class DefaultCodeAreaMouseListener extends MouseAdapter implements MouseMotionListener, MouseWheelListener {
 
     public static final int MOUSE_SCROLL_LINES = 3;
 
@@ -42,7 +44,7 @@ import javax.annotation.Nonnull;
     private Cursor currentCursor;
     private boolean mouseDown = false;
 
-    public CodeAreaMouseListener(CodeArea codeArea) {
+    public DefaultCodeAreaMouseListener(CodeArea codeArea) {
         this.codeArea = codeArea;
         currentCursor = codeArea.getCursor();
     }
