@@ -25,7 +25,6 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import javax.annotation.Nonnull;
 import org.exbin.deltahex.swing.CodeArea;
-import org.exbin.deltahex.swing.CodeAreaScrollPosition;
 
 /**
  * Code Area component mouse listener.

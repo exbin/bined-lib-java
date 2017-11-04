@@ -40,8 +40,8 @@ import org.exbin.deltahex.ScrollBarVisibility;
 import org.exbin.deltahex.SelectionRange;
 import org.exbin.deltahex.CodeAreaViewMode;
 import org.exbin.deltahex.swing.CodeArea;
-import org.exbin.deltahex.swing.CodeAreaCaret;
-import org.exbin.deltahex.swing.CodeAreaScrollPosition;
+import org.exbin.deltahex.swing.basic.CodeAreaCaret;
+import org.exbin.deltahex.swing.basic.CodeAreaScrollPosition;
 import org.exbin.deltahex.swing.basic.DefaultCodeAreaPainter;
 
 /**

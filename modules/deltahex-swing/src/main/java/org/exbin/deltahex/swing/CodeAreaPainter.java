@@ -16,7 +16,7 @@
 package org.exbin.deltahex.swing;
 
 import java.awt.Graphics;
-import java.awt.Rectangle;
+import java.awt.Point;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.exbin.deltahex.CaretPosition;
@@ -26,7 +26,7 @@ import org.exbin.utils.binary_data.OutOfBoundsException;
 /**
  * Hexadecimal editor painter interface.
  *
- * @version 0.2.0 2017/07/30
+ * @version 0.2.0 2017/11/04
  * @author ExBin Project (http://exbin.org)
  */
 public interface CodeAreaPainter {
@@ -189,11 +189,36 @@ public interface CodeAreaPainter {
     CaretPosition mousePositionToCaretPosition(int mouseX, int mouseY);
 
     /**
-     * Returns rectangle of data view.
+     * Scroll visible area to reveal specified position.
      *
-     * @return rectangle
+     * @param position
+     * @param section
      */
-    Rectangle getDataViewRect();
-
     void revealPosition(long position, @Nonnull CodeAreaSection section);
+
+    /**
+     * Returns relative cursor position in code area or null if cursor is not
+     * visible.
+     *
+     * @param bytesPerLine bytes per line
+     * @param lineHeight line height
+     * @param charWidth character width
+     * @param linesPerRect lines per visible rectangle
+     * @return cursor position or null
+     */
+    @Nullable
+    Point getCursorPoint(int bytesPerLine, int lineHeight, int charWidth, int linesPerRect);
+
+    /**
+     * Returns relative shadow cursor position in code area or null if cursor is
+     * not visible.
+     *
+     * @param bytesPerLine bytes per line
+     * @param lineHeight line height
+     * @param charWidth character width
+     * @param linesPerRect lines per visible rectangle
+     * @return cursor position or null
+     */
+    @Nullable
+    Point getShadowCursorPoint(int bytesPerLine, int lineHeight, int charWidth, int linesPerRect);
 }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.deltahex.swing;
+package org.exbin.deltahex.swing.basic;
 
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -25,11 +25,12 @@ import javax.swing.Timer;
 import org.exbin.deltahex.CaretPosition;
 import org.exbin.deltahex.CodeAreaSection;
 import org.exbin.deltahex.EditationMode;
+import org.exbin.deltahex.swing.CodeArea;
 
 /**
  * Code area caret.
  *
- * @version 0.2.0 2017/04/22
+ * @version 0.2.0 2017/11/04
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeAreaCaret {
@@ -53,7 +54,7 @@ public class CodeAreaCaret {
         privateSetBlinkRate(DEFAULT_BLINK_RATE);
     }
 
-    public int getCursorThickness(CursorShape cursorShape, int charWidth, int lineHeight) {
+    public int getCursorThickness(@Nonnull CursorShape cursorShape, int charWidth, int lineHeight) {
         switch (cursorShape.getWidth()) {
             case LINE:
                 return LINE_CURSOR_WIDTH;
@@ -79,72 +80,6 @@ public class CodeAreaCaret {
     }
 
     /**
-     * Returns relative cursor position in code area or null if cursor is not
-     * visible.
-     *
-     * @param bytesPerLine bytes per line
-     * @param lineHeight line height
-     * @param charWidth character width
-     * @param linesPerRect lines per visible rectangle
-     * @return cursor position or null
-     */
-    public Point getCursorPoint(int bytesPerLine, int lineHeight, int charWidth, int linesPerRect) {
-        CodeAreaScrollPosition scrollPosition = codeArea.getScrollPosition();
-        long shiftedPosition = caretPosition.getDataPosition() + scrollPosition.getLineDataOffset();
-        long line = shiftedPosition / bytesPerLine - scrollPosition.getScrollLinePosition();
-        if (line < -1 || line > linesPerRect) {
-            return null;
-        }
-
-        int byteOffset = (int) (shiftedPosition % bytesPerLine);
-
-        Rectangle dataViewRect = codeArea.getDataViewRectangle();
-        int caretY = (int) (dataViewRect.y + line * lineHeight) - scrollPosition.getScrollLineOffset();
-        int caretX;
-        if (caretPosition.getSection() == CodeAreaSection.TEXT_PREVIEW) {
-            caretX = codeArea.getPreviewX() + charWidth * byteOffset;
-        } else {
-            caretX = dataViewRect.x + charWidth * (codeArea.getPainter().computeFirstCodeCharPos(byteOffset) + getCodeOffset());
-        }
-        caretX -= scrollPosition.getScrollCharPosition() * charWidth + scrollPosition.getScrollCharOffset();
-
-        return new Point(caretX, caretY);
-    }
-
-    /**
-     * Returns relative shadow cursor position in code area or null if cursor is
-     * not visible.
-     *
-     * @param bytesPerLine bytes per line
-     * @param lineHeight line height
-     * @param charWidth character width
-     * @param linesPerRect lines per visible rectangle
-     * @return cursor position or null
-     */
-    public Point getShadowCursorPoint(int bytesPerLine, int lineHeight, int charWidth, int linesPerRect) {
-        CodeAreaScrollPosition scrollPosition = codeArea.getScrollPosition();
-        long shiftedPosition = caretPosition.getDataPosition() + scrollPosition.getLineDataOffset();
-        long line = shiftedPosition / bytesPerLine - scrollPosition.getScrollLinePosition();
-        if (line < -1 || line + 1 > linesPerRect) {
-            return null;
-        }
-
-        int byteOffset = (int) (shiftedPosition % bytesPerLine);
-
-        Rectangle dataViewRect = codeArea.getDataViewRectangle();
-        int caretY = (int) (dataViewRect.y + line * lineHeight) - scrollPosition.getScrollLineOffset();
-        int caretX;
-        if (caretPosition.getSection() == CodeAreaSection.TEXT_PREVIEW) {
-            caretX = dataViewRect.x + charWidth * codeArea.getPainter().computeFirstCodeCharPos(byteOffset);
-        } else {
-            caretX = codeArea.getPreviewX() + charWidth * byteOffset;
-        }
-        caretX -= scrollPosition.getScrollCharPosition() * charWidth + scrollPosition.getScrollCharOffset();
-
-        return new Point(caretX, caretY);
-    }
-
-    /**
      * Returns cursor rectangle.
      *
      * @param bytesPerLine bytes per line
@@ -159,9 +94,9 @@ public class CodeAreaCaret {
             return null;
         }
 
-        CursorShape cursorShape = codeArea.getEditationMode() == EditationMode.INSERT ? insertCursorShape : overwriteCursorShape;
+        CodeAreaCaret.CursorShape cursorShape = codeArea.getEditationMode() == EditationMode.INSERT ? insertCursorShape : overwriteCursorShape;
         int cursorThickness = 0;
-        if (cursorShape.getWidth() != CursorShapeWidth.FULL) {
+        if (cursorShape.getWidth() != CodeAreaCaret.CursorShapeWidth.FULL) {
             cursorThickness = getCursorThickness(cursorShape, charWidth, lineHeight);
         }
         switch (cursorShape) {
@@ -170,7 +105,7 @@ public class CodeAreaCaret {
             case BOTTOM_CORNERS:
             case CORNERS: {
                 int width = charWidth;
-                if (cursorShape != CursorShape.BOX) {
+                if (cursorShape != CodeAreaCaret.CursorShape.BOX) {
                     width++;
                 }
                 return new Rectangle(cursorPoint.x, cursorPoint.y, width, lineHeight);

@@ -31,6 +31,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 import java.util.Arrays;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.UIManager;
@@ -44,9 +45,7 @@ import org.exbin.deltahex.EditationMode;
 import org.exbin.deltahex.ScrollBarVisibility;
 import org.exbin.deltahex.swing.CharacterRenderingMode;
 import org.exbin.deltahex.swing.CodeArea;
-import org.exbin.deltahex.swing.CodeAreaCaret;
 import org.exbin.deltahex.swing.CodeAreaPainter;
-import org.exbin.deltahex.swing.CodeAreaScrollPosition;
 import org.exbin.deltahex.swing.CodeAreaSwingUtils;
 import org.exbin.deltahex.swing.color.CodeAreaColorType;
 import org.exbin.utils.binary_data.OutOfBoundsException;
@@ -54,7 +53,7 @@ import org.exbin.utils.binary_data.OutOfBoundsException;
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2017/11/02
+ * @version 0.2.0 2017/11/04
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaPainter implements CodeAreaPainter {
@@ -1221,7 +1220,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         return caretPosition;
     }
 
-    @Override
     public Rectangle getDataViewRect() {
         // TODO cache
         return new Rectangle(state.lineNumbersAreaWidth, state.headerAreaHeight, state.areaWidth - state.lineNumbersAreaWidth, state.areaHeight - state.headerAreaHeight);
@@ -1274,6 +1272,76 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             updateScrollBars();
             codeArea.notifyScrolled();
         }
+    }
+
+    /**
+     * Returns relative cursor position in code area or null if cursor is not
+     * visible.
+     *
+     * @param bytesPerLine bytes per line
+     * @param lineHeight line height
+     * @param charWidth character width
+     * @param linesPerRect lines per visible rectangle
+     * @return cursor position or null
+     */
+    @Override
+    @Nullable
+    public Point getCursorPoint(int bytesPerLine, int lineHeight, int charWidth, int linesPerRect) {
+        CodeAreaScrollPosition scrollPosition = codeArea.getScrollPosition();
+        long shiftedPosition = caretPosition.getDataPosition() + scrollPosition.getLineDataOffset();
+        long line = shiftedPosition / bytesPerLine - scrollPosition.getScrollLinePosition();
+        if (line < -1 || line > linesPerRect) {
+            return null;
+        }
+
+        int byteOffset = (int) (shiftedPosition % bytesPerLine);
+
+        Rectangle dataViewRect = codeArea.getDataViewRectangle();
+        int caretY = (int) (dataViewRect.y + line * lineHeight) - scrollPosition.getScrollLineOffset();
+        int caretX;
+        if (caretPosition.getSection() == CodeAreaSection.TEXT_PREVIEW) {
+            caretX = codeArea.getPreviewX() + charWidth * byteOffset;
+        } else {
+            caretX = dataViewRect.x + charWidth * (codeArea.getPainter().computeFirstCodeCharPos(byteOffset) + getCodeOffset());
+        }
+        caretX -= scrollPosition.getScrollCharPosition() * charWidth + scrollPosition.getScrollCharOffset();
+
+        return new Point(caretX, caretY);
+    }
+
+    /**
+     * Returns relative shadow cursor position in code area or null if cursor is
+     * not visible.
+     *
+     * @param bytesPerLine bytes per line
+     * @param lineHeight line height
+     * @param charWidth character width
+     * @param linesPerRect lines per visible rectangle
+     * @return cursor position or null
+     */
+    @Override
+    @Nullable
+    public Point getShadowCursorPoint(int bytesPerLine, int lineHeight, int charWidth, int linesPerRect) {
+        CodeAreaScrollPosition scrollPosition = codeArea.getScrollPosition();
+        long shiftedPosition = caretPosition.getDataPosition() + scrollPosition.getLineDataOffset();
+        long line = shiftedPosition / bytesPerLine - scrollPosition.getScrollLinePosition();
+        if (line < -1 || line + 1 > linesPerRect) {
+            return null;
+        }
+
+        int byteOffset = (int) (shiftedPosition % bytesPerLine);
+
+        Rectangle dataViewRect = codeArea.getDataViewRectangle();
+        int caretY = (int) (dataViewRect.y + line * lineHeight) - scrollPosition.getScrollLineOffset();
+        int caretX;
+        if (caretPosition.getSection() == CodeAreaSection.TEXT_PREVIEW) {
+            caretX = dataViewRect.x + charWidth * codeArea.getPainter().computeFirstCodeCharPos(byteOffset);
+        } else {
+            caretX = codeArea.getPreviewX() + charWidth * byteOffset;
+        }
+        caretX -= scrollPosition.getScrollCharPosition() * charWidth + scrollPosition.getScrollCharOffset();
+
+        return new Point(caretX, caretY);
     }
 
     // TODO move to painter?
