@@ -32,6 +32,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.swing.JComponent;
 import javax.swing.UIManager;
 import org.exbin.deltahex.CaretMovedListener;
@@ -49,26 +50,28 @@ import org.exbin.utils.binary_data.BinaryData;
 /**
  * Hexadecimal viewer/editor component.
  *
- * @version 0.2.0 2017/11/04
+ * @version 0.2.0 2017/11/05
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeArea extends JComponent implements CodeAreaControl {
 
+    @Nonnull
     private BinaryData data;
-
+    @Nonnull
     private CodeAreaCaret caret;
+    @Nonnull
     private SelectionRange selection;
+    @Nonnull
     private Charset charset = Charset.defaultCharset();
     private boolean handleClipboard = true;
 
+    @Nonnull
     private CodeAreaPainter painter;
+    @Nonnull
     private CodeAreaCommandHandler commandHandler;
-
+    @Nonnull
     private EditationMode editationMode = EditationMode.OVERWRITE;
 
-    /*
-     * Listeners.
-     */
     private final List<SelectionChangedListener> selectionChangedListeners = new ArrayList<>();
     private final List<CaretMovedListener> caretMovedListeners = new ArrayList<>();
     private final List<EditationModeChangedListener> editationModeChangedListeners = new ArrayList<>();
@@ -111,49 +114,49 @@ public class CodeArea extends JComponent implements CodeAreaControl {
     private void registerControlListeners() {
         addComponentListener(new ComponentListener() {
             @Override
-            public void componentResized(ComponentEvent e) {
+            public void componentResized(@Nonnull ComponentEvent e) {
                 resetPainter();
             }
 
             @Override
-            public void componentMoved(ComponentEvent e) {
+            public void componentMoved(@Nonnull ComponentEvent e) {
             }
 
             @Override
-            public void componentShown(ComponentEvent e) {
+            public void componentShown(@Nonnull ComponentEvent e) {
             }
 
             @Override
-            public void componentHidden(ComponentEvent e) {
+            public void componentHidden(@Nonnull ComponentEvent e) {
             }
         });
 
         addKeyListener(new KeyAdapter() {
             @Override
-            public void keyTyped(KeyEvent keyEvent) {
+            public void keyTyped(@Nonnull KeyEvent keyEvent) {
                 commandHandler.keyTyped(keyEvent);
             }
 
             @Override
-            public void keyPressed(KeyEvent keyEvent) {
+            public void keyPressed(@Nonnull KeyEvent keyEvent) {
                 commandHandler.keyPressed(keyEvent);
             }
         });
 
         addFocusListener(new FocusListener() {
             @Override
-            public void focusGained(FocusEvent e) {
+            public void focusGained(@Nonnull FocusEvent e) {
                 repaint();
             }
 
             @Override
-            public void focusLost(FocusEvent e) {
+            public void focusLost(@Nonnull FocusEvent e) {
                 repaint();
             }
         });
         UIManager.addPropertyChangeListener(new PropertyChangeListener() {
             @Override
-            public void propertyChange(PropertyChangeEvent evt) {
+            public void propertyChange(@Nonnull PropertyChangeEvent evt) {
                 painter.rebuildColors();
             }
         });
@@ -197,11 +200,12 @@ public class CodeArea extends JComponent implements CodeAreaControl {
         notifyCaretMoved();
     }
 
+    @Nonnull
     public CodeAreaCommandHandler getCommandHandler() {
         return commandHandler;
     }
 
-    public void setCommandHandler(CodeAreaCommandHandler commandHandler) {
+    public void setCommandHandler(@Nonnull CodeAreaCommandHandler commandHandler) {
         this.commandHandler = commandHandler;
     }
 
@@ -264,11 +268,12 @@ public class CodeArea extends JComponent implements CodeAreaControl {
         notifySelectionChanged();
     }
 
+    @Nonnull
     public BinaryData getData() {
         return data;
     }
 
-    public void setData(BinaryData data) {
+    public void setData(@Nonnull BinaryData data) {
         this.data = data;
         notifyDataChanged();
         repaint();
@@ -278,6 +283,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
         return data == null ? 0 : data.getDataSize();
     }
 
+    @Nonnull
     public CodeAreaPainter getPainter() {
         return painter;
     }
@@ -292,7 +298,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
     }
 
     @Override
-    protected void paintComponent(Graphics g) {
+    protected void paintComponent(@Nonnull Graphics g) {
         super.paintComponent(g);
         painter.paintComponent(g);
     }
@@ -416,43 +422,43 @@ public class CodeArea extends JComponent implements CodeAreaControl {
         }
     }
 
-    public void addSelectionChangedListener(SelectionChangedListener selectionChangedListener) {
+    public void addSelectionChangedListener(@Nullable SelectionChangedListener selectionChangedListener) {
         selectionChangedListeners.add(selectionChangedListener);
     }
 
-    public void removeSelectionChangedListener(SelectionChangedListener selectionChangedListener) {
+    public void removeSelectionChangedListener(@Nullable SelectionChangedListener selectionChangedListener) {
         selectionChangedListeners.remove(selectionChangedListener);
     }
 
-    public void addCaretMovedListener(CaretMovedListener caretMovedListener) {
+    public void addCaretMovedListener(@Nullable CaretMovedListener caretMovedListener) {
         caretMovedListeners.add(caretMovedListener);
     }
 
-    public void removeCaretMovedListener(CaretMovedListener caretMovedListener) {
+    public void removeCaretMovedListener(@Nullable CaretMovedListener caretMovedListener) {
         caretMovedListeners.remove(caretMovedListener);
     }
 
-    public void addEditationModeChangedListener(EditationModeChangedListener editationModeChangedListener) {
+    public void addEditationModeChangedListener(@Nullable EditationModeChangedListener editationModeChangedListener) {
         editationModeChangedListeners.add(editationModeChangedListener);
     }
 
-    public void removeEditationModeChangedListener(EditationModeChangedListener editationModeChangedListener) {
+    public void removeEditationModeChangedListener(@Nullable EditationModeChangedListener editationModeChangedListener) {
         editationModeChangedListeners.remove(editationModeChangedListener);
     }
 
-    public void addDataChangedListener(DataChangedListener dataChangedListener) {
+    public void addDataChangedListener(@Nullable DataChangedListener dataChangedListener) {
         dataChangedListeners.add(dataChangedListener);
     }
 
-    public void removeDataChangedListener(DataChangedListener dataChangedListener) {
+    public void removeDataChangedListener(@Nullable DataChangedListener dataChangedListener) {
         dataChangedListeners.remove(dataChangedListener);
     }
 
-    public void addScrollingListener(ScrollingListener scrollingListener) {
+    public void addScrollingListener(@Nullable ScrollingListener scrollingListener) {
         scrollingListeners.add(scrollingListener);
     }
 
-    public void removeScrollingListener(ScrollingListener scrollingListener) {
+    public void removeScrollingListener(@Nullable ScrollingListener scrollingListener) {
         scrollingListeners.remove(scrollingListener);
     }
 
@@ -463,17 +469,12 @@ public class CodeArea extends JComponent implements CodeAreaControl {
     public void revealCursor() {
         revealPosition(caret.getCaretPosition().getDataPosition(), caret.getSection());
     }
-    
-    public void revealPosition(long position, CodeAreaSection section) {
+
+    public void revealPosition(long position, @Nullable CodeAreaSection section) {
         painter.revealPosition(position, section);
     }
 
     public void repaintCursor() {
         repaint();
-        // TODO
-//        Graphics graphics = getGraphics();
-//        if (graphics != null) {
-//            painter.paintCursor(graphics);
-//        }
     }
 }

@@ -15,18 +15,21 @@
  */
 package org.exbin.deltahex;
 
+import java.awt.event.KeyEvent;
 import javax.annotation.Nonnull;
+import org.exbin.utils.binary_data.EditableBinaryData;
 
 /**
  * Hexadecimal editor component utilities.
  *
- * @version 0.2.0 2017/05/17
+ * @version 0.2.0 2017/11/05
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeAreaUtils {
 
     public static final char[] UPPER_HEX_CODES = "0123456789ABCDEF".toCharArray();
     public static final char[] LOWER_HEX_CODES = "0123456789abcdef".toCharArray();
+    private static final int CODE_BUFFER_LENGTH = 16;
 
     private CodeAreaUtils() {
     }
@@ -258,5 +261,170 @@ public class CodeAreaUtils {
         }
 
         return 0;
+    }
+
+    /**
+     * Inserts text encoded data of given code type into given binary data.
+     *
+     * @param insertedString
+     * @param data
+     * @param codeType
+     */
+    public static void insertHexStringIntoData(@Nonnull String insertedString, @Nonnull EditableBinaryData data, @Nonnull CodeType codeType) {
+        int maxDigits = codeType.getMaxDigitsForByte();
+        byte[] buffer = new byte[CODE_BUFFER_LENGTH];
+        int bufferUsage = 0;
+        int offset = 0;
+        for (int i = 0; i < insertedString.length(); i++) {
+            char charAt = insertedString.charAt(i);
+            if ((charAt == ' ' || charAt == '\t') && offset == i) {
+                offset++;
+            } else if (charAt == ' ' || charAt == '\t' || charAt == ',' || charAt == ';' || charAt == ':') {
+                byte value = CodeAreaUtils.stringCodeToByte(insertedString.substring(offset, i), codeType);
+                if (bufferUsage < CODE_BUFFER_LENGTH) {
+                    buffer[bufferUsage] = value;
+                    bufferUsage++;
+                } else {
+                    data.insert(data.getDataSize(), buffer, 0, bufferUsage);
+                    bufferUsage = 0;
+                }
+                offset = i + 1;
+            } else if (i == offset + maxDigits) {
+                byte value = CodeAreaUtils.stringCodeToByte(insertedString.substring(offset, i), codeType);
+                if (bufferUsage < CODE_BUFFER_LENGTH) {
+                    buffer[bufferUsage] = value;
+                    bufferUsage++;
+                } else {
+                    data.insert(data.getDataSize(), buffer, 0, bufferUsage);
+                    bufferUsage = 0;
+                }
+                offset = i;
+            }
+        }
+
+        if (offset < insertedString.length()) {
+            byte value = CodeAreaUtils.stringCodeToByte(insertedString.substring(offset), codeType);
+            if (bufferUsage < CODE_BUFFER_LENGTH) {
+                buffer[bufferUsage] = value;
+                bufferUsage++;
+            } else {
+                data.insert(data.getDataSize(), buffer, 0, bufferUsage);
+                bufferUsage = 0;
+            }
+        }
+
+        if (bufferUsage > 0) {
+            data.insert(data.getDataSize(), buffer, 0, bufferUsage);
+        }
+    }
+
+    /**
+     * Return true if provided character is valid for given code type and
+     * position.
+     *
+     * @param keyValue
+     * @param codeOffset
+     * @param codeType
+     * @return
+     */
+    public static boolean isValidCodeKeyValue(@Nonnull char keyValue, int codeOffset, @Nonnull CodeType codeType) {
+        boolean validKey = false;
+        switch (codeType) {
+            case BINARY: {
+                validKey = keyValue >= '0' && keyValue <= '1';
+                break;
+            }
+            case DECIMAL: {
+                validKey = codeOffset == 0
+                        ? keyValue >= '0' && keyValue <= '2'
+                        : keyValue >= '0' && keyValue <= '9';
+                break;
+            }
+            case OCTAL: {
+                validKey = codeOffset == 0
+                        ? keyValue >= '0' && keyValue <= '3'
+                        : keyValue >= '0' && keyValue <= '7';
+                break;
+            }
+            case HEXADECIMAL: {
+                validKey = (keyValue >= '0' && keyValue <= '9')
+                        || (keyValue >= 'a' && keyValue <= 'f') || (keyValue >= 'A' && keyValue <= 'F');
+                break;
+            }
+            default:
+                throw new IllegalStateException("Unexpected code type " + codeType.name());
+        }
+        return validKey;
+    }
+
+    public static byte setCodeValue(byte byteValue, int value, int codeOffset, @Nonnull CodeType codeType) {
+        switch (codeType) {
+            case BINARY: {
+                int bitMask = 0x80 >> codeOffset;
+                byteValue = (byte) (byteValue & (0xff - bitMask) | (value << (7 - codeOffset)));
+                break;
+            }
+            case DECIMAL: {
+                int newValue = byteValue & 0xff;
+                switch (codeOffset) {
+                    case 0: {
+                        newValue = (newValue % 100) + value * 100;
+                        if (newValue > 255) {
+                            newValue = 200;
+                        }
+                        break;
+                    }
+                    case 1: {
+                        newValue = (newValue / 100) * 100 + value * 10 + (newValue % 10);
+                        if (newValue > 255) {
+                            newValue -= 200;
+                        }
+                        break;
+                    }
+                    case 2: {
+                        newValue = (newValue / 10) * 10 + value;
+                        if (newValue > 255) {
+                            newValue -= 200;
+                        }
+                        break;
+                    }
+                }
+
+                byteValue = (byte) newValue;
+                break;
+            }
+            case OCTAL: {
+                int newValue = byteValue & 0xff;
+                switch (codeOffset) {
+                    case 0: {
+                        newValue = (newValue % 64) + value * 64;
+                        break;
+                    }
+                    case 1: {
+                        newValue = (newValue / 64) * 64 + value * 8 + (newValue % 8);
+                        break;
+                    }
+                    case 2: {
+                        newValue = (newValue / 8) * 8 + value;
+                        break;
+                    }
+                }
+
+                byteValue = (byte) newValue;
+                break;
+            }
+            case HEXADECIMAL: {
+                if (codeOffset == 1) {
+                    byteValue = (byte) ((byteValue & 0xf0) | value);
+                } else {
+                    byteValue = (byte) ((byteValue & 0xf) | (value << 4));
+                }
+                break;
+            }
+            default:
+                throw new IllegalStateException("Unexpected code type " + codeType.name());
+        }
+
+        return byteValue;
     }
 }

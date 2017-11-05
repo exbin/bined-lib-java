@@ -26,6 +26,7 @@ import org.exbin.deltahex.CaretPosition;
 import org.exbin.deltahex.CodeAreaSection;
 import org.exbin.deltahex.EditationMode;
 import org.exbin.deltahex.swing.CodeArea;
+import org.exbin.deltahex.swing.CodeAreaPainter;
 
 /**
  * Code area caret.
@@ -88,8 +89,10 @@ public class CodeAreaCaret {
      * @param linesPerRect lines per visible rectangle
      * @return cursor rectangle or null
      */
+    @Nullable
     public Rectangle getCursorRect(int bytesPerLine, int lineHeight, int charWidth, int linesPerRect) {
-        Point cursorPoint = getCursorPoint(bytesPerLine, lineHeight, charWidth, linesPerRect);
+        CodeAreaPainter painter = codeArea.getPainter();
+        Point cursorPoint = painter.getCursorPoint(bytesPerLine, lineHeight, charWidth, linesPerRect);
         if (cursorPoint == null) {
             return null;
         }

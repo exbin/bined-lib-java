@@ -13,16 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.deltahex.swing.basic;
+package org.exbin.deltahex.capability;
 
 /**
- * Border paint modes for basic painter.
+ * Hexadecimal component capability interface.
  *
- * @version 0.2.0 2017/11/02
+ * @version 0.2.0 2017/11/05
  * @author ExBin Project (http://exbin.org)
  */
-public enum BasicBorderPaintMode {
-    TRANSPARENT,
-    PLAIN,
-    STRIPED
+public interface CodeAreaCapability {
+
+    
 }

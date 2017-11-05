@@ -13,25 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.deltahex.swing.color;
-
-import java.awt.Color;
-import javax.annotation.Nullable;
+package org.exbin.deltahex.swing.extended.color;
 
 /**
- * Interface for code area color profile.
+ * Enumeration of basic color types.
  *
  * @version 0.2.0 2017/04/14
  * @author ExBin Project (http://exbin.org)
  */
-public interface CodeAreaColorsGroup {
+public enum CodeAreaBasicColorType implements CodeAreaColorType {
+    COLOR("basic.color"),
+    BACKGROUND("basic.background"),
+    SELECTION("basic.selection"),
+    MIRROR_SELECTION("basic.mirror_selection");
 
-    /**
-     * Returns color for given color type.
-     *
-     * @param colorType color type
-     * @return color
-     */
-    @Nullable
-    Color getColor(CodeAreaColorType colorType);
+    private CodeAreaBasicColorType(String preferencesId) {
+        this.preferencesId = preferencesId;
+    }
+
+    private final String preferencesId;
+
+    @Override
+    public String getPreferencesId() {
+        return preferencesId;
+    }
 }

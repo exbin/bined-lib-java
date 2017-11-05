@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.deltahex.swing.ex;
+package org.exbin.deltahex.swing.extended;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -26,7 +26,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.Stroke;
-import org.exbin.deltahex.swing.color.CodeAreaColorProfile;
+import org.exbin.deltahex.swing.extended.color.CodeAreaColorProfile;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 import java.util.Arrays;
@@ -50,7 +50,7 @@ import org.exbin.deltahex.swing.basic.DefaultCodeAreaPainter;
  * @version 0.2.0 2017/04/23
  * @author ExBin Project (http://exbin.org)
  */
-public class DefaultCodeAreaPainterEx extends DefaultCodeAreaPainter {
+public class DefaultCodeAreaPainterExt extends DefaultCodeAreaPainter {
 
     public static final int DECORATION_HEADER_LINE = 1;
     public static final int DECORATION_LINENUM_LINE = 2;
@@ -65,7 +65,7 @@ public class DefaultCodeAreaPainterEx extends DefaultCodeAreaPainter {
 //    protected final char[] charMapping = new char[256];
 //    protected Map<Character, Character> unprintableCharactersMapping = null;
 //
-    public DefaultCodeAreaPainterEx(CodeArea codeArea) {
+    public DefaultCodeAreaPainterExt(CodeArea codeArea) {
         super(codeArea);
     }
 

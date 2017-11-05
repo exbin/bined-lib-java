@@ -32,15 +32,19 @@ import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.annotation.Nonnull;
 import org.exbin.deltahex.CaretPosition;
 import org.exbin.deltahex.CodeAreaSection;
 import org.exbin.deltahex.CodeAreaUtils;
+import org.exbin.deltahex.CodeAreaViewMode;
 import org.exbin.deltahex.CodeType;
 import org.exbin.deltahex.EditationMode;
 import org.exbin.deltahex.SelectionRange;
-import org.exbin.deltahex.CodeAreaViewMode;
+import org.exbin.deltahex.capability.CodeTypeCapability;
+import org.exbin.deltahex.capability.ViewModeCapability;
 import org.exbin.deltahex.swing.CodeArea;
 import org.exbin.deltahex.swing.CodeAreaCommandHandler;
+import org.exbin.deltahex.swing.CodeAreaPainter;
 import org.exbin.utils.binary_data.BinaryData;
 import org.exbin.utils.binary_data.ByteArrayEditableData;
 import org.exbin.utils.binary_data.EditableBinaryData;
@@ -48,7 +52,7 @@ import org.exbin.utils.binary_data.EditableBinaryData;
 /**
  * Default hexadecimal editor command handler.
  *
- * @version 0.2.0 2017/09/20
+ * @version 0.2.0 2017/11/05
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
@@ -57,18 +61,24 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     public static final String MIME_CLIPBOARD_BINARY = "application/octet-stream";
     public static final String FALLBACK_CLIPBOARD = "clipboard";
     public static final String DEFAULT_ENCODING = "UTF-8";
-    private static final int CODE_BUFFER_LENGTH = 16;
 
     private final int metaMask;
 
+    @Nonnull
     private final CodeArea codeArea;
+    private final boolean codeTypeSupported;
+    private final boolean viewModeSupported;
+
     private Clipboard clipboard;
     private boolean canPaste = false;
     private DataFlavor binaryDataFlavor;
     private ClipboardData currentClipboardData = null;
 
-    public DefaultCodeAreaCommandHandler(CodeArea codeArea) {
+    public DefaultCodeAreaCommandHandler(@Nonnull CodeArea codeArea) {
         this.codeArea = codeArea;
+        CodeAreaPainter painter = codeArea.getPainter();
+        codeTypeSupported = painter instanceof CodeTypeCapability.CodeTypeCapable;
+        viewModeSupported = painter instanceof ViewModeCapability.ViewModeCapable;
 
         int metaMaskInit;
         try {
@@ -118,7 +128,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     }
 
     @Override
-    public void keyPressed(KeyEvent keyEvent) {
+    public void keyPressed(@Nonnull KeyEvent keyEvent) {
         if (!codeArea.isEnabled()) {
             return;
         }
@@ -127,20 +137,20 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             case KeyEvent.VK_LEFT: {
                 if ((keyEvent.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) > 0) {
                     // Scroll position offset instead of cursor
-                    CodeAreaScrollPosition scrollPosition = codeArea.getScrollPosition();
-                    if (scrollPosition.getLineDataOffset() < codeArea.getBytesPerLine() - 1) {
-                        scrollPosition.setLineDataOffset(scrollPosition.getLineDataOffset() + 1);
-                    } else {
-                        if (scrollPosition.getScrollLinePosition() > 0) {
-                            scrollPosition.setScrollLinePosition(scrollPosition.getScrollLinePosition() - 1);
-                        }
-                        scrollPosition.setLineDataOffset(0);
-                    }
-
-                    codeArea.getCaret().resetBlink();
-                    codeArea.resetPainter();
-                    codeArea.notifyScrolled();
-                    codeArea.repaint();
+//                    CodeAreaScrollPosition scrollPosition = codeArea.getScrollPosition();
+//                    if (scrollPosition.getLineDataOffset() < codeArea.getBytesPerLine() - 1) {
+//                        scrollPosition.setLineDataOffset(scrollPosition.getLineDataOffset() + 1);
+//                    } else {
+//                        if (scrollPosition.getScrollLinePosition() > 0) {
+//                            scrollPosition.setScrollLinePosition(scrollPosition.getScrollLinePosition() - 1);
+//                        }
+//                        scrollPosition.setLineDataOffset(0);
+//                    }
+//
+//                    codeArea.getCaret().resetBlink();
+//                    codeArea.resetPainter();
+//                    codeArea.notifyScrolled();
+//                    codeArea.repaint();
                 } else {
                     moveLeft(keyEvent.getModifiersEx());
                     sequenceBreak();
@@ -152,21 +162,21 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             case KeyEvent.VK_RIGHT: {
                 if ((keyEvent.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) > 0) {
                     // Scroll position offset instead of cursor
-                    CodeAreaScrollPosition scrollPosition = codeArea.getScrollPosition();
-                    if (scrollPosition.getLineDataOffset() > 0) {
-                        scrollPosition.setLineDataOffset(scrollPosition.getLineDataOffset() - 1);
-                    } else {
-                        long dataSize = codeArea.getDataSize();
-                        if (scrollPosition.getScrollLinePosition() < dataSize / codeArea.getBytesPerLine()) {
-                            scrollPosition.setScrollLinePosition(scrollPosition.getScrollLinePosition() + 1);
-                        }
-                        scrollPosition.setLineDataOffset(codeArea.getBytesPerLine() - 1);
-                    }
-
-                    codeArea.getCaret().resetBlink();
-                    codeArea.resetPainter();
-                    codeArea.notifyScrolled();
-                    codeArea.repaint();
+//                    CodeAreaScrollPosition scrollPosition = codeArea.getScrollPosition();
+//                    if (scrollPosition.getLineDataOffset() > 0) {
+//                        scrollPosition.setLineDataOffset(scrollPosition.getLineDataOffset() - 1);
+//                    } else {
+//                        long dataSize = codeArea.getDataSize();
+//                        if (scrollPosition.getScrollLinePosition() < dataSize / codeArea.getBytesPerLine()) {
+//                            scrollPosition.setScrollLinePosition(scrollPosition.getScrollLinePosition() + 1);
+//                        }
+//                        scrollPosition.setLineDataOffset(codeArea.getBytesPerLine() - 1);
+//                    }
+//
+//                    codeArea.getCaret().resetBlink();
+//                    codeArea.resetPainter();
+//                    codeArea.notifyScrolled();
+//                    codeArea.repaint();
                 } else {
                     moveRight(keyEvent.getModifiersEx());
                     sequenceBreak();
@@ -180,12 +190,12 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                 int bytesPerLine = codeArea.getBytesPerLine();
                 if ((keyEvent.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) > 0) {
                     // Scroll page instead of cursor
-                    CodeAreaScrollPosition scrollPosition = codeArea.getScrollPosition();
-                    if (scrollPosition.getScrollLinePosition() > 0) {
-                        scrollPosition.setScrollLinePosition(scrollPosition.getScrollLinePosition() - 1);
-                        codeArea.updateScrollBars();
-                        codeArea.notifyScrolled();
-                    }
+//                    CodeAreaScrollPosition scrollPosition = codeArea.getScrollPosition();
+//                    if (scrollPosition.getScrollLinePosition() > 0) {
+//                        scrollPosition.setScrollLinePosition(scrollPosition.getScrollLinePosition() - 1);
+//                        codeArea.getPainter().updateScrollBars();
+//                        codeArea.notifyScrolled();
+//                    }
                 } else {
                     if (caretPosition.getDataPosition() > 0) {
                         if (caretPosition.getDataPosition() >= bytesPerLine) {
@@ -206,12 +216,12 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                 long dataSize = codeArea.getDataSize();
                 if ((keyEvent.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) > 0) {
                     // Scroll page instead of cursor
-                    CodeAreaScrollPosition scrollPosition = codeArea.getScrollPosition();
-                    if (scrollPosition.getScrollLinePosition() < dataSize / codeArea.getBytesPerLine()) {
-                        scrollPosition.setScrollLinePosition(scrollPosition.getScrollLinePosition() + 1);
-                        codeArea.updateScrollBars();
-                        codeArea.notifyScrolled();
-                    }
+//                    CodeAreaScrollPosition scrollPosition = codeArea.getScrollPosition();
+//                    if (scrollPosition.getScrollLinePosition() < dataSize / codeArea.getBytesPerLine()) {
+//                        scrollPosition.setScrollLinePosition(scrollPosition.getScrollLinePosition() + 1);
+//                        codeArea.getPainter().updateScrollBars();
+//                        codeArea.notifyScrolled();
+//                    }
                 } else {
                     if (caretPosition.getDataPosition() < dataSize) {
                         if (caretPosition.getDataPosition() + bytesPerLine < dataSize
@@ -230,16 +240,16 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             case KeyEvent.VK_HOME: {
                 CaretPosition caretPosition = codeArea.getCaretPosition();
                 int bytesPerLine = codeArea.getBytesPerLine();
-                CodeAreaScrollPosition scrollPosition = codeArea.getScrollPosition();
                 if (caretPosition.getDataPosition() > 0 || caretPosition.getCodeOffset() != 0) {
                     long targetPosition;
                     if ((keyEvent.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) > 0) {
                         targetPosition = 0;
                     } else {
-                        targetPosition = ((caretPosition.getDataPosition() + scrollPosition.getLineDataOffset()) / bytesPerLine) * bytesPerLine - scrollPosition.getLineDataOffset();
-                        if (targetPosition < 0) {
-                            targetPosition = 0;
-                        }
+//                        CodeAreaScrollPosition scrollPosition = codeArea.getScrollPosition();
+//                        targetPosition = ((caretPosition.getDataPosition() + scrollPosition.getLineDataOffset()) / bytesPerLine) * bytesPerLine - scrollPosition.getLineDataOffset();
+//                        if (targetPosition < 0) {
+                        targetPosition = 0;
+//                        }
                     }
                     codeArea.getCaret().setCaretPosition(targetPosition);
                     sequenceBreak();
@@ -253,16 +263,15 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             case KeyEvent.VK_END: {
                 CaretPosition caretPosition = codeArea.getCaretPosition();
                 int bytesPerLine = codeArea.getBytesPerLine();
-                CodeAreaScrollPosition scrollPosition = codeArea.getScrollPosition();
                 long dataSize = codeArea.getDataSize();
                 if (caretPosition.getDataPosition() < dataSize) {
                     if ((keyEvent.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) > 0) {
                         codeArea.getCaret().setCaretPosition(codeArea.getDataSize());
                     } else if (codeArea.getActiveSection() == CodeAreaSection.CODE_MATRIX) {
-                        long newPosition = (((caretPosition.getDataPosition() + scrollPosition.getLineDataOffset()) / bytesPerLine) + 1) * bytesPerLine - 1 - scrollPosition.getLineDataOffset();
-                        codeArea.getCaret().setCaretPosition(newPosition < dataSize ? newPosition : dataSize, newPosition < dataSize ? codeArea.getPainter().getCodeType().getMaxDigitsForByte() - 1 : 0);
+                        long newPosition = ((caretPosition.getDataPosition() / bytesPerLine) + 1) * bytesPerLine - 1;
+                        codeArea.getCaret().setCaretPosition(newPosition < dataSize ? newPosition : dataSize, newPosition < dataSize ? getMaxDigitsForByte() - 1 : 0);
                     } else {
-                        long newPosition = (((caretPosition.getDataPosition() + scrollPosition.getLineDataOffset()) / bytesPerLine) + 1) * bytesPerLine - 1 - scrollPosition.getLineDataOffset();
+                        long newPosition = ((caretPosition.getDataPosition() / bytesPerLine) + 1) * bytesPerLine - 1;
                         codeArea.getCaret().setCaretPosition(newPosition < dataSize ? newPosition : dataSize);
                     }
                     sequenceBreak();
@@ -275,12 +284,12 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             case KeyEvent.VK_PAGE_UP: {
                 CaretPosition caretPosition = codeArea.getCaretPosition();
                 int bytesStep = codeArea.getBytesPerLine() * codeArea.getLinesPerRectangle();
-                CodeAreaScrollPosition scrollPosition = codeArea.getScrollPosition();
-                if (scrollPosition.getScrollLinePosition() > codeArea.getLinesPerRectangle()) {
-                    scrollPosition.setScrollLinePosition(scrollPosition.getScrollLinePosition() - codeArea.getLinesPerRectangle());
-                    codeArea.updateScrollBars();
-                    codeArea.notifyScrolled();
-                }
+//                CodeAreaScrollPosition scrollPosition = codeArea.getScrollPosition();
+//                if (scrollPosition.getScrollLinePosition() > codeArea.getLinesPerRectangle()) {
+//                    scrollPosition.setScrollLinePosition(scrollPosition.getScrollLinePosition() - codeArea.getLinesPerRectangle());
+//                    codeArea.getPainter().updateScrollBars();
+//                    codeArea.notifyScrolled();
+//                }
                 if (caretPosition.getDataPosition() > 0) {
                     if (caretPosition.getDataPosition() >= bytesStep) {
                         codeArea.getCaret().setCaretPosition(caretPosition.getDataPosition() - bytesStep, caretPosition.getCodeOffset());
@@ -298,12 +307,12 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                 CaretPosition caretPosition = codeArea.getCaretPosition();
                 int bytesStep = codeArea.getBytesPerLine() * codeArea.getLinesPerRectangle();
                 long dataSize = codeArea.getDataSize();
-                CodeAreaScrollPosition scrollPosition = codeArea.getScrollPosition();
-                if (scrollPosition.getScrollLinePosition() < dataSize / codeArea.getBytesPerLine() - codeArea.getLinesPerRectangle() * 2) {
-                    scrollPosition.setScrollLinePosition(scrollPosition.getScrollLinePosition() + codeArea.getLinesPerRectangle());
-                    codeArea.updateScrollBars();
-                    codeArea.notifyScrolled();
-                }
+//                CodeAreaScrollPosition scrollPosition = codeArea.getScrollPosition();
+//                if (scrollPosition.getScrollLinePosition() < dataSize / codeArea.getBytesPerLine() - codeArea.getLinesPerRectangle() * 2) {
+//                    scrollPosition.setScrollLinePosition(scrollPosition.getScrollLinePosition() + codeArea.getLinesPerRectangle());
+//                    codeArea.getPainter().updateScrollBars();
+//                    codeArea.notifyScrolled();
+//                }
                 if (caretPosition.getDataPosition() < dataSize) {
                     if (caretPosition.getDataPosition() + bytesStep < dataSize) {
                         codeArea.getCaret().setCaretPosition(caretPosition.getDataPosition() + bytesStep, caretPosition.getCodeOffset());
@@ -337,16 +346,18 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                 break;
             }
             case KeyEvent.VK_TAB: {
-                if (codeArea.getViewMode() == CodeAreaViewMode.DUAL) {
-                    CodeAreaSection activeSection = codeArea.getActiveSection() == CodeAreaSection.CODE_MATRIX ? CodeAreaSection.TEXT_PREVIEW : CodeAreaSection.CODE_MATRIX;
-                    if (activeSection == CodeAreaSection.TEXT_PREVIEW) {
-                        codeArea.getCaretPosition().setCodeOffset(0);
+                if (viewModeSupported) {
+                    if (((ViewModeCapability.ViewModeCapable) codeArea).getViewMode() == CodeAreaViewMode.DUAL) {
+                        CodeAreaSection activeSection = codeArea.getActiveSection() == CodeAreaSection.CODE_MATRIX ? CodeAreaSection.TEXT_PREVIEW : CodeAreaSection.CODE_MATRIX;
+                        if (activeSection == CodeAreaSection.TEXT_PREVIEW) {
+                            codeArea.getCaretPosition().setCodeOffset(0);
+                        }
+                        codeArea.getCaret().setSection(activeSection);
+                        codeArea.revealCursor();
+                        codeArea.repaint();
                     }
-                    codeArea.getCaret().setSection(activeSection);
-                    codeArea.revealCursor();
-                    codeArea.repaint();
+                    keyEvent.consume();
                 }
-                keyEvent.consume();
                 break;
             }
             case KeyEvent.VK_DELETE: {
@@ -384,7 +395,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     }
 
     @Override
-    public void keyTyped(KeyEvent keyEvent) {
+    public void keyTyped(@Nonnull KeyEvent keyEvent) {
         char keyValue = keyEvent.getKeyChar();
         // TODO Add support for high unicode codes
         if (keyValue == KeyEvent.CHAR_UNDEFINED) {
@@ -397,33 +408,8 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         if (codeArea.getActiveSection() == CodeAreaSection.CODE_MATRIX) {
             long dataPosition = codeArea.getDataPosition();
             int codeOffset = codeArea.getCodeOffset();
-            CodeType codeType = codeArea.getCodeType();
-            boolean validKey = false;
-            switch (codeType) {
-                case BINARY: {
-                    validKey = keyValue >= '0' && keyValue <= '1';
-                    break;
-                }
-                case DECIMAL: {
-                    validKey = codeOffset == 0
-                            ? keyValue >= '0' && keyValue <= '2'
-                            : keyValue >= '0' && keyValue <= '9';
-                    break;
-                }
-                case OCTAL: {
-                    validKey = codeOffset == 0
-                            ? keyValue >= '0' && keyValue <= '3'
-                            : keyValue >= '0' && keyValue <= '7';
-                    break;
-                }
-                case HEXADECIMAL: {
-                    validKey = (keyValue >= '0' && keyValue <= '9')
-                            || (keyValue >= 'a' && keyValue <= 'f') || (keyValue >= 'A' && keyValue <= 'F');
-                    break;
-                }
-                default:
-                    throw new IllegalStateException("Unexpected code type " + codeType.name());
-            }
+            CodeType codeType = getCodeType();
+            boolean validKey = CodeAreaUtils.isValidCodeKeyValue(keyValue, codeOffset, codeType);
             if (validKey) {
                 if (codeArea.hasSelection()) {
                     deleteSelection();
@@ -507,82 +493,11 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     private void setCodeValue(int value) {
         long dataPosition = codeArea.getDataPosition();
         int codeOffset = codeArea.getCodeOffset();
-        setCodeValue(dataPosition, value, codeOffset);
-    }
-
-    private void setCodeValue(long dataPosition, int value, int codeOffset) {
-        CodeType codeType = codeArea.getCodeType();
         BinaryData data = codeArea.getData();
-
+        CodeType codeType = getCodeType();
         byte byteValue = data.getByte(dataPosition);
-        switch (codeType) {
-            case BINARY: {
-                int bitMask = 0x80 >> codeOffset;
-                byteValue = (byte) (byteValue & (0xff - bitMask) | (value << (7 - codeOffset)));
-                break;
-            }
-            case DECIMAL: {
-                int newValue = byteValue & 0xff;
-                switch (codeOffset) {
-                    case 0: {
-                        newValue = (newValue % 100) + value * 100;
-                        if (newValue > 255) {
-                            newValue = 200;
-                        }
-                        break;
-                    }
-                    case 1: {
-                        newValue = (newValue / 100) * 100 + value * 10 + (newValue % 10);
-                        if (newValue > 255) {
-                            newValue -= 200;
-                        }
-                        break;
-                    }
-                    case 2: {
-                        newValue = (newValue / 10) * 10 + value;
-                        if (newValue > 255) {
-                            newValue -= 200;
-                        }
-                        break;
-                    }
-                }
-
-                byteValue = (byte) newValue;
-                break;
-            }
-            case OCTAL: {
-                int newValue = byteValue & 0xff;
-                switch (codeOffset) {
-                    case 0: {
-                        newValue = (newValue % 64) + value * 64;
-                        break;
-                    }
-                    case 1: {
-                        newValue = (newValue / 64) * 64 + value * 8 + (newValue % 8);
-                        break;
-                    }
-                    case 2: {
-                        newValue = (newValue / 8) * 8 + value;
-                        break;
-                    }
-                }
-
-                byteValue = (byte) newValue;
-                break;
-            }
-            case HEXADECIMAL: {
-                if (codeOffset == 1) {
-                    byteValue = (byte) ((byteValue & 0xf0) | value);
-                } else {
-                    byteValue = (byte) ((byteValue & 0xf) | (value << 4));
-                }
-                break;
-            }
-            default:
-                throw new IllegalStateException("Unexpected code type " + codeType.name());
-        }
-
-        ((EditableBinaryData) data).setByte(dataPosition, byteValue);
+        byte outputValue = CodeAreaUtils.setCodeValue(byteValue, value, codeOffset, codeType);
+        ((EditableBinaryData) data).setByte(dataPosition, outputValue);
     }
 
     @Override
@@ -604,7 +519,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                 ((EditableBinaryData) codeArea.getData()).remove(dataPosition - 1, 1);
                 codeArea.notifyDataChanged();
                 codeArea.revealCursor();
-                codeArea.updateScrollBars();
+                codeArea.getPainter().updateScrollBars();
             }
         }
     }
@@ -618,7 +533,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         if (codeArea.hasSelection()) {
             deleteSelection();
             codeArea.notifyDataChanged();
-            codeArea.updateScrollBars();
+            codeArea.getPainter().updateScrollBars();
             codeArea.notifyCaretMoved();
             codeArea.revealCursor();
         } else {
@@ -630,7 +545,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                 if (caret.getCodeOffset() > 0) {
                     caret.setCodeOffset(0);
                 }
-                codeArea.updateScrollBars();
+                codeArea.getPainter().updateScrollBars();
                 codeArea.notifyCaretMoved();
                 codeArea.revealCursor();
             }
@@ -646,7 +561,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         CodeAreaCaret caret = codeArea.getCaret();
         caret.setCaretPosition(first);
         codeArea.revealCursor();
-        codeArea.updateScrollBars();
+        codeArea.getPainter().updateScrollBars();
     }
 
     @Override
@@ -687,7 +602,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         }
     }
 
-    private void setClipboardContent(ClipboardData content) {
+    private void setClipboardContent(@Nonnull ClipboardData content) {
         clearClipboardData();
         try {
             currentClipboardData = content;
@@ -752,7 +667,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
                         caret.setCaretPosition(caret.getDataPosition() + dataSize);
                         caret.setCodeOffset(0);
-                        codeArea.updateScrollBars();
+                        codeArea.getPainter().updateScrollBars();
                         codeArea.notifyCaretMoved();
                         codeArea.revealCursor();
                     }
@@ -786,7 +701,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
                         caret.setCaretPosition(caret.getDataPosition() + length);
                         caret.setCodeOffset(0);
-                        codeArea.updateScrollBars();
+                        codeArea.getPainter().updateScrollBars();
                         codeArea.notifyCaretMoved();
                         codeArea.revealCursor();
                     }
@@ -829,9 +744,9 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                         CodeAreaCaret caret = codeArea.getCaret();
                         long dataPosition = caret.getDataPosition();
 
-                        CodeType codeType = codeArea.getCodeType();
+                        CodeType codeType = getCodeType();
                         ByteArrayEditableData data = new ByteArrayEditableData();
-                        insertHexStringIntoData((String) insertedData, data, codeType);
+                        CodeAreaUtils.insertHexStringIntoData((String) insertedData, data, codeType);
 
                         long length = data.getDataSize();
                         if (codeArea.getEditationMode() == EditationMode.OVERWRITE) {
@@ -846,7 +761,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
                         caret.setCaretPosition(caret.getDataPosition() + length);
                         caret.setCodeOffset(0);
-                        codeArea.updateScrollBars();
+                        codeArea.getPainter().updateScrollBars();
                         codeArea.notifyCaretMoved();
                         codeArea.revealCursor();
                     }
@@ -856,54 +771,6 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             }
         } catch (IllegalStateException ex) {
             // Clipboard not available - ignore
-        }
-    }
-
-    private void insertHexStringIntoData(String insertedString, EditableBinaryData data, CodeType codeType) {
-        int maxDigits = codeType.getMaxDigitsForByte();
-        byte[] buffer = new byte[CODE_BUFFER_LENGTH];
-        int bufferUsage = 0;
-        int offset = 0;
-        for (int i = 0; i < insertedString.length(); i++) {
-            char charAt = insertedString.charAt(i);
-            if ((charAt == ' ' || charAt == '\t') && offset == i) {
-                offset++;
-            } else if (charAt == ' ' || charAt == '\t' || charAt == ',' || charAt == ';' || charAt == ':') {
-                byte value = CodeAreaUtils.stringCodeToByte(insertedString.substring(offset, i), codeType);
-                if (bufferUsage < CODE_BUFFER_LENGTH) {
-                    buffer[bufferUsage] = value;
-                    bufferUsage++;
-                } else {
-                    data.insert(data.getDataSize(), buffer, 0, bufferUsage);
-                    bufferUsage = 0;
-                }
-                offset = i + 1;
-            } else if (i == offset + maxDigits) {
-                byte value = CodeAreaUtils.stringCodeToByte(insertedString.substring(offset, i), codeType);
-                if (bufferUsage < CODE_BUFFER_LENGTH) {
-                    buffer[bufferUsage] = value;
-                    bufferUsage++;
-                } else {
-                    data.insert(data.getDataSize(), buffer, 0, bufferUsage);
-                    bufferUsage = 0;
-                }
-                offset = i;
-            }
-        }
-
-        if (offset < insertedString.length()) {
-            byte value = CodeAreaUtils.stringCodeToByte(insertedString.substring(offset), codeType);
-            if (bufferUsage < CODE_BUFFER_LENGTH) {
-                buffer[bufferUsage] = value;
-                bufferUsage++;
-            } else {
-                data.insert(data.getDataSize(), buffer, 0, bufferUsage);
-                bufferUsage = 0;
-            }
-        }
-
-        if (bufferUsage > 0) {
-            data.insert(data.getDataSize(), buffer, 0, bufferUsage);
         }
     }
 
@@ -967,12 +834,11 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     public void moveRight(int modifiers) {
         CodeAreaCaret caret = codeArea.getCaret();
         CaretPosition caretPosition = caret.getCaretPosition();
-        CodeType codeType = codeArea.getCodeType();
         if (caretPosition.getDataPosition() < codeArea.getDataSize()) {
             if (caret.getSection() == CodeAreaSection.CODE_MATRIX) {
                 int codeOffset = caret.getCodeOffset();
                 if (caretPosition.getDataPosition() < codeArea.getDataSize()) {
-                    if (codeOffset < codeType.getMaxDigitsForByte() - 1) {
+                    if (codeOffset < getMaxDigitsForByte() - 1) {
                         caret.setCodeOffset(codeOffset + 1);
                     } else {
                         caret.setCaretPosition(caretPosition.getDataPosition() + 1, 0);
@@ -991,7 +857,6 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     public void moveLeft(int modifiers) {
         CodeAreaCaret caret = codeArea.getCaret();
         CaretPosition caretPosition = caret.getCaretPosition();
-        CodeType codeType = codeArea.getCodeType();
         if (caret.getSection() == CodeAreaSection.CODE_MATRIX) {
             int codeOffset = caret.getCodeOffset();
             if (codeOffset > 0) {
@@ -999,7 +864,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                 updateSelection(modifiers, caretPosition);
                 codeArea.notifyCaretMoved();
             } else if (caretPosition.getDataPosition() > 0) {
-                caret.setCaretPosition(caretPosition.getDataPosition() - 1, codeType.getMaxDigitsForByte() - 1);
+                caret.setCaretPosition(caretPosition.getDataPosition() - 1, getMaxDigitsForByte() - 1);
                 updateSelection(modifiers, caretPosition);
                 codeArea.notifyCaretMoved();
             }
@@ -1019,6 +884,15 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         byte[] bytes = new byte[buffer.remaining()];
         buffer.get(bytes, 0, bytes.length);
         return bytes;
+    }
+
+    @Nonnull
+    private CodeType getCodeType() {
+        if (codeTypeSupported) {
+            return ((CodeTypeCapability.CodeTypeCapable) codeArea.getPainter()).getCodeType();
+        }
+
+        return CodeType.HEXADECIMAL;
     }
 
     public class BinaryDataClipboardData implements ClipboardData {
@@ -1061,6 +935,10 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         }
     }
 
+    private int getMaxDigitsForByte() {
+        return 2;
+    }
+
     private class CodeDataClipboardData implements ClipboardData {
 
         private final BinaryData data;
@@ -1084,7 +962,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             if (flavor.equals(binaryDataFlavor)) {
                 return data;
             } else {
-                int charsPerByte = codeArea.getCodeType().getMaxDigitsForByte() + 1;
+                int charsPerByte = getMaxDigitsForByte() + 1;
                 int textLength = (int) (data.getDataSize() * charsPerByte);
                 if (textLength > 0) {
                     textLength--;

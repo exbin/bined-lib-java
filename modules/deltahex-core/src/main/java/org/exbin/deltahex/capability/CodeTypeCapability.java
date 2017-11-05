@@ -13,27 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.deltahex.swing.color;
+package org.exbin.deltahex.capability;
+
+import javax.annotation.Nonnull;
+import org.exbin.deltahex.CodeType;
 
 /**
- * Enumeration of unprintable color types.
+ * Support for code type capability.
  *
- * @version 0.2.0 2017/04/22
+ * @version 0.2.0 2017/11/05
  * @author ExBin Project (http://exbin.org)
  */
-public enum CodeAreaColorizationColorType implements CodeAreaColorType {
+public interface CodeTypeCapability extends CodeAreaCapability {
 
-    CONTROL_CODES("colorization.control_codes"),
-    UPPER_CODES("colorization.upper_codes");
+    public interface CodeTypeCapable {
 
-    private CodeAreaColorizationColorType(String preferencesId) {
-        this.preferencesId = preferencesId;
-    }
+        @Nonnull
+        CodeType getCodeType();
 
-    private final String preferencesId;
-
-    @Override
-    public String getPreferencesId() {
-        return preferencesId;
+        void setCodeType(@Nonnull CodeType codeType);
     }
 }

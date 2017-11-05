@@ -17,11 +17,12 @@ package org.exbin.deltahex.swing;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import javax.annotation.Nonnull;
 
 /**
  * Interface for code area data manipulation.
  *
- * @version 0.2.0 2017/04/23
+ * @version 0.2.0 2017/11/05
  * @author ExBin Project (http://exbin.org)
  */
 public interface CodeAreaCommandHandler {
@@ -36,14 +37,14 @@ public interface CodeAreaCommandHandler {
      *
      * @param keyEvent key event
      */
-    void keyPressed(KeyEvent keyEvent);
+    void keyPressed(@Nonnull KeyEvent keyEvent);
 
     /**
      * Keyboard key was typed.
      *
      * @param keyEvent key event
      */
-    void keyTyped(KeyEvent keyEvent);
+    void keyTyped(@Nonnull KeyEvent keyEvent);
 
     /**
      * Backspace key was pressed.
@@ -108,5 +109,5 @@ public interface CodeAreaCommandHandler {
      * @param mouseEvent mouse event
      * @param modifiers modifiers
      */
-    void moveCaret(MouseEvent mouseEvent, int modifiers);
+    void moveCaret(@Nonnull MouseEvent mouseEvent, int modifiers);
 }

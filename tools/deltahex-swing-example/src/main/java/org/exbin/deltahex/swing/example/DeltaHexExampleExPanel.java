@@ -49,6 +49,8 @@ import org.exbin.deltahex.ScrollingListener;
 import org.exbin.deltahex.SelectionChangedListener;
 import org.exbin.deltahex.SelectionRange;
 import org.exbin.deltahex.CodeAreaViewMode;
+import org.exbin.deltahex.capability.CodeTypeCapability;
+import org.exbin.deltahex.capability.ViewModeCapability;
 import org.exbin.deltahex.swing.CodeArea;
 import org.exbin.deltahex.swing.basic.CodeAreaCaret;
 import org.exbin.deltahex.swing.basic.CodeAreaScrollPosition;
@@ -57,7 +59,7 @@ import org.exbin.utils.binary_data.EditableBinaryData;
 /**
  * Hexadecimal editor example panel.
  *
- * @version 0.2.0 2017/06/20
+ * @version 0.2.0 2017/11/05
  * @author ExBin Project (http://exbin.org)
  */
 public class DeltaHexExampleExPanel extends javax.swing.JPanel {
@@ -73,17 +75,17 @@ public class DeltaHexExampleExPanel extends javax.swing.JPanel {
     public void setCodeArea(final CodeArea codeArea) {
         this.codeArea = codeArea;
         splitPane.setRightComponent(codeArea);
-        viewModeComboBox.setSelectedIndex(codeArea.getViewMode().ordinal());
-        codeTypeComboBox.setSelectedIndex(codeArea.getCodeType().ordinal());
+        viewModeComboBox.setSelectedIndex(((ViewModeCapability.ViewModeCapable) codeArea.getPainter()).getViewMode().ordinal());
+        codeTypeComboBox.setSelectedIndex(((CodeTypeCapability.CodeTypeCapable) codeArea.getPainter()).getCodeType().ordinal());
 //        positionCodeTypeComboBox.setSelectedIndex(codeArea.getPositionCodeType().ordinal());
         activeSectionComboBox.setSelectedIndex(codeArea.getActiveSection().ordinal());
 //        backgroundModeComboBox.setSelectedIndex(codeArea.getBackgroundMode().ordinal());
 //        lineNumbersBackgroundCheckBox.setSelected(codeArea.isLineNumberBackground());
 //        charRenderingComboBox.setSelectedIndex(codeArea.getCharRenderingMode().ordinal());
 //        charAntialiasingComboBox.setSelectedIndex(codeArea.getCharAntialiasingMode().ordinal());
-        verticalScrollBarVisibilityComboBox.setSelectedIndex(codeArea.getVerticalScrollBarVisibility().ordinal());
+//        verticalScrollBarVisibilityComboBox.setSelectedIndex(codeArea.getVerticalScrollBarVisibility().ordinal());
 //        verticalScrollModeComboBox.setSelectedIndex(codeArea.getVerticalScrollMode().ordinal());
-        horizontalScrollBarVisibilityComboBox.setSelectedIndex(codeArea.getHorizontalScrollBarVisibility().ordinal());
+//        horizontalScrollBarVisibilityComboBox.setSelectedIndex(codeArea.getHorizontalScrollBarVisibility().ordinal());
 //        horizontalScrollModeComboBox.setSelectedIndex(codeArea.getHorizontalScrollMode().ordinal());
 //        hexCharactersModeComboBox.setSelectedIndex(codeArea.getHexCharactersCase().ordinal());
 //        showLineNumbersCheckBox.setSelected(codeArea.isShowLineNumbers());
@@ -143,10 +145,10 @@ public class DeltaHexExampleExPanel extends javax.swing.JPanel {
         codeArea.addScrollingListener(new ScrollingListener() {
             @Override
             public void scrolled() {
-                CodeAreaScrollPosition scrollPosition = codeArea.getScrollPosition();
-                verticalPositionTextField.setText(scrollPosition.getScrollLinePosition() + ":" + scrollPosition.getScrollLineOffset());
-                horizontalPositionTextField.setText(scrollPosition.getScrollCharPosition() + ":" + scrollPosition.getScrollCharOffset());
-                horizontalByteShiftTextField.setText(String.valueOf(scrollPosition.getLineDataOffset()));
+//                CodeAreaScrollPosition scrollPosition = codeArea.getScrollPosition();
+//                verticalPositionTextField.setText(scrollPosition.getScrollLinePosition() + ":" + scrollPosition.getScrollLineOffset());
+//                horizontalPositionTextField.setText(scrollPosition.getScrollCharPosition() + ":" + scrollPosition.getScrollCharOffset());
+//                horizontalByteShiftTextField.setText(String.valueOf(scrollPosition.getLineDataOffset()));
             }
         });
 
@@ -1266,7 +1268,7 @@ public class DeltaHexExampleExPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void viewModeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewModeComboBoxActionPerformed
-        codeArea.setViewMode(CodeAreaViewMode.values()[viewModeComboBox.getSelectedIndex()]);
+        ((ViewModeCapability.ViewModeCapable) codeArea.getPainter()).setViewMode(CodeAreaViewMode.values()[viewModeComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_viewModeComboBoxActionPerformed
 
     private void lineLengthSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_lineLengthSpinnerStateChanged
@@ -1481,7 +1483,7 @@ public class DeltaHexExampleExPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_verticalScrollModeComboBoxActionPerformed
 
     private void verticalScrollBarVisibilityComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_verticalScrollBarVisibilityComboBoxActionPerformed
-        codeArea.setVerticalScrollBarVisibility(ScrollBarVisibility.values()[verticalScrollBarVisibilityComboBox.getSelectedIndex()]);
+//        codeArea.setVerticalScrollBarVisibility(ScrollBarVisibility.values()[verticalScrollBarVisibilityComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_verticalScrollBarVisibilityComboBoxActionPerformed
 
     private void horizontalScrollModeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_horizontalScrollModeComboBoxActionPerformed
@@ -1489,7 +1491,7 @@ public class DeltaHexExampleExPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_horizontalScrollModeComboBoxActionPerformed
 
     private void horizontalScrollBarVisibilityComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_horizontalScrollBarVisibilityComboBoxActionPerformed
-        codeArea.setHorizontalScrollBarVisibility(ScrollBarVisibility.values()[horizontalScrollBarVisibilityComboBox.getSelectedIndex()]);
+//        codeArea.setHorizontalScrollBarVisibility(ScrollBarVisibility.values()[horizontalScrollBarVisibilityComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_horizontalScrollBarVisibilityComboBoxActionPerformed
 
     private void cursorRenderingModeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cursorRenderingModeComboBoxActionPerformed

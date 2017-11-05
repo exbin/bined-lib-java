@@ -13,28 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.deltahex.swing.color;
+package org.exbin.deltahex.capability;
+
+import javax.annotation.Nonnull;
+import org.exbin.deltahex.CodeAreaViewMode;
 
 /**
- * Enumeration of basic color types.
+ * Support for view mode capability.
  *
- * @version 0.2.0 2017/04/14
+ * @version 0.2.0 2017/11/05
  * @author ExBin Project (http://exbin.org)
  */
-public enum CodeAreaBasicColorType implements CodeAreaColorType {
-    COLOR("basic.color"),
-    BACKGROUND("basic.background"),
-    SELECTION("basic.selection"),
-    MIRROR_SELECTION("basic.mirror_selection");
+public interface ViewModeCapability extends CodeAreaCapability {
 
-    private CodeAreaBasicColorType(String preferencesId) {
-        this.preferencesId = preferencesId;
-    }
+    public interface ViewModeCapable {
 
-    private final String preferencesId;
+        @Nonnull
+        CodeAreaViewMode getViewMode();
 
-    @Override
-    public String getPreferencesId() {
-        return preferencesId;
+        void setViewMode(@Nonnull CodeAreaViewMode viewMode);
     }
 }

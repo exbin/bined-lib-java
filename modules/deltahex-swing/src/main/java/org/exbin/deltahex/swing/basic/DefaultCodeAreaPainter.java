@@ -17,6 +17,7 @@ package org.exbin.deltahex.swing.basic;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
@@ -43,11 +44,13 @@ import org.exbin.deltahex.CodeAreaViewMode;
 import org.exbin.deltahex.CodeType;
 import org.exbin.deltahex.EditationMode;
 import org.exbin.deltahex.ScrollBarVisibility;
+import org.exbin.deltahex.capability.CodeTypeCapability;
+import org.exbin.deltahex.capability.ScrollingCapability;
+import org.exbin.deltahex.capability.ViewModeCapability;
 import org.exbin.deltahex.swing.CharacterRenderingMode;
 import org.exbin.deltahex.swing.CodeArea;
 import org.exbin.deltahex.swing.CodeAreaPainter;
 import org.exbin.deltahex.swing.CodeAreaSwingUtils;
-import org.exbin.deltahex.swing.color.CodeAreaColorType;
 import org.exbin.utils.binary_data.OutOfBoundsException;
 
 /**
@@ -56,20 +59,28 @@ import org.exbin.utils.binary_data.OutOfBoundsException;
  * @version 0.2.0 2017/11/04
  * @author ExBin Project (http://exbin.org)
  */
-public class DefaultCodeAreaPainter implements CodeAreaPainter {
+public class DefaultCodeAreaPainter implements CodeAreaPainter, ScrollingCapability.ScrollingCapable, ViewModeCapability.ViewModeCapable, CodeTypeCapability.CodeTypeCapable {
 
+    @Nonnull
     protected final CodeArea codeArea;
     private int subFontSpace = 3;
 
+    @Nullable
     private PainterState state = null;
 
+    @Nonnull
     private CodeAreaViewMode viewMode = CodeAreaViewMode.DUAL;
+    @Nonnull
     private BasicBorderPaintMode borderPaintMode = BasicBorderPaintMode.STRIPED;
+    @Nonnull
     private CharacterRenderingMode characterRenderingMode = CharacterRenderingMode.AUTO;
+    @Nonnull
     private CodeType codeType = CodeType.HEXADECIMAL;
+    @Nonnull
     private HexCharactersCase hexCharactersCase = HexCharactersCase.UPPER;
     private boolean showShadowCursor = true;
 
+    @Nullable
     private Charset charMappingCharset = null;
     private final char[] charMapping = new char[256];
     private long paintCounter = 0;
@@ -77,15 +88,22 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     /**
      * Scrollbars handling.
      */
-    private JScrollPane scrollPanel;
-    private CodeAreaDataView dataView;
+    @Nonnull
+    private final JScrollPane scrollPanel;
+    @Nonnull
+    private final CodeAreaDataView dataView;
+    @Nonnull
     private final CodeAreaScrollPosition scrollPosition = new CodeAreaScrollPosition();
+    @Nonnull
     private ScrollBarVisibility verticalScrollBarVisibility = ScrollBarVisibility.IF_NEEDED;
+    @Nonnull
     private VerticalScrollUnit verticalScrollUnit = VerticalScrollUnit.LINE;
+    @Nonnull
     private ScrollBarVisibility horizontalScrollBarVisibility = ScrollBarVisibility.IF_NEEDED;
+    @Nonnull
     private HorizontalScrollUnit horizontalScrollUnit = HorizontalScrollUnit.PIXEL;
 
-    public DefaultCodeAreaPainter(CodeArea codeArea) {
+    public DefaultCodeAreaPainter(@Nonnull CodeArea codeArea) {
         this.codeArea = codeArea;
 
         scrollPanel = new JScrollPane();
@@ -326,7 +344,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     }
 
     @Override
-    public void paintComponent(Graphics g) {
+    public void paintComponent(@Nonnull Graphics g) {
         if (state == null) {
             reset();
         }
@@ -341,14 +359,14 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         paintCounter++;
     }
 
-    public void paintOutsiteArea(Graphics g) {
+    public void paintOutsiteArea(@Nonnull Graphics g) {
         g.setColor(Color.WHITE);
         g.fillRect(0, 0, state.areaWidth, state.headerAreaHeight);
         g.setColor(Color.BLACK);
         g.fillRect(0, state.headerAreaHeight - 1, state.lineNumbersAreaWidth, 1);
     }
 
-    public void paintHeader(Graphics g) {
+    public void paintHeader(@Nonnull Graphics g) {
         Rectangle clipBounds = g.getClipBounds();
         Rectangle headerArea = new Rectangle(state.lineNumbersAreaWidth, 0, state.areaWidth - state.lineNumbersAreaWidth, state.headerAreaHeight); // TODO minus scrollbar width
         g.setClip(clipBounds != null ? headerArea.intersection(clipBounds) : headerArea);
@@ -489,7 +507,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         g.setClip(clipBounds);
     }
 
-    public void paintLineNumbers(Graphics g) {
+    public void paintLineNumbers(@Nonnull Graphics g) {
         Rectangle clipBounds = g.getClipBounds();
         Rectangle lineNumbersArea = new Rectangle(0, state.headerAreaHeight, state.lineNumbersAreaWidth, state.areaHeight - state.headerAreaHeight); // TODO minus scrollbar height
         g.setClip(clipBounds != null ? lineNumbersArea.intersection(clipBounds) : lineNumbersArea);
@@ -539,7 +557,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     }
 
     @Override
-    public void paintMainArea(Graphics g) {
+    public void paintMainArea(@Nonnull Graphics g) {
         if (state == null) {
             reset();
         }
@@ -570,7 +588,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
      *
      * @param g graphics
      */
-    public void paintBackground(Graphics g) {
+    public void paintBackground(@Nonnull Graphics g) {
         int linePositionX = state.lineNumbersAreaWidth;
         g.setColor(state.colors.background);
         if (borderPaintMode != BasicBorderPaintMode.TRANSPARENT) {
@@ -593,7 +611,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         }
     }
 
-    public void paintLines(Graphics g) {
+    public void paintLines(@Nonnull Graphics g) {
         Color randomColor = new Color((float) Math.random(), (float) Math.random(), (float) Math.random());
         g.setColor(randomColor);
         long dataPosition = state.scrollPosition.getScrollLinePosition() * state.bytesPerLine + state.scrollPosition.getLineDataOffset();
@@ -681,7 +699,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
     }
 
-    private void paintLineBackground(Graphics g, int linePositionX, int linePositionY) {
+    private void paintLineBackground(@Nonnull Graphics g, int linePositionX, int linePositionY) {
         int renderOffset = state.visibleCharStart;
         Color renderColor = null;
         for (int charOnLine = state.visibleCharStart; charOnLine < state.visibleCharEnd; charOnLine++) {
@@ -729,7 +747,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         }
     }
 
-    private void paintLineText(Graphics g, int linePositionX, int linePositionY) {
+    private void paintLineText(@Nonnull Graphics g, int linePositionX, int linePositionY) {
         int positionY = linePositionY; // - codeArea.getSubFontSpace();
 
         g.setColor(Color.BLACK);
@@ -740,7 +758,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 //        int positionY = linePositionY + paintData.lineHeight - codeArea.getSubFontSpace();
 //
         int renderOffset = state.visibleCharStart;
-        CodeAreaColorType renderColorType = null;
         for (int charOnLine = state.visibleCharStart; charOnLine < state.visibleCharEnd; charOnLine++) {
             CodeAreaSection section;
             int byteOnLine;
@@ -803,7 +820,17 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     }
 
     @Override
-    public void paintCursor(Graphics g) {
+    public int getCursorShape(int x, int y) {
+        Rectangle dataViewRectangle = getDataViewRectangle();
+        if (x >= dataViewRectangle.x && y >= dataViewRectangle.y) {
+            return Cursor.TEXT_CURSOR;
+        }
+
+        return Cursor.DEFAULT_CURSOR;
+    }
+
+    @Override
+    public void paintCursor(@Nonnull Graphics g) {
         if (!codeArea.hasFocus()) {
             return;
         }
@@ -814,7 +841,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         int lineHeight = getLineHeight();
         int characterWidth = getCharacterWidth();
         int linesPerRect = getLinesPerRectangle();
-        Point cursorPoint = caret.getCursorPoint(bytesPerLine, lineHeight, characterWidth, linesPerRect);
+        Point cursorPoint = getCursorPoint(bytesPerLine, lineHeight, characterWidth, linesPerRect);
         boolean cursorVisible = caret.isCursorVisible();
         CodeAreaCaret.CursorRenderingMode renderingMode = caret.getRenderingMode();
 
@@ -910,7 +937,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         // Paint shadow cursor
         if (getViewMode() == CodeAreaViewMode.DUAL && showShadowCursor) {
             g.setColor(state.colors.cursor);
-            Point shadowCursorPoint = caret.getShadowCursorPoint(bytesPerLine, lineHeight, characterWidth, linesPerRect);
+            Point shadowCursorPoint = getShadowCursorPoint(bytesPerLine, lineHeight, characterWidth, linesPerRect);
             shadowCursorPoint.setLocation(shadowCursorPoint.x + state.lineNumbersAreaWidth, shadowCursorPoint.y + state.headerAreaHeight);
             Graphics2D g2d = (Graphics2D) g.create();
             Stroke dashed = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{2}, 0);
@@ -920,7 +947,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         }
     }
 
-    private void paintCursorRect(Graphics g, int x, int y, int width, int height, CodeAreaCaret.CursorRenderingMode renderingMode) {
+    private void paintCursorRect(@Nonnull Graphics g, int x, int y, int width, int height, @Nonnull CodeAreaCaret.CursorRenderingMode renderingMode) {
         switch (renderingMode) {
             case PAINT: {
                 g.fillRect(x, y, width, height);
@@ -1034,16 +1061,16 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
      * @param startX X position of drawing area start
      * @param positionY Y position of drawing area start
      */
-    protected void drawCenteredChar(Graphics g, char[] drawnChars, int charOffset, int charWidthSpace, int startX, int positionY) {
+    protected void drawCenteredChar(@Nonnull Graphics g, char[] drawnChars, int charOffset, int charWidthSpace, int startX, int positionY) {
         int charWidth = state.fontMetrics.charWidth(drawnChars[charOffset]);
         drawShiftedChar(g, drawnChars, charOffset, charWidthSpace, startX, positionY, (charWidthSpace + 1 - charWidth) >> 1);
     }
 
-    protected void drawShiftedChar(Graphics g, char[] drawnChars, int charOffset, int charWidthSpace, int startX, int positionY, int shift) {
+    protected void drawShiftedChar(@Nonnull Graphics g, char[] drawnChars, int charOffset, int charWidthSpace, int startX, int positionY, int shift) {
         g.drawChars(drawnChars, charOffset, 1, startX + shift, positionY);
     }
 
-    private void buildCharMapping(Charset charset) {
+    private void buildCharMapping(@Nonnull Charset charset) {
         for (int i = 0; i < 256; i++) {
             charMapping[i] = new String(new byte[]{(byte) i}, charset).charAt(0);
         }
@@ -1065,6 +1092,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     }
 
     @Nonnull
+    @Override
     public CodeAreaViewMode getViewMode() {
         return viewMode;
     }
@@ -1082,11 +1110,12 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         codeArea.repaint();
     }
 
+    @Nonnull
     public CodeType getCodeType() {
         return codeType;
     }
 
-    public void setCodeType(CodeType codeType) {
+    public void setCodeType(@Nonnull CodeType codeType) {
         this.codeType = codeType;
         codeArea.resetPainter();
         codeArea.repaint();
@@ -1157,6 +1186,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     }
 
     @Override
+    @Nonnull
     public CaretPosition mousePositionToCaretPosition(int mouseX, int mouseY) {
         CodeAreaPainter painter = codeArea.getPainter();
         Rectangle hexRect = getDataViewRectangle();
@@ -1220,6 +1250,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         return caretPosition;
     }
 
+    @Nonnull
     public Rectangle getDataViewRect() {
         // TODO cache
         return new Rectangle(state.lineNumbersAreaWidth, state.headerAreaHeight, state.areaWidth - state.lineNumbersAreaWidth, state.areaHeight - state.headerAreaHeight);
@@ -1287,7 +1318,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     @Override
     @Nullable
     public Point getCursorPoint(int bytesPerLine, int lineHeight, int charWidth, int linesPerRect) {
-        CodeAreaScrollPosition scrollPosition = codeArea.getScrollPosition();
+        CaretPosition caretPosition = codeArea.getCaretPosition();
         long shiftedPosition = caretPosition.getDataPosition() + scrollPosition.getLineDataOffset();
         long line = shiftedPosition / bytesPerLine - scrollPosition.getScrollLinePosition();
         if (line < -1 || line > linesPerRect) {
@@ -1296,13 +1327,13 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
         int byteOffset = (int) (shiftedPosition % bytesPerLine);
 
-        Rectangle dataViewRect = codeArea.getDataViewRectangle();
+        Rectangle dataViewRect = getDataViewRectangle();
         int caretY = (int) (dataViewRect.y + line * lineHeight) - scrollPosition.getScrollLineOffset();
         int caretX;
         if (caretPosition.getSection() == CodeAreaSection.TEXT_PREVIEW) {
             caretX = codeArea.getPreviewX() + charWidth * byteOffset;
         } else {
-            caretX = dataViewRect.x + charWidth * (codeArea.getPainter().computeFirstCodeCharPos(byteOffset) + getCodeOffset());
+            caretX = dataViewRect.x + charWidth * (codeArea.getPainter().computeFirstCodeCharPos(byteOffset) + caretPosition.getCodeOffset());
         }
         caretX -= scrollPosition.getScrollCharPosition() * charWidth + scrollPosition.getScrollCharOffset();
 
@@ -1322,7 +1353,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     @Override
     @Nullable
     public Point getShadowCursorPoint(int bytesPerLine, int lineHeight, int charWidth, int linesPerRect) {
-        CodeAreaScrollPosition scrollPosition = codeArea.getScrollPosition();
+        CaretPosition caretPosition = codeArea.getCaretPosition();
         long shiftedPosition = caretPosition.getDataPosition() + scrollPosition.getLineDataOffset();
         long line = shiftedPosition / bytesPerLine - scrollPosition.getScrollLinePosition();
         if (line < -1 || line + 1 > linesPerRect) {
@@ -1331,7 +1362,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
         int byteOffset = (int) (shiftedPosition % bytesPerLine);
 
-        Rectangle dataViewRect = codeArea.getDataViewRectangle();
+        Rectangle dataViewRect = getDataViewRectangle();
         int caretY = (int) (dataViewRect.y + line * lineHeight) - scrollPosition.getScrollLineOffset();
         int caretX;
         if (caretPosition.getSection() == CodeAreaSection.TEXT_PREVIEW) {
@@ -1344,7 +1375,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         return new Point(caretX, caretY);
     }
 
-    // TODO move to painter?
+    @Override
     public void updateScrollBars() {
         if (scrollPosition.getVerticalOverflowMode() == CodeAreaScrollPosition.VerticalOverflowMode.OVERFLOW) {
             long lines = ((codeArea.getDataSize() + scrollPosition.getLineDataOffset()) / getBytesPerLine()) + 1;
@@ -1457,7 +1488,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             }
 
             // TODO
-            dataViewScrolled(codeArea.getGraphics());
+            codeArea.repaint();
+//            dataViewScrolled(codeArea.getGraphics());
             codeArea.notifyScrolled();
         }
     }
@@ -1480,6 +1512,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                 }
             }
 
+            codeArea.repaint();
             dataViewScrolled(codeArea.getGraphics());
             codeArea.notifyScrolled();
         }

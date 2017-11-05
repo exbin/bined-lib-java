@@ -1,0 +1,8 @@
+rootProject.name = 'deltahex-swing-extended'
+
+if (rootProject.path == ':') {
+    include ':modules:deltahex-core'
+    include ':modules:deltahex-swing'
+}
+
+apply from: '../deltahex-java-modules-settings.gradle'

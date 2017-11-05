@@ -13,23 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.deltahex.swing.color;
-
-import javax.annotation.Nonnull;
+package org.exbin.deltahex.swing.extended.color;
 
 /**
- * Interface for extended code area color profile.
+ * Enumeration of unprintable color types.
  *
- * @version 0.2.0 2017/04/17
+ * @version 0.2.0 2017/04/14
  * @author ExBin Project (http://exbin.org)
  */
-public interface CodeAreaColorProfileEx {
+public enum CodeAreaUnprintablesColorType implements CodeAreaColorType {
 
-    /**
-     * Returns colors group for alternate areas.
-     *
-     * @return colors group
-     */
-    @Nonnull
-    CodeAreaColorsGroup getAlternateColors();
+    UNPRINTABLE("unprintable.color");
+
+    private CodeAreaUnprintablesColorType(String preferencesId) {
+        this.preferencesId = preferencesId;
+    }
+
+    private final String preferencesId;
+
+    @Override
+    public String getPreferencesId() {
+        return preferencesId;
+    }
 }

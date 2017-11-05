@@ -15,6 +15,8 @@
  */
 package org.exbin.deltahex.swing.basic;
 
+import javax.annotation.Nonnull;
+
 /**
  * Code Area scrolling position.
  *
@@ -90,11 +92,12 @@ public class CodeAreaScrollPosition {
         this.lineDataOffset = lineDataOffset;
     }
 
+    @Nonnull
     public VerticalOverflowMode getVerticalOverflowMode() {
         return verticalOverflowMode;
     }
 
-    public void setVerticalOverflowMode(VerticalOverflowMode verticalOverflowMode) {
+    public void setVerticalOverflowMode(@Nonnull VerticalOverflowMode verticalOverflowMode) {
         this.verticalOverflowMode = verticalOverflowMode;
     }
 

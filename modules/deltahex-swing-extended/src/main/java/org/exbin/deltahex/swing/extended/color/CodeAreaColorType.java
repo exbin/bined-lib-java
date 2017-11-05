@@ -13,16 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.deltahex.swing.basic;
+package org.exbin.deltahex.swing.extended.color;
+
+import javax.annotation.Nonnull;
 
 /**
- * Border paint modes for basic painter.
+ * Interface for code area color profile.
  *
- * @version 0.2.0 2017/11/02
+ * @version 0.2.0 2017/04/17
  * @author ExBin Project (http://exbin.org)
  */
-public enum BasicBorderPaintMode {
-    TRANSPARENT,
-    PLAIN,
-    STRIPED
+public interface CodeAreaColorType {
+
+    /**
+     * Returns preferences identifier.
+     *
+     * Unique string ID should be returned.
+     *
+     * Custom implementations should start with full package name to avoid
+     * collisions.
+     *
+     * @return preferences ID key
+     */
+    @Nonnull
+    String getPreferencesId();
 }

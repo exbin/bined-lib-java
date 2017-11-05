@@ -221,4 +221,15 @@ public interface CodeAreaPainter {
      */
     @Nullable
     Point getShadowCursorPoint(int bytesPerLine, int lineHeight, int charWidth, int linesPerRect);
+
+    void updateScrollBars();
+
+    /**
+     * Returns cursor shape type for given position.
+     *
+     * @param x
+     * @param y
+     * @return cursor type from java.awt.Cursor
+     */
+    int getCursorShape(int x, int y);
 }

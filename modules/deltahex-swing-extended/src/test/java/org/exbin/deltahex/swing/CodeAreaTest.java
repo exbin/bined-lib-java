@@ -19,17 +19,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.Nonnull;
 import org.exbin.deltahex.EditationMode;
 import org.exbin.utils.binary_data.ByteArrayEditableData;
 import org.exbin.utils.binary_data.EditableBinaryData;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 import org.junit.Test;
 
 /**
  * Tests for codeArea component.
  *
- * @version 0.2.0 2017/11/05
+ * @version 0.2.0 2017/04/11
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeAreaTest {
@@ -48,7 +47,7 @@ public class CodeAreaTest {
         codeArea.setData(getSampleData(SAMPLE_ALLBYTES));
         codeArea.selectAll();
         codeArea.delete();
-        Assert.assertTrue(codeArea.getDataSize() == 0);
+        assertTrue(codeArea.getDataSize() == 0);
     }
 
     @Test
@@ -61,7 +60,7 @@ public class CodeAreaTest {
         codeArea.copy();
         codeArea.clearSelection();
         codeArea.paste();
-        Assert.assertTrue(codeArea.getDataSize() == dataSize);
+        assertTrue(codeArea.getDataSize() == dataSize);
     }
 
     @Test
@@ -75,7 +74,7 @@ public class CodeAreaTest {
         codeArea.copy();
         codeArea.clearSelection();
         codeArea.paste();
-        Assert.assertTrue(codeArea.getDataSize() == dataSize * 2);
+        assertTrue(codeArea.getDataSize() == dataSize * 2);
     }
 
     @Test
@@ -89,11 +88,10 @@ public class CodeAreaTest {
         codeArea.clearSelection();
         codeArea.getCaret().setCaretPosition(dataSize / 2);
         codeArea.paste();
-        Assert.assertTrue(codeArea.getDataSize() == (dataSize / 2 + dataSize));
+        assertTrue(codeArea.getDataSize() == (dataSize / 2 + dataSize));
     }
 
-    @Nonnull
-    private EditableBinaryData getSampleData(@Nonnull String dataPath) {
+    private EditableBinaryData getSampleData(String dataPath) {
         ByteArrayEditableData data = new ByteArrayEditableData();
         try (InputStream stream = CodeAreaTest.class.getResourceAsStream(dataPath)) {
             data.loadFromStream(stream);

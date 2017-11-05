@@ -13,16 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.deltahex.swing.basic;
+package org.exbin.deltahex.swing.extended.color;
 
 /**
- * Border paint modes for basic painter.
+ * Enumeration of unprintable color types.
  *
- * @version 0.2.0 2017/11/02
+ * @version 0.2.0 2017/04/22
  * @author ExBin Project (http://exbin.org)
  */
-public enum BasicBorderPaintMode {
-    TRANSPARENT,
-    PLAIN,
-    STRIPED
+public enum CodeAreaColorizationColorType implements CodeAreaColorType {
+
+    CONTROL_CODES("colorization.control_codes"),
+    UPPER_CODES("colorization.upper_codes");
+
+    private CodeAreaColorizationColorType(String preferencesId) {
+        this.preferencesId = preferencesId;
+    }
+
+    private final String preferencesId;
+
+    @Override
+    public String getPreferencesId() {
+        return preferencesId;
+    }
 }

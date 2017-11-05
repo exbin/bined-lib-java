@@ -26,31 +26,39 @@ import java.nio.charset.CoderResult;
 import java.nio.charset.CodingErrorAction;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * Input stream translation class which converts from input charset to target
  * charset.
  *
- * @version 0.2.0 2017/10/07
+ * @version 0.2.0 2017/11/05
  * @author ExBin Project (http://exbin.org)
  */
 public class CharsetStreamTranslator extends InputStream {
 
     public static final int BYTE_BUFFER_SIZE = 16;
 
+    @Nonnull
     private final CharsetEncoder encoder;
+    @Nonnull
     private final CharsetDecoder decoder;
+    @Nonnull
     private final InputStream source;
 
+    @Nonnull
     private final ByteBuffer inputBuffer;
+    @Nonnull
     private final ByteBuffer outputBuffer;
+    @Nonnull
     private final CharBuffer charBuffer;
     private boolean endOfInput = false;
 
     private int maxInputCharSize;
     private int maxOutputCharSize;
 
-    public CharsetStreamTranslator(Charset inputCharset, Charset outputCharset, InputStream source, int bufferSize) {
+    public CharsetStreamTranslator(@Nonnull Charset inputCharset, @Nonnull Charset outputCharset, @Nonnull InputStream source, int bufferSize) {
         this.source = source;
         decoder = inputCharset.newDecoder();
         decoder.onUnmappableCharacter(CodingErrorAction.REPLACE);
@@ -74,7 +82,7 @@ public class CharsetStreamTranslator extends InputStream {
         outputBuffer.limit(0);
     }
 
-    public CharsetStreamTranslator(Charset inputCharset, Charset outputCharset, InputStream source) {
+    public CharsetStreamTranslator(@Nonnull Charset inputCharset, @Nonnull Charset outputCharset, @Nonnull InputStream source) {
         this(inputCharset, outputCharset, source, BYTE_BUFFER_SIZE);
     }
 
@@ -127,7 +135,7 @@ public class CharsetStreamTranslator extends InputStream {
     public void processNext() {
         charBuffer.rewind();
         charBuffer.limit(charBuffer.capacity());
-        
+
         do {
             loadFromInput();
             if (inputBuffer.remaining() == 0) {

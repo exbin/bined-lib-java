@@ -13,26 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.deltahex.swing.color;
+package org.exbin.deltahex.capability;
 
 /**
- * Enumeration of unprintable color types.
+ * Support for code type capability.
  *
- * @version 0.2.0 2017/04/14
+ * @version 0.2.0 2017/11/05
  * @author ExBin Project (http://exbin.org)
  */
-public enum CodeAreaUnprintablesColorType implements CodeAreaColorType {
+public interface ScrollingCapability extends CodeAreaCapability {
 
-    UNPRINTABLE("unprintable.color");
+    public interface ScrollingCapable {
 
-    private CodeAreaUnprintablesColorType(String preferencesId) {
-        this.preferencesId = preferencesId;
-    }
-
-    private final String preferencesId;
-
-    @Override
-    public String getPreferencesId() {
-        return preferencesId;
     }
 }

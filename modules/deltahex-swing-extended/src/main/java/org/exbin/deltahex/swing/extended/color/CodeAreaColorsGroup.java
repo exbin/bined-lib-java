@@ -13,16 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.deltahex.swing.basic;
+package org.exbin.deltahex.swing.extended.color;
+
+import java.awt.Color;
+import javax.annotation.Nullable;
 
 /**
- * Border paint modes for basic painter.
+ * Interface for code area color profile.
  *
- * @version 0.2.0 2017/11/02
+ * @version 0.2.0 2017/04/14
  * @author ExBin Project (http://exbin.org)
  */
-public enum BasicBorderPaintMode {
-    TRANSPARENT,
-    PLAIN,
-    STRIPED
+public interface CodeAreaColorsGroup {
+
+    /**
+     * Returns color for given color type.
+     *
+     * @param colorType color type
+     * @return color
+     */
+    @Nullable
+    Color getColor(CodeAreaColorType colorType);
 }

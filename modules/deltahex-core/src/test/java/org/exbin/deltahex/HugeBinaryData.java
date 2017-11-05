@@ -18,13 +18,14 @@ package org.exbin.deltahex;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import javax.annotation.Nonnull;
 import org.exbin.utils.binary_data.BinaryData;
 import org.exbin.utils.binary_data.ByteArrayData;
 
 /**
  * Simulation of huge binary data source.
  *
- * @version 0.1.1 2016/09/01
+ * @version 0.2.0 2017/11/05
  * @author ExBin Project (http://exbin.org)
  */
 public class HugeBinaryData implements BinaryData {
@@ -50,6 +51,7 @@ public class HugeBinaryData implements BinaryData {
     }
 
     @Override
+    @Nonnull
     public BinaryData copy(long startFrom, long length) {
         if (length > Integer.MAX_VALUE) {
             throw new IllegalStateException("Unable to copy too huge memory segment");
@@ -67,11 +69,12 @@ public class HugeBinaryData implements BinaryData {
     }
 
     @Override
-    public void saveToStream(OutputStream out) throws IOException {
+    public void saveToStream(@Nonnull OutputStream out) throws IOException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
+    @Nonnull
     public InputStream getDataInputStream() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
