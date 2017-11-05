@@ -15,7 +15,6 @@
  */
 package org.exbin.deltahex.swing;
 
-import org.exbin.deltahex.swing.basic.CodeAreaCaret;
 import org.exbin.deltahex.swing.basic.DefaultCodeAreaPainter;
 import org.exbin.deltahex.swing.basic.DefaultCodeAreaCommandHandler;
 import java.awt.Color;
@@ -35,14 +34,10 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.swing.JComponent;
 import javax.swing.UIManager;
-import org.exbin.deltahex.CaretMovedListener;
-import org.exbin.deltahex.CaretPosition;
 import org.exbin.deltahex.CodeAreaControl;
-import org.exbin.deltahex.CodeAreaSection;
 import org.exbin.deltahex.DataChangedListener;
 import org.exbin.deltahex.EditationMode;
 import org.exbin.deltahex.EditationModeChangedListener;
-import org.exbin.deltahex.ScrollingListener;
 import org.exbin.deltahex.SelectionChangedListener;
 import org.exbin.deltahex.SelectionRange;
 import org.exbin.utils.binary_data.BinaryData;
@@ -58,8 +53,6 @@ public class CodeArea extends JComponent implements CodeAreaControl {
     @Nonnull
     private BinaryData data;
     @Nonnull
-    private CodeAreaCaret caret;
-    @Nonnull
     private SelectionRange selection;
     @Nonnull
     private Charset charset = Charset.defaultCharset();
@@ -73,10 +66,8 @@ public class CodeArea extends JComponent implements CodeAreaControl {
     private EditationMode editationMode = EditationMode.OVERWRITE;
 
     private final List<SelectionChangedListener> selectionChangedListeners = new ArrayList<>();
-    private final List<CaretMovedListener> caretMovedListeners = new ArrayList<>();
     private final List<EditationModeChangedListener> editationModeChangedListeners = new ArrayList<>();
     private final List<DataChangedListener> dataChangedListeners = new ArrayList<>();
-    private final List<ScrollingListener> scrollingListeners = new ArrayList<>();
 
     /**
      * Creates new instance with default command handler and painter.
@@ -102,8 +93,6 @@ public class CodeArea extends JComponent implements CodeAreaControl {
     }
 
     private void init() {
-        caret = new CodeAreaCaret(this);
-
         // TODO: Use swing color instead
         setBackground(Color.WHITE);
         setFocusable(true);
@@ -160,44 +149,6 @@ public class CodeArea extends JComponent implements CodeAreaControl {
                 painter.rebuildColors();
             }
         });
-    }
-
-    @Nonnull
-    public CodeAreaCaret getCaret() {
-        return caret;
-    }
-
-    public long getDataPosition() {
-        return caret.getDataPosition();
-    }
-
-    public int getCodeOffset() {
-        return caret.getCodeOffset();
-    }
-
-    @Nonnull
-    public CodeAreaSection getActiveSection() {
-        return caret.getSection();
-    }
-
-    @Nonnull
-    public CaretPosition getCaretPosition() {
-        return caret.getCaretPosition();
-    }
-
-    public void setCaretPosition(@Nonnull CaretPosition caretPosition) {
-        caret.setCaretPosition(caretPosition);
-        notifyCaretMoved();
-    }
-
-    public void setCaretPosition(long dataPosition) {
-        caret.setCaretPosition(dataPosition);
-        notifyCaretMoved();
-    }
-
-    public void setCaretPosition(long dataPosition, int codeOffset) {
-        caret.setCaretPosition(dataPosition, codeOffset);
-        notifyCaretMoved();
     }
 
     @Nonnull
@@ -389,16 +340,18 @@ public class CodeArea extends JComponent implements CodeAreaControl {
         this.handleClipboard = handleClipboard;
     }
 
-    public void notifyCaretMoved() {
-        for (CaretMovedListener caretMovedListener : caretMovedListeners) {
-            caretMovedListener.caretMoved(caret.getCaretPosition());
+    public void notifySelectionChanged() {
+        for (SelectionChangedListener selectionChangedListener : selectionChangedListeners) {
+            selectionChangedListener.selectionChanged(selection);
         }
     }
 
-    public void notifyScrolled() {
-        for (ScrollingListener scrollingListener : scrollingListeners) {
-            scrollingListener.scrolled();
-        }
+    public void addSelectionChangedListener(@Nullable SelectionChangedListener selectionChangedListener) {
+        selectionChangedListeners.add(selectionChangedListener);
+    }
+
+    public void removeSelectionChangedListener(@Nullable SelectionChangedListener selectionChangedListener) {
+        selectionChangedListeners.remove(selectionChangedListener);
     }
 
     /**
@@ -414,28 +367,6 @@ public class CodeArea extends JComponent implements CodeAreaControl {
         for (DataChangedListener dataChangedListener : dataChangedListeners) {
             dataChangedListener.dataChanged();
         }
-    }
-
-    public void notifySelectionChanged() {
-        for (SelectionChangedListener selectionChangedListener : selectionChangedListeners) {
-            selectionChangedListener.selectionChanged(selection);
-        }
-    }
-
-    public void addSelectionChangedListener(@Nullable SelectionChangedListener selectionChangedListener) {
-        selectionChangedListeners.add(selectionChangedListener);
-    }
-
-    public void removeSelectionChangedListener(@Nullable SelectionChangedListener selectionChangedListener) {
-        selectionChangedListeners.remove(selectionChangedListener);
-    }
-
-    public void addCaretMovedListener(@Nullable CaretMovedListener caretMovedListener) {
-        caretMovedListeners.add(caretMovedListener);
-    }
-
-    public void removeCaretMovedListener(@Nullable CaretMovedListener caretMovedListener) {
-        caretMovedListeners.remove(caretMovedListener);
     }
 
     public void addEditationModeChangedListener(@Nullable EditationModeChangedListener editationModeChangedListener) {
@@ -454,27 +385,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
         dataChangedListeners.remove(dataChangedListener);
     }
 
-    public void addScrollingListener(@Nullable ScrollingListener scrollingListener) {
-        scrollingListeners.add(scrollingListener);
-    }
-
-    public void removeScrollingListener(@Nullable ScrollingListener scrollingListener) {
-        scrollingListeners.remove(scrollingListener);
-    }
-
     public void resetPainter() {
         painter.reset();
-    }
-
-    public void revealCursor() {
-        revealPosition(caret.getCaretPosition().getDataPosition(), caret.getSection());
-    }
-
-    public void revealPosition(long position, @Nullable CodeAreaSection section) {
-        painter.revealPosition(position, section);
-    }
-
-    public void repaintCursor() {
-        repaint();
     }
 }

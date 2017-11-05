@@ -30,12 +30,15 @@ import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.UIManager;
+import org.exbin.deltahex.CaretMovedListener;
 import org.exbin.deltahex.CaretPosition;
 import org.exbin.deltahex.CodeAreaSection;
 import org.exbin.deltahex.CodeAreaUtils;
@@ -44,6 +47,8 @@ import org.exbin.deltahex.CodeAreaViewMode;
 import org.exbin.deltahex.CodeType;
 import org.exbin.deltahex.EditationMode;
 import org.exbin.deltahex.ScrollBarVisibility;
+import org.exbin.deltahex.ScrollingListener;
+import org.exbin.deltahex.capability.CaretCapability;
 import org.exbin.deltahex.capability.CodeTypeCapability;
 import org.exbin.deltahex.capability.ScrollingCapability;
 import org.exbin.deltahex.capability.ViewModeCapability;
@@ -56,10 +61,10 @@ import org.exbin.utils.binary_data.OutOfBoundsException;
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2017/11/04
+ * @version 0.2.0 2017/11/05
  * @author ExBin Project (http://exbin.org)
  */
-public class DefaultCodeAreaPainter implements CodeAreaPainter, ScrollingCapability.ScrollingCapable, ViewModeCapability.ViewModeCapable, CodeTypeCapability.CodeTypeCapable {
+public class DefaultCodeAreaPainter implements CodeAreaPainter, CaretCapability.CaretCapable, ScrollingCapability.ScrollingCapable, ViewModeCapability.ViewModeCapable, CodeTypeCapability.CodeTypeCapable {
 
     @Nonnull
     protected final CodeArea codeArea;
@@ -80,6 +85,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, ScrollingCapabil
     private HexCharactersCase hexCharactersCase = HexCharactersCase.UPPER;
     private boolean showShadowCursor = true;
 
+    @Nonnull
+    private CodeAreaCaret caret;
     @Nullable
     private Charset charMappingCharset = null;
     private final char[] charMapping = new char[256];
@@ -103,6 +110,9 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, ScrollingCapabil
     @Nonnull
     private HorizontalScrollUnit horizontalScrollUnit = HorizontalScrollUnit.PIXEL;
 
+    private final List<CaretMovedListener> caretMovedListeners = new ArrayList<>();
+    private final List<ScrollingListener> scrollingListeners = new ArrayList<>();
+
     public DefaultCodeAreaPainter(@Nonnull CodeArea codeArea) {
         this.codeArea = codeArea;
 
@@ -123,6 +133,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, ScrollingCapabil
         scrollPanel.setBackground(Color.RED);
         scrollPanel.setViewportView(dataView);
         scrollPanel.getViewport().setOpaque(false);
+        caret = new CodeAreaCaret(codeArea);
 
         DefaultCodeAreaMouseListener codeAreaMouseListener = new DefaultCodeAreaMouseListener(codeArea);
         codeArea.addMouseListener(codeAreaMouseListener);
@@ -819,6 +830,44 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, ScrollingCapabil
         }
     }
 
+    @Nonnull
+    public CodeAreaCaret getCaret() {
+        return caret;
+    }
+
+    public long getDataPosition() {
+        return caret.getDataPosition();
+    }
+
+    public int getCodeOffset() {
+        return caret.getCodeOffset();
+    }
+
+    @Nonnull
+    public CodeAreaSection getActiveSection() {
+        return caret.getSection();
+    }
+
+    @Nonnull
+    public CaretPosition getCaretPosition() {
+        return caret.getCaretPosition();
+    }
+
+    public void setCaretPosition(@Nonnull CaretPosition caretPosition) {
+        caret.setCaretPosition(caretPosition);
+        notifyCaretMoved();
+    }
+
+    public void setCaretPosition(long dataPosition) {
+        caret.setCaretPosition(dataPosition);
+        notifyCaretMoved();
+    }
+
+    public void setCaretPosition(long dataPosition, int codeOffset) {
+        caret.setCaretPosition(dataPosition, codeOffset);
+        notifyCaretMoved();
+    }
+
     @Override
     public int getCursorShape(int x, int y) {
         Rectangle dataViewRectangle = getDataViewRectangle();
@@ -835,7 +884,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, ScrollingCapabil
             return;
         }
 
-        CodeAreaCaret caret = codeArea.getCaret();
+        CodeAreaCaret caret = getCaret();
         int codeDigits = getCodeType().getMaxDigitsForByte();
         int bytesPerLine = getBytesPerLine();
         int lineHeight = getLineHeight();
@@ -943,7 +992,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, ScrollingCapabil
             Stroke dashed = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{2}, 0);
             g2d.setStroke(dashed);
             g2d.drawRect(shadowCursorPoint.x, shadowCursorPoint.y,
-                    characterWidth * (codeArea.getActiveSection() == CodeAreaSection.TEXT_PREVIEW ? codeDigits : 1), lineHeight - 1);
+                    characterWidth * (getActiveSection() == CodeAreaSection.TEXT_PREVIEW ? codeDigits : 1), lineHeight - 1);
         }
     }
 
@@ -1097,24 +1146,27 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, ScrollingCapabil
         return viewMode;
     }
 
+    @Override
     public void setViewMode(@Nonnull CodeAreaViewMode viewMode) {
         this.viewMode = viewMode;
         if (viewMode == CodeAreaViewMode.CODE_MATRIX) {
-            codeArea.getCaret().setSection(CodeAreaSection.CODE_MATRIX);
-            codeArea.notifyCaretMoved();
+            getCaret().setSection(CodeAreaSection.CODE_MATRIX);
+            notifyCaretMoved();
         } else if (viewMode == CodeAreaViewMode.TEXT_PREVIEW) {
-            codeArea.getCaret().setSection(CodeAreaSection.TEXT_PREVIEW);
-            codeArea.notifyCaretMoved();
+            getCaret().setSection(CodeAreaSection.TEXT_PREVIEW);
+            notifyCaretMoved();
         }
         codeArea.resetPainter();
         codeArea.repaint();
     }
 
+    @Override
     @Nonnull
     public CodeType getCodeType() {
         return codeType;
     }
 
+    @Override
     public void setCodeType(@Nonnull CodeType codeType) {
         this.codeType = codeType;
         codeArea.resetPainter();
@@ -1192,7 +1244,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, ScrollingCapabil
         Rectangle hexRect = getDataViewRectangle();
         CodeAreaViewMode viewMode = getViewMode();
         CodeType codeType = getCodeType();
-        CodeAreaCaret caret = codeArea.getCaret();
+        CodeAreaCaret caret = getCaret();
         int bytesPerLine = codeArea.getBytesPerLine();
         if (mouseX < hexRect.x) {
             mouseX = hexRect.x;
@@ -1256,7 +1308,10 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, ScrollingCapabil
         return new Rectangle(state.lineNumbersAreaWidth, state.headerAreaHeight, state.areaWidth - state.lineNumbersAreaWidth, state.areaHeight - state.headerAreaHeight);
     }
 
-    @Override
+    public void revealPosition() {
+        revealPosition(caret.getCaretPosition().getDataPosition(), caret.getSection());
+    }
+
     public void revealPosition(long position, @Nonnull CodeAreaSection section) {
         if (!isInitialized()) {
             // Ignore if painter not initialized
@@ -1301,7 +1356,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, ScrollingCapabil
 
         if (scrolled) {
             updateScrollBars();
-            codeArea.notifyScrolled();
+            notifyScrolled();
         }
     }
 
@@ -1318,7 +1373,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, ScrollingCapabil
     @Override
     @Nullable
     public Point getCursorPoint(int bytesPerLine, int lineHeight, int charWidth, int linesPerRect) {
-        CaretPosition caretPosition = codeArea.getCaretPosition();
+        CaretPosition caretPosition = getCaretPosition();
         long shiftedPosition = caretPosition.getDataPosition() + scrollPosition.getLineDataOffset();
         long line = shiftedPosition / bytesPerLine - scrollPosition.getScrollLinePosition();
         if (line < -1 || line > linesPerRect) {
@@ -1353,7 +1408,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, ScrollingCapabil
     @Override
     @Nullable
     public Point getShadowCursorPoint(int bytesPerLine, int lineHeight, int charWidth, int linesPerRect) {
-        CaretPosition caretPosition = codeArea.getCaretPosition();
+        CaretPosition caretPosition = getCaretPosition();
         long shiftedPosition = caretPosition.getDataPosition() + scrollPosition.getLineDataOffset();
         long line = shiftedPosition / bytesPerLine - scrollPosition.getScrollLinePosition();
         if (line < -1 || line + 1 > linesPerRect) {
@@ -1428,7 +1483,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, ScrollingCapabil
         codeArea.resetPainter();
         scrollPosition.setScrollLinePosition(linePosition);
         updateScrollBars();
-        codeArea.notifyScrolled();
+        notifyScrolled();
     }
 
     public ScrollBarVisibility getHorizontalScrollBarVisibility() {
@@ -1454,7 +1509,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, ScrollingCapabil
         codeArea.resetPainter();
         scrollPosition.setScrollCharPosition(bytePosition);
         updateScrollBars();
-        codeArea.notifyScrolled();
+        notifyScrolled();
     }
 
     private class VerticalAdjustmentListener implements AdjustmentListener {
@@ -1490,7 +1545,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, ScrollingCapabil
             // TODO
             codeArea.repaint();
 //            dataViewScrolled(codeArea.getGraphics());
-            codeArea.notifyScrolled();
+            notifyScrolled();
         }
     }
 
@@ -1514,7 +1569,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, ScrollingCapabil
 
             codeArea.repaint();
             dataViewScrolled(codeArea.getGraphics());
-            codeArea.notifyScrolled();
+            notifyScrolled();
         }
     }
 
@@ -1551,6 +1606,35 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, ScrollingCapabil
      */
     private void renderBackgroundSequence(Graphics g, int startOffset, int endOffset, int linePositionX, int positionY) {
         g.fillRect(linePositionX + startOffset * state.characterWidth, positionY, (endOffset - startOffset) * state.characterWidth, state.lineHeight);
+    }
+
+    @Override
+    public void notifyCaretMoved() {
+        for (CaretMovedListener caretMovedListener : caretMovedListeners) {
+            caretMovedListener.caretMoved(caret.getCaretPosition());
+        }
+    }
+
+    public void notifyScrolled() {
+        for (ScrollingListener scrollingListener : scrollingListeners) {
+            scrollingListener.scrolled();
+        }
+    }
+
+    public void addCaretMovedListener(@Nullable CaretMovedListener caretMovedListener) {
+        caretMovedListeners.add(caretMovedListener);
+    }
+
+    public void removeCaretMovedListener(@Nullable CaretMovedListener caretMovedListener) {
+        caretMovedListeners.remove(caretMovedListener);
+    }
+
+    public void addScrollingListener(@Nullable ScrollingListener scrollingListener) {
+        scrollingListeners.add(scrollingListener);
+    }
+
+    public void removeScrollingListener(@Nullable ScrollingListener scrollingListener) {
+        scrollingListeners.remove(scrollingListener);
     }
 
     private static class Colors {

@@ -189,14 +189,6 @@ public interface CodeAreaPainter {
     CaretPosition mousePositionToCaretPosition(int mouseX, int mouseY);
 
     /**
-     * Scroll visible area to reveal specified position.
-     *
-     * @param position
-     * @param section
-     */
-    void revealPosition(long position, @Nonnull CodeAreaSection section);
-
-    /**
      * Returns relative cursor position in code area or null if cursor is not
      * visible.
      *

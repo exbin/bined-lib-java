@@ -24,6 +24,9 @@ package org.exbin.deltahex.capability;
 public interface CaretCapability extends CodeAreaCapability {
 
     public interface CaretCapable {
-
+        
+        void revealCursor();
+        
+        void notifyCaretMoved();
     }
 }
