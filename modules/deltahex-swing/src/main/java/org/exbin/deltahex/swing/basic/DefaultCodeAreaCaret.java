@@ -31,10 +31,10 @@ import org.exbin.deltahex.swing.CodeAreaPainter;
 /**
  * Code area caret.
  *
- * @version 0.2.0 2017/11/04
+ * @version 0.2.0 2017/11/07
  * @author ExBin Project (http://exbin.org)
  */
-public class CodeAreaCaret {
+public class DefaultCodeAreaCaret {
 
     private static final int LINE_CURSOR_WIDTH = 1;
     private static final int DOUBLE_CURSOR_WIDTH = 2;
@@ -50,7 +50,7 @@ public class CodeAreaCaret {
     private CursorShape overwriteCursorShape = CursorShape.BOX;
     private CursorRenderingMode renderingMode = CursorRenderingMode.PAINT; //NEGATIVE;
 
-    public CodeAreaCaret(CodeArea codeArea) {
+    public DefaultCodeAreaCaret(CodeArea codeArea) {
         this.codeArea = codeArea;
         privateSetBlinkRate(DEFAULT_BLINK_RATE);
     }
@@ -97,9 +97,9 @@ public class CodeAreaCaret {
             return null;
         }
 
-        CodeAreaCaret.CursorShape cursorShape = codeArea.getEditationMode() == EditationMode.INSERT ? insertCursorShape : overwriteCursorShape;
+        DefaultCodeAreaCaret.CursorShape cursorShape = codeArea.getEditationMode() == EditationMode.INSERT ? insertCursorShape : overwriteCursorShape;
         int cursorThickness = 0;
-        if (cursorShape.getWidth() != CodeAreaCaret.CursorShapeWidth.FULL) {
+        if (cursorShape.getWidth() != DefaultCodeAreaCaret.CursorShapeWidth.FULL) {
             cursorThickness = getCursorThickness(cursorShape, charWidth, lineHeight);
         }
         switch (cursorShape) {
@@ -108,7 +108,7 @@ public class CodeAreaCaret {
             case BOTTOM_CORNERS:
             case CORNERS: {
                 int width = charWidth;
-                if (cursorShape != CodeAreaCaret.CursorShape.BOX) {
+                if (cursorShape != DefaultCodeAreaCaret.CursorShape.BOX) {
                     width++;
                 }
                 return new Rectangle(cursorPoint.x, cursorPoint.y, width, lineHeight);

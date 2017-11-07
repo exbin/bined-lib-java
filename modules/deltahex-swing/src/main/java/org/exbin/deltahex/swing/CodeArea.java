@@ -15,7 +15,6 @@
  */
 package org.exbin.deltahex.swing;
 
-import org.exbin.deltahex.swing.basic.DefaultCodeAreaPainter;
 import org.exbin.deltahex.swing.basic.DefaultCodeAreaCommandHandler;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -27,46 +26,32 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.swing.JComponent;
 import javax.swing.UIManager;
 import org.exbin.deltahex.CodeAreaControl;
 import org.exbin.deltahex.DataChangedListener;
-import org.exbin.deltahex.EditationMode;
-import org.exbin.deltahex.EditationModeChangedListener;
-import org.exbin.deltahex.SelectionChangedListener;
-import org.exbin.deltahex.SelectionRange;
+import org.exbin.deltahex.swing.basic.DefaultCodeAreaWorker;
 import org.exbin.utils.binary_data.BinaryData;
 
 /**
  * Hexadecimal viewer/editor component.
  *
- * @version 0.2.0 2017/11/05
+ * @version 0.2.0 2017/11/07
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeArea extends JComponent implements CodeAreaControl {
 
     @Nonnull
     private BinaryData data;
-    @Nonnull
-    private SelectionRange selection;
-    @Nonnull
-    private Charset charset = Charset.defaultCharset();
-    private boolean handleClipboard = true;
 
     @Nonnull
-    private CodeAreaPainter painter;
+    private CodeAreaWorker worker;
     @Nonnull
     private CodeAreaCommandHandler commandHandler;
-    @Nonnull
-    private EditationMode editationMode = EditationMode.OVERWRITE;
 
-    private final List<SelectionChangedListener> selectionChangedListeners = new ArrayList<>();
-    private final List<EditationModeChangedListener> editationModeChangedListeners = new ArrayList<>();
     private final List<DataChangedListener> dataChangedListeners = new ArrayList<>();
 
     /**
@@ -74,8 +59,8 @@ public class CodeArea extends JComponent implements CodeAreaControl {
      */
     public CodeArea() {
         super();
+        this.worker = new DefaultCodeAreaWorker(this);
         this.commandHandler = new DefaultCodeAreaCommandHandler(this);
-        this.painter = new DefaultCodeAreaPainter(this);
         init();
     }
 
@@ -83,12 +68,11 @@ public class CodeArea extends JComponent implements CodeAreaControl {
      * Creates new instance with command handler and painter.
      *
      * @param commandHandler command handler
-     * @param painter painter
      */
-    public CodeArea(@Nonnull CodeAreaCommandHandler commandHandler, @Nonnull CodeAreaPainter painter) {
+    public CodeArea(@Nonnull CodeAreaCommandHandler commandHandler, @Nonnull CodeAreaWorker worker) {
         super();
+        this.worker = worker;
         this.commandHandler = commandHandler;
-        this.painter = painter;
         init();
     }
 
@@ -146,9 +130,28 @@ public class CodeArea extends JComponent implements CodeAreaControl {
         UIManager.addPropertyChangeListener(new PropertyChangeListener() {
             @Override
             public void propertyChange(@Nonnull PropertyChangeEvent evt) {
-                painter.rebuildColors();
+                worker.rebuildColors();
             }
         });
+    }
+
+    @Nonnull
+    public CodeAreaWorker getWorker() {
+        return worker;
+    }
+
+    public void setWorker(@Nonnull CodeAreaWorker worker) {
+        if (worker == null) {
+            throw new NullPointerException("Worker cannot be null");
+        }
+
+        this.worker = worker;
+    }
+
+    @Override
+    protected void paintComponent(@Nonnull Graphics g) {
+        super.paintComponent(g);
+        worker.paintComponent(g);
     }
 
     @Nonnull
@@ -207,16 +210,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
 
     @Override
     public boolean hasSelection() {
-        return !selection.isEmpty();
-    }
-
-    public SelectionRange getSelection() {
-        return selection;
-    }
-
-    public void setSelection(SelectionRange selection) {
-        this.selection = selection;
-        notifySelectionChanged();
+        return commandHandler.hasSelection();
     }
 
     @Nonnull
@@ -234,134 +228,35 @@ public class CodeArea extends JComponent implements CodeAreaControl {
         return data == null ? 0 : data.getDataSize();
     }
 
-    @Nonnull
-    public CodeAreaPainter getPainter() {
-        return painter;
-    }
-
-    public void setPainter(@Nonnull CodeAreaPainter painter) {
-        if (painter == null) {
-            throw new NullPointerException("Painter cannot be null");
-        }
-
-        this.painter = painter;
-        repaint();
-    }
-
-    @Override
-    protected void paintComponent(@Nonnull Graphics g) {
-        super.paintComponent(g);
-        painter.paintComponent(g);
-    }
-
-    public int computeCodeAreaCharacter(int pixelX) {
-        return painter.computeCodeAreaCharacter(pixelX);
-    }
-
-    public int computeCodeAreaLine(int pixelY) {
-        return painter.computeCodeAreaLine(pixelY);
-    }
-
-    /**
-     * Returns currently used charset.
-     *
-     * @return charset
-     */
-    @Nonnull
-    public Charset getCharset() {
-        return charset;
-    }
-
-    /**
-     * Sets charset to use for characters decoding.
-     *
-     * @param charset charset
-     */
-    public void setCharset(@Nonnull Charset charset) {
-        if (charset == null) {
-            throw new NullPointerException("Charset cannot be null");
-        }
-
-        this.charset = charset;
-        repaint();
-    }
-
-    @Nonnull
-    public EditationMode getEditationMode() {
-        return editationMode;
-    }
-
-    public boolean isEditable() {
-        return editationMode != EditationMode.READ_ONLY;
-    }
-
-    public void setEditationMode(@Nonnull EditationMode editationMode) {
-        boolean changed = editationMode != this.editationMode;
-        this.editationMode = editationMode;
-        if (changed) {
-            for (EditationModeChangedListener listener : editationModeChangedListeners) {
-                listener.editationModeChanged(editationMode);
-            }
-            caret.resetBlink();
-            repaint();
-        }
-    }
-
     /**
      * Returns rectangle of the data view area.
      *
      * @return rectangle
      */
     public int getPreviewX() {
-        return painter.getPreviewX();
+        return worker.getPreviewX();
     }
 
     public int getBytesPerRectangle() {
-        return painter.getBytesPerRectangle();
+        return worker.getBytesPerRectangle();
     }
 
     public int getLinesPerRectangle() {
-        return painter.getLinesPerRectangle();
+        return worker.getLinesPerRectangle();
     }
 
     public int getBytesPerLine() {
-        return painter.getBytesPerLine();
+        return worker.getBytesPerLine();
     }
 
     public int getCharactersPerLine() {
-        return painter.getCharactersPerLine();
-    }
-
-    public boolean isHandleClipboard() {
-        return handleClipboard;
-    }
-
-    public void setHandleClipboard(boolean handleClipboard) {
-        this.handleClipboard = handleClipboard;
-    }
-
-    public void notifySelectionChanged() {
-        for (SelectionChangedListener selectionChangedListener : selectionChangedListeners) {
-            selectionChangedListener.selectionChanged(selection);
-        }
-    }
-
-    public void addSelectionChangedListener(@Nullable SelectionChangedListener selectionChangedListener) {
-        selectionChangedListeners.add(selectionChangedListener);
-    }
-
-    public void removeSelectionChangedListener(@Nullable SelectionChangedListener selectionChangedListener) {
-        selectionChangedListeners.remove(selectionChangedListener);
+        return worker.getCharactersPerLine();
     }
 
     /**
      * Notifies component, that internal data was changed.
      */
     public void notifyDataChanged() {
-        if (caret.getDataPosition() > data.getDataSize()) {
-            caret.setCaretPosition(0);
-            notifyCaretMoved();
-        }
         resetPainter();
 
         for (DataChangedListener dataChangedListener : dataChangedListeners) {
@@ -369,23 +264,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
         }
     }
 
-    public void addEditationModeChangedListener(@Nullable EditationModeChangedListener editationModeChangedListener) {
-        editationModeChangedListeners.add(editationModeChangedListener);
-    }
-
-    public void removeEditationModeChangedListener(@Nullable EditationModeChangedListener editationModeChangedListener) {
-        editationModeChangedListeners.remove(editationModeChangedListener);
-    }
-
-    public void addDataChangedListener(@Nullable DataChangedListener dataChangedListener) {
-        dataChangedListeners.add(dataChangedListener);
-    }
-
-    public void removeDataChangedListener(@Nullable DataChangedListener dataChangedListener) {
-        dataChangedListeners.remove(dataChangedListener);
-    }
-
     public void resetPainter() {
-        painter.reset();
+        worker.reset();
     }
 }

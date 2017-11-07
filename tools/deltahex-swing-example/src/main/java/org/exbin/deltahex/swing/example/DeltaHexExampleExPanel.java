@@ -52,7 +52,7 @@ import org.exbin.deltahex.CodeAreaViewMode;
 import org.exbin.deltahex.capability.CodeTypeCapability;
 import org.exbin.deltahex.capability.ViewModeCapability;
 import org.exbin.deltahex.swing.CodeArea;
-import org.exbin.deltahex.swing.basic.CodeAreaCaret;
+import org.exbin.deltahex.swing.basic.DefaultCodeAreaCaret;
 import org.exbin.deltahex.swing.basic.CodeAreaScrollPosition;
 import org.exbin.utils.binary_data.EditableBinaryData;
 
@@ -1495,15 +1495,15 @@ public class DeltaHexExampleExPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_horizontalScrollBarVisibilityComboBoxActionPerformed
 
     private void cursorRenderingModeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cursorRenderingModeComboBoxActionPerformed
-        codeArea.getCaret().setRenderingMode(CodeAreaCaret.CursorRenderingMode.values()[cursorRenderingModeComboBox.getSelectedIndex()]);
+        codeArea.getCaret().setRenderingMode(DefaultCodeAreaCaret.CursorRenderingMode.values()[cursorRenderingModeComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_cursorRenderingModeComboBoxActionPerformed
 
     private void cursorInsertShapeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cursorInsertShapeComboBoxActionPerformed
-        codeArea.getCaret().setInsertCursorShape(CodeAreaCaret.CursorShape.values()[cursorInsertShapeComboBox.getSelectedIndex()]);
+        codeArea.getCaret().setInsertCursorShape(DefaultCodeAreaCaret.CursorShape.values()[cursorInsertShapeComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_cursorInsertShapeComboBoxActionPerformed
 
     private void cursorOverwriteShapeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cursorOverwriteShapeComboBoxActionPerformed
-        codeArea.getCaret().setOverwriteCursorShape(CodeAreaCaret.CursorShape.values()[cursorOverwriteShapeComboBox.getSelectedIndex()]);
+        codeArea.getCaret().setOverwriteCursorShape(DefaultCodeAreaCaret.CursorShape.values()[cursorOverwriteShapeComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_cursorOverwriteShapeComboBoxActionPerformed
 
     private void cursorBlinkingRateSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_cursorBlinkingRateSpinnerStateChanged

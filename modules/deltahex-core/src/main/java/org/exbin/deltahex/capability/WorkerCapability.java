@@ -21,7 +21,5 @@ package org.exbin.deltahex.capability;
  * @version 0.2.0 2017/11/05
  * @author ExBin Project (http://exbin.org)
  */
-public interface CodeAreaCapability {
-
-    
+public interface WorkerCapability {
 }

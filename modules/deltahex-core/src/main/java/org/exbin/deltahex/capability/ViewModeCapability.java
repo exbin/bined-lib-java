@@ -24,7 +24,7 @@ import org.exbin.deltahex.CodeAreaViewMode;
  * @version 0.2.0 2017/11/05
  * @author ExBin Project (http://exbin.org)
  */
-public interface ViewModeCapability extends CodeAreaCapability {
+public interface ViewModeCapability extends WorkerCapability {
 
     public interface ViewModeCapable {
 

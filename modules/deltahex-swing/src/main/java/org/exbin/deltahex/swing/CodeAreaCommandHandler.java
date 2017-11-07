@@ -22,7 +22,7 @@ import javax.annotation.Nonnull;
 /**
  * Interface for code area data manipulation.
  *
- * @version 0.2.0 2017/11/05
+ * @version 0.2.0 2017/11/06
  * @author ExBin Project (http://exbin.org)
  */
 public interface CodeAreaCommandHandler {
@@ -110,4 +110,11 @@ public interface CodeAreaCommandHandler {
      * @param modifiers modifiers
      */
     void moveCaret(@Nonnull MouseEvent mouseEvent, int modifiers);
+
+    /**
+     * Returns true if there is active selection for clipboard handling.
+     *
+     * @return true if non-empty selection is active
+     */
+    boolean hasSelection();
 }

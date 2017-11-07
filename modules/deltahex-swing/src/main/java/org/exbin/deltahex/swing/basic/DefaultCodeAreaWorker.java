@@ -45,13 +45,22 @@ import org.exbin.deltahex.CodeAreaUtils;
 import org.exbin.deltahex.HexCharactersCase;
 import org.exbin.deltahex.CodeAreaViewMode;
 import org.exbin.deltahex.CodeType;
+import org.exbin.deltahex.DataChangedListener;
 import org.exbin.deltahex.EditationMode;
+import org.exbin.deltahex.EditationModeChangedListener;
 import org.exbin.deltahex.ScrollBarVisibility;
 import org.exbin.deltahex.ScrollingListener;
+import org.exbin.deltahex.SelectionChangedListener;
+import org.exbin.deltahex.SelectionRange;
+import org.exbin.deltahex.capability.CaretCapability;
+import org.exbin.deltahex.capability.CodeTypeCapability;
+import org.exbin.deltahex.capability.ScrollingCapability;
+import org.exbin.deltahex.capability.ViewModeCapability;
 import org.exbin.deltahex.swing.CharacterRenderingMode;
 import org.exbin.deltahex.swing.CodeArea;
 import org.exbin.deltahex.swing.CodeAreaPainter;
 import org.exbin.deltahex.swing.CodeAreaSwingUtils;
+import org.exbin.deltahex.swing.CodeAreaWorker;
 import org.exbin.utils.binary_data.OutOfBoundsException;
 
 /**
@@ -60,14 +69,26 @@ import org.exbin.utils.binary_data.OutOfBoundsException;
  * @version 0.2.0 2017/11/07
  * @author ExBin Project (http://exbin.org)
  */
-public class DefaultCodeAreaPainter implements CodeAreaPainter {
+public class DefaultCodeAreaWorker implements CodeAreaWorker, CaretCapability.CaretCapable, ScrollingCapability.ScrollingCapable, ViewModeCapability.ViewModeCapable, CodeTypeCapability.CodeTypeCapable {
 
     @Nonnull
     protected final CodeArea codeArea;
     private int subFontSpace = 3;
 
+    @Nonnull
+    private CodeAreaPainter painter;
+
     @Nullable
     private PainterState state = null;
+
+    @Nonnull
+    private SelectionRange selection;
+    @Nonnull
+    private Charset charset = Charset.defaultCharset();
+    private boolean handleClipboard = true;
+
+    @Nonnull
+    private EditationMode editationMode = EditationMode.OVERWRITE;
 
     @Nonnull
     private CodeAreaViewMode viewMode = CodeAreaViewMode.DUAL;
@@ -108,8 +129,10 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
     private final List<CaretMovedListener> caretMovedListeners = new ArrayList<>();
     private final List<ScrollingListener> scrollingListeners = new ArrayList<>();
+    private final List<SelectionChangedListener> selectionChangedListeners = new ArrayList<>();
+    private final List<EditationModeChangedListener> editationModeChangedListeners = new ArrayList<>();
 
-    public DefaultCodeAreaPainter(@Nonnull CodeArea codeArea) {
+    public DefaultCodeAreaWorker(@Nonnull CodeArea codeArea) {
         this.codeArea = codeArea;
 
         scrollPanel = new JScrollPane();
@@ -117,11 +140,11 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         JScrollBar verticalScrollBar = scrollPanel.getVerticalScrollBar();
         verticalScrollBar.setVisible(false);
         verticalScrollBar.setIgnoreRepaint(true);
-        verticalScrollBar.addAdjustmentListener(new DefaultCodeAreaPainter.VerticalAdjustmentListener());
+        verticalScrollBar.addAdjustmentListener(new DefaultCodeAreaWorker.VerticalAdjustmentListener());
         JScrollBar horizontalScrollBar = scrollPanel.getHorizontalScrollBar();
         horizontalScrollBar.setIgnoreRepaint(false);
         horizontalScrollBar.setVisible(true);
-        horizontalScrollBar.addAdjustmentListener(new DefaultCodeAreaPainter.HorizontalAdjustmentListener());
+        horizontalScrollBar.addAdjustmentListener(new DefaultCodeAreaWorker.HorizontalAdjustmentListener());
         codeArea.add(scrollPanel);
         dataView = new CodeAreaDataView(codeArea);
         dataView.setOpaque(false);
@@ -130,6 +153,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         scrollPanel.setViewportView(dataView);
         scrollPanel.getViewport().setOpaque(false);
         caret = new DefaultCodeAreaCaret(codeArea);
+
+        this.painter = new DefaultCodeAreaPainter(codeArea);
 
         DefaultCodeAreaMouseListener codeAreaMouseListener = new DefaultCodeAreaMouseListener(codeArea);
         codeArea.addMouseListener(codeAreaMouseListener);
@@ -269,6 +294,20 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             resetCharPositions();
             paintComponent(g);
         }
+    }
+
+   @Nonnull
+    public CodeAreaPainter getPainter() {
+        return painter;
+    }
+
+    public void setPainter(@Nonnull CodeAreaPainter painter) {
+        if (painter == null) {
+            throw new NullPointerException("Painter cannot be null");
+        }
+
+        this.painter = painter;
+        repaint();
     }
 
     private void resetScrollState() {
@@ -1582,6 +1621,82 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         return 8;
     }
 
+    public SelectionRange getSelection() {
+        return selection;
+    }
+
+    public void setSelection(SelectionRange selection) {
+        this.selection = selection;
+        notifySelectionChanged();
+    }
+
+    /**
+     * Returns currently used charset.
+     *
+     * @return charset
+     */
+    @Nonnull
+    public Charset getCharset() {
+        return charset;
+    }
+
+    /**
+     * Sets charset to use for characters decoding.
+     *
+     * @param charset charset
+     */
+    public void setCharset(@Nonnull Charset charset) {
+        if (charset == null) {
+            throw new NullPointerException("Charset cannot be null");
+        }
+
+        this.charset = charset;
+        repaint();
+    }
+
+    @Nonnull
+    public EditationMode getEditationMode() {
+        return editationMode;
+    }
+
+    public boolean isEditable() {
+        return editationMode != EditationMode.READ_ONLY;
+    }
+
+    public void setEditationMode(@Nonnull EditationMode editationMode) {
+        boolean changed = editationMode != this.editationMode;
+        this.editationMode = editationMode;
+        if (changed) {
+            for (EditationModeChangedListener listener : editationModeChangedListeners) {
+                listener.editationModeChanged(editationMode);
+            }
+            caret.resetBlink();
+            repaint();
+        }
+    }
+
+    public boolean isHandleClipboard() {
+        return handleClipboard;
+    }
+
+    public void setHandleClipboard(boolean handleClipboard) {
+        this.handleClipboard = handleClipboard;
+    }
+
+    public void notifySelectionChanged() {
+        for (SelectionChangedListener selectionChangedListener : selectionChangedListeners) {
+            selectionChangedListener.selectionChanged(selection);
+        }
+    }
+
+    public void addSelectionChangedListener(@Nullable SelectionChangedListener selectionChangedListener) {
+        selectionChangedListeners.add(selectionChangedListener);
+    }
+
+    public void removeSelectionChangedListener(@Nullable SelectionChangedListener selectionChangedListener) {
+        selectionChangedListeners.remove(selectionChangedListener);
+    }
+
     private static boolean areSameColors(Color color, Color comparedColor) {
         return (color == null && comparedColor == null) || (color != null && color.equals(comparedColor));
     }
@@ -1631,6 +1746,22 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
     public void removeScrollingListener(@Nullable ScrollingListener scrollingListener) {
         scrollingListeners.remove(scrollingListener);
+    }
+
+    public void addEditationModeChangedListener(@Nullable EditationModeChangedListener editationModeChangedListener) {
+        editationModeChangedListeners.add(editationModeChangedListener);
+    }
+
+    public void removeEditationModeChangedListener(@Nullable EditationModeChangedListener editationModeChangedListener) {
+        editationModeChangedListeners.remove(editationModeChangedListener);
+    }
+
+    public void addDataChangedListener(@Nullable DataChangedListener dataChangedListener) {
+        dataChangedListeners.add(dataChangedListener);
+    }
+
+    public void removeDataChangedListener(@Nullable DataChangedListener dataChangedListener) {
+        dataChangedListeners.remove(dataChangedListener);
     }
 
     private static class Colors {

@@ -511,7 +511,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             deleteSelection();
             codeArea.notifyDataChanged();
         } else {
-            CodeAreaCaret caret = codeArea.getCaret();
+            DefaultCodeAreaCaret caret = codeArea.getCaret();
             long dataPosition = caret.getDataPosition();
             if (dataPosition > 0 && dataPosition <= codeArea.getDataSize()) {
                 caret.setCodeOffset(0);
@@ -538,7 +538,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             notifyCaretMoved();
             revealCursor();
         } else {
-            CodeAreaCaret caret = codeArea.getCaret();
+            DefaultCodeAreaCaret caret = codeArea.getCaret();
             long dataPosition = caret.getDataPosition();
             if (dataPosition < codeArea.getDataSize()) {
                 ((EditableBinaryData) codeArea.getData()).remove(dataPosition, 1);
@@ -559,7 +559,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         long last = selection.getLast();
         ((EditableBinaryData) codeArea.getData()).remove(first, last - first + 1);
         codeArea.clearSelection();
-        CodeAreaCaret caret = codeArea.getCaret();
+        DefaultCodeAreaCaret caret = codeArea.getCaret();
         caret.setCaretPosition(first);
         revealCursor();
         codeArea.getPainter().updateScrollBars();
@@ -651,7 +651,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                 try {
                     Object object = clipboard.getData(binaryDataFlavor);
                     if (object instanceof BinaryData) {
-                        CodeAreaCaret caret = codeArea.getCaret();
+                        DefaultCodeAreaCaret caret = codeArea.getCaret();
                         long dataPosition = caret.getDataPosition();
 
                         BinaryData data = (BinaryData) object;
@@ -685,7 +685,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                 try {
                     insertedData = clipboard.getData(DataFlavor.stringFlavor);
                     if (insertedData instanceof String) {
-                        CodeAreaCaret caret = codeArea.getCaret();
+                        DefaultCodeAreaCaret caret = codeArea.getCaret();
                         long dataPosition = caret.getDataPosition();
 
                         byte[] bytes = ((String) insertedData).getBytes(Charset.forName(DEFAULT_ENCODING));
@@ -742,7 +742,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                 try {
                     insertedData = clipboard.getData(DataFlavor.stringFlavor);
                     if (insertedData instanceof String) {
-                        CodeAreaCaret caret = codeArea.getCaret();
+                        DefaultCodeAreaCaret caret = codeArea.getCaret();
                         long dataPosition = caret.getDataPosition();
 
                         CodeType codeType = getCodeType();
@@ -796,7 +796,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     }
 
     public void updateSelection(int modifiers, CaretPosition caretPosition) {
-        CodeAreaCaret caret = codeArea.getCaret();
+        DefaultCodeAreaCaret caret = codeArea.getCaret();
         SelectionRange selection = codeArea.getSelection();
         if ((modifiers & KeyEvent.SHIFT_DOWN_MASK) > 0) {
             long currentPosition = caret.getDataPosition();
@@ -833,7 +833,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     }
 
     public void moveRight(int modifiers) {
-        CodeAreaCaret caret = codeArea.getCaret();
+        DefaultCodeAreaCaret caret = codeArea.getCaret();
         CaretPosition caretPosition = caret.getCaretPosition();
         if (caretPosition.getDataPosition() < codeArea.getDataSize()) {
             if (caret.getSection() == CodeAreaSection.CODE_MATRIX) {
@@ -856,7 +856,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     }
 
     public void moveLeft(int modifiers) {
-        CodeAreaCaret caret = codeArea.getCaret();
+        DefaultCodeAreaCaret caret = codeArea.getCaret();
         CaretPosition caretPosition = caret.getCaretPosition();
         if (caret.getSection() == CodeAreaSection.CODE_MATRIX) {
             int codeOffset = caret.getCodeOffset();

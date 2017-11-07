@@ -23,12 +23,12 @@ import org.exbin.deltahex.CaretPosition;
 import org.exbin.utils.binary_data.OutOfBoundsException;
 
 /**
- * Hexadecimal editor painter interface.
+ * Hexadecimal editor worker interface.
  *
- * @version 0.2.0 2017/11/04
+ * @version 0.2.0 2017/11/06
  * @author ExBin Project (http://exbin.org)
  */
-public interface CodeAreaPainter {
+public interface CodeAreaWorker {
 
     /**
      * Returns true if painter was initialized.
