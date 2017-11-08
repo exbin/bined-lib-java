@@ -18,8 +18,6 @@ package org.exbin.deltahex.swing.basic;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Cursor;
-import java.awt.Font;
-import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -31,7 +29,6 @@ import java.awt.event.AdjustmentListener;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -52,24 +49,24 @@ import org.exbin.deltahex.ScrollBarVisibility;
 import org.exbin.deltahex.ScrollingListener;
 import org.exbin.deltahex.SelectionChangedListener;
 import org.exbin.deltahex.SelectionRange;
-import org.exbin.deltahex.capability.CaretCapability;
-import org.exbin.deltahex.capability.CodeTypeCapability;
-import org.exbin.deltahex.capability.ScrollingCapability;
-import org.exbin.deltahex.capability.ViewModeCapability;
 import org.exbin.deltahex.swing.CharacterRenderingMode;
 import org.exbin.deltahex.swing.CodeArea;
 import org.exbin.deltahex.swing.CodeAreaPainter;
 import org.exbin.deltahex.swing.CodeAreaSwingUtils;
 import org.exbin.deltahex.swing.CodeAreaWorker;
 import org.exbin.utils.binary_data.OutOfBoundsException;
+import org.exbin.deltahex.capability.CaretCapable;
+import org.exbin.deltahex.capability.CodeTypeCapable;
+import org.exbin.deltahex.capability.ViewModeCapable;
+import org.exbin.deltahex.capability.ScrollingCapable;
 
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2017/11/07
+ * @version 0.2.0 2017/11/08
  * @author ExBin Project (http://exbin.org)
  */
-public class DefaultCodeAreaWorker implements CodeAreaWorker, CaretCapability.CaretCapable, ScrollingCapability.ScrollingCapable, ViewModeCapability.ViewModeCapable, CodeTypeCapability.CodeTypeCapable {
+public class DefaultCodeAreaWorker implements CodeAreaWorker, CaretCapable, ScrollingCapable, ViewModeCapable, CodeTypeCapable {
 
     @Nonnull
     protected final CodeArea codeArea;
@@ -77,9 +74,6 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, CaretCapability.Ca
 
     @Nonnull
     private CodeAreaPainter painter;
-
-    @Nullable
-    private PainterState state = null;
 
     @Nonnull
     private SelectionRange selection;
@@ -104,14 +98,7 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, CaretCapability.Ca
 
     @Nonnull
     private DefaultCodeAreaCaret caret;
-    @Nullable
-    private Charset charMappingCharset = null;
-    private final char[] charMapping = new char[256];
-    private long paintCounter = 0;
 
-    /**
-     * Scrollbars handling.
-     */
     @Nonnull
     private final JScrollPane scrollPanel;
     @Nonnull
@@ -259,7 +246,7 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, CaretCapability.Ca
             reset();
         }
 
-        state.charset = codeArea.getCharset();
+        state.charset = charset;
         CharsetEncoder encoder = state.charset.newEncoder();
         state.maxCharLength = (int) encoder.maxBytesPerChar();
 
@@ -296,7 +283,7 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, CaretCapability.Ca
         }
     }
 
-   @Nonnull
+    @Nonnull
     public CodeAreaPainter getPainter() {
         return painter;
     }
@@ -307,7 +294,7 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, CaretCapability.Ca
         }
 
         this.painter = painter;
-        repaint();
+        codeArea.repaint();
     }
 
     private void resetScrollState() {
@@ -391,478 +378,7 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, CaretCapability.Ca
 
     @Override
     public void paintComponent(@Nonnull Graphics g) {
-        if (state == null) {
-            reset();
-        }
-        if (state.font == null) {
-            resetFont(g);
-        }
-
-        paintOutsiteArea(g);
-        paintHeader(g);
-        paintLineNumbers(g);
-        paintMainArea(g);
-        paintCounter++;
-    }
-
-    public void paintOutsiteArea(@Nonnull Graphics g) {
-        g.setColor(Color.WHITE);
-        g.fillRect(0, 0, state.areaWidth, state.headerAreaHeight);
-        g.setColor(Color.BLACK);
-        g.fillRect(0, state.headerAreaHeight - 1, state.lineNumbersAreaWidth, 1);
-    }
-
-    public void paintHeader(@Nonnull Graphics g) {
-        Rectangle clipBounds = g.getClipBounds();
-        Rectangle headerArea = new Rectangle(state.lineNumbersAreaWidth, 0, state.areaWidth - state.lineNumbersAreaWidth, state.headerAreaHeight); // TODO minus scrollbar width
-        g.setClip(clipBounds != null ? headerArea.intersection(clipBounds) : headerArea);
-
-        g.setColor(state.colors.background);
-        g.fillRect(headerArea.x, headerArea.y, headerArea.width, headerArea.height);
-
-        // Black line
-        g.setColor(Color.BLACK);
-        g.fillRect(0, state.headerAreaHeight - 1, state.areaWidth, 1);
-
-        if (state.viewMode != CodeAreaViewMode.TEXT_PREVIEW) {
-            int charsPerLine = computeFirstCodeCharPos(state.bytesPerLine);
-            int headerX = state.lineNumbersAreaWidth + state.mainAreaX - state.scrollPosition.getScrollCharPosition() * state.characterWidth - state.scrollPosition.getScrollCharOffset();
-            int headerY = codeArea.getInsets().top + state.lineHeight - subFontSpace;
-
-            int visibleCharStart = (state.scrollPosition.getScrollCharPosition() * state.characterWidth + state.scrollPosition.getScrollCharOffset()) / state.characterWidth;
-            if (visibleCharStart < 0) {
-                visibleCharStart = 0;
-            }
-            int visibleCharEnd = (state.mainAreaWidth + (state.scrollPosition.getScrollCharPosition() + charsPerLine) * state.characterWidth + state.scrollPosition.getScrollCharOffset()) / state.characterWidth;
-            if (visibleCharEnd > charsPerLine) {
-                visibleCharEnd = charsPerLine;
-            }
-            int visibleStart = computePositionByte(visibleCharStart);
-            int visibleEnd = computePositionByte(visibleCharEnd - 1) + 1;
-
-            g.setColor(codeArea.getForeground());
-            char[] headerChars = new char[charsPerLine];
-            Arrays.fill(headerChars, ' ');
-
-            boolean interleaving = false;
-            int lastPos = 0;
-            for (int index = visibleStart; index < visibleEnd; index++) {
-                int codePos = computeFirstCodeCharPos(index);
-                if (codePos == lastPos + 2 && !interleaving) {
-                    interleaving = true;
-                } else {
-                    CodeAreaUtils.longToBaseCode(headerChars, codePos, index, 16, 2, true, state.hexCharactersCase);
-                    lastPos = codePos;
-                    interleaving = false;
-                }
-            }
-
-            int renderOffset = visibleCharStart;
-//            ColorsGroup.ColorType renderColorType = null;
-            Color renderColor = null;
-            for (int characterOnLine = visibleCharStart; characterOnLine < visibleCharEnd; characterOnLine++) {
-                int byteOnLine;
-                byteOnLine = computePositionByte(characterOnLine);
-                boolean sequenceBreak = false;
-                boolean nativeWidth = true;
-
-                int currentCharWidth = 0;
-//                ColorsGroup.ColorType colorType = ColorsGroup.ColorType.TEXT;
-                if (characterRenderingMode != CharacterRenderingMode.LINE_AT_ONCE) {
-                    char currentChar = ' ';
-//                    if (colorType == ColorsGroup.ColorType.TEXT) {
-                    currentChar = headerChars[characterOnLine];
-//                    }
-                    if (currentChar == ' ' && renderOffset == characterOnLine) {
-                        renderOffset++;
-                        continue;
-                    }
-                    if (characterRenderingMode == CharacterRenderingMode.AUTO && state.monospaceFont) {
-                        // Detect if character is in unicode range covered by monospace fonts
-                        if (CodeAreaSwingUtils.isMonospaceFullWidthCharater(currentChar)) {
-                            currentCharWidth = state.characterWidth;
-                        }
-                    }
-
-                    if (currentCharWidth == 0) {
-                        currentCharWidth = state.fontMetrics.charWidth(currentChar);
-                        nativeWidth = currentCharWidth == state.characterWidth;
-                    }
-                } else {
-                    currentCharWidth = state.characterWidth;
-                }
-
-                Color color = Color.BLACK;
-//                getHeaderPositionColor(byteOnLine, charOnLine);
-//                if (renderColorType == null) {
-//                    renderColorType = colorType;
-//                    renderColor = color;
-//                    g.setColor(color);
-//                }
-
-                if (!nativeWidth || !areSameColors(color, renderColor)) { // || !colorType.equals(renderColorType)
-                    sequenceBreak = true;
-                }
-                if (sequenceBreak) {
-                    if (renderOffset < characterOnLine) {
-                        g.drawChars(headerChars, renderOffset, characterOnLine - renderOffset, headerX + renderOffset * state.characterWidth, headerY);
-                    }
-
-//                    if (!colorType.equals(renderColorType)) {
-//                        renderColorType = colorType;
-//                    }
-                    if (!areSameColors(color, renderColor)) {
-                        renderColor = color;
-                        g.setColor(color);
-                    }
-
-                    if (!nativeWidth) {
-                        renderOffset = characterOnLine + 1;
-                        if (characterRenderingMode == CharacterRenderingMode.TOP_LEFT) {
-                            g.drawChars(headerChars, characterOnLine, 1, headerX + characterOnLine * state.characterWidth, headerY);
-                        } else {
-                            drawShiftedChar(g, headerChars, characterOnLine, state.characterWidth, headerX + characterOnLine * state.characterWidth, headerY, (state.characterWidth + 1 - currentCharWidth) >> 1);
-                        }
-                    } else {
-                        renderOffset = characterOnLine;
-                    }
-                }
-            }
-
-            if (renderOffset < charsPerLine) {
-                g.drawChars(headerChars, renderOffset, charsPerLine - renderOffset, headerX + renderOffset * state.characterWidth, headerY);
-            }
-        }
-
-//        int decorationMode = codeArea.getDecorationMode();
-//        if ((decorationMode & CodeArea.DECORATION_HEADER_LINE) > 0) {
-//            g.setColor(codeArea.getDecorationLineColor());
-//            g.drawLine(compRect.x, codeRect.y - 1, compRect.x + compRect.width, codeRect.y - 1);
-//        }
-//        if ((decorationMode & CodeArea.DECORATION_BOX) > 0) {
-//            g.setColor(codeArea.getDecorationLineColor());
-//            g.drawLine(codeRect.x - 1, codeRect.y - 1, codeRect.x + codeRect.width, codeRect.y - 1);
-//        }
-//        if ((decorationMode & CodeArea.DECORATION_PREVIEW_LINE) > 0) {
-//            int lineX = codeArea.getPreviewX() - scrollPosition.getScrollCharPosition() * codeArea.getCharWidth() - scrollPosition.getScrollCharOffset() - codeArea.getCharWidth() / 2;
-//            if (lineX >= codeRect.x) {
-//                g.setColor(codeArea.getDecorationLineColor());
-//                g.drawLine(lineX, compRect.y, lineX, codeRect.y);
-//            }
-//        }
-        g.setClip(clipBounds);
-    }
-
-    public void paintLineNumbers(@Nonnull Graphics g) {
-        Rectangle clipBounds = g.getClipBounds();
-        Rectangle lineNumbersArea = new Rectangle(0, state.headerAreaHeight, state.lineNumbersAreaWidth, state.areaHeight - state.headerAreaHeight); // TODO minus scrollbar height
-        g.setClip(clipBounds != null ? lineNumbersArea.intersection(clipBounds) : lineNumbersArea);
-
-        g.setColor(state.colors.background);
-        g.fillRect(lineNumbersArea.x, lineNumbersArea.y, lineNumbersArea.width, lineNumbersArea.height);
-
-        int lineNumberLength = state.lineNumbersLength;
-
-        if (state.borderPaintMode == BasicBorderPaintMode.STRIPED) {
-            long dataPosition = state.scrollPosition.getScrollLinePosition() * state.bytesPerLine;
-            int stripePositionY = state.headerAreaHeight + ((state.scrollPosition.getScrollLinePosition() & 1) > 0 ? 0 : state.lineHeight);
-            g.setColor(state.colors.stripes);
-            for (int line = 0; line <= state.linesPerRect / 2; line++) {
-                if (dataPosition >= state.dataSize) {
-                    break;
-                }
-
-                g.fillRect(0, stripePositionY, state.lineNumbersAreaWidth, state.lineHeight);
-                stripePositionY += state.lineHeight * 2;
-                dataPosition += state.bytesPerLine * 2;
-            }
-        }
-
-        long dataPosition = state.bytesPerLine * state.scrollPosition.getScrollLinePosition();
-        int positionY = state.headerAreaHeight + state.lineHeight - subFontSpace - state.scrollPosition.getScrollLineOffset();
-        g.setColor(state.colors.foreground);
-        Rectangle compRect = new Rectangle();
-        for (int line = 0; line <= state.linesPerRect; line++) {
-            if (dataPosition >= state.dataSize) {
-                break;
-            }
-
-            CodeAreaUtils.longToBaseCode(state.lineNumberCode, 0, dataPosition < 0 ? 0 : dataPosition, state.codeType.getBase(), lineNumberLength, true, HexCharactersCase.UPPER);
-            if (state.characterRenderingMode == CharacterRenderingMode.LINE_AT_ONCE) {
-                g.drawChars(state.lineNumberCode, 0, lineNumberLength, compRect.x, positionY);
-            } else {
-                for (int digitIndex = 0; digitIndex < lineNumberLength; digitIndex++) {
-                    drawCenteredChar(g, state.lineNumberCode, digitIndex, state.characterWidth, compRect.x + state.characterWidth * digitIndex, positionY);
-                }
-            }
-
-            positionY += state.lineHeight;
-            dataPosition += state.bytesPerLine;
-        }
-        g.setClip(clipBounds);
-    }
-
-    @Override
-    public void paintMainArea(@Nonnull Graphics g) {
-        if (state == null) {
-            reset();
-        }
-        if (state.font == null) {
-            resetFont(g);
-        }
-
-        Rectangle clipBounds = g.getClipBounds();
-        Rectangle mainArea = new Rectangle(state.lineNumbersAreaWidth, state.headerAreaHeight, state.areaWidth - state.lineNumbersAreaWidth - 20, state.areaHeight - state.headerAreaHeight - 20);
-        g.setClip(clipBounds != null ? mainArea.intersection(clipBounds) : mainArea);
-        paintBackground(g);
-        paintLines(g);
-        g.setClip(clipBounds);
-        paintCursor(g);
-
-        // TODO: Remove later
-        int x = state.areaWidth - state.lineNumbersAreaWidth - 220;
-        int y = state.areaHeight - state.headerAreaHeight - 20;
-        g.setColor(Color.YELLOW);
-        g.fillRect(x, y, 200, 16);
-        g.setColor(Color.BLACK);
-        char[] headerCode = (String.valueOf(state.scrollPosition.getScrollCharPosition()) + "+" + String.valueOf(state.scrollPosition.getScrollCharOffset()) + " : " + String.valueOf(state.scrollPosition.getScrollLinePosition()) + "+" + String.valueOf(state.scrollPosition.getScrollLineOffset()) + " P: " + String.valueOf(paintCounter)).toCharArray();
-        g.drawChars(headerCode, 0, headerCode.length, x, y + state.lineHeight);
-    }
-
-    /**
-     * Paints main area background.
-     *
-     * @param g graphics
-     */
-    public void paintBackground(@Nonnull Graphics g) {
-        int linePositionX = state.lineNumbersAreaWidth;
-        g.setColor(state.colors.background);
-        if (borderPaintMode != BasicBorderPaintMode.TRANSPARENT) {
-            g.fillRect(linePositionX, state.headerAreaHeight, state.mainAreaWidth, state.mainAreaHeight);
-        }
-
-        if (borderPaintMode == BasicBorderPaintMode.STRIPED) {
-            long dataPosition = state.scrollPosition.getScrollLinePosition() * state.bytesPerLine;
-            int stripePositionY = state.headerAreaHeight + (int) ((state.scrollPosition.getScrollLinePosition() & 1) > 0 ? 0 : state.lineHeight);
-            g.setColor(state.colors.stripes);
-            for (int line = 0; line <= state.linesPerRect / 2; line++) {
-                if (dataPosition >= state.dataSize) {
-                    break;
-                }
-
-                g.fillRect(linePositionX, stripePositionY, state.mainAreaWidth, state.lineHeight);
-                stripePositionY += state.lineHeight * 2;
-                dataPosition += state.bytesPerLine * 2;
-            }
-        }
-    }
-
-    public void paintLines(@Nonnull Graphics g) {
-        Color randomColor = new Color((float) Math.random(), (float) Math.random(), (float) Math.random());
-        g.setColor(randomColor);
-        long dataPosition = state.scrollPosition.getScrollLinePosition() * state.bytesPerLine + state.scrollPosition.getLineDataOffset();
-        int linePositionX = state.lineNumbersAreaWidth - state.scrollPosition.getScrollCharPosition() * state.characterWidth - state.scrollPosition.getScrollCharOffset();
-        int linePositionY = state.headerAreaHeight + state.lineHeight - subFontSpace;
-        g.setColor(Color.BLACK);
-        for (int line = 0; line <= state.linesPerRect; line++) {
-            prepareLineData(dataPosition);
-            paintLineBackground(g, linePositionX, linePositionY);
-            paintLineText(g, linePositionX, linePositionY);
-//            CodeAreaUtils.longToBaseCode(lineNumberCode, 0, dataPosition < 0 ? 0 : dataPosition, 16, lineNumberLength, true, HexCharactersCase.UPPER);
-//            if (state.characterRenderingMode == CharacterRenderingMode.LINE_AT_ONCE) {
-//                g.drawChars(lineNumberCode, 0, lineNumberLength, compRect.x, positionY);
-//            } else {
-//                for (int digitIndex = 0; digitIndex < lineNumberLength; digitIndex++) {
-//                    drawCenteredChar(g, lineNumberCode, digitIndex, state.characterWidth, compRect.x + state.characterWidth * digitIndex, positionY);
-//                }
-//            }
-
-            linePositionY += state.lineHeight;
-            dataPosition += state.bytesPerLine;
-        }
-    }
-
-    private void prepareLineData(long dataPosition) {
-        int lineBytesLimit = state.bytesPerLine;
-        int lineStart = 0;
-        if (dataPosition < state.dataSize) {
-            int lineDataSize = state.bytesPerLine + state.maxCharLength - 1;
-            if (dataPosition + lineDataSize > state.dataSize) {
-                lineDataSize = (int) (state.dataSize - dataPosition);
-            }
-            if (dataPosition < 0) {
-                lineStart = (int) -dataPosition;
-            }
-            codeArea.getData().copyToArray(dataPosition + lineStart, state.lineData, lineStart, lineDataSize - lineStart);
-            if (dataPosition + lineBytesLimit > state.dataSize) {
-                lineBytesLimit = (int) (state.dataSize - dataPosition);
-            }
-        } else {
-            lineBytesLimit = 0;
-        }
-
-        // Fill codes
-        if (state.viewMode != CodeAreaViewMode.TEXT_PREVIEW) {
-            for (int byteOnLine = Math.max(state.visibleCodeStart, lineStart); byteOnLine < Math.min(state.visibleCodeEnd, lineBytesLimit); byteOnLine++) {
-                byte dataByte = state.lineData[byteOnLine];
-                CodeAreaUtils.byteToCharsCode(dataByte, state.codeType, state.lineCharacters, computeFirstCodeCharPos(byteOnLine), state.hexCharactersCase);
-            }
-            if (state.bytesPerLine > lineBytesLimit) {
-                Arrays.fill(state.lineCharacters, computePositionByte(lineBytesLimit), state.lineCharacters.length, ' ');
-            }
-        }
-
-        // Fill preview characters
-        if (state.viewMode != CodeAreaViewMode.CODE_MATRIX) {
-            for (int byteOnLine = state.visiblePreviewStart; byteOnLine < Math.min(state.visiblePreviewEnd, lineBytesLimit); byteOnLine++) {
-                byte dataByte = state.lineData[byteOnLine];
-
-                if (state.maxCharLength > 1) {
-                    if (dataPosition + state.maxCharLength > state.dataSize) {
-                        state.maxCharLength = (int) (state.dataSize - dataPosition);
-                    }
-
-                    int charDataLength = state.maxCharLength;
-                    if (byteOnLine + charDataLength > state.lineData.length) {
-                        charDataLength = state.lineData.length - byteOnLine;
-                    }
-                    String displayString = new String(state.lineData, byteOnLine, charDataLength, state.charset);
-                    if (!displayString.isEmpty()) {
-                        state.lineCharacters[state.previewCharPos + byteOnLine] = displayString.charAt(0);
-                    }
-                } else {
-                    if (charMappingCharset == null || charMappingCharset != state.charset) {
-                        buildCharMapping(state.charset);
-                    }
-
-                    state.lineCharacters[state.previewCharPos + byteOnLine] = charMapping[dataByte & 0xFF];
-                }
-            }
-            if (state.bytesPerLine > lineBytesLimit) {
-                Arrays.fill(state.lineCharacters, state.previewCharPos + lineBytesLimit, state.previewCharPos + state.bytesPerLine, ' ');
-            }
-        }
-
-    }
-
-    private void paintLineBackground(@Nonnull Graphics g, int linePositionX, int linePositionY) {
-        int renderOffset = state.visibleCharStart;
-        Color renderColor = null;
-        for (int charOnLine = state.visibleCharStart; charOnLine < state.visibleCharEnd; charOnLine++) {
-            CodeAreaSection section;
-            int byteOnLine;
-            if (charOnLine >= state.previewCharPos && state.viewMode != CodeAreaViewMode.CODE_MATRIX) {
-                byteOnLine = charOnLine - state.previewCharPos;
-                section = CodeAreaSection.TEXT_PREVIEW;
-            } else {
-                byteOnLine = computePositionByte(charOnLine);
-                section = CodeAreaSection.CODE_MATRIX;
-            }
-            boolean sequenceBreak = false;
-
-            Color color = null; //Color.getPositionColor(byteOnLine, charOnLine, section, colorType, paintData);
-//            if (renderColorType == null) {
-//                renderColorType = colorType;
-//                renderColor = color;
-//                g.setColor(color);
-//            }
-
-            if (!areSameColors(color, renderColor)) {
-                sequenceBreak = true;
-            }
-            if (sequenceBreak) {
-                if (renderOffset < charOnLine) {
-                    if (renderColor != null) {
-                        renderBackgroundSequence(g, renderOffset, charOnLine, linePositionX, linePositionY);
-                    }
-                }
-
-                if (!areSameColors(color, renderColor)) {
-                    renderColor = color;
-                    g.setColor(color);
-                }
-
-                renderOffset = charOnLine;
-            }
-        }
-
-        if (renderOffset < state.charactersPerLine) {
-            if (renderColor != null) {
-                renderBackgroundSequence(g, renderOffset, state.charactersPerLine, linePositionX, linePositionY);
-            }
-        }
-    }
-
-    private void paintLineText(@Nonnull Graphics g, int linePositionX, int linePositionY) {
-        int positionY = linePositionY; // - codeArea.getSubFontSpace();
-
-        g.setColor(Color.BLACK);
-//        Rectangle dataViewRectangle = codeArea.getDataViewRectangle();
-//        g.drawString("[" + String.valueOf(dataViewRectangle.x) + "," + String.valueOf(dataViewRectangle.y) + "," + String.valueOf(dataViewRectangle.width) + "," + String.valueOf(dataViewRectangle.height) + "]", linePositionX, positionY);
-
-//    public void paintLineText(Graphics g, int linePositionX, int linePositionY, PaintDataCache paintData) {
-//        int positionY = linePositionY + paintData.lineHeight - codeArea.getSubFontSpace();
-//
-        int renderOffset = state.visibleCharStart;
-        for (int charOnLine = state.visibleCharStart; charOnLine < state.visibleCharEnd; charOnLine++) {
-            CodeAreaSection section;
-            int byteOnLine;
-            if (charOnLine >= state.previewCharPos) {
-                byteOnLine = charOnLine - state.previewCharPos;
-                section = CodeAreaSection.TEXT_PREVIEW;
-            } else {
-                byteOnLine = computePositionByte(charOnLine);
-                section = CodeAreaSection.CODE_MATRIX;
-            }
-            boolean sequenceBreak = false;
-            boolean nativeWidth = true;
-
-            int currentCharWidth = 0;
-            if (state.characterRenderingMode != CharacterRenderingMode.LINE_AT_ONCE) {
-                char currentChar = state.lineCharacters[charOnLine];
-                if (currentChar == ' ' && renderOffset == charOnLine) {
-                    renderOffset++;
-                    continue;
-                }
-                if (state.characterRenderingMode == CharacterRenderingMode.AUTO && state.monospaceFont) {
-                    // Detect if character is in unicode range covered by monospace fonts
-                    if (CodeAreaSwingUtils.isMonospaceFullWidthCharater(currentChar)) {
-                        currentCharWidth = state.characterWidth;
-                    }
-                }
-
-                if (currentCharWidth == 0) {
-                    currentCharWidth = state.fontMetrics.charWidth(currentChar);
-                    nativeWidth = currentCharWidth == state.characterWidth;
-                }
-            } else {
-                currentCharWidth = state.characterWidth;
-            }
-
-            if (!nativeWidth) {
-                sequenceBreak = true;
-            }
-            if (sequenceBreak) {
-                if (renderOffset < charOnLine) {
-                    renderCharSequence(g, renderOffset, charOnLine, linePositionX, positionY);
-                }
-
-                if (!nativeWidth) {
-                    renderOffset = charOnLine + 1;
-                    if (state.characterRenderingMode == CharacterRenderingMode.TOP_LEFT) {
-                        g.drawChars(state.lineCharacters, charOnLine, 1, linePositionX + charOnLine * state.characterWidth, positionY);
-                    } else {
-                        drawShiftedChar(g, state.lineCharacters, charOnLine, state.characterWidth, linePositionX + charOnLine * state.characterWidth, positionY, (state.characterWidth + 1 - currentCharWidth) >> 1);
-                    }
-                } else {
-                    renderOffset = charOnLine;
-                }
-            }
-        }
-
-        if (renderOffset < state.charactersPerLine) {
-            renderCharSequence(g, renderOffset, state.charactersPerLine, linePositionX, positionY);
-        }
+        painter.paintComponent(g);
     }
 
     @Nonnull
@@ -936,7 +452,7 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, CaretCapability.Ca
                 g.setXORMode(Color.WHITE);
             }
 
-            DefaultCodeAreaCaret.CursorShape cursorShape = codeArea.getEditationMode() == EditationMode.INSERT ? caret.getInsertCursorShape() : caret.getOverwriteCursorShape();
+            DefaultCodeAreaCaret.CursorShape cursorShape = getEditationMode() == EditationMode.INSERT ? caret.getInsertCursorShape() : caret.getOverwriteCursorShape();
             int cursorThickness = 0;
             if (cursorShape.getWidth() != DefaultCodeAreaCaret.CursorShapeWidth.FULL) {
                 cursorThickness = caret.getCursorThickness(cursorShape, characterWidth, lineHeight);
@@ -1078,7 +594,7 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, CaretCapability.Ca
                     }
 
                     char[] previewChars = new char[1];
-                    Charset charset = codeArea.getCharset();
+                    Charset charset = getCharset();
                     CharsetEncoder encoder = charset.newEncoder();
                     int maxCharLength = (int) encoder.maxBytesPerChar();
                     byte[] data = new byte[maxCharLength];
@@ -1343,7 +859,8 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, CaretCapability.Ca
         return new Rectangle(state.lineNumbersAreaWidth, state.headerAreaHeight, state.areaWidth - state.lineNumbersAreaWidth, state.areaHeight - state.headerAreaHeight);
     }
 
-    public void revealPosition() {
+    @Override
+    public void revealCursor() {
         revealPosition(caret.getCaretPosition().getDataPosition(), caret.getSection());
     }
 
@@ -1778,55 +1295,5 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, CaretCapability.Ca
         Color negativeCursorMirror;
         Color decorationLine;
         Color stripes;
-    }
-
-    private static class PainterState {
-
-        boolean monospaceFont;
-        int characterWidth;
-
-        int areaWidth;
-        int areaHeight;
-        int mainAreaX;
-        int mainAreaY;
-        int mainAreaWidth;
-        int mainAreaHeight;
-        CodeAreaViewMode viewMode;
-        CodeAreaScrollPosition scrollPosition;
-        VerticalScrollUnit verticalScrollUnit;
-        HorizontalScrollUnit horizontalScrollUnit;
-        Colors colors = new Colors();
-        long dataSize;
-
-        int lineNumbersLength;
-        int lineNumbersAreaWidth;
-        int headerAreaHeight;
-        int lineHeight;
-        int linesPerRect;
-        int bytesPerLine;
-        int charactersPerRect;
-        int charactersPerLine;
-        CodeType codeType;
-        int maxDigits;
-        HexCharactersCase hexCharactersCase;
-        BasicBorderPaintMode borderPaintMode;
-
-        int previewCharPos;
-        int visibleCharStart;
-        int visibleCharEnd;
-        int visiblePreviewStart;
-        int visiblePreviewEnd;
-        int visibleCodeStart;
-        int visibleCodeEnd;
-
-        Charset charset;
-        Font font;
-        FontMetrics fontMetrics;
-        CharacterRenderingMode characterRenderingMode;
-        int maxCharLength;
-
-        byte[] lineData;
-        char[] lineNumberCode;
-        char[] lineCharacters;
     }
 }

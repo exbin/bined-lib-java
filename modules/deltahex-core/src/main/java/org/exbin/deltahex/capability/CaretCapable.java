@@ -15,22 +15,18 @@
  */
 package org.exbin.deltahex.capability;
 
-import javax.annotation.Nonnull;
-import org.exbin.deltahex.CodeType;
-
 /**
- * Support for code type capability.
+ * Support for caret / cursor capability.
  *
  * @version 0.2.0 2017/11/05
  * @author ExBin Project (http://exbin.org)
  */
-public interface CodeTypeCapability extends WorkerCapability {
+public interface CaretCapable {
 
-    public interface CodeTypeCapable {
-
-        @Nonnull
-        CodeType getCodeType();
-
-        void setCodeType(@Nonnull CodeType codeType);
+    void revealCursor();
+    void notifyCaretMoved();
+    
+    public static class CaretCapability implements WorkerCapability {
+        
     }
 }

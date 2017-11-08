@@ -43,12 +43,12 @@ import org.exbin.deltahex.ScrollingListener;
 import org.exbin.deltahex.SelectionChangedListener;
 import org.exbin.deltahex.SelectionRange;
 import org.exbin.deltahex.CodeAreaViewMode;
-import org.exbin.deltahex.capability.CodeTypeCapability;
-import org.exbin.deltahex.capability.ViewModeCapability;
 import org.exbin.deltahex.swing.CodeArea;
 import org.exbin.deltahex.swing.basic.DefaultCodeAreaCaret;
 import org.exbin.deltahex.swing.basic.CodeAreaScrollPosition;
 import org.exbin.utils.binary_data.EditableBinaryData;
+import org.exbin.deltahex.capability.CodeTypeCapable;
+import org.exbin.deltahex.capability.ViewModeCapable;
 
 /**
  * Hexadecimal editor example panel.
@@ -69,8 +69,8 @@ public class DeltaHexExampleBasicPanel extends javax.swing.JPanel {
     public void setCodeArea(final CodeArea codeArea) {
         this.codeArea = codeArea;
         splitPane.setRightComponent(codeArea);
-        viewModeComboBox.setSelectedIndex(((ViewModeCapability.ViewModeCapable) codeArea.getPainter()).getViewMode().ordinal());
-        codeTypeComboBox.setSelectedIndex(((CodeTypeCapability.CodeTypeCapable) codeArea.getPainter()).getCodeType().ordinal());
+        viewModeComboBox.setSelectedIndex(((ViewModeCapable.ViewModeCapable) codeArea.getPainter()).getViewMode().ordinal());
+        codeTypeComboBox.setSelectedIndex(((CodeTypeCapable.CodeTypeCapable) codeArea.getPainter()).getCodeType().ordinal());
 //        positionCodeTypeComboBox.setSelectedIndex(codeArea.getPositionCodeType().ordinal());
         activeSectionComboBox.setSelectedIndex(codeArea.getActiveSection().ordinal());
 //        backgroundModeComboBox.setSelectedIndex(codeArea.getBackgroundMode().ordinal());
@@ -1262,7 +1262,7 @@ public class DeltaHexExampleBasicPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void viewModeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewModeComboBoxActionPerformed
-        ((ViewModeCapability.ViewModeCapable) codeArea.getPainter()).setViewMode(CodeAreaViewMode.values()[viewModeComboBox.getSelectedIndex()]);
+        ((ViewModeCapable.ViewModeCapable) codeArea.getPainter()).setViewMode(CodeAreaViewMode.values()[viewModeComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_viewModeComboBoxActionPerformed
 
     private void lineLengthSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_lineLengthSpinnerStateChanged

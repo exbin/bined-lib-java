@@ -40,15 +40,15 @@ import org.exbin.deltahex.CodeAreaViewMode;
 import org.exbin.deltahex.CodeType;
 import org.exbin.deltahex.EditationMode;
 import org.exbin.deltahex.SelectionRange;
-import org.exbin.deltahex.capability.CaretCapability;
-import org.exbin.deltahex.capability.CodeTypeCapability;
-import org.exbin.deltahex.capability.ViewModeCapability;
 import org.exbin.deltahex.swing.CodeArea;
 import org.exbin.deltahex.swing.CodeAreaCommandHandler;
 import org.exbin.deltahex.swing.CodeAreaPainter;
 import org.exbin.utils.binary_data.BinaryData;
 import org.exbin.utils.binary_data.ByteArrayEditableData;
 import org.exbin.utils.binary_data.EditableBinaryData;
+import org.exbin.deltahex.capability.CaretCapable;
+import org.exbin.deltahex.capability.CodeTypeCapable;
+import org.exbin.deltahex.capability.ViewModeCapable;
 
 /**
  * Default hexadecimal editor command handler.
@@ -78,8 +78,8 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     public DefaultCodeAreaCommandHandler(@Nonnull CodeArea codeArea) {
         this.codeArea = codeArea;
         CodeAreaPainter painter = codeArea.getPainter();
-        codeTypeSupported = painter instanceof CodeTypeCapability.CodeTypeCapable;
-        viewModeSupported = painter instanceof ViewModeCapability.ViewModeCapable;
+        codeTypeSupported = painter instanceof CodeTypeCapable.CodeTypeCapable;
+        viewModeSupported = painter instanceof ViewModeCapable.ViewModeCapable;
 
         int metaMaskInit;
         try {
@@ -348,7 +348,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             }
             case KeyEvent.VK_TAB: {
                 if (viewModeSupported) {
-                    if (((ViewModeCapability.ViewModeCapable) codeArea).getViewMode() == CodeAreaViewMode.DUAL) {
+                    if (((ViewModeCapable.ViewModeCapable) codeArea).getViewMode() == CodeAreaViewMode.DUAL) {
                         CodeAreaSection activeSection = codeArea.getActiveSection() == CodeAreaSection.CODE_MATRIX ? CodeAreaSection.TEXT_PREVIEW : CodeAreaSection.CODE_MATRIX;
                         if (activeSection == CodeAreaSection.TEXT_PREVIEW) {
                             codeArea.getCaretPosition().setCodeOffset(0);
@@ -890,18 +890,18 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     @Nonnull
     private CodeType getCodeType() {
         if (codeTypeSupported) {
-            return ((CodeTypeCapability.CodeTypeCapable) codeArea.getPainter()).getCodeType();
+            return ((CodeTypeCapable.CodeTypeCapable) codeArea.getPainter()).getCodeType();
         }
 
         return CodeType.HEXADECIMAL;
     }
     
     private void revealCursor() {
-        ((CaretCapability.CaretCapable) codeArea.getPainter()).revealCursor();
+        ((CaretCapable.CaretCapable) codeArea.getPainter()).revealCursor();
     }
     
     private void notifyCaretMoved() {
-        ((CaretCapability.CaretCapable) codeArea.getPainter()).notifyCaretMoved();
+        ((CaretCapable.CaretCapable) codeArea.getPainter()).notifyCaretMoved();
     }
 
     public class BinaryDataClipboardData implements ClipboardData {

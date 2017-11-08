@@ -23,6 +23,7 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import javax.annotation.Nonnull;
+import org.exbin.deltahex.capability.CaretCapable;
 import org.exbin.deltahex.swing.CodeArea;
 import org.exbin.deltahex.swing.CodeAreaPainter;
 
@@ -53,7 +54,7 @@ import org.exbin.deltahex.swing.CodeAreaPainter;
         codeArea.requestFocus();
         if (codeArea.isEnabled() && me.getButton() == MouseEvent.BUTTON1) {
             codeArea.getCommandHandler().moveCaret(me, me.getModifiersEx());
-            codeArea.revealCursor();
+            ((CaretCapable) codeArea.getWorker()).revealCursor();
             mouseDown = true;
         }
     }

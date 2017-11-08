@@ -15,15 +15,23 @@
  */
 package org.exbin.deltahex.capability;
 
+import javax.annotation.Nonnull;
+import org.exbin.deltahex.CodeAreaViewMode;
+
 /**
- * Support for code type capability.
+ * Support for view mode capability.
  *
  * @version 0.2.0 2017/11/05
  * @author ExBin Project (http://exbin.org)
  */
-public interface ScrollingCapability extends WorkerCapability {
+public interface ViewModeCapable {
 
-    public interface ScrollingCapable {
+    @Nonnull
+    CodeAreaViewMode getViewMode();
+
+    void setViewMode(@Nonnull CodeAreaViewMode viewMode);
+
+    public static class ViewModeCapability implements WorkerCapability {
 
     }
 }
