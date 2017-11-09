@@ -153,124 +153,6 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, CaretCapable, Scro
     }
 
     @Override
-    public void reset() {
-        if (state == null) {
-            state = new PainterState();
-        }
-
-        resetSizes();
-        resetScrollState();
-        resetColors();
-
-        state.viewMode = getViewMode();
-        state.characterRenderingMode = characterRenderingMode;
-        state.hexCharactersCase = hexCharactersCase;
-        state.borderPaintMode = borderPaintMode;
-        state.dataSize = codeArea.getDataSize();
-
-        state.linesPerRect = getLinesPerRectangle();
-        state.bytesPerLine = getBytesPerLine();
-
-        state.codeType = getCodeType();
-        state.maxDigits = state.codeType.getMaxDigitsForByte();
-
-        int charactersPerLine = 0;
-        if (state.viewMode != CodeAreaViewMode.TEXT_PREVIEW) {
-            charactersPerLine += computeLastCodeCharPos(state.bytesPerLine - 1) + 1;
-        }
-        if (state.viewMode != CodeAreaViewMode.CODE_MATRIX) {
-            charactersPerLine += state.bytesPerLine;
-            if (state.viewMode == CodeAreaViewMode.DUAL) {
-                charactersPerLine++;
-            }
-        }
-
-        state.charactersPerLine = charactersPerLine;
-        state.hexCharactersCase = HexCharactersCase.UPPER;
-    }
-
-    private void resetCharPositions() {
-        state.charactersPerRect = computeLastCodeCharPos(state.bytesPerLine - 1);
-        // Compute first and last visible character of the code area
-        if (state.viewMode == CodeAreaViewMode.DUAL) {
-            state.previewCharPos = state.charactersPerRect + 2;
-        } else {
-            state.previewCharPos = 0;
-        }
-
-        if (state.viewMode == CodeAreaViewMode.DUAL || state.viewMode == CodeAreaViewMode.CODE_MATRIX) {
-            state.visibleCharStart = (state.scrollPosition.getScrollCharPosition() * state.characterWidth + state.scrollPosition.getScrollCharOffset()) / state.characterWidth;
-            if (state.visibleCharStart < 0) {
-                state.visibleCharStart = 0;
-            }
-            state.visibleCharEnd = (state.mainAreaWidth + (state.scrollPosition.getScrollCharPosition() + state.charactersPerLine) * state.characterWidth + state.scrollPosition.getScrollCharOffset()) / state.characterWidth;
-            if (state.visibleCharEnd > state.charactersPerRect) {
-                state.visibleCharEnd = state.charactersPerRect;
-            }
-            state.visibleCodeStart = computePositionByte(state.visibleCharStart);
-            state.visibleCodeEnd = computePositionByte(state.visibleCharEnd - 1) + 1;
-        } else {
-            state.visibleCharStart = 0;
-            state.visibleCharEnd = -1;
-            state.visibleCodeStart = 0;
-            state.visibleCodeEnd = -1;
-        }
-
-        if (state.viewMode == CodeAreaViewMode.DUAL || state.viewMode == CodeAreaViewMode.TEXT_PREVIEW) {
-            state.visiblePreviewStart = (state.scrollPosition.getScrollCharPosition() * state.characterWidth + state.scrollPosition.getScrollCharOffset()) / state.characterWidth - state.previewCharPos;
-            if (state.visiblePreviewStart < 0) {
-                state.visiblePreviewStart = 0;
-            }
-            if (state.visibleCodeEnd < 0) {
-                state.visibleCharStart = state.visiblePreviewStart + state.previewCharPos;
-            }
-            state.visiblePreviewEnd = (state.mainAreaWidth + (state.scrollPosition.getScrollCharPosition() + 1) * state.characterWidth + state.scrollPosition.getScrollCharOffset()) / state.characterWidth - state.previewCharPos;
-            if (state.visiblePreviewEnd > state.bytesPerLine) {
-                state.visiblePreviewEnd = state.bytesPerLine;
-            }
-            if (state.visiblePreviewEnd >= 0) {
-                state.visibleCharEnd = state.visiblePreviewEnd + state.previewCharPos;
-            }
-        } else {
-            state.visiblePreviewStart = 0;
-            state.visiblePreviewEnd = -1;
-        }
-
-        state.lineData = new byte[state.bytesPerLine + state.maxCharLength - 1];
-        state.lineNumberCode = new char[state.lineNumbersLength];
-        state.lineCharacters = new char[state.charactersPerLine];
-    }
-
-    public void resetFont(@Nonnull Graphics g) {
-        if (state == null) {
-            reset();
-        }
-
-        state.charset = charset;
-        CharsetEncoder encoder = state.charset.newEncoder();
-        state.maxCharLength = (int) encoder.maxBytesPerChar();
-
-        state.font = codeArea.getFont();
-        state.fontMetrics = g.getFontMetrics(state.font);
-        /**
-         * Use small 'w' character to guess normal font width.
-         */
-        state.characterWidth = state.fontMetrics.charWidth('w');
-        /**
-         * Compare it to small 'i' to detect if font is monospaced.
-         *
-         * TODO: Is there better way?
-         */
-        state.monospaceFont = state.characterWidth == state.fontMetrics.charWidth(' ') && state.characterWidth == state.fontMetrics.charWidth('i');
-        int fontSize = state.font.getSize();
-        state.lineHeight = fontSize + subFontSpace;
-
-        state.lineNumbersLength = getLineNumberLength();
-        resetSizes();
-        resetCharPositions();
-    }
-
-    @Override
     public void dataViewScrolled(@Nonnull Graphics g) {
         if (!isInitialized()) {
             return;
@@ -297,83 +179,9 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, CaretCapable, Scro
         codeArea.repaint();
     }
 
-    private void resetScrollState() {
-        state.scrollPosition = scrollPosition;
-        state.verticalScrollUnit = getVerticalScrollUnit();
-        state.horizontalScrollUnit = getHorizontalScrollUnit();
-
-        // TODO Overflow mode
-        switch (state.horizontalScrollUnit) {
-            case CHARACTER: {
-                state.mainAreaX = state.scrollPosition.getScrollCharPosition();
-                break;
-            }
-            case PIXEL: {
-                state.mainAreaX = state.scrollPosition.getScrollCharPosition() * state.characterWidth + state.scrollPosition.getScrollCharOffset();
-                break;
-            }
-        }
-
-        switch (state.verticalScrollUnit) {
-            case LINE: {
-                state.mainAreaY = (int) state.scrollPosition.getScrollLinePosition();
-                break;
-            }
-            case PIXEL: {
-                state.mainAreaY = ((int) state.scrollPosition.getScrollLinePosition() * state.lineHeight) + state.scrollPosition.getScrollLineOffset();
-                break;
-            }
-        }
-
-        // TODO on resize only
-        scrollPanel.setBounds(getDataViewRect());
-        scrollPanel.revalidate();
-    }
-
-    private void resetSizes() {
-        state.areaWidth = codeArea.getWidth();
-        state.areaHeight = codeArea.getHeight();
-        state.lineNumbersAreaWidth = state.characterWidth * (state.lineNumbersLength + 1);
-        state.headerAreaHeight = 20;
-        state.mainAreaWidth = state.areaWidth - state.lineNumbersAreaWidth;
-        state.mainAreaHeight = state.areaHeight - state.headerAreaHeight;
-    }
-
-    private void resetColors() {
-        Colors colors = state.colors;
-        colors.foreground = codeArea.getForeground();
-        if (colors.foreground == null) {
-            colors.foreground = Color.BLACK;
-        }
-
-        colors.background = codeArea.getBackground();
-        if (colors.background == null) {
-            colors.background = Color.WHITE;
-        }
-        colors.selectionForeground = UIManager.getColor("TextArea.selectionForeground");
-        if (colors.selectionForeground == null) {
-            colors.selectionForeground = Color.WHITE;
-        }
-        colors.selectionBackground = UIManager.getColor("TextArea.selectionBackground");
-        if (colors.selectionBackground == null) {
-            colors.selectionBackground = new Color(96, 96, 255);
-        }
-        colors.selectionMirrorForeground = colors.selectionForeground;
-        int grayLevel = (colors.selectionBackground.getRed() + colors.selectionBackground.getGreen() + colors.selectionBackground.getBlue()) / 3;
-        colors.selectionMirrorBackground = new Color(grayLevel, grayLevel, grayLevel);
-        colors.cursor = UIManager.getColor("TextArea.caretForeground");
-        colors.negativeCursor = CodeAreaSwingUtils.createNegativeColor(colors.cursor);
-        if (colors.cursor == null) {
-            colors.cursor = Color.BLACK;
-        }
-        colors.decorationLine = Color.GRAY;
-
-        colors.stripes = CodeAreaSwingUtils.createOddColor(colors.background);
-    }
-
     @Override
     public boolean isInitialized() {
-        return state != null;
+        return painter.isInitialized();
     }
 
     @Override
@@ -1214,28 +1022,6 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, CaretCapable, Scro
         selectionChangedListeners.remove(selectionChangedListener);
     }
 
-    private static boolean areSameColors(Color color, Color comparedColor) {
-        return (color == null && comparedColor == null) || (color != null && color.equals(comparedColor));
-    }
-
-    /**
-     * Render sequence of characters.
-     *
-     * Doesn't include character at offset end.
-     */
-    private void renderCharSequence(Graphics g, int startOffset, int endOffset, int linePositionX, int positionY) {
-        g.drawChars(state.lineCharacters, startOffset, endOffset - startOffset, linePositionX + startOffset * state.characterWidth, positionY);
-    }
-
-    /**
-     * Render sequence of background rectangles.
-     *
-     * Doesn't include character at offset end.
-     */
-    private void renderBackgroundSequence(Graphics g, int startOffset, int endOffset, int linePositionX, int positionY) {
-        g.fillRect(linePositionX + startOffset * state.characterWidth, positionY, (endOffset - startOffset) * state.characterWidth, state.lineHeight);
-    }
-
     @Override
     public void notifyCaretMoved() {
         for (CaretMovedListener caretMovedListener : caretMovedListeners) {
@@ -1271,14 +1057,6 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, CaretCapable, Scro
 
     public void removeEditationModeChangedListener(@Nullable EditationModeChangedListener editationModeChangedListener) {
         editationModeChangedListeners.remove(editationModeChangedListener);
-    }
-
-    public void addDataChangedListener(@Nullable DataChangedListener dataChangedListener) {
-        dataChangedListeners.add(dataChangedListener);
-    }
-
-    public void removeDataChangedListener(@Nullable DataChangedListener dataChangedListener) {
-        dataChangedListeners.remove(dataChangedListener);
     }
 
     private static class Colors {

@@ -17,11 +17,12 @@ package org.exbin.deltahex.swing;
 
 import java.awt.Color;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * Hexadecimal editor component swing utilities.
  *
- * @version 0.2.0 2017/11/02
+ * @version 0.2.0 2017/11/09
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeAreaSwingUtils {
@@ -31,6 +32,8 @@ public class CodeAreaSwingUtils {
     public static final int INV_SPACE_CODE_POINT = 0x7f;
     public static final int EXCEPTION1_CODE_POINT = 0x8e;
     public static final int EXCEPTION2_CODE_POINT = 0x9e;
+
+    public static int MAX_COMPONENT_VALUE = 255;
 
     private CodeAreaSwingUtils() {
     }
@@ -48,6 +51,10 @@ public class CodeAreaSwingUtils {
                 && character != EXCEPTION1_CODE_POINT && character != EXCEPTION2_CODE_POINT);
     }
 
+    public static boolean areSameColors(@Nullable Color color, @Nullable Color comparedColor) {
+        return (color == null && comparedColor == null) || (color != null && color.equals(comparedColor));
+    }
+
     @Nonnull
     public static Color createOddColor(@Nonnull Color color) {
         return new Color(
@@ -63,8 +70,8 @@ public class CodeAreaSwingUtils {
     @Nonnull
     public static Color createNegativeColor(@Nonnull Color color) {
         return new Color(
-                255 - color.getRed(),
-                255 - color.getGreen(),
-                255 - color.getBlue());
+                MAX_COMPONENT_VALUE - color.getRed(),
+                MAX_COMPONENT_VALUE - color.getGreen(),
+                MAX_COMPONENT_VALUE - color.getBlue());
     }
 }

@@ -29,6 +29,7 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.swing.JComponent;
 import javax.swing.UIManager;
 import org.exbin.deltahex.CodeAreaControl;
@@ -39,7 +40,7 @@ import org.exbin.utils.binary_data.BinaryData;
 /**
  * Hexadecimal viewer/editor component.
  *
- * @version 0.2.0 2017/11/07
+ * @version 0.2.0 2017/11/09
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeArea extends JComponent implements CodeAreaControl {
@@ -262,6 +263,14 @@ public class CodeArea extends JComponent implements CodeAreaControl {
         for (DataChangedListener dataChangedListener : dataChangedListeners) {
             dataChangedListener.dataChanged();
         }
+    }
+
+    public void addDataChangedListener(@Nullable DataChangedListener dataChangedListener) {
+        dataChangedListeners.add(dataChangedListener);
+    }
+
+    public void removeDataChangedListener(@Nullable DataChangedListener dataChangedListener) {
+        dataChangedListeners.remove(dataChangedListener);
     }
 
     public void resetPainter() {

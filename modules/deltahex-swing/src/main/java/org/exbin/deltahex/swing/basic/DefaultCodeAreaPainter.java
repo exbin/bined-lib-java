@@ -124,10 +124,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
     @Override
     public void reset() {
-        if (state == null) {
-            state = new PainterState();
-        }
-
         resetSizes();
         resetScrollState();
         resetColors();
@@ -1058,10 +1054,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
     private int getLineNumberLength() {
         return 8;
-    }
-
-    private static boolean areSameColors(Color color, Color comparedColor) {
-        return (color == null && comparedColor == null) || (color != null && color.equals(comparedColor));
     }
 
     /**
