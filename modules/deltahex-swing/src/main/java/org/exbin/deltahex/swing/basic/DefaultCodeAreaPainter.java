@@ -52,6 +52,7 @@ import org.exbin.deltahex.swing.CharacterRenderingMode;
 import org.exbin.deltahex.swing.CodeArea;
 import org.exbin.deltahex.swing.CodeAreaPainter;
 import org.exbin.deltahex.swing.CodeAreaSwingUtils;
+import org.exbin.deltahex.swing.CodeAreaWorker;
 import org.exbin.utils.binary_data.OutOfBoundsException;
 
 /**
@@ -110,7 +111,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     char[] lineCharacters;
 
     @Nonnull
-    protected final CodeArea codeArea;
+    protected final CodeAreaWorker worker;
     private int subFontSpace = 3;
 
     @Nullable
@@ -118,8 +119,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     private final char[] charMapping = new char[256];
     private long paintCounter = 0;
 
-    public DefaultCodeAreaPainter(@Nonnull CodeArea codeArea) {
-        this.codeArea = codeArea;
+    public DefaultCodeAreaPainter(@Nonnull CodeAreaWorker worker) {
+        this.worker = worker;
     }
 
     @Override
@@ -128,11 +129,11 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         resetScrollState();
         resetColors();
 
-        viewMode = getViewMode();
-        characterRenderingMode = characterRenderingMode;
-        hexCharactersCase = hexCharactersCase;
-        borderPaintMode = borderPaintMode;
-        dataSize = codeArea.getDataSize();
+        viewMode = worker.getViewMode();
+        characterRenderingMode = worker.getCharacterRenderingMode();
+        hexCharactersCase = worker.getHhexCharactersCase();
+        borderPaintMode = worker.getBorderPaintMode();
+        dataSize = worker.getDataSize();
 
         linesPerRect = getLinesPerRectangle();
         bytesPerLine = getBytesPerLine();
