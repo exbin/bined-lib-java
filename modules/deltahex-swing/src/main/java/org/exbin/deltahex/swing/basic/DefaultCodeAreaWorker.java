@@ -56,7 +56,9 @@ import org.exbin.deltahex.swing.CodeAreaSwingUtils;
 import org.exbin.deltahex.swing.CodeAreaWorker;
 import org.exbin.utils.binary_data.OutOfBoundsException;
 import org.exbin.deltahex.capability.CaretCapable;
+import org.exbin.deltahex.capability.CharsetCapable;
 import org.exbin.deltahex.capability.CodeTypeCapable;
+import org.exbin.deltahex.capability.EditationModeCapable;
 import org.exbin.deltahex.capability.ViewModeCapable;
 import org.exbin.deltahex.capability.ScrollingCapable;
 
@@ -66,7 +68,7 @@ import org.exbin.deltahex.capability.ScrollingCapable;
  * @version 0.2.0 2017/11/08
  * @author ExBin Project (http://exbin.org)
  */
-public class DefaultCodeAreaWorker implements CodeAreaWorker, CaretCapable, ScrollingCapable, ViewModeCapable, CodeTypeCapable {
+public class DefaultCodeAreaWorker implements CodeAreaWorker, CaretCapable, ScrollingCapable, ViewModeCapable, CodeTypeCapable, EditationModeCapable, CharsetCapable {
 
     @Nonnull
     protected final CodeArea codeArea;
@@ -961,15 +963,12 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, CaretCapable, Scro
      * @return charset
      */
     @Nonnull
+    @Override
     public Charset getCharset() {
         return charset;
     }
 
-    /**
-     * Sets charset to use for characters decoding.
-     *
-     * @param charset charset
-     */
+    @Override
     public void setCharset(@Nonnull Charset charset) {
         if (charset == null) {
             throw new NullPointerException("Charset cannot be null");
@@ -980,14 +979,17 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, CaretCapable, Scro
     }
 
     @Nonnull
+    @Override
     public EditationMode getEditationMode() {
         return editationMode;
     }
 
+    @Override
     public boolean isEditable() {
         return editationMode != EditationMode.READ_ONLY;
     }
 
+    @Override
     public void setEditationMode(@Nonnull EditationMode editationMode) {
         boolean changed = editationMode != this.editationMode;
         this.editationMode = editationMode;

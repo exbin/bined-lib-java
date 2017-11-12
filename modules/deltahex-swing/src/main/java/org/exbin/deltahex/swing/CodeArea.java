@@ -40,7 +40,7 @@ import org.exbin.utils.binary_data.BinaryData;
 /**
  * Hexadecimal viewer/editor component.
  *
- * @version 0.2.0 2017/11/09
+ * @version 0.2.0 2017/11/12
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeArea extends JComponent implements CodeAreaControl {
@@ -69,6 +69,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
      * Creates new instance with command handler and painter.
      *
      * @param commandHandler command handler
+     * @param worker code area worker
      */
     public CodeArea(@Nonnull CodeAreaCommandHandler commandHandler, @Nonnull CodeAreaWorker worker) {
         super();

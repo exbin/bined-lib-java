@@ -135,11 +135,11 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         borderPaintMode = worker.getBorderPaintMode();
         dataSize = worker.getDataSize();
 
-        linesPerRect = getLinesPerRectangle();
-        bytesPerLine = getBytesPerLine();
+        linesPerRect = worker.getLinesPerRectangle();
+        bytesPerLine = worker.getBytesPerLine();
 
-        codeType = getCodeType();
-        maxDigits = codeType.getMaxDigitsForByte();
+        codeType = worker.getCodeType();
+        maxDigits = worker.getMaxDigitsForByte();
 
         int charactersPerLine = 0;
         if (viewMode != CodeAreaViewMode.TEXT_PREVIEW) {
