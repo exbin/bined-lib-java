@@ -16,24 +16,22 @@
 package org.exbin.deltahex.capability;
 
 import javax.annotation.Nonnull;
-import org.exbin.deltahex.CodeAreaCaret;
+import org.exbin.deltahex.SelectionRange;
 
 /**
- * Support for caret / cursor capability.
+ * Support for selection capability.
  *
- * @version 0.2.0 2017/11/14
+ * @version 0.2.0 2017/11/17
  * @author ExBin Project (http://exbin.org)
  */
-public interface CaretCapable {
+public interface SelectionCapable {
 
     @Nonnull
-    CodeAreaCaret getCaret();
+    SelectionRange getSelection();
 
-    void revealCursor();
+    void setSelection(@Nonnull SelectionRange selection);
 
-    void notifyCaretMoved();
-
-    public static class CaretCapability implements WorkerCapability {
+    public static class SelectionCapability implements WorkerCapability {
 
     }
 }

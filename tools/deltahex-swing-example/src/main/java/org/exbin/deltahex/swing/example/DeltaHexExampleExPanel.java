@@ -42,7 +42,7 @@ import org.exbin.deltahex.CaretPosition;
 import org.exbin.deltahex.CodeAreaSection;
 import org.exbin.deltahex.CodeType;
 import org.exbin.deltahex.DataChangedListener;
-import org.exbin.deltahex.HexCharactersCase;
+import org.exbin.deltahex.CodeCharactersCase;
 import org.exbin.deltahex.PositionCodeType;
 import org.exbin.deltahex.ScrollBarVisibility;
 import org.exbin.deltahex.ScrollingListener;

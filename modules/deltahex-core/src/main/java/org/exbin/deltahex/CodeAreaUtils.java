@@ -15,7 +15,6 @@
  */
 package org.exbin.deltahex;
 
-import java.awt.event.KeyEvent;
 import javax.annotation.Nonnull;
 import org.exbin.utils.binary_data.EditableBinaryData;
 
@@ -97,8 +96,8 @@ public class CodeAreaUtils {
      * @param targetPosition target position in array of characters
      * @param charCase case type for alphabetical characters
      */
-    public static void byteToCharsCode(byte dataByte, @Nonnull CodeType codeType, char[] targetData, int targetPosition, @Nonnull HexCharactersCase charCase) {
-        char[] hexCharacters = charCase == HexCharactersCase.UPPER ? CodeAreaUtils.UPPER_HEX_CODES : CodeAreaUtils.LOWER_HEX_CODES;
+    public static void byteToCharsCode(byte dataByte, @Nonnull CodeType codeType, char[] targetData, int targetPosition, @Nonnull CodeCharactersCase charCase) {
+        char[] hexCharacters = charCase == CodeCharactersCase.UPPER ? CodeAreaUtils.UPPER_HEX_CODES : CodeAreaUtils.LOWER_HEX_CODES;
         switch (codeType) {
             case BINARY: {
                 int bitMask = 0x80;
@@ -250,8 +249,8 @@ public class CodeAreaUtils {
      * @param characterCase upper case for values greater than 9
      * @return offset of characters position
      */
-    public static int longToBaseCode(@Nonnull char[] target, int targetOffset, long value, int base, int lengthLimit, boolean fillZeros, @Nonnull HexCharactersCase characterCase) {
-        char[] codes = characterCase == HexCharactersCase.UPPER ? UPPER_HEX_CODES : LOWER_HEX_CODES;
+    public static int longToBaseCode(@Nonnull char[] target, int targetOffset, long value, int base, int lengthLimit, boolean fillZeros, @Nonnull CodeCharactersCase characterCase) {
+        char[] codes = characterCase == CodeCharactersCase.UPPER ? UPPER_HEX_CODES : LOWER_HEX_CODES;
         for (int i = lengthLimit - 1; i >= 0; i--) {
             target[targetOffset + i] = codes[(int) (value % base)];
             if (!fillZeros && value == 0) {

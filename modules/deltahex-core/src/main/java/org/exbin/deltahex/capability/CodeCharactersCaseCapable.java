@@ -16,24 +16,22 @@
 package org.exbin.deltahex.capability;
 
 import javax.annotation.Nonnull;
-import org.exbin.deltahex.CodeAreaCaret;
+import org.exbin.deltahex.CodeCharactersCase;
 
 /**
- * Support for caret / cursor capability.
+ * Support for view mode capability.
  *
- * @version 0.2.0 2017/11/14
+ * @version 0.2.0 2017/11/17
  * @author ExBin Project (http://exbin.org)
  */
-public interface CaretCapable {
+public interface CodeCharactersCaseCapable {
 
     @Nonnull
-    CodeAreaCaret getCaret();
+    CodeCharactersCase getCodeCharactersCase();
 
-    void revealCursor();
+    void setCodeCharactersCase(@Nonnull CodeCharactersCase codeCharactersCase);
 
-    void notifyCaretMoved();
-
-    public static class CaretCapability implements WorkerCapability {
+    public static class CodeCharactersCaseCapability implements WorkerCapability {
 
     }
 }

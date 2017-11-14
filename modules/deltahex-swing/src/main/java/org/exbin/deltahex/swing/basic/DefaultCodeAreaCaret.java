@@ -23,18 +23,19 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.swing.Timer;
 import org.exbin.deltahex.CaretPosition;
+import org.exbin.deltahex.CodeAreaCaret;
 import org.exbin.deltahex.CodeAreaSection;
 import org.exbin.deltahex.EditationMode;
 import org.exbin.deltahex.swing.CodeArea;
 import org.exbin.deltahex.swing.CodeAreaPainter;
 
 /**
- * Code area caret.
+ * Default implementation of code area caret.
  *
- * @version 0.2.0 2017/11/07
+ * @version 0.2.0 2017/11/17
  * @author ExBin Project (http://exbin.org)
  */
-public class DefaultCodeAreaCaret {
+public class DefaultCodeAreaCaret implements CodeAreaCaret {
 
     private static final int LINE_CURSOR_WIDTH = 1;
     private static final int DOUBLE_CURSOR_WIDTH = 2;
@@ -146,6 +147,7 @@ public class DefaultCodeAreaCaret {
     }
 
     @Nonnull
+    @Override
     public CaretPosition getCaretPosition() {
         // TODO: Make immutable / cache?
         return new CaretPosition(caretPosition.getDataPosition(), caretPosition.getCodeOffset());
@@ -229,6 +231,7 @@ public class DefaultCodeAreaCaret {
         if (insertCursorShape == null) {
             throw new NullPointerException("Insert cursor shape cannot be null");
         }
+
         this.insertCursorShape = insertCursorShape;
         cursorRepaint();
     }
@@ -241,6 +244,7 @@ public class DefaultCodeAreaCaret {
         if (overwriteCursorShape == null) {
             throw new NullPointerException("Override cursor shape cannot be null");
         }
+
         this.overwriteCursorShape = overwriteCursorShape;
         cursorRepaint();
     }

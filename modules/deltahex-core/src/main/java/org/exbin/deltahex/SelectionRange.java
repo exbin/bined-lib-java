@@ -15,15 +15,16 @@
  */
 package org.exbin.deltahex;
 
+import javax.annotation.concurrent.Immutable;
+
 /**
  * Selection range is selection between two positions where begin represents
  * originating point and end of the selection can be before or after begin.
- * 
- * Class is immutable.
- * 
- * @version 0.2.0 2017/05/03
+ *
+ * @version 0.2.0 2017/11/17
  * @author ExBin Project (http://exbin.org)
  */
+@Immutable
 public class SelectionRange {
 
     private final long start;
@@ -36,7 +37,18 @@ public class SelectionRange {
         this(0, 0);
     }
 
+    /**
+     * Creates selection range from start to end including start and not
+     * including end position.
+     *
+     * @param start position selection starts from
+     * @param end position selection ends to without last character
+     */
     public SelectionRange(long start, long end) {
+        if (start > end) {
+            throw new IllegalStateException("Selection end (" + end + ") cannot be before it's start (" + start + ")");
+        }
+
         this.start = start;
         this.end = end;
     }
@@ -55,7 +67,7 @@ public class SelectionRange {
      * @return data position
      */
     public long getFirst() {
-        return end >= start ? start : end;
+        return start;
     }
 
     /**
@@ -64,7 +76,7 @@ public class SelectionRange {
      * @return data position
      */
     public long getLast() {
-        return end >= start ? end : start - 1;
+        return end - 1;
     }
 
     /**
@@ -73,11 +85,11 @@ public class SelectionRange {
      * @return length in bytes
      */
     public long getLength() {
-        return end >= start ? end - start : start - end;
+        return end - start;
     }
 
     /**
-     * Returns true if selection is empty;
+     * Returns true if selection is empty.
      *
      * @return true if selection is empty
      */

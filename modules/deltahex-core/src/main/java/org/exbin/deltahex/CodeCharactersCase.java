@@ -16,12 +16,12 @@
 package org.exbin.deltahex;
 
 /**
- * Enumeration of hex characters case.
+ * Enumeration of code characters case.
  *
- * @version 0.1.1 2016/08/31
+ * @version 0.2.0 2017/11/17
  * @author ExBin Project (http://exbin.org)
  */
-public enum HexCharactersCase {
+public enum CodeCharactersCase {
 
     /**
      * Lower case, eg. a, b, c, d, e, f.

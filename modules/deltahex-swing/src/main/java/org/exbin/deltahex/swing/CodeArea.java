@@ -40,7 +40,7 @@ import org.exbin.utils.binary_data.BinaryData;
 /**
  * Hexadecimal viewer/editor component.
  *
- * @version 0.2.0 2017/11/12
+ * @version 0.2.0 2017/11/17
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeArea extends JComponent implements CodeAreaControl {
@@ -228,31 +228,6 @@ public class CodeArea extends JComponent implements CodeAreaControl {
 
     public long getDataSize() {
         return data == null ? 0 : data.getDataSize();
-    }
-
-    /**
-     * Returns rectangle of the data view area.
-     *
-     * @return rectangle
-     */
-    public int getPreviewX() {
-        return worker.getPreviewX();
-    }
-
-    public int getBytesPerRectangle() {
-        return worker.getBytesPerRectangle();
-    }
-
-    public int getLinesPerRectangle() {
-        return worker.getLinesPerRectangle();
-    }
-
-    public int getBytesPerLine() {
-        return worker.getBytesPerLine();
-    }
-
-    public int getCharactersPerLine() {
-        return worker.getCharactersPerLine();
     }
 
     /**

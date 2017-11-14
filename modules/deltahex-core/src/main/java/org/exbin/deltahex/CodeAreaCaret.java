@@ -13,27 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.deltahex.capability;
-
-import javax.annotation.Nonnull;
-import org.exbin.deltahex.CodeAreaCaret;
+package org.exbin.deltahex;
 
 /**
- * Support for caret / cursor capability.
+ * Interface for code area caret.
  *
  * @version 0.2.0 2017/11/14
  * @author ExBin Project (http://exbin.org)
  */
-public interface CaretCapable {
+public interface CodeAreaCaret {
 
-    @Nonnull
-    CodeAreaCaret getCaret();
-
-    void revealCursor();
-
-    void notifyCaretMoved();
-
-    public static class CaretCapability implements WorkerCapability {
-
-    }
+    CaretPosition getCaretPosition();
 }

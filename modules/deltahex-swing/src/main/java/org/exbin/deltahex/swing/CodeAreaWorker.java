@@ -25,7 +25,7 @@ import org.exbin.utils.binary_data.OutOfBoundsException;
 /**
  * Hexadecimal editor worker interface.
  *
- * @version 0.2.0 2017/11/06
+ * @version 0.2.0 2017/11/17
  * @author ExBin Project (http://exbin.org)
  */
 public interface CodeAreaWorker {
@@ -45,39 +45,11 @@ public interface CodeAreaWorker {
     void paintComponent(@Nonnull Graphics g);
 
     /**
-     * Paints main hexadecimal data section of the component.
-     *
-     * @param g graphics
-     */
-    void paintMainArea(@Nonnull Graphics g);
-
-    /**
-     * Paints cursor symbol.
-     *
-     * @param g graphics
-     */
-    void paintCursor(@Nonnull Graphics g);
-
-    /**
      * Notifies painter that data view was scrolled.
      *
      * @param g graphics
      */
     void dataViewScrolled(@Nonnull Graphics g);
-
-    /**
-     * Returns previews section position.
-     *
-     * @return previews X position
-     */
-    int getPreviewX();
-
-    /**
-     * Returns first character of preview section.
-     *
-     * @return previews X position
-     */
-    int getPreviewFirstChar();
 
     /**
      * Rebuilds colors after UIManager change.
@@ -88,38 +60,6 @@ public interface CodeAreaWorker {
      * Resets painter state for new painting.
      */
     void reset();
-
-    /**
-     * Returns how many bytes is visible in data view rectangle.
-     *
-     * @return number of bytes visible in data view rectangle
-     */
-    int getBytesPerRectangle();
-
-    /**
-     * Returns how many lines is visible in data view rectangle.
-     *
-     * @return number of lines visible in data view rectangle
-     */
-    int getLinesPerRectangle();
-
-    /**
-     * Returns how many bytes is shown per single line.
-     *
-     * @return number of bytes shown per single line
-     */
-    int getBytesPerLine();
-
-    /**
-     * Returns how characters is shown per single line.
-     *
-     * @return number of characters shown per single line
-     */
-    int getCharactersPerLine();
-
-    int getLineHeight();
-
-    int getCharacterWidth();
 
     /**
      * Returns byte offset position for code section.

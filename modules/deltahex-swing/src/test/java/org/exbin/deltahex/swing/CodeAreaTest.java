@@ -21,6 +21,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Nonnull;
 import org.exbin.deltahex.EditationMode;
+import org.exbin.deltahex.capability.CaretCapable;
+import org.exbin.deltahex.capability.EditationModeCapable;
 import org.exbin.utils.binary_data.ByteArrayEditableData;
 import org.exbin.utils.binary_data.EditableBinaryData;
 import org.junit.Assert;
@@ -29,7 +31,7 @@ import org.junit.Test;
 /**
  * Tests for codeArea component.
  *
- * @version 0.2.0 2017/11/05
+ * @version 0.2.0 2017/11/14
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeAreaTest {
@@ -48,6 +50,7 @@ public class CodeAreaTest {
         codeArea.setData(getSampleData(SAMPLE_ALLBYTES));
         codeArea.selectAll();
         codeArea.delete();
+
         Assert.assertTrue(codeArea.getDataSize() == 0);
     }
 
@@ -61,13 +64,14 @@ public class CodeAreaTest {
         codeArea.copy();
         codeArea.clearSelection();
         codeArea.paste();
+
         Assert.assertTrue(codeArea.getDataSize() == dataSize);
     }
 
     @Test
     public void testCopyPasteInInsertMode() {
         CodeArea codeArea = new CodeArea();
-        codeArea.setEditationMode(EditationMode.INSERT);
+        ((EditationModeCapable) codeArea.getWorker()).setEditationMode(EditationMode.INSERT);
         EditableBinaryData sampleData = getSampleData(SAMPLE_ALLBYTES);
         codeArea.setData(sampleData);
         long dataSize = sampleData.getDataSize();
@@ -75,6 +79,7 @@ public class CodeAreaTest {
         codeArea.copy();
         codeArea.clearSelection();
         codeArea.paste();
+
         Assert.assertTrue(codeArea.getDataSize() == dataSize * 2);
     }
 
@@ -87,8 +92,9 @@ public class CodeAreaTest {
         codeArea.selectAll();
         codeArea.copy();
         codeArea.clearSelection();
-        codeArea.getCaret().setCaretPosition(dataSize / 2);
+        ((CaretCapable) codeArea.getWorker()).getCaret().setCaretPosition(dataSize / 2);
         codeArea.paste();
+
         Assert.assertTrue(codeArea.getDataSize() == (dataSize / 2 + dataSize));
     }
 

@@ -35,7 +35,7 @@ import java.util.Map;
 import org.exbin.deltahex.CodeAreaSection;
 import org.exbin.deltahex.CodeAreaUtils;
 import org.exbin.deltahex.EditationMode;
-import org.exbin.deltahex.HexCharactersCase;
+import org.exbin.deltahex.CodeCharactersCase;
 import org.exbin.deltahex.ScrollBarVisibility;
 import org.exbin.deltahex.SelectionRange;
 import org.exbin.deltahex.CodeAreaViewMode;

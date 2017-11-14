@@ -42,12 +42,13 @@ import org.exbin.deltahex.CaretMovedListener;
 import org.exbin.deltahex.CaretPosition;
 import org.exbin.deltahex.CodeAreaSection;
 import org.exbin.deltahex.CodeAreaUtils;
-import org.exbin.deltahex.HexCharactersCase;
+import org.exbin.deltahex.CodeCharactersCase;
 import org.exbin.deltahex.CodeAreaViewMode;
 import org.exbin.deltahex.CodeType;
 import org.exbin.deltahex.EditationMode;
 import org.exbin.deltahex.ScrollBarVisibility;
 import org.exbin.deltahex.ScrollingListener;
+import org.exbin.deltahex.capability.ViewModeCapable;
 import org.exbin.deltahex.swing.CharacterRenderingMode;
 import org.exbin.deltahex.swing.CodeArea;
 import org.exbin.deltahex.swing.CodeAreaPainter;
@@ -89,7 +90,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     int charactersPerLine;
     CodeType codeType;
     int maxDigits;
-    HexCharactersCase hexCharactersCase;
+    CodeCharactersCase hexCharactersCase;
     BasicBorderPaintMode borderPaintMode;
 
     int previewCharPos;
@@ -129,7 +130,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         resetScrollState();
         resetColors();
 
-        viewMode = worker.getViewMode();
+        viewMode = ((ViewModeCapable) worker).getViewMode();
         characterRenderingMode = worker.getCharacterRenderingMode();
         hexCharactersCase = worker.getHhexCharactersCase();
         borderPaintMode = worker.getBorderPaintMode();
@@ -153,7 +154,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         }
 
         charactersPerLine = charactersPerLine;
-        hexCharactersCase = HexCharactersCase.UPPER;
+        hexCharactersCase = CodeCharactersCase.UPPER;
     }
 
     private void resetCharPositions() {
@@ -527,7 +528,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                 break;
             }
 
-            CodeAreaUtils.longToBaseCode(lineNumberCode, 0, dataPosition < 0 ? 0 : dataPosition, codeType.getBase(), lineNumberLength, true, HexCharactersCase.UPPER);
+            CodeAreaUtils.longToBaseCode(lineNumberCode, 0, dataPosition < 0 ? 0 : dataPosition, codeType.getBase(), lineNumberLength, true, CodeCharactersCase.UPPER);
             if (characterRenderingMode == CharacterRenderingMode.LINE_AT_ONCE) {
                 g.drawChars(lineNumberCode, 0, lineNumberLength, compRect.x, positionY);
             } else {
@@ -812,12 +813,12 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         }
 
         DefaultCodeAreaCaret caret = getCaret();
-        int codeDigits = getCodeType().getMaxDigitsForByte();
-        int bytesPerLine = getBytesPerLine();
-        int lineHeight = getLineHeight();
-        int characterWidth = getCharacterWidth();
-        int linesPerRect = getLinesPerRectangle();
-        Point cursorPoint = getCursorPoint(bytesPerLine, lineHeight, characterWidth, linesPerRect);
+        int codeDigits = worker.getCodeType().getMaxDigitsForByte();
+        int bytesPerLine = worker.getBytesPerLine();
+        int lineHeight = worker.getLineHeight();
+        int characterWidth = worker.getCharacterWidth();
+        int linesPerRect = worker.getLinesPerRectangle();
+        Point cursorPoint = worker.getCursorPoint(bytesPerLine, lineHeight, characterWidth, linesPerRect);
         boolean cursorVisible = caret.isCursorVisible();
         DefaultCodeAreaCaret.CursorRenderingMode renderingMode = caret.getRenderingMode();
 
