@@ -18,8 +18,8 @@ package org.exbin.deltahex.swing;
 import org.exbin.deltahex.swing.basic.DefaultCodeAreaCommandHandler;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyAdapter;
@@ -40,7 +40,7 @@ import org.exbin.utils.binary_data.BinaryData;
 /**
  * Hexadecimal viewer/editor component.
  *
- * @version 0.2.0 2017/11/17
+ * @version 0.2.0 2017/12/09
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeArea extends JComponent implements CodeAreaControl {
@@ -66,7 +66,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
     }
 
     /**
-     * Creates new instance with command handler and painter.
+     * Creates new instance with provided command handler and worker.
      *
      * @param commandHandler command handler
      * @param worker code area worker
@@ -87,22 +87,10 @@ public class CodeArea extends JComponent implements CodeAreaControl {
     }
 
     private void registerControlListeners() {
-        addComponentListener(new ComponentListener() {
+        addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(@Nonnull ComponentEvent e) {
                 resetPainter();
-            }
-
-            @Override
-            public void componentMoved(@Nonnull ComponentEvent e) {
-            }
-
-            @Override
-            public void componentShown(@Nonnull ComponentEvent e) {
-            }
-
-            @Override
-            public void componentHidden(@Nonnull ComponentEvent e) {
             }
         });
 

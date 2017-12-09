@@ -21,7 +21,7 @@ import org.exbin.utils.binary_data.EditableBinaryData;
 /**
  * Hexadecimal editor component utilities.
  *
- * @version 0.2.0 2017/11/05
+ * @version 0.2.0 2017/12/09
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeAreaUtils {
@@ -49,7 +49,7 @@ public class CodeAreaUtils {
     /**
      * Converts byte value to sequence of two hexadecimal characters.
      *
-     * @param target target char array
+     * @param target target char array (output parameter)
      * @param value byte value
      */
     public static void byteToHexChars(@Nonnull char[] target, byte value) {
@@ -76,7 +76,7 @@ public class CodeAreaUtils {
      * Converts long value to sequence of hexadecimal character. No range
      * checking.
      *
-     * @param target target char array
+     * @param target target char array (output parameter)
      * @param value long value
      * @param length length of the target sequence
      */
@@ -92,7 +92,7 @@ public class CodeAreaUtils {
      *
      * @param dataByte byte value
      * @param codeType code type
-     * @param targetData target array of characters
+     * @param targetData target array of characters (output parameter)
      * @param targetPosition target position in array of characters
      * @param charCase case type for alphabetical characters
      */
@@ -240,9 +240,9 @@ public class CodeAreaUtils {
      *
      * Optionally fills rest of the value with zeros.
      *
-     * @param target target characters array
+     * @param target target characters array (output parameter)
      * @param targetOffset offset position in target array
-     * @param value value
+     * @param value value value
      * @param base target numerical base, supported values are 1 to 16
      * @param lengthLimit length limit
      * @param fillZeros flag if rest of the value should be filled with zeros
@@ -265,9 +265,9 @@ public class CodeAreaUtils {
     /**
      * Inserts text encoded data of given code type into given binary data.
      *
-     * @param insertedString
-     * @param data
-     * @param codeType
+     * @param insertedString inserted text in format of code type
+     * @param data data output (output parameter)
+     * @param codeType type of code to use
      */
     public static void insertHexStringIntoData(@Nonnull String insertedString, @Nonnull EditableBinaryData data, @Nonnull CodeType codeType) {
         int maxDigits = codeType.getMaxDigitsForByte();
@@ -321,10 +321,10 @@ public class CodeAreaUtils {
      * Return true if provided character is valid for given code type and
      * position.
      *
-     * @param keyValue
-     * @param codeOffset
-     * @param codeType
-     * @return
+     * @param keyValue keyboard key value
+     * @param codeOffset current code offset
+     * @param codeType current code type
+     * @return true if key value value is valid
      */
     public static boolean isValidCodeKeyValue(@Nonnull char keyValue, int codeOffset, @Nonnull CodeType codeType) {
         boolean validKey = false;
@@ -356,6 +356,15 @@ public class CodeAreaUtils {
         return validKey;
     }
 
+    /**
+     * Returns modified byte value after single code value is applied.
+     *
+     * @param byteValue original byte value
+     * @param value code value
+     * @param codeOffset code offset
+     * @param codeType code type
+     * @return modified byte value
+     */
     public static byte setCodeValue(byte byteValue, int value, int codeOffset, @Nonnull CodeType codeType) {
         switch (codeType) {
             case BINARY: {

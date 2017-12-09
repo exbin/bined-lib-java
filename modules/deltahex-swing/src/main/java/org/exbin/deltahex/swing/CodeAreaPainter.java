@@ -16,11 +16,7 @@
 package org.exbin.deltahex.swing;
 
 import java.awt.Graphics;
-import java.awt.Point;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import org.exbin.deltahex.CaretPosition;
-import org.exbin.utils.binary_data.OutOfBoundsException;
 
 /**
  * Hexadecimal editor painter interface.

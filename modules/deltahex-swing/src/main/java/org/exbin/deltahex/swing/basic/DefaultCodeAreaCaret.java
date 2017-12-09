@@ -15,8 +15,6 @@
  */
 package org.exbin.deltahex.swing.basic;
 
-import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.annotation.Nonnull;
@@ -25,14 +23,13 @@ import javax.swing.Timer;
 import org.exbin.deltahex.CaretPosition;
 import org.exbin.deltahex.CodeAreaCaret;
 import org.exbin.deltahex.CodeAreaSection;
-import org.exbin.deltahex.EditationMode;
+import org.exbin.deltahex.capability.CaretCapable;
 import org.exbin.deltahex.swing.CodeArea;
-import org.exbin.deltahex.swing.CodeAreaPainter;
 
 /**
  * Default implementation of code area caret.
  *
- * @version 0.2.0 2017/11/17
+ * @version 0.2.0 2017/12/09
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaCaret implements CodeAreaCaret {
@@ -81,71 +78,6 @@ public class DefaultCodeAreaCaret implements CodeAreaCaret {
         return -1;
     }
 
-    /**
-     * Returns cursor rectangle.
-     *
-     * @param bytesPerLine bytes per line
-     * @param lineHeight line height
-     * @param charWidth character width
-     * @param linesPerRect lines per visible rectangle
-     * @return cursor rectangle or null
-     */
-    @Nullable
-    public Rectangle getCursorRect(int bytesPerLine, int lineHeight, int charWidth, int linesPerRect) {
-        CodeAreaPainter painter = codeArea.getPainter();
-        Point cursorPoint = painter.getCursorPoint(bytesPerLine, lineHeight, charWidth, linesPerRect);
-        if (cursorPoint == null) {
-            return null;
-        }
-
-        DefaultCodeAreaCaret.CursorShape cursorShape = codeArea.getEditationMode() == EditationMode.INSERT ? insertCursorShape : overwriteCursorShape;
-        int cursorThickness = 0;
-        if (cursorShape.getWidth() != DefaultCodeAreaCaret.CursorShapeWidth.FULL) {
-            cursorThickness = getCursorThickness(cursorShape, charWidth, lineHeight);
-        }
-        switch (cursorShape) {
-            case BOX:
-            case FRAME:
-            case BOTTOM_CORNERS:
-            case CORNERS: {
-                int width = charWidth;
-                if (cursorShape != DefaultCodeAreaCaret.CursorShape.BOX) {
-                    width++;
-                }
-                return new Rectangle(cursorPoint.x, cursorPoint.y, width, lineHeight);
-            }
-            case LINE_TOP:
-            case DOUBLE_TOP:
-            case QUARTER_TOP:
-            case HALF_TOP: {
-                return new Rectangle(cursorPoint.x, cursorPoint.y,
-                        charWidth, cursorThickness);
-            }
-            case LINE_BOTTOM:
-            case DOUBLE_BOTTOM:
-            case QUARTER_BOTTOM:
-            case HALF_BOTTOM: {
-                return new Rectangle(cursorPoint.x, cursorPoint.y + lineHeight - cursorThickness,
-                        charWidth, cursorThickness);
-            }
-            case LINE_LEFT:
-            case DOUBLE_LEFT:
-            case QUARTER_LEFT:
-            case HALF_LEFT: {
-                return new Rectangle(cursorPoint.x, cursorPoint.y, cursorThickness, lineHeight);
-            }
-            case LINE_RIGHT:
-            case DOUBLE_RIGHT:
-            case QUARTER_RIGHT:
-            case HALF_RIGHT: {
-                return new Rectangle(cursorPoint.x + charWidth - cursorThickness, cursorPoint.y, cursorThickness, lineHeight);
-            }
-            default: {
-                throw new IllegalStateException("Unexpected cursor shape type " + cursorShape.name());
-            }
-        }
-    }
-
     @Nonnull
     @Override
     public CaretPosition getCaretPosition() {
@@ -160,15 +92,17 @@ public class DefaultCodeAreaCaret implements CodeAreaCaret {
         }
     }
 
-    private void cursorRepaint() {
-        codeArea.repaintCursor();
+    private void notifyCaredChanged() {
+        ((CaretCapable) codeArea.getWorker()).notifyCaretChanged();
     }
 
+    @Override
     public void setCaretPosition(@Nullable CaretPosition caretPosition) {
         this.caretPosition.setDataPosition(caretPosition == null ? 0 : caretPosition.getDataPosition());
         this.caretPosition.setCodeOffset(caretPosition == null ? 0 : caretPosition.getCodeOffset());
     }
 
+    @Override
     public void setCaretPosition(long dataPosition) {
         caretPosition.setDataPosition(dataPosition);
         caretPosition.setCodeOffset(0);
@@ -233,7 +167,7 @@ public class DefaultCodeAreaCaret implements CodeAreaCaret {
         }
 
         this.insertCursorShape = insertCursorShape;
-        cursorRepaint();
+        notifyCaredChanged();
     }
 
     public CursorShape getOverwriteCursorShape() {
@@ -246,7 +180,7 @@ public class DefaultCodeAreaCaret implements CodeAreaCaret {
         }
 
         this.overwriteCursorShape = overwriteCursorShape;
-        cursorRepaint();
+        notifyCaredChanged();
     }
 
     public boolean isCursorVisible() {
@@ -262,7 +196,7 @@ public class DefaultCodeAreaCaret implements CodeAreaCaret {
             throw new NullPointerException("Cursor rendering mode cannot be null");
         }
         this.renderingMode = renderingMode;
-        cursorRepaint();
+        notifyCaredChanged();
     }
 
     private void privateSetBlinkRate(int blinkRate) {
@@ -275,7 +209,7 @@ public class DefaultCodeAreaCaret implements CodeAreaCaret {
                 blinkTimer.stop();
                 blinkTimer = null;
                 cursorVisible = true;
-                cursorRepaint();
+                notifyCaredChanged();
             } else {
                 blinkTimer.setDelay(blinkRate);
                 blinkTimer.setInitialDelay(blinkRate);
@@ -292,7 +226,7 @@ public class DefaultCodeAreaCaret implements CodeAreaCaret {
         @Override
         public void actionPerformed(ActionEvent e) {
             cursorVisible = !cursorVisible;
-            cursorRepaint();
+            notifyCaredChanged();
         }
     }
 

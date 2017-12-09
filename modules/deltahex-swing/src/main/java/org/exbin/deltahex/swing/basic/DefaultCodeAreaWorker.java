@@ -17,6 +17,7 @@ package org.exbin.deltahex.swing.basic;
 
 import java.awt.Color;
 import java.awt.Cursor;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -54,14 +55,17 @@ import org.exbin.deltahex.capability.ViewModeCapable;
 import org.exbin.deltahex.capability.ScrollingCapable;
 import org.exbin.deltahex.capability.SelectionCapable;
 import org.exbin.deltahex.capability.CodeCharactersCaseCapable;
+import org.exbin.deltahex.swing.capability.AntialiasingCapable;
+import org.exbin.deltahex.swing.capability.BorderPaintCapable;
+import org.exbin.deltahex.swing.capability.FontCapable;
 
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2017/11/17
+ * @version 0.2.0 2017/12/09
  * @author ExBin Project (http://exbin.org)
  */
-public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, CaretCapable, ScrollingCapable, ViewModeCapable, CodeTypeCapable, EditationModeCapable, CharsetCapable, CodeCharactersCaseCapable {
+public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, CaretCapable, ScrollingCapable, ViewModeCapable, CodeTypeCapable, EditationModeCapable, CharsetCapable, CodeCharactersCaseCapable, AntialiasingCapable, FontCapable, BorderPaintCapable {
 
     @Nonnull
     protected final CodeArea codeArea;
@@ -79,6 +83,8 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
     private EditationMode editationMode = EditationMode.OVERWRITE;
     @Nonnull
     private CodeAreaViewMode viewMode = CodeAreaViewMode.DUAL;
+    @Nullable
+    private Font font;
     @Nonnull
     private BasicBorderPaintMode borderPaintMode = BasicBorderPaintMode.STRIPED;
     @Nonnull
@@ -145,17 +151,10 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
         dataView.addMouseWheelListener(codeAreaMouseListener);
     }
 
+    @Nonnull
     @Override
-    public void dataViewScrolled(@Nonnull Graphics g) {
-        if (!isInitialized()) {
-            return;
-        }
-
-        resetScrollState();
-        if (state.characterWidth > 0) {
-            resetCharPositions();
-            paintComponent(g);
-        }
+    public CodeArea getCodeArea() {
+        return codeArea;
     }
 
     @Nonnull
@@ -169,7 +168,7 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
         }
 
         this.painter = painter;
-        codeArea.repaint();
+        repaint();
     }
 
     @Override
@@ -240,8 +239,7 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
     @Override
     public void setCodeCharactersCase(@Nonnull CodeCharactersCase codeCharactersCase) {
         this.codeCharactersCase = codeCharactersCase;
-        codeArea.resetPainter();
-        codeArea.repaint();
+        repaint();
     }
 
 //    @Override
@@ -253,7 +251,6 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
 //    public int getPreviewFirstChar() {
 //        return computeLastCodeCharPos(getBytesPerLine());
 //    }
-
     @Override
     public void rebuildColors() {
     }
@@ -274,8 +271,7 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
             getCaret().setSection(CodeAreaSection.TEXT_PREVIEW);
             notifyCaretMoved();
         }
-        codeArea.resetPainter();
-        codeArea.repaint();
+        repaint();
     }
 
     @Override
@@ -287,8 +283,7 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
     @Override
     public void setCodeType(@Nonnull CodeType codeType) {
         this.codeType = codeType;
-        codeArea.resetPainter();
-        codeArea.repaint();
+        repaint();
     }
 
     @Override
@@ -537,6 +532,33 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
         painter.reset();
     }
 
+    private void repaint() {
+        codeArea.resetPainter();
+        codeArea.repaint();
+    }
+
+    @Override
+    public CaretPosition mousePositionToCaretPosition(int mouseX, int mouseY) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void notifyCaretChanged() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Nonnull
+    @Override
+    public CharacterRenderingMode getCharacterRenderingMode() {
+        return characterRenderingMode;
+    }
+
+    @Override
+    public void setCharacterRenderingMode(@Nonnull CharacterRenderingMode characterRenderingMode) {
+        this.characterRenderingMode = characterRenderingMode;
+        repaint();
+    }
+
     private class VerticalAdjustmentListener implements AdjustmentListener {
 
         public VerticalAdjustmentListener() {
@@ -568,9 +590,9 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
             }
 
             // TODO
-            codeArea.repaint();
-//            dataViewScrolled(codeArea.getGraphics());
             notifyScrolled();
+            repaint();
+//            dataViewScrolled(codeArea.getGraphics());
         }
     }
 
@@ -592,17 +614,13 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
                 }
             }
 
-            codeArea.repaint();
+            repaint();
             dataViewScrolled(codeArea.getGraphics());
             notifyScrolled();
         }
     }
 
-    /**
-     * Returns rectangle of the data view area.
-     *
-     * @return rectangle
-     */
+    @Nonnull
     public Rectangle getDataViewRectangle() {
         return dataView.getBounds();
     }
@@ -619,11 +637,6 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
         notifySelectionChanged();
     }
 
-    /**
-     * Returns currently used charset.
-     *
-     * @return charset
-     */
     @Nonnull
     @Override
     public Charset getCharset() {
@@ -637,7 +650,7 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
         }
 
         this.charset = charset;
-        codeArea.repaint();
+        repaint();
     }
 
     @Nonnull
@@ -660,7 +673,7 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
                 listener.editationModeChanged(editationMode);
             }
             caret.resetBlink();
-            codeArea.repaint();
+            repaint();
         }
     }
 
@@ -670,6 +683,30 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
 
     public void setHandleClipboard(boolean handleClipboard) {
         this.handleClipboard = handleClipboard;
+    }
+
+    @Nonnull
+    @Override
+    public Font getFont() {
+        return font;
+    }
+
+    @Override
+    public void setFont(@Nonnull Font font) {
+        this.font = font;
+        repaint();
+    }
+
+    @Nonnull 
+    @Override
+    public BasicBorderPaintMode getBorderPaintMode() {
+        return borderPaintMode;
+    }
+
+    @Override
+    public void setBorderPaintMode(@Nonnull BasicBorderPaintMode borderPaintMode) {
+        this.borderPaintMode = borderPaintMode;
+        repaint();
     }
 
     public void notifySelectionChanged() {

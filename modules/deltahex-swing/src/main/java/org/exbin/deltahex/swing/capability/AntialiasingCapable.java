@@ -13,29 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.deltahex.capability;
+package org.exbin.deltahex.swing.capability;
 
 import javax.annotation.Nonnull;
-import org.exbin.deltahex.CodeAreaCaret;
+import org.exbin.deltahex.capability.WorkerCapability;
+import org.exbin.deltahex.swing.CharacterRenderingMode;
 
 /**
- * Support for caret / cursor capability.
+ * Support for antialiasing capability.
  *
  * @version 0.2.0 2017/12/09
  * @author ExBin Project (http://exbin.org)
  */
-public interface CaretCapable {
+public interface AntialiasingCapable {
 
     @Nonnull
-    CodeAreaCaret getCaret();
+    CharacterRenderingMode getCharacterRenderingMode();
 
-    void revealCursor();
+    void setCharacterRenderingMode(@Nonnull CharacterRenderingMode characterRenderingMode);
 
-    void notifyCaretMoved();
-
-    void notifyCaretChanged();
-
-    public static class CaretCapability implements WorkerCapability {
+    public static class AntialiasingCapability implements WorkerCapability {
 
     }
 }

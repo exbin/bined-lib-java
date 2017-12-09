@@ -48,77 +48,84 @@ import org.exbin.deltahex.CodeType;
 import org.exbin.deltahex.EditationMode;
 import org.exbin.deltahex.ScrollBarVisibility;
 import org.exbin.deltahex.ScrollingListener;
+import org.exbin.deltahex.capability.CodeCharactersCaseCapable;
+import org.exbin.deltahex.capability.CodeTypeCapable;
 import org.exbin.deltahex.capability.ViewModeCapable;
 import org.exbin.deltahex.swing.CharacterRenderingMode;
 import org.exbin.deltahex.swing.CodeArea;
 import org.exbin.deltahex.swing.CodeAreaPainter;
 import org.exbin.deltahex.swing.CodeAreaSwingUtils;
 import org.exbin.deltahex.swing.CodeAreaWorker;
+import org.exbin.deltahex.swing.capability.AntialiasingCapable;
 import org.exbin.utils.binary_data.OutOfBoundsException;
+import org.exbin.deltahex.swing.capability.BorderPaintCapable;
 
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2017/11/08
+ * @version 0.2.0 2017/12/09
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
-    boolean monospaceFont;
-    int characterWidth;
-
-    int areaWidth;
-    int areaHeight;
-    int mainAreaX;
-    int mainAreaY;
-    int mainAreaWidth;
-    int mainAreaHeight;
-    CodeAreaViewMode viewMode;
-    CodeAreaScrollPosition scrollPosition;
-    VerticalScrollUnit verticalScrollUnit;
-    HorizontalScrollUnit horizontalScrollUnit;
-    Colors colors = new Colors();
-    long dataSize;
-
-    int lineNumbersLength;
-    int lineNumbersAreaWidth;
-    int headerAreaHeight;
-    int lineHeight;
-    int linesPerRect;
-    int bytesPerLine;
-    int charactersPerRect;
-    int charactersPerLine;
-    CodeType codeType;
-    int maxDigits;
-    CodeCharactersCase hexCharactersCase;
-    BasicBorderPaintMode borderPaintMode;
-
-    int previewCharPos;
-    int visibleCharStart;
-    int visibleCharEnd;
-    int visiblePreviewStart;
-    int visiblePreviewEnd;
-    int visibleCodeStart;
-    int visibleCodeEnd;
-
-    Charset charset;
-    Font font;
-    FontMetrics fontMetrics;
-    CharacterRenderingMode characterRenderingMode;
-    int maxCharLength;
-
-    byte[] lineData;
-    char[] lineNumberCode;
-    char[] lineCharacters;
-
     @Nonnull
     protected final CodeAreaWorker worker;
+
+    private CodeAreaViewMode viewMode;
+    private CodeAreaScrollPosition scrollPosition;
+    private VerticalScrollUnit verticalScrollUnit;
+    private HorizontalScrollUnit horizontalScrollUnit;
+    private Colors colors = new Colors();
+    private long dataSize;
+
+    private int areaWidth;
+    private int areaHeight;
+    private int mainAreaX;
+    private int mainAreaY;
+    private int mainAreaWidth;
+    private int mainAreaHeight;
+
+    private int lineNumbersLength;
+    private int lineNumbersAreaWidth;
+    private int headerAreaHeight;
+    private int lineHeight;
+    private int linesPerRect;
+    private int bytesPerLine;
+    private int charactersPerRect;
+    private int charactersPerLine;
+    private CodeType codeType;
+    private CodeCharactersCase hexCharactersCase;
+    private BasicBorderPaintMode borderPaintMode;
+
+    private int previewCharPos;
+    private int visibleCharStart;
+    private int visibleCharEnd;
+    private int visiblePreviewStart;
+    private int visiblePreviewEnd;
+    private int visibleCodeStart;
+    private int visibleCodeEnd;
+
+    private Charset charset;
+    @Nullable
+    private Font font;
+    @Nullable
+    private CharacterRenderingMode characterRenderingMode;
+    private int maxCharLength;
+
+    private byte[] lineData;
+    private char[] lineNumberCode;
+    private char[] lineCharacters;
+
     private int subFontSpace = 3;
 
     @Nullable
     private Charset charMappingCharset = null;
     private final char[] charMapping = new char[256];
     private long paintCounter = 0;
+
+    private FontMetrics fontMetrics;
+    private boolean monospaceFont;
+    private int characterWidth;
 
     public DefaultCodeAreaPainter(@Nonnull CodeAreaWorker worker) {
         this.worker = worker;
@@ -131,16 +138,15 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         resetColors();
 
         viewMode = ((ViewModeCapable) worker).getViewMode();
-        characterRenderingMode = worker.getCharacterRenderingMode();
-        hexCharactersCase = worker.getHhexCharactersCase();
-        borderPaintMode = worker.getBorderPaintMode();
-        dataSize = worker.getDataSize();
+        characterRenderingMode = ((AntialiasingCapable) worker).getCharacterRenderingMode();
+        hexCharactersCase = ((CodeCharactersCaseCapable) worker).getCodeCharactersCase();
+        borderPaintMode = ((BorderPaintCapable) worker).getBorderPaintMode();
+        dataSize = worker.getCodeArea().getDataSize();
 
         linesPerRect = worker.getLinesPerRectangle();
         bytesPerLine = worker.getBytesPerLine();
 
-        codeType = worker.getCodeType();
-        maxDigits = worker.getMaxDigitsForByte();
+        codeType = ((CodeTypeCapable) worker).getCodeType();
 
         int charactersPerLine = 0;
         if (viewMode != CodeAreaViewMode.TEXT_PREVIEW) {
@@ -153,7 +159,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             }
         }
 
-        charactersPerLine = charactersPerLine;
+        this.charactersPerLine = charactersPerLine;
         hexCharactersCase = CodeCharactersCase.UPPER;
     }
 
@@ -1068,7 +1074,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             byteOnLine = cursorCharX;
             if (viewMode == CodeAreaViewMode.DUAL) {
                 byteOnLine -= painter.getPreviewFirstChar();
-            }mousePositionToCaretPosition
+            }
         }
 
         if (byteOnLine >= bytesPerLine) {
@@ -1121,6 +1127,84 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
     private int getLineNumberLength() {
         return 8;
+    }
+
+    @Override
+    public void dataViewScrolled(@Nonnull Graphics g) {
+        if (!isInitialized()) {
+            return;
+        }
+
+        resetScrollState();
+        if (state.characterWidth > 0) {
+            resetCharPositions();
+            paintComponent(g);
+        }
+    }
+
+    /**
+     * Returns cursor rectangle.
+     *
+     * @param bytesPerLine bytes per line
+     * @param lineHeight line height
+     * @param charWidth character width
+     * @param linesPerRect lines per visible rectangle
+     * @return cursor rectangle or null
+     */
+    @Nullable
+    public Rectangle getCursorRect(int bytesPerLine, int lineHeight, int charWidth, int linesPerRect) {
+        CodeAreaPainter painter = codeArea.getPainter();
+        Point cursorPoint = painter.getCursorPoint(bytesPerLine, lineHeight, charWidth, linesPerRect);
+        if (cursorPoint == null) {
+            return null;
+        }
+
+        DefaultCodeAreaCaret.CursorShape cursorShape = codeArea.getEditationMode() == EditationMode.INSERT ? insertCursorShape : overwriteCursorShape;
+        int cursorThickness = 0;
+        if (cursorShape.getWidth() != DefaultCodeAreaCaret.CursorShapeWidth.FULL) {
+            cursorThickness = getCursorThickness(cursorShape, charWidth, lineHeight);
+        }
+        switch (cursorShape) {
+            case BOX:
+            case FRAME:
+            case BOTTOM_CORNERS:
+            case CORNERS: {
+                int width = charWidth;
+                if (cursorShape != DefaultCodeAreaCaret.CursorShape.BOX) {
+                    width++;
+                }
+                return new Rectangle(cursorPoint.x, cursorPoint.y, width, lineHeight);
+            }
+            case LINE_TOP:
+            case DOUBLE_TOP:
+            case QUARTER_TOP:
+            case HALF_TOP: {
+                return new Rectangle(cursorPoint.x, cursorPoint.y,
+                        charWidth, cursorThickness);
+            }
+            case LINE_BOTTOM:
+            case DOUBLE_BOTTOM:
+            case QUARTER_BOTTOM:
+            case HALF_BOTTOM: {
+                return new Rectangle(cursorPoint.x, cursorPoint.y + lineHeight - cursorThickness,
+                        charWidth, cursorThickness);
+            }
+            case LINE_LEFT:
+            case DOUBLE_LEFT:
+            case QUARTER_LEFT:
+            case HALF_LEFT: {
+                return new Rectangle(cursorPoint.x, cursorPoint.y, cursorThickness, lineHeight);
+            }
+            case LINE_RIGHT:
+            case DOUBLE_RIGHT:
+            case QUARTER_RIGHT:
+            case HALF_RIGHT: {
+                return new Rectangle(cursorPoint.x + charWidth - cursorThickness, cursorPoint.y, cursorThickness, lineHeight);
+            }
+            default: {
+                throw new IllegalStateException("Unexpected cursor shape type " + cursorShape.name());
+            }
+        }
     }
 
     /**

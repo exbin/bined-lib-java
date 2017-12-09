@@ -15,27 +15,17 @@
  */
 package org.exbin.deltahex.capability;
 
-import javax.annotation.Nonnull;
-import org.exbin.deltahex.CodeAreaCaret;
-
 /**
- * Support for caret / cursor capability.
+ * Line wrapping capability interface.
  *
  * @version 0.2.0 2017/12/09
  * @author ExBin Project (http://exbin.org)
  */
-public interface CaretCapable {
-
-    @Nonnull
-    CodeAreaCaret getCaret();
-
-    void revealCursor();
-
-    void notifyCaretMoved();
-
-    void notifyCaretChanged();
-
-    public static class CaretCapability implements WorkerCapability {
+public interface LineWrappingCapability {
+    
+    
+    
+    public static class ScrollingCapability implements WorkerCapability {
 
     }
 }

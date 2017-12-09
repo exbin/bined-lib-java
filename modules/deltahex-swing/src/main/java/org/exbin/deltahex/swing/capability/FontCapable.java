@@ -13,29 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.deltahex.capability;
+package org.exbin.deltahex.swing.capability;
 
-import javax.annotation.Nonnull;
-import org.exbin.deltahex.CodeAreaCaret;
+import java.awt.Font;
+import org.exbin.deltahex.capability.WorkerCapability;
 
 /**
- * Support for caret / cursor capability.
+ * Support for font capability.
  *
  * @version 0.2.0 2017/12/09
  * @author ExBin Project (http://exbin.org)
  */
-public interface CaretCapable {
+public interface FontCapable {
 
-    @Nonnull
-    CodeAreaCaret getCaret();
+    Font getFont();
 
-    void revealCursor();
+    void setFont(Font font);
 
-    void notifyCaretMoved();
-
-    void notifyCaretChanged();
-
-    public static class CaretCapability implements WorkerCapability {
+    public static class FontCapability implements WorkerCapability {
 
     }
 }

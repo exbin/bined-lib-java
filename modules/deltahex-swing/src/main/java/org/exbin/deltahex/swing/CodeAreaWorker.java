@@ -25,10 +25,18 @@ import org.exbin.utils.binary_data.OutOfBoundsException;
 /**
  * Hexadecimal editor worker interface.
  *
- * @version 0.2.0 2017/11/17
+ * @version 0.2.0 2017/12/09
  * @author ExBin Project (http://exbin.org)
  */
 public interface CodeAreaWorker {
+
+    /**
+     * Returns code area used by this worker.
+     *
+     * @return code area
+     */
+    @Nonnull
+    CodeArea getCodeArea();
 
     /**
      * Returns true if painter was initialized.
@@ -43,13 +51,6 @@ public interface CodeAreaWorker {
      * @param g graphics
      */
     void paintComponent(@Nonnull Graphics g);
-
-    /**
-     * Notifies painter that data view was scrolled.
-     *
-     * @param g graphics
-     */
-    void dataViewScrolled(@Nonnull Graphics g);
 
     /**
      * Rebuilds colors after UIManager change.

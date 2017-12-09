@@ -15,13 +15,21 @@
  */
 package org.exbin.deltahex;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * Interface for code area caret.
  *
- * @version 0.2.0 2017/11/14
+ * @version 0.2.0 2017/12/09
  * @author ExBin Project (http://exbin.org)
  */
 public interface CodeAreaCaret {
 
+    @Nonnull
     CaretPosition getCaretPosition();
+
+    void setCaretPosition(@Nullable CaretPosition caretPosition);
+
+    void setCaretPosition(long dataPosition);
 }

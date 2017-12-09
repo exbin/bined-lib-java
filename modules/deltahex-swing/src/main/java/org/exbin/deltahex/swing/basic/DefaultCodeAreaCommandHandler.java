@@ -49,6 +49,7 @@ import org.exbin.utils.binary_data.EditableBinaryData;
 import org.exbin.deltahex.capability.CaretCapable;
 import org.exbin.deltahex.capability.CodeTypeCapable;
 import org.exbin.deltahex.capability.ViewModeCapable;
+import org.exbin.deltahex.swing.CodeAreaWorker;
 
 /**
  * Default hexadecimal editor command handler.
@@ -77,9 +78,9 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
     public DefaultCodeAreaCommandHandler(@Nonnull CodeArea codeArea) {
         this.codeArea = codeArea;
-        CodeAreaPainter painter = codeArea.getPainter();
-        codeTypeSupported = painter instanceof CodeTypeCapable.CodeTypeCapable;
-        viewModeSupported = painter instanceof ViewModeCapable.ViewModeCapable;
+        CodeAreaWorker worker = codeArea.getWorker();
+        codeTypeSupported = worker instanceof CodeTypeCapable;
+        viewModeSupported = worker instanceof ViewModeCapable;
 
         int metaMaskInit;
         try {
@@ -890,18 +891,18 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     @Nonnull
     private CodeType getCodeType() {
         if (codeTypeSupported) {
-            return ((CodeTypeCapable.CodeTypeCapable) codeArea.getPainter()).getCodeType();
+            return ((CodeTypeCapable) codeArea.getWorker()).getCodeType();
         }
 
         return CodeType.HEXADECIMAL;
     }
     
     private void revealCursor() {
-        ((CaretCapable.CaretCapable) codeArea.getPainter()).revealCursor();
+        ((CaretCapable) codeArea.getWorker()).revealCursor();
     }
     
     private void notifyCaretMoved() {
-        ((CaretCapable.CaretCapable) codeArea.getPainter()).notifyCaretMoved();
+        ((CaretCapable) codeArea.getWorker()).notifyCaretMoved();
     }
 
     public class BinaryDataClipboardData implements ClipboardData {
@@ -942,10 +943,6 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         public void dispose() {
             data.dispose();
         }
-    }
-
-    private int getMaxDigitsForByte() {
-        return 2;
     }
 
     private class CodeDataClipboardData implements ClipboardData {
