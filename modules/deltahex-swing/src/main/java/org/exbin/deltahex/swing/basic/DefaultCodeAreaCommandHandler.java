@@ -54,7 +54,7 @@ import org.exbin.deltahex.swing.CodeAreaWorker;
 /**
  * Default hexadecimal editor command handler.
  *
- * @version 0.2.0 2017/11/05
+ * @version 0.2.0 2017/12/10
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {

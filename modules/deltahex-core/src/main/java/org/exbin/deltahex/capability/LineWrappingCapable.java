@@ -21,11 +21,17 @@ package org.exbin.deltahex.capability;
  * @version 0.2.0 2017/12/09
  * @author ExBin Project (http://exbin.org)
  */
-public interface LineWrappingCapability {
-    
-    
-    
-    public static class ScrollingCapability implements WorkerCapability {
+public interface LineWrappingCapable {
+
+    boolean isLineWrapping();
+
+    void setLineWrapping(boolean lineWrapping);
+
+    int getMaxBytesPerLine();
+
+    void setMaxBytesPerLine(int maxBytesPerLine);
+
+    public static class LineWrappingCapability implements WorkerCapability {
 
     }
 }

@@ -49,6 +49,7 @@ import org.exbin.deltahex.ScrollingListener;
 import org.exbin.deltahex.SelectionChangedListener;
 import org.exbin.deltahex.SelectionRange;
 import org.exbin.deltahex.CodeAreaViewMode;
+import org.exbin.deltahex.capability.CaretCapable;
 import org.exbin.deltahex.swing.CodeArea;
 import org.exbin.deltahex.swing.basic.DefaultCodeAreaCaret;
 import org.exbin.deltahex.swing.basic.CodeAreaScrollPosition;
@@ -75,8 +76,8 @@ public class DeltaHexExampleExPanel extends javax.swing.JPanel {
     public void setCodeArea(final CodeArea codeArea) {
         this.codeArea = codeArea;
         splitPane.setRightComponent(codeArea);
-        viewModeComboBox.setSelectedIndex(((ViewModeCapable.ViewModeCapable) codeArea.getPainter()).getViewMode().ordinal());
-        codeTypeComboBox.setSelectedIndex(((CodeTypeCapable.CodeTypeCapable) codeArea.getPainter()).getCodeType().ordinal());
+        viewModeComboBox.setSelectedIndex(((ViewModeCapable) codeArea.getWorker()).getViewMode().ordinal());
+        codeTypeComboBox.setSelectedIndex(((CodeTypeCapable) codeArea.getWorker()).getCodeType().ordinal());
 //        positionCodeTypeComboBox.setSelectedIndex(codeArea.getPositionCodeType().ordinal());
         activeSectionComboBox.setSelectedIndex(codeArea.getActiveSection().ordinal());
 //        backgroundModeComboBox.setSelectedIndex(codeArea.getBackgroundMode().ordinal());
@@ -102,7 +103,7 @@ public class DeltaHexExampleExPanel extends javax.swing.JPanel {
 //        lineNumbersSpaceSpinner.setValue(codeArea.getLineNumberSpaceSize());
 //        lineNumbersLengthComboBox.setSelectedIndex(codeArea.getLineNumberType().ordinal());
 //        lineNumbersLengthSpinner.setValue(codeArea.getLineNumberSpecifiedLength());
-        cursorRenderingModeComboBox.setSelectedIndex(codeArea.getCaret().getRenderingMode().ordinal());
+        cursorRenderingModeComboBox.setSelectedIndex(((CaretCapable) codeArea.getWorker()).getCaret().getRenderingMode().ordinal());
         cursorInsertShapeComboBox.setSelectedIndex(codeArea.getCaret().getInsertCursorShape().ordinal());
         cursorOverwriteShapeComboBox.setSelectedIndex(codeArea.getCaret().getOverwriteCursorShape().ordinal());
         cursorBlinkingRateSpinner.setValue(codeArea.getCaret().getBlinkRate());

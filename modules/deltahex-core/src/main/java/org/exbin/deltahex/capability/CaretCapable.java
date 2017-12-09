@@ -35,6 +35,15 @@ public interface CaretCapable {
 
     void notifyCaretChanged();
 
+    /**
+     * Returns cursor shape type for given position.
+     *
+     * @param x
+     * @param y
+     * @return cursor type from java.awt.Cursor
+     */
+    int getCursorShape(int x, int y);
+
     public static class CaretCapability implements WorkerCapability {
 
     }

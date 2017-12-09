@@ -25,12 +25,12 @@ import java.awt.event.MouseWheelListener;
 import javax.annotation.Nonnull;
 import org.exbin.deltahex.capability.CaretCapable;
 import org.exbin.deltahex.swing.CodeArea;
-import org.exbin.deltahex.swing.CodeAreaPainter;
+import org.exbin.deltahex.swing.CodeAreaWorker;
 
 /**
  * Code Area component mouse listener.
  *
- * @version 0.2.0 2017/11/05
+ * @version 0.2.0 2017/12/09
  * @author ExBin Project (http://exbin.org)
  */
 /* package */ class DefaultCodeAreaMouseListener extends MouseAdapter implements MouseMotionListener, MouseWheelListener {
@@ -81,8 +81,8 @@ import org.exbin.deltahex.swing.CodeAreaPainter;
     }
 
     private void updateMouseCursor(@Nonnull MouseEvent e) {
-        CodeAreaPainter painter = codeArea.getPainter();
-        int cursorShape = painter.getCursorShape(e.getX(), e.getY());
+        CodeAreaWorker worker = codeArea.getWorker();
+        int cursorShape = ((CaretCapable) worker).getCursorShape(e.getX(), e.getY());
         Cursor newCursor = cursorShape == 0 ? defaultCursor : textCursor;
 
         if (newCursor != currentCursor) {
@@ -93,10 +93,11 @@ import org.exbin.deltahex.swing.CodeAreaPainter;
 
     @Override
     public void mouseDragged(@Nonnull MouseEvent me) {
+        CodeAreaWorker worker = codeArea.getWorker();
         updateMouseCursor(me);
         if (codeArea.isEnabled() && mouseDown) {
             codeArea.getCommandHandler().moveCaret(me, KeyEvent.SHIFT_DOWN_MASK);
-            codeArea.revealCursor();
+            ((CaretCapable) worker).revealCursor();
         }
     }
 
