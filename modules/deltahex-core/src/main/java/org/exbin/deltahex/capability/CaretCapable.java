@@ -16,6 +16,7 @@
 package org.exbin.deltahex.capability;
 
 import javax.annotation.Nonnull;
+import org.exbin.deltahex.CaretPosition;
 import org.exbin.deltahex.CodeAreaCaret;
 
 /**
@@ -30,6 +31,8 @@ public interface CaretCapable {
     CodeAreaCaret getCaret();
 
     void revealCursor();
+    
+    void revealPosition(@Nonnull CaretPosition caretPosition);
 
     void notifyCaretMoved();
 

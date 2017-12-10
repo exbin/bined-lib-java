@@ -15,20 +15,14 @@
  */
 package org.exbin.deltahex.swing.basic;
 
-import java.awt.Color;
-import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Rectangle;
-import java.awt.event.AdjustmentEvent;
-import java.awt.event.AdjustmentListener;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.swing.JScrollBar;
-import javax.swing.JScrollPane;
 import org.exbin.deltahex.CaretMovedListener;
 import org.exbin.deltahex.CaretPosition;
 import org.exbin.deltahex.CodeAreaSection;
@@ -104,10 +98,6 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
     private int maxBytesPerLine = 16;
 
     @Nonnull
-    private final JScrollPane scrollPanel;
-    @Nonnull
-    private final CodeAreaDataView dataView;
-    @Nonnull
     private ScrollBarVisibility verticalScrollBarVisibility = ScrollBarVisibility.IF_NEEDED;
     @Nonnull
     private VerticalScrollUnit verticalScrollUnit = VerticalScrollUnit.LINE;
@@ -124,34 +114,9 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
     public DefaultCodeAreaWorker(@Nonnull CodeArea codeArea) {
         this.codeArea = codeArea;
 
-        dataView = new CodeAreaDataView(codeArea);
-        dataView.setOpaque(false);
-        scrollPanel = new JScrollPane();
-        scrollPanel.setBorder(null);
-        JScrollBar verticalScrollBar = scrollPanel.getVerticalScrollBar();
-        verticalScrollBar.setVisible(false);
-        verticalScrollBar.setIgnoreRepaint(true);
-        verticalScrollBar.addAdjustmentListener(new VerticalAdjustmentListener());
-        JScrollBar horizontalScrollBar = scrollPanel.getHorizontalScrollBar();
-        horizontalScrollBar.setIgnoreRepaint(false);
-        horizontalScrollBar.setVisible(true);
-        horizontalScrollBar.addAdjustmentListener(new HorizontalAdjustmentListener());
-        codeArea.add(scrollPanel);
-        scrollPanel.setOpaque(false);
-        scrollPanel.setBackground(Color.RED);
-        scrollPanel.setViewportView(dataView);
-        scrollPanel.getViewport().setOpaque(false);
         caret = new DefaultCodeAreaCaret(codeArea);
 
         this.painter = new DefaultCodeAreaPainter(this);
-
-        DefaultCodeAreaMouseListener codeAreaMouseListener = new DefaultCodeAreaMouseListener(codeArea);
-        codeArea.addMouseListener(codeAreaMouseListener);
-        codeArea.addMouseMotionListener(codeAreaMouseListener);
-        codeArea.addMouseWheelListener(codeAreaMouseListener);
-        dataView.addMouseListener(codeAreaMouseListener);
-        dataView.addMouseMotionListener(codeAreaMouseListener);
-        dataView.addMouseWheelListener(codeAreaMouseListener);
     }
 
     @Nonnull
@@ -225,12 +190,7 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
 
     @Override
     public int getCursorShape(int x, int y) {
-        Rectangle dataViewRectangle = getDataViewRectangle();
-        if (x >= dataViewRectangle.x && y >= dataViewRectangle.y) {
-            return Cursor.TEXT_CURSOR;
-        }
-
-        return Cursor.DEFAULT_CURSOR;
+        return painter.getCursorShape(x, y);
     }
 
     @Nonnull
@@ -294,9 +254,14 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
         revealPosition(caret.getCaretPosition().getDataPosition(), caret.getSection());
     }
 
+    @Override
+    public void revealPosition(@Nonnull CaretPosition caretPosition) {
+        revealPosition(caretPosition.getDataPosition(), caretPosition.getSection());
+    }
+
     public void revealPosition(long position, @Nonnull CodeAreaSection section) {
         if (!isInitialized()) {
-            // Ignore if painter not initialized
+            // Silently ignore if painter is not yet initialized
             return;
         }
 
@@ -342,38 +307,14 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
         }
     }
 
-    public void updateScrollBars() {
-        if (scrollPosition.getVerticalOverflowMode() == CodeAreaScrollPosition.VerticalOverflowMode.OVERFLOW) {
-            long lines = ((codeArea.getDataSize() + scrollPosition.getLineDataOffset()) / getBytesPerLine()) + 1;
-            int scrollValue;
-            if (scrollPosition.getScrollCharPosition() < Long.MAX_VALUE / Integer.MAX_VALUE) {
-                scrollValue = (int) ((scrollPosition.getScrollLinePosition() * Integer.MAX_VALUE) / lines);
-            } else {
-                scrollValue = (int) (scrollPosition.getScrollLinePosition() / (lines / Integer.MAX_VALUE));
-            }
-            scrollPanel.getVerticalScrollBar().setValue(scrollValue);
-        } else if (verticalScrollUnit == VerticalScrollUnit.LINE) {
-            scrollPanel.getVerticalScrollBar().setValue((int) scrollPosition.getScrollLinePosition());
-        } else {
-            scrollPanel.getVerticalScrollBar().setValue((int) (scrollPosition.getScrollLinePosition() * getLineHeight() + scrollPosition.getScrollLineOffset()));
-        }
-
-        if (horizontalScrollUnit == HorizontalScrollUnit.CHARACTER) {
-            scrollPanel.getHorizontalScrollBar().setValue(scrollPosition.getScrollCharPosition());
-        } else {
-            scrollPanel.getHorizontalScrollBar().setValue(scrollPosition.getScrollCharPosition() * getCharacterWidth() + scrollPosition.getScrollCharOffset());
-        }
-        codeArea.repaint();
+    private void updateScrollBars() {
+        painter.updateScrollBars();
+        repaint();
     }
 
     @Override
     public CodeAreaScrollPosition getScrollPosition() {
         return scrollPosition;
-    }
-
-    boolean isHorizontalScrollBarVisible() {
-        // TODO
-        return scrollPanel.getHorizontalScrollBar().isVisible();
     }
 
     @Override
@@ -464,11 +405,6 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
     }
 
     @Nonnull
-    public Rectangle getDataViewRectangle() {
-        return dataView.getBounds();
-    }
-
-    @Nonnull
     @Override
     public SelectionRange getSelection() {
         return selection;
@@ -478,6 +414,11 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
     public void setSelection(@Nonnull SelectionRange selection) {
         this.selection = selection;
         notifySelectionChanged();
+    }
+
+    @Override
+    public boolean hasSelection() {
+        return selection != null && !selection.isEmpty();
     }
 
     @Nonnull
@@ -540,7 +481,7 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
         repaint();
     }
 
-    @Nonnull 
+    @Nonnull
     @Override
     public BasicBorderPaintMode getBorderPaintMode() {
         return borderPaintMode;
@@ -621,66 +562,5 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
 
     public void removeEditationModeChangedListener(@Nullable EditationModeChangedListener editationModeChangedListener) {
         editationModeChangedListeners.remove(editationModeChangedListener);
-    }
-
-    private class VerticalAdjustmentListener implements AdjustmentListener {
-
-        public VerticalAdjustmentListener() {
-        }
-
-        @Override
-        public void adjustmentValueChanged(AdjustmentEvent e) {
-            int scrollBarValue = scrollPanel.getVerticalScrollBar().getValue();
-            if (scrollPosition.getVerticalOverflowMode() == CodeAreaScrollPosition.VerticalOverflowMode.OVERFLOW) {
-                int maxValue = Integer.MAX_VALUE - scrollPanel.getVerticalScrollBar().getVisibleAmount();
-                long lines = ((codeArea.getDataSize() + scrollPosition.getLineDataOffset()) / getBytesPerLine()) - getLinesPerRectangle() + 1;
-                long targetLine;
-                if (scrollBarValue > 0 && lines > maxValue / scrollBarValue) {
-                    targetLine = scrollBarValue * (lines / maxValue);
-                    long rest = lines % maxValue;
-                    targetLine += (rest * scrollBarValue) / maxValue;
-                } else {
-                    targetLine = (scrollBarValue * lines) / Integer.MAX_VALUE;
-                }
-                scrollPosition.setScrollLinePosition(targetLine);
-                if (verticalScrollUnit != VerticalScrollUnit.LINE) {
-                    scrollPosition.setScrollLineOffset(0);
-                }
-            } else if (verticalScrollUnit == VerticalScrollUnit.LINE) {
-                scrollPosition.setScrollLinePosition(scrollBarValue);
-            } else {
-                scrollPosition.setScrollLinePosition(scrollBarValue / getLineHeight());
-                scrollPosition.setScrollLineOffset(scrollBarValue % getLineHeight());
-            }
-
-            // TODO
-            notifyScrolled();
-            repaint();
-//            dataViewScrolled(codeArea.getGraphics());
-        }
-    }
-
-    private class HorizontalAdjustmentListener implements AdjustmentListener {
-
-        public HorizontalAdjustmentListener() {
-        }
-
-        @Override
-        public void adjustmentValueChanged(AdjustmentEvent e) {
-            if (horizontalScrollUnit == HorizontalScrollUnit.CHARACTER) {
-                scrollPosition.setScrollCharPosition(scrollPanel.getHorizontalScrollBar().getValue());
-            } else {
-                int characterWidth = getCharacterWidth();
-                if (characterWidth > 0) {
-                    int horizontalScroll = scrollPanel.getHorizontalScrollBar().getValue();
-                    scrollPosition.setScrollCharPosition(horizontalScroll / characterWidth);
-                    scrollPosition.setScrollCharOffset(horizontalScroll % characterWidth);
-                }
-            }
-
-            repaint();
-            dataViewScrolled(codeArea.getGraphics());
-            notifyScrolled();
-        }
     }
 }

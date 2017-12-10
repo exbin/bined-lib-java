@@ -34,6 +34,7 @@ import javax.swing.JComponent;
 import javax.swing.UIManager;
 import org.exbin.deltahex.CodeAreaControl;
 import org.exbin.deltahex.DataChangedListener;
+import org.exbin.deltahex.capability.SelectionCapable;
 import org.exbin.deltahex.swing.basic.DefaultCodeAreaWorker;
 import org.exbin.utils.binary_data.BinaryData;
 
@@ -200,7 +201,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
 
     @Override
     public boolean hasSelection() {
-        return commandHandler.hasSelection();
+        return ((SelectionCapable) worker).hasSelection();
     }
 
     @Nonnull

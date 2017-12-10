@@ -58,4 +58,8 @@ public interface CodeAreaPainter {
      * Resets painter state for new painting.
      */
     void reset();
+
+    int getCursorShape(int x, int y);
+    
+    void updateScrollBars();
 }

@@ -110,11 +110,4 @@ public interface CodeAreaCommandHandler {
      * @param modifiers modifiers
      */
     void moveCaret(@Nonnull MouseEvent mouseEvent, int modifiers);
-
-    /**
-     * Returns true if there is active selection for clipboard handling.
-     *
-     * @return true if non-empty selection is active
-     */
-    boolean hasSelection();
 }

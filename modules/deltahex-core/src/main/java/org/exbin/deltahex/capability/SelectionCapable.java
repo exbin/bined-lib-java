@@ -21,7 +21,7 @@ import org.exbin.deltahex.SelectionRange;
 /**
  * Support for selection capability.
  *
- * @version 0.2.0 2017/11/17
+ * @version 0.2.0 2017/12/10
  * @author ExBin Project (http://exbin.org)
  */
 public interface SelectionCapable {
@@ -30,6 +30,13 @@ public interface SelectionCapable {
     SelectionRange getSelection();
 
     void setSelection(@Nonnull SelectionRange selection);
+
+    /**
+     * Returns true if there is active selection for clipboard handling.
+     *
+     * @return true if non-empty selection is active
+     */
+    boolean hasSelection();
 
     public static class SelectionCapability implements WorkerCapability {
 
