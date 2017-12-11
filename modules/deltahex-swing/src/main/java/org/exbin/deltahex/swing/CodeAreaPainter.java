@@ -17,6 +17,7 @@ package org.exbin.deltahex.swing;
 
 import java.awt.Graphics;
 import javax.annotation.Nonnull;
+import org.exbin.deltahex.CodeAreaSection;
 
 /**
  * Hexadecimal editor painter interface.
@@ -60,6 +61,8 @@ public interface CodeAreaPainter {
     void reset();
 
     int getCursorShape(int x, int y);
-    
+
     void updateScrollBars();
+
+    boolean revealPosition(long position, @Nonnull CodeAreaSection section);
 }

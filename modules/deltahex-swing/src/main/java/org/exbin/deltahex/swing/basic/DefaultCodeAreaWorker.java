@@ -17,7 +17,6 @@ package org.exbin.deltahex.swing.basic;
 
 import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.Rectangle;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
@@ -265,41 +264,7 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
             return;
         }
 
-        boolean scrolled = false;
-        Rectangle hexRect = getDataViewRectangle();
-        int bytesPerRect = getBytesPerRectangle();
-        int linesPerRect = getLinesPerRectangle();
-        int bytesPerLine = getBytesPerLine();
-        long caretLine = position / bytesPerLine;
-
-        int positionByte = painter.computePositionByte((int) (position % bytesPerLine));
-
-        if (caretLine <= scrollPosition.getScrollLinePosition()) {
-            scrollPosition.setScrollLinePosition(caretLine);
-            scrollPosition.setScrollLineOffset(0);
-            scrolled = true;
-        } else if (caretLine >= scrollPosition.getScrollLinePosition() + linesPerRect) {
-            scrollPosition.setScrollLinePosition(caretLine - linesPerRect);
-            if (verticalScrollUnit == VerticalScrollUnit.PIXEL) {
-                scrollPosition.setScrollLineOffset(getLineHeight() - (hexRect.height % getLineHeight()));
-            } else {
-                scrollPosition.setScrollLinePosition(scrollPosition.getScrollLinePosition() + 1);
-            }
-            scrolled = true;
-        }
-        if (positionByte <= scrollPosition.getScrollCharPosition()) {
-            scrollPosition.setScrollCharPosition(positionByte);
-            scrollPosition.setScrollCharOffset(0);
-            scrolled = true;
-        } else if (positionByte >= scrollPosition.getScrollCharPosition() + bytesPerRect) {
-            scrollPosition.setScrollCharPosition(positionByte - bytesPerRect);
-            if (horizontalScrollUnit == HorizontalScrollUnit.PIXEL) {
-                scrollPosition.setScrollCharOffset(getCharacterWidth() - (hexRect.width % getCharacterWidth()));
-            } else {
-                scrollPosition.setScrollCharPosition(scrollPosition.getScrollCharPosition() + 1);
-            }
-            scrolled = true;
-        }
+        boolean scrolled = painter.revealPosition(position, section);
 
         if (scrolled) {
             updateScrollBars();

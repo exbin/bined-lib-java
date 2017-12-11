@@ -180,7 +180,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         dataSize = worker.getCodeArea().getDataSize();
 
         linesPerRect = computeLinesPerRectangle();
-        bytesPerLine = getBytesPerLine();
+        bytesPerLine = computeBytesPerLine();
 
         codeType = ((CodeTypeCapable) worker).getCodeType();
 
@@ -775,6 +775,47 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         }
     }
 
+    @Override
+    public boolean revealPosition(long position, CodeAreaSection section) {
+        boolean scrolled = false;
+        Rectangle hexRect = getDataViewRectangle();
+        int bytesPerRect = getBytesPerRectangle();
+        int linesPerRect = getLinesPerRectangle();
+        int bytesPerLine = getBytesPerLine();
+        long caretLine = position / bytesPerLine;
+
+        int positionByte = painter.computePositionByte((int) (position % bytesPerLine));
+
+        if (caretLine <= scrollPosition.getScrollLinePosition()) {
+            scrollPosition.setScrollLinePosition(caretLine);
+            scrollPosition.setScrollLineOffset(0);
+            scrolled = true;
+        } else if (caretLine >= scrollPosition.getScrollLinePosition() + linesPerRect) {
+            scrollPosition.setScrollLinePosition(caretLine - linesPerRect);
+            if (verticalScrollUnit == VerticalScrollUnit.PIXEL) {
+                scrollPosition.setScrollLineOffset(getLineHeight() - (hexRect.height % getLineHeight()));
+            } else {
+                scrollPosition.setScrollLinePosition(scrollPosition.getScrollLinePosition() + 1);
+            }
+            scrolled = true;
+        }
+        if (positionByte <= scrollPosition.getScrollCharPosition()) {
+            scrollPosition.setScrollCharPosition(positionByte);
+            scrollPosition.setScrollCharOffset(0);
+            scrolled = true;
+        } else if (positionByte >= scrollPosition.getScrollCharPosition() + bytesPerRect) {
+            scrollPosition.setScrollCharPosition(positionByte - bytesPerRect);
+            if (horizontalScrollUnit == HorizontalScrollUnit.PIXEL) {
+                scrollPosition.setScrollCharOffset(getCharacterWidth() - (hexRect.width % getCharacterWidth()));
+            } else {
+                scrollPosition.setScrollCharPosition(scrollPosition.getScrollCharPosition() + 1);
+            }
+            scrolled = true;
+        }
+
+        return scrolled;
+    }
+
     private void paintLineText(@Nonnull Graphics g, int linePositionX, int linePositionY) {
         int positionY = linePositionY; // - codeArea.getSubFontSpace();
 
@@ -1353,7 +1394,15 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     }
 
     private int computeBytesPerLine() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        boolean lineWrapping = ((LineWrappingCapable) worker).isLineWrapping();
+        int maxBytesPerLine = ((LineWrappingCapable) worker).getMaxBytesPerLine();
+
+        int computedBytesPerLine;
+        if (lineWrapping) {
+
+        }
+
+        return computedBytesPerLine;
     }
 
     @Override

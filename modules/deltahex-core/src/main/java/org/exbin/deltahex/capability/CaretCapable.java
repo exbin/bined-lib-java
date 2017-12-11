@@ -41,8 +41,8 @@ public interface CaretCapable {
     /**
      * Returns cursor shape type for given position.
      *
-     * @param x
-     * @param y
+     * @param x x-coordinate
+     * @param y y-coordinate
      * @return cursor type from java.awt.Cursor
      */
     int getCursorShape(int x, int y);
