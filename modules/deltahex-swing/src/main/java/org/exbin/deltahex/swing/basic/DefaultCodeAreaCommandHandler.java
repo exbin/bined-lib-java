@@ -763,7 +763,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
                         caret.setCaretPosition(caret.getDataPosition() + length);
                         caret.setCodeOffset(0);
-                        codeArea.getPainter().updateScrollBars();
+                        codeArea.getWorker().updateScrollBars();
                         notifyCaretMoved();
                         revealCursor();
                     }
@@ -968,7 +968,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             if (flavor.equals(binaryDataFlavor)) {
                 return data;
             } else {
-                int charsPerByte = getMaxDigitsForByte() + 1;
+                int charsPerByte = getCodeType().getMaxDigitsForByte() + 1;
                 int textLength = (int) (data.getDataSize() * charsPerByte);
                 if (textLength > 0) {
                     textLength--;
