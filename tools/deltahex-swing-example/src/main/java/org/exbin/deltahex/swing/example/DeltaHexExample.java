@@ -77,12 +77,12 @@ public class DeltaHexExample {
             public void stateChanged(ChangeEvent e) {
                 switch (tabbedPane.getSelectedIndex()) {
                     case 0: {
-//                        tabbedPane.setSelectedComponent(basicPanel);
+                        tabbedPane.setSelectedComponent(basicPanel);
                         basicCodeArea.requestFocus();
                         break;
                     }
                     case 1: {
-//                        tabbedPane.setSelectedComponent(extendedPanel);
+                        tabbedPane.setSelectedComponent(extendedPanel);
                         extendedCodeArea.requestFocus();
                         break;
                     }

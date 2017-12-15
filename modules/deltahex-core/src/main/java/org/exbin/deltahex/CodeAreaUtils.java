@@ -15,13 +15,22 @@
  */
 package org.exbin.deltahex;
 
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.ClipboardOwner;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.Arrays;
 import javax.annotation.Nonnull;
+import org.exbin.utils.binary_data.BinaryData;
 import org.exbin.utils.binary_data.EditableBinaryData;
 
 /**
  * Hexadecimal editor component utilities.
  *
- * @version 0.2.0 2017/12/09
+ * @version 0.2.0 2017/12/15
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeAreaUtils {
@@ -29,6 +38,9 @@ public class CodeAreaUtils {
     public static final char[] UPPER_HEX_CODES = "0123456789ABCDEF".toCharArray();
     public static final char[] LOWER_HEX_CODES = "0123456789abcdef".toCharArray();
     private static final int CODE_BUFFER_LENGTH = 16;
+
+    public static final String MIME_CLIPBOARD_BINARY = "application/octet-stream";
+    public static final String DEFAULT_ENCODING = "UTF-8";
 
     private CodeAreaUtils() {
     }
@@ -434,5 +446,117 @@ public class CodeAreaUtils {
         }
 
         return byteValue;
+    }
+
+    public static boolean canPaste(@Nonnull Clipboard clipboard, @Nonnull DataFlavor binaryDataFlavor) {
+        try {
+            return clipboard.isDataFlavorAvailable(binaryDataFlavor) || clipboard.isDataFlavorAvailable(DataFlavor.stringFlavor);
+        } catch (IllegalStateException ex) {
+            return false;
+        }
+    }
+
+    public static class BinaryDataClipboardData implements ClipboardData {
+
+        private final BinaryData data;
+        private final DataFlavor binaryDataFlavor;
+
+        public BinaryDataClipboardData(@Nonnull BinaryData data, @Nonnull DataFlavor binaryDataFlavor) {
+            this.data = data;
+            this.binaryDataFlavor = binaryDataFlavor;
+        }
+
+        @Nonnull
+        @Override
+        public DataFlavor[] getTransferDataFlavors() {
+            return new DataFlavor[]{binaryDataFlavor, DataFlavor.stringFlavor};
+        }
+
+        @Override
+        public boolean isDataFlavorSupported(@Nonnull DataFlavor flavor) {
+            return flavor.equals(binaryDataFlavor) || flavor.equals(DataFlavor.stringFlavor);
+        }
+
+        @Nonnull
+        @Override
+        public Object getTransferData(@Nonnull DataFlavor flavor) throws UnsupportedFlavorException, IOException {
+            if (flavor.equals(binaryDataFlavor)) {
+                return data;
+            } else {
+                ByteArrayOutputStream byteArrayStream = new ByteArrayOutputStream();
+                data.saveToStream(byteArrayStream);
+                return byteArrayStream.toString(DEFAULT_ENCODING);
+            }
+        }
+
+        @Override
+        public void lostOwnership(@Nonnull Clipboard clipboard, @Nonnull Transferable contents) {
+            // do nothing
+        }
+
+        @Override
+        public void dispose() {
+            data.dispose();
+        }
+    }
+
+    public static class CodeDataClipboardData implements ClipboardData {
+
+        private final BinaryData data;
+        private final DataFlavor binaryDataFlavor;
+        private final CodeType codeType;
+
+        public CodeDataClipboardData(@Nonnull BinaryData data, @Nonnull DataFlavor binaryDataFlavor, @Nonnull CodeType codeType) {
+            this.data = data;
+            this.binaryDataFlavor = binaryDataFlavor;
+            this.codeType = codeType;
+        }
+
+        @Nonnull
+        @Override
+        public DataFlavor[] getTransferDataFlavors() {
+            return new DataFlavor[]{binaryDataFlavor, DataFlavor.stringFlavor};
+        }
+
+        @Override
+        public boolean isDataFlavorSupported(@Nonnull DataFlavor flavor) {
+            return flavor.equals(binaryDataFlavor) || flavor.equals(DataFlavor.stringFlavor);
+        }
+
+        @Override
+        public Object getTransferData(@Nonnull DataFlavor flavor) throws UnsupportedFlavorException, IOException {
+            if (flavor.equals(binaryDataFlavor)) {
+                return data;
+            } else {
+                int charsPerByte = codeType.getMaxDigitsForByte() + 1;
+                int textLength = (int) (data.getDataSize() * charsPerByte);
+                if (textLength > 0) {
+                    textLength--;
+                }
+
+                char[] targetData = new char[textLength];
+                Arrays.fill(targetData, ' ');
+                throw new UnsupportedOperationException("Not supported yet.");
+//                for (int i = 0; i < data.getDataSize(); i++) {
+//                    CodeAreaUtils.byteToCharsCode(data.getByte(i), codeArea.getCodeType(), targetData, i * charsPerByte, codeArea.getHexCharactersCase());
+//                }
+//                return new String(targetData);
+            }
+        }
+
+        @Override
+        public void lostOwnership(@Nonnull Clipboard clipboard, @Nonnull Transferable contents) {
+            // do nothing
+        }
+
+        @Override
+        public void dispose() {
+            data.dispose();
+        }
+    }
+
+    public static interface ClipboardData extends Transferable, ClipboardOwner {
+
+        void dispose();
     }
 }

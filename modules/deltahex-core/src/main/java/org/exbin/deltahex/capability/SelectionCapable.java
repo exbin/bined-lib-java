@@ -16,12 +16,14 @@
 package org.exbin.deltahex.capability;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import org.exbin.deltahex.SelectionChangedListener;
 import org.exbin.deltahex.SelectionRange;
 
 /**
  * Support for selection capability.
  *
- * @version 0.2.0 2017/12/10
+ * @version 0.2.0 2017/12/15
  * @author ExBin Project (http://exbin.org)
  */
 public interface SelectionCapable {
@@ -38,6 +40,10 @@ public interface SelectionCapable {
      */
     boolean hasSelection();
 
+    void addSelectionChangedListener(@Nullable SelectionChangedListener selectionChangedListener);
+
+    void removeSelectionChangedListener(@Nullable SelectionChangedListener selectionChangedListener);
+    
     public static class SelectionCapability implements WorkerCapability {
 
     }

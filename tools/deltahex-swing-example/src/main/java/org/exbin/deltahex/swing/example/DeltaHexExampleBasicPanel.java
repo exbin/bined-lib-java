@@ -50,11 +50,12 @@ import org.exbin.utils.binary_data.EditableBinaryData;
 import org.exbin.deltahex.capability.CodeTypeCapable;
 import org.exbin.deltahex.capability.SelectionCapable;
 import org.exbin.deltahex.capability.ViewModeCapable;
+import org.exbin.deltahex.swing.capability.ScrollingCapable;
 
 /**
  * Hexadecimal editor example panel.
  *
- * @version 0.2.0 2017/12/14
+ * @version 0.2.0 2017/12/15
  * @author ExBin Project (http://exbin.org)
  */
 public class DeltaHexExampleBasicPanel extends javax.swing.JPanel {
@@ -73,7 +74,7 @@ public class DeltaHexExampleBasicPanel extends javax.swing.JPanel {
         viewModeComboBox.setSelectedIndex(((ViewModeCapable) codeArea.getWorker()).getViewMode().ordinal());
         codeTypeComboBox.setSelectedIndex(((CodeTypeCapable) codeArea.getWorker()).getCodeType().ordinal());
 //        positionCodeTypeComboBox.setSelectedIndex(codeArea.getPositionCodeType().ordinal());
-        activeSectionComboBox.setSelectedIndex(((SectionCapable) codeArea.getWorker()).getActiveSection().ordinal());
+        activeSectionComboBox.setSelectedIndex(((CaretCapable) codeArea.getWorker()).getCaret().getCaretPosition().getSection().ordinal());
 //        backgroundModeComboBox.setSelectedIndex(codeArea.getBackgroundMode().ordinal());
 //        lineNumbersBackgroundCheckBox.setSelected(codeArea.isLineNumberBackground());
 //        charRenderingComboBox.setSelectedIndex(codeArea.getCharRenderingMode().ordinal());
@@ -97,10 +98,10 @@ public class DeltaHexExampleBasicPanel extends javax.swing.JPanel {
 //        lineNumbersSpaceSpinner.setValue(codeArea.getLineNumberSpaceSize());
 //        lineNumbersLengthComboBox.setSelectedIndex(codeArea.getLineNumberType().ordinal());
 //        lineNumbersLengthSpinner.setValue(codeArea.getLineNumberSpecifiedLength());
-        cursorRenderingModeComboBox.setSelectedIndex(((CaretCapable) codeArea.getWorker()).getCaret().getRenderingMode().ordinal());
-        cursorInsertShapeComboBox.setSelectedIndex(((CaretCapable) codeArea.getWorker()).getCaret().getInsertCursorShape().ordinal());
-        cursorOverwriteShapeComboBox.setSelectedIndex(((CaretCapable) codeArea.getWorker()).getCaret().getOverwriteCursorShape().ordinal());
-        cursorBlinkingRateSpinner.setValue(((CaretCapable) codeArea.getWorker()).getCaret().getBlinkRate());
+//        cursorRenderingModeComboBox.setSelectedIndex(((CaretCapable) codeArea.getWorker()).getCaret().getRenderingMode().ordinal());
+//        cursorInsertShapeComboBox.setSelectedIndex(((CaretCapable) codeArea.getWorker()).getCaret().getInsertCursorShape().ordinal());
+//        cursorOverwriteShapeComboBox.setSelectedIndex(((CaretCapable) codeArea.getWorker()).getCaret().getOverwriteCursorShape().ordinal());
+//        cursorBlinkingRateSpinner.setValue(((CaretCapable) codeArea.getWorker()).getCaret().getBlinkRate());
 //        byteGroupSizeSpinner.setValue(codeArea.getByteGroupSize());
 //        spaceGroupSizeSpinner.setValue(codeArea.getSpaceGroupSize());
 
@@ -137,7 +138,7 @@ public class DeltaHexExampleBasicPanel extends javax.swing.JPanel {
                 dataSizeTextField.setText(String.valueOf(codeArea.getDataSize()));
             }
         });
-        codeArea.addScrollingListener(new ScrollingListener() {
+        ((ScrollingCapable) codeArea.getWorker()).addScrollingListener(new ScrollingListener() {
             @Override
             public void scrolled() {
 //                CodeAreaScrollPosition scrollPosition = codeArea.getScrollPosition();
@@ -1490,19 +1491,19 @@ public class DeltaHexExampleBasicPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_horizontalScrollBarVisibilityComboBoxActionPerformed
 
     private void cursorRenderingModeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cursorRenderingModeComboBoxActionPerformed
-        ((CaretCapable) codeArea.getWorker()).getCaret().setRenderingMode(DefaultCodeAreaCaret.CursorRenderingMode.values()[cursorRenderingModeComboBox.getSelectedIndex()]);
+//        ((CaretCapable) codeArea.getWorker()).getCaret().setRenderingMode(DefaultCodeAreaCaret.CursorRenderingMode.values()[cursorRenderingModeComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_cursorRenderingModeComboBoxActionPerformed
 
     private void cursorInsertShapeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cursorInsertShapeComboBoxActionPerformed
-        ((CaretCapable) codeArea.getWorker()).getCaret().setInsertCursorShape(DefaultCodeAreaCaret.CursorShape.values()[cursorInsertShapeComboBox.getSelectedIndex()]);
+//        ((CaretCapable) codeArea.getWorker()).getCaret().setInsertCursorShape(DefaultCodeAreaCaret.CursorShape.values()[cursorInsertShapeComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_cursorInsertShapeComboBoxActionPerformed
 
     private void cursorOverwriteShapeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cursorOverwriteShapeComboBoxActionPerformed
-        ((CaretCapable) codeArea.getWorker()).getCaret().setOverwriteCursorShape(DefaultCodeAreaCaret.CursorShape.values()[cursorOverwriteShapeComboBox.getSelectedIndex()]);
+//        ((CaretCapable) codeArea.getWorker()).getCaret().setOverwriteCursorShape(DefaultCodeAreaCaret.CursorShape.values()[cursorOverwriteShapeComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_cursorOverwriteShapeComboBoxActionPerformed
 
     private void cursorBlinkingRateSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_cursorBlinkingRateSpinnerStateChanged
-        ((CaretCapable) codeArea.getWorker()).getCaret().setBlinkRate((Integer) cursorBlinkingRateSpinner.getValue());
+//        ((CaretCapable) codeArea.getWorker()).getCaret().setBlinkRate((Integer) cursorBlinkingRateSpinner.getValue());
     }//GEN-LAST:event_cursorBlinkingRateSpinnerStateChanged
 
     private void byteGroupSizeSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_byteGroupSizeSpinnerStateChanged

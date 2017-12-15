@@ -40,6 +40,7 @@ import org.exbin.deltahex.swing.CodeAreaPainter;
 import org.exbin.deltahex.swing.CodeAreaWorker;
 import org.exbin.deltahex.capability.CaretCapable;
 import org.exbin.deltahex.capability.CharsetCapable;
+import org.exbin.deltahex.capability.ClipboardCapable;
 import org.exbin.deltahex.capability.CodeTypeCapable;
 import org.exbin.deltahex.capability.EditationModeCapable;
 import org.exbin.deltahex.capability.ViewModeCapable;
@@ -54,12 +55,12 @@ import org.exbin.deltahex.swing.capability.FontCapable;
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2017/12/10
+ * @version 0.2.0 2017/12/15
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, CaretCapable, ScrollingCapable, ViewModeCapable,
         CodeTypeCapable, EditationModeCapable, CharsetCapable, CodeCharactersCaseCapable, AntialiasingCapable, FontCapable,
-        BorderPaintCapable, LineWrappingCapable {
+        BorderPaintCapable, LineWrappingCapable, ClipboardCapable {
 
     @Nonnull
     protected final CodeArea codeArea;
@@ -68,7 +69,7 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
     private CodeAreaPainter painter;
 
     @Nonnull
-    private DefaultCodeAreaCaret caret;
+    private final DefaultCodeAreaCaret caret;
     @Nonnull
     private SelectionRange selection = null;
     @Nonnull
@@ -272,6 +273,13 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
         }
     }
 
+    @Nullable
+    @Override
+    public CaretPosition mousePositionToCaretPosition(int positionX, int positionY) {
+        // TODO
+        return null;
+    }
+
     private void updateScrollBars() {
         painter.updateScrollBars();
         repaint();
@@ -426,10 +434,12 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
         }
     }
 
+    @Override
     public boolean isHandleClipboard() {
         return handleClipboard;
     }
 
+    @Override
     public void setHandleClipboard(boolean handleClipboard) {
         this.handleClipboard = handleClipboard;
     }
@@ -491,40 +501,49 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
         }
     }
 
+    @Override
     public void notifyScrolled() {
         for (ScrollingListener scrollingListener : scrollingListeners) {
             scrollingListener.scrolled();
         }
     }
 
+    @Override
     public void addSelectionChangedListener(@Nullable SelectionChangedListener selectionChangedListener) {
         selectionChangedListeners.add(selectionChangedListener);
     }
 
+    @Override
     public void removeSelectionChangedListener(@Nullable SelectionChangedListener selectionChangedListener) {
         selectionChangedListeners.remove(selectionChangedListener);
     }
 
+    @Override
     public void addCaretMovedListener(@Nullable CaretMovedListener caretMovedListener) {
         caretMovedListeners.add(caretMovedListener);
     }
 
+    @Override
     public void removeCaretMovedListener(@Nullable CaretMovedListener caretMovedListener) {
         caretMovedListeners.remove(caretMovedListener);
     }
 
+    @Override
     public void addScrollingListener(@Nullable ScrollingListener scrollingListener) {
         scrollingListeners.add(scrollingListener);
     }
 
+    @Override
     public void removeScrollingListener(@Nullable ScrollingListener scrollingListener) {
         scrollingListeners.remove(scrollingListener);
     }
 
+    @Override
     public void addEditationModeChangedListener(@Nullable EditationModeChangedListener editationModeChangedListener) {
         editationModeChangedListeners.add(editationModeChangedListener);
     }
 
+    @Override
     public void removeEditationModeChangedListener(@Nullable EditationModeChangedListener editationModeChangedListener) {
         editationModeChangedListeners.remove(editationModeChangedListener);
     }

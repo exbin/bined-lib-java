@@ -16,13 +16,15 @@
 package org.exbin.deltahex.capability;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import org.exbin.deltahex.CaretMovedListener;
 import org.exbin.deltahex.CaretPosition;
 import org.exbin.deltahex.CodeAreaCaret;
 
 /**
  * Support for caret / cursor capability.
  *
- * @version 0.2.0 2017/12/09
+ * @version 0.2.0 2017/12/15
  * @author ExBin Project (http://exbin.org)
  */
 public interface CaretCapable {
@@ -31,12 +33,19 @@ public interface CaretCapable {
     CodeAreaCaret getCaret();
 
     void revealCursor();
-    
+
     void revealPosition(@Nonnull CaretPosition caretPosition);
+
+    @Nullable
+    CaretPosition mousePositionToCaretPosition(int positionX, int positionY);
 
     void notifyCaretMoved();
 
     void notifyCaretChanged();
+
+    void addCaretMovedListener(@Nullable CaretMovedListener caretMovedListener);
+
+    void removeCaretMovedListener(@Nullable CaretMovedListener caretMovedListener);
 
     /**
      * Returns cursor shape type for given position.

@@ -15,31 +15,19 @@
  */
 package org.exbin.deltahex.capability;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import org.exbin.deltahex.EditationMode;
-import org.exbin.deltahex.EditationModeChangedListener;
-
 /**
- * Support for editation mode capability.
+ * Support for clipboard capability.
  *
  * @version 0.2.0 2017/12/15
  * @author ExBin Project (http://exbin.org)
  */
-public interface EditationModeCapable {
+public interface ClipboardCapable {
 
-    @Nonnull
-    EditationMode getEditationMode();
+    boolean isHandleClipboard();
 
-    boolean isEditable();
+    void setHandleClipboard(boolean handleClipboard);
 
-    void setEditationMode(@Nonnull EditationMode editationMode);
-
-    void addEditationModeChangedListener(@Nullable EditationModeChangedListener editationModeChangedListener);
-
-    void removeEditationModeChangedListener(@Nullable EditationModeChangedListener editationModeChangedListener);
-
-    public static class EditationModeCapability implements WorkerCapability {
+    public static class ClipboardCapability implements WorkerCapability {
 
     }
 }

@@ -15,7 +15,9 @@
  */
 package org.exbin.deltahex.swing.capability;
 
+import javax.annotation.Nullable;
 import org.exbin.deltahex.ScrollBarVisibility;
+import org.exbin.deltahex.ScrollingListener;
 import org.exbin.deltahex.capability.WorkerCapability;
 import org.exbin.deltahex.swing.basic.CodeAreaScrollPosition;
 import org.exbin.deltahex.swing.basic.HorizontalScrollUnit;
@@ -24,7 +26,7 @@ import org.exbin.deltahex.swing.basic.VerticalScrollUnit;
 /**
  * Support for code type capability.
  *
- * @version 0.2.0 2017/12/09
+ * @version 0.2.0 2017/12/15
  * @author ExBin Project (http://exbin.org)
  */
 public interface ScrollingCapable {
@@ -46,6 +48,12 @@ public interface ScrollingCapable {
     HorizontalScrollUnit getHorizontalScrollUnit();
 
     void setHorizontalScrollUnit(HorizontalScrollUnit horizontalScrollUnit);
+
+    void notifyScrolled();
+
+    void addScrollingListener(@Nullable ScrollingListener scrollingListener);
+
+    void removeScrollingListener(@Nullable ScrollingListener scrollingListener);
 
     public static class ScrollingCapability implements WorkerCapability {
 
