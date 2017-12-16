@@ -1378,7 +1378,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     }
 
     private int computeLinesPerRectangle() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return 30;
     }
 
     private int computeBytesPerLine() {

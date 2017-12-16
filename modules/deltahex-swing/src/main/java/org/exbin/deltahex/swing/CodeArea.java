@@ -36,6 +36,7 @@ import org.exbin.deltahex.CodeAreaControl;
 import org.exbin.deltahex.DataChangedListener;
 import org.exbin.deltahex.capability.SelectionCapable;
 import org.exbin.deltahex.swing.basic.DefaultCodeAreaWorker;
+import org.exbin.deltahex.swing.capability.FontCapable;
 import org.exbin.utils.binary_data.BinaryData;
 
 /**
@@ -142,6 +143,10 @@ public class CodeArea extends JComponent implements CodeAreaControl {
     @Override
     protected void paintComponent(@Nonnull Graphics g) {
         super.paintComponent(g);
+
+        if (!worker.isInitialized()) {
+            ((FontCapable) worker).setFont(getFont());
+        }
         worker.paintComponent(g);
     }
 

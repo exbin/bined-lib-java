@@ -362,7 +362,7 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
 
     @Override
     public void notifyCaretChanged() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        // TODO
     }
 
     @Nonnull
