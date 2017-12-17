@@ -15,28 +15,31 @@
  */
 package org.exbin.deltahex;
 
+import java.util.Objects;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * Specifies caret position as combination of data position, section and code
  * offset of code representation.
  *
- * @version 0.2.0 2017/04/09
+ * @version 0.2.0 2017/12/17
  * @author ExBin Project (http://exbin.org)
  */
 public class CaretPosition {
 
     private long dataPosition = 0;
+    private int codeOffset = 0;
     @Nonnull
     private CodeAreaSection section = CodeAreaSection.CODE_MATRIX;
-    private int codeOffset = 0;
 
     public CaretPosition() {
     }
 
-    public CaretPosition(long dataPosition, int codeOffset) {
+    public CaretPosition(long dataPosition, int codeOffset, @Nullable CodeAreaSection section) {
         this.dataPosition = dataPosition;
         this.codeOffset = codeOffset;
+        this.section = section == null ? CodeAreaSection.CODE_MATRIX : section;
     }
 
     public long getDataPosition() {
@@ -61,9 +64,7 @@ public class CaretPosition {
     }
 
     public void setSection(@Nonnull CodeAreaSection section) {
-        if (section == null) {
-            throw new NullPointerException();
-        }
+        Objects.requireNonNull(section, "section cannot be null");
 
         this.section = section;
     }
@@ -76,5 +77,6 @@ public class CaretPosition {
     public void setPosition(@Nonnull CaretPosition position) {
         dataPosition = position.dataPosition;
         codeOffset = position.codeOffset;
+        section = position.getSection();
     }
 }

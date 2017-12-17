@@ -32,6 +32,7 @@ import java.nio.charset.CharsetEncoder;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import javax.annotation.Nonnull;
 import org.exbin.deltahex.CodeAreaSection;
 import org.exbin.deltahex.CodeAreaUtils;
 import org.exbin.deltahex.EditationMode;
@@ -40,6 +41,7 @@ import org.exbin.deltahex.ScrollBarVisibility;
 import org.exbin.deltahex.SelectionRange;
 import org.exbin.deltahex.CodeAreaViewMode;
 import org.exbin.deltahex.swing.CodeArea;
+import org.exbin.deltahex.swing.CodeAreaWorker;
 import org.exbin.deltahex.swing.basic.DefaultCodeAreaCaret;
 import org.exbin.deltahex.swing.basic.CodeAreaScrollPosition;
 import org.exbin.deltahex.swing.basic.DefaultCodeAreaPainter;
@@ -65,8 +67,8 @@ public class DefaultCodeAreaPainterExt extends DefaultCodeAreaPainter {
 //    protected final char[] charMapping = new char[256];
 //    protected Map<Character, Character> unprintableCharactersMapping = null;
 //
-    public DefaultCodeAreaPainterExt(CodeArea codeArea) {
-        super(codeArea);
+    public DefaultCodeAreaPainterExt(@Nonnull CodeAreaWorker worker) {
+        super(worker);
     }
 
 //    @Override

@@ -766,7 +766,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     }
 
     @Override
-    public boolean revealPosition(long position, CodeAreaSection section) {
+    public boolean revealPosition(@Nonnull CaretPosition caretPosition) {
         boolean scrolled = false;
         /*        Rectangle hexRect = getDataViewRectangle();
         int bytesPerRect = getBytesPerRectangle();

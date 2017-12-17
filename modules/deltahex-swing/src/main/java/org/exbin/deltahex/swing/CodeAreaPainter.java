@@ -17,12 +17,13 @@ package org.exbin.deltahex.swing;
 
 import java.awt.Graphics;
 import javax.annotation.Nonnull;
-import org.exbin.deltahex.CodeAreaSection;
+import javax.annotation.Nullable;
+import org.exbin.deltahex.CaretPosition;
 
 /**
  * Hexadecimal editor painter interface.
  *
- * @version 0.2.0 2017/11/04
+ * @version 0.2.0 2017/12/17
  * @author ExBin Project (http://exbin.org)
  */
 public interface CodeAreaPainter {
@@ -60,9 +61,26 @@ public interface CodeAreaPainter {
      */
     void reset();
 
-    int getCursorShape(int x, int y);
+    /**
+     * Returns type of cursor for given painter relative position.
+     *
+     * @param positionX component relative position X
+     * @param positionY component relative position Y
+     * @return java.awt.Cursor cursor type value
+     */
+    int getCursorShape(int positionX, int positionY);
 
     void updateScrollBars();
 
-    boolean revealPosition(long position, @Nonnull CodeAreaSection section);
+    /**
+     * Attempts to scroll component so that provided caret position is visible.
+     *
+     * Performs minimal scrolling and tries to preserve current vertical /
+     * horizontal scrolling if possible. If given position cannot be fully
+     * shown, top left corner is preferred.
+     *
+     * @param caretPosition caret position
+     * @return true if any scrolling was performed
+     */
+    boolean revealPosition(@Nonnull CaretPosition caretPosition);
 }

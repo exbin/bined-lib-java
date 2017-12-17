@@ -82,7 +82,7 @@ public class DefaultCodeAreaCaret implements CodeAreaCaret {
     @Override
     public CaretPosition getCaretPosition() {
         // TODO: Make immutable / cache?
-        return new CaretPosition(caretPosition.getDataPosition(), caretPosition.getCodeOffset());
+        return new CaretPosition(caretPosition.getDataPosition(), caretPosition.getCodeOffset(), caretPosition.getSection());
     }
 
     public void resetBlink() {

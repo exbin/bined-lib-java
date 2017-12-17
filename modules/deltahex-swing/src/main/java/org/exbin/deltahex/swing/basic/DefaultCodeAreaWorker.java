@@ -189,8 +189,8 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
     }
 
     @Override
-    public int getCursorShape(int x, int y) {
-        return painter.getCursorShape(x, y);
+    public int getCursorShape(int positionX, int positionY) {
+        return painter.getCursorShape(positionX, positionY);
     }
 
     @Nonnull
@@ -265,7 +265,7 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
             return;
         }
 
-        boolean scrolled = painter.revealPosition(position, section);
+        boolean scrolled = painter.revealPosition(new CaretPosition(position, 0, section));
 
         if (scrolled) {
             updateScrollBars();

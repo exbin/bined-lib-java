@@ -42,12 +42,12 @@ import org.exbin.utils.binary_data.BinaryData;
 /**
  * Hexadecimal viewer/editor component.
  *
- * @version 0.2.0 2017/12/09
+ * @version 0.2.0 2017/12/17
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeArea extends JComponent implements CodeAreaControl {
 
-    @Nonnull
+    @Nullable
     private BinaryData data;
 
     @Nonnull
@@ -61,22 +61,19 @@ public class CodeArea extends JComponent implements CodeAreaControl {
      * Creates new instance with default command handler and painter.
      */
     public CodeArea() {
-        super();
-        this.worker = new DefaultCodeAreaWorker(this);
-        this.commandHandler = new DefaultCodeAreaCommandHandler(this);
-        init();
+        this(null, null);
     }
 
     /**
      * Creates new instance with provided command handler and worker.
      *
-     * @param commandHandler command handler
-     * @param worker code area worker
+     * @param worker code area worker or null for default worker
+     * @param commandHandler command handler or null for default handler
      */
-    public CodeArea(@Nonnull CodeAreaCommandHandler commandHandler, @Nonnull CodeAreaWorker worker) {
+    public CodeArea(@Nullable CodeAreaWorker worker, @Nullable CodeAreaCommandHandler commandHandler) {
         super();
-        this.worker = worker;
-        this.commandHandler = commandHandler;
+        this.worker = worker == null ? new DefaultCodeAreaWorker(this) : worker;
+        this.commandHandler = commandHandler == null ? new DefaultCodeAreaCommandHandler(this) : commandHandler;
         init();
     }
 
@@ -91,7 +88,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
     private void registerControlListeners() {
         addComponentListener(new ComponentAdapter() {
             @Override
-            public void componentResized(@Nonnull ComponentEvent e) {
+            public void componentResized(@Nonnull ComponentEvent event) {
                 resetPainter();
             }
         });
@@ -209,12 +206,12 @@ public class CodeArea extends JComponent implements CodeAreaControl {
         return ((SelectionCapable) worker).hasSelection();
     }
 
-    @Nonnull
+    @Nullable
     public BinaryData getData() {
         return data;
     }
 
-    public void setData(@Nonnull BinaryData data) {
+    public void setData(@Nullable BinaryData data) {
         this.data = data;
         notifyDataChanged();
         repaint();
