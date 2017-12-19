@@ -29,7 +29,7 @@ import org.exbin.deltahex.swing.CodeArea;
 /**
  * Default implementation of code area caret.
  *
- * @version 0.2.0 2017/12/09
+ * @version 0.2.0 2017/12/19
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaCaret implements CodeAreaCaret {
@@ -176,7 +176,7 @@ public class DefaultCodeAreaCaret implements CodeAreaCaret {
 
     public void setOverwriteCursorShape(CursorShape overwriteCursorShape) {
         if (overwriteCursorShape == null) {
-            throw new NullPointerException("Override cursor shape cannot be null");
+            throw new NullPointerException("Overwrite cursor shape cannot be null");
         }
 
         this.overwriteCursorShape = overwriteCursorShape;
