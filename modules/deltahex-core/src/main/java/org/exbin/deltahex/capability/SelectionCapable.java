@@ -43,7 +43,7 @@ public interface SelectionCapable {
     void addSelectionChangedListener(@Nullable SelectionChangedListener selectionChangedListener);
 
     void removeSelectionChangedListener(@Nullable SelectionChangedListener selectionChangedListener);
-    
+
     public static class SelectionCapability implements WorkerCapability {
 
     }

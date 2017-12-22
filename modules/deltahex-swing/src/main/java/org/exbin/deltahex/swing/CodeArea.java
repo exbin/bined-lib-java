@@ -25,7 +25,6 @@ import java.awt.event.FocusListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
@@ -42,7 +41,7 @@ import org.exbin.utils.binary_data.BinaryData;
 /**
  * Hexadecimal viewer/editor component.
  *
- * @version 0.2.0 2017/12/17
+ * @version 0.2.0 2017/12/23
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeArea extends JComponent implements CodeAreaControl {
@@ -116,11 +115,8 @@ public class CodeArea extends JComponent implements CodeAreaControl {
                 repaint();
             }
         });
-        UIManager.addPropertyChangeListener(new PropertyChangeListener() {
-            @Override
-            public void propertyChange(@Nonnull PropertyChangeEvent evt) {
-                worker.rebuildColors();
-            }
+        UIManager.addPropertyChangeListener((@Nonnull PropertyChangeEvent evt) -> {
+            worker.rebuildColors();
         });
     }
 
@@ -227,9 +223,9 @@ public class CodeArea extends JComponent implements CodeAreaControl {
     public void notifyDataChanged() {
         resetPainter();
 
-        for (DataChangedListener dataChangedListener : dataChangedListeners) {
-            dataChangedListener.dataChanged();
-        }
+        dataChangedListeners.forEach((listener) -> {
+            listener.dataChanged();
+        });
     }
 
     public void addDataChangedListener(@Nullable DataChangedListener dataChangedListener) {

@@ -15,6 +15,7 @@
  */
 package org.exbin.deltahex;
 
+import java.util.Objects;
 import javax.annotation.Nonnull;
 
 /**
@@ -33,9 +34,7 @@ public class CodeAreaSpaceSize {
     }
 
     public CodeAreaSpaceSize(@Nonnull SpaceSizeType spaceType) {
-        if (spaceType == null) {
-            throw new NullPointerException();
-        }
+        Objects.requireNonNull(spaceType, "Space type cannot be null");
 
         this.spaceType = spaceType;
     }
@@ -46,9 +45,7 @@ public class CodeAreaSpaceSize {
     }
 
     public void setSpaceType(@Nonnull SpaceSizeType spaceType) {
-        if (spaceType == null) {
-            throw new IllegalArgumentException("Space type cannot be null");
-        }
+        Objects.requireNonNull(spaceType, "Space type cannot be null");
 
         this.spaceType = spaceType;
     }

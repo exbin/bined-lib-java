@@ -16,7 +16,7 @@
 package org.exbin.deltahex.capability;
 
 /**
- * Hexadecimal component capability interface.
+ * Hexadecimal component capability parent interface.
  *
  * @version 0.2.0 2017/11/05
  * @author ExBin Project (http://exbin.org)

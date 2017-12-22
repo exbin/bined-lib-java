@@ -27,7 +27,6 @@ import java.nio.charset.CodingErrorAction;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 /**
  * Input stream translation class which converts from input charset to target
@@ -105,7 +104,7 @@ public class CharsetStreamTranslator extends InputStream {
     }
 
     @Override
-    public int read(byte[] buffer, int offset, int length) throws IOException {
+    public int read(@Nonnull byte[] buffer, int offset, int length) throws IOException {
         int processed = 0;
 
         while (processed < length) {
@@ -185,7 +184,6 @@ public class CharsetStreamTranslator extends InputStream {
     }
 
     @Override
-
     public int available() throws IOException {
         int remaining = outputBuffer.remaining();
         if (remaining > 0) {

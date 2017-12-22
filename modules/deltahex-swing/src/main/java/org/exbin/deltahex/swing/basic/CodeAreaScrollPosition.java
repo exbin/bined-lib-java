@@ -50,6 +50,7 @@ public class CodeAreaScrollPosition {
      */
     private int lineDataOffset = 0;
 
+    @Nonnull
     private VerticalOverflowMode verticalOverflowMode = VerticalOverflowMode.NORMAL;
 
     public long getScrollLinePosition() {

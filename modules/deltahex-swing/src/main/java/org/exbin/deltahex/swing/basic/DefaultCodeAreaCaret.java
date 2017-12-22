@@ -17,6 +17,7 @@ package org.exbin.deltahex.swing.basic;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.swing.Timer;
@@ -29,7 +30,7 @@ import org.exbin.deltahex.swing.CodeArea;
 /**
  * Default implementation of code area caret.
  *
- * @version 0.2.0 2017/12/19
+ * @version 0.2.0 2017/12/23
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaCaret implements CodeAreaCaret {
@@ -38,17 +39,24 @@ public class DefaultCodeAreaCaret implements CodeAreaCaret {
     private static final int DOUBLE_CURSOR_WIDTH = 2;
     private static final int DEFAULT_BLINK_RATE = 450;
 
+    @Nonnull
     private final CodeArea codeArea;
     private final CaretPosition caretPosition = new CaretPosition();
 
     private int blinkRate = 0;
     private Timer blinkTimer = null;
     private boolean cursorVisible = true;
+
+    @Nonnull
     private CursorShape insertCursorShape = CursorShape.DOUBLE_LEFT;
+    @Nonnull
     private CursorShape overwriteCursorShape = CursorShape.BOX;
+    @Nonnull
     private CursorRenderingMode renderingMode = CursorRenderingMode.PAINT; //NEGATIVE;
 
-    public DefaultCodeAreaCaret(CodeArea codeArea) {
+    public DefaultCodeAreaCaret(@Nonnull CodeArea codeArea) {
+        Objects.requireNonNull(codeArea, "Code area cannot be null");
+
         this.codeArea = codeArea;
         privateSetBlinkRate(DEFAULT_BLINK_RATE);
     }
@@ -115,7 +123,7 @@ public class DefaultCodeAreaCaret implements CodeAreaCaret {
         resetBlink();
     }
 
-    public void setCaretPosition(long dataPosition, int codeOffset, CodeAreaSection section) {
+    public void setCaretPosition(long dataPosition, int codeOffset, @Nonnull CodeAreaSection section) {
         caretPosition.setDataPosition(dataPosition);
         caretPosition.setCodeOffset(codeOffset);
         caretPosition.setSection(section);
@@ -140,11 +148,12 @@ public class DefaultCodeAreaCaret implements CodeAreaCaret {
         resetBlink();
     }
 
+    @Nonnull
     public CodeAreaSection getSection() {
         return caretPosition.getSection();
     }
 
-    public void setSection(CodeAreaSection section) {
+    public void setSection(@Nonnull CodeAreaSection section) {
         caretPosition.setSection(section);
         resetBlink();
     }
@@ -157,27 +166,25 @@ public class DefaultCodeAreaCaret implements CodeAreaCaret {
         privateSetBlinkRate(blinkRate);
     }
 
+    @Nonnull
     public CursorShape getInsertCursorShape() {
         return insertCursorShape;
     }
 
-    public void setInsertCursorShape(CursorShape insertCursorShape) {
-        if (insertCursorShape == null) {
-            throw new NullPointerException("Insert cursor shape cannot be null");
-        }
+    public void setInsertCursorShape(@Nonnull CursorShape insertCursorShape) {
+        Objects.requireNonNull(insertCursorShape, "Insert cursor shape cannot be null");
 
         this.insertCursorShape = insertCursorShape;
         notifyCaredChanged();
     }
 
+    @Nonnull
     public CursorShape getOverwriteCursorShape() {
         return overwriteCursorShape;
     }
 
-    public void setOverwriteCursorShape(CursorShape overwriteCursorShape) {
-        if (overwriteCursorShape == null) {
-            throw new NullPointerException("Overwrite cursor shape cannot be null");
-        }
+    public void setOverwriteCursorShape(@Nonnull CursorShape overwriteCursorShape) {
+        Objects.requireNonNull(overwriteCursorShape, "Overwrite cursor shape cannot be null");
 
         this.overwriteCursorShape = overwriteCursorShape;
         notifyCaredChanged();
@@ -187,14 +194,14 @@ public class DefaultCodeAreaCaret implements CodeAreaCaret {
         return cursorVisible;
     }
 
+    @Nonnull
     public CursorRenderingMode getRenderingMode() {
         return renderingMode;
     }
 
-    public void setRenderingMode(CursorRenderingMode renderingMode) {
-        if (renderingMode == null) {
-            throw new NullPointerException("Cursor rendering mode cannot be null");
-        }
+    public void setRenderingMode(@Nonnull CursorRenderingMode renderingMode) {
+        Objects.requireNonNull(renderingMode, "Cursor rendering mode cannot be null");
+
         this.renderingMode = renderingMode;
         notifyCaredChanged();
     }
@@ -203,6 +210,7 @@ public class DefaultCodeAreaCaret implements CodeAreaCaret {
         if (blinkRate < 0) {
             throw new IllegalArgumentException("Blink rate cannot be negative");
         }
+
         this.blinkRate = blinkRate;
         if (blinkTimer != null) {
             if (blinkRate == 0) {
@@ -273,10 +281,11 @@ public class DefaultCodeAreaCaret implements CodeAreaCaret {
 
         private final CursorShapeWidth width;
 
-        private CursorShape(CursorShapeWidth width) {
+        private CursorShape(@Nonnull CursorShapeWidth width) {
             this.width = width;
         }
 
+        @Nonnull
         public CursorShapeWidth getWidth() {
             return width;
         }

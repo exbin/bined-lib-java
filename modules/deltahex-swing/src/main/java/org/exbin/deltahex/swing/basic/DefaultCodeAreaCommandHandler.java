@@ -19,7 +19,6 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.FlavorEvent;
-import java.awt.datatransfer.FlavorListener;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -95,11 +94,8 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             clipboard = new Clipboard(FALLBACK_CLIPBOARD);
         }
         try {
-            clipboard.addFlavorListener(new FlavorListener() {
-                @Override
-                public void flavorsChanged(FlavorEvent e) {
-                    updateCanPaste();
-                }
+            clipboard.addFlavorListener((FlavorEvent e) -> {
+                updateCanPaste();
             });
             try {
                 binaryDataFlavor = new DataFlavor(CodeAreaUtils.MIME_CLIPBOARD_BINARY);

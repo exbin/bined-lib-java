@@ -71,7 +71,7 @@ public enum PositionCodeType {
     }
 
     /**
-     * Maximum number of digits per single byte.
+     * Returns maximum number of digits per single byte.
      *
      * @return number of digits
      */

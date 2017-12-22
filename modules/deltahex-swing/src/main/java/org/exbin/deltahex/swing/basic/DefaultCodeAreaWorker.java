@@ -20,6 +20,7 @@ import java.awt.Graphics;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.exbin.deltahex.CaretMovedListener;
@@ -55,7 +56,7 @@ import org.exbin.deltahex.swing.capability.FontCapable;
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2017/12/15
+ * @version 0.2.0 2017/12/23
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, CaretCapable, ScrollingCapable, ViewModeCapable,
@@ -70,7 +71,7 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
 
     @Nonnull
     private final DefaultCodeAreaCaret caret;
-    @Nonnull
+    @Nullable
     private SelectionRange selection = null;
     @Nonnull
     private final CodeAreaScrollPosition scrollPosition = new CodeAreaScrollPosition();
@@ -115,8 +116,7 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
         this.codeArea = codeArea;
 
         caret = new DefaultCodeAreaCaret(codeArea);
-
-        this.painter = new DefaultCodeAreaPainter(this);
+        painter = new DefaultCodeAreaPainter(this);
     }
 
     @Nonnull
@@ -131,9 +131,7 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
     }
 
     public void setPainter(@Nonnull CodeAreaPainter painter) {
-        if (painter == null) {
-            throw new NullPointerException("Painter cannot be null");
-        }
+        Objects.requireNonNull(painter, "Painter cannot be null");
 
         this.painter = painter;
         repaint();
@@ -205,15 +203,6 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
         repaint();
     }
 
-//    @Override
-//    public int getPreviewX() {
-//        return computeFirstCodeCharPos(getBytesPerLine()) * getCharacterWidth();
-//    }
-//
-//    @Override
-//    public int getPreviewFirstChar() {
-//        return computeLastCodeCharPos(getBytesPerLine());
-//    }
     @Override
     public void rebuildColors() {
     }
@@ -402,9 +391,7 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
 
     @Override
     public void setCharset(@Nonnull Charset charset) {
-        if (charset == null) {
-            throw new NullPointerException("Charset cannot be null");
-        }
+        Objects.requireNonNull(charset, "Charset cannot be null");
 
         this.charset = charset;
         repaint();
@@ -426,9 +413,9 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
         boolean changed = editationMode != this.editationMode;
         this.editationMode = editationMode;
         if (changed) {
-            for (EditationModeChangedListener listener : editationModeChangedListeners) {
+            editationModeChangedListeners.forEach((listener) -> {
                 listener.editationModeChanged(editationMode);
-            }
+            });
             caret.resetBlink();
             repaint();
         }
@@ -489,23 +476,23 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
     }
 
     public void notifySelectionChanged() {
-        for (SelectionChangedListener selectionChangedListener : selectionChangedListeners) {
+        selectionChangedListeners.forEach((selectionChangedListener) -> {
             selectionChangedListener.selectionChanged(selection);
-        }
+        });
     }
 
     @Override
     public void notifyCaretMoved() {
-        for (CaretMovedListener caretMovedListener : caretMovedListeners) {
+        caretMovedListeners.forEach((caretMovedListener) -> {
             caretMovedListener.caretMoved(caret.getCaretPosition());
-        }
+        });
     }
 
     @Override
     public void notifyScrolled() {
-        for (ScrollingListener scrollingListener : scrollingListeners) {
+        scrollingListeners.forEach((scrollingListener) -> {
             scrollingListener.scrolled();
-        }
+        });
     }
 
     @Override
