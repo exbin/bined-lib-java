@@ -17,7 +17,6 @@ package org.exbin.deltahex.swing;
 
 import java.awt.Graphics;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import org.exbin.deltahex.CaretPosition;
 
 /**
@@ -69,6 +68,17 @@ public interface CodeAreaPainter {
      * @return java.awt.Cursor cursor type value
      */
     int getCursorShape(int positionX, int positionY);
+
+    /**
+     * Returns closest caret position for provided component relative mouse
+     * position.
+     *
+     * @param mouseX component relative position X
+     * @param mouseY component relative position Y
+     * @return closest caret position
+     */
+    @Nonnull
+    CaretPosition mousePositionToClosestCaretPosition(int mouseX, int mouseY);
 
     void updateScrollBars();
 

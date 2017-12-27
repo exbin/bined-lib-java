@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.deltahex.swing.basic;
+package org.exbin.deltahex.swing.extended;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -33,8 +33,9 @@ import org.exbin.deltahex.swing.CodeArea;
  * @version 0.2.0 2017/12/23
  * @author ExBin Project (http://exbin.org)
  */
-public class DefaultCodeAreaCaret implements CodeAreaCaret {
+public class ExtCodeAreaCaret implements CodeAreaCaret {
 
+    private static final int LINE_CURSOR_WIDTH = 1;
     private static final int DOUBLE_CURSOR_WIDTH = 2;
     private static final int DEFAULT_BLINK_RATE = 450;
 
@@ -47,9 +48,13 @@ public class DefaultCodeAreaCaret implements CodeAreaCaret {
     private boolean cursorVisible = true;
 
     @Nonnull
-    private CursorRenderingMode renderingMode = CursorRenderingMode.NEGATIVE;
+    private CursorShape insertCursorShape = CursorShape.DOUBLE_LEFT;
+    @Nonnull
+    private CursorShape overwriteCursorShape = CursorShape.BOX;
+    @Nonnull
+    private CursorRenderingMode renderingMode = CursorRenderingMode.PAINT; //NEGATIVE;
 
-    public DefaultCodeAreaCaret(@Nonnull CodeArea codeArea) {
+    public ExtCodeAreaCaret(@Nonnull CodeArea codeArea) {
         Objects.requireNonNull(codeArea, "Code area cannot be null");
 
         this.codeArea = codeArea;
@@ -57,12 +62,25 @@ public class DefaultCodeAreaCaret implements CodeAreaCaret {
     }
 
     public int getCursorThickness(@Nonnull CursorShape cursorShape, int characterWidth, int lineHeight) {
-        switch (cursorShape) {
-            case INSERT:
+        switch (cursorShape.getWidth()) {
+            case LINE:
+                return LINE_CURSOR_WIDTH;
+            case DOUBLE:
                 return DOUBLE_CURSOR_WIDTH;
-            case OVERWRITE:
-            case MIRROR:
-                return characterWidth;
+            case QUARTER: {
+                if (cursorShape == CursorShape.QUARTER_LEFT || cursorShape == CursorShape.QUARTER_RIGHT) {
+                    return characterWidth / 4;
+                } else {
+                    return lineHeight / 4;
+                }
+            }
+            case HALF: {
+                if (cursorShape == CursorShape.HALF_LEFT || cursorShape == CursorShape.HALF_RIGHT) {
+                    return characterWidth / 2;
+                } else {
+                    return lineHeight / 2;
+                }
+            }
         }
 
         return -1;
@@ -148,6 +166,30 @@ public class DefaultCodeAreaCaret implements CodeAreaCaret {
         privateSetBlinkRate(blinkRate);
     }
 
+    @Nonnull
+    public CursorShape getInsertCursorShape() {
+        return insertCursorShape;
+    }
+
+    public void setInsertCursorShape(@Nonnull CursorShape insertCursorShape) {
+        Objects.requireNonNull(insertCursorShape, "Insert cursor shape cannot be null");
+
+        this.insertCursorShape = insertCursorShape;
+        notifyCaredChanged();
+    }
+
+    @Nonnull
+    public CursorShape getOverwriteCursorShape() {
+        return overwriteCursorShape;
+    }
+
+    public void setOverwriteCursorShape(@Nonnull CursorShape overwriteCursorShape) {
+        Objects.requireNonNull(overwriteCursorShape, "Overwrite cursor shape cannot be null");
+
+        this.overwriteCursorShape = overwriteCursorShape;
+        notifyCaredChanged();
+    }
+
     public boolean isCursorVisible() {
         return cursorVisible;
     }
@@ -200,7 +242,79 @@ public class DefaultCodeAreaCaret implements CodeAreaCaret {
      * Enumeration of supported cursor shapes.
      */
     public static enum CursorShape {
-        INSERT, OVERWRITE, MIRROR
+        /*
+         * Single line cursor shapes.
+         */
+        LINE_BOTTOM(CursorShapeWidth.LINE),
+        LINE_TOP(CursorShapeWidth.LINE),
+        LINE_LEFT(CursorShapeWidth.LINE),
+        LINE_RIGHT(CursorShapeWidth.LINE),
+        /*
+         * Double line cursor shapes.
+         */
+        DOUBLE_BOTTOM(CursorShapeWidth.DOUBLE),
+        DOUBLE_TOP(CursorShapeWidth.DOUBLE),
+        DOUBLE_LEFT(CursorShapeWidth.DOUBLE),
+        DOUBLE_RIGHT(CursorShapeWidth.DOUBLE),
+        /*
+         * Quarter cursor shapes.
+         */
+        QUARTER_BOTTOM(CursorShapeWidth.QUARTER),
+        QUARTER_TOP(CursorShapeWidth.QUARTER),
+        QUARTER_LEFT(CursorShapeWidth.QUARTER),
+        QUARTER_RIGHT(CursorShapeWidth.QUARTER),
+        /*
+         * Half cursor shapes.
+         */
+        HALF_BOTTOM(CursorShapeWidth.HALF),
+        HALF_TOP(CursorShapeWidth.HALF),
+        HALF_LEFT(CursorShapeWidth.HALF),
+        HALF_RIGHT(CursorShapeWidth.HALF),
+        /*
+         * Full cursor shapes.
+         * Frame and corners modes are always rendered using paint mode.
+         */
+        BOX(CursorShapeWidth.FULL),
+        FRAME(CursorShapeWidth.FULL),
+        CORNERS(CursorShapeWidth.FULL),
+        BOTTOM_CORNERS(CursorShapeWidth.FULL);
+
+        private final CursorShapeWidth width;
+
+        private CursorShape(@Nonnull CursorShapeWidth width) {
+            this.width = width;
+        }
+
+        @Nonnull
+        public CursorShapeWidth getWidth() {
+            return width;
+        }
+    }
+
+    /**
+     * Width of the cursor paint object.
+     */
+    public static enum CursorShapeWidth {
+        /**
+         * Single pixel width line.
+         */
+        LINE,
+        /**
+         * Two pixels width line.
+         */
+        DOUBLE,
+        /**
+         * One quarter of cursor size.
+         */
+        QUARTER,
+        /**
+         * Half of cursor size.
+         */
+        HALF,
+        /**
+         * Full cursor size.
+         */
+        FULL
     }
 
     /**

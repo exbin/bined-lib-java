@@ -52,7 +52,7 @@ import org.exbin.deltahex.swing.basic.DefaultCodeAreaPainter;
  * @version 0.2.0 2017/04/23
  * @author ExBin Project (http://exbin.org)
  */
-public class DefaultCodeAreaPainterExt extends DefaultCodeAreaPainter {
+public class ExtCodeAreaPainter extends DefaultCodeAreaPainter {
 
     public static final int DECORATION_HEADER_LINE = 1;
     public static final int DECORATION_LINENUM_LINE = 2;
@@ -67,7 +67,7 @@ public class DefaultCodeAreaPainterExt extends DefaultCodeAreaPainter {
 //    protected final char[] charMapping = new char[256];
 //    protected Map<Character, Character> unprintableCharactersMapping = null;
 //
-    public DefaultCodeAreaPainterExt(@Nonnull CodeAreaWorker worker) {
+    public ExtCodeAreaPainter(@Nonnull CodeAreaWorker worker) {
         super(worker);
     }
 

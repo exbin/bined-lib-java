@@ -56,7 +56,6 @@ import org.exbin.deltahex.swing.CodeAreaPainter;
 import org.exbin.deltahex.swing.CodeAreaSwingUtils;
 import org.exbin.deltahex.swing.CodeAreaWorker;
 import org.exbin.deltahex.swing.capability.AntialiasingCapable;
-import org.exbin.utils.binary_data.OutOfBoundsException;
 import org.exbin.deltahex.swing.capability.BorderPaintCapable;
 import org.exbin.deltahex.swing.capability.FontCapable;
 import org.exbin.utils.binary_data.BinaryData;
@@ -64,7 +63,7 @@ import org.exbin.utils.binary_data.BinaryData;
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2017/12/19
+ * @version 0.2.0 2017/12/27
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaPainter implements CodeAreaPainter {
@@ -915,81 +914,24 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                 g.setXORMode(Color.WHITE);
             }
 
-            DefaultCodeAreaCaret.CursorShape cursorShape = editationMode == EditationMode.INSERT ? caret.getInsertCursorShape() : caret.getOverwriteCursorShape();
-            int cursorThickness = 0;
-            if (cursorShape.getWidth() != DefaultCodeAreaCaret.CursorShapeWidth.FULL) {
-                cursorThickness = caret.getCursorThickness(cursorShape, characterWidth, lineHeight);
-            }
+            DefaultCodeAreaCaret.CursorShape cursorShape = editationMode == EditationMode.INSERT ? DefaultCodeAreaCaret.CursorShape.INSERT : DefaultCodeAreaCaret.CursorShape.OVERWRITE;
+            int cursorThickness = caret.getCursorThickness(cursorShape, characterWidth, lineHeight);
             switch (cursorShape) {
-                case LINE_TOP:
-                case DOUBLE_TOP:
-                case QUARTER_TOP:
-                case HALF_TOP: {
-                    paintCursorRect(g, cursorPoint.x, cursorPoint.y,
-                            characterWidth, cursorThickness, renderingMode);
-                    break;
-                }
-                case LINE_BOTTOM:
-                case DOUBLE_BOTTOM:
-                case QUARTER_BOTTOM:
-                case HALF_BOTTOM: {
-                    paintCursorRect(g, cursorPoint.x, cursorPoint.y + lineHeight - cursorThickness,
-                            characterWidth, cursorThickness, renderingMode);
-                    break;
-                }
-                case LINE_LEFT:
-                case DOUBLE_LEFT:
-                case QUARTER_LEFT:
-                case HALF_LEFT: {
+                case INSERT: {
                     paintCursorRect(g, cursorPoint.x, cursorPoint.y, cursorThickness, lineHeight, renderingMode);
                     break;
                 }
-                case LINE_RIGHT:
-                case DOUBLE_RIGHT:
-                case QUARTER_RIGHT:
-                case HALF_RIGHT: {
-                    paintCursorRect(g, cursorPoint.x + characterWidth - cursorThickness, cursorPoint.y, cursorThickness, lineHeight, renderingMode);
-                    break;
-                }
-                case BOX: {
+                case OVERWRITE: {
                     paintCursorRect(g, cursorPoint.x, cursorPoint.y,
                             characterWidth, lineHeight, renderingMode);
                     break;
                 }
-                case FRAME: {
+                case MIRROR: {
                     g.drawRect(cursorPoint.x, cursorPoint.y, characterWidth, lineHeight - 1);
                     break;
                 }
-                case BOTTOM_CORNERS:
-                case CORNERS: {
-                    int quarterWidth = characterWidth / 4;
-                    int quarterLine = lineHeight / 4;
-                    if (cursorShape == DefaultCodeAreaCaret.CursorShape.CORNERS) {
-                        g.drawLine(cursorPoint.x, cursorPoint.y,
-                                cursorPoint.x + quarterWidth, cursorPoint.y);
-                        g.drawLine(cursorPoint.x + characterWidth - quarterWidth, cursorPoint.y,
-                                cursorPoint.x + characterWidth, cursorPoint.y);
-
-                        g.drawLine(cursorPoint.x, cursorPoint.y + 1,
-                                cursorPoint.x, cursorPoint.y + quarterLine);
-                        g.drawLine(cursorPoint.x + characterWidth, cursorPoint.y + 1,
-                                cursorPoint.x + characterWidth, cursorPoint.y + quarterLine);
-                    }
-
-                    g.drawLine(cursorPoint.x, cursorPoint.y + lineHeight - quarterLine - 1,
-                            cursorPoint.x, cursorPoint.y + lineHeight - 2);
-                    g.drawLine(cursorPoint.x + characterWidth, cursorPoint.y + lineHeight - quarterLine - 1,
-                            cursorPoint.x + characterWidth, cursorPoint.y + lineHeight - 2);
-
-                    g.drawLine(cursorPoint.x, cursorPoint.y + lineHeight - 1,
-                            cursorPoint.x + quarterWidth, cursorPoint.y + lineHeight - 1);
-                    g.drawLine(cursorPoint.x + characterWidth - quarterWidth, cursorPoint.y + lineHeight - 1,
-                            cursorPoint.x + characterWidth, cursorPoint.y + lineHeight - 1);
-                    break;
-                }
-                default: {
+                default:
                     throw new IllegalStateException("Unexpected cursor shape type " + cursorShape.name());
-                }
             }
 
             if (renderingMode == DefaultCodeAreaCaret.CursorRenderingMode.XOR) {
@@ -1010,14 +952,14 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 //        }
     }
 
-    private void paintCursorRect(@Nonnull Graphics g, int x, int y, int width, int height, @Nonnull DefaultCodeAreaCaret.CursorRenderingMode renderingMode) {
+    private void paintCursorRect(@Nonnull Graphics g, int cursorX, int cursorY, int cursorWidth, int cursorHeight, @Nonnull DefaultCodeAreaCaret.CursorRenderingMode renderingMode) {
         switch (renderingMode) {
             case PAINT: {
-                g.fillRect(x, y, width, height);
+                g.fillRect(cursorX, cursorY, cursorWidth, cursorHeight);
                 break;
             }
             case XOR: {
-                Rectangle rect = new Rectangle(x, y, width, height);
+                Rectangle rect = new Rectangle(cursorX, cursorY, cursorWidth, cursorHeight);
                 Rectangle intersection = rect.intersection(g.getClipBounds());
                 if (!intersection.isEmpty()) {
                     g.fillRect(intersection.x, intersection.y, intersection.width, intersection.height);
@@ -1025,7 +967,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                 break;
             }
             case NEGATIVE: {
-                Rectangle rect = new Rectangle(x, y, width, height);
+                Rectangle rect = new Rectangle(cursorX, cursorY, cursorWidth, cursorHeight);
                 Rectangle clipBounds = g.getClipBounds();
                 Rectangle intersection;
                 if (clipBounds != null) {
@@ -1038,11 +980,11 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                 }
                 Shape clip = g.getClip();
                 g.setClip(intersection.x, intersection.y, intersection.width, intersection.height);
-                g.fillRect(x, y, width, height);
+                g.fillRect(cursorX, cursorY, cursorWidth, cursorHeight);
                 g.setColor(colors.negativeCursor);
                 BinaryData codeAreaData = worker.getCodeArea().getData();
-                int line = (y + scrollPosition.getScrollLineOffset() - dataViewY) / lineHeight;
-                int scrolledX = x + scrollPosition.getScrollCharPosition() * characterWidth + scrollPosition.getScrollCharOffset();
+                int line = (cursorY + scrollPosition.getScrollLineOffset() - dataViewY) / lineHeight;
+                int scrolledX = cursorX + scrollPosition.getScrollCharPosition() * characterWidth + scrollPosition.getScrollCharOffset();
                 int posY = dataViewY + (line + 1) * lineHeight - subFontSpace - scrollPosition.getScrollLineOffset();
                 if (viewMode != CodeAreaViewMode.CODE_MATRIX && scrolledX >= previewRelativeX) {
                     int charPos = (scrolledX - previewRelativeX) / characterWidth;
@@ -1104,16 +1046,21 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                 g.setClip(clip);
                 break;
             }
+            default:
+                throw new IllegalStateException("Unexpected rendering mode " + renderingMode.name());
         }
     }
 
     @Nonnull
-    public CaretPosition mousePositionToCaretPosition(int mouseX, int mouseY) {
-        /*        if (mouseX < hexRect.x) {
-            mouseX = hexRect.x;
+    @Override
+    public CaretPosition mousePositionToClosestCaretPosition(int mouseX, int mouseY) {
+        CaretPosition caret = new CaretPosition();
+        if (mouseX < lineNumbersAreaWidth) {
+            mouseX = lineNumbersAreaWidth;
         }
-        int cursorCharX = computeCodeAreaCharacter(mouseX - hexRect.x + scrollPosition.getScrollCharOffset()) + scrollPosition.getScrollCharPosition();
-        long cursorLineY = computeCodeAreaLine(mouseY - hexRect.y + scrollPosition.getScrollLineOffset()) + scrollPosition.getScrollLinePosition();
+
+        int cursorCharX = computeCodeAreaCharacter(mouseX - lineNumbersAreaWidth + scrollPosition.getScrollCharOffset()) + scrollPosition.getScrollCharPosition();
+        long cursorLineY = computeCodeAreaLine(mouseY - lineNumbersAreaWidth + scrollPosition.getScrollLineOffset()) + scrollPosition.getScrollLinePosition();
         if (cursorLineY < 0) {
             cursorLineY = 0;
         }
@@ -1124,13 +1071,13 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         long dataPosition;
         int codeOffset = 0;
         int byteOnLine;
-        if ((viewMode == CodeAreaViewMode.DUAL && cursorCharX < painter.getPreviewFirstChar()) || viewMode == CodeAreaViewMode.CODE_MATRIX) {
+        if ((viewMode == CodeAreaViewMode.DUAL && cursorCharX < previewRelativeX) || viewMode == CodeAreaViewMode.CODE_MATRIX) {
             caret.setSection(CodeAreaSection.CODE_MATRIX);
-            byteOnLine = painter.computePositionByte(cursorCharX);
+            byteOnLine = computePositionByte(cursorCharX);
             if (byteOnLine >= bytesPerLine) {
                 codeOffset = 0;
             } else {
-                codeOffset = cursorCharX - painter.computeFirstCodeCharPos(byteOnLine);
+                codeOffset = cursorCharX - computeFirstCodeCharPos(byteOnLine);
                 if (codeOffset >= codeType.getMaxDigitsForByte()) {
                     codeOffset = codeType.getMaxDigitsForByte() - 1;
                 }
@@ -1139,7 +1086,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             caret.setSection(CodeAreaSection.TEXT_PREVIEW);
             byteOnLine = cursorCharX;
             if (viewMode == CodeAreaViewMode.DUAL) {
-                byteOnLine -= painter.getPreviewFirstChar();
+                byteOnLine -= previewCharPos;
             }
         }
 
@@ -1153,17 +1100,14 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             codeOffset = 0;
         }
 
-        long dataSize = codeArea.getDataSize();
         if (dataPosition >= dataSize) {
             dataPosition = dataSize;
             codeOffset = 0;
         }
 
-        CaretPosition caretPosition = caret.getCaretPosition();
-        caret.setCaretPosition(dataPosition, codeOffset);
-
-        return caretPosition; */
-        return new CaretPosition();
+        caret.setDataPosition(dataPosition);
+        caret.setCodeOffset(codeOffset);
+        return caret;
     }
 
     /**
@@ -1272,10 +1216,10 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         return byteOffset * (codeType.getMaxDigitsForByte() + 1) + codeType.getMaxDigitsForByte() - 1;
     }
 
-    public long cursorPositionToDataPosition(long line, int byteOffset) throws OutOfBoundsException {
-        return 16;
-    }
-
+//    public long cursorPositionToDataPosition(long line, int byteOffset) throws OutOfBoundsException {
+//        return 16;
+//    }
+//
     /**
      * Draws char in array centering it in precomputed space.
      *
