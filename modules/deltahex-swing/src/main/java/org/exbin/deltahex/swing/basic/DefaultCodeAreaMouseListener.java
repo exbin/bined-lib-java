@@ -23,6 +23,7 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import javax.annotation.Nonnull;
+import javax.swing.JComponent;
 import org.exbin.deltahex.capability.CaretCapable;
 import org.exbin.deltahex.swing.CodeArea;
 import org.exbin.deltahex.swing.CodeAreaWorker;
@@ -30,7 +31,7 @@ import org.exbin.deltahex.swing.CodeAreaWorker;
 /**
  * Code Area component mouse listener.
  *
- * @version 0.2.0 2017/12/09
+ * @version 0.2.0 2017/12/28
  * @author ExBin Project (http://exbin.org)
  */
 /* package */ class DefaultCodeAreaMouseListener extends MouseAdapter implements MouseMotionListener, MouseWheelListener {
@@ -38,14 +39,16 @@ import org.exbin.deltahex.swing.CodeAreaWorker;
     public static final int MOUSE_SCROLL_LINES = 3;
 
     private final CodeArea codeArea;
+    private final JComponent view;
 
     private final Cursor defaultCursor = Cursor.getDefaultCursor();
     private final Cursor textCursor = Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR);
     private Cursor currentCursor;
     private boolean mouseDown = false;
 
-    public DefaultCodeAreaMouseListener(@Nonnull CodeArea codeArea) {
+    public DefaultCodeAreaMouseListener(@Nonnull CodeArea codeArea, @Nonnull JComponent view) {
         this.codeArea = codeArea;
+        this.view = view;
         currentCursor = codeArea.getCursor();
     }
 
@@ -53,7 +56,10 @@ import org.exbin.deltahex.swing.CodeAreaWorker;
     public void mousePressed(@Nonnull MouseEvent me) {
         codeArea.requestFocus();
         if (codeArea.isEnabled() && me.getButton() == MouseEvent.BUTTON1) {
-            codeArea.getCommandHandler().moveCaret(me, me.getModifiersEx());
+            boolean isDataView = me.getSource() != codeArea;
+            int mouseX = isDataView ? me.getX() + view.getX() : me.getX();
+            int mouseY = isDataView ? me.getY() + view.getY() : me.getY();
+            codeArea.getCommandHandler().moveCaret(mouseX, mouseY, me.getModifiersEx());
             ((CaretCapable) codeArea.getWorker()).revealCursor();
             mouseDown = true;
         }
@@ -96,7 +102,10 @@ import org.exbin.deltahex.swing.CodeAreaWorker;
         CodeAreaWorker worker = codeArea.getWorker();
         updateMouseCursor(me);
         if (codeArea.isEnabled() && mouseDown) {
-            codeArea.getCommandHandler().moveCaret(me, KeyEvent.SHIFT_DOWN_MASK);
+            boolean isDataView = me.getSource() != codeArea;
+            int mouseX = isDataView ? me.getX() + view.getX() : me.getX();
+            int mouseY = isDataView ? me.getY() + view.getY() : me.getY();
+            codeArea.getCommandHandler().moveCaret(mouseX, mouseY, KeyEvent.SHIFT_DOWN_MASK);
             ((CaretCapable) worker).revealCursor();
         }
     }
@@ -107,7 +116,6 @@ import org.exbin.deltahex.swing.CodeAreaWorker;
             return;
         }
 
-        // TODO
 //        CodeAreaScrollPosition scrollPosition = codeArea.getScrollPosition();
 //
 //        if (e.isShiftDown() && codeArea.getPainter().isHorizontalScrollBarVisible()) {

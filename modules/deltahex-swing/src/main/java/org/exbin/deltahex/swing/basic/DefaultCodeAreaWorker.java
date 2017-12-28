@@ -264,9 +264,8 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
 
     @Nullable
     @Override
-    public CaretPosition mousePositionToCaretPosition(int positionX, int positionY) {
-        // TODO
-        return null;
+    public CaretPosition mousePositionToClosestCaretPosition(int positionX, int positionY) {
+        return painter.mousePositionToClosestCaretPosition(positionX, positionY);
     }
 
     private void updateScrollBars() {

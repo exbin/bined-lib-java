@@ -56,7 +56,7 @@ public class DefaultCodeAreaCaret implements CodeAreaCaret {
         privateSetBlinkRate(DEFAULT_BLINK_RATE);
     }
 
-    public int getCursorThickness(@Nonnull CursorShape cursorShape, int characterWidth, int lineHeight) {
+    public static int getCursorThickness(@Nonnull CursorShape cursorShape, int characterWidth, int lineHeight) {
         switch (cursorShape) {
             case INSERT:
                 return DOUBLE_CURSOR_WIDTH;
@@ -88,8 +88,12 @@ public class DefaultCodeAreaCaret implements CodeAreaCaret {
 
     @Override
     public void setCaretPosition(@Nullable CaretPosition caretPosition) {
-        this.caretPosition.setDataPosition(caretPosition == null ? 0 : caretPosition.getDataPosition());
-        this.caretPosition.setCodeOffset(caretPosition == null ? 0 : caretPosition.getCodeOffset());
+        if (caretPosition != null) {
+        this.caretPosition.setPosition(caretPosition);
+        } else {
+            this.caretPosition.clear();
+        }
+        resetBlink();
     }
 
     @Override

@@ -106,8 +106,9 @@ public interface CodeAreaCommandHandler {
     /**
      * Move caret with mouse event.
      *
-     * @param mouseEvent mouse event
+     * @param positionX relative position X
+     * @param positionY relative position Y
      * @param modifiers modifiers
      */
-    void moveCaret(@Nonnull MouseEvent mouseEvent, int modifiers);
+    void moveCaret(int positionX, int positionY, int modifiers);
 }

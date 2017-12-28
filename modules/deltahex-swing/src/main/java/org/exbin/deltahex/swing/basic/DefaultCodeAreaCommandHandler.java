@@ -21,7 +21,6 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.FlavorEvent;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
@@ -53,7 +52,7 @@ import org.exbin.deltahex.swing.CodeAreaWorker;
 /**
  * Default hexadecimal editor command handler.
  *
- * @version 0.2.0 2017/12/15
+ * @version 0.2.0 2017/12/28
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
@@ -575,7 +574,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     @Override
     public void copy() {
         SelectionRange selection = ((SelectionCapable) codeArea.getWorker()).getSelection();
-        if (selection != null) {
+        if (!selection.isEmpty()) {
             long first = selection.getFirst();
             long last = selection.getLast();
 
@@ -589,7 +588,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     @Override
     public void copyAsCode() {
         SelectionRange selection = ((SelectionCapable) codeArea.getWorker()).getSelection();
-        if (selection != null) {
+        if (!selection.isEmpty()) {
             long first = selection.getFirst();
             long last = selection.getLast();
 
@@ -626,7 +625,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         }
 
         SelectionRange selection = ((SelectionCapable) codeArea.getWorker()).getSelection();
-        if (selection != null) {
+        if (!selection.isEmpty()) {
             copy();
             deleteSelection();
             codeArea.notifyDataChanged();
@@ -800,7 +799,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             long currentPosition = caret.getDataPosition();
             long end = currentPosition;
             long start;
-            if (selection != null) {
+            if (!selection.isEmpty()) {
                 start = selection.getStart();
                 if (start == currentPosition) {
                     clearSelection();
@@ -826,12 +825,14 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     }
 
     @Override
-    public void moveCaret(MouseEvent me, int modifiers) {
+    public void moveCaret(int positionX, int positionY, int modifiers) {
+        CaretPosition caretPosition = ((CaretCapable) codeArea.getWorker()).mousePositionToClosestCaretPosition(positionX, positionY);
+        ((CaretCapable) codeArea.getWorker()).getCaret().setCaretPosition(caretPosition);
+        updateSelection(modifiers, caretPosition);
+
         notifyCaretMoved();
         sequenceBreak();
-
-        CaretPosition caretPosition = ((CaretCapable) codeArea.getWorker()).mousePositionToCaretPosition(me.getX(), me.getY());
-        updateSelection(modifiers, caretPosition);
+        codeArea.repaint();
     }
 
     public void moveRight(int modifiers) {

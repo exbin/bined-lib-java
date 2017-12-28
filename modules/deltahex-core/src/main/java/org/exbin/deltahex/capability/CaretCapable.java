@@ -37,7 +37,7 @@ public interface CaretCapable {
     void revealPosition(@Nonnull CaretPosition caretPosition);
 
     @Nullable
-    CaretPosition mousePositionToCaretPosition(int positionX, int positionY);
+    CaretPosition mousePositionToClosestCaretPosition(int positionX, int positionY);
 
     void notifyCaretMoved();
 

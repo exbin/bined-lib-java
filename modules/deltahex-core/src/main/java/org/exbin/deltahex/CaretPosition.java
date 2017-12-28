@@ -23,7 +23,7 @@ import javax.annotation.Nullable;
  * Specifies caret position as combination of data position, section and code
  * offset of code representation.
  *
- * @version 0.2.0 2017/12/17
+ * @version 0.2.0 2017/12/28
  * @author ExBin Project (http://exbin.org)
  */
 public class CaretPosition {
@@ -78,5 +78,11 @@ public class CaretPosition {
         dataPosition = position.dataPosition;
         codeOffset = position.codeOffset;
         section = position.getSection();
+    }
+
+    public void clear() {
+        this.dataPosition = 0;
+        this.codeOffset = 0;
+        this.section = section == null ? CodeAreaSection.CODE_MATRIX : section;
     }
 }

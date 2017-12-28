@@ -37,6 +37,7 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.plaf.basic.BasicBorders;
+import org.exbin.deltahex.CaretPosition;
 import org.exbin.deltahex.DataChangedListener;
 import org.exbin.deltahex.ScrollingListener;
 import org.exbin.deltahex.SelectionChangedListener;
@@ -45,17 +46,17 @@ import org.exbin.deltahex.CodeAreaViewMode;
 import org.exbin.deltahex.capability.CaretCapable;
 import org.exbin.deltahex.capability.CharsetCapable;
 import org.exbin.deltahex.swing.CodeArea;
-import org.exbin.deltahex.swing.basic.DefaultCodeAreaCaret;
 import org.exbin.utils.binary_data.EditableBinaryData;
 import org.exbin.deltahex.capability.CodeTypeCapable;
 import org.exbin.deltahex.capability.SelectionCapable;
 import org.exbin.deltahex.capability.ViewModeCapable;
+import org.exbin.deltahex.swing.basic.DefaultCodeAreaWorker;
 import org.exbin.deltahex.swing.capability.ScrollingCapable;
 
 /**
  * Hexadecimal editor example panel.
  *
- * @version 0.2.0 2017/12/15
+ * @version 0.2.0 2017/12/28
  * @author ExBin Project (http://exbin.org)
  */
 public class DeltaHexExampleBasicPanel extends javax.swing.JPanel {
@@ -70,6 +71,7 @@ public class DeltaHexExampleBasicPanel extends javax.swing.JPanel {
 
     public void setCodeArea(final CodeArea codeArea) {
         this.codeArea = codeArea;
+        DefaultCodeAreaWorker worker = (DefaultCodeAreaWorker) codeArea.getWorker();
         splitPane.setRightComponent(codeArea);
         viewModeComboBox.setSelectedIndex(((ViewModeCapable) codeArea.getWorker()).getViewMode().ordinal());
         codeTypeComboBox.setSelectedIndex(((CodeTypeCapable) codeArea.getWorker()).getCodeType().ordinal());
@@ -110,14 +112,11 @@ public class DeltaHexExampleBasicPanel extends javax.swing.JPanel {
 //        decoratorLineNumLineCheckBox.setSelected((decorationMode & CodeArea.DECORATION_LINENUM_LINE) > 0);
 //        decoratorSplitLineCheckBox.setSelected((decorationMode & CodeArea.DECORATION_PREVIEW_LINE) > 0);
 //        decoratorBoxCheckBox.setSelected((decorationMode & CodeArea.DECORATION_BOX) > 0);
-//        codeArea.addCaretMovedListener(new CaretMovedListener() {
-//            @Override
-//            public void caretMoved(CaretPosition caretPosition, CodeAreaSection section) {
-//                positionTextField.setText(String.valueOf(caretPosition.getDataPosition()));
-//                codeOffsetTextField.setText(String.valueOf(caretPosition.getCodeOffset()));
-//                activeSectionComboBox.setSelectedIndex(section.ordinal());
-//            }
-//        });
+        worker.addCaretMovedListener((CaretPosition caretPosition) -> {
+            positionTextField.setText(String.valueOf(caretPosition.getDataPosition()));
+            codeOffsetTextField.setText(String.valueOf(caretPosition.getCodeOffset()));
+            activeSectionComboBox.setSelectedIndex(caretPosition.getSection().ordinal());
+        });
         ((SelectionCapable) codeArea.getWorker()).addSelectionChangedListener(new SelectionChangedListener() {
             @Override
             public void selectionChanged(SelectionRange selection) {
