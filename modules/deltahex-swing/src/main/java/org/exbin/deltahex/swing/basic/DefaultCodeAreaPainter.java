@@ -23,7 +23,6 @@ import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.Shape;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
 import java.nio.charset.Charset;
@@ -63,7 +62,7 @@ import org.exbin.utils.binary_data.BinaryData;
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2017/12/28
+ * @version 0.2.0 2017/12/30
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaPainter implements CodeAreaPainter {
@@ -208,7 +207,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         charactersPerRect = computeLastCodeCharPos(bytesPerLine - 1);
         // Compute first and last visible character of the code area
         if (viewMode == CodeAreaViewMode.DUAL) {
-            previewCharPos = charactersPerRect + 2;
+            previewCharPos = bytesPerLine * (codeType.getMaxDigitsForByte() + 1);
         } else {
             previewCharPos = 0;
         }
@@ -405,7 +404,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
     public void paintHeader(@Nonnull Graphics g) {
         Rectangle clipBounds = g.getClipBounds();
-        Rectangle headerArea = new Rectangle(lineNumbersAreaWidth, 0, componentWidth - lineNumbersAreaWidth, headerAreaHeight); // TODO minus scrollbar width
+        Rectangle headerArea = new Rectangle(lineNumbersAreaWidth, 0, componentWidth - lineNumbersAreaWidth, headerAreaHeight);
         g.setClip(clipBounds != null ? headerArea.intersection(clipBounds) : headerArea);
 
         g.setColor(colors.background);
@@ -603,7 +602,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         }
 
         Rectangle clipBounds = g.getClipBounds();
-        Rectangle mainArea = new Rectangle(lineNumbersAreaWidth, headerAreaHeight, componentWidth - lineNumbersAreaWidth - 20, componentHeight - headerAreaHeight - 20);
+        Rectangle mainArea = getMainAreaRect();
         g.setClip(clipBounds != null ? mainArea.intersection(clipBounds) : mainArea);
         paintBackground(g);
         paintLines(g);
@@ -904,38 +903,92 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
         DefaultCodeAreaCaret caret = (DefaultCodeAreaCaret) ((CaretCapable) worker).getCaret();
         Rectangle cursorRect = getPositionRect(caret.getDataPosition(), caret.getCodeOffset(), caret.getSection());
-        boolean cursorVisible = caret.isCursorVisible();
-        DefaultCodeAreaCaret.CursorRenderingMode renderingMode = caret.getRenderingMode();
+        if (cursorRect == null) {
+            return;
+        }
 
-        if (cursorVisible && cursorRect != null) {
+        Rectangle clipBounds = g.getClipBounds();
+        Rectangle mainAreaRect = getMainAreaRect();
+        Rectangle intersection = mainAreaRect.intersection(cursorRect);
+        boolean cursorVisible = caret.isCursorVisible() && !intersection.isEmpty();
+
+        if (cursorVisible) {
+            g.setClip(intersection);
+            DefaultCodeAreaCaret.CursorRenderingMode renderingMode = caret.getRenderingMode();
             g.setColor(colors.cursor);
-            if (renderingMode == DefaultCodeAreaCaret.CursorRenderingMode.XOR) {
-                g.setXORMode(Color.WHITE);
-            }
 
-            paintCursorRect(g, cursorRect.x, cursorRect.y, cursorRect.width, cursorRect.height, renderingMode);
+            switch (renderingMode) {
+                case PAINT: {
+                    g.fillRect(intersection.x, intersection.y, intersection.width, intersection.height);
+                    break;
+                }
+                case XOR: {
+                    g.setXORMode(Color.WHITE);
+                    g.fillRect(intersection.x, intersection.y, intersection.width, intersection.height);
+                    g.setPaintMode();
+                    break;
+                }
+                case NEGATIVE: {
+                    g.fillRect(cursorRect.x, cursorRect.y, cursorRect.width, cursorRect.height);
+                    g.setColor(colors.negativeCursor);
+                    BinaryData codeAreaData = worker.getCodeArea().getData();
+                    int line = (cursorRect.y + scrollPosition.getScrollLineOffset() - dataViewY) / lineHeight;
+                    int scrolledX = cursorRect.x + scrollPosition.getScrollCharPosition() * characterWidth + scrollPosition.getScrollCharOffset();
+                    int posY = dataViewY + (line + 1) * lineHeight - subFontSpace - scrollPosition.getScrollLineOffset();
+                    long dataPosition = caret.getDataPosition();
+                    if (viewMode != CodeAreaViewMode.CODE_MATRIX && caret.getSection() == CodeAreaSection.TEXT_PREVIEW) {
+                        int charPos = (scrolledX - previewRelativeX) / characterWidth;
+                        if (dataPosition >= dataSize) {
+                            break;
+                        }
 
-//            DefaultCodeAreaCaret.CursorShape cursorShape = editationMode == EditationMode.INSERT ? DefaultCodeAreaCaret.CursorShape.INSERT : DefaultCodeAreaCaret.CursorShape.OVERWRITE;
-//            int cursorThickness = caret.getCursorThickness(cursorShape, characterWidth, lineHeight);
-//            switch (cursorShape) {
-//                case INSERT: {
-//                    paintCursorRect(g, cursorPoint.x, cursorPoint.y, cursorThickness, lineHeight, renderingMode);
-//                    break;
-//                }
-//                case OVERWRITE: {
-//                    paintCursorRect(g, cursorPoint.x, cursorPoint.y,
-//                            characterWidth, lineHeight, renderingMode);
-//                    break;
-//                }
-//                case MIRROR: {
-////                    g.drawRect(cursorPoint.x, cursorPoint.y, characterWidth, lineHeight - 1);
-//                    break;
-//                }
-//                default:
-//                    throw new IllegalStateException("Unexpected cursor shape type " + cursorShape.name());
-//            }
-            if (renderingMode == DefaultCodeAreaCaret.CursorRenderingMode.XOR) {
-                g.setPaintMode();
+                        char[] previewChars = new char[1];
+                        byte[] data = new byte[maxCharLength];
+
+                        if (maxCharLength > 1) {
+                            int charDataLength = maxCharLength;
+                            if (dataPosition + maxCharLength > dataSize) {
+                                charDataLength = (int) (dataSize - dataPosition);
+                            }
+
+                            codeAreaData.copyToArray(dataPosition, data, 0, charDataLength);
+                            String displayString = new String(data, 0, charDataLength, charset);
+                            if (!displayString.isEmpty()) {
+                                previewChars[0] = displayString.charAt(0);
+                            }
+                        } else {
+                            if (charMappingCharset == null || charMappingCharset != charset) {
+                                buildCharMapping(charset);
+                            }
+
+                            previewChars[0] = charMapping[codeAreaData.getByte(dataPosition) & 0xFF];
+                        }
+                        int posX = previewRelativeX + charPos * characterWidth - scrollPosition.getScrollCharPosition() * characterWidth - scrollPosition.getScrollCharOffset();
+                        if (characterRenderingMode == CharacterRenderingMode.LINE_AT_ONCE) {
+                            g.drawChars(previewChars, 0, 1, posX, posY);
+                        } else {
+                            drawCenteredChar(g, previewChars, 0, characterWidth, posX, posY);
+                        }
+                    } else {
+                        int charPos = (scrolledX - dataViewX) / characterWidth;
+                        int byteOffset = computePositionByte(charPos);
+                        int codeCharPos = computeFirstCodeCharPos(byteOffset);
+                        char[] lineChars = new char[codeType.getMaxDigitsForByte()];
+
+                        byte dataByte = codeAreaData.getByte(dataPosition);
+                        CodeAreaUtils.byteToCharsCode(dataByte, codeType, lineChars, 0, hexCharactersCase);
+                        int posX = dataViewX + codeCharPos * characterWidth - scrollPosition.getScrollCharPosition() * characterWidth - scrollPosition.getScrollCharOffset();
+                        int charsOffset = charPos - codeCharPos;
+                        if (characterRenderingMode == CharacterRenderingMode.LINE_AT_ONCE) {
+                            g.drawChars(lineChars, charsOffset, 1, posX + (charsOffset * characterWidth), posY);
+                        } else {
+                            drawCenteredChar(g, lineChars, charsOffset, characterWidth, posX + (charsOffset * characterWidth), posY);
+                        }
+                    }
+                    break;
+                }
+                default:
+                    throw new IllegalStateException("Unexpected rendering mode " + renderingMode.name());
             }
         }
 
@@ -950,105 +1003,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 //            g2d.drawRect(shadowCursorPoint.x, shadowCursorPoint.y,
 //                    characterWidth * (getActiveSection() == CodeAreaSection.TEXT_PREVIEW ? codeDigits : 1), lineHeight - 1);
 //        }
-    }
-
-    private void paintCursorRect(@Nonnull Graphics g, int cursorX, int cursorY, int cursorWidth, int cursorHeight, @Nonnull DefaultCodeAreaCaret.CursorRenderingMode renderingMode) {
-        switch (renderingMode) {
-            case PAINT: {
-                g.fillRect(cursorX, cursorY, cursorWidth, cursorHeight);
-                break;
-            }
-            case XOR: {
-                Rectangle rect = new Rectangle(cursorX, cursorY, cursorWidth, cursorHeight);
-                Rectangle intersection = rect.intersection(g.getClipBounds());
-                if (!intersection.isEmpty()) {
-                    g.fillRect(intersection.x, intersection.y, intersection.width, intersection.height);
-                }
-                break;
-            }
-            case NEGATIVE: {
-                Rectangle rect = new Rectangle(cursorX, cursorY, cursorWidth, cursorHeight);
-                Rectangle clipBounds = g.getClipBounds();
-                Rectangle intersection;
-                if (clipBounds != null) {
-                    intersection = rect.intersection(clipBounds);
-                } else {
-                    intersection = rect;
-                }
-                if (intersection.isEmpty()) {
-                    break;
-                }
-                Shape clip = g.getClip();
-                g.setClip(intersection.x, intersection.y, intersection.width, intersection.height);
-                g.fillRect(cursorX, cursorY, cursorWidth, cursorHeight);
-                g.setColor(colors.negativeCursor);
-                BinaryData codeAreaData = worker.getCodeArea().getData();
-                int line = (cursorY + scrollPosition.getScrollLineOffset() - dataViewY) / lineHeight;
-                int scrolledX = cursorX + scrollPosition.getScrollCharPosition() * characterWidth + scrollPosition.getScrollCharOffset();
-                int posY = dataViewY + (line + 1) * lineHeight - subFontSpace - scrollPosition.getScrollLineOffset();
-                if (viewMode != CodeAreaViewMode.CODE_MATRIX && scrolledX >= previewRelativeX) {
-                    int charPos = (scrolledX - previewRelativeX) / characterWidth;
-                    long dataPosition = (line + scrollPosition.getScrollLinePosition()) * bytesPerLine + charPos - scrollPosition.getLineDataOffset();
-                    if (dataPosition >= dataSize) {
-                        g.setClip(clip);
-                        break;
-                    }
-
-                    char[] previewChars = new char[1];
-                    CharsetEncoder encoder = charset.newEncoder();
-                    byte[] data = new byte[maxCharLength];
-
-                    if (maxCharLength > 1) {
-                        int charDataLength = maxCharLength;
-                        if (dataPosition + maxCharLength > dataSize) {
-                            charDataLength = (int) (dataSize - dataPosition);
-                        }
-
-                        codeAreaData.copyToArray(dataPosition, data, 0, charDataLength);
-                        String displayString = new String(data, 0, charDataLength, charset);
-                        if (!displayString.isEmpty()) {
-                            previewChars[0] = displayString.charAt(0);
-                        }
-                    } else {
-                        if (charMappingCharset == null || charMappingCharset != charset) {
-                            buildCharMapping(charset);
-                        }
-
-                        previewChars[0] = charMapping[codeAreaData.getByte(dataPosition) & 0xFF];
-                    }
-                    int posX = previewRelativeX + charPos * characterWidth - scrollPosition.getScrollCharPosition() * characterWidth - scrollPosition.getScrollCharOffset();
-                    if (characterRenderingMode == CharacterRenderingMode.LINE_AT_ONCE) {
-                        g.drawChars(previewChars, 0, 1, posX, posY);
-                    } else {
-                        drawCenteredChar(g, previewChars, 0, characterWidth, posX, posY);
-                    }
-                } else {
-                    int charPos = (scrolledX - dataViewX) / characterWidth;
-                    int byteOffset = computePositionByte(charPos);
-                    int codeCharPos = computeFirstCodeCharPos(byteOffset);
-                    char[] lineChars = new char[codeType.getMaxDigitsForByte()];
-                    long dataPosition = (line + scrollPosition.getScrollLinePosition()) * bytesPerLine + byteOffset - scrollPosition.getLineDataOffset();
-                    if (dataPosition >= dataSize) {
-                        g.setClip(clip);
-                        break;
-                    }
-
-                    byte dataByte = codeAreaData.getByte(dataPosition);
-                    CodeAreaUtils.byteToCharsCode(dataByte, codeType, lineChars, 0, hexCharactersCase);
-                    int posX = dataViewX + codeCharPos * characterWidth - scrollPosition.getScrollCharPosition() * characterWidth - scrollPosition.getScrollCharOffset();
-                    int charsOffset = charPos - codeCharPos;
-                    if (characterRenderingMode == CharacterRenderingMode.LINE_AT_ONCE) {
-                        g.drawChars(lineChars, charsOffset, 1, posX + (charsOffset * characterWidth), posY);
-                    } else {
-                        drawCenteredChar(g, lineChars, charsOffset, characterWidth, posX + (charsOffset * characterWidth), posY);
-                    }
-                }
-                g.setClip(clip);
-                break;
-            }
-            default:
-                throw new IllegalStateException("Unexpected rendering mode " + renderingMode.name());
-        }
+        g.setClip(clipBounds);
     }
 
     @Nonnull
@@ -1136,7 +1091,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         int caretY = (int) (dataViewRect.y + line * lineHeight) - scrollPosition.getScrollLineOffset();
         int caretX;
         if (section == CodeAreaSection.TEXT_PREVIEW) {
-            caretX = previewRelativeX + characterWidth * byteOffset;
+            caretX = dataViewRect.x + previewRelativeX + characterWidth * byteOffset;
         } else {
             caretX = dataViewRect.x + characterWidth * (computeFirstCodeCharPos(byteOffset) + codeOffset);
         }
@@ -1326,6 +1281,10 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         } else {
             scrollPanel.getHorizontalScrollBar().setValue(scrollPosition.getScrollCharPosition() * characterWidth + scrollPosition.getScrollCharOffset());
         }
+    }
+
+    private Rectangle getMainAreaRect() {
+        return new Rectangle(lineNumbersAreaWidth, headerAreaHeight, componentWidth - lineNumbersAreaWidth - 20, componentHeight - headerAreaHeight - 20); // TODO minus scrollbar width
     }
 
     private class VerticalAdjustmentListener implements AdjustmentListener {

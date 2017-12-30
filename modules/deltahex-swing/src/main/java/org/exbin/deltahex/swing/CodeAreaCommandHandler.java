@@ -16,7 +16,6 @@
 package org.exbin.deltahex.swing;
 
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
 import javax.annotation.Nonnull;
 
 /**

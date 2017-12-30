@@ -16,7 +16,6 @@
 package org.exbin.deltahex.swing.basic;
 
 import java.awt.Cursor;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
@@ -26,12 +25,11 @@ import javax.annotation.Nonnull;
 import javax.swing.JComponent;
 import org.exbin.deltahex.capability.CaretCapable;
 import org.exbin.deltahex.swing.CodeArea;
-import org.exbin.deltahex.swing.CodeAreaWorker;
 
 /**
  * Code Area component mouse listener.
  *
- * @version 0.2.0 2017/12/28
+ * @version 0.2.0 2017/12/29
  * @author ExBin Project (http://exbin.org)
  */
 /* package */ class DefaultCodeAreaMouseListener extends MouseAdapter implements MouseMotionListener, MouseWheelListener {
@@ -56,13 +54,17 @@ import org.exbin.deltahex.swing.CodeAreaWorker;
     public void mousePressed(@Nonnull MouseEvent me) {
         codeArea.requestFocus();
         if (codeArea.isEnabled() && me.getButton() == MouseEvent.BUTTON1) {
-            boolean isDataView = me.getSource() != codeArea;
-            int mouseX = isDataView ? me.getX() + view.getX() : me.getX();
-            int mouseY = isDataView ? me.getY() + view.getY() : me.getY();
-            codeArea.getCommandHandler().moveCaret(mouseX, mouseY, me.getModifiersEx());
-            ((CaretCapable) codeArea.getWorker()).revealCursor();
+            moveCaret(me);
             mouseDown = true;
         }
+    }
+
+    private void moveCaret(@Nonnull MouseEvent me) {
+        boolean isDataView = me.getSource() != codeArea;
+        int mouseX = isDataView ? me.getX() + view.getX() : me.getX();
+        int mouseY = isDataView ? me.getY() + view.getY() : me.getY();
+        codeArea.getCommandHandler().moveCaret(mouseX, mouseY, me.getModifiersEx());
+        ((CaretCapable) codeArea.getWorker()).revealCursor();
     }
 
     @Override
@@ -86,11 +88,14 @@ import org.exbin.deltahex.swing.CodeAreaWorker;
         updateMouseCursor(e);
     }
 
-    private void updateMouseCursor(@Nonnull MouseEvent e) {
-        CodeAreaWorker worker = codeArea.getWorker();
-        int cursorShape = ((CaretCapable) worker).getCursorShape(e.getX(), e.getY());
-        Cursor newCursor = cursorShape == 0 ? defaultCursor : textCursor;
+    private void updateMouseCursor(@Nonnull MouseEvent me) {
+        boolean isDataView = me.getSource() != codeArea;
+        int mouseX = isDataView ? me.getX() + view.getX() : me.getX();
+        int mouseY = isDataView ? me.getY() + view.getY() : me.getY();
+        int cursorShape = ((CaretCapable) codeArea.getWorker()).getCursorShape(mouseX, mouseY);
 
+        // Reuse current cursor if unchanged
+        Cursor newCursor = cursorShape == 0 ? defaultCursor : textCursor;
         if (newCursor != currentCursor) {
             currentCursor = newCursor;
             codeArea.setCursor(newCursor);
@@ -99,14 +104,9 @@ import org.exbin.deltahex.swing.CodeAreaWorker;
 
     @Override
     public void mouseDragged(@Nonnull MouseEvent me) {
-        CodeAreaWorker worker = codeArea.getWorker();
         updateMouseCursor(me);
         if (codeArea.isEnabled() && mouseDown) {
-            boolean isDataView = me.getSource() != codeArea;
-            int mouseX = isDataView ? me.getX() + view.getX() : me.getX();
-            int mouseY = isDataView ? me.getY() + view.getY() : me.getY();
-            codeArea.getCommandHandler().moveCaret(mouseX, mouseY, KeyEvent.SHIFT_DOWN_MASK);
-            ((CaretCapable) worker).revealCursor();
+            moveCaret(me);
         }
     }
 
