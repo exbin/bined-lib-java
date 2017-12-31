@@ -38,16 +38,15 @@ import javax.swing.border.LineBorder;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.plaf.basic.BasicBorders;
 import org.exbin.deltahex.CaretPosition;
-import org.exbin.deltahex.DataChangedListener;
-import org.exbin.deltahex.ScrollingListener;
 import org.exbin.deltahex.SelectionChangedListener;
 import org.exbin.deltahex.SelectionRange;
 import org.exbin.deltahex.CodeAreaViewMode;
+import org.exbin.deltahex.EditationMode;
 import org.exbin.deltahex.capability.CaretCapable;
 import org.exbin.deltahex.capability.CharsetCapable;
+import org.exbin.deltahex.capability.EditationModeCapable;
 import org.exbin.deltahex.swing.CodeArea;
 import org.exbin.utils.binary_data.EditableBinaryData;
-import org.exbin.deltahex.capability.CodeTypeCapable;
 import org.exbin.deltahex.capability.SelectionCapable;
 import org.exbin.deltahex.capability.ViewModeCapable;
 import org.exbin.deltahex.swing.basic.DefaultCodeAreaWorker;
@@ -56,7 +55,7 @@ import org.exbin.deltahex.swing.capability.ScrollingCapable;
 /**
  * Hexadecimal editor example panel.
  *
- * @version 0.2.0 2017/12/28
+ * @version 0.2.0 2017/12/31
  * @author ExBin Project (http://exbin.org)
  */
 public class DeltaHexExampleBasicPanel extends javax.swing.JPanel {
@@ -73,13 +72,13 @@ public class DeltaHexExampleBasicPanel extends javax.swing.JPanel {
         this.codeArea = codeArea;
         DefaultCodeAreaWorker worker = (DefaultCodeAreaWorker) codeArea.getWorker();
         splitPane.setRightComponent(codeArea);
-        viewModeComboBox.setSelectedIndex(((ViewModeCapable) codeArea.getWorker()).getViewMode().ordinal());
-        codeTypeComboBox.setSelectedIndex(((CodeTypeCapable) codeArea.getWorker()).getCodeType().ordinal());
+        viewModeComboBox.setSelectedIndex(worker.getViewMode().ordinal());
+        codeTypeComboBox.setSelectedIndex(worker.getCodeType().ordinal());
 //        positionCodeTypeComboBox.setSelectedIndex(codeArea.getPositionCodeType().ordinal());
         activeSectionComboBox.setSelectedIndex(((CaretCapable) codeArea.getWorker()).getCaret().getCaretPosition().getSection().ordinal());
 //        backgroundModeComboBox.setSelectedIndex(codeArea.getBackgroundMode().ordinal());
 //        lineNumbersBackgroundCheckBox.setSelected(codeArea.isLineNumberBackground());
-//        charRenderingComboBox.setSelectedIndex(codeArea.getCharRenderingMode().ordinal());
+        charRenderingComboBox.setSelectedIndex(worker.getCharacterRenderingMode().ordinal());
 //        charAntialiasingComboBox.setSelectedIndex(codeArea.getCharAntialiasingMode().ordinal());
 //        verticalScrollBarVisibilityComboBox.setSelectedIndex(codeArea.getVerticalScrollBarVisibility().ordinal());
 //        verticalScrollModeComboBox.setSelectedIndex(codeArea.getVerticalScrollMode().ordinal());
@@ -90,7 +89,7 @@ public class DeltaHexExampleBasicPanel extends javax.swing.JPanel {
 //        showHeaderCheckBox.setSelected(codeArea.isShowHeader());
 //        showNonprintableCharactersCheckBox.setSelected(codeArea.isShowUnprintableCharacters());
 //        showShadowCursorCheckBox.setSelected(codeArea.isShowShadowCursor());
-//        editationAllowedComboBox.setSelectedIndex(codeArea.getEditationAllowed().ordinal());
+        editationAllowedComboBox.setSelectedIndex(worker.getEditationMode().ordinal());
 //        wrapLineModeCheckBox.setSelected(codeArea.isWrapMode());
 //        lineLengthSpinner.setValue(codeArea.getLineLength());
         dataSizeTextField.setText(String.valueOf(codeArea.getDataSize()));
@@ -100,7 +99,7 @@ public class DeltaHexExampleBasicPanel extends javax.swing.JPanel {
 //        lineNumbersSpaceSpinner.setValue(codeArea.getLineNumberSpaceSize());
 //        lineNumbersLengthComboBox.setSelectedIndex(codeArea.getLineNumberType().ordinal());
 //        lineNumbersLengthSpinner.setValue(codeArea.getLineNumberSpecifiedLength());
-//        cursorRenderingModeComboBox.setSelectedIndex(((CaretCapable) codeArea.getWorker()).getCaret().getRenderingMode().ordinal());
+        cursorRenderingModeComboBox.setSelectedIndex(worker.getCaret().getRenderingMode().ordinal());
 //        cursorInsertShapeComboBox.setSelectedIndex(((CaretCapable) codeArea.getWorker()).getCaret().getInsertCursorShape().ordinal());
 //        cursorOverwriteShapeComboBox.setSelectedIndex(((CaretCapable) codeArea.getWorker()).getCaret().getOverwriteCursorShape().ordinal());
 //        cursorBlinkingRateSpinner.setValue(((CaretCapable) codeArea.getWorker()).getCaret().getBlinkRate());
@@ -131,20 +130,14 @@ public class DeltaHexExampleBasicPanel extends javax.swing.JPanel {
                 }
             }
         });
-        codeArea.addDataChangedListener(new DataChangedListener() {
-            @Override
-            public void dataChanged() {
-                dataSizeTextField.setText(String.valueOf(codeArea.getDataSize()));
-            }
+        codeArea.addDataChangedListener(() -> {
+            dataSizeTextField.setText(String.valueOf(codeArea.getDataSize()));
         });
-        ((ScrollingCapable) codeArea.getWorker()).addScrollingListener(new ScrollingListener() {
-            @Override
-            public void scrolled() {
+        ((ScrollingCapable) codeArea.getWorker()).addScrollingListener(() -> {
 //                CodeAreaScrollPosition scrollPosition = codeArea.getScrollPosition();
 //                verticalPositionTextField.setText(scrollPosition.getScrollLinePosition() + ":" + scrollPosition.getScrollLineOffset());
 //                horizontalPositionTextField.setText(scrollPosition.getScrollCharPosition() + ":" + scrollPosition.getScrollCharOffset());
 //                horizontalByteShiftTextField.setText(String.valueOf(scrollPosition.getLineDataOffset()));
-            }
         });
 
         tabMap.put(modeTab, modePanel);
@@ -1458,7 +1451,7 @@ public class DeltaHexExampleBasicPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_charsetComboBoxActionPerformed
 
     private void editationAllowedComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editationAllowedComboBoxActionPerformed
-//        codeArea.setEditationAllowed(EditationAllowed.values()[editationAllowedComboBox.getSelectedIndex()]);
+        ((EditationModeCapable) codeArea.getWorker()).setEditationMode(EditationMode.values()[editationAllowedComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_editationAllowedComboBoxActionPerformed
 
     private void tabbedPaneStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_tabbedPaneStateChanged

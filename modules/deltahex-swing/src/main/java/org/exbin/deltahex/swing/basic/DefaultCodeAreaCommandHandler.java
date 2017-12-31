@@ -52,7 +52,7 @@ import org.exbin.deltahex.swing.CodeAreaWorker;
 /**
  * Default hexadecimal editor command handler.
  *
- * @version 0.2.0 2017/12/28
+ * @version 0.2.0 2017/12/31
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
@@ -349,6 +349,8 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                         }
                         // TODO
                         caretPosition.setSection(activeSection);
+                        caret.setCaretPosition(caretPosition);
+                        ((CaretCapable) codeArea.getWorker()).notifyCaretMoved();
                         revealCursor();
                         codeArea.repaint();
                     }
@@ -550,7 +552,19 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     }
 
     private void deleteSelection() {
+        BinaryData data = codeArea.getData();
+        if (data == null) {
+            return;
+        }
+        if (!(data instanceof EditableBinaryData)) {
+            throw new IllegalStateException("Data is not editable");
+        }
+
         SelectionRange selection = ((SelectionCapable) codeArea.getWorker()).getSelection();
+        if (selection.isEmpty()) {
+            return;
+        }
+
         long first = selection.getFirst();
         long last = selection.getLast();
         ((EditableBinaryData) codeArea.getData()).remove(first, last - first + 1);
@@ -782,8 +796,6 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         long dataSize = codeArea.getDataSize();
         if (dataSize > 0) {
             ((SelectionCapable) codeArea.getWorker()).setSelection(new SelectionRange(0, dataSize - 1));
-            // TODO ((SelectionCapable) codeArea.getWorker()).notifySelectionChanged();
-            codeArea.repaint();
         }
     }
 

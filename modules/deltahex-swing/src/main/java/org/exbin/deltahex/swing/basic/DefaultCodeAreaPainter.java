@@ -62,7 +62,7 @@ import org.exbin.utils.binary_data.BinaryData;
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2017/12/30
+ * @version 0.2.0 2017/12/31
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaPainter implements CodeAreaPainter {
@@ -283,6 +283,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         lineNumbersLength = getLineNumberLength();
         resetSizes();
         resetCharPositions();
+        initialized = true;
     }
 
     public void dataViewScrolled(@Nonnull Graphics g) {
@@ -391,7 +392,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         paintHeader(g);
         paintLineNumbers(g);
         paintMainArea(g);
-        scrollPanel.repaint();
+//        scrollPanel.paintComponents(g);
         paintCounter++;
     }
 

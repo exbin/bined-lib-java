@@ -134,8 +134,11 @@ public class CodeArea extends JComponent implements CodeAreaControl {
     }
 
     @Override
-    protected void paintComponent(@Nonnull Graphics g) {
+    protected void paintComponent(@Nullable Graphics g) {
         super.paintComponent(g);
+        if (g == null) {
+            return;
+        }
 
         if (!worker.isInitialized()) {
             ((FontCapable) worker).setFont(getFont());

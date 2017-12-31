@@ -350,7 +350,7 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
 
     @Override
     public void notifyCaretChanged() {
-        // TODO
+        codeArea.repaint();
     }
 
     @Nonnull

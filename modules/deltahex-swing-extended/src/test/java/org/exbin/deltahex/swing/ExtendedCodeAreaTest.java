@@ -20,25 +20,27 @@ import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.exbin.deltahex.EditationMode;
+import org.exbin.deltahex.capability.CaretCapable;
+import org.exbin.deltahex.capability.EditationModeCapable;
 import org.exbin.utils.binary_data.ByteArrayEditableData;
 import org.exbin.utils.binary_data.EditableBinaryData;
-import static org.junit.Assert.*;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
  * Tests for codeArea component.
  *
- * @version 0.2.0 2017/04/11
+ * @version 0.2.0 2017/12/31
  * @author ExBin Project (http://exbin.org)
  */
-public class CodeAreaTest {
+public class ExtendedCodeAreaTest {
 
     public static final String SAMPLE_FILES_PATH = "/org/exbin/deltahex/resources/test/";
     public static final String SAMPLE_5BYTES = SAMPLE_FILES_PATH + "5bytes.dat";
     public static final String SAMPLE_10BYTES = SAMPLE_FILES_PATH + "10bytes.dat";
     public static final String SAMPLE_ALLBYTES = SAMPLE_FILES_PATH + "allbytes.dat";
 
-    public CodeAreaTest() {
+    public ExtendedCodeAreaTest() {
     }
 
     @Test
@@ -47,7 +49,7 @@ public class CodeAreaTest {
         codeArea.setData(getSampleData(SAMPLE_ALLBYTES));
         codeArea.selectAll();
         codeArea.delete();
-        assertTrue(codeArea.getDataSize() == 0);
+        Assert.assertTrue(codeArea.getDataSize() == 0);
     }
 
     @Test
@@ -60,13 +62,13 @@ public class CodeAreaTest {
         codeArea.copy();
         codeArea.clearSelection();
         codeArea.paste();
-        assertTrue(codeArea.getDataSize() == dataSize);
+        Assert.assertTrue(codeArea.getDataSize() == dataSize);
     }
 
     @Test
     public void testCopyPasteInInsertMode() {
         CodeArea codeArea = new CodeArea();
-        codeArea.setEditationMode(EditationMode.INSERT);
+        ((EditationModeCapable) codeArea.getWorker()).setEditationMode(EditationMode.INSERT);
         EditableBinaryData sampleData = getSampleData(SAMPLE_ALLBYTES);
         codeArea.setData(sampleData);
         long dataSize = sampleData.getDataSize();
@@ -74,7 +76,7 @@ public class CodeAreaTest {
         codeArea.copy();
         codeArea.clearSelection();
         codeArea.paste();
-        assertTrue(codeArea.getDataSize() == dataSize * 2);
+        Assert.assertTrue(codeArea.getDataSize() == dataSize * 2);
     }
 
     @Test
@@ -86,18 +88,18 @@ public class CodeAreaTest {
         codeArea.selectAll();
         codeArea.copy();
         codeArea.clearSelection();
-        codeArea.getCaret().setCaretPosition(dataSize / 2);
+        ((CaretCapable) codeArea.getWorker()).getCaret().setCaretPosition(dataSize / 2);
         codeArea.paste();
-        assertTrue(codeArea.getDataSize() == (dataSize / 2 + dataSize));
+        Assert.assertTrue(codeArea.getDataSize() == (dataSize / 2 + dataSize));
     }
 
     private EditableBinaryData getSampleData(String dataPath) {
         ByteArrayEditableData data = new ByteArrayEditableData();
-        try (InputStream stream = CodeAreaTest.class.getResourceAsStream(dataPath)) {
+        try (InputStream stream = ExtendedCodeAreaTest.class.getResourceAsStream(dataPath)) {
             data.loadFromStream(stream);
             stream.close();
         } catch (IOException ex) {
-            Logger.getLogger(CodeAreaTest.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ExtendedCodeAreaTest.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         return data;

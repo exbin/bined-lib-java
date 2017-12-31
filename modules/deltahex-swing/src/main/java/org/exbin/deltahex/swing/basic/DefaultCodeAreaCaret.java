@@ -83,13 +83,14 @@ public class DefaultCodeAreaCaret implements CodeAreaCaret {
     }
 
     private void notifyCaredChanged() {
+        // TODO limit to cursor repaint
         ((CaretCapable) codeArea.getWorker()).notifyCaretChanged();
     }
 
     @Override
     public void setCaretPosition(@Nullable CaretPosition caretPosition) {
         if (caretPosition != null) {
-        this.caretPosition.setPosition(caretPosition);
+            this.caretPosition.setPosition(caretPosition);
         } else {
             this.caretPosition.clear();
         }

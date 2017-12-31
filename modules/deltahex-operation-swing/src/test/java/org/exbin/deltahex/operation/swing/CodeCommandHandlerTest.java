@@ -17,13 +17,13 @@ package org.exbin.deltahex.operation.swing;
 
 import org.exbin.deltahex.swing.CodeArea;
 import org.exbin.deltahex.swing.CodeAreaCommandHandler;
-import org.exbin.deltahex.swing.DefaultCodeAreaCommandHandler;
+import org.exbin.deltahex.swing.basic.DefaultCodeAreaCommandHandler;
 import org.junit.Test;
 
 /**
  * Tests for code command handler.
  *
- * @version 0.2.0 2017/08/14
+ * @version 0.2.0 2017/12/31
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeCommandHandlerTest {
