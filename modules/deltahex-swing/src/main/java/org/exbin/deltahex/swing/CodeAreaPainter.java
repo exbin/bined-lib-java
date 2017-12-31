@@ -73,12 +73,12 @@ public interface CodeAreaPainter {
      * Returns closest caret position for provided component relative mouse
      * position.
      *
-     * @param mouseX component relative position X
-     * @param mouseY component relative position Y
+     * @param positionX component relative position X
+     * @param positionY component relative position Y
      * @return closest caret position
      */
     @Nonnull
-    CaretPosition mousePositionToClosestCaretPosition(int mouseX, int mouseY);
+    CaretPosition mousePositionToClosestCaretPosition(int positionX, int positionY);
 
     void updateScrollBars();
 

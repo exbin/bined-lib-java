@@ -142,19 +142,19 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         CodeArea codeArea = worker.getCodeArea();
         dataView = new JPanel();
         dataView.setBorder(null);
+        dataView.setVisible(false);
         dataView.setLayout(null);
         dataView.setOpaque(false);
         // Fill whole area, no more suitable method found so far
         dataView.setPreferredSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
         scrollPanel = new JScrollPane();
         scrollPanel.setBorder(null);
+        scrollPanel.setIgnoreRepaint(true);
         JScrollBar verticalScrollBar = scrollPanel.getVerticalScrollBar();
-        verticalScrollBar.setVisible(false);
         verticalScrollBar.setIgnoreRepaint(true);
         verticalScrollBar.addAdjustmentListener(new VerticalAdjustmentListener());
         JScrollBar horizontalScrollBar = scrollPanel.getHorizontalScrollBar();
-        horizontalScrollBar.setIgnoreRepaint(false);
-        horizontalScrollBar.setVisible(true);
+        horizontalScrollBar.setIgnoreRepaint(true);
         horizontalScrollBar.addAdjustmentListener(new HorizontalAdjustmentListener());
         codeArea.add(scrollPanel);
         scrollPanel.setOpaque(false);
@@ -166,9 +166,9 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         codeArea.addMouseListener(codeAreaMouseListener);
         codeArea.addMouseMotionListener(codeAreaMouseListener);
         codeArea.addMouseWheelListener(codeAreaMouseListener);
-        dataView.addMouseListener(codeAreaMouseListener);
-        dataView.addMouseMotionListener(codeAreaMouseListener);
-        dataView.addMouseWheelListener(codeAreaMouseListener);
+        scrollPanel.addMouseListener(codeAreaMouseListener);
+        scrollPanel.addMouseMotionListener(codeAreaMouseListener);
+        scrollPanel.addMouseWheelListener(codeAreaMouseListener);
     }
 
     @Override
@@ -1009,20 +1009,20 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
     @Nonnull
     @Override
-    public CaretPosition mousePositionToClosestCaretPosition(int mouseX, int mouseY) {
+    public CaretPosition mousePositionToClosestCaretPosition(int positionX, int positionY) {
         CaretPosition caret = new CaretPosition();
-        if (mouseX < lineNumbersAreaWidth) {
-            mouseX = lineNumbersAreaWidth;
+        if (positionX < lineNumbersAreaWidth) {
+            positionX = lineNumbersAreaWidth;
         }
-        int cursorCharX = computeCodeAreaCharacter(mouseX - lineNumbersAreaWidth + scrollPosition.getScrollCharOffset()) + scrollPosition.getScrollCharPosition();
+        int cursorCharX = (positionX - lineNumbersAreaWidth + scrollPosition.getScrollCharOffset()) / characterWidth + scrollPosition.getScrollCharPosition();
         if (cursorCharX < 0) {
             cursorCharX = 0;
         }
 
-        if (mouseY < headerAreaHeight) {
-            mouseY = headerAreaHeight;
+        if (positionY < headerAreaHeight) {
+            positionY = headerAreaHeight;
         }
-        long cursorLineY = computeCodeAreaLine(mouseY - headerAreaHeight + scrollPosition.getScrollLineOffset()) + scrollPosition.getScrollLinePosition();
+        long cursorLineY = (positionY - headerAreaHeight + scrollPosition.getScrollLineOffset()) / lineHeight + scrollPosition.getScrollLinePosition();
         if (cursorLineY < 0) {
             cursorLineY = 0;
         }
@@ -1156,14 +1156,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         return lineCharPosition / (codeType.getMaxDigitsForByte() + 1);
     }
 
-    public int computeCodeAreaCharacter(int pixelX) {
-        return pixelX / characterWidth;
-    }
-
-    public int computeCodeAreaLine(int pixelY) {
-        return pixelY / lineHeight;
-    }
-
     public int computeFirstCodeCharPos(int byteOffset) {
         return byteOffset * (codeType.getMaxDigitsForByte() + 1);
     }
@@ -1172,10 +1164,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         return byteOffset * (codeType.getMaxDigitsForByte() + 1) + codeType.getMaxDigitsForByte() - 1;
     }
 
-//    public long cursorPositionToDataPosition(long line, int byteOffset) throws OutOfBoundsException {
-//        return 16;
-//    }
-//
     /**
      * Draws char in array centering it in precomputed space.
      *
@@ -1319,9 +1307,9 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             }
 
             // TODO
-            notifyScrolled();
-//            repaint();
+            worker.getCodeArea().repaint();
 //            dataViewScrolled(codeArea.getGraphics());
+            notifyScrolled();
         }
     }
 
@@ -1342,7 +1330,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                 }
             }
 
-            //          repaint();
+            worker.getCodeArea().repaint();
 //            dataViewScrolled(codeArea.getGraphics());
             notifyScrolled();
         }

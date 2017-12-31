@@ -22,14 +22,14 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import javax.annotation.Nonnull;
-import javax.swing.JComponent;
+import javax.swing.JScrollPane;
 import org.exbin.deltahex.capability.CaretCapable;
 import org.exbin.deltahex.swing.CodeArea;
 
 /**
  * Code Area component mouse listener.
  *
- * @version 0.2.0 2017/12/29
+ * @version 0.2.0 2017/12/31
  * @author ExBin Project (http://exbin.org)
  */
 /* package */ class DefaultCodeAreaMouseListener extends MouseAdapter implements MouseMotionListener, MouseWheelListener {
@@ -37,14 +37,14 @@ import org.exbin.deltahex.swing.CodeArea;
     public static final int MOUSE_SCROLL_LINES = 3;
 
     private final CodeArea codeArea;
-    private final JComponent view;
+    private final JScrollPane view;
 
     private final Cursor defaultCursor = Cursor.getDefaultCursor();
     private final Cursor textCursor = Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR);
     private Cursor currentCursor;
     private boolean mouseDown = false;
 
-    public DefaultCodeAreaMouseListener(@Nonnull CodeArea codeArea, @Nonnull JComponent view) {
+    public DefaultCodeAreaMouseListener(@Nonnull CodeArea codeArea, @Nonnull JScrollPane view) {
         this.codeArea = codeArea;
         this.view = view;
         currentCursor = codeArea.getCursor();
@@ -60,10 +60,7 @@ import org.exbin.deltahex.swing.CodeArea;
     }
 
     private void moveCaret(@Nonnull MouseEvent me) {
-        boolean isDataView = me.getSource() != codeArea;
-        int mouseX = isDataView ? me.getX() + view.getX() : me.getX();
-        int mouseY = isDataView ? me.getY() + view.getY() : me.getY();
-        codeArea.getCommandHandler().moveCaret(mouseX, mouseY, me.getModifiersEx());
+        codeArea.getCommandHandler().moveCaret(computeRelativeX(me), computeRelativeY(me), me.getModifiersEx());
         ((CaretCapable) codeArea.getWorker()).revealCursor();
     }
 
@@ -89,10 +86,7 @@ import org.exbin.deltahex.swing.CodeArea;
     }
 
     private void updateMouseCursor(@Nonnull MouseEvent me) {
-        boolean isDataView = me.getSource() != codeArea;
-        int mouseX = isDataView ? me.getX() + view.getX() : me.getX();
-        int mouseY = isDataView ? me.getY() + view.getY() : me.getY();
-        int cursorShape = ((CaretCapable) codeArea.getWorker()).getCursorShape(mouseX, mouseY);
+        int cursorShape = ((CaretCapable) codeArea.getWorker()).getCursorShape(computeRelativeX(me), computeRelativeY(me));
 
         // Reuse current cursor if unchanged
         Cursor newCursor = cursorShape == 0 ? defaultCursor : textCursor;
@@ -108,6 +102,16 @@ import org.exbin.deltahex.swing.CodeArea;
         if (codeArea.isEnabled() && mouseDown) {
             moveCaret(me);
         }
+    }
+
+    private int computeRelativeX(@Nonnull MouseEvent me) {
+        boolean isDataView = me.getSource() != codeArea;
+        return isDataView ? me.getX() + view.getX() : me.getX();
+    }
+
+    private int computeRelativeY(@Nonnull MouseEvent me) {
+        boolean isDataView = me.getSource() != codeArea;
+        return isDataView ? me.getY() + view.getY() : me.getY();
     }
 
     @Override
