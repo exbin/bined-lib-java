@@ -24,13 +24,15 @@ import org.exbin.deltahex.CodeAreaCaret;
 /**
  * Support for caret / cursor capability.
  *
- * @version 0.2.0 2017/12/15
+ * @version 0.2.0 2018/01/01
  * @author ExBin Project (http://exbin.org)
  */
 public interface CaretCapable {
 
     @Nonnull
     CodeAreaCaret getCaret();
+
+    boolean isShowMirrorCursor();
 
     void revealCursor();
 

@@ -94,7 +94,7 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
     private CodeType codeType = CodeType.HEXADECIMAL;
     @Nonnull
     private CodeCharactersCase codeCharactersCase = CodeCharactersCase.UPPER;
-    private boolean showShadowCursor = true;
+    private boolean showMirrorCursor = true;
     private boolean lineWrapping = false;
     private int maxBytesPerLine = 16;
 
@@ -151,6 +151,11 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
     @Override
     public DefaultCodeAreaCaret getCaret() {
         return caret;
+    }
+
+    @Override
+    public boolean isShowMirrorCursor() {
+        return showMirrorCursor;
     }
 
     public long getDataPosition() {

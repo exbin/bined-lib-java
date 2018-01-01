@@ -15,14 +15,17 @@
  */
 package org.exbin.deltahex.swing.basic;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.Stroke;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
 import java.nio.charset.Charset;
@@ -104,6 +107,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     private CodeCharactersCase hexCharactersCase;
     private EditationMode editationMode;
     private BasicBorderPaintMode borderPaintMode;
+    private boolean showMirrorCursor;
 
     private int previewCharPos;
     private int previewRelativeX;
@@ -130,6 +134,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     @Nullable
     private Charset charMappingCharset = null;
     private final char[] charMapping = new char[256];
+    // Debug
     private long paintCounter = 0;
 
     @Nullable
@@ -182,6 +187,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         hexCharactersCase = ((CodeCharactersCaseCapable) worker).getCodeCharactersCase();
         editationMode = ((EditationModeCapable) worker).getEditationMode();
         borderPaintMode = ((BorderPaintCapable) worker).getBorderPaintMode();
+        showMirrorCursor = ((CaretCapable) worker).isShowMirrorCursor();
         dataSize = worker.getCodeArea().getDataSize();
 
         linesPerRect = computeLinesPerRectangle();
@@ -649,8 +655,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     }
 
     public void paintLines(@Nonnull Graphics g) {
-        Color randomColor = new Color((float) Math.random(), (float) Math.random(), (float) Math.random());
-        g.setColor(randomColor);
+//        Color randomColor = new Color((float) Math.random(), (float) Math.random(), (float) Math.random());
+//        g.setColor(randomColor);
         long dataPosition = scrollPosition.getScrollLinePosition() * bytesPerLine + scrollPosition.getLineDataOffset();
         int linePositionX = lineNumbersAreaWidth - scrollPosition.getScrollCharPosition() * characterWidth - scrollPosition.getScrollCharOffset();
         int linePositionY = headerAreaHeight + lineHeight - subFontSpace;
@@ -993,17 +999,22 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             }
         }
 
-        // Paint shadow cursor
-//        if (viewMode == CodeAreaViewMode.DUAL && showShadowCursor) {
-//            g.setColor(colors.cursor);
-//            Point shadowCursorPoint = getShadowCursorPoint(bytesPerLine, lineHeight, characterWidth, linesPerRect);
-//            shadowCursorPoint.setLocation(shadowCursorPoint.x + lineNumbersAreaWidth, shadowCursorPoint.y + headerAreaHeight);
-//            Graphics2D g2d = (Graphics2D) g.create();
-//            Stroke dashed = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{2}, 0);
-//            g2d.setStroke(dashed);
-//            g2d.drawRect(shadowCursorPoint.x, shadowCursorPoint.y,
-//                    characterWidth * (getActiveSection() == CodeAreaSection.TEXT_PREVIEW ? codeDigits : 1), lineHeight - 1);
-//        }
+        // Paint mirror cursor
+        if (viewMode == CodeAreaViewMode.DUAL && showMirrorCursor) {
+            Rectangle mirrorCursorRect = getMirrorCursorRect(caret.getDataPosition(), caret.getSection());
+            if (mirrorCursorRect != null) {
+                intersection = mainAreaRect.intersection(mirrorCursorRect);
+                boolean mirrorCursorVisible = !intersection.isEmpty();
+                if (mirrorCursorVisible) {
+                    g.setClip(intersection);
+                    g.setColor(colors.cursor);
+                    Graphics2D g2d = (Graphics2D) g.create();
+                    Stroke dashed = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{2}, 0);
+                    g2d.setStroke(dashed);
+                    g2d.drawRect(mirrorCursorRect.x, mirrorCursorRect.y, mirrorCursorRect.width - 1, mirrorCursorRect.height - 1);
+                }
+            }
+        }
         g.setClip(clipBounds);
     }
 
@@ -1101,39 +1112,16 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         return new Point(caretX, caretY);
     }
 
-    /**
-     * Returns relative shadow cursor position in code area or null if cursor is
-     * not visible.
-     *
-     * @param bytesPerLine bytes per line
-     * @param lineHeight line height
-     * @param charWidth character width
-     * @param linesPerRect lines per visible rectangle
-     * @return cursor position or null
-     */
     @Nullable
-    public Point getShadowCursorPoint(int bytesPerLine, int lineHeight, int charWidth, int linesPerRect) {
-        /*        CaretPosition caretPosition = getCaretPosition();
-        long shiftedPosition = caretPosition.getDataPosition() + scrollPosition.getLineDataOffset();
-        long line = shiftedPosition / bytesPerLine - scrollPosition.getScrollLinePosition();
-        if (line < -1 || line + 1 > linesPerRect) {
+    private Rectangle getMirrorCursorRect(long dataPosition, @Nonnull CodeAreaSection section) {
+        Point mirrorCursorPoint = getPositionPoint(dataPosition, 0, section == CodeAreaSection.CODE_MATRIX ? CodeAreaSection.TEXT_PREVIEW : CodeAreaSection.CODE_MATRIX);
+        if (mirrorCursorPoint == null) {
             return null;
         }
 
-        int byteOffset = (int) (shiftedPosition % bytesPerLine);
+        Rectangle mirrorCursorRect = new Rectangle(mirrorCursorPoint.x, mirrorCursorPoint.y, characterWidth * (section == CodeAreaSection.TEXT_PREVIEW ? codeType.getMaxDigitsForByte() : 1), lineHeight);
 
-        Rectangle dataViewRect = getDataViewRectangle();
-        int caretY = (int) (dataViewRect.y + line * lineHeight) - scrollPosition.getScrollLineOffset();
-        int caretX;
-        if (caretPosition.getSection() == CodeAreaSection.TEXT_PREVIEW) {
-            caretX = dataViewRect.x + charWidth * computeFirstCodeCharPos(byteOffset);
-        } else {
-            caretX = codeArea.getPreviewX() + charWidth * byteOffset;
-        }
-        caretX -= scrollPosition.getScrollCharPosition() * charWidth + scrollPosition.getScrollCharOffset();
-
-        return new Point(caretX, caretY); */
-        return new Point();
+        return mirrorCursorRect;
     }
 
     @Override
@@ -1233,7 +1221,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     }
 
     private int computeLinesPerRectangle() {
-        return 30;
+        return lineHeight == 0 ? 0 : (dataViewHeight + lineHeight - 1) / lineHeight;
     }
 
     private int computeBytesPerLine() {

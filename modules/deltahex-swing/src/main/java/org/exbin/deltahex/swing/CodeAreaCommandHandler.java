@@ -21,7 +21,7 @@ import javax.annotation.Nonnull;
 /**
  * Interface for code area data manipulation.
  *
- * @version 0.2.0 2017/11/06
+ * @version 0.2.0 2018/01/01
  * @author ExBin Project (http://exbin.org)
  */
 public interface CodeAreaCommandHandler {
@@ -110,4 +110,16 @@ public interface CodeAreaCommandHandler {
      * @param modifiers modifiers
      */
     void moveCaret(int positionX, int positionY, int modifiers);
+
+    /**
+     * Performs scrolling.
+     *
+     * @param scrollSize number of scroll units (positive or negative)
+     * @param direction direction of scrolling
+     */
+    void wheelScroll(int scrollSize, @Nonnull ScrollingDirection direction);
+
+    public enum ScrollingDirection {
+        HORIZONTAL, VERTICAL
+    }
 }
