@@ -417,7 +417,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         g.setColor(colors.background);
         g.fillRect(headerArea.x, headerArea.y, headerArea.width, headerArea.height);
 
-        // Black line
+        // Decoration line
         g.setColor(Color.BLACK);
         g.fillRect(0, headerAreaHeight - 1, componentWidth, 1);
 
@@ -655,24 +655,14 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     }
 
     public void paintLines(@Nonnull Graphics g) {
-//        Color randomColor = new Color((float) Math.random(), (float) Math.random(), (float) Math.random());
-//        g.setColor(randomColor);
         long dataPosition = scrollPosition.getScrollLinePosition() * bytesPerLine + scrollPosition.getLineDataOffset();
         int linePositionX = lineNumbersAreaWidth - scrollPosition.getScrollCharPosition() * characterWidth - scrollPosition.getScrollCharOffset();
-        int linePositionY = headerAreaHeight + lineHeight - subFontSpace;
+        int linePositionY = headerAreaHeight;
         g.setColor(Color.BLACK);
         for (int line = 0; line <= linesPerRect; line++) {
             prepareLineData(dataPosition);
             paintLineBackground(g, linePositionX, linePositionY);
             paintLineText(g, linePositionX, linePositionY);
-//            CodeAreaUtils.longToBaseCode(lineNumberCode, 0, dataPosition < 0 ? 0 : dataPosition, 16, lineNumberLength, true, HexCharactersCase.UPPER);
-//            if (characterRenderingMode == CharacterRenderingMode.LINE_AT_ONCE) {
-//                g.drawChars(lineNumberCode, 0, lineNumberLength, compRect.x, positionY);
-//            } else {
-//                for (int digitIndex = 0; digitIndex < lineNumberLength; digitIndex++) {
-//                    drawCenteredChar(g, lineNumberCode, digitIndex, characterWidth, compRect.x + characterWidth * digitIndex, positionY);
-//                }
-//            }
 
             linePositionY += lineHeight;
             dataPosition += bytesPerLine;
@@ -756,7 +746,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             }
             boolean sequenceBreak = false;
 
-            Color color = null; //Color.getPositionColor(byteOnLine, charOnLine, section, colorType, paintData);
+            Color color = getPositionBackgroundColor(byteOnLine, charOnLine, section);
 //            if (renderColorType == null) {
 //                renderColorType = colorType;
 //                renderColor = color;
@@ -787,6 +777,11 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                 renderBackgroundSequence(g, renderOffset, charactersPerLine, linePositionX, linePositionY);
             }
         }
+    }
+
+    private Color getPositionBackgroundColor(int byteOnLine, int charOnLine, @Nonnull CodeAreaSection section) {
+        Color randomColor = new Color(192 + (int) (Math.random() * 63), 192 + (int) (Math.random() * 63), 192 + (int) (Math.random() * 63));
+        return randomColor;
     }
 
     @Override
@@ -831,7 +826,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     }
 
     private void paintLineText(@Nonnull Graphics g, int linePositionX, int linePositionY) {
-        int positionY = linePositionY; // - codeArea.getSubFontSpace();
+        int positionY = linePositionY + lineHeight - subFontSpace;
 
         g.setColor(Color.BLACK);
 //        Rectangle dataViewRectangle = codeArea.getDataViewRectangle();
