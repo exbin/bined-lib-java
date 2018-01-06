@@ -44,12 +44,14 @@ import org.exbin.deltahex.CodeCharactersCase;
 import org.exbin.deltahex.CodeAreaViewMode;
 import org.exbin.deltahex.CodeType;
 import org.exbin.deltahex.EditationMode;
+import org.exbin.deltahex.SelectionRange;
 import org.exbin.deltahex.capability.CaretCapable;
 import org.exbin.deltahex.capability.CharsetCapable;
 import org.exbin.deltahex.capability.CodeCharactersCaseCapable;
 import org.exbin.deltahex.capability.CodeTypeCapable;
 import org.exbin.deltahex.capability.EditationModeCapable;
 import org.exbin.deltahex.capability.LineWrappingCapable;
+import org.exbin.deltahex.capability.SelectionCapable;
 import org.exbin.deltahex.swing.capability.ScrollingCapable;
 import org.exbin.deltahex.capability.ViewModeCapable;
 import org.exbin.deltahex.swing.CharacterRenderingMode;
@@ -65,7 +67,7 @@ import org.exbin.utils.binary_data.BinaryData;
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2017/12/31
+ * @version 0.2.0 2018/01/06
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaPainter implements CodeAreaPainter {
@@ -80,7 +82,9 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     private final JScrollPane scrollPanel;
 
     private CodeAreaViewMode viewMode;
-    private CodeAreaScrollPosition scrollPosition;
+    private final CaretPosition caretPosition = new CaretPosition();
+    private SelectionRange selectionRange = null;
+    private final CodeAreaScrollPosition scrollPosition = new CodeAreaScrollPosition();
     private VerticalScrollUnit verticalScrollUnit;
     private HorizontalScrollUnit horizontalScrollUnit;
     private int scrollX;
@@ -186,6 +190,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         characterRenderingMode = ((AntialiasingCapable) worker).getCharacterRenderingMode();
         hexCharactersCase = ((CodeCharactersCaseCapable) worker).getCodeCharactersCase();
         editationMode = ((EditationModeCapable) worker).getEditationMode();
+        caretPosition.setPosition(((CaretCapable) worker).getCaret().getCaretPosition());
+        selectionRange = ((SelectionCapable) worker).getSelection();
         borderPaintMode = ((BorderPaintCapable) worker).getBorderPaintMode();
         showMirrorCursor = ((CaretCapable) worker).isShowMirrorCursor();
         dataSize = worker.getCodeArea().getDataSize();
@@ -305,7 +311,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     }
 
     private void resetScrollState() {
-        scrollPosition = ((ScrollingCapable) worker).getScrollPosition();
+        scrollPosition.setScrollPosition(((ScrollingCapable) worker).getScrollPosition());
         verticalScrollUnit = ((ScrollingCapable) worker).getVerticalScrollUnit();
         horizontalScrollUnit = ((ScrollingCapable) worker).getHorizontalScrollUnit();
 
@@ -661,8 +667,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         g.setColor(Color.BLACK);
         for (int line = 0; line <= linesPerRect; line++) {
             prepareLineData(dataPosition);
-            paintLineBackground(g, linePositionX, linePositionY);
-            paintLineText(g, linePositionX, linePositionY);
+            paintLineBackground(g, dataPosition, linePositionX, linePositionY);
+            paintLineText(g, dataPosition, linePositionX, linePositionY);
 
             linePositionY += lineHeight;
             dataPosition += bytesPerLine;
@@ -731,7 +737,15 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         }
     }
 
-    private void paintLineBackground(@Nonnull Graphics g, int linePositionX, int linePositionY) {
+    /**
+     * Paints line background.
+     *
+     * @param g graphics
+     * @param lineDataPosition line data position
+     * @param linePositionX line position X
+     * @param linePositionY line position Y
+     */
+    public void paintLineBackground(@Nonnull Graphics g, long lineDataPosition, int linePositionX, int linePositionY) {
         int renderOffset = visibleCharStart;
         Color renderColor = null;
         for (int charOnLine = visibleCharStart; charOnLine < visibleCharEnd; charOnLine++) {
@@ -746,13 +760,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             }
             boolean sequenceBreak = false;
 
-            Color color = getPositionBackgroundColor(byteOnLine, charOnLine, section);
-//            if (renderColorType == null) {
-//                renderColorType = colorType;
-//                renderColor = color;
-//                g.setColor(color);
-//            }
-
+            Color color = getPositionBackgroundColor(lineDataPosition, byteOnLine, charOnLine, section);
             if (!CodeAreaSwingUtils.areSameColors(color, renderColor)) {
                 sequenceBreak = true;
             }
@@ -765,7 +773,9 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
                 if (!CodeAreaSwingUtils.areSameColors(color, renderColor)) {
                     renderColor = color;
-                    g.setColor(color);
+                    if (color != null) {
+                        g.setColor(color);
+                    }
                 }
 
                 renderOffset = charOnLine;
@@ -779,9 +789,23 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         }
     }
 
-    private Color getPositionBackgroundColor(int byteOnLine, int charOnLine, @Nonnull CodeAreaSection section) {
-        Color randomColor = new Color(192 + (int) (Math.random() * 63), 192 + (int) (Math.random() * 63), 192 + (int) (Math.random() * 63));
-        return randomColor;
+    /**
+     * Returns background color for particular code.
+     *
+     * @param lineDataPosition line data position
+     * @param byteOnLine byte on current line
+     * @param charOnLine character on current line
+     * @param section current section
+     * @return color or null for default color
+     */
+    @Nullable
+    public Color getPositionBackgroundColor(long lineDataPosition, int byteOnLine, int charOnLine, @Nonnull CodeAreaSection section) {
+        boolean inSelection = selectionRange != null && selectionRange.isInSelection(lineDataPosition + byteOnLine);
+        if (inSelection) {
+            return section == caretPosition.getSection() ? colors.selectionBackground : colors.selectionMirrorBackground;
+        }
+
+        return null;
     }
 
     @Override
@@ -825,7 +849,15 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         return scrolled;
     }
 
-    private void paintLineText(@Nonnull Graphics g, int linePositionX, int linePositionY) {
+    /**
+     * Paints line text.
+     *
+     * @param g graphics
+     * @param lineDataPosition line data position
+     * @param linePositionX line position X
+     * @param linePositionY line position Y
+     */
+    public void paintLineText(@Nonnull Graphics g, long lineDataPosition, int linePositionX, int linePositionY) {
         int positionY = linePositionY + lineHeight - subFontSpace;
 
         g.setColor(Color.BLACK);

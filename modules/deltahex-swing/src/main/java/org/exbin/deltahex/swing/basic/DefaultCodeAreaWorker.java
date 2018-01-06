@@ -380,6 +380,7 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
     public void setSelection(@Nonnull SelectionRange selection) {
         this.selection = selection;
         notifySelectionChanged();
+        repaint();
     }
 
     @Override

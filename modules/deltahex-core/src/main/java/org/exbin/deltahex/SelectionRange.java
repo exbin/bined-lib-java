@@ -21,7 +21,7 @@ import javax.annotation.concurrent.Immutable;
  * Selection range is selection between two positions where begin represents
  * originating point and end of the selection can be before or after begin.
  *
- * @version 0.2.0 2017/11/17
+ * @version 0.2.0 2018/01/06
  * @author ExBin Project (http://exbin.org)
  */
 @Immutable
@@ -41,12 +41,12 @@ public class SelectionRange {
      * Creates selection range from start to end including start and not
      * including end position.
      *
-     * @param start position selection starts from
-     * @param end position selection ends to without last character
+     * @param start selection start position
+     * @param end selection end position without actual end position itself
      */
     public SelectionRange(long start, long end) {
-        if (start > end) {
-            throw new IllegalStateException("Selection end (" + end + ") cannot be before it's start (" + start + ")");
+        if (start < 0 || end < 0) {
+            throw new IllegalArgumentException("Selection (" + start + ", " + end + ") with negative range is not allowed");
         }
 
         this.start = start;
@@ -67,7 +67,7 @@ public class SelectionRange {
      * @return data position
      */
     public long getFirst() {
-        return start;
+        return end < start ? end + 1 : start;
     }
 
     /**
@@ -76,7 +76,7 @@ public class SelectionRange {
      * @return data position
      */
     public long getLast() {
-        return end - 1;
+        return end < start ? start : end - 1;
     }
 
     /**
@@ -85,7 +85,7 @@ public class SelectionRange {
      * @return length in bytes
      */
     public long getLength() {
-        return end - start;
+        return end < start ? start - end : end - start;
     }
 
     /**
@@ -95,5 +95,15 @@ public class SelectionRange {
      */
     public boolean isEmpty() {
         return start == end;
+    }
+
+    /**
+     * Checks if position belongs to this selection.
+     *
+     * @param position position
+     * @return true if position belongs to current selection range.
+     */
+    public boolean isInSelection(long position) {
+        return end < start ? position > end && position <= start : position >= start && position < end;
     }
 }

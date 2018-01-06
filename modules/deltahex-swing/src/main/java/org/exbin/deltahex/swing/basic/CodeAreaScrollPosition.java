@@ -16,11 +16,12 @@
 package org.exbin.deltahex.swing.basic;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * Code Area scrolling position.
  *
- * @version 0.2.0 2017/04/25
+ * @version 0.2.0 2018/01/06
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeAreaScrollPosition {
@@ -100,6 +101,18 @@ public class CodeAreaScrollPosition {
 
     public void setVerticalOverflowMode(@Nonnull VerticalOverflowMode verticalOverflowMode) {
         this.verticalOverflowMode = verticalOverflowMode;
+    }
+
+    public void setScrollPosition(@Nullable CodeAreaScrollPosition scrollPosition) {
+        if (scrollPosition == null) {
+            reset();
+        } else {
+            scrollLinePosition = scrollPosition.getScrollLinePosition();
+            scrollLineOffset = scrollPosition.getScrollLineOffset();
+            scrollCharPosition = scrollPosition.getScrollCharPosition();
+            scrollCharOffset = scrollPosition.getScrollCharOffset();
+            lineDataOffset = scrollPosition.getLineDataOffset();
+        }
     }
 
     /**

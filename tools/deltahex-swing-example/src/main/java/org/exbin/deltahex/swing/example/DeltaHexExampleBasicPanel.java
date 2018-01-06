@@ -38,7 +38,6 @@ import javax.swing.border.LineBorder;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.plaf.basic.BasicBorders;
 import org.exbin.deltahex.CaretPosition;
-import org.exbin.deltahex.SelectionChangedListener;
 import org.exbin.deltahex.SelectionRange;
 import org.exbin.deltahex.CodeAreaViewMode;
 import org.exbin.deltahex.EditationMode;
@@ -55,7 +54,7 @@ import org.exbin.deltahex.swing.capability.ScrollingCapable;
 /**
  * Hexadecimal editor example panel.
  *
- * @version 0.2.0 2017/12/31
+ * @version 0.2.0 2018/01/06
  * @author ExBin Project (http://exbin.org)
  */
 public class DeltaHexExampleBasicPanel extends javax.swing.JPanel {
@@ -116,18 +115,15 @@ public class DeltaHexExampleBasicPanel extends javax.swing.JPanel {
             codeOffsetTextField.setText(String.valueOf(caretPosition.getCodeOffset()));
             activeSectionComboBox.setSelectedIndex(caretPosition.getSection().ordinal());
         });
-        ((SelectionCapable) codeArea.getWorker()).addSelectionChangedListener(new SelectionChangedListener() {
-            @Override
-            public void selectionChanged(SelectionRange selection) {
-                if (selection != null) {
-                    long first = ((SelectionCapable) codeArea.getWorker()).getSelection().getFirst();
-                    selectionStartTextField.setText(String.valueOf(first));
-                    long last = ((SelectionCapable) codeArea.getWorker()).getSelection().getLast();
-                    selectionEndTextField.setText(String.valueOf(last));
-                } else {
-                    selectionStartTextField.setText("");
-                    selectionEndTextField.setText("");
-                }
+        ((SelectionCapable) codeArea.getWorker()).addSelectionChangedListener((SelectionRange selection) -> {
+            if (selection != null) {
+                long first = ((SelectionCapable) codeArea.getWorker()).getSelection().getFirst();
+                selectionStartTextField.setText(String.valueOf(first));
+                long last = ((SelectionCapable) codeArea.getWorker()).getSelection().getLast();
+                selectionEndTextField.setText(String.valueOf(last));
+            } else {
+                selectionStartTextField.setText("");
+                selectionEndTextField.setText("");
             }
         });
         codeArea.addDataChangedListener(() -> {
