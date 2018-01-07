@@ -17,11 +17,12 @@ package org.exbin.deltahex.swing;
 
 import java.awt.Graphics;
 import javax.annotation.Nonnull;
+import org.exbin.deltahex.CaretPosition;
 
 /**
  * Hexadecimal editor worker interface.
  *
- * @version 0.2.0 2017/12/10
+ * @version 0.2.0 2018/01/07
  * @author ExBin Project (http://exbin.org)
  */
 public interface CodeAreaWorker {
@@ -57,4 +58,14 @@ public interface CodeAreaWorker {
      * Resets painter state for new painting.
      */
     void reset();
+
+    /**
+     * Computes position for movement action.
+     *
+     * @param position source position
+     * @param direction movement direction
+     * @return target position
+     */
+    @Nonnull
+    CaretPosition computeMovePosition(@Nonnull CaretPosition position, @Nonnull MovementDirection direction);
 }

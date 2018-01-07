@@ -59,6 +59,7 @@ import org.exbin.deltahex.swing.CodeArea;
 import org.exbin.deltahex.swing.CodeAreaPainter;
 import org.exbin.deltahex.swing.CodeAreaSwingUtils;
 import org.exbin.deltahex.swing.CodeAreaWorker;
+import org.exbin.deltahex.swing.MovementDirection;
 import org.exbin.deltahex.swing.capability.AntialiasingCapable;
 import org.exbin.deltahex.swing.capability.BorderPaintCapable;
 import org.exbin.deltahex.swing.capability.FontCapable;
@@ -67,7 +68,7 @@ import org.exbin.utils.binary_data.BinaryData;
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2018/01/06
+ * @version 0.2.0 2018/01/07
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaPainter implements CodeAreaPainter {
@@ -860,7 +861,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     public void paintLineText(@Nonnull Graphics g, long lineDataPosition, int linePositionX, int linePositionY) {
         int positionY = linePositionY + lineHeight - subFontSpace;
 
-        g.setColor(Color.BLACK);
+        Color renderColor = null;
+        g.setColor(colors.foreground);
 //        Rectangle dataViewRectangle = codeArea.getDataViewRectangle();
 //        g.drawString("[" + String.valueOf(dataViewRectangle.x) + "," + String.valueOf(dataViewRectangle.y) + "," + String.valueOf(dataViewRectangle.width) + "," + String.valueOf(dataViewRectangle.height) + "]", linePositionX, positionY);
 
@@ -880,6 +882,11 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             }
             boolean sequenceBreak = false;
             boolean nativeWidth = true;
+
+            Color color = getPositionTextColor(lineDataPosition, byteOnLine, charOnLine, section);
+            if (!CodeAreaSwingUtils.areSameColors(color, renderColor)) {
+                sequenceBreak = true;
+            }
 
             int currentCharWidth = 0;
             if (characterRenderingMode != CharacterRenderingMode.LINE_AT_ONCE) {
@@ -921,12 +928,40 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                 } else {
                     renderOffset = charOnLine;
                 }
+
+                if (!CodeAreaSwingUtils.areSameColors(color, renderColor)) {
+                    renderColor = color;
+                    if (color != null) {
+                        g.setColor(color);
+                    } else {
+                        g.setColor(colors.foreground);
+                    }
+                }
             }
         }
 
         if (renderOffset < charactersPerLine) {
             renderCharSequence(g, renderOffset, charactersPerLine, linePositionX, positionY);
         }
+    }
+
+    /**
+     * Returns background color for particular code.
+     *
+     * @param lineDataPosition line data position
+     * @param byteOnLine byte on current line
+     * @param charOnLine character on current line
+     * @param section current section
+     * @return color or null for default color
+     */
+    @Nullable
+    public Color getPositionTextColor(long lineDataPosition, int byteOnLine, int charOnLine, @Nonnull CodeAreaSection section) {
+        boolean inSelection = selectionRange != null && selectionRange.isInSelection(lineDataPosition + byteOnLine);
+        if (inSelection) {
+            return section == caretPosition.getSection() ? colors.selectionForeground : colors.selectionMirrorForeground;
+        }
+
+        return null;
     }
 
     @Override
@@ -1105,6 +1140,11 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         caret.setDataPosition(dataPosition);
         caret.setCodeOffset(codeOffset);
         return caret;
+    }
+
+    @Override
+    public CaretPosition computeMovePosition(CaretPosition position, MovementDirection direction) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     /**

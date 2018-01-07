@@ -49,6 +49,7 @@ import org.exbin.deltahex.swing.capability.ScrollingCapable;
 import org.exbin.deltahex.capability.SelectionCapable;
 import org.exbin.deltahex.capability.CodeCharactersCaseCapable;
 import org.exbin.deltahex.capability.LineWrappingCapable;
+import org.exbin.deltahex.swing.MovementDirection;
 import org.exbin.deltahex.swing.capability.AntialiasingCapable;
 import org.exbin.deltahex.swing.capability.BorderPaintCapable;
 import org.exbin.deltahex.swing.capability.FontCapable;
@@ -56,7 +57,7 @@ import org.exbin.deltahex.swing.capability.FontCapable;
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2017/12/23
+ * @version 0.2.0 2018/01/07
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, CaretCapable, ScrollingCapable, ViewModeCapable,
@@ -271,6 +272,12 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
     @Override
     public CaretPosition mousePositionToClosestCaretPosition(int positionX, int positionY) {
         return painter.mousePositionToClosestCaretPosition(positionX, positionY);
+    }
+
+    @Nonnull
+    @Override
+    public CaretPosition computeMovePosition(@Nonnull CaretPosition position, @Nonnull MovementDirection direction) {
+        return painter.computeMovePosition(position, direction);
     }
 
     private void updateScrollBars() {

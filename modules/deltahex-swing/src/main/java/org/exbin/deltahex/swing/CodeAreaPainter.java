@@ -22,7 +22,7 @@ import org.exbin.deltahex.CaretPosition;
 /**
  * Hexadecimal editor painter interface.
  *
- * @version 0.2.0 2017/12/17
+ * @version 0.2.0 2018/01/07
  * @author ExBin Project (http://exbin.org)
  */
 public interface CodeAreaPainter {
@@ -93,4 +93,14 @@ public interface CodeAreaPainter {
      * @return true if any scrolling was performed
      */
     boolean revealPosition(@Nonnull CaretPosition caretPosition);
+
+    /**
+     * Computes position for movement action.
+     *
+     * @param position source position
+     * @param direction movement direction
+     * @return target position
+     */
+    @Nonnull
+    CaretPosition computeMovePosition(@Nonnull CaretPosition position, @Nonnull MovementDirection direction);
 }
