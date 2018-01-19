@@ -72,8 +72,8 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
 
     @Nonnull
     private final DefaultCodeAreaCaret caret;
-    @Nullable
-    private SelectionRange selection = null;
+    @Nonnull
+    private SelectionRange selection = new SelectionRange();
     @Nonnull
     private final CodeAreaScrollPosition scrollPosition = new CodeAreaScrollPosition();
 
@@ -385,6 +385,10 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
 
     @Override
     public void setSelection(@Nonnull SelectionRange selection) {
+        if (selection == null) {
+            throw new IllegalArgumentException("Null selection is not allowed");
+        }
+
         this.selection = selection;
         notifySelectionChanged();
         repaint();
@@ -392,7 +396,7 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
 
     @Override
     public boolean hasSelection() {
-        return selection != null && !selection.isEmpty();
+        return !selection.isEmpty();
     }
 
     @Nonnull

@@ -48,6 +48,7 @@ import org.exbin.deltahex.capability.EditationModeCapable;
 import org.exbin.deltahex.capability.SelectionCapable;
 import org.exbin.deltahex.capability.ViewModeCapable;
 import org.exbin.deltahex.swing.CodeAreaWorker;
+import org.exbin.deltahex.swing.MovementDirection;
 
 /**
  * Default hexadecimal editor command handler.
@@ -188,13 +189,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 //                        codeArea.notifyScrolled();
 //                    }
                 } else {
-//                    if (caretPosition.getDataPosition() > 0) {
-//                        if (caretPosition.getDataPosition() >= bytesPerLine) {
-//                            ((CaretCapable) codeArea.getWorker()).getCaret().setCaretPosition(new CaretPosition(caretPosition.getDataPosition() - bytesPerLine, caretPosition.getCodeOffset()));
-//                            notifyCaretMoved();
-//                        }
-//                        updateSelection(keyEvent.getModifiersEx(), caretPosition);
-//                    }
+                    moveUp(keyEvent.getModifiersEx());
                     sequenceBreak();
                     revealCursor();
                 }
@@ -214,14 +209,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 //                        codeArea.notifyScrolled();
 //                    }
                 } else {
-//                    if (caretPosition.getDataPosition() < dataSize) {
-//                        if (caretPosition.getDataPosition() + bytesPerLine < dataSize
-//                                || (caretPosition.getDataPosition() + bytesPerLine == dataSize && caretPosition.getCodeOffset() == 0)) {
-//                            ((CaretCapable) codeArea.getWorker()).getCaret().setCaretPosition(new CaretPosition(caretPosition.getDataPosition() + bytesPerLine, caretPosition.getCodeOffset()));
-//                            notifyCaretMoved();
-//                        }
-//                        updateSelection(keyEvent.getModifiersEx(), caretPosition);
-//                    }
+                    moveDown(keyEvent.getModifiersEx());
                     sequenceBreak();
                     revealCursor();
                 }
@@ -801,7 +789,8 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
     @Override
     public void clearSelection() {
-        ((SelectionCapable) codeArea.getWorker()).setSelection(new SelectionRange());
+        SelectionRange selection = ((SelectionCapable) codeArea.getWorker()).getSelection();
+        ((SelectionCapable) codeArea.getWorker()).setSelection(new SelectionRange(selection.getStart(), selection.getStart()));
     }
 
     @Override
@@ -855,11 +844,13 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 //        }
     }
 
-    public void updateSelection(int modifiers, CaretPosition caretPosition) {
+    public void updateSelection(int modifiers, @Nonnull CaretPosition caretPosition) {
         DefaultCodeAreaCaret caret = (DefaultCodeAreaCaret) ((CaretCapable) codeArea.getWorker()).getCaret();
         SelectionRange selection = ((SelectionCapable) codeArea.getWorker()).getSelection();
         if ((modifiers & KeyEvent.SHIFT_DOWN_MASK) > 0) {
-            long currentPosition = caret.getDataPosition();
+            ((SelectionCapable) codeArea.getWorker()).setSelection(new SelectionRange(selection.getStart(), caret.getDataPosition()));
+
+            /*            long currentPosition = caret.getDataPosition();
             long end = currentPosition;
             long start;
             if (!selection.isEmpty()) {
@@ -876,11 +867,10 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                 } else {
                     ((SelectionCapable) codeArea.getWorker()).setSelection(new SelectionRange(start, start < currentPosition ? end - 1 : end));
                 }
-            }
+            } */
         } else {
-            clearSelection();
+            ((SelectionCapable) codeArea.getWorker()).setSelection(new SelectionRange(caret.getDataPosition(), caret.getDataPosition()));
         }
-        codeArea.repaint();
     }
 
     private void updateCanPaste() {
@@ -898,48 +888,46 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         codeArea.repaint();
     }
 
-    public void moveRight(int modifiers) {
-        DefaultCodeAreaCaret caret = (DefaultCodeAreaCaret) ((CaretCapable) codeArea.getWorker()).getCaret();
-        CaretPosition caretPosition = caret.getCaretPosition();
-        if (caretPosition.getDataPosition() < codeArea.getDataSize()) {
-            if (caret.getSection() == CodeAreaSection.CODE_MATRIX) {
-                int codeOffset = caret.getCodeOffset();
-                if (caretPosition.getDataPosition() < codeArea.getDataSize()) {
-                    CodeType codeType = ((CodeTypeCapable) codeArea.getWorker()).getCodeType();
-                    if (codeOffset < codeType.getMaxDigitsForByte() - 1) {
-                        caret.setCodeOffset(codeOffset + 1);
-                    } else {
-                        caret.setCaretPosition(caretPosition.getDataPosition() + 1, 0);
-                    }
-                    updateSelection(modifiers, caretPosition);
-                    notifyCaretMoved();
-                }
-            } else {
-                caret.setCaretPosition(caretPosition.getDataPosition() + 1);
-                updateSelection(modifiers, caretPosition);
-                notifyCaretMoved();
-            }
-        }
-    }
-
     public void moveLeft(int modifiers) {
         DefaultCodeAreaCaret caret = (DefaultCodeAreaCaret) ((CaretCapable) codeArea.getWorker()).getCaret();
         CaretPosition caretPosition = caret.getCaretPosition();
-        if (caret.getSection() == CodeAreaSection.CODE_MATRIX) {
-            int codeOffset = caret.getCodeOffset();
-            if (codeOffset > 0) {
-                caret.setCodeOffset(codeOffset - 1);
-                updateSelection(modifiers, caretPosition);
-                notifyCaretMoved();
-            } else if (caretPosition.getDataPosition() > 0) {
-                CodeType codeType = ((CodeTypeCapable) codeArea.getWorker()).getCodeType();
-                caret.setCaretPosition(caretPosition.getDataPosition() - 1, codeType.getMaxDigitsForByte() - 1);
-                updateSelection(modifiers, caretPosition);
-                notifyCaretMoved();
-            }
-        } else if (caretPosition.getDataPosition() > 0) {
-            caret.setCaretPosition(caretPosition.getDataPosition() - 1);
-            updateSelection(modifiers, caretPosition);
+        CaretPosition movePosition = codeArea.getWorker().computeMovePosition(caretPosition, MovementDirection.LEFT);
+        if (!caretPosition.equals(movePosition)) {
+            caret.setCaretPosition(movePosition);
+            updateSelection(modifiers, movePosition);
+            notifyCaretMoved();
+        }
+    }
+
+    public void moveRight(int modifiers) {
+        DefaultCodeAreaCaret caret = (DefaultCodeAreaCaret) ((CaretCapable) codeArea.getWorker()).getCaret();
+        CaretPosition caretPosition = caret.getCaretPosition();
+        CaretPosition movePosition = codeArea.getWorker().computeMovePosition(caretPosition, MovementDirection.RIGHT);
+        if (!caretPosition.equals(movePosition)) {
+            caret.setCaretPosition(movePosition);
+            updateSelection(modifiers, movePosition);
+            notifyCaretMoved();
+        }
+    }
+
+    public void moveUp(int modifiers) {
+        DefaultCodeAreaCaret caret = (DefaultCodeAreaCaret) ((CaretCapable) codeArea.getWorker()).getCaret();
+        CaretPosition caretPosition = caret.getCaretPosition();
+        CaretPosition movePosition = codeArea.getWorker().computeMovePosition(caretPosition, MovementDirection.UP);
+        if (!caretPosition.equals(movePosition)) {
+            caret.setCaretPosition(movePosition);
+            updateSelection(modifiers, movePosition);
+            notifyCaretMoved();
+        }
+    }
+
+    public void moveDown(int modifiers) {
+        DefaultCodeAreaCaret caret = (DefaultCodeAreaCaret) ((CaretCapable) codeArea.getWorker()).getCaret();
+        CaretPosition caretPosition = caret.getCaretPosition();
+        CaretPosition movePosition = codeArea.getWorker().computeMovePosition(caretPosition, MovementDirection.DOWN);
+        if (!caretPosition.equals(movePosition)) {
+            caret.setCaretPosition(movePosition);
+            updateSelection(modifiers, movePosition);
             notifyCaretMoved();
         }
     }
@@ -966,6 +954,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
     private void revealCursor() {
         ((CaretCapable) codeArea.getWorker()).revealCursor();
+        codeArea.repaint();
     }
 
     private void notifyCaretMoved() {

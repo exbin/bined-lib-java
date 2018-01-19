@@ -67,7 +67,7 @@ public class SelectionRange {
      * @return data position
      */
     public long getFirst() {
-        return end < start ? end + 1 : start;
+        return start < end ? start : end;
     }
 
     /**
@@ -76,7 +76,7 @@ public class SelectionRange {
      * @return data position
      */
     public long getLast() {
-        return end < start ? start : end - 1;
+        return start < end ? end - 1 : start - 1;
     }
 
     /**
@@ -85,7 +85,7 @@ public class SelectionRange {
      * @return length in bytes
      */
     public long getLength() {
-        return end < start ? start - end : end - start;
+        return start < end ? end - start : start - end;
     }
 
     /**
@@ -104,6 +104,6 @@ public class SelectionRange {
      * @return true if position belongs to current selection range.
      */
     public boolean isInSelection(long position) {
-        return end < start ? position > end && position <= start : position >= start && position < end;
+        return start < end ? position >= start && position < end : position >= end && position < start;
     }
 }

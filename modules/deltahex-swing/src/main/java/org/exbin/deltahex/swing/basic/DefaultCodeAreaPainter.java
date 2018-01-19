@@ -1143,8 +1143,67 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     }
 
     @Override
-    public CaretPosition computeMovePosition(CaretPosition position, MovementDirection direction) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public CaretPosition computeMovePosition(@Nonnull CaretPosition position, @Nonnull MovementDirection direction) {
+        CaretPosition target = new CaretPosition(position.getDataPosition(), position.getCodeOffset(), position.getSection());
+        switch (direction) {
+            case LEFT: {
+                if (position.getSection() == CodeAreaSection.CODE_MATRIX) {
+                    int codeOffset = position.getCodeOffset();
+                    if (codeOffset > 0) {
+                        target.setCodeOffset(codeOffset - 1);
+                    } else if (position.getDataPosition() > 0) {
+                        target.setDataPosition(position.getDataPosition() - 1);
+                        target.setCodeOffset(codeType.getMaxDigitsForByte() - 1);
+                    }
+                } else if (position.getDataPosition() > 0) {
+                    target.setDataPosition(position.getDataPosition() - 1);
+                }
+                break;
+            }
+            case RIGHT: {
+                if (position.getSection() == CodeAreaSection.CODE_MATRIX) {
+                    int codeOffset = position.getCodeOffset();
+                    if (codeOffset < codeType.getMaxDigitsForByte() - 1) {
+                        target.setCodeOffset(codeOffset + 1);
+                    } else if (position.getDataPosition() < dataSize) {
+                        target.setDataPosition(position.getDataPosition() + 1);
+                        target.setCodeOffset(0);
+                    }
+                } else if (position.getDataPosition() < dataSize) {
+                    target.setDataPosition(position.getDataPosition() + 1);
+                }
+                break;
+            }
+            case UP: {
+                if (position.getDataPosition() >= bytesPerLine) {
+                    target.setDataPosition(position.getDataPosition() - bytesPerLine);
+                }
+                break;
+            }
+            case DOWN: {
+                if (position.getDataPosition() + bytesPerLine < dataSize || (position.getDataPosition() + bytesPerLine == dataSize && position.getCodeOffset() == 0)) {
+                    target.setDataPosition(position.getDataPosition() + bytesPerLine);
+                }
+                break;
+            }
+            case LINE_START: {
+                break;
+            }
+            case LINE_END: {
+                break;
+            }
+            case PAGE_UP: {
+                break;
+            }
+            case PAGE_DOWN: {
+                break;
+            }
+            default: {
+                throw new IllegalStateException("Unexpected movement direction " + direction.name());
+            }
+        }
+
+        return target;
     }
 
     /**
