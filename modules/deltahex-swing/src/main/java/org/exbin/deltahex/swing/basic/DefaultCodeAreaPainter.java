@@ -1187,15 +1187,47 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                 break;
             }
             case LINE_START: {
+                long dataPosition = position.getDataPosition();
+                dataPosition -= (dataPosition % bytesPerLine);
+                target.setDataPosition(dataPosition);
+                target.setCodeOffset(0);
                 break;
             }
             case LINE_END: {
+                long dataPosition = position.getDataPosition();
+                long increment = bytesPerLine - 1 - (dataPosition % bytesPerLine);
+                if (dataPosition > Long.MAX_VALUE - increment || dataPosition + increment > dataSize) {
+                    target.setDataPosition(dataSize);
+                } else {
+                    target.setDataPosition(dataPosition + increment);
+                }
+                if (position.getSection() == CodeAreaSection.CODE_MATRIX) {
+                    target.setCodeOffset(codeType.getMaxDigitsForByte() - 1);
+                }
                 break;
             }
             case PAGE_UP: {
                 break;
             }
             case PAGE_DOWN: {
+                break;
+            }
+            case DOC_START: {
+                target.setDataPosition(0);
+                target.setCodeOffset(0);
+                break;
+            }
+            case DOC_END: {
+                target.setDataPosition(dataSize);
+                target.setCodeOffset(0);
+                break;
+            }
+            case SWITCH_SECTION: {
+                CodeAreaSection activeSection = caretPosition.getSection() == CodeAreaSection.CODE_MATRIX ? CodeAreaSection.TEXT_PREVIEW : CodeAreaSection.CODE_MATRIX;
+                if (activeSection == CodeAreaSection.TEXT_PREVIEW) {
+                    target.setCodeOffset(0);
+                }
+                target.setSection(activeSection);
                 break;
             }
             default: {
