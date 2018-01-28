@@ -102,5 +102,5 @@ public interface CodeAreaPainter {
      * @return target position
      */
     @Nonnull
-    CaretPosition computeMovePosition(@Nonnull CaretPosition position, @Nonnull MovementDirection direction);
+    CaretPosition computeMovePosition(@Nonnull CaretPosition position, @Nonnull MovementShift direction);
 }

@@ -16,14 +16,11 @@
 package org.exbin.deltahex.swing;
 
 /**
- * Enumeration of supported movements.
+ * Enumeration of supported scrolling directions.
  *
- * @version 0.2.0 2018/01/20
+ * @version 0.2.0 2018/01/28
  * @author ExBin Project (http://exbin.org)
  */
-public enum MovementDirection {
-    UP, DOWN, LEFT, RIGHT,
-    PAGE_UP, PAGE_DOWN,
-    LINE_START, LINE_END, DOC_START, DOC_END,
-    SWITCH_SECTION
+public enum ScrollingShift {
+    PAGE_UP, PAGE_DOWN
 }

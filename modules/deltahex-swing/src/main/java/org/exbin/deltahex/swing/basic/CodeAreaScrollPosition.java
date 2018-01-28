@@ -15,6 +15,7 @@
  */
 package org.exbin.deltahex.swing.basic;
 
+import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -124,6 +125,41 @@ public class CodeAreaScrollPosition {
         scrollCharPosition = 0;
         scrollCharOffset = 0;
         lineDataOffset = 0;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(scrollLinePosition, scrollLineOffset, scrollCharPosition, scrollCharOffset, lineDataOffset, verticalOverflowMode);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final CodeAreaScrollPosition other = (CodeAreaScrollPosition) obj;
+        if (this.scrollLinePosition != other.scrollLinePosition) {
+            return false;
+        }
+        if (this.scrollLineOffset != other.scrollLineOffset) {
+            return false;
+        }
+        if (this.scrollCharPosition != other.scrollCharPosition) {
+            return false;
+        }
+        if (this.scrollCharOffset != other.scrollCharOffset) {
+            return false;
+        }
+        if (this.lineDataOffset != other.lineDataOffset) {
+            return false;
+        }
+        return this.verticalOverflowMode == other.verticalOverflowMode;
     }
 
     /**
