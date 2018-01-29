@@ -27,13 +27,15 @@ import org.exbin.deltahex.swing.basic.VerticalScrollUnit;
 /**
  * Support for code type capability.
  *
- * @version 0.2.0 2018/01/28
+ * @version 0.2.0 2018/01/29
  * @author ExBin Project (http://exbin.org)
  */
 public interface ScrollingCapable {
 
     @Nonnull
     CodeAreaScrollPosition getScrollPosition();
+
+    void setScrollPosition(@Nonnull CodeAreaScrollPosition scrollPosition);
 
     @Nonnull
     ScrollBarVisibility getVerticalScrollBarVisibility();
@@ -63,6 +65,8 @@ public interface ScrollingCapable {
 
     @Nonnull
     CodeAreaScrollPosition computeScrolling(@Nonnull CodeAreaScrollPosition startPosition, @Nonnull ScrollingShift scrollingShift);
+    
+    void updateScrollBars();
 
     public static class ScrollingCapability implements WorkerCapability {
 

@@ -60,6 +60,7 @@ import org.exbin.deltahex.swing.CodeAreaPainter;
 import org.exbin.deltahex.swing.CodeAreaSwingUtils;
 import org.exbin.deltahex.swing.CodeAreaWorker;
 import org.exbin.deltahex.swing.MovementShift;
+import org.exbin.deltahex.swing.ScrollingShift;
 import org.exbin.deltahex.swing.capability.AntialiasingCapable;
 import org.exbin.deltahex.swing.capability.BorderPaintCapable;
 import org.exbin.deltahex.swing.capability.FontCapable;
@@ -68,7 +69,7 @@ import org.exbin.utils.binary_data.BinaryData;
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2018/01/07
+ * @version 0.2.0 2018/01/29
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaPainter implements CodeAreaPainter {
@@ -1236,6 +1237,57 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         }
 
         return target;
+    }
+
+    @Nonnull
+    @Override
+    public CodeAreaScrollPosition computeScrolling(@Nonnull CodeAreaScrollPosition startPosition, @Nonnull ScrollingShift scrollingShift) {
+        CodeAreaScrollPosition targetPosition = new CodeAreaScrollPosition();
+        targetPosition.setScrollPosition(startPosition);
+
+        switch (scrollingShift) {
+            case UP: {
+                if (startPosition.getScrollLinePosition() == 0) {
+                    targetPosition.setScrollLineOffset(0);
+                } else {
+                    targetPosition.setScrollLinePosition(startPosition.getScrollLinePosition() - 1);
+                }
+                break;
+            }
+            case DOWN: {
+//                if (startPosition.getScrollLinePosition() < linesPerDocument) {
+                targetPosition.setScrollLinePosition(startPosition.getScrollLinePosition() + 1);
+//                }
+                break;
+            }
+            case LEFT: {
+                throw new UnsupportedOperationException("Not supported yet.");
+                // break;
+            }
+            case RIGHT: {
+                throw new UnsupportedOperationException("Not supported yet.");
+                // break;
+            }
+            case PAGE_UP: {
+                if (startPosition.getScrollLinePosition() < linesPerRect) {
+                    targetPosition.setScrollLinePosition(0);
+                    targetPosition.setScrollLineOffset(0);
+                } else {
+                    targetPosition.setScrollLinePosition(startPosition.getScrollLinePosition() - linesPerRect);
+                }
+                break;
+            }
+            case PAGE_DOWN: {
+//                if (startPosition.getScrollLinePosition() < linesPerDocument) {
+                targetPosition.setScrollLinePosition(startPosition.getScrollLinePosition() + linesPerRect);
+//                }
+                break;
+            }
+            default:
+                throw new IllegalStateException("Unexpected scrolling shift type: " + scrollingShift.name());
+        }
+
+        return targetPosition;
     }
 
     /**

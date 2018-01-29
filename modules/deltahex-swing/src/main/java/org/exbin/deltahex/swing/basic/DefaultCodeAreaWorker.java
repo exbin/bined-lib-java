@@ -284,19 +284,27 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
     @Nonnull
     @Override
     public CodeAreaScrollPosition computeScrolling(@Nonnull CodeAreaScrollPosition startPosition, @Nonnull ScrollingShift scrollingShift) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return painter.computeScrolling(startPosition, scrollingShift);
     }
 
-    private void updateScrollBars() {
+    @Override
+    public void updateScrollBars() {
         painter.updateScrollBars();
         repaint();
     }
 
+    @Nonnull
     @Override
     public CodeAreaScrollPosition getScrollPosition() {
         return scrollPosition;
     }
 
+    @Override
+    public void setScrollPosition(@Nonnull CodeAreaScrollPosition scrollPosition) {
+        this.scrollPosition.setScrollPosition(scrollPosition);
+    }
+
+    @Nonnull
     @Override
     public ScrollBarVisibility getVerticalScrollBarVisibility() {
         return verticalScrollBarVisibility;
@@ -309,6 +317,7 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
         updateScrollBars();
     }
 
+    @Nonnull
     @Override
     public VerticalScrollUnit getVerticalScrollUnit() {
         return verticalScrollUnit;
@@ -327,6 +336,7 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
         notifyScrolled();
     }
 
+    @Nonnull
     @Override
     public ScrollBarVisibility getHorizontalScrollBarVisibility() {
         return horizontalScrollBarVisibility;
@@ -339,6 +349,7 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
         updateScrollBars();
     }
 
+    @Nonnull
     @Override
     public HorizontalScrollUnit getHorizontalScrollUnit() {
         return horizontalScrollUnit;

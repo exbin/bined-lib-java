@@ -18,11 +18,12 @@ package org.exbin.deltahex.swing;
 import java.awt.Graphics;
 import javax.annotation.Nonnull;
 import org.exbin.deltahex.CaretPosition;
+import org.exbin.deltahex.swing.basic.CodeAreaScrollPosition;
 
 /**
  * Hexadecimal editor painter interface.
  *
- * @version 0.2.0 2018/01/07
+ * @version 0.2.0 2018/01/29
  * @author ExBin Project (http://exbin.org)
  */
 public interface CodeAreaPainter {
@@ -103,4 +104,14 @@ public interface CodeAreaPainter {
      */
     @Nonnull
     CaretPosition computeMovePosition(@Nonnull CaretPosition position, @Nonnull MovementShift direction);
+
+    /**
+     * Computes scrolling position for given shift action.
+     *
+     * @param startPosition start position
+     * @param scrollingShift shift action
+     * @return target position
+     */
+    @Nonnull
+    CodeAreaScrollPosition computeScrolling(@Nonnull CodeAreaScrollPosition startPosition, @Nonnull ScrollingShift scrollingShift);
 }

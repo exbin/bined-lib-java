@@ -112,7 +112,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     }
 
     private void updateScrollBars() {
-        // TODO
+        ((ScrollingCapable) codeArea.getWorker()).updateScrollBars();
     }
 
     @Override
@@ -901,8 +901,9 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         CodeAreaScrollPosition sourcePosition = ((ScrollingCapable) codeArea.getWorker()).getScrollPosition();
         CodeAreaScrollPosition scrollPosition = ((ScrollingCapable) codeArea.getWorker()).computeScrolling(sourcePosition, scrollingShift);
         if (!sourcePosition.equals(scrollPosition)) {
+            ((ScrollingCapable) codeArea.getWorker()).setScrollPosition(scrollPosition);
+            updateScrollBars();
             notifyScrolled();
-            throw new UnsupportedOperationException("Not supported yet.");
         }
     }
 
