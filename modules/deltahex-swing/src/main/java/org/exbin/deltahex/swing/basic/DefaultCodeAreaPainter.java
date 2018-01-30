@@ -1208,9 +1208,35 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                 break;
             }
             case PAGE_UP: {
+                long dataPosition = position.getDataPosition();
+                long increment = bytesPerLine * linesPerRect;
+                if (dataPosition < increment) {
+                    target.setDataPosition(dataPosition % bytesPerLine);
+                } else {
+                    target.setDataPosition(dataPosition - increment);
+                }
                 break;
             }
             case PAGE_DOWN: {
+                long dataPosition = position.getDataPosition();
+                long increment = bytesPerLine * linesPerRect;
+                if (dataPosition > dataSize - increment) {
+                    long positionOnLine = dataPosition % bytesPerLine;
+                    long lineDataStart = dataSize / bytesPerLine;
+                    if (lineDataStart == dataSize - positionOnLine) {
+                        target.setDataPosition(dataSize);
+                        target.setCodeOffset(0);
+                    } else if (lineDataStart > dataSize - positionOnLine) {
+                        if (lineDataStart > bytesPerLine) {
+                            lineDataStart -= bytesPerLine;
+                            target.setDataPosition(lineDataStart + positionOnLine);
+                        }
+                    } else {
+                        target.setDataPosition(lineDataStart + positionOnLine);
+                    }
+                } else {
+                    target.setDataPosition(dataPosition + increment);
+                }
                 break;
             }
             case DOC_START: {
