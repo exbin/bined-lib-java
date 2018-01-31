@@ -105,6 +105,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     private int lineNumbersAreaWidth;
     private int headerAreaHeight;
     private int lineHeight;
+    private int linesPerPage;
     private int linesPerRect;
     private int bytesPerLine;
     private int charactersPerRect;
@@ -199,6 +200,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         dataSize = worker.getCodeArea().getDataSize();
 
         linesPerRect = computeLinesPerRectangle();
+        linesPerPage = computeLinesPerPage();
         bytesPerLine = computeBytesPerLine();
 
         codeType = ((CodeTypeCapable) worker).getCodeType();
@@ -1209,7 +1211,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             }
             case PAGE_UP: {
                 long dataPosition = position.getDataPosition();
-                long increment = bytesPerLine * linesPerRect;
+                long increment = bytesPerLine * linesPerPage;
                 if (dataPosition < increment) {
                     target.setDataPosition(dataPosition % bytesPerLine);
                 } else {
@@ -1219,7 +1221,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             }
             case PAGE_DOWN: {
                 long dataPosition = position.getDataPosition();
-                long increment = bytesPerLine * linesPerRect;
+                long increment = bytesPerLine * linesPerPage;
                 if (dataPosition > dataSize - increment) {
                     long positionOnLine = dataPosition % bytesPerLine;
                     long lineDataStart = dataSize / bytesPerLine;
@@ -1295,18 +1297,21 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                 // break;
             }
             case PAGE_UP: {
-                if (startPosition.getScrollLinePosition() < linesPerRect) {
+                if (startPosition.getScrollLinePosition() < linesPerPage) {
                     targetPosition.setScrollLinePosition(0);
                     targetPosition.setScrollLineOffset(0);
                 } else {
-                    targetPosition.setScrollLinePosition(startPosition.getScrollLinePosition() - linesPerRect);
+                    targetPosition.setScrollLinePosition(startPosition.getScrollLinePosition() - linesPerPage);
                 }
                 break;
             }
             case PAGE_DOWN: {
-//                if (startPosition.getScrollLinePosition() < linesPerDocument) {
-                targetPosition.setScrollLinePosition(startPosition.getScrollLinePosition() + linesPerRect);
-//                }
+                long linesPerDocument = (dataSize + bytesPerLine - 1) / bytesPerLine;
+                if (startPosition.getScrollLinePosition() < linesPerDocument) {
+                    targetPosition.setScrollLinePosition(startPosition.getScrollLinePosition() + linesPerPage);
+                } else {
+                    targetPosition.setScrollLinePosition(linesPerDocument > linesPerPage ? linesPerDocument - linesPerPage : 0);
+                }
                 break;
             }
             default:
@@ -1460,13 +1465,23 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         return lineHeight == 0 ? 0 : (dataViewHeight + lineHeight - 1) / lineHeight;
     }
 
+    private int computeLinesPerPage() {
+        int visibleHeight;
+        if (scrollPanel.getHorizontalScrollBar().isVisible()) {
+            visibleHeight = dataViewHeight - scrollPanel.getHorizontalScrollBar().getHeight();
+        } else {
+            visibleHeight = dataViewHeight;
+        }
+        return lineHeight == 0 ? 0 : visibleHeight / lineHeight;
+    }
+
     private int computeBytesPerLine() {
         boolean lineWrapping = ((LineWrappingCapable) worker).isLineWrapping();
         int maxBytesPerLine = ((LineWrappingCapable) worker).getMaxBytesPerLine();
 
         int computedBytesPerLine = 16;
         if (lineWrapping) {
-
+            // TODO
         }
 
         return computedBytesPerLine;
