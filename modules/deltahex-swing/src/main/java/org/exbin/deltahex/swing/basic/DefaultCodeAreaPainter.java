@@ -125,6 +125,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     private int visibleCodeStart;
     private int visibleCodeEnd;
 
+    @Nonnull
     private Charset charset;
     @Nullable
     private Font font;
@@ -217,6 +218,11 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             }
         }
         charactersPerLine = charsPerLine;
+
+        // TODO compute
+        int documentDataWidth = charactersPerLine * characterWidth;
+        long documentDataHeight = ((dataSize + bytesPerLine - 1) / bytesPerLine) * lineHeight;
+        dataView.setPreferredSize(new Dimension(documentDataWidth, (int) documentDataHeight));
     }
 
     private void resetCharPositions() {
@@ -1489,6 +1495,9 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
     @Override
     public void updateScrollBars() {
+        JScrollBar verticalScrollBar = scrollPanel.getVerticalScrollBar();
+        JScrollBar horizontalScrollBar = scrollPanel.getHorizontalScrollBar();
+
         if (scrollPosition.getVerticalOverflowMode() == CodeAreaScrollPosition.VerticalOverflowMode.OVERFLOW) {
             long lines = ((dataSize + scrollPosition.getLineDataOffset()) / bytesPerLine) + 1;
             int scrollValue;
@@ -1497,17 +1506,17 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             } else {
                 scrollValue = (int) (scrollPosition.getScrollLinePosition() / (lines / Integer.MAX_VALUE));
             }
-            scrollPanel.getVerticalScrollBar().setValue(scrollValue);
+            verticalScrollBar.setValue(scrollValue);
         } else if (verticalScrollUnit == VerticalScrollUnit.LINE) {
-            scrollPanel.getVerticalScrollBar().setValue((int) scrollPosition.getScrollLinePosition());
+            verticalScrollBar.setValue((int) scrollPosition.getScrollLinePosition());
         } else {
-            scrollPanel.getVerticalScrollBar().setValue((int) (scrollPosition.getScrollLinePosition() * lineHeight + scrollPosition.getScrollLineOffset()));
+            verticalScrollBar.setValue((int) (scrollPosition.getScrollLinePosition() * lineHeight + scrollPosition.getScrollLineOffset()));
         }
 
         if (horizontalScrollUnit == HorizontalScrollUnit.CHARACTER) {
-            scrollPanel.getHorizontalScrollBar().setValue(scrollPosition.getScrollCharPosition());
+            horizontalScrollBar.setValue(scrollPosition.getScrollCharPosition());
         } else {
-            scrollPanel.getHorizontalScrollBar().setValue(scrollPosition.getScrollCharPosition() * characterWidth + scrollPosition.getScrollCharOffset());
+            horizontalScrollBar.setValue(scrollPosition.getScrollCharPosition() * characterWidth + scrollPosition.getScrollCharOffset());
         }
     }
 
