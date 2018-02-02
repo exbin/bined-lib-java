@@ -200,7 +200,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             case KeyEvent.VK_DOWN: {
                 CaretPosition caretPosition = ((CaretCapable) codeArea.getWorker()).getCaret().getCaretPosition();
 //                int bytesPerLine = codeArea.getBytesPerLine();
-                long dataSize = codeArea.getDataSize();
+//                long dataSize = codeArea.getDataSize();
                 if ((keyEvent.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) > 0) {
                     // Scroll page instead of cursor
 //                    CodeAreaScrollPosition scrollPosition = codeArea.getScrollPosition();
@@ -476,8 +476,9 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     }
 
     private void setCodeValue(int value) {
-        long dataPosition = ((CaretCapable) codeArea.getWorker()).getCaret().getCaretPosition().getDataPosition();
-        int codeOffset = ((CaretCapable) codeArea.getWorker()).getCaret().getCaretPosition().getCodeOffset();
+        CaretPosition caretPosition = ((CaretCapable) codeArea.getWorker()).getCaret().getCaretPosition();
+        long dataPosition = caretPosition.getDataPosition();
+        int codeOffset = caretPosition.getCodeOffset();
         BinaryData data = codeArea.getData();
         CodeType codeType = getCodeType();
         byte byteValue = data.getByte(dataPosition);

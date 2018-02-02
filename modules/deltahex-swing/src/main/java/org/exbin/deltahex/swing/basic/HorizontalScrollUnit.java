@@ -23,11 +23,11 @@ package org.exbin.deltahex.swing.basic;
  */
 public enum HorizontalScrollUnit {
     /**
-     * Sroll per whole character.
+     * Scroll per whole character.
      */
     CHARACTER,
     /**
-     * Sroll per pixel.
+     * Scroll per pixel.
      */
     PIXEL
 }

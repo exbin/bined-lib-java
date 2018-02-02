@@ -20,7 +20,7 @@ import org.exbin.deltahex.capability.WorkerCapability;
 import org.exbin.deltahex.swing.CharacterRenderingMode;
 
 /**
- * Support for antialiasing capability.
+ * Support for anti-aliasing capability.
  *
  * @version 0.2.0 2017/12/09
  * @author ExBin Project (http://exbin.org)

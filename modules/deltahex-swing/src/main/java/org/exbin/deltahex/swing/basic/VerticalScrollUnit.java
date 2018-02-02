@@ -23,11 +23,11 @@ package org.exbin.deltahex.swing.basic;
  */
 public enum VerticalScrollUnit {
     /**
-     * Sroll per whole line.
+     * Scroll per whole line.
      */
     LINE,
     /**
-     * Sroll per pixel.
+     * Scroll per pixel.
      */
     PIXEL
 

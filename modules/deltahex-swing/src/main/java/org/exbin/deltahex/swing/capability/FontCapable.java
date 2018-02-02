@@ -16,6 +16,7 @@
 package org.exbin.deltahex.swing.capability;
 
 import java.awt.Font;
+import javax.annotation.Nonnull;
 import org.exbin.deltahex.capability.WorkerCapability;
 
 /**
@@ -26,9 +27,10 @@ import org.exbin.deltahex.capability.WorkerCapability;
  */
 public interface FontCapable {
 
+    @Nonnull
     Font getFont();
 
-    void setFont(Font font);
+    void setFont(@Nonnull Font font);
 
     public static class FontCapability implements WorkerCapability {
 

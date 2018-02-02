@@ -41,8 +41,8 @@ public class HugeBinaryData implements BinaryData {
     }
 
     @Override
-    public byte getByte(long l) {
-        return (byte) (l % 255);
+    public byte getByte(long longValue) {
+        return (byte) (longValue % 0xff);
     }
 
     @Override

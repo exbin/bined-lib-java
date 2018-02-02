@@ -30,7 +30,7 @@ public interface BorderPaintCapable {
     @Nonnull
     BasicBorderPaintMode getBorderPaintMode();
 
-    void setBorderPaintMode(BasicBorderPaintMode borderPaintMode);
+    void setBorderPaintMode(@Nonnull BasicBorderPaintMode borderPaintMode);
 
     public static class BorderPaintCapability implements WorkerCapability {
 
