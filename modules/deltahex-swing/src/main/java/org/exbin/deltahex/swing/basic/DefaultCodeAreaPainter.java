@@ -137,6 +137,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     private char[] lineNumberCode;
     private char[] lineCharacters;
 
+    // TODO replace with computation
     private int subFontSpace = 3;
 
     @Nullable
@@ -442,16 +443,16 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             int headerX = dataViewX - scrollPosition.getScrollCharPosition() * characterWidth - scrollPosition.getScrollCharOffset();
             int headerY = lineHeight - subFontSpace;
 
-            int visibleCharStart = (scrollPosition.getScrollCharPosition() * characterWidth + scrollPosition.getScrollCharOffset()) / characterWidth;
-            if (visibleCharStart < 0) {
-                visibleCharStart = 0;
+            int visibleHeaderCharStart = (scrollPosition.getScrollCharPosition() * characterWidth + scrollPosition.getScrollCharOffset()) / characterWidth;
+            if (visibleHeaderCharStart < 0) {
+                visibleHeaderCharStart = 0;
             }
-            int visibleCharEnd = (dataViewWidth + (scrollPosition.getScrollCharPosition() + charsPerLine) * characterWidth + scrollPosition.getScrollCharOffset()) / characterWidth;
-            if (visibleCharEnd > charsPerLine) {
-                visibleCharEnd = charsPerLine;
+            int visibleHeaderCharEnd = (dataViewWidth + (scrollPosition.getScrollCharPosition() + charsPerLine) * characterWidth + scrollPosition.getScrollCharOffset()) / characterWidth;
+            if (visibleHeaderCharEnd > charsPerLine) {
+                visibleHeaderCharEnd = charsPerLine;
             }
-            int visibleStart = computePositionByte(visibleCharStart);
-            int visibleEnd = computePositionByte(visibleCharEnd - 1) + 1;
+            int visibleStart = computePositionByte(visibleHeaderCharStart);
+            int visibleEnd = computePositionByte(visibleHeaderCharEnd - 1) + 1;
 
             g.setColor(colors.foreground);
             char[] headerChars = new char[charsPerLine];
@@ -470,10 +471,10 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                 }
             }
 
-            int renderOffset = visibleCharStart;
+            int renderOffset = visibleHeaderCharStart;
 //            ColorsGroup.ColorType renderColorType = null;
             Color renderColor = null;
-            for (int characterOnLine = visibleCharStart; characterOnLine < visibleCharEnd; characterOnLine++) {
+            for (int characterOnLine = visibleHeaderCharStart; characterOnLine < visibleHeaderCharEnd; characterOnLine++) {
                 int byteOnLine;
                 byteOnLine = computePositionByte(characterOnLine);
                 boolean sequenceBreak = false;
@@ -820,7 +821,39 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
     @Override
     public boolean revealPosition(@Nonnull CaretPosition caretPosition) {
+        long shiftedPosition = caretPosition.getDataPosition() + scrollPosition.getLineDataOffset();
+        long linePosition = shiftedPosition / bytesPerLine;
+        int byteOffset = (int) (shiftedPosition % bytesPerLine);
+        int charPosition;
+        if (caretPosition.getSection() == CodeAreaSection.TEXT_PREVIEW) {
+            charPosition = previewCharPos + byteOffset;
+        } else {
+            charPosition = computeFirstCodeCharPos(byteOffset) + caretPosition.getCodeOffset();
+        }
+
         boolean scrolled = false;
+        if (linePosition < scrollPosition.getScrollLinePosition()) {
+            // Scroll up
+            scrollPosition.setScrollLinePosition(linePosition);
+            scrollPosition.setScrollLineOffset(0);
+
+            scrolled = true;
+        } else {
+            // Scroll down
+
+        }
+
+        if (charPosition < scrollPosition.getScrollCharPosition()) {
+            // Scroll left
+            scrollPosition.setScrollCharPosition(charPosition);
+            scrollPosition.setScrollCharOffset(0);
+
+            scrolled = true;
+        } else {
+            // Scroll right
+
+        }
+
         /*        Rectangle hexRect = getDataViewRectangle();
         int bytesPerRect = getBytesPerRectangle();
         int linesPerRect = getLinesPerRectangle();
@@ -856,6 +889,9 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             scrolled = true;
         }
          */
+        if (scrolled) {
+            ((ScrollingCapable) worker).setScrollPosition(scrollPosition);
+        }
         return scrolled;
     }
 
