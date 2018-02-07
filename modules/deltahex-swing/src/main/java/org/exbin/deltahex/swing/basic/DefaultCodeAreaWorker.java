@@ -252,21 +252,22 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
 
     @Override
     public void revealPosition(@Nonnull CaretPosition caretPosition) {
-        revealPosition(caretPosition.getDataPosition(), caretPosition.getCodeOffset(), caretPosition.getSection());
-    }
-
-    public void revealPosition(long dataPosition, int dataOffset, @Nonnull CodeAreaSection section) {
         if (!isInitialized()) {
             // Silently ignore if painter is not yet initialized
             return;
         }
 
-        boolean scrolled = painter.revealPosition(new CaretPosition(dataPosition, dataOffset, section));
-
-        if (scrolled) {
+        CodeAreaScrollPosition revealScrollPosition = painter.computeRevealScrollPosition(caretPosition);
+        if (revealScrollPosition != null) {
+            setScrollPosition(revealScrollPosition);
+            codeArea.resetPainter();
             updateScrollBars();
             notifyScrolled();
         }
+    }
+
+    public void revealPosition(long dataPosition, int dataOffset, @Nonnull CodeAreaSection section) {
+        revealPosition(new CaretPosition(dataPosition, dataOffset, section));
     }
 
     @Nullable

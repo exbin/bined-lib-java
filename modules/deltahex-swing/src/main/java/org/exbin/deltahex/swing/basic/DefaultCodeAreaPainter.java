@@ -69,7 +69,7 @@ import org.exbin.utils.binary_data.BinaryData;
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2018/01/29
+ * @version 0.2.0 2018/02/07
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaPainter implements CodeAreaPainter {
@@ -819,8 +819,11 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         return null;
     }
 
+    @Nullable
     @Override
-    public boolean revealPosition(@Nonnull CaretPosition caretPosition) {
+    public CodeAreaScrollPosition computeRevealScrollPosition(@Nonnull CaretPosition caretPosition) {
+        CodeAreaScrollPosition targetScrollPosition = new CodeAreaScrollPosition();
+        targetScrollPosition.setScrollPosition(scrollPosition);
         long shiftedPosition = caretPosition.getDataPosition() + scrollPosition.getLineDataOffset();
         long linePosition = shiftedPosition / bytesPerLine;
         int byteOffset = (int) (shiftedPosition % bytesPerLine);
@@ -833,21 +836,46 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
         boolean scrolled = false;
         if (linePosition < scrollPosition.getScrollLinePosition()) {
-            // Scroll up
-            scrollPosition.setScrollLinePosition(linePosition);
-            scrollPosition.setScrollLineOffset(0);
-
+            // Scroll line up
+            targetScrollPosition.setScrollLinePosition(linePosition);
+            targetScrollPosition.setScrollLineOffset(0);
+            scrolled = true;
+        } else if ((linePosition == scrollPosition.getScrollLinePosition() && scrollPosition.getScrollLineOffset() > 0)) {
+            // Scroll line offset up
+            targetScrollPosition.setScrollLineOffset(0);
             scrolled = true;
         } else {
-            // Scroll down
+            int bottomLineOffset;
+            if (verticalScrollUnit == VerticalScrollUnit.LINE) {
+                bottomLineOffset = 0;
+            } else {
+                if (dataViewHeight < lineHeight) {
+                    throw new UnsupportedOperationException("Not supported yet.");
+                } else {
+                    bottomLineOffset = dataViewHeight % lineHeight;
+                }
+            }
 
+            if (linePosition > scrollPosition.getScrollLinePosition() + linesPerPage) {
+                // Scroll line down
+                targetScrollPosition.setScrollLinePosition(linePosition - linesPerPage);
+                targetScrollPosition.setScrollLineOffset(bottomLineOffset);
+                scrolled = true;
+            } else if (linePosition == scrollPosition.getScrollLinePosition() + linesPerPage && scrollPosition.getScrollLineOffset() > bottomLineOffset) {
+                // Scroll line offset down
+                targetScrollPosition.setScrollLineOffset(bottomLineOffset);
+                scrolled = true;
+            }
         }
 
         if (charPosition < scrollPosition.getScrollCharPosition()) {
-            // Scroll left
-            scrollPosition.setScrollCharPosition(charPosition);
-            scrollPosition.setScrollCharOffset(0);
-
+            // Scroll characters left
+            targetScrollPosition.setScrollCharPosition(charPosition);
+            targetScrollPosition.setScrollCharOffset(0);
+            scrolled = true;
+        } else if (charPosition == scrollPosition.getScrollCharPosition() && scrollPosition.getScrollCharOffset() > 0) {
+            // Scroll character offset left
+            targetScrollPosition.setScrollCharOffset(0);
             scrolled = true;
         } else {
             // Scroll right
@@ -889,10 +917,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             scrolled = true;
         }
          */
-        if (scrolled) {
-            ((ScrollingCapable) worker).setScrollPosition(scrollPosition);
-        }
-        return scrolled;
+        return scrolled ? targetScrollPosition : null;
     }
 
     /**
@@ -1591,6 +1616,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             }
 
             // TODO
+            ((ScrollingCapable) worker).setScrollPosition(scrollPosition);
             worker.getCodeArea().repaint();
 //            dataViewScrolled(codeArea.getGraphics());
             notifyScrolled();
@@ -1614,6 +1640,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                 }
             }
 
+            ((ScrollingCapable) worker).setScrollPosition(scrollPosition);
             worker.getCodeArea().repaint();
 //            dataViewScrolled(codeArea.getGraphics());
             notifyScrolled();
