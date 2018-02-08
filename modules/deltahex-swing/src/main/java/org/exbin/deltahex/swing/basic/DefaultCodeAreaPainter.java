@@ -108,6 +108,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     private int linesPerPage;
     private int linesPerRect;
     private int bytesPerLine;
+    private int charactersPerPage;
     private int charactersPerRect;
     private int charactersPerLine;
     private CodeType codeType;
@@ -208,17 +209,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         codeType = ((CodeTypeCapable) worker).getCodeType();
         hexCharactersCase = CodeCharactersCase.UPPER;
 
-        int charsPerLine = 0;
-        if (viewMode != CodeAreaViewMode.TEXT_PREVIEW) {
-            charsPerLine += computeLastCodeCharPos(bytesPerLine - 1) + 1;
-        }
-        if (viewMode != CodeAreaViewMode.CODE_MATRIX) {
-            charsPerLine += bytesPerLine;
-            if (viewMode == CodeAreaViewMode.DUAL) {
-                charsPerLine++;
-            }
-        }
-        charactersPerLine = charsPerLine;
+        charactersPerPage = computeCharactersPerPage();
+        charactersPerLine = computeCharactersPerLine();
 
         // TODO compute
         int documentDataWidth = charactersPerLine * characterWidth;
@@ -227,7 +219,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     }
 
     private void resetCharPositions() {
-        charactersPerRect = computeLastCodeCharPos(bytesPerLine - 1);
+        charactersPerRect = computeCharactersPerRectangle();
+
         // Compute first and last visible character of the code area
         if (viewMode == CodeAreaViewMode.DUAL) {
             previewCharPos = bytesPerLine * (codeType.getMaxDigitsForByte() + 1);
@@ -878,8 +871,27 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             targetScrollPosition.setScrollCharOffset(0);
             scrolled = true;
         } else {
-            // Scroll right
+            int rightCharOffset;
+            if (horizontalScrollUnit == HorizontalScrollUnit.CHARACTER) {
+                rightCharOffset = 0;
+            } else {
+                if (dataViewWidth < characterWidth) {
+                    throw new UnsupportedOperationException("Not supported yet.");
+                } else {
+                    rightCharOffset = dataViewWidth % characterWidth;
+                }
+            }
 
+            if (charPosition > scrollPosition.getScrollCharPosition() + charactersPerPage) {
+                // Scroll character right
+                targetScrollPosition.setScrollCharPosition(charPosition - charactersPerPage);
+                targetScrollPosition.setScrollCharOffset(rightCharOffset);
+                scrolled = true;
+            } else if (charPosition == scrollPosition.getScrollCharPosition() + charactersPerPage && scrollPosition.getScrollCharOffset() > rightCharOffset) {
+                // Scroll line offset down
+                targetScrollPosition.setScrollCharOffset(rightCharOffset);
+                scrolled = true;
+            }
         }
 
         /*        Rectangle hexRect = getDataViewRectangle();
@@ -1552,6 +1564,34 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         }
 
         return computedBytesPerLine;
+    }
+
+    private int computeCharactersPerLine() {
+        int charsPerLine = 0;
+        if (viewMode != CodeAreaViewMode.TEXT_PREVIEW) {
+            charsPerLine += computeLastCodeCharPos(bytesPerLine - 1) + 1;
+        }
+        if (viewMode != CodeAreaViewMode.CODE_MATRIX) {
+            charsPerLine += bytesPerLine;
+            if (viewMode == CodeAreaViewMode.DUAL) {
+                charsPerLine++;
+            }
+        }
+        return charsPerLine;
+    }
+
+    private int computeCharactersPerRectangle() {
+        return characterWidth == 0 ? 0 : (dataViewWidth + characterWidth - 1) / characterWidth;
+    }
+
+    private int computeCharactersPerPage() {
+        int visibleWidth;
+        if (scrollPanel.getVerticalScrollBar().isVisible()) {
+            visibleWidth = dataViewWidth - scrollPanel.getVerticalScrollBar().getWidth();
+        } else {
+            visibleWidth = dataViewWidth;
+        }
+        return characterWidth == 0 ? 0 : visibleWidth / characterWidth;
     }
 
     @Override
