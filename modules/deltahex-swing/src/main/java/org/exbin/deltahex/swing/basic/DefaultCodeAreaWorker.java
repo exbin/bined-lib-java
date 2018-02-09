@@ -58,7 +58,7 @@ import org.exbin.deltahex.swing.capability.FontCapable;
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2018/01/07
+ * @version 0.2.0 2018/02/09
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, CaretCapable, ScrollingCapable, ViewModeCapable,
@@ -74,7 +74,7 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
     @Nonnull
     private final DefaultCodeAreaCaret caret;
     @Nonnull
-    private SelectionRange selection = new SelectionRange();
+    private final SelectionRange selection = new SelectionRange();
     @Nonnull
     private final CodeAreaScrollPosition scrollPosition = new CodeAreaScrollPosition();
 
@@ -408,7 +408,14 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
             throw new IllegalArgumentException("Null selection is not allowed");
         }
 
-        this.selection = selection;
+        this.selection.setSelection(selection);
+        notifySelectionChanged();
+        repaint();
+    }
+
+    @Override
+    public void setSelection(long start, long end) {
+        this.selection.setSelection(start, end);
         notifySelectionChanged();
         repaint();
     }

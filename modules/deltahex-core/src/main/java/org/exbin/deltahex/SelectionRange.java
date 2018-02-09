@@ -15,20 +15,21 @@
  */
 package org.exbin.deltahex;
 
+import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
 /**
  * Selection range is selection between two positions where begin represents
  * originating point and end of the selection can be before or after begin.
  *
- * @version 0.2.0 2018/01/06
+ * @version 0.2.0 2018/02/09
  * @author ExBin Project (http://exbin.org)
  */
 @Immutable
 public class SelectionRange {
 
-    private final long start;
-    private final long end;
+    private long start;
+    private long end;
 
     /**
      * Creates empty selection range.
@@ -59,6 +60,36 @@ public class SelectionRange {
 
     public long getEnd() {
         return end;
+    }
+
+    public void setStart(long start) {
+        if (start < 0) {
+            throw new IllegalArgumentException("Selection with negative range start (" + start + ") is not allowed");
+        }
+
+        this.start = start;
+    }
+
+    public void setEnd(long end) {
+        if (start < 0) {
+            throw new IllegalArgumentException("Selection with negative range end (" + end + ") is not allowed");
+        }
+
+        this.end = end;
+    }
+
+    public void setSelection(@Nullable SelectionRange selection) {
+        if (selection == null) {
+            start = end = 0;
+        } else {
+            setStart(selection.getStart());
+            setEnd(selection.getEnd());
+        }
+    }
+
+    public void setSelection(long start, long end) {
+        setStart(start);
+        setEnd(end);
     }
 
     /**

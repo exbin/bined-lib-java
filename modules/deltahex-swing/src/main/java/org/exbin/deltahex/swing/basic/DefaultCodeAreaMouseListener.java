@@ -16,6 +16,7 @@
 package org.exbin.deltahex.swing.basic;
 
 import java.awt.Cursor;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
@@ -61,7 +62,8 @@ public class DefaultCodeAreaMouseListener extends MouseAdapter implements MouseM
     }
 
     private void moveCaret(@Nonnull MouseEvent me) {
-        codeArea.getCommandHandler().moveCaret(computeRelativeX(me), computeRelativeY(me), me.getModifiersEx());
+        boolean selecting = (me.getModifiersEx() & KeyEvent.SHIFT_DOWN_MASK) > 0;
+        codeArea.getCommandHandler().moveCaret(computeRelativeX(me), computeRelativeY(me), selecting);
         ((CaretCapable) codeArea.getWorker()).revealCursor();
     }
 
@@ -101,7 +103,8 @@ public class DefaultCodeAreaMouseListener extends MouseAdapter implements MouseM
     public void mouseDragged(@Nonnull MouseEvent me) {
         updateMouseCursor(me);
         if (codeArea.isEnabled() && mouseDown) {
-            moveCaret(me);
+            codeArea.getCommandHandler().moveCaret(computeRelativeX(me), computeRelativeY(me), true);
+            ((CaretCapable) codeArea.getWorker()).revealCursor();
         }
     }
 
