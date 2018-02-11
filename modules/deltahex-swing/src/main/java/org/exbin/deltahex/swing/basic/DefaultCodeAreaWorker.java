@@ -49,8 +49,8 @@ import org.exbin.deltahex.swing.capability.ScrollingCapable;
 import org.exbin.deltahex.capability.SelectionCapable;
 import org.exbin.deltahex.capability.CodeCharactersCaseCapable;
 import org.exbin.deltahex.capability.LineWrappingCapable;
-import org.exbin.deltahex.swing.MovementShift;
-import org.exbin.deltahex.swing.ScrollingShift;
+import org.exbin.deltahex.swing.MovementDirection;
+import org.exbin.deltahex.swing.ScrollingDirection;
 import org.exbin.deltahex.swing.capability.AntialiasingCapable;
 import org.exbin.deltahex.swing.capability.BorderPaintCapable;
 import org.exbin.deltahex.swing.capability.FontCapable;
@@ -278,13 +278,13 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
 
     @Nonnull
     @Override
-    public CaretPosition computeMovePosition(@Nonnull CaretPosition position, @Nonnull MovementShift direction) {
+    public CaretPosition computeMovePosition(@Nonnull CaretPosition position, @Nonnull MovementDirection direction) {
         return painter.computeMovePosition(position, direction);
     }
 
     @Nonnull
     @Override
-    public CodeAreaScrollPosition computeScrolling(@Nonnull CodeAreaScrollPosition startPosition, @Nonnull ScrollingShift scrollingShift) {
+    public CodeAreaScrollPosition computeScrolling(@Nonnull CodeAreaScrollPosition startPosition, @Nonnull ScrollingDirection scrollingShift) {
         return painter.computeScrolling(startPosition, scrollingShift);
     }
 

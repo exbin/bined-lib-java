@@ -107,15 +107,15 @@ public interface CodeAreaPainter {
      * @return target position
      */
     @Nonnull
-    CaretPosition computeMovePosition(@Nonnull CaretPosition position, @Nonnull MovementShift direction);
+    CaretPosition computeMovePosition(@Nonnull CaretPosition position, @Nonnull MovementDirection direction);
 
     /**
      * Computes scrolling position for given shift action.
      *
      * @param startPosition start position
-     * @param scrollingShift shift action
+     * @param direction scrolling direction
      * @return target position
      */
     @Nonnull
-    CodeAreaScrollPosition computeScrolling(@Nonnull CodeAreaScrollPosition startPosition, @Nonnull ScrollingShift scrollingShift);
+    CodeAreaScrollPosition computeScrolling(@Nonnull CodeAreaScrollPosition startPosition, @Nonnull ScrollingDirection direction);
 }

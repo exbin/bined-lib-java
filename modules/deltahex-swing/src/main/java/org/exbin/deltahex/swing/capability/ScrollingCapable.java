@@ -19,7 +19,7 @@ import javax.annotation.Nonnull;
 import org.exbin.deltahex.ScrollBarVisibility;
 import org.exbin.deltahex.ScrollingListener;
 import org.exbin.deltahex.capability.WorkerCapability;
-import org.exbin.deltahex.swing.ScrollingShift;
+import org.exbin.deltahex.swing.ScrollingDirection;
 import org.exbin.deltahex.swing.basic.CodeAreaScrollPosition;
 import org.exbin.deltahex.swing.basic.HorizontalScrollUnit;
 import org.exbin.deltahex.swing.basic.VerticalScrollUnit;
@@ -64,7 +64,7 @@ public interface ScrollingCapable {
     void removeScrollingListener(@Nonnull ScrollingListener scrollingListener);
 
     @Nonnull
-    CodeAreaScrollPosition computeScrolling(@Nonnull CodeAreaScrollPosition startPosition, @Nonnull ScrollingShift scrollingShift);
+    CodeAreaScrollPosition computeScrolling(@Nonnull CodeAreaScrollPosition startPosition, @Nonnull ScrollingDirection direction);
     
     void updateScrollBars();
 

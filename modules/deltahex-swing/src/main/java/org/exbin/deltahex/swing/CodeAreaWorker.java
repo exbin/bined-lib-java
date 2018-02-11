@@ -67,5 +67,5 @@ public interface CodeAreaWorker {
      * @return target position
      */
     @Nonnull
-    CaretPosition computeMovePosition(@Nonnull CaretPosition position, @Nonnull MovementShift direction);
+    CaretPosition computeMovePosition(@Nonnull CaretPosition position, @Nonnull MovementDirection direction);
 }

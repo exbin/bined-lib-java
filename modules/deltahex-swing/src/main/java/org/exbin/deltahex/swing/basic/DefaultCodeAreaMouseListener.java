@@ -124,6 +124,6 @@ public class DefaultCodeAreaMouseListener extends MouseAdapter implements MouseM
             return;
         }
 
-        codeArea.getCommandHandler().wheelScroll(e.getWheelRotation() > 0 ? MOUSE_SCROLL_LINES : -MOUSE_SCROLL_LINES, e.isShiftDown() ? CodeAreaCommandHandler.ScrollingDirection.VERTICAL : CodeAreaCommandHandler.ScrollingDirection.HORIZONTAL);
+        codeArea.getCommandHandler().wheelScroll(e.getWheelRotation() > 0 ? MOUSE_SCROLL_LINES : -MOUSE_SCROLL_LINES, e.isShiftDown() ? CodeAreaCommandHandler.ScrollbarOrientation.VERTICAL : CodeAreaCommandHandler.ScrollbarOrientation.HORIZONTAL);
     }
 }

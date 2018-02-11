@@ -48,6 +48,7 @@ import org.exbin.deltahex.swing.CodeArea;
 import org.exbin.utils.binary_data.EditableBinaryData;
 import org.exbin.deltahex.capability.SelectionCapable;
 import org.exbin.deltahex.capability.ViewModeCapable;
+import org.exbin.deltahex.swing.basic.CodeAreaScrollPosition;
 import org.exbin.deltahex.swing.basic.DefaultCodeAreaWorker;
 import org.exbin.deltahex.swing.capability.ScrollingCapable;
 
@@ -130,10 +131,10 @@ public class DeltaHexExampleBasicPanel extends javax.swing.JPanel {
             dataSizeTextField.setText(String.valueOf(codeArea.getDataSize()));
         });
         ((ScrollingCapable) codeArea.getWorker()).addScrollingListener(() -> {
-//                CodeAreaScrollPosition scrollPosition = codeArea.getScrollPosition();
-//                verticalPositionTextField.setText(scrollPosition.getScrollLinePosition() + ":" + scrollPosition.getScrollLineOffset());
-//                horizontalPositionTextField.setText(scrollPosition.getScrollCharPosition() + ":" + scrollPosition.getScrollCharOffset());
-//                horizontalByteShiftTextField.setText(String.valueOf(scrollPosition.getLineDataOffset()));
+            CodeAreaScrollPosition scrollPosition = ((ScrollingCapable) codeArea.getWorker()).getScrollPosition();
+            verticalPositionTextField.setText(scrollPosition.getScrollLinePosition() + ":" + scrollPosition.getScrollLineOffset());
+            horizontalPositionTextField.setText(scrollPosition.getScrollCharPosition() + ":" + scrollPosition.getScrollCharOffset());
+            horizontalByteShiftTextField.setText(String.valueOf(scrollPosition.getLineDataOffset()));
         });
 
         tabMap.put(modeTab, modePanel);

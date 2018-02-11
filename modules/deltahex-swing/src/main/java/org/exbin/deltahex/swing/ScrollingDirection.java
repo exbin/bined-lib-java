@@ -21,7 +21,7 @@ package org.exbin.deltahex.swing;
  * @version 0.2.0 2018/01/28
  * @author ExBin Project (http://exbin.org)
  */
-public enum ScrollingShift {
+public enum ScrollingDirection {
     UP, DOWN, LEFT, RIGHT,
     PAGE_UP, PAGE_DOWN
 }

@@ -59,8 +59,8 @@ import org.exbin.deltahex.swing.CodeArea;
 import org.exbin.deltahex.swing.CodeAreaPainter;
 import org.exbin.deltahex.swing.CodeAreaSwingUtils;
 import org.exbin.deltahex.swing.CodeAreaWorker;
-import org.exbin.deltahex.swing.MovementShift;
-import org.exbin.deltahex.swing.ScrollingShift;
+import org.exbin.deltahex.swing.MovementDirection;
+import org.exbin.deltahex.swing.ScrollingDirection;
 import org.exbin.deltahex.swing.capability.AntialiasingCapable;
 import org.exbin.deltahex.swing.capability.BorderPaintCapable;
 import org.exbin.deltahex.swing.capability.FontCapable;
@@ -1126,8 +1126,12 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                         int codeCharPos = computeFirstCodeCharPos(byteOffset);
                         char[] lineChars = new char[codeType.getMaxDigitsForByte()];
 
-                        byte dataByte = codeAreaData.getByte(dataPosition);
-                        CodeAreaUtils.byteToCharsCode(dataByte, codeType, lineChars, 0, hexCharactersCase);
+                        if (dataPosition < dataSize) {
+                            byte dataByte = codeAreaData.getByte(dataPosition);
+                            CodeAreaUtils.byteToCharsCode(dataByte, codeType, lineChars, 0, hexCharactersCase);
+                        } else {
+                            lineChars[0] = ' ';
+                        }
                         int posX = dataViewX + codeCharPos * characterWidth - scrollPosition.getScrollCharPosition() * characterWidth - scrollPosition.getScrollCharOffset();
                         int charsOffset = charPos - codeCharPos;
                         if (characterRenderingMode == CharacterRenderingMode.LINE_AT_ONCE) {
@@ -1225,7 +1229,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     }
 
     @Override
-    public CaretPosition computeMovePosition(@Nonnull CaretPosition position, @Nonnull MovementShift direction) {
+    public CaretPosition computeMovePosition(@Nonnull CaretPosition position, @Nonnull MovementDirection direction) {
         CaretPosition target = new CaretPosition(position.getDataPosition(), position.getCodeOffset(), position.getSection());
         switch (direction) {
             case LEFT: {
@@ -1348,11 +1352,11 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
     @Nonnull
     @Override
-    public CodeAreaScrollPosition computeScrolling(@Nonnull CodeAreaScrollPosition startPosition, @Nonnull ScrollingShift scrollingShift) {
+    public CodeAreaScrollPosition computeScrolling(@Nonnull CodeAreaScrollPosition startPosition, @Nonnull ScrollingDirection direction) {
         CodeAreaScrollPosition targetPosition = new CodeAreaScrollPosition();
         targetPosition.setScrollPosition(startPosition);
 
-        switch (scrollingShift) {
+        switch (direction) {
             case UP: {
                 if (startPosition.getScrollLinePosition() == 0) {
                     targetPosition.setScrollLineOffset(0);
@@ -1394,7 +1398,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                 break;
             }
             default:
-                throw new IllegalStateException("Unexpected scrolling shift type: " + scrollingShift.name());
+                throw new IllegalStateException("Unexpected scrolling shift type: " + direction.name());
         }
 
         return targetPosition;

@@ -115,11 +115,11 @@ public interface CodeAreaCommandHandler {
      * Performs scrolling.
      *
      * @param scrollSize number of scroll units (positive or negative)
-     * @param direction direction of scrolling
+     * @param orientation scrollbar orientation
      */
-    void wheelScroll(int scrollSize, @Nonnull ScrollingDirection direction);
+    void wheelScroll(int scrollSize, @Nonnull ScrollbarOrientation orientation);
 
-    public enum ScrollingDirection {
+    public enum ScrollbarOrientation {
         HORIZONTAL, VERTICAL
     }
 }
