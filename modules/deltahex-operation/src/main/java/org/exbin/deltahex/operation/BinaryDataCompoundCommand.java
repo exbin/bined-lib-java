@@ -13,39 +13,46 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.deltahex;
+package org.exbin.deltahex.operation;
 
+import java.util.Collection;
+import java.util.List;
 import javax.annotation.Nonnull;
 
 /**
- * Specifies caret position as combination of data position, section and code
- * offset of code representation.
+ * Interface for compound command.
  *
  * @version 0.2.0 2018/02/13
  * @author ExBin Project (http://exbin.org)
  */
-public interface CaretPosition {
+public interface BinaryDataCompoundCommand extends BinaryDataCommand {
 
     /**
-     * Returns position of byte in document.
+     * Append command to the list of commands.
      *
-     * @return data position
+     * @param command appended command
      */
-    long getDataPosition();
+    public void appendCommand(@Nonnull BinaryDataCommand command);
 
     /**
-     * Returns offset position of current code on current position and code
-     * type.
+     * Append list of commands to the list of commands.
      *
-     * @return code offset
+     * @param commands appended commands
      */
-    int getCodeOffset();
+    public void appendCommands(@Nonnull Collection<BinaryDataCommand> commands);
 
     /**
-     * Returns active code area section.
+     * Returns list of commands.
      *
-     * @return section
+     * @return list of commands
      */
     @Nonnull
-    CodeAreaSection getSection();
+    public List<BinaryDataCommand> getCommands();
+
+    /**
+     * Returns true if compound command is empty.
+     *
+     * @return true if command is empty
+     */
+    public boolean isEmpty();
 }

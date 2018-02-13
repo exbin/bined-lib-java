@@ -13,39 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.deltahex;
+package org.exbin.deltahex.operation;
 
 import javax.annotation.Nonnull;
 
 /**
- * Specifies caret position as combination of data position, section and code
- * offset of code representation.
+ * Operation execution listener.
  *
  * @version 0.2.0 2018/02/13
  * @author ExBin Project (http://exbin.org)
  */
-public interface CaretPosition {
+public interface BinaryDataOperationListener {
 
     /**
-     * Returns position of byte in document.
+     * Notifies about change in document content.
      *
-     * @return data position
+     * @param event change event
      */
-    long getDataPosition();
-
-    /**
-     * Returns offset position of current code on current position and code
-     * type.
-     *
-     * @return code offset
-     */
-    int getCodeOffset();
-
-    /**
-     * Returns active code area section.
-     *
-     * @return section
-     */
-    @Nonnull
-    CodeAreaSection getSection();
+    void notifyChange(@Nonnull BinaryDataOperationEvent event);
 }

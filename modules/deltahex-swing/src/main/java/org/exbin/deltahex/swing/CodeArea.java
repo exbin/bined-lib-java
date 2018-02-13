@@ -231,11 +231,11 @@ public class CodeArea extends JComponent implements CodeAreaControl {
         });
     }
 
-    public void addDataChangedListener(@Nullable DataChangedListener dataChangedListener) {
+    public void addDataChangedListener(@Nonnull DataChangedListener dataChangedListener) {
         dataChangedListeners.add(dataChangedListener);
     }
 
-    public void removeDataChangedListener(@Nullable DataChangedListener dataChangedListener) {
+    public void removeDataChangedListener(@Nonnull DataChangedListener dataChangedListener) {
         dataChangedListeners.remove(dataChangedListener);
     }
 

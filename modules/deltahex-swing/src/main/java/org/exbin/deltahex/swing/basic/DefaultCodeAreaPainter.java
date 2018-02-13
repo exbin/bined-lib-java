@@ -38,6 +38,7 @@ import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.UIManager;
 import org.exbin.deltahex.CaretPosition;
+import org.exbin.deltahex.CodeAreaCaretPosition;
 import org.exbin.deltahex.CodeAreaSection;
 import org.exbin.deltahex.CodeAreaUtils;
 import org.exbin.deltahex.CodeCharactersCase;
@@ -69,7 +70,7 @@ import org.exbin.utils.binary_data.BinaryData;
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2018/02/07
+ * @version 0.2.0 2018/02/13
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaPainter implements CodeAreaPainter {
@@ -84,7 +85,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     private final JScrollPane scrollPanel;
 
     private CodeAreaViewMode viewMode;
-    private final CaretPosition caretPosition = new CaretPosition();
+    private final CodeAreaCaretPosition caretPosition = new CodeAreaCaretPosition();
     private SelectionRange selectionRange = null;
     private final CodeAreaScrollPosition scrollPosition = new CodeAreaScrollPosition();
     private VerticalScrollUnit verticalScrollUnit;
@@ -1169,7 +1170,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     @Nonnull
     @Override
     public CaretPosition mousePositionToClosestCaretPosition(int positionX, int positionY) {
-        CaretPosition caret = new CaretPosition();
+        CodeAreaCaretPosition caret = new CodeAreaCaretPosition();
         if (positionX < lineNumbersAreaWidth) {
             positionX = lineNumbersAreaWidth;
         }
@@ -1230,7 +1231,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
     @Override
     public CaretPosition computeMovePosition(@Nonnull CaretPosition position, @Nonnull MovementDirection direction) {
-        CaretPosition target = new CaretPosition(position.getDataPosition(), position.getCodeOffset(), position.getSection());
+        CodeAreaCaretPosition target = new CodeAreaCaretPosition(position.getDataPosition(), position.getCodeOffset(), position.getSection());
         switch (direction) {
             case LEFT: {
                 if (position.getSection() == CodeAreaSection.CODE_MATRIX) {

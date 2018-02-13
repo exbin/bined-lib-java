@@ -25,6 +25,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.exbin.deltahex.CaretMovedListener;
 import org.exbin.deltahex.CaretPosition;
+import org.exbin.deltahex.CodeAreaCaretPosition;
 import org.exbin.deltahex.CodeAreaSection;
 import org.exbin.deltahex.CodeCharactersCase;
 import org.exbin.deltahex.CodeAreaViewMode;
@@ -267,7 +268,7 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
     }
 
     public void revealPosition(long dataPosition, int dataOffset, @Nonnull CodeAreaSection section) {
-        revealPosition(new CaretPosition(dataPosition, dataOffset, section));
+        revealPosition(new CodeAreaCaretPosition(dataPosition, dataOffset, section));
     }
 
     @Nullable
