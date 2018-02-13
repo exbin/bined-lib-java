@@ -23,6 +23,7 @@ import javax.annotation.Nullable;
 import javax.swing.Timer;
 import org.exbin.deltahex.CaretPosition;
 import org.exbin.deltahex.CodeAreaCaret;
+import org.exbin.deltahex.CodeAreaCaretPosition;
 import org.exbin.deltahex.CodeAreaSection;
 import org.exbin.deltahex.capability.CaretCapable;
 import org.exbin.deltahex.swing.CodeArea;
@@ -30,7 +31,7 @@ import org.exbin.deltahex.swing.CodeArea;
 /**
  * Default implementation of code area caret.
  *
- * @version 0.2.0 2017/12/23
+ * @version 0.2.0 2018/02/13
  * @author ExBin Project (http://exbin.org)
  */
 public class ExtCodeAreaCaret implements CodeAreaCaret {
@@ -41,7 +42,7 @@ public class ExtCodeAreaCaret implements CodeAreaCaret {
 
     @Nonnull
     private final CodeArea codeArea;
-    private final CaretPosition caretPosition = new CaretPosition();
+    private final CodeAreaCaretPosition caretPosition = new CodeAreaCaretPosition();
 
     private int blinkRate = 0;
     private Timer blinkTimer = null;
@@ -89,8 +90,7 @@ public class ExtCodeAreaCaret implements CodeAreaCaret {
     @Nonnull
     @Override
     public CaretPosition getCaretPosition() {
-        // TODO: Make immutable / cache?
-        return new CaretPosition(caretPosition.getDataPosition(), caretPosition.getCodeOffset(), caretPosition.getSection());
+        return caretPosition;
     }
 
     public void resetBlink() {
