@@ -31,7 +31,7 @@ import org.exbin.deltahex.swing.CodeArea;
 /**
  * Default implementation of code area caret.
  *
- * @version 0.2.0 2018/02/13
+ * @version 0.2.0 2018/02/14
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaCaret implements CodeAreaCaret {
@@ -104,6 +104,7 @@ public class DefaultCodeAreaCaret implements CodeAreaCaret {
         resetBlink();
     }
 
+    @Override
     public void setCaretPosition(long dataPosition, int codeOffset) {
         caretPosition.setDataPosition(dataPosition);
         caretPosition.setCodeOffset(codeOffset);

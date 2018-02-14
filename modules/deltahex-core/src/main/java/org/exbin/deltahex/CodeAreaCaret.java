@@ -21,15 +21,41 @@ import javax.annotation.Nullable;
 /**
  * Interface for code area caret.
  *
- * @version 0.2.0 2017/12/09
+ * @version 0.2.0 2018/02/14
  * @author ExBin Project (http://exbin.org)
  */
 public interface CodeAreaCaret {
 
+    /**
+     * Returns caret position.
+     *
+     * Returned value should not be cast for editing.
+     *
+     * @return caret position
+     */
     @Nonnull
     CaretPosition getCaretPosition();
 
+    /**
+     * Sets current caret position to provided value.
+     *
+     * @param caretPosition caret position
+     */
     void setCaretPosition(@Nullable CaretPosition caretPosition);
 
+    /**
+     * Sets current caret position to given position preserving section.
+     *
+     * @param dataPosition data position
+     * @param codeOffset code offset
+     */
+    void setCaretPosition(long dataPosition, int codeOffset);
+
+    /**
+     * Sets current caret position to given position resetting offset and
+     * preserving section.
+     *
+     * @param dataPosition data position
+     */
     void setCaretPosition(long dataPosition);
 }

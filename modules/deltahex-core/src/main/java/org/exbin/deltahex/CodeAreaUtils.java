@@ -22,6 +22,8 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import javax.annotation.Nonnull;
 import org.exbin.utils.binary_data.BinaryData;
@@ -272,6 +274,20 @@ public class CodeAreaUtils {
         }
 
         return 0;
+    }
+
+    /**
+     * Converts provided character into byte array for given charset.
+     *
+     * @param value character value
+     * @param charset charset
+     * @return byte array
+     */
+    public static byte[] characterToBytes(char value, @Nonnull Charset charset) {
+        ByteBuffer buffer = charset.encode(Character.toString(value));
+        byte[] bytes = new byte[buffer.remaining()];
+        buffer.get(bytes, 0, bytes.length);
+        return bytes;
     }
 
     /**
