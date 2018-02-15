@@ -59,7 +59,7 @@ import org.exbin.deltahex.swing.capability.FontCapable;
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2018/02/09
+ * @version 0.2.0 2018/02/15
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, CaretCapable, ScrollingCapable, ViewModeCapable,
@@ -159,6 +159,11 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
     @Override
     public boolean isShowMirrorCursor() {
         return showMirrorCursor;
+    }
+
+    public void setShowMirrorCursor(boolean showMirrorCursor) {
+        this.showMirrorCursor = showMirrorCursor;
+        repaint();
     }
 
     public long getDataPosition() {
