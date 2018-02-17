@@ -17,6 +17,7 @@ package org.exbin.deltahex.capability;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import org.exbin.deltahex.BasicCodeAreaZone;
 import org.exbin.deltahex.CaretMovedListener;
 import org.exbin.deltahex.CaretPosition;
 import org.exbin.deltahex.CodeAreaCaret;
@@ -24,39 +25,77 @@ import org.exbin.deltahex.CodeAreaCaret;
 /**
  * Support for caret / cursor capability.
  *
- * @version 0.2.0 2018/01/01
+ * @version 0.2.0 2018/02/17
  * @author ExBin Project (http://exbin.org)
  */
 public interface CaretCapable {
 
+    /**
+     * Returns handler for caret.
+     *
+     * @return caret handler
+     */
     @Nonnull
     CodeAreaCaret getCaret();
 
-    boolean isShowMirrorCursor();
-
+    /**
+     * Reveals scrolling area for current cursor position.
+     */
     void revealCursor();
 
+    /**
+     * Reveals scrolling area for given caret position.
+     *
+     * @param caretPosition caret position
+     */
     void revealPosition(@Nonnull CaretPosition caretPosition);
 
     @Nullable
     CaretPosition mousePositionToClosestCaretPosition(int positionX, int positionY);
 
+    /**
+     * Returns if cursor should be visible in other sections.
+     *
+     * @return true if cursor should be mirrored
+     */
+    boolean isShowMirrorCursor();
+
+    /**
+     * Sets if cursor should be visible in other sections.
+     *
+     * @param showMirrorCursor true if cursor should be mirrored
+     */
+    void setShowMirrorCursor(boolean showMirrorCursor);
+
     void notifyCaretMoved();
 
     void notifyCaretChanged();
 
-    void addCaretMovedListener(@Nullable CaretMovedListener caretMovedListener);
-
-    void removeCaretMovedListener(@Nullable CaretMovedListener caretMovedListener);
-
     /**
      * Returns cursor shape type for given position.
+     *
+     * TODO: Not part of caret?
      *
      * @param x x-coordinate
      * @param y y-coordinate
      * @return cursor type from java.awt.Cursor
      */
-    int getCursorShape(int x, int y);
+    int getMouseCursorShape(int x, int y);
+
+    /**
+     * Returns zone type for given position.
+     *
+     * TODO: Not part of caret?
+     *
+     * @param x x-coordinate
+     * @param y y-coordinate
+     * @return specific zone in component
+     */
+    BasicCodeAreaZone getPositionZone(int x, int y);
+
+    void addCaretMovedListener(@Nullable CaretMovedListener caretMovedListener);
+
+    void removeCaretMovedListener(@Nullable CaretMovedListener caretMovedListener);
 
     public static class CaretCapability implements WorkerCapability {
 

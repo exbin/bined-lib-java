@@ -18,6 +18,7 @@ package org.exbin.deltahex.swing;
 import java.awt.Graphics;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import org.exbin.deltahex.BasicCodeAreaZone;
 import org.exbin.deltahex.CaretPosition;
 import org.exbin.deltahex.swing.basic.CodeAreaScrollPosition;
 
@@ -69,7 +70,16 @@ public interface CodeAreaPainter {
      * @param positionY component relative position Y
      * @return java.awt.Cursor cursor type value
      */
-    int getCursorShape(int positionX, int positionY);
+    int getMouseCursorShape(int positionX, int positionY);
+
+    /**
+     * Returns zone type for given position.
+     *
+     * @param x x-coordinate
+     * @param y y-coordinate
+     * @return specific zone in component
+     */
+    BasicCodeAreaZone getPositionZone(int x, int y);
 
     /**
      * Returns closest caret position for provided component relative mouse

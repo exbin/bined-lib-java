@@ -26,7 +26,8 @@ import javax.annotation.Nullable;
 import org.exbin.deltahex.CaretMovedListener;
 import org.exbin.deltahex.CaretPosition;
 import org.exbin.deltahex.CodeAreaCaretPosition;
-import org.exbin.deltahex.CodeAreaSection;
+import org.exbin.deltahex.BasicCodeAreaSection;
+import org.exbin.deltahex.BasicCodeAreaZone;
 import org.exbin.deltahex.CodeCharactersCase;
 import org.exbin.deltahex.CodeAreaViewMode;
 import org.exbin.deltahex.CodeType;
@@ -174,8 +175,7 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
         return caret.getCodeOffset();
     }
 
-    @Nonnull
-    public CodeAreaSection getActiveSection() {
+    public int getActiveSection() {
         return caret.getSection();
     }
 
@@ -200,8 +200,13 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
     }
 
     @Override
-    public int getCursorShape(int positionX, int positionY) {
-        return painter.getCursorShape(positionX, positionY);
+    public int getMouseCursorShape(int positionX, int positionY) {
+        return painter.getMouseCursorShape(positionX, positionY);
+    }
+
+    @Override
+    public BasicCodeAreaZone getPositionZone(int positionX, int positionY) {
+        return painter.getPositionZone(positionX, positionY);
     }
 
     @Nonnull
@@ -230,10 +235,10 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
     public void setViewMode(@Nonnull CodeAreaViewMode viewMode) {
         this.viewMode = viewMode;
         if (viewMode == CodeAreaViewMode.CODE_MATRIX) {
-            getCaret().setSection(CodeAreaSection.CODE_MATRIX);
+            getCaret().setSection(BasicCodeAreaSection.CODE_MATRIX.getSection());
             notifyCaretMoved();
         } else if (viewMode == CodeAreaViewMode.TEXT_PREVIEW) {
-            getCaret().setSection(CodeAreaSection.TEXT_PREVIEW);
+            getCaret().setSection(BasicCodeAreaSection.TEXT_PREVIEW.getSection());
             notifyCaretMoved();
         }
         repaint();
@@ -272,7 +277,7 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
         }
     }
 
-    public void revealPosition(long dataPosition, int dataOffset, @Nonnull CodeAreaSection section) {
+    public void revealPosition(long dataPosition, int dataOffset, int section) {
         revealPosition(new CodeAreaCaretPosition(dataPosition, dataOffset, section));
     }
 

@@ -24,7 +24,6 @@ import javax.swing.Timer;
 import org.exbin.deltahex.CaretPosition;
 import org.exbin.deltahex.CodeAreaCaret;
 import org.exbin.deltahex.CodeAreaCaretPosition;
-import org.exbin.deltahex.CodeAreaSection;
 import org.exbin.deltahex.capability.CaretCapable;
 import org.exbin.deltahex.swing.CodeArea;
 
@@ -123,7 +122,7 @@ public class ExtCodeAreaCaret implements CodeAreaCaret {
         resetBlink();
     }
 
-    public void setCaretPosition(long dataPosition, int codeOffset, @Nonnull CodeAreaSection section) {
+    public void setCaretPosition(long dataPosition, int codeOffset, int section) {
         caretPosition.setDataPosition(dataPosition);
         caretPosition.setCodeOffset(codeOffset);
         caretPosition.setSection(section);
@@ -148,12 +147,11 @@ public class ExtCodeAreaCaret implements CodeAreaCaret {
         resetBlink();
     }
 
-    @Nonnull
-    public CodeAreaSection getSection() {
+    public int getSection() {
         return caretPosition.getSection();
     }
 
-    public void setSection(@Nonnull CodeAreaSection section) {
+    public void setSection(int section) {
         caretPosition.setSection(section);
         resetBlink();
     }

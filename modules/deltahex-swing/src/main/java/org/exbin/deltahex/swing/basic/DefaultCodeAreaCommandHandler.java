@@ -28,7 +28,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Nonnull;
 import org.exbin.deltahex.CaretPosition;
-import org.exbin.deltahex.CodeAreaSection;
+import org.exbin.deltahex.BasicCodeAreaSection;
 import org.exbin.deltahex.CodeAreaUtils;
 import org.exbin.deltahex.CodeAreaViewMode;
 import org.exbin.deltahex.CodeType;
@@ -391,7 +391,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
         DefaultCodeAreaCaret caret = (DefaultCodeAreaCaret) ((CaretCapable) codeArea.getWorker()).getCaret();
         CaretPosition caretPosition = caret.getCaretPosition();
-        if (caretPosition.getSection() == CodeAreaSection.CODE_MATRIX) {
+        if (caretPosition.getSection() == BasicCodeAreaSection.CODE_MATRIX.getSection()) {
             long dataPosition = caretPosition.getDataPosition();
             int codeOffset = caretPosition.getCodeOffset();
             CodeType codeType = getCodeType();

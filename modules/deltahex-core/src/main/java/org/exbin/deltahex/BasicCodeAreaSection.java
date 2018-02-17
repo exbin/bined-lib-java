@@ -15,37 +15,30 @@
  */
 package org.exbin.deltahex;
 
-import javax.annotation.Nonnull;
-
 /**
- * Specifies caret position as combination of data position, section and code
- * offset of code representation.
+ * Enumeration of basic cursor position section.
  *
- * @version 0.2.0 2018/02/17
+ * @version 0.2.0 2017/04/17
  * @author ExBin Project (http://exbin.org)
  */
-public interface CaretPosition {
+public enum BasicCodeAreaSection {
 
     /**
-     * Returns position of byte in document.
-     *
-     * @return data position
+     * Section of code area with codes for binary data representation.
      */
-    long getDataPosition();
-
+    CODE_MATRIX(0),
     /**
-     * Returns offset position of current code on current position and code
-     * type.
-     *
-     * @return code offset
+     * Section of code area with textual preview characters.
      */
-    int getCodeOffset();
+    TEXT_PREVIEW(1);
 
-    /**
-     * Returns active code area section.
-     *
-     * @return section
-     */
-    @Nonnull
-    int getSection();
+    private final int section;
+
+    private BasicCodeAreaSection(int section) {
+        this.section = section;
+    }
+
+    public int getSection() {
+        return section;
+    }
 }

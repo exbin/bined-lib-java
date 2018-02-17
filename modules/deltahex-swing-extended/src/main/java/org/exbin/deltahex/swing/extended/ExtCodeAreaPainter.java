@@ -33,7 +33,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.Nonnull;
-import org.exbin.deltahex.CodeAreaSection;
+import org.exbin.deltahex.BasicCodeAreaSection;
 import org.exbin.deltahex.CodeAreaUtils;
 import org.exbin.deltahex.EditationMode;
 import org.exbin.deltahex.CodeCharactersCase;

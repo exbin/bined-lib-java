@@ -16,19 +16,19 @@
 package org.exbin.deltahex;
 
 /**
- * Enumeration of cursor position section.
+ * Enumeration of basic code area zones.
  *
- * @version 0.2.0 2017/04/02
+ * @version 0.2.0 2017/04/17
  * @author ExBin Project (http://exbin.org)
  */
-public enum CodeAreaSection {
+public enum BasicCodeAreaZone {
+    
+    HEADER,
+    LINE_NUMBERS,
+    CODE_AREA,
+    HORIZONTAL_SCROLLBAR,
+    VERTICAL_SCROLLBAR,
+    TOP_LEFT_CORNER,
+    BOTTOM_LEFT_CORNER,
 
-    /**
-     * Section of code area with codes for binary data representation.
-     */
-    CODE_MATRIX,
-    /**
-     * Section of code area with textual preview characters.
-     */
-    TEXT_PREVIEW
 }

@@ -75,7 +75,7 @@ public class DeltaHexExampleBasicPanel extends javax.swing.JPanel {
         viewModeComboBox.setSelectedIndex(worker.getViewMode().ordinal());
         codeTypeComboBox.setSelectedIndex(worker.getCodeType().ordinal());
 //        positionCodeTypeComboBox.setSelectedIndex(codeArea.getPositionCodeType().ordinal());
-        activeSectionComboBox.setSelectedIndex(((CaretCapable) codeArea.getWorker()).getCaret().getCaretPosition().getSection().ordinal());
+        activeSectionComboBox.setSelectedIndex(((CaretCapable) codeArea.getWorker()).getCaret().getCaretPosition().getSection());
 //        backgroundModeComboBox.setSelectedIndex(codeArea.getBackgroundMode().ordinal());
 //        lineNumbersBackgroundCheckBox.setSelected(codeArea.isLineNumberBackground());
         charRenderingComboBox.setSelectedIndex(worker.getCharacterRenderingMode().ordinal());
@@ -114,7 +114,7 @@ public class DeltaHexExampleBasicPanel extends javax.swing.JPanel {
         worker.addCaretMovedListener((CaretPosition caretPosition) -> {
             positionTextField.setText(String.valueOf(caretPosition.getDataPosition()));
             codeOffsetTextField.setText(String.valueOf(caretPosition.getCodeOffset()));
-            activeSectionComboBox.setSelectedIndex(caretPosition.getSection().ordinal());
+            activeSectionComboBox.setSelectedIndex(caretPosition.getSection());
         });
         ((SelectionCapable) codeArea.getWorker()).addSelectionChangedListener((SelectionRange selection) -> {
             if (selection != null) {

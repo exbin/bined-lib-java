@@ -39,7 +39,7 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.plaf.basic.BasicBorders;
 import org.exbin.deltahex.CaretMovedListener;
 import org.exbin.deltahex.CaretPosition;
-import org.exbin.deltahex.CodeAreaSection;
+import org.exbin.deltahex.BasicCodeAreaSection;
 import org.exbin.deltahex.CodeType;
 import org.exbin.deltahex.DataChangedListener;
 import org.exbin.deltahex.CodeCharactersCase;

@@ -89,7 +89,7 @@ public class DefaultCodeAreaMouseListener extends MouseAdapter implements MouseM
     }
 
     private void updateMouseCursor(@Nonnull MouseEvent me) {
-        int cursorShape = ((CaretCapable) codeArea.getWorker()).getCursorShape(computeRelativeX(me), computeRelativeY(me));
+        int cursorShape = ((CaretCapable) codeArea.getWorker()).getMouseCursorShape(computeRelativeX(me), computeRelativeY(me));
 
         // Reuse current cursor if unchanged
         Cursor newCursor = cursorShape == 0 ? defaultCursor : textCursor;
