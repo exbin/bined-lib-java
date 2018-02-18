@@ -22,7 +22,7 @@ import javax.annotation.Nullable;
 /**
  * Hexadecimal editor component swing utilities.
  *
- * @version 0.2.0 2017/11/09
+ * @version 0.2.0 2017/02/18
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeAreaSwingUtils {
@@ -73,5 +73,11 @@ public class CodeAreaSwingUtils {
                 MAX_COMPONENT_VALUE - color.getRed(),
                 MAX_COMPONENT_VALUE - color.getGreen(),
                 MAX_COMPONENT_VALUE - color.getBlue());
+    }
+
+    @Nonnull
+    public static Color computeGrayColor(@Nonnull Color color) {
+        int grayLevel = (color.getRed() + color.getGreen() + color.getBlue()) / 3;
+        return new Color(grayLevel, grayLevel, grayLevel);
     }
 }

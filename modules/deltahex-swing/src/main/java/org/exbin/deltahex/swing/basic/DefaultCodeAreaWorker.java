@@ -162,6 +162,7 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
         return showMirrorCursor;
     }
 
+    @Override
     public void setShowMirrorCursor(boolean showMirrorCursor) {
         this.showMirrorCursor = showMirrorCursor;
         repaint();
@@ -336,7 +337,7 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
     }
 
     @Override
-    public void setVerticalScrollUnit(VerticalScrollUnit verticalScrollUnit) {
+    public void setVerticalScrollUnit(@Nonnull VerticalScrollUnit verticalScrollUnit) {
         this.verticalScrollUnit = verticalScrollUnit;
         long linePosition = scrollPosition.getScrollLinePosition();
         if (verticalScrollUnit == VerticalScrollUnit.LINE) {
@@ -355,7 +356,7 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
     }
 
     @Override
-    public void setHorizontalScrollBarVisibility(ScrollBarVisibility horizontalScrollBarVisibility) {
+    public void setHorizontalScrollBarVisibility(@Nonnull ScrollBarVisibility horizontalScrollBarVisibility) {
         this.horizontalScrollBarVisibility = horizontalScrollBarVisibility;
         codeArea.resetPainter();
         updateScrollBars();
@@ -368,7 +369,7 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
     }
 
     @Override
-    public void setHorizontalScrollUnit(HorizontalScrollUnit horizontalScrollUnit) {
+    public void setHorizontalScrollUnit(@Nonnull HorizontalScrollUnit horizontalScrollUnit) {
         this.horizontalScrollUnit = horizontalScrollUnit;
         int bytePosition = scrollPosition.getScrollCharPosition();
         if (horizontalScrollUnit == HorizontalScrollUnit.CHARACTER) {

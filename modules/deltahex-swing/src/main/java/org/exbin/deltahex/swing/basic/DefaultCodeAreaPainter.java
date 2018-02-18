@@ -71,7 +71,7 @@ import org.exbin.utils.binary_data.BinaryData;
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2018/02/17
+ * @version 0.2.0 2018/02/18
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaPainter implements CodeAreaPainter {
@@ -350,10 +350,16 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     }
 
     private void resetSizes() {
+        if (fontMetrics == null) {
+            headerAreaHeight = 0;
+        } else {
+            int fontHeight = fontMetrics.getHeight();
+            headerAreaHeight = fontHeight + fontHeight / 4;
+        }
+
         componentWidth = worker.getCodeArea().getWidth();
         componentHeight = worker.getCodeArea().getHeight();
         lineNumbersAreaWidth = characterWidth * (lineNumbersLength + 1);
-        headerAreaHeight = 20;
         dataViewX = lineNumbersAreaWidth;
         dataViewY = headerAreaHeight;
         dataViewWidth = componentWidth - lineNumbersAreaWidth;
@@ -380,8 +386,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             colors.selectionBackground = new Color(96, 96, 255);
         }
         colors.selectionMirrorForeground = colors.selectionForeground;
-        int grayLevel = (colors.selectionBackground.getRed() + colors.selectionBackground.getGreen() + colors.selectionBackground.getBlue()) / 3;
-        colors.selectionMirrorBackground = new Color(grayLevel, grayLevel, grayLevel);
+        colors.selectionMirrorBackground = CodeAreaSwingUtils.computeGrayColor(colors.selectionBackground);
         colors.cursor = UIManager.getColor("TextArea.caretForeground");
         colors.negativeCursor = CodeAreaSwingUtils.createNegativeColor(colors.cursor);
         if (colors.cursor == null) {
