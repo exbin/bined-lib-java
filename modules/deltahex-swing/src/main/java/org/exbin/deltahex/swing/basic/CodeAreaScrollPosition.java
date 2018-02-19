@@ -52,9 +52,6 @@ public class CodeAreaScrollPosition {
      */
     private int lineDataOffset = 0;
 
-    @Nonnull
-    private VerticalOverflowMode verticalOverflowMode = VerticalOverflowMode.NORMAL;
-
     public long getScrollLinePosition() {
         return scrollLinePosition;
     }
@@ -95,15 +92,6 @@ public class CodeAreaScrollPosition {
         this.lineDataOffset = lineDataOffset;
     }
 
-    @Nonnull
-    public VerticalOverflowMode getVerticalOverflowMode() {
-        return verticalOverflowMode;
-    }
-
-    public void setVerticalOverflowMode(@Nonnull VerticalOverflowMode verticalOverflowMode) {
-        this.verticalOverflowMode = verticalOverflowMode;
-    }
-
     public void setScrollPosition(@Nullable CodeAreaScrollPosition scrollPosition) {
         if (scrollPosition == null) {
             reset();
@@ -129,7 +117,7 @@ public class CodeAreaScrollPosition {
 
     @Override
     public int hashCode() {
-        return Objects.hash(scrollLinePosition, scrollLineOffset, scrollCharPosition, scrollCharOffset, lineDataOffset, verticalOverflowMode);
+        return Objects.hash(scrollLinePosition, scrollLineOffset, scrollCharPosition, scrollCharOffset, lineDataOffset);
     }
 
     @Override
@@ -156,23 +144,6 @@ public class CodeAreaScrollPosition {
         if (this.scrollCharOffset != other.scrollCharOffset) {
             return false;
         }
-        if (this.lineDataOffset != other.lineDataOffset) {
-            return false;
-        }
-        return this.verticalOverflowMode == other.verticalOverflowMode;
-    }
-
-    /**
-     * Enumeration of vertical overflow modes.
-     */
-    public enum VerticalOverflowMode {
-        /**
-         * Normal ratio 1 on 1.
-         */
-        NORMAL,
-        /**
-         * Height is more than available precision and scaled.
-         */
-        OVERFLOW
+        return this.lineDataOffset == other.lineDataOffset;
     }
 }

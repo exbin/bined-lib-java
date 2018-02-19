@@ -71,7 +71,7 @@ import org.exbin.utils.binary_data.BinaryData;
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2018/02/18
+ * @version 0.2.0 2018/02/19
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaPainter implements CodeAreaPainter {
@@ -89,6 +89,9 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     private final CodeAreaCaretPosition caretPosition = new CodeAreaCaretPosition();
     private SelectionRange selectionRange = null;
     private final CodeAreaScrollPosition scrollPosition = new CodeAreaScrollPosition();
+    @Nonnull
+    private ScrollBarVerticalScale scrollBarVerticalScale = ScrollBarVerticalScale.NORMAL;
+
     private VerticalScrollUnit verticalScrollUnit;
     private HorizontalScrollUnit horizontalScrollUnit;
     private int scrollX;
@@ -163,7 +166,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         dataView.setLayout(null);
         dataView.setOpaque(false);
         // Fill whole area, no more suitable method found so far
-        dataView.setPreferredSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+        dataView.setPreferredSize(new Dimension(0, 0));
         scrollPanel = new JScrollPane();
         scrollPanel.setBorder(null);
         scrollPanel.setIgnoreRepaint(true);
@@ -191,7 +194,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     @Override
     public void reset() {
         resetSizes();
-        resetScrollState();
         resetColors();
 
         viewMode = ((ViewModeCapable) worker).getViewMode();
@@ -214,10 +216,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         charactersPerPage = computeCharactersPerPage();
         charactersPerLine = computeCharactersPerLine();
 
-        // TODO compute
-        int documentDataWidth = charactersPerLine * characterWidth;
-        long documentDataHeight = ((dataSize + bytesPerLine - 1) / bytesPerLine) * lineHeight;
-        dataView.setPreferredSize(new Dimension(documentDataWidth, (int) documentDataHeight));
+        resetScrollState();
     }
 
     private void resetCharPositions() {
@@ -320,6 +319,22 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         scrollPosition.setScrollPosition(((ScrollingCapable) worker).getScrollPosition());
         verticalScrollUnit = ((ScrollingCapable) worker).getVerticalScrollUnit();
         horizontalScrollUnit = ((ScrollingCapable) worker).getHorizontalScrollUnit();
+
+        if (lineHeight > 0 && characterWidth > 0) {
+            int documentDataWidth = charactersPerLine * characterWidth;
+            long linesPerData = (dataSize + bytesPerLine - 1) / bytesPerLine;
+
+            int documentDataHeight;
+            if (linesPerData > Integer.MAX_VALUE / lineHeight) {
+                scrollBarVerticalScale = ScrollBarVerticalScale.SCALED;
+                documentDataHeight = Integer.MAX_VALUE;
+            } else {
+                scrollBarVerticalScale = ScrollBarVerticalScale.NORMAL;
+                documentDataHeight = (int) (linesPerData * lineHeight);
+            }
+
+            dataView.setPreferredSize(new Dimension(documentDataWidth, documentDataHeight));
+        }
 
         // TODO Overflow mode
         switch (horizontalScrollUnit) {
@@ -1579,7 +1594,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         JScrollBar verticalScrollBar = scrollPanel.getVerticalScrollBar();
         JScrollBar horizontalScrollBar = scrollPanel.getHorizontalScrollBar();
 
-        if (scrollPosition.getVerticalOverflowMode() == CodeAreaScrollPosition.VerticalOverflowMode.OVERFLOW) {
+        if (scrollBarVerticalScale == ScrollBarVerticalScale.SCALED) {
             long lines = ((dataSize + scrollPosition.getLineDataOffset()) / bytesPerLine) + 1;
             int scrollValue;
             if (scrollPosition.getScrollCharPosition() < Long.MAX_VALUE / Integer.MAX_VALUE) {
@@ -1613,7 +1628,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         @Override
         public void adjustmentValueChanged(AdjustmentEvent e) {
             int scrollBarValue = scrollPanel.getVerticalScrollBar().getValue();
-            if (scrollPosition.getVerticalOverflowMode() == CodeAreaScrollPosition.VerticalOverflowMode.OVERFLOW) {
+            if (scrollBarVerticalScale == ScrollBarVerticalScale.SCALED) {
                 int maxValue = Integer.MAX_VALUE - scrollPanel.getVerticalScrollBar().getVisibleAmount();
                 long lines = ((dataSize + scrollPosition.getLineDataOffset()) / bytesPerLine) - computeLinesPerRectangle() + 1;
                 long targetLine;
@@ -1685,5 +1700,19 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         Color negativeCursorMirror;
         Color decorationLine;
         Color stripes;
+    }
+
+    /**
+     * Enumeration of vertical scalling modes.
+     */
+    public enum ScrollBarVerticalScale {
+        /**
+         * Normal ratio 1 on 1.
+         */
+        NORMAL,
+        /**
+         * Height is more than available range and scaled.
+         */
+        SCALED
     }
 }
