@@ -1604,13 +1604,13 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             }
             verticalScrollBar.setValue(scrollValue);
         } else if (verticalScrollUnit == VerticalScrollUnit.LINE) {
-            verticalScrollBar.setValue((int) scrollPosition.getScrollLinePosition());
+            verticalScrollBar.setValue((int) scrollPosition.getScrollLinePosition() * lineHeight);
         } else {
             verticalScrollBar.setValue((int) (scrollPosition.getScrollLinePosition() * lineHeight + scrollPosition.getScrollLineOffset()));
         }
 
         if (horizontalScrollUnit == HorizontalScrollUnit.CHARACTER) {
-            horizontalScrollBar.setValue(scrollPosition.getScrollCharPosition());
+            horizontalScrollBar.setValue(scrollPosition.getScrollCharPosition() * characterWidth);
         } else {
             horizontalScrollBar.setValue(scrollPosition.getScrollCharPosition() * characterWidth + scrollPosition.getScrollCharOffset());
         }
@@ -1643,11 +1643,17 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                 if (verticalScrollUnit != VerticalScrollUnit.LINE) {
                     scrollPosition.setScrollLineOffset(0);
                 }
-            } else if (verticalScrollUnit == VerticalScrollUnit.LINE) {
-                scrollPosition.setScrollLinePosition(scrollBarValue);
             } else {
-                scrollPosition.setScrollLinePosition(scrollBarValue / lineHeight);
-                scrollPosition.setScrollLineOffset(scrollBarValue % lineHeight);
+                if (lineHeight == 0) {
+                    scrollPosition.setScrollLinePosition(0);
+                    scrollPosition.setScrollLineOffset(0);
+                } else if (verticalScrollUnit == VerticalScrollUnit.LINE) {
+                    scrollPosition.setScrollLinePosition(scrollBarValue / lineHeight);
+                    scrollPosition.setScrollLineOffset(0);
+                } else {
+                    scrollPosition.setScrollLinePosition(scrollBarValue / lineHeight);
+                    scrollPosition.setScrollLineOffset(scrollBarValue % lineHeight);
+                }
             }
 
             // TODO
@@ -1665,13 +1671,19 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
         @Override
         public void adjustmentValueChanged(AdjustmentEvent e) {
+            int scrollBarValue = scrollPanel.getHorizontalScrollBar().getValue();
             if (horizontalScrollUnit == HorizontalScrollUnit.CHARACTER) {
-                scrollPosition.setScrollCharPosition(scrollPanel.getHorizontalScrollBar().getValue());
+                scrollPosition.setScrollCharPosition(scrollBarValue);
             } else {
-                if (characterWidth > 0) {
-                    int horizontalScroll = scrollPanel.getHorizontalScrollBar().getValue();
-                    scrollPosition.setScrollCharPosition(horizontalScroll / characterWidth);
-                    scrollPosition.setScrollCharOffset(horizontalScroll % characterWidth);
+                if (characterWidth == 0) {
+                    scrollPosition.setScrollCharPosition(0);
+                    scrollPosition.setScrollCharOffset(0);
+                } else if (horizontalScrollUnit == HorizontalScrollUnit.CHARACTER) {
+                    scrollPosition.setScrollCharPosition(scrollBarValue / characterWidth);
+                    scrollPosition.setScrollCharOffset(0);
+                } else {
+                    scrollPosition.setScrollCharPosition(scrollBarValue / characterWidth);
+                    scrollPosition.setScrollCharOffset(scrollBarValue % characterWidth);
                 }
             }
 
