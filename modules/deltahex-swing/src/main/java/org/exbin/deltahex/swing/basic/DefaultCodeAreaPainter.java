@@ -71,7 +71,7 @@ import org.exbin.utils.binary_data.BinaryData;
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2018/02/19
+ * @version 0.2.0 2018/02/21
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaPainter implements CodeAreaPainter {
@@ -1375,11 +1375,16 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                 break;
             }
             case PAGE_DOWN: {
-                long linesPerDocument = (dataSize + bytesPerLine - 1) / bytesPerLine;
-                if (startPosition.getScrollLinePosition() < linesPerDocument) {
+                long linesPerDocument = dataSize / bytesPerLine;
+                if (dataSize % bytesPerLine > 0) {
+                    linesPerDocument++;
+                }
+                if (startPosition.getScrollLinePosition() <= linesPerDocument - linesPerPage * 2) {
                     targetPosition.setScrollLinePosition(startPosition.getScrollLinePosition() + linesPerPage);
+                } else if (linesPerDocument > linesPerPage) {
+                    targetPosition.setScrollLinePosition(linesPerDocument - linesPerPage);
                 } else {
-                    targetPosition.setScrollLinePosition(linesPerDocument > linesPerPage ? linesPerDocument - linesPerPage : 0);
+                    targetPosition.setScrollLinePosition(0);
                 }
                 break;
             }
