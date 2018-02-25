@@ -71,7 +71,7 @@ import org.exbin.utils.binary_data.BinaryData;
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2018/02/21
+ * @version 0.2.0 2018/02/25
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaPainter implements CodeAreaPainter {
@@ -916,6 +916,11 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             }
         }
         return scrolled ? targetScrollPosition : null;
+    }
+
+    @Override
+    public CodeAreaScrollPosition computeCenterOnScrollPosition(CaretPosition caretPosition) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     /**

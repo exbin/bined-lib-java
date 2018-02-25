@@ -110,6 +110,19 @@ public interface CodeAreaPainter {
     CodeAreaScrollPosition computeRevealScrollPosition(@Nonnull CaretPosition caretPosition);
 
     /**
+     * Returns scroll position so that provided caret position is visible in the
+     * center of the scrolled area.
+     *
+     * Attempts to center as much as possible while preserving scrolling limits.
+     *
+     * @param caretPosition caret position
+     * @return scroll position or null if desired scroll position is the same as
+     * current scroll position.
+     */
+    @Nullable
+    CodeAreaScrollPosition computeCenterOnScrollPosition(@Nonnull CaretPosition caretPosition);
+
+    /**
      * Computes position for movement action.
      *
      * @param position source position

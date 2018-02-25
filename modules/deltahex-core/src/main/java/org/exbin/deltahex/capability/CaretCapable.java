@@ -25,7 +25,7 @@ import org.exbin.deltahex.CodeAreaCaret;
 /**
  * Support for caret / cursor capability.
  *
- * @version 0.2.0 2018/02/17
+ * @version 0.2.0 2018/02/25
  * @author ExBin Project (http://exbin.org)
  */
 public interface CaretCapable {
@@ -49,6 +49,19 @@ public interface CaretCapable {
      * @param caretPosition caret position
      */
     void revealPosition(@Nonnull CaretPosition caretPosition);
+
+    /**
+     * Scrolls scrolling area as centered as possible for current cursor
+     * position.
+     */
+    void centerOnCursor();
+
+    /**
+     * Scrolls scrolling area as centered as possible for given caret position.
+     *
+     * @param caretPosition caret position
+     */
+    void centerOnPosition(@Nonnull CaretPosition caretPosition);
 
     @Nullable
     CaretPosition mousePositionToClosestCaretPosition(int positionX, int positionY);
@@ -87,11 +100,12 @@ public interface CaretCapable {
      *
      * TODO: Not part of caret?
      *
-     * @param x x-coordinate
-     * @param y y-coordinate
+     * @param positionX x-coordinate
+     * @param positionY y-coordinate
      * @return specific zone in component
      */
-    BasicCodeAreaZone getPositionZone(int x, int y);
+    @Nonnull
+    BasicCodeAreaZone getPositionZone(int positionX, int positionY);
 
     void addCaretMovedListener(@Nullable CaretMovedListener caretMovedListener);
 

@@ -60,7 +60,7 @@ import org.exbin.deltahex.swing.capability.FontCapable;
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2018/02/15
+ * @version 0.2.0 2018/02/25
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, CaretCapable, ScrollingCapable, ViewModeCapable,
@@ -280,6 +280,31 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
 
     public void revealPosition(long dataPosition, int dataOffset, int section) {
         revealPosition(new CodeAreaCaretPosition(dataPosition, dataOffset, section));
+    }
+
+    @Override
+    public void centerOnCursor() {
+        centerOnPosition(caret.getCaretPosition());
+    }
+
+    @Override
+    public void centerOnPosition(@Nonnull CaretPosition caretPosition) {
+        if (!isInitialized()) {
+            // Silently ignore if painter is not yet initialized
+            return;
+        }
+
+        CodeAreaScrollPosition centerOnScrollPosition = painter.computeCenterOnScrollPosition(caretPosition);
+        if (centerOnScrollPosition != null) {
+            setScrollPosition(centerOnScrollPosition);
+            codeArea.resetPainter();
+            updateScrollBars();
+            notifyScrolled();
+        }
+    }
+
+    public void centerOnPosition(long dataPosition, int dataOffset, int section) {
+        centerOnPosition(new CodeAreaCaretPosition(dataPosition, dataOffset, section));
     }
 
     @Nullable
