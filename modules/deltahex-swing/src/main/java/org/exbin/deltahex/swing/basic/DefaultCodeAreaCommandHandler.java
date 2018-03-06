@@ -579,7 +579,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             long first = selection.getFirst();
             long last = selection.getLast();
 
-            BinaryData copy = ((EditableBinaryData) codeArea.getData()).copy(first, last - first + 1);
+            BinaryData copy = codeArea.getData().copy(first, last - first + 1);
 
             CodeAreaUtils.BinaryDataClipboardData binaryData = new CodeAreaUtils.BinaryDataClipboardData(copy, binaryDataFlavor);
             setClipboardContent(binaryData);
@@ -593,7 +593,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             long first = selection.getFirst();
             long last = selection.getLast();
 
-            BinaryData copy = ((EditableBinaryData) codeArea.getData()).copy(first, last - first + 1);
+            BinaryData copy = codeArea.getData().copy(first, last - first + 1);
 
             CodeType codeType = ((CodeTypeCapable) codeArea.getWorker()).getCodeType();
             CodeAreaUtils.CodeDataClipboardData binaryData = new CodeAreaUtils.CodeDataClipboardData(copy, binaryDataFlavor, codeType);

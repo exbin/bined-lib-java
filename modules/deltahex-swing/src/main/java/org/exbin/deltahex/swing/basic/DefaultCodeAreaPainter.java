@@ -443,7 +443,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
     public void paintHeader(@Nonnull Graphics g) {
         Rectangle clipBounds = g.getClipBounds();
-        Rectangle headerArea = new Rectangle(lineNumbersAreaWidth, 0, componentWidth - lineNumbersAreaWidth, headerAreaHeight);
+        Rectangle headerArea = new Rectangle(lineNumbersAreaWidth, 0, componentWidth - lineNumbersAreaWidth - getVerticalScrollBarSize(), headerAreaHeight);
         g.setClip(clipBounds != null ? headerArea.intersection(clipBounds) : headerArea);
 
         g.setColor(colors.background);
@@ -584,7 +584,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
     public void paintLineNumbers(@Nonnull Graphics g) {
         Rectangle clipBounds = g.getClipBounds();
-        Rectangle lineNumbersArea = new Rectangle(0, headerAreaHeight, lineNumbersAreaWidth, componentHeight - headerAreaHeight); // TODO minus scrollbar height
+        Rectangle lineNumbersArea = new Rectangle(0, headerAreaHeight, lineNumbersAreaWidth, componentHeight - headerAreaHeight - getHorizontalScrollBarSize());
         g.setClip(clipBounds != null ? lineNumbersArea.intersection(clipBounds) : lineNumbersArea);
 
         g.setColor(colors.background);
@@ -1627,7 +1627,31 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     }
 
     private Rectangle getMainAreaRect() {
-        return new Rectangle(lineNumbersAreaWidth, headerAreaHeight, componentWidth - lineNumbersAreaWidth - 20, componentHeight - headerAreaHeight - 20); // TODO minus scrollbar width
+        return new Rectangle(lineNumbersAreaWidth, headerAreaHeight, componentWidth - lineNumbersAreaWidth - getVerticalScrollBarSize(), componentHeight - headerAreaHeight - getHorizontalScrollBarSize());
+    }
+
+    private int getHorizontalScrollBarSize() {
+        int size;
+        JScrollBar horizontalScrollBar = scrollPanel.getHorizontalScrollBar();
+        if (horizontalScrollBar.isVisible()) {
+            size = horizontalScrollBar.getHeight();
+        } else {
+            size = 0;
+        }
+
+        return size;
+    }
+
+    private int getVerticalScrollBarSize() {
+        int size;
+        JScrollBar verticalScrollBar = scrollPanel.getVerticalScrollBar();
+        if (verticalScrollBar.isVisible()) {
+            size = verticalScrollBar.getWidth();
+        } else {
+            size = 0;
+        }
+
+        return size;
     }
 
     private class VerticalAdjustmentListener implements AdjustmentListener {
