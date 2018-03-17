@@ -16,13 +16,12 @@
 package org.exbin.deltahex.swing.basic;
 
 import java.util.Objects;
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
  * Code Area scrolling position.
  *
- * @version 0.2.0 2018/01/06
+ * @version 0.2.0 2018/03/17
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeAreaScrollPosition {
@@ -46,11 +45,6 @@ public class CodeAreaScrollPosition {
      * Scrollbar document character pixel offset position.
      */
     private int scrollCharOffset = 0;
-
-    /**
-     * Relative line data offset.
-     */
-    private int lineDataOffset = 0;
 
     public long getScrollLinePosition() {
         return scrollLinePosition;
@@ -84,14 +78,6 @@ public class CodeAreaScrollPosition {
         this.scrollCharOffset = scrollCharOffset;
     }
 
-    public int getLineDataOffset() {
-        return lineDataOffset;
-    }
-
-    public void setLineDataOffset(int lineDataOffset) {
-        this.lineDataOffset = lineDataOffset;
-    }
-
     public void setScrollPosition(@Nullable CodeAreaScrollPosition scrollPosition) {
         if (scrollPosition == null) {
             reset();
@@ -100,7 +86,6 @@ public class CodeAreaScrollPosition {
             scrollLineOffset = scrollPosition.getScrollLineOffset();
             scrollCharPosition = scrollPosition.getScrollCharPosition();
             scrollCharOffset = scrollPosition.getScrollCharOffset();
-            lineDataOffset = scrollPosition.getLineDataOffset();
         }
     }
 
@@ -112,12 +97,11 @@ public class CodeAreaScrollPosition {
         scrollLineOffset = 0;
         scrollCharPosition = 0;
         scrollCharOffset = 0;
-        lineDataOffset = 0;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(scrollLinePosition, scrollLineOffset, scrollCharPosition, scrollCharOffset, lineDataOffset);
+        return Objects.hash(scrollLinePosition, scrollLineOffset, scrollCharPosition, scrollCharOffset);
     }
 
     @Override
@@ -141,9 +125,6 @@ public class CodeAreaScrollPosition {
         if (this.scrollCharPosition != other.scrollCharPosition) {
             return false;
         }
-        if (this.scrollCharOffset != other.scrollCharOffset) {
-            return false;
-        }
-        return this.lineDataOffset == other.lineDataOffset;
+        return this.scrollCharOffset != other.scrollCharOffset;
     }
 }

@@ -480,7 +480,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                 if (codePos == lastPos + 2 && !interleaving) {
                     interleaving = true;
                 } else {
-                    CodeAreaUtils.longToBaseCode(headerChars, codePos, index, 16, 2, true, hexCharactersCase);
+                    CodeAreaUtils.longToBaseCode(headerChars, codePos, index, CodeType.HEXADECIMAL.getBase(), 2, true, hexCharactersCase);
                     lastPos = codePos;
                     interleaving = false;
                 }
@@ -687,7 +687,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     }
 
     public void paintLines(@Nonnull Graphics g) {
-        long dataPosition = scrollPosition.getScrollLinePosition() * bytesPerLine + scrollPosition.getLineDataOffset();
+        long dataPosition = scrollPosition.getScrollLinePosition() * bytesPerLine;
         int linePositionX = lineNumbersAreaWidth - scrollPosition.getScrollCharPosition() * characterWidth - scrollPosition.getScrollCharOffset();
         int linePositionY = headerAreaHeight;
         g.setColor(Color.BLACK);
@@ -839,7 +839,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     public CodeAreaScrollPosition computeRevealScrollPosition(@Nonnull CaretPosition caretPosition) {
         CodeAreaScrollPosition targetScrollPosition = new CodeAreaScrollPosition();
         targetScrollPosition.setScrollPosition(scrollPosition);
-        long shiftedPosition = caretPosition.getDataPosition() + scrollPosition.getLineDataOffset();
+        long shiftedPosition = caretPosition.getDataPosition();
         long linePosition = shiftedPosition / bytesPerLine;
         int byteOffset = (int) (shiftedPosition % bytesPerLine);
         int charPosition;
@@ -1203,7 +1203,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             byteOnLine = bytesPerLine - 1;
         }
 
-        dataPosition = byteOnLine + (cursorLineY * bytesPerLine) - scrollPosition.getLineDataOffset();
+        dataPosition = byteOnLine + (cursorLineY * bytesPerLine);
         if (dataPosition < 0) {
             dataPosition = 0;
             codeOffset = 0;
@@ -1411,13 +1411,12 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
      */
     @Nullable
     public Point getPositionPoint(long dataPosition, int codeOffset, int section) {
-        long shiftedPosition = dataPosition + scrollPosition.getLineDataOffset();
-        long line = shiftedPosition / bytesPerLine - scrollPosition.getScrollLinePosition();
+        long line = dataPosition / bytesPerLine - scrollPosition.getScrollLinePosition();
         if (line < -1 || line > linesPerRect) {
             return null;
         }
 
-        int byteOffset = (int) (shiftedPosition % bytesPerLine);
+        int byteOffset = (int) (dataPosition % bytesPerLine);
 
         Rectangle dataViewRect = getDataViewRectangle();
         int caretY = (int) (dataViewRect.y + line * lineHeight) - scrollPosition.getScrollLineOffset();
@@ -1605,7 +1604,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         JScrollBar horizontalScrollBar = scrollPanel.getHorizontalScrollBar();
 
         if (scrollBarVerticalScale == ScrollBarVerticalScale.SCALED) {
-            long lines = ((dataSize + scrollPosition.getLineDataOffset()) / bytesPerLine) + 1;
+            long lines = (dataSize / bytesPerLine) + 1;
             int scrollValue;
             if (scrollPosition.getScrollCharPosition() < Long.MAX_VALUE / Integer.MAX_VALUE) {
                 scrollValue = (int) ((scrollPosition.getScrollLinePosition() * Integer.MAX_VALUE) / lines);
@@ -1664,7 +1663,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             int scrollBarValue = scrollPanel.getVerticalScrollBar().getValue();
             if (scrollBarVerticalScale == ScrollBarVerticalScale.SCALED) {
                 int maxValue = Integer.MAX_VALUE - scrollPanel.getVerticalScrollBar().getVisibleAmount();
-                long lines = ((dataSize + scrollPosition.getLineDataOffset()) / bytesPerLine) - computeLinesPerRectangle() + 1;
+                long lines = (dataSize / bytesPerLine) - computeLinesPerRectangle() + 1;
                 long targetLine;
                 if (scrollBarValue > 0 && lines > maxValue / scrollBarValue) {
                     targetLine = scrollBarValue * (lines / maxValue);

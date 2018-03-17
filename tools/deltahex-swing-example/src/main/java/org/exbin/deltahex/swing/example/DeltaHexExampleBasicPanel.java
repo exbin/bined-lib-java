@@ -134,7 +134,6 @@ public class DeltaHexExampleBasicPanel extends javax.swing.JPanel {
             CodeAreaScrollPosition scrollPosition = ((ScrollingCapable) codeArea.getWorker()).getScrollPosition();
             verticalPositionTextField.setText(scrollPosition.getScrollLinePosition() + ":" + scrollPosition.getScrollLineOffset());
             horizontalPositionTextField.setText(scrollPosition.getScrollCharPosition() + ":" + scrollPosition.getScrollCharOffset());
-            horizontalByteShiftTextField.setText(String.valueOf(scrollPosition.getLineDataOffset()));
         });
 
         tabMap.put(modeTab, modePanel);
