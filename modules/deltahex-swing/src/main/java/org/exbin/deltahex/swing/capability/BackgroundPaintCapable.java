@@ -17,22 +17,22 @@ package org.exbin.deltahex.swing.capability;
 
 import javax.annotation.Nonnull;
 import org.exbin.deltahex.capability.WorkerCapability;
-import org.exbin.deltahex.swing.basic.BasicBorderPaintMode;
+import org.exbin.deltahex.swing.basic.BasicBackgroundPaintMode;
 
 /**
- * Support for border paint mode capability.
+ * Support for background paint mode capability.
  *
- * @version 0.2.0 2017/12/09
+ * @version 0.2.0 2018/03/18
  * @author ExBin Project (http://exbin.org)
  */
-public interface BorderPaintCapable {
+public interface BackgroundPaintCapable {
 
     @Nonnull
-    BasicBorderPaintMode getBorderPaintMode();
+    BasicBackgroundPaintMode getBackgroundPaintMode();
 
-    void setBorderPaintMode(@Nonnull BasicBorderPaintMode borderPaintMode);
+    void setBackgroundPaintMode(@Nonnull BasicBackgroundPaintMode borderPaintMode);
 
-    public static class BorderPaintCapability implements WorkerCapability {
+    public static class BackgroundPaintCapability implements WorkerCapability {
 
     }
 }

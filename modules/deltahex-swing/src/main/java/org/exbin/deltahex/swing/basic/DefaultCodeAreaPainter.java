@@ -64,14 +64,14 @@ import org.exbin.deltahex.swing.CodeAreaWorker;
 import org.exbin.deltahex.swing.MovementDirection;
 import org.exbin.deltahex.swing.ScrollingDirection;
 import org.exbin.deltahex.swing.capability.AntialiasingCapable;
-import org.exbin.deltahex.swing.capability.BorderPaintCapable;
 import org.exbin.deltahex.swing.capability.FontCapable;
 import org.exbin.utils.binary_data.BinaryData;
+import org.exbin.deltahex.swing.capability.BackgroundPaintCapable;
 
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2018/02/25
+ * @version 0.2.0 2018/03/18
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaPainter implements CodeAreaPainter {
@@ -119,7 +119,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     private CodeType codeType;
     private CodeCharactersCase hexCharactersCase;
     private EditationMode editationMode;
-    private BasicBorderPaintMode borderPaintMode;
+    private BasicBackgroundPaintMode backgroundPaintMode;
     private boolean showMirrorCursor;
 
     private int previewCharPos;
@@ -202,7 +202,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         editationMode = ((EditationModeCapable) worker).getEditationMode();
         caretPosition.setPosition(((CaretCapable) worker).getCaret().getCaretPosition());
         selectionRange = ((SelectionCapable) worker).getSelection();
-        borderPaintMode = ((BorderPaintCapable) worker).getBorderPaintMode();
+        backgroundPaintMode = ((BackgroundPaintCapable) worker).getBackgroundPaintMode();
         showMirrorCursor = ((CaretCapable) worker).isShowMirrorCursor();
         dataSize = worker.getCodeArea().getDataSize();
 
@@ -592,7 +592,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
         int lineNumberLength = lineNumbersLength;
 
-        if (borderPaintMode == BasicBorderPaintMode.STRIPED) {
+        if (backgroundPaintMode == BasicBackgroundPaintMode.STRIPED) {
             long dataPosition = scrollPosition.getScrollLinePosition() * bytesPerLine;
             int stripePositionY = headerAreaHeight + ((scrollPosition.getScrollLinePosition() & 1) > 0 ? 0 : lineHeight);
             g.setColor(colors.stripes);
@@ -666,11 +666,11 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     public void paintBackground(@Nonnull Graphics g) {
         int linePositionX = lineNumbersAreaWidth;
         g.setColor(colors.background);
-        if (borderPaintMode != BasicBorderPaintMode.TRANSPARENT) {
+        if (backgroundPaintMode != BasicBackgroundPaintMode.TRANSPARENT) {
             g.fillRect(linePositionX, headerAreaHeight, dataViewWidth, dataViewHeight);
         }
 
-        if (borderPaintMode == BasicBorderPaintMode.STRIPED) {
+        if (backgroundPaintMode == BasicBackgroundPaintMode.STRIPED) {
             long dataPosition = scrollPosition.getScrollLinePosition() * bytesPerLine;
             int stripePositionY = headerAreaHeight + (int) ((scrollPosition.getScrollLinePosition() & 1) > 0 ? 0 : lineHeight);
             g.setColor(colors.stripes);
@@ -1093,17 +1093,25 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                                 charDataLength = (int) (dataSize - dataPosition);
                             }
 
-                            codeAreaData.copyToArray(dataPosition, data, 0, charDataLength);
-                            String displayString = new String(data, 0, charDataLength, charset);
-                            if (!displayString.isEmpty()) {
-                                previewChars[0] = displayString.charAt(0);
+                            if (codeAreaData == null) {
+                                previewChars[0] = ' ';
+                            } else {
+                                codeAreaData.copyToArray(dataPosition, data, 0, charDataLength);
+                                String displayString = new String(data, 0, charDataLength, charset);
+                                if (!displayString.isEmpty()) {
+                                    previewChars[0] = displayString.charAt(0);
+                                }
                             }
                         } else {
                             if (charMappingCharset == null || charMappingCharset != charset) {
                                 buildCharMapping(charset);
                             }
 
-                            previewChars[0] = charMapping[codeAreaData.getByte(dataPosition) & 0xFF];
+                            if (codeAreaData == null) {
+                                previewChars[0] = ' ';
+                            } else {
+                                previewChars[0] = charMapping[codeAreaData.getByte(dataPosition) & 0xFF];
+                            }
                         }
                         int posX = previewRelativeX + charPos * characterWidth - scrollPosition.getScrollCharPosition() * characterWidth - scrollPosition.getScrollCharOffset();
                         if (characterRenderingMode == CharacterRenderingMode.LINE_AT_ONCE) {
@@ -1117,11 +1125,11 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                         int codeCharPos = computeFirstCodeCharPos(byteOffset);
                         char[] lineChars = new char[codeType.getMaxDigitsForByte()];
 
-                        if (dataPosition < dataSize) {
+                        if (codeAreaData != null && dataPosition < dataSize) {
                             byte dataByte = codeAreaData.getByte(dataPosition);
                             CodeAreaUtils.byteToCharsCode(dataByte, codeType, lineChars, 0, hexCharactersCase);
                         } else {
-                            lineChars[0] = ' ';
+                            Arrays.fill(lineChars, ' ');
                         }
                         int posX = dataViewX + codeCharPos * characterWidth - scrollPosition.getScrollCharPosition() * characterWidth - scrollPosition.getScrollCharOffset();
                         int charsOffset = charPos - codeCharPos;
@@ -1439,7 +1447,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         }
 
         Rectangle mirrorCursorRect = new Rectangle(mirrorCursorPoint.x, mirrorCursorPoint.y, characterWidth * (section == BasicCodeAreaSection.TEXT_PREVIEW.getSection() ? codeType.getMaxDigitsForByte() : 1), lineHeight);
-
         return mirrorCursorRect;
     }
 

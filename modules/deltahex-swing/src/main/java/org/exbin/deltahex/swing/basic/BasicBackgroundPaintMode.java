@@ -21,7 +21,7 @@ package org.exbin.deltahex.swing.basic;
  * @version 0.2.0 2017/11/02
  * @author ExBin Project (http://exbin.org)
  */
-public enum BasicBorderPaintMode {
+public enum BasicBackgroundPaintMode {
     TRANSPARENT,
     PLAIN,
     STRIPED

@@ -17,15 +17,21 @@ package org.exbin.deltahex.swing.capability;
 
 import javax.annotation.Nonnull;
 import org.exbin.deltahex.capability.WorkerCapability;
+import org.exbin.deltahex.swing.AntialiasingMode;
 import org.exbin.deltahex.swing.CharacterRenderingMode;
 
 /**
  * Support for anti-aliasing capability.
  *
- * @version 0.2.0 2017/12/09
+ * @version 0.2.0 2017/03/18
  * @author ExBin Project (http://exbin.org)
  */
 public interface AntialiasingCapable {
+
+    @Nonnull
+    AntialiasingMode getAntialiasingMode();
+
+    void setAntialiasingMode(@Nonnull AntialiasingMode antialisingMode);
 
     @Nonnull
     CharacterRenderingMode getCharacterRenderingMode();

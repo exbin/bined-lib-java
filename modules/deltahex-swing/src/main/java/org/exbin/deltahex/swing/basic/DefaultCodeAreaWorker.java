@@ -51,21 +51,22 @@ import org.exbin.deltahex.swing.capability.ScrollingCapable;
 import org.exbin.deltahex.capability.SelectionCapable;
 import org.exbin.deltahex.capability.CodeCharactersCaseCapable;
 import org.exbin.deltahex.capability.LineWrappingCapable;
+import org.exbin.deltahex.swing.AntialiasingMode;
 import org.exbin.deltahex.swing.MovementDirection;
 import org.exbin.deltahex.swing.ScrollingDirection;
 import org.exbin.deltahex.swing.capability.AntialiasingCapable;
-import org.exbin.deltahex.swing.capability.BorderPaintCapable;
 import org.exbin.deltahex.swing.capability.FontCapable;
+import org.exbin.deltahex.swing.capability.BackgroundPaintCapable;
 
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2018/03/17
+ * @version 0.2.0 2018/03/18
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, CaretCapable, ScrollingCapable, ViewModeCapable,
         CodeTypeCapable, EditationModeCapable, CharsetCapable, CodeCharactersCaseCapable, AntialiasingCapable, FontCapable,
-        BorderPaintCapable, LineWrappingCapable, ClipboardCapable {
+        BackgroundPaintCapable, LineWrappingCapable, ClipboardCapable {
 
     @Nonnull
     protected final CodeArea codeArea;
@@ -91,9 +92,11 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
     @Nullable
     private Font font;
     @Nonnull
-    private BasicBorderPaintMode borderPaintMode = BasicBorderPaintMode.STRIPED;
+    private BasicBackgroundPaintMode borderPaintMode = BasicBackgroundPaintMode.STRIPED;
     @Nonnull
     private CharacterRenderingMode characterRenderingMode = CharacterRenderingMode.AUTO;
+    @Nonnull
+    private AntialiasingMode antialiasingMode = AntialiasingMode.AUTO;
     @Nonnull
     private CodeType codeType = CodeType.HEXADECIMAL;
     @Nonnull
@@ -433,6 +436,17 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
         repaint();
     }
 
+    @Override
+    public AntialiasingMode getAntialiasingMode() {
+        return antialiasingMode;
+    }
+
+    @Override
+    public void setAntialiasingMode(AntialiasingMode antialiasingMode) {
+        this.antialiasingMode = antialiasingMode;
+        repaint();
+    }
+
     @Nonnull
     @Override
     public SelectionRange getSelection() {
@@ -441,9 +455,7 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
 
     @Override
     public void setSelection(@Nonnull SelectionRange selection) {
-        if (selection == null) {
-            throw new IllegalArgumentException("Null selection is not allowed");
-        }
+        Objects.requireNonNull(painter, "Selection cannot be null");
 
         this.selection.setSelection(selection);
         notifySelectionChanged();
@@ -524,12 +536,12 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
 
     @Nonnull
     @Override
-    public BasicBorderPaintMode getBorderPaintMode() {
+    public BasicBackgroundPaintMode getBackgroundPaintMode() {
         return borderPaintMode;
     }
 
     @Override
-    public void setBorderPaintMode(@Nonnull BasicBorderPaintMode borderPaintMode) {
+    public void setBackgroundPaintMode(@Nonnull BasicBackgroundPaintMode borderPaintMode) {
         this.borderPaintMode = borderPaintMode;
         repaint();
     }

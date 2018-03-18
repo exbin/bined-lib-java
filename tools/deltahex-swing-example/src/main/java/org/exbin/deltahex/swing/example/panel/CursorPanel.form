@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<Form version="1.3" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
+  <AuxValues>
+    <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
+    <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_generateFQN" type="java.lang.Boolean" value="true"/>
+    <AuxValue name="FormSettings_generateMnemonicsCode" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_i18nAutoMode" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_layoutCodeTarget" type="java.lang.Integer" value="1"/>
+    <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
+    <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
+  </AuxValues>
+
+  <Layout>
+    <DimensionLayout dim="0">
+      <Group type="103" groupAlignment="0" attributes="0">
+          <Group type="102" alignment="0" attributes="0">
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="cursorRenderingModeComboBox" alignment="0" pref="253" max="32767" attributes="0"/>
+                  <Component id="cursorInsertShapeComboBox" alignment="0" pref="253" max="32767" attributes="0"/>
+                  <Component id="cursorOverwriteShapeComboBox" alignment="0" pref="253" max="32767" attributes="0"/>
+                  <Group type="102" alignment="0" attributes="0">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="cursorRenderingModeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="cursorInsertShapeModeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="cursorOverwriteShapeModeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                  </Group>
+                  <Component id="showShadowCursorCheckBox" alignment="0" max="32767" attributes="0"/>
+                  <Group type="102" alignment="0" attributes="0">
+                      <Component id="cursorBlinkingRateLabel" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="63" max="-2" attributes="0"/>
+                  </Group>
+                  <Component id="cursorBlinkingRateSpinner" alignment="1" max="32767" attributes="0"/>
+              </Group>
+              <EmptySpace max="-2" attributes="0"/>
+          </Group>
+      </Group>
+    </DimensionLayout>
+    <DimensionLayout dim="1">
+      <Group type="103" groupAlignment="0" attributes="0">
+          <Group type="102" alignment="1" attributes="0">
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="cursorBlinkingRateLabel" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="cursorBlinkingRateSpinner" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="cursorRenderingModeLabel" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="cursorRenderingModeComboBox" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="cursorInsertShapeModeLabel" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="cursorInsertShapeComboBox" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="cursorOverwriteShapeModeLabel" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="cursorOverwriteShapeComboBox" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="showShadowCursorCheckBox" min="-2" max="-2" attributes="0"/>
+              <EmptySpace pref="143" max="32767" attributes="0"/>
+          </Group>
+      </Group>
+    </DimensionLayout>
+  </Layout>
+  <SubComponents>
+    <Component class="javax.swing.JCheckBox" name="showShadowCursorCheckBox">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Show Shadow Cursor"/>
+      </Properties>
+      <Events>
+        <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="showShadowCursorCheckBoxItemStateChanged"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JLabel" name="cursorRenderingModeLabel">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Cursor Rendering Mode"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JComboBox" name="cursorRenderingModeComboBox">
+      <Properties>
+        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+          <StringArray count="3">
+            <StringItem index="0" value="PAINT"/>
+            <StringItem index="1" value="XOR"/>
+            <StringItem index="2" value="NEGATIVE"/>
+          </StringArray>
+        </Property>
+        <Property name="selectedIndex" type="int" value="1"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cursorRenderingModeComboBoxActionPerformed"/>
+      </Events>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+      </AuxValues>
+    </Component>
+    <Component class="javax.swing.JLabel" name="cursorInsertShapeModeLabel">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Insert Cursor Shape"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JComboBox" name="cursorInsertShapeComboBox">
+      <Properties>
+        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+          <StringArray count="20">
+            <StringItem index="0" value="LINE_BOTTOM"/>
+            <StringItem index="1" value="LINE_TOP"/>
+            <StringItem index="2" value="LINE_LEFT"/>
+            <StringItem index="3" value="LINE_RIGHT"/>
+            <StringItem index="4" value="DOUBLE_BOTTOM"/>
+            <StringItem index="5" value="DOUBLE_TOP"/>
+            <StringItem index="6" value="DOUBLE_LEFT"/>
+            <StringItem index="7" value="DOUBLE_RIGHT"/>
+            <StringItem index="8" value="QUARTER_BOTTOM"/>
+            <StringItem index="9" value="QUARTER_TOP"/>
+            <StringItem index="10" value="QUARTER_LEFT"/>
+            <StringItem index="11" value="QUARTER_RIGHT"/>
+            <StringItem index="12" value="HALF_BOTTOM"/>
+            <StringItem index="13" value="HALF_TOP"/>
+            <StringItem index="14" value="HALF_LEFT"/>
+            <StringItem index="15" value="HALF_RIGHT"/>
+            <StringItem index="16" value="BOX"/>
+            <StringItem index="17" value="FRAME"/>
+            <StringItem index="18" value="CORNERS"/>
+            <StringItem index="19" value="BOTTOM_CORNERS"/>
+          </StringArray>
+        </Property>
+        <Property name="selectedIndex" type="int" value="6"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cursorInsertShapeComboBoxActionPerformed"/>
+      </Events>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+      </AuxValues>
+    </Component>
+    <Component class="javax.swing.JLabel" name="cursorOverwriteShapeModeLabel">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Overwrite Cursor Shape"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JComboBox" name="cursorOverwriteShapeComboBox">
+      <Properties>
+        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+          <StringArray count="20">
+            <StringItem index="0" value="LINE_BOTTOM"/>
+            <StringItem index="1" value="LINE_TOP"/>
+            <StringItem index="2" value="LINE_LEFT"/>
+            <StringItem index="3" value="LINE_RIGHT"/>
+            <StringItem index="4" value="DOUBLE_BOTTOM"/>
+            <StringItem index="5" value="DOUBLE_TOP"/>
+            <StringItem index="6" value="DOUBLE_LEFT"/>
+            <StringItem index="7" value="DOUBLE_RIGHT"/>
+            <StringItem index="8" value="QUARTER_BOTTOM"/>
+            <StringItem index="9" value="QUARTER_TOP"/>
+            <StringItem index="10" value="QUARTER_LEFT"/>
+            <StringItem index="11" value="QUARTER_RIGHT"/>
+            <StringItem index="12" value="HALF_BOTTOM"/>
+            <StringItem index="13" value="HALF_TOP"/>
+            <StringItem index="14" value="HALF_LEFT"/>
+            <StringItem index="15" value="HALF_RIGHT"/>
+            <StringItem index="16" value="BOX"/>
+            <StringItem index="17" value="FRAME"/>
+            <StringItem index="18" value="CORNERS"/>
+            <StringItem index="19" value="BOTTOM_CORNERS"/>
+          </StringArray>
+        </Property>
+        <Property name="selectedIndex" type="int" value="16"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cursorOverwriteShapeComboBoxActionPerformed"/>
+      </Events>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+      </AuxValues>
+    </Component>
+    <Component class="javax.swing.JLabel" name="cursorBlinkingRateLabel">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Cursor Blinking Rate"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JSpinner" name="cursorBlinkingRateSpinner">
+      <Events>
+        <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="cursorBlinkingRateSpinnerStateChanged"/>
+      </Events>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value=""/>
+      </AuxValues>
+    </Component>
+  </SubComponents>
+</Form>
