@@ -216,6 +216,10 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         charactersPerPage = computeCharactersPerPage();
         charactersPerLine = computeCharactersPerLine();
 
+        if (characterWidth > 0) {
+            resetCharPositions();
+        }
+
         resetScrollState();
     }
 

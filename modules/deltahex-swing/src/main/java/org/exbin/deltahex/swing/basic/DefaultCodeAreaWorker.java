@@ -444,6 +444,7 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
     @Override
     public void setAntialiasingMode(AntialiasingMode antialiasingMode) {
         this.antialiasingMode = antialiasingMode;
+        reset();
         repaint();
     }
 
