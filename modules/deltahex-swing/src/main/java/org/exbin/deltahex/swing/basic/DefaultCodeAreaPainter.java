@@ -216,10 +216,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         charactersPerPage = computeCharactersPerPage();
         charactersPerLine = computeCharactersPerLine();
 
-        if (characterWidth > 0) {
-            resetCharPositions();
-        }
-
         resetScrollState();
     }
 
@@ -239,9 +235,9 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             if (visibleCharStart < 0) {
                 visibleCharStart = 0;
             }
-            visibleCharEnd = (dataViewWidth + (scrollPosition.getScrollCharPosition() + charactersPerLine) * characterWidth + scrollPosition.getScrollCharOffset()) / characterWidth;
-            if (visibleCharEnd > charactersPerRect) {
-                visibleCharEnd = charactersPerRect;
+            visibleCharEnd = ((scrollPosition.getScrollCharPosition() + charactersPerRect) * characterWidth + scrollPosition.getScrollCharOffset()) / characterWidth;
+            if (visibleCharEnd > charactersPerLine) {
+                visibleCharEnd = charactersPerLine;
             }
             visibleCodeStart = computePositionByte(visibleCharStart);
             visibleCodeEnd = computePositionByte(visibleCharEnd - 1) + 1;
@@ -321,6 +317,11 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
     private void resetScrollState() {
         scrollPosition.setScrollPosition(((ScrollingCapable) worker).getScrollPosition());
+
+        if (characterWidth > 0) {
+            resetCharPositions();
+        }
+
         verticalScrollUnit = ((ScrollingCapable) worker).getVerticalScrollUnit();
         horizontalScrollUnit = ((ScrollingCapable) worker).getHorizontalScrollUnit();
 
@@ -1732,13 +1733,14 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             }
 
             ((ScrollingCapable) worker).setScrollPosition(scrollPosition);
+            notifyScrolled();
             worker.getCodeArea().repaint();
 //            dataViewScrolled(codeArea.getGraphics());
-            notifyScrolled();
         }
     }
 
     private void notifyScrolled() {
+        resetScrollState();
         // TODO
     }
 
