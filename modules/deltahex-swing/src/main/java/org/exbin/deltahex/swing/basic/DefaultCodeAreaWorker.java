@@ -257,6 +257,7 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
     @Override
     public void setCodeType(@Nonnull CodeType codeType) {
         this.codeType = codeType;
+        painter.reset();
         repaint();
     }
 
@@ -433,6 +434,7 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
     @Override
     public void setCharacterRenderingMode(@Nonnull CharacterRenderingMode characterRenderingMode) {
         this.characterRenderingMode = characterRenderingMode;
+        painter.reset();
         repaint();
     }
 
@@ -486,6 +488,7 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
         Objects.requireNonNull(charset, "Charset cannot be null");
 
         this.charset = charset;
+        painter.reset();
         repaint();
     }
 
@@ -532,6 +535,7 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
     @Override
     public void setFont(@Nonnull Font font) {
         this.font = font;
+        painter.reset();
         repaint();
     }
 

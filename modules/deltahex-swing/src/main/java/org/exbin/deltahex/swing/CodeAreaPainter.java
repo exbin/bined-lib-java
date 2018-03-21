@@ -59,9 +59,19 @@ public interface CodeAreaPainter {
     void paintCursor(@Nonnull Graphics g);
 
     /**
-     * Resets painter state for new painting.
+     * Resets complete painter state for new painting.
      */
     void reset();
+
+    /**
+     * Resets painter font state for new painting.
+     */
+    void resetFont();
+
+    /**
+     * Resets painter layout state for new painting.
+     */
+    void resetLayout();
 
     /**
      * Returns type of cursor for given painter relative position.

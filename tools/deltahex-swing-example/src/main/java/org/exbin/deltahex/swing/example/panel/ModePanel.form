@@ -16,18 +16,17 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" alignment="0" attributes="0">
+          <Group type="102" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="viewModeComboBox" alignment="0" max="32767" attributes="0"/>
-                  <Component id="showNonprintableCharactersCheckBox" alignment="0" max="32767" attributes="0"/>
                   <Component id="charRenderingComboBox" alignment="0" pref="294" max="32767" attributes="0"/>
                   <Component id="codeTypeComboBox" alignment="0" max="32767" attributes="0"/>
                   <Component id="charAntialiasingComboBox" alignment="0" max="32767" attributes="0"/>
                   <Component id="editationAllowedComboBox" alignment="0" max="32767" attributes="0"/>
                   <Component id="fontPanel" alignment="0" max="32767" attributes="0"/>
                   <Component id="charsetComboBox" alignment="0" max="32767" attributes="0"/>
-                  <Group type="102" alignment="0" attributes="0">
+                  <Group type="102" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="viewModeScrollModeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="charRenderingScrollModeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
@@ -50,8 +49,6 @@
               <Component id="viewModeScrollModeLabel" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="viewModeComboBox" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
-              <Component id="showNonprintableCharactersCheckBox" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="codeTypeScrollModeLabel" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
@@ -80,14 +77,6 @@
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Component class="javax.swing.JCheckBox" name="showNonprintableCharactersCheckBox">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Show Nonprintable Characters"/>
-      </Properties>
-      <Events>
-        <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="showNonprintableCharactersCheckBoxItemStateChanged"/>
-      </Events>
-    </Component>
     <Component class="javax.swing.JComboBox" name="codeTypeComboBox">
       <Properties>
         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
@@ -263,7 +252,6 @@
             <StringItem index="3" value="CENTER"/>
           </StringArray>
         </Property>
-        <Property name="enabled" type="boolean" value="false"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="charRenderingComboBoxActionPerformed"/>
@@ -297,7 +285,6 @@
             <StringItem index="8" value="LCD_VBGR"/>
           </StringArray>
         </Property>
-        <Property name="enabled" type="boolean" value="false"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="charAntialiasingComboBoxActionPerformed"/>

@@ -56,6 +56,7 @@ import org.exbin.deltahex.capability.LineWrappingCapable;
 import org.exbin.deltahex.capability.SelectionCapable;
 import org.exbin.deltahex.swing.capability.ScrollingCapable;
 import org.exbin.deltahex.capability.ViewModeCapable;
+import org.exbin.deltahex.swing.AntialiasingMode;
 import org.exbin.deltahex.swing.CharacterRenderingMode;
 import org.exbin.deltahex.swing.CodeArea;
 import org.exbin.deltahex.swing.CodeAreaPainter;
@@ -71,7 +72,7 @@ import org.exbin.deltahex.swing.capability.BackgroundPaintCapable;
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2018/03/18
+ * @version 0.2.0 2018/03/21
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaPainter implements CodeAreaPainter {
@@ -79,6 +80,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     @Nonnull
     protected final CodeAreaWorker worker;
     private boolean initialized = false;
+    private boolean fontChanged = false;
 
     @Nonnull
     private final JPanel dataView;
@@ -137,6 +139,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     private Font font;
     @Nullable
     private CharacterRenderingMode characterRenderingMode;
+    @Nullable
+    private AntialiasingMode antialiasingMode;
     private int maxCharLength;
 
     private byte[] lineData;
@@ -193,11 +197,23 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
     @Override
     public void reset() {
-        resetSizes();
         resetColors();
+        resetFont();
+        resetLayout();
+    }
+
+    @Override
+    public void resetFont() {
+        fontChanged = true;
+    }
+
+    @Override
+    public void resetLayout() {
+        resetSizes();
 
         viewMode = ((ViewModeCapable) worker).getViewMode();
         characterRenderingMode = ((AntialiasingCapable) worker).getCharacterRenderingMode();
+        antialiasingMode = ((AntialiasingCapable) worker).getAntialiasingMode();
         hexCharactersCase = ((CodeCharactersCaseCapable) worker).getCodeCharactersCase();
         editationMode = ((EditationModeCapable) worker).getEditationMode();
         caretPosition.setPosition(((CaretCapable) worker).getCaret().getCaretPosition());
@@ -641,8 +657,9 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         if (!initialized) {
             reset();
         }
-        if (font == null) {
+        if (fontChanged) {
             resetFont(g);
+            fontChanged = false;
         }
 
         Rectangle clipBounds = g.getClipBounds();
@@ -1468,7 +1485,20 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
     @Override
     public BasicCodeAreaZone getPositionZone(int x, int y) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if (y <= headerAreaHeight) {
+            if (x < lineNumbersAreaWidth) {
+                return BasicCodeAreaZone.TOP_LEFT_CORNER;
+            } else {
+                return BasicCodeAreaZone.HEADER;
+            }
+        }
+
+        if (x < lineNumbersAreaWidth) {
+            return BasicCodeAreaZone.LINE_NUMBERS;
+        }
+
+        // TODO
+        return BasicCodeAreaZone.CODE_AREA;
     }
 
     @Nonnull

@@ -33,7 +33,7 @@ import org.exbin.deltahex.swing.capability.AntialiasingCapable;
 /**
  * Hexadecimal editor example panel.
  *
- * @version 0.2.0 2018/03/18
+ * @version 0.2.0 2018/03/21
  * @author ExBin Project (http://exbin.org)
  */
 public class ModePanel extends javax.swing.JPanel {
@@ -52,7 +52,6 @@ public class ModePanel extends javax.swing.JPanel {
         charRenderingComboBox.setSelectedIndex(worker.getCharacterRenderingMode().ordinal());
         editationAllowedComboBox.setSelectedIndex(worker.getEditationMode().ordinal());
         charAntialiasingComboBox.setSelectedIndex(((AntialiasingCapable) worker).getAntialiasingMode().ordinal());
-//        showNonprintableCharactersCheckBox.setSelected(codeArea.isShowUnprintableCharacters());
     }
 
     /**
@@ -64,7 +63,6 @@ public class ModePanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        showNonprintableCharactersCheckBox = new javax.swing.JCheckBox();
         codeTypeComboBox = new javax.swing.JComboBox<>();
         editationAllowedLabel = new javax.swing.JLabel();
         editationAllowedComboBox = new javax.swing.JComboBox<>();
@@ -82,13 +80,6 @@ public class ModePanel extends javax.swing.JPanel {
         charAntialiasingComboBox = new javax.swing.JComboBox<>();
         charsetComboBox = new javax.swing.JComboBox<>();
         codeTypeScrollModeLabel = new javax.swing.JLabel();
-
-        showNonprintableCharactersCheckBox.setText("Show Nonprintable Characters");
-        showNonprintableCharactersCheckBox.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                showNonprintableCharactersCheckBoxItemStateChanged(evt);
-            }
-        });
 
         codeTypeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "BINARY", "OCTAL", "DECIMAL", "HEXADECIMAL" }));
         codeTypeComboBox.setSelectedIndex(3);
@@ -170,7 +161,6 @@ public class ModePanel extends javax.swing.JPanel {
         charRenderingScrollModeLabel.setText("Character Rendering");
 
         charRenderingComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "AUTO", "LINE_AT_ONCE", "TOP_LEFT", "CENTER" }));
-        charRenderingComboBox.setEnabled(false);
         charRenderingComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 charRenderingComboBoxActionPerformed(evt);
@@ -182,7 +172,6 @@ public class ModePanel extends javax.swing.JPanel {
         charsetLabel.setText("Charset");
 
         charAntialiasingComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "OFF", "AUTO", "DEFAULT", "BASIC", "GASP", "LCD_HRGB", "LCD_HBGR", "LCD_VRGB", "LCD_VBGR" }));
-        charAntialiasingComboBox.setEnabled(false);
         charAntialiasingComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 charAntialiasingComboBoxActionPerformed(evt);
@@ -206,7 +195,6 @@ public class ModePanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(viewModeComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(showNonprintableCharactersCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(charRenderingComboBox, 0, 294, Short.MAX_VALUE)
                     .addComponent(codeTypeComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(charAntialiasingComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -232,8 +220,6 @@ public class ModePanel extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(viewModeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(showNonprintableCharactersCheckBox)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(codeTypeScrollModeLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(codeTypeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -258,10 +244,6 @@ public class ModePanel extends javax.swing.JPanel {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-
-    private void showNonprintableCharactersCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_showNonprintableCharactersCheckBoxItemStateChanged
-        //        codeArea.setShowUnprintableCharacters(showNonprintableCharactersCheckBox.isSelected());
-    }//GEN-LAST:event_showNonprintableCharactersCheckBoxItemStateChanged
 
     private void codeTypeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_codeTypeComboBoxActionPerformed
         worker.setCodeType(CodeType.values()[codeTypeComboBox.getSelectedIndex()]);
@@ -328,7 +310,6 @@ public class ModePanel extends javax.swing.JPanel {
     private javax.swing.JPanel fontPanel;
     private javax.swing.JComboBox<String> fontSizeComboBox;
     private javax.swing.JLabel fontSizeLabel;
-    private javax.swing.JCheckBox showNonprintableCharactersCheckBox;
     private javax.swing.JComboBox<String> viewModeComboBox;
     private javax.swing.JLabel viewModeScrollModeLabel;
     // End of variables declaration//GEN-END:variables
