@@ -23,15 +23,19 @@ import javax.swing.JTabbedPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.exbin.deltahex.swing.CodeArea;
+import org.exbin.deltahex.swing.basic.DefaultCodeAreaPainter;
+import org.exbin.deltahex.swing.extended.ExtCodeAreaWorker;
 import org.exbin.utils.binary_data.ByteArrayEditableData;
 
 /**
  * Example Swing GUI demonstration application of the deltahex component.
  *
- * @version 0.2.0 2017/09/28
+ * @version 0.2.0 2018/03/22
  * @author ExBin Project (http://exbin.org)
  */
 public class DeltaHexExample {
+
+    private static final String EXAMPLE_FILE_PATH = "/org/exbin/deltahex/swing/example/resources/lorem_1.txt";
 
     /**
      * Main method launching the application.
@@ -50,7 +54,7 @@ public class DeltaHexExample {
         final CodeArea basicCodeArea = new CodeArea();
         ByteArrayEditableData basicData = new ByteArrayEditableData();
         try {
-            basicData.loadFromStream(basicCodeArea.getClass().getResourceAsStream("/org/exbin/deltahex/swing/example/resources/lorem_1.txt"));
+            basicData.loadFromStream(basicCodeArea.getClass().getResourceAsStream(EXAMPLE_FILE_PATH));
         } catch (IOException ex) {
             Logger.getLogger(DeltaHexExample.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -58,10 +62,13 @@ public class DeltaHexExample {
         basicPanel.setCodeArea(basicCodeArea);
 
         final DeltaHexExampleExPanel extendedPanel = new DeltaHexExampleExPanel();
-        final CodeArea extendedCodeArea = new CodeArea();
+        final CodeArea extendedCodeArea = new CodeArea(); // TODO
+        ExtCodeAreaWorker extendedWorker = new ExtCodeAreaWorker(extendedCodeArea);
+        extendedWorker.setPainter(new DefaultCodeAreaPainter(extendedWorker));
+        extendedCodeArea.setWorker(extendedWorker);
         ByteArrayEditableData extendedData = new ByteArrayEditableData();
         try {
-            extendedData.loadFromStream(extendedCodeArea.getClass().getResourceAsStream("/org/exbin/deltahex/swing/example/resources/lorem_1.txt"));
+            extendedData.loadFromStream(extendedCodeArea.getClass().getResourceAsStream(EXAMPLE_FILE_PATH));
         } catch (IOException ex) {
             Logger.getLogger(DeltaHexExample.class.getName()).log(Level.SEVERE, null, ex);
         }

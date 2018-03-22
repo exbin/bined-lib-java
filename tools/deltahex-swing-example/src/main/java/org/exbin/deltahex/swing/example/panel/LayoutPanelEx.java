@@ -17,7 +17,7 @@ package org.exbin.deltahex.swing.example.panel;
 
 import javax.annotation.Nonnull;
 import org.exbin.deltahex.swing.CodeArea;
-import org.exbin.deltahex.swing.basic.DefaultCodeAreaWorker;
+import org.exbin.deltahex.swing.extended.ExtCodeAreaWorker;
 
 /**
  * Hexadecimal editor example panel.
@@ -28,11 +28,11 @@ import org.exbin.deltahex.swing.basic.DefaultCodeAreaWorker;
 public class LayoutPanelEx extends javax.swing.JPanel {
 
     private final CodeArea codeArea;
-    private final DefaultCodeAreaWorker worker;
+    private final ExtCodeAreaWorker worker;
 
     public LayoutPanelEx(@Nonnull CodeArea codeArea) {
         this.codeArea = codeArea;
-        worker = (DefaultCodeAreaWorker) codeArea.getWorker();
+        worker = (ExtCodeAreaWorker) codeArea.getWorker();
 
         initComponents();
 //        wrapLineModeCheckBox.setSelected(codeArea.isWrapMode());

@@ -25,8 +25,8 @@ import javax.swing.border.LineBorder;
 import javax.swing.plaf.basic.BasicBorders;
 import org.exbin.deltahex.swing.CodeArea;
 import org.exbin.deltahex.swing.basic.BasicBackgroundPaintMode;
-import org.exbin.deltahex.swing.basic.DefaultCodeAreaWorker;
 import org.exbin.deltahex.swing.capability.BackgroundPaintCapable;
+import org.exbin.deltahex.swing.extended.ExtCodeAreaWorker;
 
 /**
  * Hexadecimal editor example panel.
@@ -37,11 +37,11 @@ import org.exbin.deltahex.swing.capability.BackgroundPaintCapable;
 public class DecorationPanelEx extends javax.swing.JPanel {
 
     private final CodeArea codeArea;
-    private final DefaultCodeAreaWorker worker;
+    private final ExtCodeAreaWorker worker;
 
     public DecorationPanelEx(@Nonnull CodeArea codeArea) {
         this.codeArea = codeArea;
-        worker = (DefaultCodeAreaWorker) codeArea.getWorker();
+        worker = (ExtCodeAreaWorker) codeArea.getWorker();
 
         initComponents();
 

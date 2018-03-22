@@ -19,28 +19,31 @@ import java.awt.Font;
 import java.nio.charset.Charset;
 import javax.annotation.Nonnull;
 import org.exbin.deltahex.CodeAreaViewMode;
+import org.exbin.deltahex.CodeType;
 import org.exbin.deltahex.EditationMode;
 import org.exbin.deltahex.capability.CharsetCapable;
 import org.exbin.deltahex.capability.EditationModeCapable;
 import org.exbin.deltahex.capability.ViewModeCapable;
 import org.exbin.deltahex.swing.CodeArea;
-import org.exbin.deltahex.swing.basic.DefaultCodeAreaWorker;
-import org.exbin.deltahex.swing.capability.AntialiasingCapable;
+import org.exbin.deltahex.swing.extended.AntialiasingMode;
+import org.exbin.deltahex.swing.extended.CharacterRenderingMode;
+import org.exbin.deltahex.swing.extended.ExtCodeAreaWorker;
+import org.exbin.deltahex.swing.extended.capability.AntialiasingCapable;
 
 /**
  * Hexadecimal editor example panel.
  *
- * @version 0.2.0 2018/03/18
+ * @version 0.2.0 2018/03/22
  * @author ExBin Project (http://exbin.org)
  */
 public class ModePanelEx extends javax.swing.JPanel {
 
     private final CodeArea codeArea;
-    private final DefaultCodeAreaWorker worker;
+    private final ExtCodeAreaWorker worker;
 
     public ModePanelEx(@Nonnull CodeArea codeArea) {
         this.codeArea = codeArea;
-        worker = (DefaultCodeAreaWorker) codeArea.getWorker();
+        worker = (ExtCodeAreaWorker) codeArea.getWorker();
 
         initComponents();
 
@@ -261,7 +264,7 @@ public class ModePanelEx extends javax.swing.JPanel {
     }//GEN-LAST:event_showNonprintableCharactersCheckBoxItemStateChanged
 
     private void codeTypeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_codeTypeComboBoxActionPerformed
-        //        codeArea.setCodeType(CodeType.values()[codeTypeComboBox.getSelectedIndex()]);
+        worker.setCodeType(CodeType.values()[codeTypeComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_codeTypeComboBoxActionPerformed
 
     private void editationAllowedComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editationAllowedComboBoxActionPerformed
@@ -297,11 +300,11 @@ public class ModePanelEx extends javax.swing.JPanel {
     }//GEN-LAST:event_viewModeComboBoxActionPerformed
 
     private void charRenderingComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_charRenderingComboBoxActionPerformed
-        //        codeArea.setCharRenderingMode(CodeArea.CharRenderingMode.values()[charRenderingComboBox.getSelectedIndex()]);
+        worker.setCharacterRenderingMode(CharacterRenderingMode.values()[charRenderingComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_charRenderingComboBoxActionPerformed
 
     private void charAntialiasingComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_charAntialiasingComboBoxActionPerformed
-        //        codeArea.setCharAntialiasingMode(CodeArea.CharAntialiasingMode.values()[charAntialiasingComboBox.getSelectedIndex()]);
+        ((AntialiasingCapable) worker).setAntialiasingMode(AntialiasingMode.values()[charAntialiasingComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_charAntialiasingComboBoxActionPerformed
 
     private void charsetComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_charsetComboBoxActionPerformed

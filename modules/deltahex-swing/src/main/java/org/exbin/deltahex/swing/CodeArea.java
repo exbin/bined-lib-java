@@ -64,6 +64,8 @@ public class CodeArea extends JComponent implements CodeAreaControl {
     }
 
     /**
+     * TODO: Invalid, parameter instances cannot be created first, because they need code area parameter in constructor. Replace with factories.
+     * 
      * Creates new instance with provided command handler and worker.
      *
      * @param worker code area worker or null for default worker

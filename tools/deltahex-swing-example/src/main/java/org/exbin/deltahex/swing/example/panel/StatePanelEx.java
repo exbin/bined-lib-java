@@ -29,8 +29,8 @@ import org.exbin.deltahex.SelectionRange;
 import org.exbin.deltahex.capability.CaretCapable;
 import org.exbin.deltahex.capability.SelectionCapable;
 import org.exbin.deltahex.swing.CodeArea;
-import org.exbin.deltahex.swing.basic.DefaultCodeAreaWorker;
 import org.exbin.deltahex.swing.example.DeltaHexExampleBasicPanel;
+import org.exbin.deltahex.swing.extended.ExtCodeAreaWorker;
 import org.exbin.utils.binary_data.EditableBinaryData;
 
 /**
@@ -42,11 +42,11 @@ import org.exbin.utils.binary_data.EditableBinaryData;
 public class StatePanelEx extends javax.swing.JPanel {
 
     private final CodeArea codeArea;
-    private final DefaultCodeAreaWorker worker;
+    private final ExtCodeAreaWorker worker;
 
     public StatePanelEx(@Nonnull CodeArea codeArea) {
         this.codeArea = codeArea;
-        worker = (DefaultCodeAreaWorker) codeArea.getWorker();
+        worker = (ExtCodeAreaWorker) codeArea.getWorker();
 
         initComponents();
 

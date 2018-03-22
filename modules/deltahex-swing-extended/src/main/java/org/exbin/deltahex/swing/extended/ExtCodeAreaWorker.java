@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.deltahex.swing.basic;
+package org.exbin.deltahex.swing.extended;
 
 import java.awt.Font;
 import java.awt.Graphics;
@@ -52,17 +52,24 @@ import org.exbin.deltahex.capability.CodeCharactersCaseCapable;
 import org.exbin.deltahex.capability.LineWrappingCapable;
 import org.exbin.deltahex.swing.MovementDirection;
 import org.exbin.deltahex.swing.ScrollingDirection;
+import org.exbin.deltahex.swing.basic.BasicBackgroundPaintMode;
+import org.exbin.deltahex.swing.basic.CodeAreaScrollPosition;
+import org.exbin.deltahex.swing.basic.DefaultCodeAreaCaret;
+import org.exbin.deltahex.swing.basic.DefaultCodeAreaPainter;
+import org.exbin.deltahex.swing.basic.HorizontalScrollUnit;
+import org.exbin.deltahex.swing.basic.VerticalScrollUnit;
 import org.exbin.deltahex.swing.capability.FontCapable;
 import org.exbin.deltahex.swing.capability.BackgroundPaintCapable;
+import org.exbin.deltahex.swing.extended.capability.AntialiasingCapable;
 
 /**
- * Code area component default worker.
+ * Code area component extended worker.
  *
- * @version 0.2.0 2018/03/22
+ * @version 0.2.0 2018/03/23
  * @author ExBin Project (http://exbin.org)
  */
-public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, CaretCapable, ScrollingCapable, ViewModeCapable,
-        CodeTypeCapable, EditationModeCapable, CharsetCapable, CodeCharactersCaseCapable, FontCapable,
+public class ExtCodeAreaWorker implements CodeAreaWorker, SelectionCapable, CaretCapable, ScrollingCapable, ViewModeCapable,
+        CodeTypeCapable, EditationModeCapable, CharsetCapable, CodeCharactersCaseCapable, FontCapable, AntialiasingCapable,
         BackgroundPaintCapable, LineWrappingCapable, ClipboardCapable {
 
     @Nonnull
@@ -91,6 +98,10 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
     @Nonnull
     private BasicBackgroundPaintMode borderPaintMode = BasicBackgroundPaintMode.STRIPED;
     @Nonnull
+    private CharacterRenderingMode characterRenderingMode = CharacterRenderingMode.AUTO;
+    @Nonnull
+    private AntialiasingMode antialiasingMode = AntialiasingMode.AUTO;
+    @Nonnull
     private CodeType codeType = CodeType.HEXADECIMAL;
     @Nonnull
     private CodeCharactersCase codeCharactersCase = CodeCharactersCase.UPPER;
@@ -112,7 +123,7 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
     private final List<SelectionChangedListener> selectionChangedListeners = new ArrayList<>();
     private final List<EditationModeChangedListener> editationModeChangedListeners = new ArrayList<>();
 
-    public DefaultCodeAreaWorker(@Nonnull CodeArea codeArea) {
+    public ExtCodeAreaWorker(@Nonnull CodeArea codeArea) {
         this.codeArea = codeArea;
 
         caret = new DefaultCodeAreaCaret(codeArea);
@@ -416,6 +427,31 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
     @Override
     public void notifyCaretChanged() {
         codeArea.repaint();
+    }
+
+    @Nonnull
+    @Override
+    public CharacterRenderingMode getCharacterRenderingMode() {
+        return characterRenderingMode;
+    }
+
+    @Override
+    public void setCharacterRenderingMode(@Nonnull CharacterRenderingMode characterRenderingMode) {
+        this.characterRenderingMode = characterRenderingMode;
+        painter.reset();
+        repaint();
+    }
+
+    @Override
+    public AntialiasingMode getAntialiasingMode() {
+        return antialiasingMode;
+    }
+
+    @Override
+    public void setAntialiasingMode(AntialiasingMode antialiasingMode) {
+        this.antialiasingMode = antialiasingMode;
+        reset();
+        repaint();
     }
 
     @Nonnull

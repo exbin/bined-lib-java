@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.deltahex.swing.capability;
+package org.exbin.deltahex.swing.extended.capability;
 
 import javax.annotation.Nonnull;
 import org.exbin.deltahex.capability.WorkerCapability;
-import org.exbin.deltahex.swing.AntialiasingMode;
-import org.exbin.deltahex.swing.CharacterRenderingMode;
+import org.exbin.deltahex.swing.extended.AntialiasingMode;
+import org.exbin.deltahex.swing.extended.CharacterRenderingMode;
 
 /**
  * Support for anti-aliasing capability.

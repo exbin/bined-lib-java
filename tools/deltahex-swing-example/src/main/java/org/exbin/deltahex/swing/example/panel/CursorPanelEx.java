@@ -19,7 +19,7 @@ import javax.annotation.Nonnull;
 import org.exbin.deltahex.capability.CaretCapable;
 import org.exbin.deltahex.swing.CodeArea;
 import org.exbin.deltahex.swing.basic.DefaultCodeAreaCaret;
-import org.exbin.deltahex.swing.basic.DefaultCodeAreaWorker;
+import org.exbin.deltahex.swing.extended.ExtCodeAreaWorker;
 
 /**
  * Hexadecimal editor example panel.
@@ -30,11 +30,11 @@ import org.exbin.deltahex.swing.basic.DefaultCodeAreaWorker;
 public class CursorPanelEx extends javax.swing.JPanel {
 
     private final CodeArea codeArea;
-    private final DefaultCodeAreaWorker worker;
+    private final ExtCodeAreaWorker worker;
 
     public CursorPanelEx(@Nonnull CodeArea codeArea) {
         this.codeArea = codeArea;
-        worker = (DefaultCodeAreaWorker) codeArea.getWorker();
+        worker = (ExtCodeAreaWorker) codeArea.getWorker();
 
         initComponents();
 
