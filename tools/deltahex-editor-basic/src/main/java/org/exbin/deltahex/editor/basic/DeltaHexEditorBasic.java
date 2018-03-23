@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.annotation.Nonnull;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JFileChooser;
@@ -46,6 +47,10 @@ import org.exbin.deltahex.capability.CaretCapable;
 import org.exbin.deltahex.capability.CharsetCapable;
 import org.exbin.deltahex.capability.EditationModeCapable;
 import org.exbin.deltahex.capability.SelectionCapable;
+import org.exbin.deltahex.operation.BinaryDataCommand;
+import org.exbin.deltahex.operation.swing.CodeAreaOperationCommandHandler;
+import org.exbin.deltahex.operation.swing.CodeAreaUndoHandler;
+import org.exbin.deltahex.operation.undo.BinaryDataUndoUpdateListener;
 import org.exbin.deltahex.swing.CodeArea;
 import org.exbin.deltahex.swing.CodeAreaCommandHandler;
 import org.exbin.utils.binary_data.ByteArrayEditableData;
@@ -54,7 +59,7 @@ import org.exbin.utils.binary_data.EditableBinaryData;
 /**
  * Basic single jar swing version of Delta Hexadecimal editor.
  *
- * @version 0.2.0 2017/02/13
+ * @version 0.2.0 2017/03/23
  * @author ExBin Project (http://exbin.org)
  */
 public class DeltaHexEditorBasic extends javax.swing.JFrame {
@@ -63,7 +68,7 @@ public class DeltaHexEditorBasic extends javax.swing.JFrame {
 
     private File file = null;
     private CodeArea codeArea;
-//    private CodeAreaUndoHandler undoHandler;
+    private CodeAreaUndoHandler undoHandler;
     private CodeAreaCommandHandler commandHandler;
 
     private Action newFileAction;
@@ -89,9 +94,8 @@ public class DeltaHexEditorBasic extends javax.swing.JFrame {
     private void init() {
         codeArea = new CodeArea();
         codeArea.setData(new ByteArrayEditableData());
-// TODO
-//        undoHandler = new CodeAreaUndoHandler(codeArea);
-//        commandHandler = new CodeAreaOperationCommandHandler(codeArea, undoHandler);
+        undoHandler = new CodeAreaUndoHandler(codeArea);
+        commandHandler = new CodeAreaOperationCommandHandler(codeArea, undoHandler);
         codeArea.setCommandHandler(commandHandler);
         add(codeArea, BorderLayout.CENTER);
 
@@ -168,12 +172,11 @@ public class DeltaHexEditorBasic extends javax.swing.JFrame {
         ) {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                throw new UnsupportedOperationException("Not supported yet.");
-//                try {
-//                    undoHandler.performUndo();
-//                } catch (Exception ex) {
-//                    Logger.getLogger(DeltaHexEditorBasic.class.getName()).log(Level.SEVERE, null, ex);
-//                }
+                try {
+                    undoHandler.performUndo();
+                } catch (Exception ex) {
+                    Logger.getLogger(DeltaHexEditorBasic.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         };
         undoEditAction.putValue(Action.ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Z, java.awt.event.InputEvent.CTRL_MASK));
@@ -184,12 +187,11 @@ public class DeltaHexEditorBasic extends javax.swing.JFrame {
         ) {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                throw new UnsupportedOperationException("Not supported yet.");
-//                try {
-//                    undoHandler.performRedo();
-//                } catch (Exception ex) {
-//                    Logger.getLogger(DeltaHexEditorBasic.class.getName()).log(Level.SEVERE, null, ex);
-//                }
+                try {
+                    undoHandler.performRedo();
+                } catch (Exception ex) {
+                    Logger.getLogger(DeltaHexEditorBasic.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         };
         redoEditAction.putValue(Action.ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Y, java.awt.event.InputEvent.CTRL_MASK));
@@ -252,19 +254,19 @@ public class DeltaHexEditorBasic extends javax.swing.JFrame {
     private void postInit() {
         codeArea.setComponentPopupMenu(mainPopupMenu);
         setIconImage(new javax.swing.ImageIcon(getClass().getResource("/org/exbin/deltahex/editor/basic/resources/icons/icon.png")).getImage());
-//        undoHandler.addUndoUpdateListener(new BinaryDataUndoUpdateListener() {
-//            @Override
-//            public void undoCommandPositionChanged() {
-//                updateUndoState();
-//                codeArea.repaint();
-//            }
-//
-//            @Override
-//            public void undoCommandAdded(BinaryDataCommand cmnd) {
-//                updateUndoState();
-//                codeArea.repaint();
-//            }
-//        });
+        undoHandler.addUndoUpdateListener(new BinaryDataUndoUpdateListener() {
+            @Override
+            public void undoCommandPositionChanged() {
+                updateUndoState();
+                codeArea.repaint();
+            }
+
+            @Override
+            public void undoCommandAdded(@Nonnull BinaryDataCommand command) {
+                updateUndoState();
+                codeArea.repaint();
+            }
+        });
         ((EditationModeCapable) codeArea.getWorker()).addEditationModeChangedListener(new EditationModeChangedListener() {
             @Override
             public void editationModeChanged(EditationMode editationMode) {

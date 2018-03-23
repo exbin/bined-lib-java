@@ -415,10 +415,10 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         colors.selectionMirrorForeground = colors.selectionForeground;
         colors.selectionMirrorBackground = CodeAreaSwingUtils.computeGrayColor(colors.selectionBackground);
         colors.cursor = UIManager.getColor("TextArea.caretForeground");
-        colors.negativeCursor = CodeAreaSwingUtils.createNegativeColor(colors.cursor);
         if (colors.cursor == null) {
             colors.cursor = Color.BLACK;
         }
+        colors.negativeCursor = CodeAreaSwingUtils.createNegativeColor(colors.cursor);
         colors.decorationLine = Color.GRAY;
 
         colors.stripes = CodeAreaSwingUtils.createOddColor(colors.background);

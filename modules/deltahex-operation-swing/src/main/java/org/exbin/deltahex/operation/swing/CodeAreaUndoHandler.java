@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.annotation.Nonnull;
 import org.exbin.deltahex.operation.BinaryDataCommand;
 import org.exbin.deltahex.operation.BinaryDataOperationException;
 import org.exbin.deltahex.operation.undo.BinaryDataUndoHandler;
@@ -28,7 +29,7 @@ import org.exbin.deltahex.swing.CodeArea;
 /**
  * Undo handler for hexadecimal editor.
  *
- * @version 0.1.2 2017/01/01
+ * @version 0.2.0 2018/03/23
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeAreaUndoHandler implements BinaryDataUndoHandler {
@@ -38,7 +39,7 @@ public class CodeAreaUndoHandler implements BinaryDataUndoHandler {
     private long usedSize;
     private long commandPosition;
     private long syncPointPosition = -1;
-    private final List<BinaryDataCommand> commands;
+    private final List<BinaryDataCommand> commands = new ArrayList<>();;
     private final CodeArea codeArea;
     private final List<BinaryDataUndoUpdateListener> listeners = new ArrayList<>();
 
@@ -47,11 +48,10 @@ public class CodeAreaUndoHandler implements BinaryDataUndoHandler {
      *
      * @param codeArea hexadecimal component
      */
-    public CodeAreaUndoHandler(CodeArea codeArea) {
+    public CodeAreaUndoHandler(@Nonnull CodeArea codeArea) {
         this.codeArea = codeArea;
         undoMaximumCount = 1024;
         undoMaximumSize = 65535;
-        commands = new ArrayList<>();
         init();
     }
 
@@ -68,18 +68,18 @@ public class CodeAreaUndoHandler implements BinaryDataUndoHandler {
      * @throws BinaryDataOperationException if commands throws it
      */
     @Override
-    public void execute(BinaryDataCommand command) throws BinaryDataOperationException {
+    public void execute(@Nonnull BinaryDataCommand command) throws BinaryDataOperationException {
         command.execute();
         commandAdded(command);
     }
 
     @Override
-    public void addCommand(BinaryDataCommand command) {
+    public void addCommand(@Nonnull BinaryDataCommand command) {
         command.use();
         commandAdded(command);
     }
 
-    private void commandAdded(BinaryDataCommand addedCommand) {
+    private void commandAdded(@Nonnull BinaryDataCommand addedCommand) {
         // TODO: Check for undoOperationsMaximumCount & size
         while (commands.size() > commandPosition) {
             BinaryDataCommand command = commands.get((int) commandPosition);
@@ -246,6 +246,7 @@ public class CodeAreaUndoHandler implements BinaryDataUndoHandler {
         this.syncPointPosition = commandPosition;
     }
 
+    @Nonnull
     @Override
     public List<BinaryDataCommand> getCommandList() {
         return commands;
@@ -273,12 +274,12 @@ public class CodeAreaUndoHandler implements BinaryDataUndoHandler {
     }
 
     @Override
-    public void addUndoUpdateListener(BinaryDataUndoUpdateListener listener) {
+    public void addUndoUpdateListener(@Nonnull BinaryDataUndoUpdateListener listener) {
         listeners.add(listener);
     }
 
     @Override
-    public void removeUndoUpdateListener(BinaryDataUndoUpdateListener listener) {
+    public void removeUndoUpdateListener(@Nonnull BinaryDataUndoUpdateListener listener) {
         listeners.remove(listener);
     }
 }

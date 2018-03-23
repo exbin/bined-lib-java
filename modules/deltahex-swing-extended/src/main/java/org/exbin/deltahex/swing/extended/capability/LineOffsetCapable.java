@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.deltahex.swing.capability;
+package org.exbin.deltahex.swing.extended.capability;
 
 /**
  * Support for anti-aliasing capability.
