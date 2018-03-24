@@ -49,11 +49,11 @@ import org.exbin.deltahex.capability.ViewModeCapable;
 import org.exbin.deltahex.swing.capability.ScrollingCapable;
 import org.exbin.deltahex.capability.SelectionCapable;
 import org.exbin.deltahex.capability.CodeCharactersCaseCapable;
-import org.exbin.deltahex.capability.LineWrappingCapable;
 import org.exbin.deltahex.swing.MovementDirection;
 import org.exbin.deltahex.swing.ScrollingDirection;
 import org.exbin.deltahex.swing.capability.FontCapable;
 import org.exbin.deltahex.swing.capability.BackgroundPaintCapable;
+import org.exbin.deltahex.capability.RowWrappingCapable;
 
 /**
  * Code area component default worker.
@@ -63,7 +63,7 @@ import org.exbin.deltahex.swing.capability.BackgroundPaintCapable;
  */
 public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, CaretCapable, ScrollingCapable, ViewModeCapable,
         CodeTypeCapable, EditationModeCapable, CharsetCapable, CodeCharactersCaseCapable, FontCapable,
-        BackgroundPaintCapable, LineWrappingCapable, ClipboardCapable {
+        BackgroundPaintCapable, RowWrappingCapable, ClipboardCapable {
 
     @Nonnull
     protected final CodeArea codeArea;
@@ -101,7 +101,7 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
     @Nonnull
     private ScrollBarVisibility verticalScrollBarVisibility = ScrollBarVisibility.IF_NEEDED;
     @Nonnull
-    private VerticalScrollUnit verticalScrollUnit = VerticalScrollUnit.LINE;
+    private VerticalScrollUnit verticalScrollUnit = VerticalScrollUnit.ROW;
     @Nonnull
     private ScrollBarVisibility horizontalScrollBarVisibility = ScrollBarVisibility.IF_NEEDED;
     @Nonnull
@@ -361,12 +361,12 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
     @Override
     public void setVerticalScrollUnit(@Nonnull VerticalScrollUnit verticalScrollUnit) {
         this.verticalScrollUnit = verticalScrollUnit;
-        long linePosition = scrollPosition.getScrollLinePosition();
-        if (verticalScrollUnit == VerticalScrollUnit.LINE) {
-            scrollPosition.setScrollLineOffset(0);
+        long linePosition = scrollPosition.getScrollRowPosition();
+        if (verticalScrollUnit == VerticalScrollUnit.ROW) {
+            scrollPosition.setScrollRowOffset(0);
         }
         codeArea.resetPainter();
-        scrollPosition.setScrollLinePosition(linePosition);
+        scrollPosition.setScrollRowPosition(linePosition);
         updateScrollBars();
         notifyScrolled();
     }
@@ -520,7 +520,7 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
     }
 
     @Override
-    public boolean isLineWrapping() {
+    public boolean isRowWrapping() {
         return lineWrapping;
     }
 
@@ -530,7 +530,7 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
     }
 
     @Override
-    public int getMaxBytesPerLine() {
+    public int getMaxBytesPerRow() {
         return maxBytesPerLine;
     }
 

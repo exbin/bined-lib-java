@@ -25,7 +25,7 @@ public enum VerticalScrollUnit {
     /**
      * Scroll per whole line.
      */
-    LINE,
+    ROW,
     /**
      * Scroll per pixel.
      */

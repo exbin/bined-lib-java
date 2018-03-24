@@ -113,7 +113,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
     }
 
     @Override
-    public void sequenceBreak() {
+    public void undoSequenceBreak() {
         editCommand = null;
     }
 
@@ -598,7 +598,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
 
         try {
             undoHandler.execute(new DeleteSelectionCommand(codeArea));
-            sequenceBreak();
+            undoSequenceBreak();
             codeArea.notifyDataChanged();
         } catch (BinaryDataOperationException ex) {
             Logger.getLogger(CodeAreaOperationCommandHandler.class.getName()).log(Level.SEVERE, null, ex);

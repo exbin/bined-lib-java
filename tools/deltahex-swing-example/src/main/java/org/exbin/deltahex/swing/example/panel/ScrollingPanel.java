@@ -45,7 +45,7 @@ public class ScrollingPanel extends javax.swing.JPanel {
 
         ((ScrollingCapable) codeArea.getWorker()).addScrollingListener(() -> {
             CodeAreaScrollPosition scrollPosition = ((ScrollingCapable) codeArea.getWorker()).getScrollPosition();
-            verticalPositionTextField.setText(scrollPosition.getScrollLinePosition() + ":" + scrollPosition.getScrollLineOffset());
+            verticalPositionTextField.setText(scrollPosition.getScrollRowPosition() + ":" + scrollPosition.getScrollRowOffset());
             horizontalPositionTextField.setText(scrollPosition.getScrollCharPosition() + ":" + scrollPosition.getScrollCharOffset());
         });
     }

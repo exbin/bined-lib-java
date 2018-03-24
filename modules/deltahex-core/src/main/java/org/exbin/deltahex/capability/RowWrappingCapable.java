@@ -21,13 +21,13 @@ package org.exbin.deltahex.capability;
  * @version 0.2.0 2017/12/09
  * @author ExBin Project (http://exbin.org)
  */
-public interface LineWrappingCapable {
+public interface RowWrappingCapable {
 
-    boolean isLineWrapping();
+    boolean isRowWrapping();
 
     void setLineWrapping(boolean lineWrapping);
 
-    int getMaxBytesPerLine();
+    int getMaxBytesPerRow();
 
     void setMaxBytesPerLine(int maxBytesPerLine);
 

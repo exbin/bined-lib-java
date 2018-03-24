@@ -21,20 +21,20 @@ import javax.annotation.Nullable;
 /**
  * Code Area scrolling position.
  *
- * @version 0.2.0 2018/03/17
+ * @version 0.2.0 2018/03/24
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeAreaScrollPosition {
 
     /**
-     * Scrollbar document line position.
+     * Scrollbar document row position.
      */
-    private long scrollLinePosition = 0;
+    private long scrollRowPosition = 0;
 
     /**
-     * Scrollbar document line pixel offset position.
+     * Scrollbar document row pixel offset position.
      */
-    private int scrollLineOffset = 0;
+    private int scrollRowOffset = 0;
 
     /**
      * Scrollbar document character position.
@@ -46,12 +46,12 @@ public class CodeAreaScrollPosition {
      */
     private int scrollCharOffset = 0;
 
-    public long getScrollLinePosition() {
-        return scrollLinePosition;
+    public long getScrollRowPosition() {
+        return scrollRowPosition;
     }
 
-    public int getScrollLineOffset() {
-        return scrollLineOffset;
+    public int getScrollRowOffset() {
+        return scrollRowOffset;
     }
 
     public int getScrollCharPosition() {
@@ -62,12 +62,12 @@ public class CodeAreaScrollPosition {
         return scrollCharOffset;
     }
 
-    public void setScrollLinePosition(long scrollLinePosition) {
-        this.scrollLinePosition = scrollLinePosition;
+    public void setScrollRowPosition(long scrollRowPosition) {
+        this.scrollRowPosition = scrollRowPosition;
     }
 
-    public void setScrollLineOffset(int scrollLineOffset) {
-        this.scrollLineOffset = scrollLineOffset;
+    public void setScrollRowOffset(int scrollRowOffset) {
+        this.scrollRowOffset = scrollRowOffset;
     }
 
     public void setScrollCharPosition(int scrollCharPosition) {
@@ -82,8 +82,8 @@ public class CodeAreaScrollPosition {
         if (scrollPosition == null) {
             reset();
         } else {
-            scrollLinePosition = scrollPosition.getScrollLinePosition();
-            scrollLineOffset = scrollPosition.getScrollLineOffset();
+            scrollRowPosition = scrollPosition.getScrollRowPosition();
+            scrollRowOffset = scrollPosition.getScrollRowOffset();
             scrollCharPosition = scrollPosition.getScrollCharPosition();
             scrollCharOffset = scrollPosition.getScrollCharOffset();
         }
@@ -93,15 +93,15 @@ public class CodeAreaScrollPosition {
      * Resets scrolling position to top left corner.
      */
     public void reset() {
-        scrollLinePosition = 0;
-        scrollLineOffset = 0;
+        scrollRowPosition = 0;
+        scrollRowOffset = 0;
         scrollCharPosition = 0;
         scrollCharOffset = 0;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(scrollLinePosition, scrollLineOffset, scrollCharPosition, scrollCharOffset);
+        return Objects.hash(scrollRowPosition, scrollRowOffset, scrollCharPosition, scrollCharOffset);
     }
 
     @Override
@@ -116,10 +116,10 @@ public class CodeAreaScrollPosition {
             return false;
         }
         final CodeAreaScrollPosition other = (CodeAreaScrollPosition) obj;
-        if (this.scrollLinePosition != other.scrollLinePosition) {
+        if (this.scrollRowPosition != other.scrollRowPosition) {
             return false;
         }
-        if (this.scrollLineOffset != other.scrollLineOffset) {
+        if (this.scrollRowOffset != other.scrollRowOffset) {
             return false;
         }
         if (this.scrollCharPosition != other.scrollCharPosition) {

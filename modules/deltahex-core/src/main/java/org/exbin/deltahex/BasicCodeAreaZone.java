@@ -24,7 +24,7 @@ package org.exbin.deltahex;
 public enum BasicCodeAreaZone {
     
     HEADER,
-    LINE_NUMBERS,
+    ROW_POSITIONS,
     CODE_AREA,
     HORIZONTAL_SCROLLBAR,
     VERTICAL_SCROLLBAR,
