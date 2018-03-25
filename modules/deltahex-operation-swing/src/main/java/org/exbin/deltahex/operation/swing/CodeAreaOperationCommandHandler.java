@@ -34,6 +34,11 @@ import org.exbin.deltahex.CharsetStreamTranslator;
 import org.exbin.deltahex.CodeAreaCaret;
 import org.exbin.deltahex.CodeAreaUtils;
 import org.exbin.deltahex.SelectionRange;
+import org.exbin.deltahex.capability.CaretCapable;
+import org.exbin.deltahex.capability.CharsetCapable;
+import org.exbin.deltahex.capability.CodeCharactersCaseCapable;
+import org.exbin.deltahex.capability.CodeTypeCapable;
+import org.exbin.deltahex.capability.SelectionCapable;
 import org.exbin.deltahex.operation.BinaryDataOperationException;
 import org.exbin.deltahex.operation.swing.command.CodeAreaCommand;
 import org.exbin.deltahex.operation.swing.command.CodeAreaCommandType;
@@ -42,6 +47,7 @@ import org.exbin.deltahex.operation.swing.command.RemoveDataCommand;
 import org.exbin.deltahex.operation.undo.BinaryDataUndoHandler;
 import org.exbin.deltahex.swing.CodeArea;
 import org.exbin.deltahex.swing.CodeAreaCommandHandler;
+import org.exbin.deltahex.swing.capability.ScrollingCapable;
 import org.exbin.utils.binary_data.BinaryData;
 
 /**
@@ -1030,7 +1036,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
             } else {
                 String clipboardCharsetName = DataFlavor.getTextPlainUnicodeFlavor().getParameter(MIME_CHARSET);
                 Charset clipboardCharset = Charset.forName(clipboardCharsetName);
-                return new CharsetStreamTranslator(codeArea.getCharset(), clipboardCharset, data.getDataInputStream());
+                return new CharsetStreamTranslator(((CharsetCapable) codeArea.getWorker()).getCharset(), clipboardCharset, data.getDataInputStream());
             }
         }
 
@@ -1068,7 +1074,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
             if (flavor.equals(deltahexDataFlavor)) {
                 return data;
             } else {
-                int charsPerByte = codeArea.getCodeType().getMaxDigits() + 1;
+                int charsPerByte = ((CodeTypeCapable) codeArea.getWorker()).getCodeType().getMaxDigitsForByte() + 1;
                 int textLength = (int) (data.getDataSize() * charsPerByte);
                 if (textLength > 0) {
                     textLength--;
@@ -1077,7 +1083,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
                 char[] dataTarget = new char[textLength];
                 Arrays.fill(dataTarget, ' ');
                 for (int i = 0; i < data.getDataSize(); i++) {
-                    CodeAreaUtils.byteToCharsCode(data.getByte(i), codeArea.getCodeType(), dataTarget, i * charsPerByte, codeArea.getHexCharactersCase());
+                    CodeAreaUtils.byteToCharsCode(data.getByte(i), ((CodeTypeCapable) codeArea.getWorker()).getCodeType(), dataTarget, i * charsPerByte, ((CodeCharactersCaseCapable) codeArea.getWorker()).getCodeCharactersCase());
                 }
                 DataFlavor textPlainUnicodeFlavor = DataFlavor.getTextPlainUnicodeFlavor();
                 return new ByteArrayInputStream(new String(dataTarget).getBytes(textPlainUnicodeFlavor.getParameter(MIME_CHARSET)));
@@ -1103,7 +1109,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
 
         public DeleteSelectionCommand(CodeArea coreArea) {
             super(coreArea);
-            SelectionRange selection = coreArea.getSelection();
+            SelectionRange selection = ((SelectionCapable) coreArea.getWorker()).getSelection();
             position = selection.getFirst();
             size = selection.getLast() - position + 1;
             removeCommand = new RemoveDataCommand(coreArea, position, 0, size);
@@ -1118,22 +1124,22 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
         public void redo() throws BinaryDataOperationException {
             removeCommand.redo();
             codeArea.clearSelection();
-            CodeAreaCaret caret = codeArea.getCaret();
+            CodeAreaCaret caret = ((CaretCapable) codeArea.getWorker()).getCaret();
             caret.setCaretPosition(position);
-            codeArea.revealCursor();
+            ((CaretCapable) codeArea.getWorker()).revealCursor();
             codeArea.notifyDataChanged();
-            codeArea.updateScrollBars();
+            ((ScrollingCapable) codeArea.getWorker()).updateScrollBars();
         }
 
         @Override
         public void undo() throws BinaryDataOperationException {
             removeCommand.undo();
             codeArea.clearSelection();
-            CodeAreaCaret caret = codeArea.getCaret();
+            CodeAreaCaret caret = ((CaretCapable) codeArea.getWorker()).getCaret();
             caret.setCaretPosition(size);
-            codeArea.revealCursor();
+            ((CaretCapable) codeArea.getWorker()).revealCursor();
             codeArea.notifyDataChanged();
-            codeArea.updateScrollBars();
+            ((ScrollingCapable) codeArea.getWorker()).updateScrollBars();
         }
 
         @Override
