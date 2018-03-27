@@ -30,6 +30,8 @@ import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.annotation.Nonnull;
+import org.exbin.deltahex.CaretPosition;
 import org.exbin.deltahex.CharsetStreamTranslator;
 import org.exbin.deltahex.CodeAreaCaret;
 import org.exbin.deltahex.CodeAreaUtils;
@@ -47,6 +49,11 @@ import org.exbin.deltahex.operation.swing.command.RemoveDataCommand;
 import org.exbin.deltahex.operation.undo.BinaryDataUndoHandler;
 import org.exbin.deltahex.swing.CodeArea;
 import org.exbin.deltahex.swing.CodeAreaCommandHandler;
+import org.exbin.deltahex.swing.MovementDirection;
+import org.exbin.deltahex.swing.ScrollingDirection;
+import org.exbin.deltahex.swing.basic.CodeAreaScrollPosition;
+import org.exbin.deltahex.swing.basic.DefaultCodeAreaCaret;
+import org.exbin.deltahex.swing.basic.DefaultCodeAreaCommandHandler;
 import org.exbin.deltahex.swing.capability.ScrollingCapable;
 import org.exbin.utils.binary_data.BinaryData;
 
@@ -72,6 +79,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
     private boolean canPaste = false;
     private DataFlavor deltahexDataFlavor;
     private ClipboardData currentClipboardData = null;
+    private DataFlavor binaryDataFlavor;
 
     private final BinaryDataUndoHandler undoHandler;
     private EditDataCommand editCommand = null;
@@ -97,6 +105,11 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
                 }
             });
             try {
+                binaryDataFlavor = new DataFlavor(CodeAreaUtils.MIME_CLIPBOARD_BINARY);
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(DefaultCodeAreaCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            try {
                 deltahexDataFlavor = new DataFlavor(DELTAHEX_CLIPBOARD_MIME);
             } catch (ClassNotFoundException ex) {
                 Logger.getLogger(CodeAreaOperationCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
@@ -111,11 +124,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
     }
 
     private void updateCanPaste() {
-        try {
-            canPaste = clipboard.isDataFlavorAvailable(deltahexDataFlavor) || clipboard.isDataFlavorAvailable(DataFlavor.stringFlavor);
-        } catch (IllegalStateException ex) {
-            canPaste = false;
-        }
+        canPaste = CodeAreaUtils.canPaste(clipboard, binaryDataFlavor);
     }
 
     @Override
@@ -1001,9 +1010,49 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    public void updateSelection(boolean selecting, @Nonnull CaretPosition caretPosition) {
+        DefaultCodeAreaCaret caret = (DefaultCodeAreaCaret) ((CaretCapable) codeArea.getWorker()).getCaret();
+        SelectionRange selection = ((SelectionCapable) codeArea.getWorker()).getSelection();
+        if (selecting) {
+            ((SelectionCapable) codeArea.getWorker()).setSelection(selection.getStart(), caret.getDataPosition());
+        } else {
+            ((SelectionCapable) codeArea.getWorker()).setSelection(caret.getDataPosition(), caret.getDataPosition());
+        }
+    }
+
     @Override
     public void moveCaret(int positionX, int positionY, boolean selecting) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        CaretPosition caretPosition = ((CaretCapable) codeArea.getWorker()).mousePositionToClosestCaretPosition(positionX, positionY);
+        if (caretPosition != null) {
+            ((CaretCapable) codeArea.getWorker()).getCaret().setCaretPosition(caretPosition);
+            updateSelection(selecting, caretPosition);
+
+            notifyCaretMoved();
+            undoSequenceBreak();
+            codeArea.repaint();
+        }
+    }
+
+    public void move(int modifiers, @Nonnull MovementDirection direction) {
+        DefaultCodeAreaCaret caret = (DefaultCodeAreaCaret) ((CaretCapable) codeArea.getWorker()).getCaret();
+        CaretPosition caretPosition = caret.getCaretPosition();
+        CaretPosition movePosition = codeArea.getWorker().computeMovePosition(caretPosition, direction);
+        if (!caretPosition.equals(movePosition)) {
+            caret.setCaretPosition(movePosition);
+            updateSelection((modifiers & KeyEvent.SHIFT_DOWN_MASK) > 0, movePosition);
+            notifyCaretMoved();
+        }
+    }
+
+    public void scroll(@Nonnull ScrollingDirection direction) {
+        CodeAreaScrollPosition sourcePosition = ((ScrollingCapable) codeArea.getWorker()).getScrollPosition();
+        CodeAreaScrollPosition scrollPosition = ((ScrollingCapable) codeArea.getWorker()).computeScrolling(sourcePosition, direction);
+        if (!sourcePosition.equals(scrollPosition)) {
+            ((ScrollingCapable) codeArea.getWorker()).setScrollPosition(scrollPosition);
+            codeArea.resetPainter();
+            notifyScrolled();
+            updateScrollBars();
+        }
     }
 
     @Override
@@ -1151,6 +1200,23 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
         public boolean canUndo() {
             return true;
         }
+    }
+
+    private void revealCursor() {
+        ((CaretCapable) codeArea.getWorker()).revealCursor();
+        codeArea.repaint();
+    }
+
+    private void notifyCaretMoved() {
+        ((CaretCapable) codeArea.getWorker()).notifyCaretMoved();
+    }
+
+    private void notifyScrolled() {
+        ((ScrollingCapable) codeArea.getWorker()).notifyScrolled();
+    }
+
+    private void updateScrollBars() {
+        ((ScrollingCapable) codeArea.getWorker()).updateScrollBars();
     }
 
     public static interface ClipboardData extends Transferable, ClipboardOwner {

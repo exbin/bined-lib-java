@@ -111,10 +111,6 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         }
     }
 
-    private void updateScrollBars() {
-        ((ScrollingCapable) codeArea.getWorker()).updateScrollBars();
-    }
-
     @Override
     public void undoSequenceBreak() {
         // Do nothing
@@ -668,7 +664,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     @Override
     public void wheelScroll(int scrollSize, ScrollbarOrientation direction) {
         scroll(ScrollingDirection.UP);
-        
+
 //        CodeAreaScrollPosition scrollPosition = codeArea.getScrollPosition();
 //
 //        if (e.isShiftDown() && codeArea.getPainter().isHorizontalScrollBarVisible()) {
@@ -798,5 +794,9 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
     private void notifyScrolled() {
         ((ScrollingCapable) codeArea.getWorker()).notifyScrolled();
+    }
+
+    private void updateScrollBars() {
+        ((ScrollingCapable) codeArea.getWorker()).updateScrollBars();
     }
 }
