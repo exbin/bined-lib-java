@@ -17,29 +17,18 @@ package org.exbin.deltahex.operation.swing;
 
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.ClipboardOwner;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.FlavorEvent;
 import java.awt.datatransfer.FlavorListener;
-import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.KeyEvent;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Nonnull;
 import org.exbin.deltahex.CaretPosition;
-import org.exbin.deltahex.CharsetStreamTranslator;
 import org.exbin.deltahex.CodeAreaCaret;
 import org.exbin.deltahex.CodeAreaUtils;
 import org.exbin.deltahex.SelectionRange;
 import org.exbin.deltahex.capability.CaretCapable;
-import org.exbin.deltahex.capability.CharsetCapable;
-import org.exbin.deltahex.capability.CodeCharactersCaseCapable;
-import org.exbin.deltahex.capability.CodeTypeCapable;
 import org.exbin.deltahex.capability.SelectionCapable;
 import org.exbin.deltahex.operation.BinaryDataOperationException;
 import org.exbin.deltahex.operation.swing.command.CodeAreaCommand;
@@ -78,7 +67,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
     private Clipboard clipboard;
     private boolean canPaste = false;
     private DataFlavor deltahexDataFlavor;
-    private ClipboardData currentClipboardData = null;
+    private CodeAreaUtils.ClipboardData currentClipboardData = null;
     private DataFlavor binaryDataFlavor;
 
     private final BinaryDataUndoHandler undoHandler;
@@ -622,16 +611,16 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
 
     @Override
     public void copy() {
-//        SelectionRange selection = codeArea.getSelection();
-//        if (selection != null) {
-//            long first = selection.getFirst();
-//            long last = selection.getLast();
-//
-//            BinaryData copy = codeArea.getData().copy(first, last - first + 1);
-//
-//            BinaryDataClipboardData binaryData = new BinaryDataClipboardData(copy);
-//            setClipboardContent(binaryData);
-//        }
+        SelectionRange selection = ((SelectionCapable) codeArea.getWorker()).getSelection();
+        if (!selection.isEmpty()) {
+            long first = selection.getFirst();
+            long last = selection.getLast();
+
+            BinaryData copy = codeArea.getData().copy(first, last - first + 1);
+
+            CodeAreaUtils.BinaryDataClipboardData binaryData = new CodeAreaUtils.BinaryDataClipboardData(copy, binaryDataFlavor);
+            setClipboardContent(binaryData);
+        }
     }
 
     @Override
@@ -648,7 +637,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
 //        }
     }
 
-    private void setClipboardContent(ClipboardData content) {
+    private void setClipboardContent(CodeAreaUtils.ClipboardData content) {
         clearClipboardData();
         try {
             currentClipboardData = content;
@@ -1060,96 +1049,6 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public class BinaryDataClipboardData implements ClipboardData {
-
-        private final BinaryData data;
-
-        public BinaryDataClipboardData(BinaryData data) {
-            this.data = data;
-        }
-
-        @Override
-        public DataFlavor[] getTransferDataFlavors() {
-            return new DataFlavor[]{deltahexDataFlavor, DataFlavor.getTextPlainUnicodeFlavor()};
-        }
-
-        @Override
-        public boolean isDataFlavorSupported(DataFlavor flavor) {
-            return flavor.equals(deltahexDataFlavor) || flavor.equals(DataFlavor.getTextPlainUnicodeFlavor());
-        }
-
-        @Override
-        public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
-            if (flavor.equals(deltahexDataFlavor)) {
-                return data;
-            } else {
-                String clipboardCharsetName = DataFlavor.getTextPlainUnicodeFlavor().getParameter(MIME_CHARSET);
-                Charset clipboardCharset = Charset.forName(clipboardCharsetName);
-                return new CharsetStreamTranslator(((CharsetCapable) codeArea.getWorker()).getCharset(), clipboardCharset, data.getDataInputStream());
-            }
-        }
-
-        @Override
-        public void lostOwnership(Clipboard clipboard, Transferable contents) {
-            // do nothing
-        }
-
-        @Override
-        public void dispose() {
-            data.dispose();
-        }
-    }
-
-    public class CodeDataClipboardData implements ClipboardData {
-
-        private final BinaryData data;
-
-        public CodeDataClipboardData(BinaryData data) {
-            this.data = data;
-        }
-
-        @Override
-        public DataFlavor[] getTransferDataFlavors() {
-            return new DataFlavor[]{deltahexDataFlavor, DataFlavor.getTextPlainUnicodeFlavor()};
-        }
-
-        @Override
-        public boolean isDataFlavorSupported(DataFlavor flavor) {
-            return flavor.equals(deltahexDataFlavor) || flavor.equals(DataFlavor.getTextPlainUnicodeFlavor());
-        }
-
-        @Override
-        public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
-            if (flavor.equals(deltahexDataFlavor)) {
-                return data;
-            } else {
-                int charsPerByte = ((CodeTypeCapable) codeArea.getWorker()).getCodeType().getMaxDigitsForByte() + 1;
-                int textLength = (int) (data.getDataSize() * charsPerByte);
-                if (textLength > 0) {
-                    textLength--;
-                }
-
-                char[] dataTarget = new char[textLength];
-                Arrays.fill(dataTarget, ' ');
-                for (int i = 0; i < data.getDataSize(); i++) {
-                    CodeAreaUtils.byteToCharsCode(data.getByte(i), ((CodeTypeCapable) codeArea.getWorker()).getCodeType(), dataTarget, i * charsPerByte, ((CodeCharactersCaseCapable) codeArea.getWorker()).getCodeCharactersCase());
-                }
-                DataFlavor textPlainUnicodeFlavor = DataFlavor.getTextPlainUnicodeFlavor();
-                return new ByteArrayInputStream(new String(dataTarget).getBytes(textPlainUnicodeFlavor.getParameter(MIME_CHARSET)));
-            }
-        }
-
-        @Override
-        public void lostOwnership(Clipboard clipboard, Transferable contents) {
-            // do nothing
-        }
-
-        @Override
-        public void dispose() {
-            data.dispose();
-        }
-    }
-
     private static class DeleteSelectionCommand extends CodeAreaCommand {
 
         private final RemoveDataCommand removeCommand;
@@ -1217,10 +1116,5 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
 
     private void updateScrollBars() {
         ((ScrollingCapable) codeArea.getWorker()).updateScrollBars();
-    }
-
-    public static interface ClipboardData extends Transferable, ClipboardOwner {
-
-        void dispose();
     }
 }

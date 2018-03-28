@@ -32,7 +32,7 @@ import org.exbin.utils.binary_data.EditableBinaryData;
 /**
  * Hexadecimal editor component utilities.
  *
- * @version 0.2.0 2017/12/15
+ * @version 0.2.0 2018/03/28
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeAreaUtils {
@@ -521,11 +521,13 @@ public class CodeAreaUtils {
         private final BinaryData data;
         private final DataFlavor binaryDataFlavor;
         private final CodeType codeType;
+        private final CodeCharactersCase charactersCase;
 
-        public CodeDataClipboardData(@Nonnull BinaryData data, @Nonnull DataFlavor binaryDataFlavor, @Nonnull CodeType codeType) {
+        public CodeDataClipboardData(@Nonnull BinaryData data, @Nonnull DataFlavor binaryDataFlavor, @Nonnull CodeType codeType, @Nonnull CodeCharactersCase charactersCase) {
             this.data = data;
             this.binaryDataFlavor = binaryDataFlavor;
             this.codeType = codeType;
+            this.charactersCase = charactersCase;
         }
 
         @Nonnull
@@ -552,11 +554,11 @@ public class CodeAreaUtils {
 
                 char[] targetData = new char[textLength];
                 Arrays.fill(targetData, ' ');
-                throw new UnsupportedOperationException("Not supported yet.");
-//                for (int i = 0; i < data.getDataSize(); i++) {
-//                    CodeAreaUtils.byteToCharsCode(data.getByte(i), codeArea.getCodeType(), targetData, i * charsPerByte, codeArea.getHexCharactersCase());
-//                }
-//                return new String(targetData);
+                for (int i = 0; i < data.getDataSize(); i++) {
+                    CodeAreaUtils.byteToCharsCode(data.getByte(i), codeType, targetData, i * charsPerByte, charactersCase);
+                }
+                return new String(targetData);
+//                return new ByteArrayInputStream(new String(dataTarget).getBytes(textPlainUnicodeFlavor.getParameter(MIME_CHARSET)));
             }
         }
 
