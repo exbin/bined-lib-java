@@ -27,6 +27,7 @@ import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.swing.JComponent;
@@ -41,7 +42,7 @@ import org.exbin.utils.binary_data.BinaryData;
 /**
  * Hexadecimal viewer/editor component.
  *
- * @version 0.2.0 2017/12/23
+ * @version 0.2.0 2018/03/29
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeArea extends JComponent implements CodeAreaControl {
@@ -64,8 +65,9 @@ public class CodeArea extends JComponent implements CodeAreaControl {
     }
 
     /**
-     * TODO: Invalid, parameter instances cannot be created first, because they need code area parameter in constructor. Replace with factories.
-     * 
+     * TODO: Invalid, parameter instances cannot be created first, because they
+     * need code area parameter in constructor. Replace with factories.
+     *
      * Creates new instance with provided command handler and worker.
      *
      * @param worker code area worker or null for default worker
@@ -128,9 +130,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
     }
 
     public void setWorker(@Nonnull CodeAreaWorker worker) {
-        if (worker == null) {
-            throw new NullPointerException("Worker cannot be null");
-        }
+        Objects.requireNonNull(worker, "Worker cannot be null");
 
         this.worker = worker;
     }

@@ -18,11 +18,12 @@ package org.exbin.deltahex;
 /**
  * Enumeration of basic code area zones.
  *
- * @version 0.2.0 2017/04/17
+ * @version 0.2.0 2018/03/29
  * @author ExBin Project (http://exbin.org)
  */
 public enum BasicCodeAreaZone {
-    
+
+    UNKNOWN,
     HEADER,
     ROW_POSITIONS,
     CODE_AREA,

@@ -89,6 +89,7 @@ public interface CodeAreaPainter {
      * @param y y-coordinate
      * @return specific zone in component
      */
+    @Nonnull
     BasicCodeAreaZone getPositionZone(int x, int y);
 
     /**

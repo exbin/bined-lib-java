@@ -27,9 +27,17 @@ import javax.annotation.Nonnull;
 import org.exbin.deltahex.CaretPosition;
 import org.exbin.deltahex.CodeAreaCaret;
 import org.exbin.deltahex.CodeAreaUtils;
+import org.exbin.deltahex.CodeAreaViewMode;
+import org.exbin.deltahex.CodeCharactersCase;
+import org.exbin.deltahex.CodeType;
+import org.exbin.deltahex.EditationMode;
 import org.exbin.deltahex.SelectionRange;
 import org.exbin.deltahex.capability.CaretCapable;
+import org.exbin.deltahex.capability.CodeCharactersCaseCapable;
+import org.exbin.deltahex.capability.CodeTypeCapable;
+import org.exbin.deltahex.capability.EditationModeCapable;
 import org.exbin.deltahex.capability.SelectionCapable;
+import org.exbin.deltahex.capability.ViewModeCapable;
 import org.exbin.deltahex.operation.BinaryDataOperationException;
 import org.exbin.deltahex.operation.swing.command.CodeAreaCommand;
 import org.exbin.deltahex.operation.swing.command.CodeAreaCommandType;
@@ -38,6 +46,7 @@ import org.exbin.deltahex.operation.swing.command.RemoveDataCommand;
 import org.exbin.deltahex.operation.undo.BinaryDataUndoHandler;
 import org.exbin.deltahex.swing.CodeArea;
 import org.exbin.deltahex.swing.CodeAreaCommandHandler;
+import org.exbin.deltahex.swing.CodeAreaWorker;
 import org.exbin.deltahex.swing.MovementDirection;
 import org.exbin.deltahex.swing.ScrollingDirection;
 import org.exbin.deltahex.swing.basic.CodeAreaScrollPosition;
@@ -49,7 +58,7 @@ import org.exbin.utils.binary_data.BinaryData;
 /**
  * Command handler for undo/redo aware hexadecimal editor editing.
  *
- * @version 0.2.0 2018/03/23
+ * @version 0.2.0 2018/03/29
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
@@ -64,6 +73,9 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
     private final int metaMask;
 
     private final CodeArea codeArea;
+    private final boolean codeTypeSupported;
+    private final boolean viewModeSupported;
+
     private Clipboard clipboard;
     private boolean canPaste = false;
     private DataFlavor deltahexDataFlavor;
@@ -76,6 +88,10 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
     public CodeAreaOperationCommandHandler(CodeArea codeArea, BinaryDataUndoHandler undoHandler) {
         this.codeArea = codeArea;
         this.undoHandler = undoHandler;
+
+        CodeAreaWorker worker = codeArea.getWorker();
+        codeTypeSupported = worker instanceof CodeTypeCapable;
+        viewModeSupported = worker instanceof ViewModeCapable;
 
         int metaMaskInit;
         try {
@@ -127,222 +143,97 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
             return;
         }
 
-//        switch (keyEvent.getKeyCode()) {
-//            case KeyEvent.VK_LEFT: {
-//                if ((keyEvent.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) > 0) {
-//                    // Scroll page instead of cursor
-//                    CodeArea.ScrollPosition scrollPosition = codeArea.getScrollPosition();
-//                    if (scrollPosition.getLineByteShift() < codeArea.getBytesPerLine() - 1) {
-//                        scrollPosition.setLineByteShift(scrollPosition.getLineByteShift() + 1);
-//                    } else {
-//                        if (scrollPosition.getScrollLinePosition() > 0) {
-//                            scrollPosition.setScrollLinePosition(scrollPosition.getScrollLinePosition() - 1);
-//                        }
-//                        scrollPosition.setLineByteShift(0);
-//                    }
-//
-//                    codeArea.getCaret().resetBlink();
-//                    codeArea.computePaintData();
-//                    codeArea.notifyScrolled();
-//                    codeArea.repaint();
-//                } else {
-//                    codeArea.moveLeft(keyEvent.getModifiersEx());
-//                    sequenceBreak();
-//                    codeArea.revealCursor();
-//                }
-//                keyEvent.consume();
-//                break;
-//            }
-//            case KeyEvent.VK_RIGHT: {
-//                if ((keyEvent.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) > 0) {
-//                    // Scroll position offset instead of cursor
-//                    CodeArea.ScrollPosition scrollPosition = codeArea.getScrollPosition();
-//                    if (scrollPosition.getLineByteShift() > 0) {
-//                        scrollPosition.setLineByteShift(scrollPosition.getLineByteShift() - 1);
-//                    } else {
-//                        long dataSize = codeArea.getDataSize();
-//                        if (scrollPosition.getScrollLinePosition() < dataSize / codeArea.getBytesPerLine()) {
-//                            scrollPosition.setScrollLinePosition(scrollPosition.getScrollLinePosition() + 1);
-//                        }
-//                        scrollPosition.setLineByteShift(codeArea.getBytesPerLine() - 1);
-//                    }
-//
-//                    codeArea.getCaret().resetBlink();
-//                    codeArea.computePaintData();
-//                    codeArea.notifyScrolled();
-//                    codeArea.repaint();
-//                } else {
-//                    codeArea.moveRight(keyEvent.getModifiersEx());
-//                    sequenceBreak();
-//                    codeArea.revealCursor();
-//                }
-//                keyEvent.consume();
-//                break;
-//            }
-//            case KeyEvent.VK_UP: {
-//                CaretPosition caretPosition = codeArea.getCaretPosition();
-//                int bytesPerLine = codeArea.getBytesPerLine();
-//                if ((keyEvent.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) > 0) {
-//                    // Scroll page instead of cursor
-//                    CodeArea.ScrollPosition scrollPosition = codeArea.getScrollPosition();
-//                    if (scrollPosition.getScrollLinePosition() > 0) {
-//                        scrollPosition.setScrollLinePosition(scrollPosition.getScrollLinePosition() - 1);
-//                        codeArea.updateScrollBars();
-//                        codeArea.notifyScrolled();
-//                    }
-//                } else {
-//                    if (caretPosition.getDataPosition() > 0) {
-//                        if (caretPosition.getDataPosition() >= bytesPerLine) {
-//                            codeArea.setCaretPosition(caretPosition.getDataPosition() - bytesPerLine, caretPosition.getCodeOffset());
-//                            codeArea.notifyCaretMoved();
-//                        }
-//                        codeArea.updateSelection(keyEvent.getModifiersEx(), caretPosition);
-//                    }
-//                    sequenceBreak();
-//                    codeArea.revealCursor();
-//                }
-//                keyEvent.consume();
-//                break;
-//            }
-//            case KeyEvent.VK_DOWN: {
-//                CaretPosition caretPosition = codeArea.getCaretPosition();
-//                int bytesPerLine = codeArea.getBytesPerLine();
-//                long dataSize = codeArea.getDataSize();
-//                if ((keyEvent.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) > 0) {
-//                    // Scroll page instead of cursor
-//                    CodeArea.ScrollPosition scrollPosition = codeArea.getScrollPosition();
-//                    if (scrollPosition.getScrollLinePosition() < dataSize / codeArea.getBytesPerLine()) {
-//                        scrollPosition.setScrollLinePosition(scrollPosition.getScrollLinePosition() + 1);
-//                        codeArea.updateScrollBars();
-//                        codeArea.notifyScrolled();
-//                    }
-//                } else {
-//                    if (caretPosition.getDataPosition() < dataSize) {
-//                        if (caretPosition.getDataPosition() + bytesPerLine < dataSize
-//                                || (caretPosition.getDataPosition() + bytesPerLine == dataSize && caretPosition.getCodeOffset() == 0)) {
-//                            codeArea.setCaretPosition(caretPosition.getDataPosition() + bytesPerLine, caretPosition.getCodeOffset());
-//                            codeArea.notifyCaretMoved();
-//                        }
-//                        codeArea.updateSelection(keyEvent.getModifiersEx(), caretPosition);
-//                    }
-//                    sequenceBreak();
-//                    codeArea.revealCursor();
-//                }
-//                keyEvent.consume();
-//                break;
-//            }
-//            case KeyEvent.VK_HOME: {
-//                CaretPosition caretPosition = codeArea.getCaretPosition();
-//                int bytesPerLine = codeArea.getBytesPerLine();
-//                CodeArea.ScrollPosition scrollPosition = codeArea.getScrollPosition();
-//                if (caretPosition.getDataPosition() > 0 || caretPosition.getCodeOffset() != 0) {
-//                    long targetPosition;
-//                    if ((keyEvent.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) > 0) {
-//                        targetPosition = 0;
-//                    } else {
-//                        targetPosition = ((caretPosition.getDataPosition() + scrollPosition.getLineByteShift()) / bytesPerLine) * bytesPerLine - scrollPosition.getLineByteShift();
-//                        if (targetPosition < 0) {
-//                            targetPosition = 0;
-//                        }
-//                    }
-//                    codeArea.setCaretPosition(targetPosition);
-//                    sequenceBreak();
-//                    codeArea.notifyCaretMoved();
-//                    codeArea.updateSelection(keyEvent.getModifiersEx(), caretPosition);
-//                }
-//                codeArea.revealCursor();
-//                keyEvent.consume();
-//                break;
-//            }
-//            case KeyEvent.VK_END: {
-//                CaretPosition caretPosition = codeArea.getCaretPosition();
-//                int bytesPerLine = codeArea.getBytesPerLine();
-//                CodeArea.ScrollPosition scrollPosition = codeArea.getScrollPosition();
-//                long dataSize = codeArea.getDataSize();
-//                if ((keyEvent.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) > 0) {
-//                    codeArea.setCaretPosition(codeArea.getDataSize());
-//                } else if (codeArea.getActiveSection() == Section.CODE_MATRIX) {
-//                    long newPosition = (((caretPosition.getDataPosition() + scrollPosition.getLineByteShift()) / bytesPerLine) + 1) * bytesPerLine - 1 - scrollPosition.getLineByteShift();
-//                    codeArea.setCaretPosition(newPosition < dataSize ? newPosition : dataSize, newPosition < dataSize ? codeArea.getCodeType().getMaxDigits() - 1 : 0);
-//                } else {
-//                    long newPosition = (((caretPosition.getDataPosition() + scrollPosition.getLineByteShift()) / bytesPerLine) + 1) * bytesPerLine - 1 - scrollPosition.getLineByteShift();
-//                    codeArea.setCaretPosition(newPosition < dataSize ? newPosition : dataSize);
-//                }
-//                sequenceBreak();
-//                codeArea.updateSelection(keyEvent.getModifiersEx(), caretPosition);
-//                codeArea.revealCursor();
-//                keyEvent.consume();
-//                break;
-//            }
-//            case KeyEvent.VK_PAGE_UP: {
-//                CaretPosition caretPosition = codeArea.getCaretPosition();
-//                int bytesStep = codeArea.getBytesPerLine() * codeArea.getLinesPerRect();
-//                CodeArea.ScrollPosition scrollPosition = codeArea.getScrollPosition();
-//                if (scrollPosition.getScrollLinePosition() > codeArea.getLinesPerRect()) {
-//                    scrollPosition.setScrollLinePosition(scrollPosition.getScrollLinePosition() - codeArea.getLinesPerRect());
-//                    codeArea.updateScrollBars();
-//                    codeArea.notifyScrolled();
-//                }
-//                if (caretPosition.getDataPosition() > 0) {
-//                    if (caretPosition.getDataPosition() >= bytesStep) {
-//                        codeArea.setCaretPosition(caretPosition.getDataPosition() - bytesStep, caretPosition.getCodeOffset());
-//                    } else if (caretPosition.getDataPosition() >= codeArea.getBytesPerLine()) {
-//                        codeArea.setCaretPosition(caretPosition.getDataPosition() % codeArea.getBytesPerLine(), caretPosition.getCodeOffset());
-//                    }
-//                    sequenceBreak();
-//                    codeArea.updateSelection(keyEvent.getModifiersEx(), caretPosition);
-//                }
-//                codeArea.revealCursor();
-//                keyEvent.consume();
-//                break;
-//            }
-//            case KeyEvent.VK_PAGE_DOWN: {
-//                CaretPosition caretPosition = codeArea.getCaretPosition();
-//                int bytesStep = codeArea.getBytesPerLine() * codeArea.getLinesPerRect();
-//                long dataSize = codeArea.getDataSize();
-//                CodeArea.ScrollPosition scrollPosition = codeArea.getScrollPosition();
-//                if (scrollPosition.getScrollLinePosition() < dataSize / codeArea.getBytesPerLine() - codeArea.getLinesPerRect() * 2) {
-//                    scrollPosition.setScrollLinePosition(scrollPosition.getScrollLinePosition() + codeArea.getLinesPerRect());
-//                    codeArea.updateScrollBars();
-//                    codeArea.notifyScrolled();
-//                }
-//                if (caretPosition.getDataPosition() < dataSize) {
-//                    if (caretPosition.getDataPosition() + bytesStep < dataSize) {
-//                        codeArea.setCaretPosition(caretPosition.getDataPosition() + bytesStep, caretPosition.getCodeOffset());
-//                    } else if (caretPosition.getDataPosition() + codeArea.getBytesPerLine() <= dataSize) {
-//                        long dataPosition = dataSize
-//                                - dataSize % codeArea.getBytesPerLine()
-//                                - ((caretPosition.getDataPosition() % codeArea.getBytesPerLine() <= dataSize % codeArea.getBytesPerLine()) ? 0 : codeArea.getBytesPerLine())
-//                                + (caretPosition.getDataPosition() % codeArea.getBytesPerLine());
-//                        codeArea.setCaretPosition(dataPosition, dataPosition == dataSize ? 0 : caretPosition.getCodeOffset());
-//                    }
-//                    sequenceBreak();
-//                    codeArea.updateSelection(keyEvent.getModifiersEx(), caretPosition);
-//                }
-//                codeArea.revealCursor();
-//                keyEvent.consume();
-//                break;
-//            }
-//            case KeyEvent.VK_INSERT: {
-//                if (codeArea.getEditationAllowed() == EditationAllowed.ALLOWED) {
-//                    codeArea.setEditationMode(codeArea.getEditationMode() == EditationMode.INSERT ? EditationMode.OVERWRITE : EditationMode.INSERT);
-//                }
-//                keyEvent.consume();
-//                break;
-//            }
-//            case KeyEvent.VK_TAB: {
-//                if (codeArea.getViewMode() == ViewMode.DUAL) {
-//                    Section activeSection = codeArea.getActiveSection() == Section.CODE_MATRIX ? Section.TEXT_PREVIEW : Section.CODE_MATRIX;
-//                    if (activeSection == Section.TEXT_PREVIEW) {
-//                        codeArea.getCaretPosition().setCodeOffset(0);
-//                    }
-//                    codeArea.setActiveSection(activeSection);
-//                    codeArea.revealCursor();
-//                    codeArea.repaint();
-//                }
-//                keyEvent.consume();
-//                break;
-//            }
+        switch (keyEvent.getKeyCode()) {
+            case KeyEvent.VK_LEFT: {
+                move(keyEvent.getModifiersEx(), MovementDirection.LEFT);
+                undoSequenceBreak();
+                revealCursor();
+                keyEvent.consume();
+                break;
+            }
+            case KeyEvent.VK_RIGHT: {
+                move(keyEvent.getModifiersEx(), MovementDirection.RIGHT);
+                undoSequenceBreak();
+                revealCursor();
+                keyEvent.consume();
+                break;
+            }
+            case KeyEvent.VK_UP: {
+                move(keyEvent.getModifiersEx(), MovementDirection.UP);
+                undoSequenceBreak();
+                revealCursor();
+                keyEvent.consume();
+                break;
+            }
+            case KeyEvent.VK_DOWN: {
+                move(keyEvent.getModifiersEx(), MovementDirection.DOWN);
+                undoSequenceBreak();
+                revealCursor();
+                keyEvent.consume();
+                break;
+            }
+            case KeyEvent.VK_HOME: {
+                if ((keyEvent.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) > 0) {
+                    move(keyEvent.getModifiersEx(), MovementDirection.DOC_START);
+                } else {
+                    move(keyEvent.getModifiersEx(), MovementDirection.ROW_START);
+                }
+                undoSequenceBreak();
+                revealCursor();
+                keyEvent.consume();
+                break;
+            }
+            case KeyEvent.VK_END: {
+                if ((keyEvent.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) > 0) {
+                    move(keyEvent.getModifiersEx(), MovementDirection.DOC_END);
+                } else {
+                    move(keyEvent.getModifiersEx(), MovementDirection.ROW_END);
+                }
+                undoSequenceBreak();
+                revealCursor();
+                keyEvent.consume();
+                break;
+            }
+            case KeyEvent.VK_PAGE_UP: {
+                scroll(ScrollingDirection.PAGE_UP);
+                move(keyEvent.getModifiersEx(), MovementDirection.PAGE_UP);
+                undoSequenceBreak();
+                revealCursor();
+                keyEvent.consume();
+                break;
+            }
+            case KeyEvent.VK_PAGE_DOWN: {
+                scroll(ScrollingDirection.PAGE_DOWN);
+                move(keyEvent.getModifiersEx(), MovementDirection.PAGE_DOWN);
+                undoSequenceBreak();
+                keyEvent.consume();
+                break;
+            }
+            case KeyEvent.VK_INSERT: {
+                EditationMode editationMode = ((EditationModeCapable) codeArea.getWorker()).getEditationMode();
+                switch (editationMode) {
+                    case INSERT: {
+                        ((EditationModeCapable) codeArea.getWorker()).setEditationMode(EditationMode.OVERWRITE);
+                        keyEvent.consume();
+                        break;
+                    }
+                    case OVERWRITE: {
+                        ((EditationModeCapable) codeArea.getWorker()).setEditationMode(EditationMode.INSERT);
+                        keyEvent.consume();
+                        break;
+                    }
+                }
+                break;
+            }
+            case KeyEvent.VK_TAB: {
+                if (viewModeSupported && ((ViewModeCapable) codeArea.getWorker()).getViewMode() == CodeAreaViewMode.DUAL) {
+                    move(keyEvent.getModifiersEx(), MovementDirection.SWITCH_SECTION);
+                    undoSequenceBreak();
+                    revealCursor();
+                    keyEvent.consume();
+                }
+                break;
+            }
 //            case KeyEvent.VK_DELETE: {
 //                deletePressed();
 //                keyEvent.consume();
@@ -374,7 +265,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
 //                    }
 //                }
 //            }
-//        }
+        }
     }
 
     @Override
@@ -596,9 +487,9 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
 //    }
     @Override
     public void delete() {
-//        if (!codeArea.isEditable()) {
-//            return;
-//        }
+        if (!((EditationModeCapable) codeArea.getWorker()).isEditable()) {
+            return;
+        }
 
         try {
             undoHandler.execute(new DeleteSelectionCommand(codeArea));
@@ -625,19 +516,21 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
 
     @Override
     public void copyAsCode() {
-//        SelectionRange selection = codeArea.getSelection();
-//        if (selection != null) {
-//            long first = selection.getFirst();
-//            long last = selection.getLast();
-//
-//            BinaryData copy = codeArea.getData().copy(first, last - first + 1);
-//
-//            CodeDataClipboardData binaryData = new CodeDataClipboardData(copy);
-//            setClipboardContent(binaryData);
-//        }
+        SelectionRange selection = ((SelectionCapable) codeArea.getWorker()).getSelection();
+        if (!selection.isEmpty()) {
+            long first = selection.getFirst();
+            long last = selection.getLast();
+
+            BinaryData copy = codeArea.getData().copy(first, last - first + 1);
+
+            CodeType codeType = ((CodeTypeCapable) codeArea.getWorker()).getCodeType();
+            CodeCharactersCase charactersCase = ((CodeCharactersCaseCapable) codeArea.getWorker()).getCodeCharactersCase();
+            CodeAreaUtils.CodeDataClipboardData binaryData = new CodeAreaUtils.CodeDataClipboardData(copy, binaryDataFlavor, codeType, charactersCase);
+            setClipboardContent(binaryData);
+        }
     }
 
-    private void setClipboardContent(CodeAreaUtils.ClipboardData content) {
+    private void setClipboardContent(@Nonnull CodeAreaUtils.ClipboardData content) {
         clearClipboardData();
         try {
             currentClipboardData = content;
@@ -657,10 +550,10 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
 
     @Override
     public void cut() {
-//        if (!codeArea.isEditable()) {
-//            return;
-//        }
-//
+        if (!((EditationModeCapable) codeArea.getWorker()).isEditable()) {
+            return;
+        }
+
 //        SelectionRange selection = codeArea.getSelection();
 //        if (selection != null) {
 //            copy();
@@ -676,10 +569,10 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
 
     @Override
     public void paste() {
-//        if (!codeArea.isEditable()) {
-//            return;
-//        }
-//
+        if (!((EditationModeCapable) codeArea.getWorker()).isEditable()) {
+            return;
+        }
+
 //        try {
 //            if (!clipboard.isDataFlavorAvailable(deltahexDataFlavor) && !clipboard.isDataFlavorAvailable(DataFlavor.getTextPlainUnicodeFlavor())) {
 //                return;
@@ -836,10 +729,10 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
 
     @Override
     public void pasteFromCode() {
-//        if (!codeArea.isEditable()) {
-//            return;
-//        }
-//
+        if (!((EditationModeCapable) codeArea.getWorker()).isEditable()) {
+            return;
+        }
+
 //        try {
 //            if (!clipboard.isDataFlavorAvailable(deltahexDataFlavor) && !clipboard.isDataFlavorAvailable(DataFlavor.getTextPlainUnicodeFlavor())) {
 //                return;
