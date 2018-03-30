@@ -119,6 +119,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     private BasicBackgroundPaintMode backgroundPaintMode;
     private boolean showMirrorCursor;
 
+    private int codeLastCharPos;
     private int previewCharPos;
     private int previewRelativeX;
     private int visibleCharStart;
@@ -227,6 +228,12 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         charactersPerRect = computeCharactersPerRectangle();
 
         // Compute first and last visible character of the code area
+        if (viewMode != CodeAreaViewMode.TEXT_PREVIEW) {
+            codeLastCharPos = bytesPerRow * (codeType.getMaxDigitsForByte() + 1) - 1;
+        } else {
+            codeLastCharPos = 0;
+        }
+
         if (viewMode == CodeAreaViewMode.DUAL) {
             previewCharPos = bytesPerRow * (codeType.getMaxDigitsForByte() + 1);
         } else {
@@ -451,7 +458,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         if (lineX >= dataViewX) {
             g.drawLine(lineX, 0, lineX, headerAreaHeight);
         }
-
 
         if (viewMode != CodeAreaViewMode.TEXT_PREVIEW) {
             int charactersPerRow = computeFirstCodeCharacterPos(bytesPerRow);
@@ -825,6 +831,12 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     @Nullable
     public Color getPositionBackgroundColor(long rowDataPosition, int byteOnRow, int charOnRow, int section) {
         boolean inSelection = selectionRange != null && selectionRange.isInSelection(rowDataPosition + byteOnRow);
+        if (inSelection && (section == BasicCodeAreaSection.CODE_MATRIX.getSection())) {
+            if (charOnRow == codeLastCharPos) {
+                inSelection = false;
+            }
+        }
+
         if (inSelection) {
             return section == caretPosition.getSection() ? colors.selectionBackground : colors.selectionMirrorBackground;
         }
@@ -1460,16 +1472,16 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     }
 
     @Override
-    public BasicCodeAreaZone getPositionZone(int x, int y) {
-        if (y <= headerAreaHeight) {
-            if (x < rowPositionAreaWidth) {
+    public BasicCodeAreaZone getPositionZone(int positionX, int positionY) {
+        if (positionY <= headerAreaHeight) {
+            if (positionX < rowPositionAreaWidth) {
                 return BasicCodeAreaZone.TOP_LEFT_CORNER;
             } else {
                 return BasicCodeAreaZone.HEADER;
             }
         }
 
-        if (x < rowPositionAreaWidth) {
+        if (positionX < rowPositionAreaWidth) {
             return BasicCodeAreaZone.ROW_POSITIONS;
         }
 
