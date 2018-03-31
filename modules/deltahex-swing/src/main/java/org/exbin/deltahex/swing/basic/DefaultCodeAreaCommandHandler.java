@@ -56,7 +56,7 @@ import org.exbin.deltahex.swing.capability.ScrollingCapable;
 /**
  * Default hexadecimal editor command handler.
  *
- * @version 0.2.0 2018/03/24
+ * @version 0.2.0 2018/03/31
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {

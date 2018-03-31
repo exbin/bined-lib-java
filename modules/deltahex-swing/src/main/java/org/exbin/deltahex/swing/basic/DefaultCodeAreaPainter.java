@@ -1258,7 +1258,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             case RIGHT: {
                 if (position.getSection() == BasicCodeAreaSection.CODE_MATRIX.getSection()) {
                     int codeOffset = position.getCodeOffset();
-                    if (codeOffset < codeType.getMaxDigitsForByte() - 1) {
+                    if (position.getDataPosition() < dataSize && codeOffset < codeType.getMaxDigitsForByte() - 1) {
                         target.setCodeOffset(codeOffset + 1);
                     } else if (position.getDataPosition() < dataSize) {
                         target.setDataPosition(position.getDataPosition() + 1);
@@ -1297,7 +1297,11 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                     target.setDataPosition(dataPosition + increment);
                 }
                 if (position.getSection() == BasicCodeAreaSection.CODE_MATRIX.getSection()) {
-                    target.setCodeOffset(codeType.getMaxDigitsForByte() - 1);
+                    if (target.getDataPosition() == dataSize - 1) {
+                        target.setCodeOffset(0);
+                    } else {
+                        target.setCodeOffset(codeType.getMaxDigitsForByte() - 1);
+                    }
                 }
                 break;
             }

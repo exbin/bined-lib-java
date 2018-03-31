@@ -15,7 +15,6 @@
  */
 package org.exbin.deltahex.swing;
 
-import org.exbin.deltahex.swing.basic.DefaultCodeAreaCommandHandler;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.ComponentAdapter;
@@ -36,13 +35,14 @@ import org.exbin.deltahex.CodeAreaControl;
 import org.exbin.deltahex.DataChangedListener;
 import org.exbin.deltahex.capability.SelectionCapable;
 import org.exbin.deltahex.swing.basic.DefaultCodeAreaWorker;
+import org.exbin.deltahex.swing.basic.DefaultCodeAreaCommandHandler;
 import org.exbin.deltahex.swing.capability.FontCapable;
 import org.exbin.utils.binary_data.BinaryData;
 
 /**
  * Hexadecimal viewer/editor component.
  *
- * @version 0.2.0 2018/03/29
+ * @version 0.2.0 2018/03/31
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeArea extends JComponent implements CodeAreaControl {
