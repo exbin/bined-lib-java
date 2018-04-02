@@ -175,6 +175,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         codeArea.add(scrollPanel);
         scrollPanel.setOpaque(false);
         scrollPanel.setViewportView(dataView);
+        scrollPanel.setViewportBorder(null);
         scrollPanel.getViewport().setOpaque(false);
 
         DefaultCodeAreaMouseListener codeAreaMouseListener = new DefaultCodeAreaMouseListener(codeArea, scrollPanel);
@@ -600,7 +601,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         g.setColor(colors.foreground);
         Rectangle compRect = new Rectangle();
         for (int row = 0; row <= rowsPerRect; row++) {
-            if (dataPosition >= dataSize) {
+            if (dataPosition > dataSize) {
                 break;
             }
 
