@@ -56,7 +56,7 @@ import org.exbin.deltahex.swing.capability.ScrollingCapable;
 /**
  * Default hexadecimal editor command handler.
  *
- * @version 0.2.0 2018/03/31
+ * @version 0.2.0 2018/04/03
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
@@ -425,7 +425,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
         long first = selection.getFirst();
         long last = selection.getLast();
-        ((EditableBinaryData) codeArea.getData()).remove(first, last - first + 1);
+        ((EditableBinaryData) data).remove(first, last - first + 1);
         codeArea.clearSelection();
         DefaultCodeAreaCaret caret = (DefaultCodeAreaCaret) ((CaretCapable) codeArea.getWorker()).getCaret();
         caret.setCaretPosition(first);
@@ -447,10 +447,15 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     public void copy() {
         SelectionRange selection = ((SelectionCapable) codeArea.getWorker()).getSelection();
         if (!selection.isEmpty()) {
+            BinaryData data = codeArea.getData();
+            if (data == null) {
+                return;
+            }
+
             long first = selection.getFirst();
             long last = selection.getLast();
 
-            BinaryData copy = codeArea.getData().copy(first, last - first + 1);
+            BinaryData copy = data.copy(first, last - first + 1);
 
             CodeAreaUtils.BinaryDataClipboardData binaryData = new CodeAreaUtils.BinaryDataClipboardData(copy, binaryDataFlavor);
             setClipboardContent(binaryData);
@@ -461,10 +466,15 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     public void copyAsCode() {
         SelectionRange selection = ((SelectionCapable) codeArea.getWorker()).getSelection();
         if (!selection.isEmpty()) {
+            BinaryData data = codeArea.getData();
+            if (data == null) {
+                return;
+            }
+
             long first = selection.getFirst();
             long last = selection.getLast();
 
-            BinaryData copy = codeArea.getData().copy(first, last - first + 1);
+            BinaryData copy = data.copy(first, last - first + 1);
 
             CodeType codeType = ((CodeTypeCapable) codeArea.getWorker()).getCodeType();
             CodeCharactersCase charactersCase = ((CodeCharactersCaseCapable) codeArea.getWorker()).getCodeCharactersCase();
@@ -524,8 +534,8 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                         DefaultCodeAreaCaret caret = (DefaultCodeAreaCaret) ((CaretCapable) codeArea.getWorker()).getCaret();
                         long dataPosition = caret.getDataPosition();
 
-                        BinaryData data = (BinaryData) object;
-                        long dataSize = data.getDataSize();
+                        BinaryData clipboardData = (BinaryData) object;
+                        long dataSize = clipboardData.getDataSize();
                         if (((EditationModeCapable) codeArea.getWorker()).getEditationMode() == EditationMode.OVERWRITE) {
                             long toRemove = dataSize;
                             if (dataPosition + toRemove > codeArea.getDataSize()) {
@@ -533,7 +543,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                             }
                             ((EditableBinaryData) codeArea.getData()).remove(dataPosition, toRemove);
                         }
-                        ((EditableBinaryData) codeArea.getData()).insert(dataPosition, data);
+                        ((EditableBinaryData) codeArea.getData()).insert(dataPosition, clipboardData);
                         codeArea.notifyDataChanged();
 
                         caret.setCaretPosition(caret.getDataPosition() + dataSize);
@@ -616,10 +626,10 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                         long dataPosition = caret.getDataPosition();
 
                         CodeType codeType = getCodeType();
-                        ByteArrayEditableData data = new ByteArrayEditableData();
-                        CodeAreaUtils.insertHexStringIntoData((String) insertedData, data, codeType);
+                        ByteArrayEditableData pastedData = new ByteArrayEditableData();
+                        CodeAreaUtils.insertHexStringIntoData((String) insertedData, pastedData, codeType);
 
-                        long length = data.getDataSize();
+                        long length = pastedData.getDataSize();
                         if (((EditationModeCapable) codeArea.getWorker()).getEditationMode() == EditationMode.OVERWRITE) {
                             long toRemove = length;
                             if (dataPosition + toRemove > codeArea.getDataSize()) {
@@ -627,7 +637,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                             }
                             ((EditableBinaryData) codeArea.getData()).remove(dataPosition, toRemove);
                         }
-                        ((EditableBinaryData) codeArea.getData()).insert(caret.getDataPosition(), data);
+                        ((EditableBinaryData) codeArea.getData()).insert(caret.getDataPosition(), pastedData);
                         codeArea.notifyDataChanged();
 
                         caret.setCaretPosition(caret.getDataPosition() + length);
@@ -660,12 +670,11 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
     @Override
     public void clearSelection() {
-        SelectionRange selection = ((SelectionCapable) codeArea.getWorker()).getSelection();
-        ((SelectionCapable) codeArea.getWorker()).setSelection(selection.getStart(), selection.getStart());
+        ((SelectionCapable) codeArea.getWorker()).clearSelection();
     }
 
     @Override
-    public void wheelScroll(int scrollSize, ScrollbarOrientation direction) {
+    public void wheelScroll(int scrollSize, @Nonnull ScrollbarOrientation direction) {
         scroll(ScrollingDirection.UP);
 
 //        CodeAreaScrollPosition scrollPosition = codeArea.getScrollPosition();

@@ -22,7 +22,7 @@ import javax.annotation.concurrent.Immutable;
  * Selection range is selection between two positions where begin represents
  * originating point and end of the selection can be before or after begin.
  *
- * @version 0.2.0 2018/02/09
+ * @version 0.2.0 2018/04/03
  * @author ExBin Project (http://exbin.org)
  */
 @Immutable
@@ -90,6 +90,10 @@ public class SelectionRange {
     public void setSelection(long start, long end) {
         setStart(start);
         setEnd(end);
+    }
+
+    public void clearSelection() {
+        end = start;
     }
 
     /**

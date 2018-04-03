@@ -24,6 +24,7 @@ import java.awt.event.KeyEvent;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Nonnull;
+import org.exbin.deltahex.BasicCodeAreaSection;
 import org.exbin.deltahex.CaretPosition;
 import org.exbin.deltahex.CodeAreaCaret;
 import org.exbin.deltahex.CodeAreaUtils;
@@ -33,6 +34,7 @@ import org.exbin.deltahex.CodeType;
 import org.exbin.deltahex.EditationMode;
 import org.exbin.deltahex.SelectionRange;
 import org.exbin.deltahex.capability.CaretCapable;
+import org.exbin.deltahex.capability.ClipboardCapable;
 import org.exbin.deltahex.capability.CodeCharactersCaseCapable;
 import org.exbin.deltahex.capability.CodeTypeCapable;
 import org.exbin.deltahex.capability.EditationModeCapable;
@@ -58,7 +60,7 @@ import org.exbin.utils.binary_data.BinaryData;
 /**
  * Command handler for undo/redo aware hexadecimal editor editing.
  *
- * @version 0.2.0 2018/03/29
+ * @version 0.2.0 2018/04/03
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
@@ -234,37 +236,37 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
                 }
                 break;
             }
-//            case KeyEvent.VK_DELETE: {
-//                deletePressed();
-//                keyEvent.consume();
-//                break;
-//            }
-//            case KeyEvent.VK_BACK_SPACE: {
-//                backSpacePressed();
-//                keyEvent.consume();
-//                break;
-//            }
-//            default: {
-//                if (codeArea.isHandleClipboard()) {
-//                    if ((keyEvent.getModifiers() & metaMask) > 0 && keyEvent.getKeyCode() == KeyEvent.VK_C) {
-//                        copy();
-//                        keyEvent.consume();
-//                        break;
-//                    } else if ((keyEvent.getModifiers() & metaMask) > 0 && keyEvent.getKeyCode() == KeyEvent.VK_X) {
-//                        cut();
-//                        keyEvent.consume();
-//                        break;
-//                    } else if ((keyEvent.getModifiers() & metaMask) > 0 && keyEvent.getKeyCode() == KeyEvent.VK_V) {
-//                        paste();
-//                        keyEvent.consume();
-//                        break;
-//                    } else if ((keyEvent.getModifiers() & metaMask) > 0 && keyEvent.getKeyCode() == KeyEvent.VK_A) {
-//                        codeArea.selectAll();
-//                        keyEvent.consume();
-//                        break;
-//                    }
-//                }
-//            }
+            case KeyEvent.VK_DELETE: {
+                deletePressed();
+                keyEvent.consume();
+                break;
+            }
+            case KeyEvent.VK_BACK_SPACE: {
+                backSpacePressed();
+                keyEvent.consume();
+                break;
+            }
+            default: {
+                if (((ClipboardCapable) codeArea.getWorker()).isHandleClipboard()) {
+                    if ((keyEvent.getModifiers() & metaMask) > 0 && keyEvent.getKeyCode() == KeyEvent.VK_C) {
+                        copy();
+                        keyEvent.consume();
+                        break;
+                    } else if ((keyEvent.getModifiers() & metaMask) > 0 && keyEvent.getKeyCode() == KeyEvent.VK_X) {
+                        cut();
+                        keyEvent.consume();
+                        break;
+                    } else if ((keyEvent.getModifiers() & metaMask) > 0 && keyEvent.getKeyCode() == KeyEvent.VK_V) {
+                        paste();
+                        keyEvent.consume();
+                        break;
+                    } else if ((keyEvent.getModifiers() & metaMask) > 0 && keyEvent.getKeyCode() == KeyEvent.VK_A) {
+                        codeArea.selectAll();
+                        keyEvent.consume();
+                        break;
+                    }
+                }
+            }
         }
     }
 
@@ -274,42 +276,18 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
         if (keyValue == KeyEvent.CHAR_UNDEFINED) {
             return;
         }
-//        if (!codeArea.isEditable()) {
-//            return;
-//        }
-//
-//        if (codeArea.getActiveSection() == Section.CODE_MATRIX) {
-//            long dataPosition = codeArea.getDataPosition();
-//            long dataSize = codeArea.getDataSize();
-//            int codeOffset = codeArea.getCodeOffset();
-//            CodeType codeType = codeArea.getCodeType();
-//            boolean validKey = false;
-//            switch (codeType) {
-//                case BINARY: {
-//                    validKey = keyValue >= '0' && keyValue <= '1';
-//                    break;
-//                }
-//                case DECIMAL: {
-//                    validKey = codeOffset == 0
-//                            ? keyValue >= '0' && keyValue <= '2'
-//                            : keyValue >= '0' && keyValue <= '9';
-//                    break;
-//                }
-//                case OCTAL: {
-//                    validKey = codeOffset == 0
-//                            ? keyValue >= '0' && keyValue <= '3'
-//                            : keyValue >= '0' && keyValue <= '7';
-//                    break;
-//                }
-//                case HEXADECIMAL: {
-//                    validKey = (keyValue >= '0' && keyValue <= '9')
-//                            || (keyValue >= 'a' && keyValue <= 'f') || (keyValue >= 'A' && keyValue <= 'F');
-//                    break;
-//                }
-//                default:
-//                    throw new IllegalStateException("Unexpected code type " + codeType.name());
-//            }
-//            if (validKey) {
+        if (!((EditationModeCapable) codeArea.getWorker()).isEditable()) {
+            return;
+        }
+
+        DefaultCodeAreaCaret caret = (DefaultCodeAreaCaret) ((CaretCapable) codeArea.getWorker()).getCaret();
+        CaretPosition caretPosition = caret.getCaretPosition();
+        if (caretPosition.getSection() == BasicCodeAreaSection.CODE_MATRIX.getSection()) {
+            long dataPosition = caretPosition.getDataPosition();
+            int codeOffset = caretPosition.getCodeOffset();
+            CodeType codeType = getCodeType();
+            boolean validKey = CodeAreaUtils.isValidCodeKeyValue(keyValue, codeOffset, codeType);
+            if (validKey) {
 //                DeleteSelectionCommand deleteSelectionCommand = null;
 //                if (codeArea.hasSelection()) {
 //                    long selectionStart = codeArea.getSelection().getFirst();
@@ -429,25 +407,25 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
 //                codeArea.notifyDataChanged();
 //                codeArea.revealCursor();
 //                codeArea.repaint();
-//            }
-//        }
+            }
+        }
     }
 
     @Override
     public void backSpacePressed() {
-//        if (!codeArea.isEditable()) {
-//            return;
-//        }
-//
+        if (!((EditationModeCapable) codeArea.getWorker()).isEditable()) {
+            return;
+        }
+
 //        deleteAction(BACKSPACE_CHAR);
     }
 
     @Override
     public void deletePressed() {
-//        if (!codeArea.isEditable()) {
-//            return;
-//        }
-//
+        if (!((EditationModeCapable) codeArea.getWorker()).isEditable()) {
+            return;
+        }
+
 //        deleteAction(DELETE_CHAR);
     }
 
@@ -485,6 +463,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
 //            codeArea.notifyDataChanged();
 //        }
 //    }
+
     @Override
     public void delete() {
         if (!((EditationModeCapable) codeArea.getWorker()).isEditable()) {
@@ -733,14 +712,14 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
             return;
         }
 
-//        try {
-//            if (!clipboard.isDataFlavorAvailable(deltahexDataFlavor) && !clipboard.isDataFlavorAvailable(DataFlavor.getTextPlainUnicodeFlavor())) {
-//                return;
-//            }
-//        } catch (IllegalStateException ex) {
-//            return;
-//        }
-//
+        try {
+            if (!clipboard.isDataFlavorAvailable(deltahexDataFlavor) && !clipboard.isDataFlavorAvailable(DataFlavor.getTextPlainUnicodeFlavor())) {
+                return;
+            }
+        } catch (IllegalStateException ex) {
+            return;
+        }
+
 //        try {
 //            if (clipboard.isDataFlavorAvailable(deltahexDataFlavor)) {
 //                paste();
@@ -884,12 +863,16 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
 
     @Override
     public void selectAll() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        long dataSize = codeArea.getDataSize();
+        if (dataSize > 0) {
+            ((SelectionCapable) codeArea.getWorker()).setSelection(0, dataSize - 1);
+        }
     }
 
     @Override
     public void clearSelection() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        SelectionRange selection = ((SelectionCapable) codeArea.getWorker()).getSelection();
+        ((SelectionCapable) codeArea.getWorker()).setSelection(selection.getStart(), selection.getStart());
     }
 
     public void updateSelection(boolean selecting, @Nonnull CaretPosition caretPosition) {
@@ -992,6 +975,15 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
         public boolean canUndo() {
             return true;
         }
+    }
+
+    @Nonnull
+    private CodeType getCodeType() {
+        if (codeTypeSupported) {
+            return ((CodeTypeCapable) codeArea.getWorker()).getCodeType();
+        }
+
+        return CodeType.HEXADECIMAL;
     }
 
     private void revealCursor() {

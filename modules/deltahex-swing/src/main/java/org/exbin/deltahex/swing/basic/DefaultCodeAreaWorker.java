@@ -441,6 +441,13 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
     }
 
     @Override
+    public void clearSelection() {
+        this.selection.clearSelection();
+        notifySelectionChanged();
+        repaint();
+    }
+
+    @Override
     public boolean hasSelection() {
         return !selection.isEmpty();
     }
