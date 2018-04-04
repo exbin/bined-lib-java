@@ -59,7 +59,7 @@ import org.exbin.utils.binary_data.EditableBinaryData;
 /**
  * Basic single jar swing version of Delta Hexadecimal editor.
  *
- * @version 0.2.0 2017/03/23
+ * @version 0.2.0 2018/04/04
  * @author ExBin Project (http://exbin.org)
  */
 public class DeltaHexEditorBasic extends javax.swing.JFrame {
@@ -636,7 +636,7 @@ public class DeltaHexEditorBasic extends javax.swing.JFrame {
         ((EditableBinaryData) codeArea.getData()).clear();
         codeArea.notifyDataChanged();
         codeArea.repaint();
-//        undoHandler.clear();
+        undoHandler.clear();
         updateUndoState();
         updateClipboardState();
         file = null;
@@ -652,7 +652,7 @@ public class DeltaHexEditorBasic extends javax.swing.JFrame {
                     ((EditableBinaryData) codeArea.getData()).loadFromStream(stream);
                     codeArea.notifyDataChanged();
                     codeArea.repaint();
-//                    undoHandler.clear();
+                    undoHandler.clear();
                     updateUndoState();
                     updateClipboardState();
                 } catch (FileNotFoundException ex) {
@@ -722,7 +722,7 @@ public class DeltaHexEditorBasic extends javax.swing.JFrame {
         } else {
             try (FileOutputStream stream = new FileOutputStream(file)) {
                 ((EditableBinaryData) codeArea.getData()).saveToStream(stream);
-//                undoHandler.setSyncPoint();
+                undoHandler.setSyncPoint();
             } catch (FileNotFoundException ex) {
                 Logger.getLogger(DeltaHexEditorBasic.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IOException ex) {
@@ -754,8 +754,8 @@ public class DeltaHexEditorBasic extends javax.swing.JFrame {
     }
 
     private void updateUndoState() {
-//        undoEditAction.setEnabled(undoHandler.canUndo());
-//        redoEditAction.setEnabled(undoHandler.canRedo());
+        undoEditAction.setEnabled(undoHandler.canUndo());
+        redoEditAction.setEnabled(undoHandler.canRedo());
     }
 
     private void updateClipboardState() {
@@ -798,7 +798,7 @@ public class DeltaHexEditorBasic extends javax.swing.JFrame {
     }
 
     public boolean isModified() {
-        return true; // undoHandler.getCommandPosition() != undoHandler.getSyncPoint();
+        return undoHandler.getCommandPosition() != undoHandler.getSyncPoint();
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

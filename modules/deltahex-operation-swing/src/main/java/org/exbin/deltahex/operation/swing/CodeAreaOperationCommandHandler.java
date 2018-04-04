@@ -34,6 +34,7 @@ import org.exbin.deltahex.CodeType;
 import org.exbin.deltahex.EditationMode;
 import org.exbin.deltahex.SelectionRange;
 import org.exbin.deltahex.capability.CaretCapable;
+import org.exbin.deltahex.capability.CharsetCapable;
 import org.exbin.deltahex.capability.ClipboardCapable;
 import org.exbin.deltahex.capability.CodeCharactersCaseCapable;
 import org.exbin.deltahex.capability.CodeTypeCapable;
@@ -43,7 +44,10 @@ import org.exbin.deltahex.capability.ViewModeCapable;
 import org.exbin.deltahex.operation.BinaryDataOperationException;
 import org.exbin.deltahex.operation.swing.command.CodeAreaCommand;
 import org.exbin.deltahex.operation.swing.command.CodeAreaCommandType;
+import org.exbin.deltahex.operation.swing.command.EditCharDataCommand;
+import org.exbin.deltahex.operation.swing.command.EditCodeDataCommand;
 import org.exbin.deltahex.operation.swing.command.EditDataCommand;
+import org.exbin.deltahex.operation.swing.command.HexCompoundCommand;
 import org.exbin.deltahex.operation.swing.command.RemoveDataCommand;
 import org.exbin.deltahex.operation.undo.BinaryDataUndoHandler;
 import org.exbin.deltahex.swing.CodeArea;
@@ -54,13 +58,14 @@ import org.exbin.deltahex.swing.ScrollingDirection;
 import org.exbin.deltahex.swing.basic.CodeAreaScrollPosition;
 import org.exbin.deltahex.swing.basic.DefaultCodeAreaCaret;
 import org.exbin.deltahex.swing.basic.DefaultCodeAreaCommandHandler;
+import static org.exbin.deltahex.swing.basic.DefaultCodeAreaCommandHandler.NO_MODIFIER;
 import org.exbin.deltahex.swing.capability.ScrollingCapable;
 import org.exbin.utils.binary_data.BinaryData;
 
 /**
  * Command handler for undo/redo aware hexadecimal editor editing.
  *
- * @version 0.2.0 2018/04/03
+ * @version 0.2.0 2018/04/04
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
@@ -284,129 +289,127 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
         CaretPosition caretPosition = caret.getCaretPosition();
         if (caretPosition.getSection() == BasicCodeAreaSection.CODE_MATRIX.getSection()) {
             long dataPosition = caretPosition.getDataPosition();
-            int codeOffset = caretPosition.getCodeOffset();
+            int startCodeOffset = caretPosition.getCodeOffset();
             CodeType codeType = getCodeType();
-            boolean validKey = CodeAreaUtils.isValidCodeKeyValue(keyValue, codeOffset, codeType);
+            boolean validKey = CodeAreaUtils.isValidCodeKeyValue(keyValue, startCodeOffset, codeType);
             if (validKey) {
-//                DeleteSelectionCommand deleteSelectionCommand = null;
-//                if (codeArea.hasSelection()) {
-//                    long selectionStart = codeArea.getSelection().getFirst();
-//                    deleteSelectionCommand = new DeleteSelectionCommand(codeArea);
-//                    codeArea.getCaret().setCaretPosition(selectionStart);
-//                }
-//
-//                int value;
-//                if (keyValue >= '0' && keyValue <= '9') {
-//                    value = keyValue - '0';
-//                } else {
-//                    value = Character.toLowerCase(keyValue) - 'a' + 10;
-//                }
-//
+                DeleteSelectionCommand deleteSelectionCommand = null;
+                if (codeArea.hasSelection()) {
+                    long selectionStart = ((SelectionCapable) codeArea.getWorker()).getSelection().getFirst();
+                    deleteSelectionCommand = new DeleteSelectionCommand(codeArea);
+                    ((CaretCapable) codeArea.getWorker()).getCaret().setCaretPosition(selectionStart);
+                }
+
+                int value;
+                if (keyValue >= '0' && keyValue <= '9') {
+                    value = keyValue - '0';
+                } else {
+                    value = Character.toLowerCase(keyValue) - 'a' + 10;
+                }
+
 //                if (codeArea.getEditationAllowed() == EditationAllowed.OVERWRITE_ONLY && codeArea.getEditationMode() == EditationMode.OVERWRITE && dataPosition == dataSize) {
 //                    return;
 //                }
-//
-//                if (editCommand != null && editCommand.wasReverted()) {
-//                    editCommand = null;
-//                }
-//
-//                if (codeArea.getEditationMode() == EditationMode.OVERWRITE) {
-//                    if (editCommand == null || !(editCommand instanceof EditCodeDataCommand) || editCommand.getCommandType() != EditDataCommand.EditCommandType.OVERWRITE) {
-//                        editCommand = new EditCodeDataCommand(codeArea, EditCodeDataCommand.EditCommandType.OVERWRITE, dataPosition, codeArea.getCodeOffset());
-//                        if (deleteSelectionCommand != null) {
-//                            HexCompoundCommand compoundCommand = new HexCompoundCommand(codeArea);
-//                            compoundCommand.appendCommand(deleteSelectionCommand);
-//                            try {
-//                                undoHandler.execute(compoundCommand);
-//                            } catch (BinaryDataOperationException ex) {
-//                                Logger.getLogger(CodeAreaOperationCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
-//                            }
-//                            compoundCommand.appendCommand(editCommand);
-//                        } else {
-//                            undoHandler.addCommand(editCommand);
-//                        }
-//                    }
-//
-//                    ((EditCodeDataCommand) editCommand).appendEdit((byte) value);
-//                } else {
-//                    if (editCommand == null || !(editCommand instanceof EditCodeDataCommand) || editCommand.getCommandType() != EditCodeDataCommand.EditCommandType.INSERT) {
-//                        editCommand = new EditCodeDataCommand(codeArea, EditCharDataCommand.EditCommandType.INSERT, dataPosition, codeArea.getCodeOffset());
-//                        if (deleteSelectionCommand != null) {
-//                            HexCompoundCommand compoundCommand = new HexCompoundCommand(codeArea);
-//                            compoundCommand.appendCommand(deleteSelectionCommand);
-//                            try {
-//                                undoHandler.execute(compoundCommand);
-//                            } catch (BinaryDataOperationException ex) {
-//                                Logger.getLogger(CodeAreaOperationCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
-//                            }
-//                            compoundCommand.appendCommand(editCommand);
-//                        } else {
-//                            undoHandler.addCommand(editCommand);
-//                        }
-//                    }
-//
-//                    ((EditCodeDataCommand) editCommand).appendEdit((byte) value);
-//                }
-//                codeArea.notifyDataChanged();
-//                codeArea.moveRight(CodeArea.NO_MODIFIER);
-//                codeArea.revealCursor();
-//            }
-//        } else {
-//            char keyChar = keyValue;
-//            boolean validKey = keyChar > 31 && keyChar != DELETE_CHAR && codeArea.isValidChar(keyValue);
-//            if (validKey) {
-//                CaretPosition caretPosition = codeArea.getCaretPosition();
-//
-//                if (editCommand != null && editCommand.wasReverted()) {
-//                    editCommand = null;
-//                }
-//                long dataPosition = caretPosition.getDataPosition();
-//                DeleteSelectionCommand deleteCommand = null;
-//                if (codeArea.hasSelection()) {
-//                    deleteCommand = new DeleteSelectionCommand(codeArea);
-//                }
-//
-//                if (codeArea.getEditationMode() == EditationMode.OVERWRITE) {
-//                    if (editCommand == null || !(editCommand instanceof EditCharDataCommand) || editCommand.getCommandType() != EditCodeDataCommand.EditCommandType.OVERWRITE) {
-//                        editCommand = new EditCharDataCommand(codeArea, EditCodeDataCommand.EditCommandType.OVERWRITE, dataPosition);
-//                        if (deleteCommand != null) {
-//                            HexCompoundCommand compoundCommand = new HexCompoundCommand(codeArea);
-//                            compoundCommand.appendCommand(deleteCommand);
-//                            try {
-//                                undoHandler.execute(compoundCommand);
-//                            } catch (BinaryDataOperationException ex) {
-//                                Logger.getLogger(CodeAreaOperationCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
-//                            }
-//                            compoundCommand.appendCommand(editCommand);
-//                        } else {
-//                            undoHandler.addCommand(editCommand);
-//                        }
-//                    }
-//
-//                    ((EditCharDataCommand) editCommand).appendEdit(keyChar);
-//                } else {
-//                    if (editCommand == null || !(editCommand instanceof EditCharDataCommand) || editCommand.getCommandType() != EditCodeDataCommand.EditCommandType.INSERT) {
-//                        editCommand = new EditCharDataCommand(codeArea, EditCodeDataCommand.EditCommandType.INSERT, dataPosition);
-//                        if (deleteCommand != null) {
-//                            HexCompoundCommand compoundCommand = new HexCompoundCommand(codeArea);
-//                            compoundCommand.appendCommand(deleteCommand);
-//                            try {
-//                                undoHandler.execute(compoundCommand);
-//                            } catch (BinaryDataOperationException ex) {
-//                                Logger.getLogger(CodeAreaOperationCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
-//                            }
-//                            compoundCommand.appendCommand(editCommand);
-//                        } else {
-//                            undoHandler.addCommand(editCommand);
-//                        }
-//                    }
-//
-//                    ((EditCharDataCommand) editCommand).appendEdit(keyChar);
-//                }
-//
-//                codeArea.notifyDataChanged();
-//                codeArea.revealCursor();
-//                codeArea.repaint();
+                if (editCommand != null && editCommand.wasReverted()) {
+                    editCommand = null;
+                }
+
+                int codeOffset = ((CaretCapable) codeArea.getWorker()).getCaret().getCaretPosition().getCodeOffset();
+                if (((EditationModeCapable) codeArea.getWorker()).getEditationMode() == EditationMode.OVERWRITE) {
+                    if (editCommand == null || !(editCommand instanceof EditCodeDataCommand) || editCommand.getCommandType() != EditDataCommand.EditCommandType.OVERWRITE) {
+                        editCommand = new EditCodeDataCommand(codeArea, EditCodeDataCommand.EditCommandType.OVERWRITE, dataPosition, codeOffset);
+                        if (deleteSelectionCommand != null) {
+                            HexCompoundCommand compoundCommand = new HexCompoundCommand(codeArea);
+                            compoundCommand.appendCommand(deleteSelectionCommand);
+                            try {
+                                undoHandler.execute(compoundCommand);
+                            } catch (BinaryDataOperationException ex) {
+                                Logger.getLogger(CodeAreaOperationCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                            compoundCommand.appendCommand(editCommand);
+                        } else {
+                            undoHandler.addCommand(editCommand);
+                        }
+                    }
+
+                    ((EditCodeDataCommand) editCommand).appendEdit((byte) value);
+                } else {
+                    if (editCommand == null || !(editCommand instanceof EditCodeDataCommand) || editCommand.getCommandType() != EditCodeDataCommand.EditCommandType.INSERT) {
+                        editCommand = new EditCodeDataCommand(codeArea, EditCharDataCommand.EditCommandType.INSERT, dataPosition, codeOffset);
+                        if (deleteSelectionCommand != null) {
+                            HexCompoundCommand compoundCommand = new HexCompoundCommand(codeArea);
+                            compoundCommand.appendCommand(deleteSelectionCommand);
+                            try {
+                                undoHandler.execute(compoundCommand);
+                            } catch (BinaryDataOperationException ex) {
+                                Logger.getLogger(CodeAreaOperationCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                            compoundCommand.appendCommand(editCommand);
+                        } else {
+                            undoHandler.addCommand(editCommand);
+                        }
+                    }
+
+                    ((EditCodeDataCommand) editCommand).appendEdit((byte) value);
+                }
+                codeArea.notifyDataChanged();
+                move(NO_MODIFIER, MovementDirection.RIGHT);
+                revealCursor();
+            }
+        } else {
+            char keyChar = keyValue;
+            boolean validKey = keyChar > 31 && keyChar != DELETE_CHAR && isValidChar(keyValue);
+            if (validKey) {
+                if (editCommand != null && editCommand.wasReverted()) {
+                    editCommand = null;
+                }
+                long dataPosition = ((CaretCapable) codeArea.getWorker()).getCaret().getCaretPosition().getDataPosition();
+                DeleteSelectionCommand deleteCommand = null;
+                if (codeArea.hasSelection()) {
+                    deleteCommand = new DeleteSelectionCommand(codeArea);
+                }
+
+                if (((EditationModeCapable) codeArea.getWorker()).getEditationMode() == EditationMode.OVERWRITE) {
+                    if (editCommand == null || !(editCommand instanceof EditCharDataCommand) || editCommand.getCommandType() != EditCodeDataCommand.EditCommandType.OVERWRITE) {
+                        editCommand = new EditCharDataCommand(codeArea, EditCodeDataCommand.EditCommandType.OVERWRITE, dataPosition);
+                        if (deleteCommand != null) {
+                            HexCompoundCommand compoundCommand = new HexCompoundCommand(codeArea);
+                            compoundCommand.appendCommand(deleteCommand);
+                            try {
+                                undoHandler.execute(compoundCommand);
+                            } catch (BinaryDataOperationException ex) {
+                                Logger.getLogger(CodeAreaOperationCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                            compoundCommand.appendCommand(editCommand);
+                        } else {
+                            undoHandler.addCommand(editCommand);
+                        }
+                    }
+
+                    ((EditCharDataCommand) editCommand).appendEdit(keyChar);
+                } else {
+                    if (editCommand == null || !(editCommand instanceof EditCharDataCommand) || editCommand.getCommandType() != EditCodeDataCommand.EditCommandType.INSERT) {
+                        editCommand = new EditCharDataCommand(codeArea, EditCodeDataCommand.EditCommandType.INSERT, dataPosition);
+                        if (deleteCommand != null) {
+                            HexCompoundCommand compoundCommand = new HexCompoundCommand(codeArea);
+                            compoundCommand.appendCommand(deleteCommand);
+                            try {
+                                undoHandler.execute(compoundCommand);
+                            } catch (BinaryDataOperationException ex) {
+                                Logger.getLogger(CodeAreaOperationCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                            compoundCommand.appendCommand(editCommand);
+                        } else {
+                            undoHandler.addCommand(editCommand);
+                        }
+                    }
+
+                    ((EditCharDataCommand) editCommand).appendEdit(keyChar);
+                }
+
+                codeArea.notifyDataChanged();
+                revealCursor();
+                codeArea.repaint();
             }
         }
     }
@@ -463,7 +466,6 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
 //            codeArea.notifyDataChanged();
 //        }
 //    }
-
     @Override
     public void delete() {
         if (!((EditationModeCapable) codeArea.getWorker()).isEditable()) {
@@ -975,6 +977,10 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
         public boolean canUndo() {
             return true;
         }
+    }
+
+    public boolean isValidChar(char value) {
+        return ((CharsetCapable) codeArea.getWorker()).getCharset().canEncode();
     }
 
     @Nonnull

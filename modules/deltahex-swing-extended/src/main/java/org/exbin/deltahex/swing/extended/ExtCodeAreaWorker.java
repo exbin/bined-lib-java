@@ -477,6 +477,13 @@ public class ExtCodeAreaWorker implements CodeAreaWorker, SelectionCapable, Care
     }
 
     @Override
+    public void clearSelection() {
+        this.selection.clearSelection();
+        notifySelectionChanged();
+        repaint();
+    }
+
+    @Override
     public boolean hasSelection() {
         return !selection.isEmpty();
     }
