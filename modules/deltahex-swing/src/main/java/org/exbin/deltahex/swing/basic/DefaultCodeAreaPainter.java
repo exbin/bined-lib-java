@@ -557,7 +557,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 //                        if (characterRenderingMode == CharacterRenderingMode.TOP_LEFT) {
 //                            g.drawChars(headerChars, characterOnRow, 1, headerX + characterOnRow * characterWidth, headerY);
 //                        } else {
-                        drawShiftedChar(g, headerChars, characterOnRow, characterWidth, headerX + characterOnRow * characterWidth, headerY, (characterWidth + 1 - currentCharWidth) >> 1);
+                        int positionX = headerX + characterOnRow * characterWidth + ((characterWidth + 1 - currentCharWidth) >> 1);
+                        drawShiftedChar(g, headerChars, characterOnRow, characterWidth, positionX, headerY);
 //                        }
                     } else {
                         renderOffset = characterOnRow;
@@ -732,7 +733,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                 CodeAreaUtils.byteToCharsCode(dataByte, codeType, rowCharacters, computeFirstCodeCharacterPos(byteOnRow), hexCharactersCase);
             }
             if (bytesPerRow > rowBytesLimit) {
-                Arrays.fill(rowCharacters, computePositionByte(rowBytesLimit), rowCharacters.length, ' ');
+                Arrays.fill(rowCharacters, computeFirstCodeCharacterPos(rowBytesLimit), rowCharacters.length, ' ');
             }
         }
 
@@ -1007,7 +1008,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 //                    if (characterRenderingMode == CharacterRenderingMode.TOP_LEFT) {
 //                        g.drawChars(rowCharacters, charOnRow, 1, rowPositionX + charOnRow * characterWidth, positionY);
 //                    } else {
-                    drawShiftedChar(g, rowCharacters, charOnRow, characterWidth, rowPositionX + charOnRow * characterWidth, positionY, (characterWidth + 1 - currentCharWidth) >> 1);
+                    int positionX = rowPositionX + charOnRow * characterWidth + ((characterWidth + 1 - currentCharWidth) >> 1);
+                    drawShiftedChar(g, rowCharacters, charOnRow, characterWidth, positionX, positionY);
 //                    }
                 } else {
                     renderOffset = charOnRow;
@@ -1518,16 +1520,16 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
      * @param drawnChars array of chars
      * @param charOffset index of target character in array
      * @param charWidthSpace default character width
-     * @param startX X position of drawing area start
+     * @param positionX X position of drawing area start
      * @param positionY Y position of drawing area start
      */
-    protected void drawCenteredChar(@Nonnull Graphics g, char[] drawnChars, int charOffset, int charWidthSpace, int startX, int positionY) {
+    protected void drawCenteredChar(@Nonnull Graphics g, char[] drawnChars, int charOffset, int charWidthSpace, int positionX, int positionY) {
         int charWidth = fontMetrics.charWidth(drawnChars[charOffset]);
-        drawShiftedChar(g, drawnChars, charOffset, charWidthSpace, startX, positionY, (charWidthSpace + 1 - charWidth) >> 1);
+        drawShiftedChar(g, drawnChars, charOffset, charWidthSpace, positionX + ((charWidthSpace + 1 - charWidth) >> 1), positionY);
     }
 
-    protected void drawShiftedChar(@Nonnull Graphics g, char[] drawnChars, int charOffset, int charWidthSpace, int startX, int positionY, int shift) {
-        g.drawChars(drawnChars, charOffset, 1, startX + shift, positionY);
+    protected void drawShiftedChar(@Nonnull Graphics g, char[] drawnChars, int charOffset, int charWidthSpace, int positionX, int positionY) {
+        g.drawChars(drawnChars, charOffset, 1, positionX, positionY);
     }
 
     private void buildCharMapping(@Nonnull Charset charset) {
