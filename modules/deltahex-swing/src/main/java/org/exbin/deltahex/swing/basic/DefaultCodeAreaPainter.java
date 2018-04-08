@@ -947,7 +947,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         int positionY = rowPositionY + rowHeight - subFontSpace;
 
         Color renderColor = null;
-        g.setColor(colors.foreground);
 //        Rectangle dataViewRectangle = codeArea.getDataViewRectangle();
 //        g.drawString("[" + String.valueOf(dataViewRectangle.x) + "," + String.valueOf(dataViewRectangle.y) + "," + String.valueOf(dataViewRectangle.width) + "," + String.valueOf(dataViewRectangle.height) + "]", linePositionX, positionY);
 
@@ -955,6 +954,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 //        int positionY = rowPositionY + paintData.rowHeight - codeArea.getSubFontSpace();
 //
         int renderOffset = visibleCharStart;
+        Color color = null;
         for (int charOnRow = visibleCharStart; charOnRow < visibleCharEnd; charOnRow++) {
             int section;
             int byteOnRow;
@@ -968,7 +968,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             boolean sequenceBreak = false;
             boolean nativeWidth = true;
 
-            Color color = getPositionTextColor(rowDataPosition, byteOnRow, charOnRow, section);
+            color = getPositionTextColor(rowDataPosition, byteOnRow, charOnRow, section);
             if (!CodeAreaSwingUtils.areSameColors(color, renderColor)) {
                 sequenceBreak = true;
             }
@@ -998,7 +998,13 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             if (!nativeWidth) {
                 sequenceBreak = true;
             }
+
             if (sequenceBreak) {
+                if (!CodeAreaSwingUtils.areSameColors(color, renderColor)) {
+                    renderColor = color;
+                    g.setColor(color != null ? color : colors.foreground);
+                }
+
                 if (renderOffset < charOnRow) {
                     renderCharSequence(g, renderOffset, charOnRow, rowPositionX, positionY);
                 }
@@ -1014,19 +1020,15 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                 } else {
                     renderOffset = charOnRow;
                 }
-
-                if (!CodeAreaSwingUtils.areSameColors(color, renderColor)) {
-                    renderColor = color;
-                    if (color != null) {
-                        g.setColor(color);
-                    } else {
-                        g.setColor(colors.foreground);
-                    }
-                }
             }
         }
 
         if (renderOffset < charactersPerRow) {
+            if (!CodeAreaSwingUtils.areSameColors(color, renderColor)) {
+                renderColor = color;
+                g.setColor(color != null ? color : colors.foreground);
+            }
+
             renderCharSequence(g, renderOffset, charactersPerRow, rowPositionX, positionY);
         }
     }
@@ -1300,7 +1302,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                     target.setDataPosition(dataPosition + increment);
                 }
                 if (position.getSection() == BasicCodeAreaSection.CODE_MATRIX.getSection()) {
-                    if (target.getDataPosition() == dataSize - 1) {
+                    if (target.getDataPosition() == dataSize) {
                         target.setCodeOffset(0);
                     } else {
                         target.setCodeOffset(codeType.getMaxDigitsForByte() - 1);
