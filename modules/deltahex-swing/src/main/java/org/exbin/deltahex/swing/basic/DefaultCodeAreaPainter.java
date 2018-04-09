@@ -69,7 +69,7 @@ import org.exbin.deltahex.capability.RowWrappingCapable;
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2018/03/24
+ * @version 0.2.0 2018/04/09
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaPainter implements CodeAreaPainter {
@@ -946,15 +946,10 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     public void paintRowText(@Nonnull Graphics g, long rowDataPosition, int rowPositionX, int rowPositionY) {
         int positionY = rowPositionY + rowHeight - subFontSpace;
 
+        Color lastColor = null;
         Color renderColor = null;
-//        Rectangle dataViewRectangle = codeArea.getDataViewRectangle();
-//        g.drawString("[" + String.valueOf(dataViewRectangle.x) + "," + String.valueOf(dataViewRectangle.y) + "," + String.valueOf(dataViewRectangle.width) + "," + String.valueOf(dataViewRectangle.height) + "]", linePositionX, positionY);
 
-//    public void paintRowText(Graphics g, int rowPositionX, int rowPositionY, PaintDataCache paintData) {
-//        int positionY = rowPositionY + paintData.rowHeight - codeArea.getSubFontSpace();
-//
         int renderOffset = visibleCharStart;
-        Color color = null;
         for (int charOnRow = visibleCharStart; charOnRow < visibleCharEnd; charOnRow++) {
             int section;
             int byteOnRow;
@@ -965,58 +960,65 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                 byteOnRow = computePositionByte(charOnRow);
                 section = BasicCodeAreaSection.CODE_MATRIX.getSection();
             }
-            boolean sequenceBreak = false;
-            boolean nativeWidth = true;
 
-            color = getPositionTextColor(rowDataPosition, byteOnRow, charOnRow, section);
+            Color color = getPositionTextColor(rowDataPosition, byteOnRow, charOnRow, section);
+            if (color == null) {
+                color = colors.foreground;
+            }
+
+            boolean sequenceBreak = false;
             if (!CodeAreaSwingUtils.areSameColors(color, renderColor)) {
+                if (renderColor == null) {
+                    renderColor = color;
+                }
+
                 sequenceBreak = true;
             }
 
             int currentCharWidth = 0;
-//            if (characterRenderingMode != CharacterRenderingMode.LINE_AT_ONCE) {
             char currentChar = rowCharacters[charOnRow];
             if (currentChar == ' ' && renderOffset == charOnRow) {
                 renderOffset++;
                 continue;
             }
-            if (monospaceFont) { // characterRenderingMode == CharacterRenderingMode.AUTO &&
+
+            if (monospaceFont) {
                 // Detect if character is in unicode range covered by monospace fonts
                 if (CodeAreaSwingUtils.isMonospaceFullWidthCharater(currentChar)) {
                     currentCharWidth = characterWidth;
                 }
             }
 
+            boolean nativeWidth = true;
             if (currentCharWidth == 0) {
                 currentCharWidth = fontMetrics.charWidth(currentChar);
                 nativeWidth = currentCharWidth == characterWidth;
             }
-//            } else {
-//                currentCharWidth = characterWidth;
-//            }
 
             if (!nativeWidth) {
                 sequenceBreak = true;
             }
 
             if (sequenceBreak) {
-                if (!CodeAreaSwingUtils.areSameColors(color, renderColor)) {
-                    renderColor = color;
-                    g.setColor(color != null ? color : colors.foreground);
+                if (!CodeAreaSwingUtils.areSameColors(lastColor, renderColor)) {
+                    g.setColor(renderColor);
+                    lastColor = renderColor;
                 }
 
-                if (renderOffset < charOnRow) {
+                if (charOnRow > renderOffset) {
                     renderCharSequence(g, renderOffset, charOnRow, rowPositionX, positionY);
+                }
+
+                renderColor = color;
+                if (!CodeAreaSwingUtils.areSameColors(lastColor, renderColor)) {
+                    g.setColor(renderColor);
+                    lastColor = renderColor;
                 }
 
                 if (!nativeWidth) {
                     renderOffset = charOnRow + 1;
-//                    if (characterRenderingMode == CharacterRenderingMode.TOP_LEFT) {
-//                        g.drawChars(rowCharacters, charOnRow, 1, rowPositionX + charOnRow * characterWidth, positionY);
-//                    } else {
                     int positionX = rowPositionX + charOnRow * characterWidth + ((characterWidth + 1 - currentCharWidth) >> 1);
                     drawShiftedChar(g, rowCharacters, charOnRow, characterWidth, positionX, positionY);
-//                    }
                 } else {
                     renderOffset = charOnRow;
                 }
@@ -1024,9 +1026,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         }
 
         if (renderOffset < charactersPerRow) {
-            if (!CodeAreaSwingUtils.areSameColors(color, renderColor)) {
-                renderColor = color;
-                g.setColor(color != null ? color : colors.foreground);
+            if (!CodeAreaSwingUtils.areSameColors(lastColor, renderColor)) {
+                g.setColor(renderColor);
             }
 
             renderCharSequence(g, renderOffset, charactersPerRow, rowPositionX, positionY);
