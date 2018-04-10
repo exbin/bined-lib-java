@@ -59,7 +59,7 @@ import org.exbin.utils.binary_data.EditableBinaryData;
 /**
  * Basic single jar swing version of Delta Hexadecimal editor.
  *
- * @version 0.2.0 2018/04/04
+ * @version 0.2.0 2018/04/10
  * @author ExBin Project (http://exbin.org)
  */
 public class DeltaHexEditorBasic extends javax.swing.JFrame {

@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Nonnull;
+import org.exbin.deltahex.capability.CaretCapable;
 import org.exbin.deltahex.operation.BinaryDataCommand;
 import org.exbin.deltahex.operation.BinaryDataOperationException;
 import org.exbin.deltahex.operation.undo.BinaryDataUndoHandler;
@@ -29,7 +30,7 @@ import org.exbin.deltahex.swing.CodeArea;
 /**
  * Undo handler for hexadecimal editor.
  *
- * @version 0.2.0 2018/03/23
+ * @version 0.2.0 2018/04/10
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeAreaUndoHandler implements BinaryDataUndoHandler {
@@ -39,7 +40,7 @@ public class CodeAreaUndoHandler implements BinaryDataUndoHandler {
     private long usedSize;
     private long commandPosition;
     private long syncPointPosition = -1;
-    private final List<BinaryDataCommand> commands = new ArrayList<>();;
+    private final List<BinaryDataCommand> commands = new ArrayList<>();
     private final CodeArea codeArea;
     private final List<BinaryDataUndoUpdateListener> listeners = new ArrayList<>();
 
@@ -268,6 +269,8 @@ public class CodeAreaUndoHandler implements BinaryDataUndoHandler {
     }
 
     private void undoUpdated() {
+        codeArea.notifyDataChanged();
+        ((CaretCapable) codeArea.getWorker()).notifyCaretMoved();
         for (BinaryDataUndoUpdateListener listener : listeners) {
             listener.undoCommandPositionChanged();
         }
