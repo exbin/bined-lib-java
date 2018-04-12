@@ -23,13 +23,13 @@ import java.util.List;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import org.exbin.deltahex.BasicCodeAreaSection;
+import org.exbin.deltahex.BasicCodeAreaZone;
 import org.exbin.deltahex.CaretMovedListener;
 import org.exbin.deltahex.CaretPosition;
 import org.exbin.deltahex.CodeAreaCaretPosition;
-import org.exbin.deltahex.BasicCodeAreaSection;
-import org.exbin.deltahex.BasicCodeAreaZone;
-import org.exbin.deltahex.CodeCharactersCase;
 import org.exbin.deltahex.CodeAreaViewMode;
+import org.exbin.deltahex.CodeCharactersCase;
 import org.exbin.deltahex.CodeType;
 import org.exbin.deltahex.EditationMode;
 import org.exbin.deltahex.EditationModeChangedListener;
@@ -37,23 +37,23 @@ import org.exbin.deltahex.ScrollBarVisibility;
 import org.exbin.deltahex.ScrollingListener;
 import org.exbin.deltahex.SelectionChangedListener;
 import org.exbin.deltahex.SelectionRange;
-import org.exbin.deltahex.swing.CodeArea;
-import org.exbin.deltahex.swing.CodeAreaPainter;
-import org.exbin.deltahex.swing.CodeAreaWorker;
 import org.exbin.deltahex.capability.CaretCapable;
 import org.exbin.deltahex.capability.CharsetCapable;
 import org.exbin.deltahex.capability.ClipboardCapable;
+import org.exbin.deltahex.capability.CodeCharactersCaseCapable;
 import org.exbin.deltahex.capability.CodeTypeCapable;
 import org.exbin.deltahex.capability.EditationModeCapable;
-import org.exbin.deltahex.capability.ViewModeCapable;
-import org.exbin.deltahex.swing.capability.ScrollingCapable;
+import org.exbin.deltahex.capability.RowWrappingCapable;
 import org.exbin.deltahex.capability.SelectionCapable;
-import org.exbin.deltahex.capability.CodeCharactersCaseCapable;
+import org.exbin.deltahex.capability.ViewModeCapable;
+import org.exbin.deltahex.swing.CodeArea;
+import org.exbin.deltahex.swing.CodeAreaPainter;
+import org.exbin.deltahex.swing.CodeAreaWorker;
 import org.exbin.deltahex.swing.MovementDirection;
 import org.exbin.deltahex.swing.ScrollingDirection;
-import org.exbin.deltahex.swing.capability.FontCapable;
 import org.exbin.deltahex.swing.capability.BackgroundPaintCapable;
-import org.exbin.deltahex.capability.RowWrappingCapable;
+import org.exbin.deltahex.swing.capability.FontCapable;
+import org.exbin.deltahex.swing.capability.ScrollingCapable;
 
 /**
  * Code area component default worker.
@@ -117,6 +117,17 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
 
         caret = new DefaultCodeAreaCaret(codeArea);
         painter = new DefaultCodeAreaPainter(this);
+    }
+
+    @Nonnull
+    public static CodeAreaWorker.CodeAreaWorkerFactory createDefaultCodeAreaWorkerFactory() {
+        return new CodeAreaWorkerFactory() {
+            @Nonnull
+            @Override
+            public CodeAreaWorker createWorker(@Nonnull CodeArea codeArea) {
+                return new DefaultCodeAreaWorker(codeArea);
+            }
+        };
     }
 
     @Nonnull

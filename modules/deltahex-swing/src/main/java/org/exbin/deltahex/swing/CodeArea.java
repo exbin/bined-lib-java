@@ -34,15 +34,15 @@ import javax.swing.UIManager;
 import org.exbin.deltahex.CodeAreaControl;
 import org.exbin.deltahex.DataChangedListener;
 import org.exbin.deltahex.capability.SelectionCapable;
-import org.exbin.deltahex.swing.basic.DefaultCodeAreaWorker;
 import org.exbin.deltahex.swing.basic.DefaultCodeAreaCommandHandler;
+import org.exbin.deltahex.swing.basic.DefaultCodeAreaWorker;
 import org.exbin.deltahex.swing.capability.FontCapable;
 import org.exbin.utils.binary_data.BinaryData;
 
 /**
  * Hexadecimal viewer/editor component.
  *
- * @version 0.2.0 2018/03/31
+ * @version 0.2.0 2018/04/12
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeArea extends JComponent implements CodeAreaControl {
@@ -65,18 +65,16 @@ public class CodeArea extends JComponent implements CodeAreaControl {
     }
 
     /**
-     * TODO: Invalid, parameter instances cannot be created first, because they
-     * need code area parameter in constructor. Replace with factories.
+     * Creates new instance with provided command handler and worker factory
+     * methods.
      *
-     * Creates new instance with provided command handler and worker.
-     *
-     * @param worker code area worker or null for default worker
-     * @param commandHandler command handler or null for default handler
+     * @param workerFactory code area worker or null for default worker
+     * @param commandHandlerFactory command handler or null for default handler
      */
-    public CodeArea(@Nullable CodeAreaWorker worker, @Nullable CodeAreaCommandHandler commandHandler) {
+    public CodeArea(@Nullable CodeAreaWorker.CodeAreaWorkerFactory workerFactory, @Nullable CodeAreaCommandHandler.CodeAreaCommandHandlerFactory commandHandlerFactory) {
         super();
-        this.worker = worker == null ? new DefaultCodeAreaWorker(this) : worker;
-        this.commandHandler = commandHandler == null ? new DefaultCodeAreaCommandHandler(this) : commandHandler;
+        this.worker = workerFactory == null ? new DefaultCodeAreaWorker(this) : workerFactory.createWorker(this);
+        this.commandHandler = commandHandlerFactory == null ? new DefaultCodeAreaCommandHandler(this) : commandHandlerFactory.createCommandHandler(this);
         init();
     }
 

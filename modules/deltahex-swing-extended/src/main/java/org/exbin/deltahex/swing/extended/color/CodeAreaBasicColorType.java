@@ -15,10 +15,12 @@
  */
 package org.exbin.deltahex.swing.extended.color;
 
+import javax.annotation.Nonnull;
+
 /**
  * Enumeration of basic color types.
  *
- * @version 0.2.0 2017/04/14
+ * @version 0.2.0 2018/04/12
  * @author ExBin Project (http://exbin.org)
  */
 public enum CodeAreaBasicColorType implements CodeAreaColorType {
@@ -27,12 +29,13 @@ public enum CodeAreaBasicColorType implements CodeAreaColorType {
     SELECTION("basic.selection"),
     MIRROR_SELECTION("basic.mirror_selection");
 
-    private CodeAreaBasicColorType(String preferencesId) {
+    private final String preferencesId;
+
+    private CodeAreaBasicColorType(@Nonnull String preferencesId) {
         this.preferencesId = preferencesId;
     }
 
-    private final String preferencesId;
-
+    @Nonnull
     @Override
     public String getPreferencesId() {
         return preferencesId;

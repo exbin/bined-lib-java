@@ -15,22 +15,25 @@
  */
 package org.exbin.deltahex.swing.extended.color;
 
+import javax.annotation.Nonnull;
+
 /**
  * Enumeration of unprintable color types.
  *
- * @version 0.2.0 2017/04/14
+ * @version 0.2.0 2018/04/12
  * @author ExBin Project (http://exbin.org)
  */
 public enum CodeAreaUnprintablesColorType implements CodeAreaColorType {
 
     UNPRINTABLE("unprintable.color");
 
-    private CodeAreaUnprintablesColorType(String preferencesId) {
+    private final String preferencesId;
+
+    private CodeAreaUnprintablesColorType(@Nonnull String preferencesId) {
         this.preferencesId = preferencesId;
     }
 
-    private final String preferencesId;
-
+    @Nonnull
     @Override
     public String getPreferencesId() {
         return preferencesId;

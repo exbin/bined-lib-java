@@ -27,19 +27,14 @@ import java.nio.charset.Charset;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Nonnull;
-import org.exbin.deltahex.CaretPosition;
 import org.exbin.deltahex.BasicCodeAreaSection;
+import org.exbin.deltahex.CaretPosition;
 import org.exbin.deltahex.CodeAreaUtils;
 import org.exbin.deltahex.CodeAreaViewMode;
 import org.exbin.deltahex.CodeCharactersCase;
 import org.exbin.deltahex.CodeType;
 import org.exbin.deltahex.EditationMode;
 import org.exbin.deltahex.SelectionRange;
-import org.exbin.deltahex.swing.CodeArea;
-import org.exbin.deltahex.swing.CodeAreaCommandHandler;
-import org.exbin.utils.binary_data.BinaryData;
-import org.exbin.utils.binary_data.ByteArrayEditableData;
-import org.exbin.utils.binary_data.EditableBinaryData;
 import org.exbin.deltahex.capability.CaretCapable;
 import org.exbin.deltahex.capability.CharsetCapable;
 import org.exbin.deltahex.capability.ClipboardCapable;
@@ -48,15 +43,20 @@ import org.exbin.deltahex.capability.CodeTypeCapable;
 import org.exbin.deltahex.capability.EditationModeCapable;
 import org.exbin.deltahex.capability.SelectionCapable;
 import org.exbin.deltahex.capability.ViewModeCapable;
+import org.exbin.deltahex.swing.CodeArea;
+import org.exbin.deltahex.swing.CodeAreaCommandHandler;
 import org.exbin.deltahex.swing.CodeAreaWorker;
 import org.exbin.deltahex.swing.MovementDirection;
 import org.exbin.deltahex.swing.ScrollingDirection;
 import org.exbin.deltahex.swing.capability.ScrollingCapable;
+import org.exbin.utils.binary_data.BinaryData;
+import org.exbin.utils.binary_data.ByteArrayEditableData;
+import org.exbin.utils.binary_data.EditableBinaryData;
 
 /**
  * Default hexadecimal editor command handler.
  *
- * @version 0.2.0 2018/04/03
+ * @version 0.2.0 2018/04/12
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
@@ -111,6 +111,17 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         } catch (java.awt.HeadlessException ex) {
             Logger.getLogger(DefaultCodeAreaCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    @Nonnull
+    public static CodeAreaCommandHandler.CodeAreaCommandHandlerFactory createDefaultCodeAreaCommandHandlerFactory() {
+        return new CodeAreaCommandHandlerFactory() {
+            @Nonnull
+            @Override
+            public CodeAreaCommandHandler createCommandHandler(@Nonnull CodeArea codeArea) {
+                return new DefaultCodeAreaCommandHandler(codeArea);
+            }
+        };
     }
 
     @Override

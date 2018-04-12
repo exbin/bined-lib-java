@@ -116,6 +116,7 @@ public class ExtCodeAreaCaret implements CodeAreaCaret {
         resetBlink();
     }
 
+    @Override
     public void setCaretPosition(long dataPosition, int codeOffset) {
         caretPosition.setDataPosition(dataPosition);
         caretPosition.setCodeOffset(codeOffset);

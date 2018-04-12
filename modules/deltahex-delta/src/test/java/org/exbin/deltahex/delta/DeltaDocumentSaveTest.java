@@ -24,8 +24,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.exbin.utils.binary_data.BinaryData;
 import org.exbin.utils.binary_data.EditableBinaryData;
-import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Test;
 
 /**
  * Tests for delta document.

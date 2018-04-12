@@ -122,4 +122,10 @@ public interface CodeAreaCommandHandler {
     public enum ScrollbarOrientation {
         HORIZONTAL, VERTICAL
     }
+
+    interface CodeAreaCommandHandlerFactory {
+
+        @Nonnull
+        CodeAreaCommandHandler createCommandHandler(@Nonnull CodeArea codeArea);
+    }
 }

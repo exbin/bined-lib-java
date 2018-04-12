@@ -15,35 +15,8 @@
  */
 package org.exbin.deltahex.swing.extended;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Insets;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.Shape;
-import java.awt.Stroke;
-import org.exbin.deltahex.swing.extended.color.CodeAreaColorProfile;
-import java.nio.charset.Charset;
-import java.nio.charset.CharsetEncoder;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 import javax.annotation.Nonnull;
-import org.exbin.deltahex.BasicCodeAreaSection;
-import org.exbin.deltahex.CodeAreaUtils;
-import org.exbin.deltahex.EditationMode;
-import org.exbin.deltahex.CodeCharactersCase;
-import org.exbin.deltahex.ScrollBarVisibility;
-import org.exbin.deltahex.SelectionRange;
-import org.exbin.deltahex.CodeAreaViewMode;
-import org.exbin.deltahex.swing.CodeArea;
 import org.exbin.deltahex.swing.CodeAreaWorker;
-import org.exbin.deltahex.swing.basic.DefaultCodeAreaCaret;
-import org.exbin.deltahex.swing.basic.CodeAreaScrollPosition;
 import org.exbin.deltahex.swing.basic.DefaultCodeAreaPainter;
 
 /**

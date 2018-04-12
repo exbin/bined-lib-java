@@ -58,14 +58,13 @@ import org.exbin.deltahex.swing.ScrollingDirection;
 import org.exbin.deltahex.swing.basic.CodeAreaScrollPosition;
 import org.exbin.deltahex.swing.basic.DefaultCodeAreaCaret;
 import org.exbin.deltahex.swing.basic.DefaultCodeAreaCommandHandler;
-import static org.exbin.deltahex.swing.basic.DefaultCodeAreaCommandHandler.NO_MODIFIER;
 import org.exbin.deltahex.swing.capability.ScrollingCapable;
 import org.exbin.utils.binary_data.BinaryData;
 
 /**
  * Command handler for undo/redo aware hexadecimal editor editing.
  *
- * @version 0.2.0 2018/04/04
+ * @version 0.2.0 2018/04/12
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
@@ -133,6 +132,17 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
         } catch (java.awt.HeadlessException ex) {
             Logger.getLogger(CodeAreaOperationCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    @Nonnull
+    public static CodeAreaCommandHandler.CodeAreaCommandHandlerFactory createDefaultCodeAreaCommandHandlerFactory() {
+        return new CodeAreaCommandHandlerFactory() {
+            @Nonnull
+            @Override
+            public CodeAreaCommandHandler createCommandHandler(@Nonnull CodeArea codeArea) {
+                return new CodeAreaOperationCommandHandler(codeArea, new CodeAreaUndoHandler(codeArea));
+            }
+        };
     }
 
     private void updateCanPaste() {
@@ -353,7 +363,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
                     ((EditCodeDataCommand) editCommand).appendEdit((byte) value);
                 }
                 codeArea.notifyDataChanged();
-                move(NO_MODIFIER, MovementDirection.RIGHT);
+                move(DefaultCodeAreaCommandHandler.NO_MODIFIER, MovementDirection.RIGHT);
                 revealCursor();
             }
         } else {
