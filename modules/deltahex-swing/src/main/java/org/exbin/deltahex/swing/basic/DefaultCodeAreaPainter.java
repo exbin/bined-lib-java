@@ -69,7 +69,7 @@ import org.exbin.utils.binary_data.BinaryData;
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2018/04/09
+ * @version 0.2.0 2018/04/20
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaPainter implements CodeAreaPainter {
@@ -100,6 +100,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     private int componentHeight;
     private int dataViewX;
     private int dataViewY;
+    private int scrollPanelWidth;
+    private int scrollPanelHeight;
     private int dataViewWidth;
     private int dataViewHeight;
 
@@ -354,7 +356,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         }
 
         // TODO on resize only
-        scrollPanel.setBounds(getDataViewRectangle());
+        scrollPanel.setBounds(getScrollPanelRectangle());
         scrollPanel.revalidate();
     }
 
@@ -371,8 +373,10 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         rowPositionAreaWidth = characterWidth * (rowPositionLength + 1);
         dataViewX = rowPositionAreaWidth;
         dataViewY = headerAreaHeight;
-        dataViewWidth = componentWidth - rowPositionAreaWidth;
-        dataViewHeight = componentHeight - headerAreaHeight;
+        scrollPanelWidth = componentWidth - rowPositionAreaWidth;
+        scrollPanelHeight = componentHeight - headerAreaHeight;
+        dataViewWidth = scrollPanelWidth - getVerticalScrollBarSize();
+        dataViewHeight = scrollPanelHeight - getHorizontalScrollBarSize();
     }
 
     private void resetColors() {
@@ -1500,6 +1504,11 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     }
 
     @Nonnull
+    private Rectangle getScrollPanelRectangle() {
+        return new Rectangle(dataViewX, dataViewY, scrollPanelWidth, scrollPanelHeight);
+    }
+
+    @Nonnull
     public Rectangle getDataViewRectangle() {
         return new Rectangle(dataViewX, dataViewY, dataViewWidth, dataViewHeight);
     }
@@ -1589,13 +1598,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     }
 
     private int computeRowsPerPage() {
-        int visibleHeight;
-        if (scrollPanel.getHorizontalScrollBar().isVisible()) {
-            visibleHeight = dataViewHeight - scrollPanel.getHorizontalScrollBar().getHeight();
-        } else {
-            visibleHeight = dataViewHeight;
-        }
-        return rowHeight == 0 ? 0 : visibleHeight / rowHeight;
+        System.out.println(rowHeight == 0 ? 0 : dataViewHeight / rowHeight);
+        return rowHeight == 0 ? 0 : dataViewHeight / rowHeight;
     }
 
     private int computeBytesPerRow() {
@@ -1629,13 +1633,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     }
 
     private int computeCharactersPerPage() {
-        int visibleWidth;
-        if (scrollPanel.getVerticalScrollBar().isVisible()) {
-            visibleWidth = dataViewWidth - scrollPanel.getVerticalScrollBar().getWidth();
-        } else {
-            visibleWidth = dataViewWidth;
-        }
-        return characterWidth == 0 ? 0 : visibleWidth / characterWidth;
+        return characterWidth == 0 ? 0 : dataViewWidth / characterWidth;
     }
 
     @Override
@@ -1665,6 +1663,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         }
     }
 
+    @Nonnull
     private Rectangle getMainAreaRect() {
         return new Rectangle(rowPositionAreaWidth, headerAreaHeight, componentWidth - rowPositionAreaWidth - getVerticalScrollBarSize(), componentHeight - headerAreaHeight - getHorizontalScrollBarSize());
     }
