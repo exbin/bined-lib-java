@@ -465,7 +465,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         }
 
         if (viewMode != CodeAreaViewMode.TEXT_PREVIEW) {
-            int charactersPerRow = computeFirstCodeCharacterPos(bytesPerRow);
+            int visibleCharactersPerRow = computeFirstCodeCharacterPos(bytesPerRow);
             int headerX = dataViewX - scrollPosition.getScrollCharPosition() * characterWidth - scrollPosition.getScrollCharOffset();
             int headerY = rowHeight - subFontSpace;
 
@@ -473,15 +473,15 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             if (visibleHeaderCharStart < 0) {
                 visibleHeaderCharStart = 0;
             }
-            int visibleHeaderCharEnd = (dataViewWidth + (scrollPosition.getScrollCharPosition() + charactersPerRow) * characterWidth + scrollPosition.getScrollCharOffset()) / characterWidth;
-            if (visibleHeaderCharEnd > charactersPerRow) {
-                visibleHeaderCharEnd = charactersPerRow;
+            int visibleHeaderCharEnd = (dataViewWidth + (scrollPosition.getScrollCharPosition() + visibleCharactersPerRow) * characterWidth + scrollPosition.getScrollCharOffset()) / characterWidth;
+            if (visibleHeaderCharEnd > visibleCharactersPerRow) {
+                visibleHeaderCharEnd = visibleCharactersPerRow;
             }
             int visibleStart = computePositionByte(visibleHeaderCharStart);
             int visibleEnd = computePositionByte(visibleHeaderCharEnd - 1) + 1;
 
             g.setColor(colors.foreground);
-            char[] headerChars = new char[charactersPerRow];
+            char[] headerChars = new char[visibleCharactersPerRow];
             Arrays.fill(headerChars, ' ');
 
             boolean interleaving = false;
@@ -570,8 +570,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                 }
             }
 
-            if (renderOffset < charactersPerRow) {
-                g.drawChars(headerChars, renderOffset, charactersPerRow - renderOffset, headerX + renderOffset * characterWidth, headerY);
+            if (renderOffset < visibleCharactersPerRow) {
+                g.drawChars(headerChars, renderOffset, visibleCharactersPerRow - renderOffset, headerX + renderOffset * characterWidth, headerY);
             }
         }
 
@@ -1598,7 +1598,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     }
 
     private int computeRowsPerPage() {
-        System.out.println(rowHeight == 0 ? 0 : dataViewHeight / rowHeight);
         return rowHeight == 0 ? 0 : dataViewHeight / rowHeight;
     }
 
