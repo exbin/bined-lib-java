@@ -1,3 +1,0 @@
-rootProject.name = 'deltahex-highlight-swing'
-
-apply from: '../deltahex-java-modules-settings.gradle'

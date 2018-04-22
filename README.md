@@ -1,14 +1,14 @@
-Delta Hexadecimal Library
+BinEd Hexadecimal Library
 =========================
 
 Hexadecimal viewer/editor component library written in Java.
 
-Homepage: http://deltahex.exbin.org  
+Homepage: http://bined.exbin.org  
 
 Screenshot
 ----------
 
-![DeltaHex-Example Screenshot](images/example_screenshot.png?raw=true)
+![BinEd-Example Screenshot](images/example_screenshot.png?raw=true)
 
 Features
 --------

@@ -1,8 +1,0 @@
-rootProject.name = 'deltahex-javafx-example'
-
-if (rootProject.path == ':') {
-    include ':modules:deltahex-core'
-    include ':modules:deltahex-swing'
-}
-
-apply from: '../tools-settings.gradle'

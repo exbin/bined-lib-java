@@ -1,0 +1,3 @@
+rootProject.name = 'bined-core'
+
+apply from: '../bined-java-modules-settings.gradle'

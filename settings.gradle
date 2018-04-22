@@ -1,20 +1,20 @@
-rootProject.name = 'deltahex-java'
+rootProject.name = 'bined-java'
 
 include ":deps"
 
-include ":modules:deltahex-core"
-include ":modules:deltahex-delta"
-include ":modules:deltahex-swing"
-include ":modules:deltahex-swing-extended"
-include ":modules:deltahex-swt"
-include ":modules:deltahex-javafx"
-include ":modules:deltahex-operation"
-include ":modules:deltahex-operation-swing"
-include ":modules:deltahex-highlight-swing"
+include ":modules:bined-core"
+include ":modules:bined-delta"
+include ":modules:bined-swing"
+include ":modules:bined-swing-extended"
+include ":modules:bined-swt"
+include ":modules:bined-javafx"
+include ":modules:bined-operation"
+include ":modules:bined-operation-swing"
+include ":modules:bined-highlight-swing"
 
-include ":tools:deltahex-swing-example"
-include ":tools:deltahex-javafx-example"
-include ":tools:deltahex-editor-basic"
+include ":tools:bined-swing-example"
+include ":tools:bined-javafx-example"
+include ":tools:bined-editor-basic"
 
 File placeholder = file("deps/_placeholder")
 if (placeholder.exists()) {

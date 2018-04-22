@@ -1,0 +1,8 @@
+rootProject.name = 'bined-swing-extended'
+
+if (rootProject.path == ':') {
+    include ':modules:bined-core'
+    include ':modules:bined-swing'
+}
+
+apply from: '../bined-java-modules-settings.gradle'

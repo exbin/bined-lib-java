@@ -1,0 +1,8 @@
+rootProject.name = 'bined-javafx-example'
+
+if (rootProject.path == ':') {
+    include ':modules:bined-core'
+    include ':modules:bined-swing'
+}
+
+apply from: '../tools-settings.gradle'

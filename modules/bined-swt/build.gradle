@@ -1,0 +1,35 @@
+group = 'org.exbin.bined'
+ext.libraryName = 'BinEd SWT Library'
+ext.libraryDescription = 'Library for BinEd editor component'
+
+apply from: '../bined-java-modules.gradle'
+
+buildscript {
+    repositories {
+        mavenLocal()
+        jcenter()
+    }
+    dependencies {
+        classpath("at.bxm.gradleplugins:gradle-svntools-plugin:latest.integration")
+    }
+}
+
+if (!hasProperty('mainClass')) {
+    ext.mainClass = ''
+}
+
+repositories {
+    flatDir {
+        dirs "../../lib"
+    }
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    compile moduleDep('BinedJava', 'org.exbin.bined', 'bined-core')
+    compile moduleDep('ExbinUtilsJava', 'org.exbin.utils', 'exbin-binary_data')
+    compile group: 'org.eclipse.swt', name: 'org.eclipse.swt.gtk.linux.x86_64', version: '4.3'
+    testCompile group : 'junit', name: 'junit', version: '4.10'
+    testCompile project(path: moduleDepPath('BinedJava', 'bined-core'), configuration: 'tests')
+}

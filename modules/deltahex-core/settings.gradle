@@ -1,3 +1,0 @@
-rootProject.name = 'deltahex-core'
-
-apply from: '../deltahex-java-modules-settings.gradle'

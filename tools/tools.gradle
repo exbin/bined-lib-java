@@ -1,8 +1,8 @@
 // Shared tools build
 
 version = '0.2.0-SNAPSHOT'
-def repositoryName = "deltahex-java"
-def libraryUrl = 'http://deltahex.exbin.org'
+def repositoryName = "bined-java"
+def libraryUrl = 'http://bined.exbin.org'
 
 ext.depsExbinUtilsJava = [
     githubProfile: 'exbin',
@@ -10,7 +10,7 @@ ext.depsExbinUtilsJava = [
     version: '0.2.0-SNAPSHOT'
 ]
 
-ext.depsThis = 'DeltahexJava'
+ext.depsThis = 'BinedJava'
 
 buildscript {
     repositories {

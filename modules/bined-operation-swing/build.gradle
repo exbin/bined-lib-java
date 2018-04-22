@@ -1,0 +1,36 @@
+group = 'org.exbin.bined'
+ext.libraryName = 'BinEd Swing Operation Library'
+ext.libraryDescription = 'Library for hexadecimal editor operations'
+
+apply from: '../bined-java-modules.gradle'
+
+buildscript {
+    repositories {
+        mavenLocal()
+        jcenter()
+    }
+    if (!gradle.startParameter.taskNames.contains("offline")) {
+        dependencies {
+            classpath("at.bxm.gradleplugins:gradle-svntools-plugin:latest.integration")
+        }
+    }
+}
+
+if (!hasProperty('mainClass')) {
+    ext.mainClass = ''
+}
+
+repositories {
+    flatDir {
+        dirs "../../lib"
+    }
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    compile moduleDep('BinedJava', 'org.exbin.bined', 'bined-operation')
+    compile moduleDep('BinedJava', 'org.exbin.bined', 'bined-swing')
+    testCompile group : 'junit', name: 'junit', version: '4.10'
+    testCompile project(path: moduleDepPath('BinedJava', 'bined-core'), configuration: 'tests')
+}

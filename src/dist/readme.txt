@@ -1,9 +1,9 @@
-Delta Hexadecimal Library
+BinEd Hexadecimal Library
 =========================
 
 Hexadecimal viewer/editor component library written in Java.
 
-Homepage: http://deltahex.exbin.org  
+Homepage: http://bined.exbin.org  
 
 Features
 --------
@@ -28,5 +28,5 @@ Apache License, Version 2.0 - see LICENSE-2.0.txt
 Usage
 -----
 
-Please see deltahex-example application and sources.
+Please see bined-example application and sources.
 

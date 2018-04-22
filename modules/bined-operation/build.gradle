@@ -1,0 +1,36 @@
+group = 'org.exbin.bined'
+ext.libraryName = 'BinEd Operation Library'
+ext.libraryDescription = 'Library for hexadecimal editor operations'
+
+apply from: '../bined-java-modules.gradle'
+
+buildscript {
+    repositories {
+        mavenLocal()
+        jcenter()
+    }
+    if (!gradle.startParameter.taskNames.contains("offline")) {
+        dependencies {
+            classpath("at.bxm.gradleplugins:gradle-svntools-plugin:latest.integration")
+        }
+    }
+}
+
+if (!hasProperty('mainClass')) {
+    ext.mainClass = ''
+}
+
+repositories {
+    flatDir {
+        dirs "../../lib"
+    }
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    compile group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.2'
+
+    testCompile project(path: moduleDepPath('BinedJava', 'bined-core'), configuration: 'tests')
+    testCompile group : 'junit', name: 'junit', version: '4.10'
+}
