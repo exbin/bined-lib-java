@@ -15,36 +15,35 @@
  */
 package org.exbin.bined.swt;
 
-import org.eclipse.swt.events.KeyEvent;
+import java.awt.event.KeyEvent;
+import javax.annotation.Nonnull;
 
 /**
  * Interface for code area data manipulation.
  *
- * @version 0.1.2 2016/12/14
+ * @version 0.2.0 2018/04/22
  * @author ExBin Project (http://exbin.org)
  */
 public interface CodeAreaCommandHandler {
 
     /**
-     * Notifies command handler about caret movement.
-     *
-     * Useful for building combined undo actions.
+     * Notifies command handler about end of sequence of appendable commands.
      */
-    void caretMoved();
+    void undoSequenceBreak();
 
     /**
      * Keyboard key was pressed.
      *
      * @param keyEvent key event
      */
-    void keyPressed(KeyEvent keyEvent);
+    void keyPressed(@Nonnull KeyEvent keyEvent);
 
     /**
      * Keyboard key was typed.
      *
      * @param keyEvent key event
      */
-    void keyTyped(KeyEvent keyEvent);
+    void keyTyped(@Nonnull KeyEvent keyEvent);
 
     /**
      * Backspace key was pressed.
@@ -82,6 +81,16 @@ public interface CodeAreaCommandHandler {
     void paste();
 
     /**
+     * Expands selection to all data.
+     */
+    void selectAll();
+
+    /**
+     * Clears data selection.
+     */
+    void clearSelection();
+
+    /**
      * Pastes content of clipboard to cursor area analyzing string code.
      */
     void pasteFromCode();
@@ -92,4 +101,31 @@ public interface CodeAreaCommandHandler {
      * @return true if paste is possible
      */
     boolean canPaste();
+
+    /**
+     * Move caret with mouse event.
+     *
+     * @param positionX relative position X
+     * @param positionY relative position Y
+     * @param selecting selection selecting
+     */
+    void moveCaret(int positionX, int positionY, boolean selecting);
+
+    /**
+     * Performs scrolling.
+     *
+     * @param scrollSize number of scroll units (positive or negative)
+     * @param orientation scrollbar orientation
+     */
+    void wheelScroll(int scrollSize, @Nonnull ScrollbarOrientation orientation);
+
+    public enum ScrollbarOrientation {
+        HORIZONTAL, VERTICAL
+    }
+
+    interface CodeAreaCommandHandlerFactory {
+
+        @Nonnull
+        CodeAreaCommandHandler createCommandHandler(@Nonnull CodeArea codeArea);
+    }
 }

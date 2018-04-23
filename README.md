@@ -1,9 +1,9 @@
-BinEd Hexadecimal Library
-=========================
+BinEd Library
+=============
 
-Hexadecimal viewer/editor component library written in Java.
+Library for hexadecimal viewer/editor component written in Java.
 
-Homepage: http://bined.exbin.org  
+Homepage: http://bined.exbin.org/library  
 
 Screenshot
 ----------

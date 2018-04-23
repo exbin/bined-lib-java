@@ -66,8 +66,6 @@ import org.exbin.bined.CodeAreaControl;
 /**
  * Hexadecimal viewer/editor component.
  *
- * Also supports binary, octal and decimal codes.
- *
  * @version 0.2.0 2018/04/22
  * @author ExBin Project (http://exbin.org)
  */
@@ -78,10 +76,11 @@ public class CodeArea extends Composite implements CodeAreaControl {
 
     @Nonnull
     private CodeAreaWorker worker;
-
     @Nonnull
-    private CodeAreaPainter painter;
     private CodeAreaCommandHandler commandHandler;
+
+    private final List<DataChangedListener> dataChangedListeners = new ArrayList<>();
+
     private final CodeAreaCaret caret;
     private SelectionRange selection;
 

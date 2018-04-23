@@ -23,6 +23,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.plaf.basic.BasicBorders;
+import org.exbin.bined.capability.CodeTypeCapable;
 import org.exbin.bined.swing.CodeArea;
 import org.exbin.bined.swing.basic.BasicBackgroundPaintMode;
 import org.exbin.bined.swing.basic.DefaultCodeAreaWorker;
@@ -46,15 +47,9 @@ public class DecorationPanel extends javax.swing.JPanel {
         initComponents();
 
         backgroundModeComboBox.setSelectedIndex(((BackgroundPaintCapable) worker).getBackgroundPaintMode().ordinal());
-//        positionCodeTypeComboBox.setSelectedIndex(codeArea.getPositionCodeType().ordinal());
+//        positionCodeTypeComboBox.setSelectedIndex((((CodeTypeCapable) worker).getPositionCodeType().ordinal());
 //        lineNumbersBackgroundCheckBox.setSelected(codeArea.isLineNumberBackground());
 //        showLineNumbersCheckBox.setSelected(codeArea.isShowLineNumbers());
-
-//        int decorationMode = codeArea.getDecorationMode();
-//        decoratorHeaderLineCheckBox.setSelected((decorationMode & CodeArea.DECORATION_HEADER_LINE) > 0);
-//        decoratorLineNumLineCheckBox.setSelected((decorationMode & CodeArea.DECORATION_LINENUM_LINE) > 0);
-//        decoratorSplitLineCheckBox.setSelected((decorationMode & CodeArea.DECORATION_PREVIEW_LINE) > 0);
-//        decoratorBoxCheckBox.setSelected((decorationMode & CodeArea.DECORATION_BOX) > 0);
     }
 
     /**
@@ -73,15 +68,10 @@ public class DecorationPanel extends javax.swing.JPanel {
         positionCodeTypeLabel = new javax.swing.JLabel();
         lineNumbersBackgroundCheckBox = new javax.swing.JCheckBox();
         positionCodeTypeComboBox = new javax.swing.JComboBox<>();
-        linesPanel = new javax.swing.JPanel();
-        decoratorLineNumLineCheckBox = new javax.swing.JCheckBox();
-        decoratorSplitLineCheckBox = new javax.swing.JCheckBox();
-        decoratorBoxCheckBox = new javax.swing.JCheckBox();
-        decoratorHeaderLineCheckBox = new javax.swing.JCheckBox();
         borderTypeLabel = new javax.swing.JLabel();
         borderTypeComboBox = new javax.swing.JComboBox<>();
 
-        hexCharactersModeLabel.setText("Hex Chars Mode");
+        hexCharactersModeLabel.setText("Hex Characters Mode");
 
         backgroundModeLabel.setText("Background Mode");
 
@@ -117,61 +107,6 @@ public class DecorationPanel extends javax.swing.JPanel {
             }
         });
 
-        linesPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Lines"));
-
-        decoratorLineNumLineCheckBox.setText("LineNum Line");
-        decoratorLineNumLineCheckBox.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                decoratorLineNumLineCheckBoxItemStateChanged(evt);
-            }
-        });
-
-        decoratorSplitLineCheckBox.setText("Split Line");
-        decoratorSplitLineCheckBox.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                decoratorSplitLineCheckBoxItemStateChanged(evt);
-            }
-        });
-
-        decoratorBoxCheckBox.setText("Area Box");
-        decoratorBoxCheckBox.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                decoratorBoxCheckBoxItemStateChanged(evt);
-            }
-        });
-
-        decoratorHeaderLineCheckBox.setText("Header Line");
-        decoratorHeaderLineCheckBox.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                decoratorHeaderLineCheckBoxItemStateChanged(evt);
-            }
-        });
-
-        javax.swing.GroupLayout linesPanelLayout = new javax.swing.GroupLayout(linesPanel);
-        linesPanel.setLayout(linesPanelLayout);
-        linesPanelLayout.setHorizontalGroup(
-            linesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(linesPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(linesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(decoratorLineNumLineCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(decoratorSplitLineCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(decoratorBoxCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(decoratorHeaderLineCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
-        );
-        linesPanelLayout.setVerticalGroup(
-            linesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(linesPanelLayout.createSequentialGroup()
-                .addComponent(decoratorHeaderLineCheckBox)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(decoratorLineNumLineCheckBox)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(decoratorSplitLineCheckBox)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(decoratorBoxCheckBox))
-        );
-
         borderTypeLabel.setText("Border Type");
 
         borderTypeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "NONE", "EMPTY BORDER", "MARGIN BORDER", "BEVEL BORDER - RAISED", "BEVEL BORDER - LOWERED", "ETCHED BORDER - RAISED", "ETCHED BORDER - LOWERED", "LINE BORDER" }));
@@ -199,7 +134,6 @@ public class DecorationPanel extends javax.swing.JPanel {
                             .addComponent(borderTypeLabel)
                             .addComponent(lineNumbersBackgroundCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(backgroundModeComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(linesPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(borderTypeComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(hexCharactersModeComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(positionCodeTypeComboBox, javax.swing.GroupLayout.Alignment.TRAILING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -214,8 +148,6 @@ public class DecorationPanel extends javax.swing.JPanel {
                 .addComponent(backgroundModeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lineNumbersBackgroundCheckBox)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(linesPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(borderTypeLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -248,38 +180,6 @@ public class DecorationPanel extends javax.swing.JPanel {
         //        codeArea.setPositionCodeType(PositionCodeType.values()[positionCodeTypeComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_positionCodeTypeComboBoxActionPerformed
 
-    private void decoratorLineNumLineCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_decoratorLineNumLineCheckBoxItemStateChanged
-        //        int decorationMode = codeArea.getDecorationMode();
-        //        boolean selected = decoratorLineNumLineCheckBox.isSelected();
-        //        if (((decorationMode & CodeArea.DECORATION_LINENUM_LINE) > 0) != selected) {
-        //            codeArea.setDecorationMode(decorationMode ^ CodeArea.DECORATION_LINENUM_LINE);
-        //        }
-    }//GEN-LAST:event_decoratorLineNumLineCheckBoxItemStateChanged
-
-    private void decoratorSplitLineCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_decoratorSplitLineCheckBoxItemStateChanged
-        //        int decorationMode = codeArea.getDecorationMode();
-        //        boolean selected = decoratorSplitLineCheckBox.isSelected();
-        //        if (((decorationMode & CodeArea.DECORATION_PREVIEW_LINE) > 0) != selected) {
-        //            codeArea.setDecorationMode(decorationMode ^ CodeArea.DECORATION_PREVIEW_LINE);
-        //        }
-    }//GEN-LAST:event_decoratorSplitLineCheckBoxItemStateChanged
-
-    private void decoratorBoxCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_decoratorBoxCheckBoxItemStateChanged
-        //        int decorationMode = codeArea.getDecorationMode();
-        //        boolean selected = decoratorBoxCheckBox.isSelected();
-        //        if (((decorationMode & CodeArea.DECORATION_BOX) > 0) != selected) {
-        //            codeArea.setDecorationMode(decorationMode ^ CodeArea.DECORATION_BOX);
-        //        }
-    }//GEN-LAST:event_decoratorBoxCheckBoxItemStateChanged
-
-    private void decoratorHeaderLineCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_decoratorHeaderLineCheckBoxItemStateChanged
-        //        int decorationMode = codeArea.getDecorationMode();
-        //        boolean selected = decoratorHeaderLineCheckBox.isSelected();
-        //        if (((decorationMode & CodeArea.DECORATION_HEADER_LINE) > 0) != selected) {
-        //            codeArea.setDecorationMode(decorationMode ^ CodeArea.DECORATION_HEADER_LINE);
-        //        }
-    }//GEN-LAST:event_decoratorHeaderLineCheckBoxItemStateChanged
-
     private void borderTypeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_borderTypeComboBoxActionPerformed
         codeArea.setBorder(getBorderByType(borderTypeComboBox.getSelectedIndex()));
     }//GEN-LAST:event_borderTypeComboBoxActionPerformed
@@ -290,14 +190,9 @@ public class DecorationPanel extends javax.swing.JPanel {
     private javax.swing.JLabel backgroundModeLabel;
     private javax.swing.JComboBox<String> borderTypeComboBox;
     private javax.swing.JLabel borderTypeLabel;
-    private javax.swing.JCheckBox decoratorBoxCheckBox;
-    private javax.swing.JCheckBox decoratorHeaderLineCheckBox;
-    private javax.swing.JCheckBox decoratorLineNumLineCheckBox;
-    private javax.swing.JCheckBox decoratorSplitLineCheckBox;
     private javax.swing.JComboBox<String> hexCharactersModeComboBox;
     private javax.swing.JLabel hexCharactersModeLabel;
     private javax.swing.JCheckBox lineNumbersBackgroundCheckBox;
-    private javax.swing.JPanel linesPanel;
     private javax.swing.JComboBox<String> positionCodeTypeComboBox;
     private javax.swing.JLabel positionCodeTypeLabel;
     // End of variables declaration//GEN-END:variables

@@ -32,7 +32,6 @@
                           <Component id="borderTypeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="lineNumbersBackgroundCheckBox" alignment="0" max="32767" attributes="0"/>
                           <Component id="backgroundModeComboBox" alignment="0" max="32767" attributes="0"/>
-                          <Component id="linesPanel" alignment="0" max="32767" attributes="0"/>
                           <Component id="borderTypeComboBox" alignment="0" max="32767" attributes="0"/>
                           <Component id="hexCharactersModeComboBox" alignment="0" max="32767" attributes="0"/>
                           <Component id="positionCodeTypeComboBox" alignment="1" max="32767" attributes="0"/>
@@ -53,8 +52,6 @@
               <EmptySpace max="-2" attributes="0"/>
               <Component id="lineNumbersBackgroundCheckBox" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="linesPanel" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
               <Component id="borderTypeLabel" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="borderTypeComboBox" min="-2" max="-2" attributes="0"/>
@@ -74,7 +71,7 @@
   <SubComponents>
     <Component class="javax.swing.JLabel" name="hexCharactersModeLabel">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Hex Chars Mode"/>
+        <Property name="text" type="java.lang.String" value="Hex Characters Mode"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="backgroundModeLabel">
@@ -147,79 +144,6 @@
         <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
       </AuxValues>
     </Component>
-    <Container class="javax.swing.JPanel" name="linesPanel">
-      <Properties>
-        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-          <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-            <TitledBorder title="Lines"/>
-          </Border>
-        </Property>
-      </Properties>
-
-      <Layout>
-        <DimensionLayout dim="0">
-          <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" alignment="0" attributes="0">
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="decoratorLineNumLineCheckBox" alignment="0" max="32767" attributes="0"/>
-                      <Component id="decoratorSplitLineCheckBox" alignment="0" max="32767" attributes="0"/>
-                      <Component id="decoratorBoxCheckBox" alignment="0" max="32767" attributes="0"/>
-                      <Component id="decoratorHeaderLineCheckBox" alignment="0" max="32767" attributes="0"/>
-                  </Group>
-                  <EmptySpace max="-2" attributes="0"/>
-              </Group>
-          </Group>
-        </DimensionLayout>
-        <DimensionLayout dim="1">
-          <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" alignment="0" attributes="0">
-                  <Component id="decoratorHeaderLineCheckBox" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Component id="decoratorLineNumLineCheckBox" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Component id="decoratorSplitLineCheckBox" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Component id="decoratorBoxCheckBox" min="-2" max="-2" attributes="0"/>
-              </Group>
-          </Group>
-        </DimensionLayout>
-      </Layout>
-      <SubComponents>
-        <Component class="javax.swing.JCheckBox" name="decoratorLineNumLineCheckBox">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="LineNum Line"/>
-          </Properties>
-          <Events>
-            <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="decoratorLineNumLineCheckBoxItemStateChanged"/>
-          </Events>
-        </Component>
-        <Component class="javax.swing.JCheckBox" name="decoratorSplitLineCheckBox">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Split Line"/>
-          </Properties>
-          <Events>
-            <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="decoratorSplitLineCheckBoxItemStateChanged"/>
-          </Events>
-        </Component>
-        <Component class="javax.swing.JCheckBox" name="decoratorBoxCheckBox">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Area Box"/>
-          </Properties>
-          <Events>
-            <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="decoratorBoxCheckBoxItemStateChanged"/>
-          </Events>
-        </Component>
-        <Component class="javax.swing.JCheckBox" name="decoratorHeaderLineCheckBox">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Header Line"/>
-          </Properties>
-          <Events>
-            <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="decoratorHeaderLineCheckBoxItemStateChanged"/>
-          </Events>
-        </Component>
-      </SubComponents>
-    </Container>
     <Component class="javax.swing.JLabel" name="borderTypeLabel">
       <Properties>
         <Property name="text" type="java.lang.String" value="Border Type"/>
