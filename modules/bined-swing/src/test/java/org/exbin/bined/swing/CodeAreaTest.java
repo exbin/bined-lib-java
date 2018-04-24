@@ -47,7 +47,7 @@ public class CodeAreaTest {
     @Test
     public void testDeleteAll() {
         CodeArea codeArea = new CodeArea();
-        codeArea.setData(getSampleData(SAMPLE_ALLBYTES));
+        codeArea.setSourceData(getSampleData(SAMPLE_ALLBYTES));
         codeArea.selectAll();
         codeArea.delete();
 
@@ -58,7 +58,7 @@ public class CodeAreaTest {
     public void testCopyPasteInOverwriteMode() {
         CodeArea codeArea = new CodeArea();
         EditableBinaryData sampleData = getSampleData(SAMPLE_ALLBYTES);
-        codeArea.setData(sampleData);
+        codeArea.setSourceData(sampleData);
         long dataSize = sampleData.getDataSize();
         codeArea.selectAll();
         codeArea.copy();
@@ -73,7 +73,7 @@ public class CodeAreaTest {
         CodeArea codeArea = new CodeArea();
         ((EditationModeCapable) codeArea.getWorker()).setEditationMode(EditationMode.INSERT);
         EditableBinaryData sampleData = getSampleData(SAMPLE_ALLBYTES);
-        codeArea.setData(sampleData);
+        codeArea.setSourceData(sampleData);
         long dataSize = sampleData.getDataSize();
         codeArea.selectAll();
         codeArea.copy();
@@ -87,7 +87,7 @@ public class CodeAreaTest {
     public void testCopyPasteAtTheEnd() {
         CodeArea codeArea = new CodeArea();
         EditableBinaryData sampleData = getSampleData(SAMPLE_ALLBYTES);
-        codeArea.setData(sampleData);
+        codeArea.setSourceData(sampleData);
         long dataSize = sampleData.getDataSize();
         codeArea.selectAll();
         codeArea.copy();

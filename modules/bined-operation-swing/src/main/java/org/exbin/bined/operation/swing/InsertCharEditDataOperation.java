@@ -60,7 +60,7 @@ public class InsertCharEditDataOperation extends CharEditDataOperation {
 
     @Override
     public void appendEdit(char value) {
-        EditableBinaryData data = (EditableBinaryData) codeArea.getData();
+        EditableBinaryData data = (EditableBinaryData) codeArea.getSourceData();
         long editedDataPosition = startPosition + length;
 
         Charset charset = ((CharsetCapable) codeArea.getWorker()).getCharset();

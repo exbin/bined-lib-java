@@ -57,10 +57,10 @@ public class RemoveDataOperation extends CodeAreaOperation {
     private CodeAreaOperation execute(boolean withUndo) {
         CodeAreaOperation undoOperation = null;
         if (withUndo) {
-            EditableBinaryData undoData = (EditableBinaryData) codeArea.getData().copy(position, length);
+            EditableBinaryData undoData = (EditableBinaryData) codeArea.getSourceData().copy(position, length);
             undoOperation = new InsertDataOperation(codeArea, position, codeOffset, undoData);
         }
-        ((EditableBinaryData) codeArea.getData()).remove(position, length);
+        ((EditableBinaryData) codeArea.getSourceData()).remove(position, length);
         ((CaretCapable) codeArea.getWorker()).getCaret().setCaretPosition(position, codeOffset);
         return undoOperation;
     }

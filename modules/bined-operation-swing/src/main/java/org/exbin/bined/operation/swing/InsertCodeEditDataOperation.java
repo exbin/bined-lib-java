@@ -75,7 +75,7 @@ public class InsertCodeEditDataOperation extends CodeEditDataOperation {
 
     @Override
     public void appendEdit(byte value) {
-        EditableBinaryData data = (EditableBinaryData) codeArea.getData();
+        EditableBinaryData data = (EditableBinaryData) codeArea.getSourceData();
         long editedDataPosition = startPosition + length;
 
         byte byteValue = 0;

@@ -15,8 +15,8 @@
  */
 package org.exbin.bined.swt;
 
-import java.awt.Graphics;
 import javax.annotation.Nonnull;
+import org.eclipse.swt.graphics.GC;
 import org.exbin.bined.CaretPosition;
 
 /**
@@ -47,7 +47,7 @@ public interface CodeAreaWorker {
      *
      * @param g graphics
      */
-    void paintComponent(@Nonnull Graphics g);
+    void paintComponent(@Nonnull GC g);
 
     /**
      * Rebuilds colors after UIManager change.

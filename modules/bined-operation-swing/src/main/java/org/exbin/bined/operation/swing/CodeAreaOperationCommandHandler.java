@@ -498,7 +498,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
             long first = selection.getFirst();
             long last = selection.getLast();
 
-            BinaryData copy = codeArea.getData().copy(first, last - first + 1);
+            BinaryData copy = codeArea.getSourceData().copy(first, last - first + 1);
 
             CodeAreaUtils.BinaryDataClipboardData binaryData = new CodeAreaUtils.BinaryDataClipboardData(copy, binaryDataFlavor);
             setClipboardContent(binaryData);
@@ -512,7 +512,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
             long first = selection.getFirst();
             long last = selection.getLast();
 
-            BinaryData copy = codeArea.getData().copy(first, last - first + 1);
+            BinaryData copy = codeArea.getSourceData().copy(first, last - first + 1);
 
             CodeType codeType = ((CodeTypeCapable) codeArea.getWorker()).getCodeType();
             CodeCharactersCase charactersCase = ((CodeCharactersCaseCapable) codeArea.getWorker()).getCodeCharactersCase();
@@ -587,7 +587,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
 //        try {
 //            if (clipboard.isDataFlavorAvailable(binedDataFlavor)) {
 //                try {
-//                    Object clipboardObject = clipboard.getData(binedDataFlavor);
+//                    Object clipboardObject = clipboard.getSourceData(binedDataFlavor);
 //                    if (clipboardObject instanceof BinaryData) {
 //                        BinaryData clipboardData = (BinaryData) clipboardObject;
 //                        CodeAreaCaret caret = codeArea.getCaret();
@@ -652,7 +652,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
 //            } else if (clipboard.isDataFlavorAvailable(DataFlavor.getTextPlainUnicodeFlavor())) {
 //                InputStream clipboardData;
 //                try {
-//                    clipboardData = (InputStream) clipboard.getData(DataFlavor.getTextPlainUnicodeFlavor());
+//                    clipboardData = (InputStream) clipboard.getSourceData(DataFlavor.getTextPlainUnicodeFlavor());
 //                    CodeAreaCaret caret = codeArea.getCaret();
 //                    long dataPosition = caret.getDataPosition();
 //
@@ -749,7 +749,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
 //                long dataSize = codeArea.getDataSize();
 //                InputStream insertedData;
 //                try {
-//                    insertedData = (InputStream) clipboard.getData(DataFlavor.getTextPlainUnicodeFlavor());
+//                    insertedData = (InputStream) clipboard.getSourceData(DataFlavor.getTextPlainUnicodeFlavor());
 //                    CodeAreaCaret caret = codeArea.getCaret();
 //                    long dataPosition = caret.getDataPosition();
 //

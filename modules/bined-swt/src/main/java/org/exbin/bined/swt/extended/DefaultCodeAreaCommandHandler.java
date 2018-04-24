@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.swt.basic;
+package org.exbin.bined.swt.extended;
 
+import org.exbin.bined.swt.basic.*;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.ClipboardOwner;
@@ -34,7 +35,6 @@ import org.exbin.bined.CodeType;
 import org.exbin.bined.EditationMode;
 import org.exbin.bined.SelectionRange;
 import org.exbin.bined.swt.CodeArea;
-import org.exbin.bined.swt.extended.CodeAreaCaret;
 import org.exbin.bined.swt.CodeAreaCommandHandler;
 import org.exbin.utils.binary_data.BinaryData;
 import org.exbin.utils.binary_data.EditableBinaryData;

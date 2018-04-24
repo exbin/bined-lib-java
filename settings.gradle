@@ -14,6 +14,7 @@ include ":modules:bined-highlight-swing"
 
 include ":tools:bined-swing-example"
 include ":tools:bined-javafx-example"
+include ":tools:bined-swt-example"
 include ":tools:bined-editor-basic"
 
 File placeholder = file("deps/_placeholder")

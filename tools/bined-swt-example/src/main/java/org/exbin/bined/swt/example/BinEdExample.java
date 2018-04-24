@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.swing.example;
+package org.exbin.bined.swt.example;
 
 import java.io.IOException;
 import java.util.logging.Level;
@@ -58,7 +58,7 @@ public class BinEdExample {
         } catch (IOException ex) {
             Logger.getLogger(BinEdExample.class.getName()).log(Level.SEVERE, null, ex);
         }
-        basicCodeArea.setSourceData(basicData);
+        basicCodeArea.setData(basicData);
         basicPanel.setCodeArea(basicCodeArea);
 
         final BinEdExampleExPanel extendedPanel = new BinEdExampleExPanel();
@@ -72,7 +72,7 @@ public class BinEdExample {
         } catch (IOException ex) {
             Logger.getLogger(BinEdExample.class.getName()).log(Level.SEVERE, null, ex);
         }
-        extendedCodeArea.setSourceData(extendedData);
+        extendedCodeArea.setData(extendedData);
         extendedPanel.setCodeArea(extendedCodeArea);
 
         tabbedPane.addTab("Basic", basicPanel);

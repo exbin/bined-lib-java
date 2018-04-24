@@ -51,7 +51,7 @@ public class DeleteCharEditDataOperation extends CharEditDataOperation {
 
     @Override
     public void appendEdit(char value) {
-        EditableBinaryData data = (EditableBinaryData) codeArea.getData();
+        EditableBinaryData data = (EditableBinaryData) codeArea.getSourceData();
         switch (value) {
             case BACKSPACE_CHAR: {
                 if (position > 0) {

@@ -42,13 +42,13 @@ import org.exbin.utils.binary_data.BinaryData;
 /**
  * Hexadecimal viewer/editor component.
  *
- * @version 0.2.0 2018/04/12
+ * @version 0.2.0 2018/04/24
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeArea extends JComponent implements CodeAreaControl {
 
     @Nullable
-    private BinaryData data;
+    private BinaryData sourceData;
 
     @Nonnull
     private CodeAreaWorker worker;
@@ -134,6 +134,15 @@ public class CodeArea extends JComponent implements CodeAreaControl {
         this.worker = worker;
     }
 
+    @Nonnull
+    public CodeAreaCommandHandler getCommandHandler() {
+        return commandHandler;
+    }
+
+    public void setCommandHandler(@Nonnull CodeAreaCommandHandler commandHandler) {
+        this.commandHandler = commandHandler;
+    }
+
     @Override
     protected void paintComponent(@Nullable Graphics g) {
         super.paintComponent(g);
@@ -145,15 +154,6 @@ public class CodeArea extends JComponent implements CodeAreaControl {
             ((FontCapable) worker).setFont(getFont());
         }
         worker.paintComponent(g);
-    }
-
-    @Nonnull
-    public CodeAreaCommandHandler getCommandHandler() {
-        return commandHandler;
-    }
-
-    public void setCommandHandler(@Nonnull CodeAreaCommandHandler commandHandler) {
-        this.commandHandler = commandHandler;
     }
 
     @Override
@@ -207,18 +207,18 @@ public class CodeArea extends JComponent implements CodeAreaControl {
     }
 
     @Nullable
-    public BinaryData getData() {
-        return data;
+    public BinaryData getSourceData() {
+        return sourceData;
     }
 
-    public void setData(@Nullable BinaryData data) {
-        this.data = data;
+    public void setSourceData(@Nullable BinaryData sourceData) {
+        this.sourceData = sourceData;
         notifyDataChanged();
         repaint();
     }
 
     public long getDataSize() {
-        return data == null ? 0 : data.getDataSize();
+        return sourceData == null ? 0 : sourceData.getDataSize();
     }
 
     /**

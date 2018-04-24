@@ -15,13 +15,13 @@
  */
 package org.exbin.bined.swt;
 
-import java.awt.event.KeyEvent;
 import javax.annotation.Nonnull;
+import org.eclipse.swt.events.KeyEvent;
 
 /**
  * Interface for code area data manipulation.
  *
- * @version 0.2.0 2018/04/22
+ * @version 0.2.0 2018/04/24
  * @author ExBin Project (http://exbin.org)
  */
 public interface CodeAreaCommandHandler {

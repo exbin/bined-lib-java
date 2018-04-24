@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.swt;
+package org.exbin.bined.swt.extended;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -22,6 +22,7 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.exbin.bined.CaretPosition;
 import org.exbin.bined.EditationMode;
 import org.exbin.bined.Section;
+import org.exbin.bined.swt.CodeArea;
 
 /**
  * Code area caret.

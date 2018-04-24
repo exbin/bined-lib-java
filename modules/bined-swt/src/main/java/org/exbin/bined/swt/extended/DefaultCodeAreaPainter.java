@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.swt.basic;
+package org.exbin.bined.swt.extended;
 
+import org.exbin.bined.swt.basic.*;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 import java.util.Arrays;
@@ -33,7 +34,6 @@ import org.exbin.bined.Section;
 import org.exbin.bined.SelectionRange;
 import org.exbin.bined.ViewMode;
 import org.exbin.bined.swt.CodeArea;
-import org.exbin.bined.swt.extended.CodeAreaCaret;
 import org.exbin.bined.swt.CodeAreaPainter;
 import org.exbin.bined.swt.ColorsGroup;
 

@@ -722,7 +722,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             if (dataPosition < 0) {
                 rowStart = (int) -dataPosition;
             }
-            worker.getCodeArea().getData().copyToArray(dataPosition + rowStart, rowData, rowStart, rowDataSize - rowStart);
+            worker.getCodeArea().getSourceData().copyToArray(dataPosition + rowStart, rowData, rowStart, rowDataSize - rowStart);
             if (dataPosition + rowBytesLimit > dataSize) {
                 rowBytesLimit = (int) (dataSize - dataPosition);
             }
@@ -1093,7 +1093,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                 case NEGATIVE: {
                     g.fillRect(cursorRect.x, cursorRect.y, cursorRect.width, cursorRect.height);
                     g.setColor(colors.negativeCursor);
-                    BinaryData codeAreaData = worker.getCodeArea().getData();
+                    BinaryData codeAreaData = worker.getCodeArea().getSourceData();
                     int row = (cursorRect.y + scrollPosition.getScrollRowOffset() - dataViewY) / rowHeight;
                     int scrolledX = cursorRect.x + scrollPosition.getScrollCharPosition() * characterWidth + scrollPosition.getScrollCharOffset();
                     int posY = dataViewY + (row + 1) * rowHeight - subFontSpace - scrollPosition.getScrollRowOffset();

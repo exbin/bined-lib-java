@@ -55,10 +55,10 @@ public class ModifyDataOperation extends CodeAreaOperation {
     private CodeAreaOperation execute(boolean withUndo) {
         CodeAreaOperation undoOperation = null;
         if (withUndo) {
-            BinaryData undoData = codeArea.getData().copy(position, data.getDataSize());
+            BinaryData undoData = codeArea.getSourceData().copy(position, data.getDataSize());
             undoOperation = new ModifyDataOperation(codeArea, position, undoData);
         }
-        ((EditableBinaryData) codeArea.getData()).replace(position, data);
+        ((EditableBinaryData) codeArea.getSourceData()).replace(position, data);
         return undoOperation;
     }
 

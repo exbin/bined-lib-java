@@ -271,7 +271,7 @@ public class StatePanelEx extends javax.swing.JPanel {
             try {
                 File selectedFile = saveFC.getSelectedFile();
                 try (FileOutputStream stream = new FileOutputStream(selectedFile)) {
-                    codeArea.getData().saveToStream(stream);
+                    codeArea.getSourceData().saveToStream(stream);
                 }
             } catch (IOException ex) {
                 Logger.getLogger(BinEdExampleBasicPanel.class.getName()).log(Level.SEVERE, null, ex);
@@ -301,7 +301,7 @@ public class StatePanelEx extends javax.swing.JPanel {
             try {
                 File selectedFile = openFC.getSelectedFile();
                 try (FileInputStream stream = new FileInputStream(selectedFile)) {
-                    ((EditableBinaryData) codeArea.getData()).loadFromStream(stream);
+                    ((EditableBinaryData) codeArea.getSourceData()).loadFromStream(stream);
                     codeArea.notifyDataChanged();
                     //                    codeArea.resetPosition();
                 }
