@@ -15,27 +15,23 @@
  */
 package org.exbin.bined.swt.example;
 
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JFrame;
-import javax.swing.JTabbedPane;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import org.exbin.bined.swing.CodeArea;
-import org.exbin.bined.swing.basic.DefaultCodeAreaPainter;
-import org.exbin.bined.swing.extended.ExtCodeAreaWorker;
-import org.exbin.utils.binary_data.ByteArrayEditableData;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.TabFolder;
+import org.eclipse.swt.widgets.TabItem;
+import org.eclipse.swt.widgets.Text;
 
 /**
  * Example Swing GUI demonstration application of the bined component.
  *
- * @version 0.2.0 2018/03/22
+ * @version 0.2.0 2018/04/25
  * @author ExBin Project (http://exbin.org)
  */
 public class BinEdExample {
 
-    private static final String EXAMPLE_FILE_PATH = "/org/exbin/bined/swing/example/resources/lorem_1.txt";
+    private static final String EXAMPLE_FILE_PATH = "/org/exbin/bined/swt/example/resources/lorem_1.txt";
 
     /**
      * Main method launching the application.
@@ -43,75 +39,115 @@ public class BinEdExample {
      * @param args arguments
      */
     public static void main(String[] args) {
-        final JFrame frame = new JFrame("BinEd Library Example");
-        frame.setLocationByPlatform(true);
-        frame.setSize(1000, 600);
-        frame.setLocationRelativeTo(null);
-        final JTabbedPane tabbedPane = new JTabbedPane();
-        tabbedPane.setFocusable(false);
+        Display display = new Display();
+        Shell shell = new Shell(display);
+        shell.setText("BinEd Library Example");
+        shell.setSize(1000, 600);
+        shell.setLayout(new FillLayout());
 
-        final BinEdExampleBasicPanel basicPanel = new BinEdExampleBasicPanel();
-        final CodeArea basicCodeArea = new CodeArea();
-        ByteArrayEditableData basicData = new ByteArrayEditableData();
-        try {
-            basicData.loadFromStream(basicCodeArea.getClass().getResourceAsStream(EXAMPLE_FILE_PATH));
-        } catch (IOException ex) {
-            Logger.getLogger(BinEdExample.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        basicCodeArea.setData(basicData);
-        basicPanel.setCodeArea(basicCodeArea);
+//        shell.setLocation(point);
+        final TabFolder tabFolder = new TabFolder(shell, SWT.BORDER);
+        TabItem basicTabItem = new TabItem(tabFolder, SWT.NULL);
+        basicTabItem.setText("Basic");
 
-        final BinEdExampleExPanel extendedPanel = new BinEdExampleExPanel();
-        final CodeArea extendedCodeArea = new CodeArea(); // TODO
-        ExtCodeAreaWorker extendedWorker = new ExtCodeAreaWorker(extendedCodeArea);
-        extendedWorker.setPainter(new DefaultCodeAreaPainter(extendedWorker));
-        extendedCodeArea.setWorker(extendedWorker);
-        ByteArrayEditableData extendedData = new ByteArrayEditableData();
-        try {
-            extendedData.loadFromStream(extendedCodeArea.getClass().getResourceAsStream(EXAMPLE_FILE_PATH));
-        } catch (IOException ex) {
-            Logger.getLogger(BinEdExample.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        extendedCodeArea.setData(extendedData);
-        extendedPanel.setCodeArea(extendedCodeArea);
+        Text text = new Text(tabFolder, SWT.BORDER);
+        text.setText("TEST");
+        basicTabItem.setControl(text);
 
-        tabbedPane.addTab("Basic", basicPanel);
-        tabbedPane.addTab("Extended", extendedPanel);
+        TabItem extendedTabItem = new TabItem(tabFolder, SWT.NULL);
+        extendedTabItem.setText("Extended");
 
-        // TODO Keep only current tab populated
-        tabbedPane.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                switch (tabbedPane.getSelectedIndex()) {
-                    case 0: {
-                        tabbedPane.setSelectedComponent(basicPanel);
-                        basicCodeArea.requestFocus();
-                        break;
-                    }
-                    case 1: {
-                        tabbedPane.setSelectedComponent(extendedPanel);
-                        extendedCodeArea.requestFocus();
-                        break;
-                    }
-                }
+//        final BinEdExampleBasicPanel basicPanel = new BinEdExampleBasicPanel();
+//        final CodeArea basicCodeArea = new CodeArea();
+//        ByteArrayEditableData basicData = new ByteArrayEditableData();
+//        try {
+//            basicData.loadFromStream(basicCodeArea.getClass().getResourceAsStream(EXAMPLE_FILE_PATH));
+//        } catch (IOException ex) {
+//            Logger.getLogger(BinEdExample.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        basicCodeArea.setData(basicData);
+//        basicPanel.setCodeArea(basicCodeArea);
+
+        shell.open();
+
+        while (!shell.isDisposed()) {
+            if (!display.readAndDispatch()) {
+                display.sleep();
             }
-        });
-        frame.add(tabbedPane);
+        }
 
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                frame.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        display.dispose();
 
-                frame.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                frame.setVisible(true);
-                basicCodeArea.requestFocus();
-            }
-        });
+//
+//        final JFrame frame = new JFrame("BinEd Library Example");
+//        frame.setLocationByPlatform(true);
+//        frame.setSize(1000, 600);
+//        frame.setLocationRelativeTo(null);
+//        final JTabbedPane tabbedPane = new JTabbedPane();
+//        tabbedPane.setFocusable(false);
+//
+//        final BinEdExampleBasicPanel basicPanel = new BinEdExampleBasicPanel();
+//        final CodeArea basicCodeArea = new CodeArea();
+//        ByteArrayEditableData basicData = new ByteArrayEditableData();
+//        try {
+//            basicData.loadFromStream(basicCodeArea.getClass().getResourceAsStream(EXAMPLE_FILE_PATH));
+//        } catch (IOException ex) {
+//            Logger.getLogger(BinEdExample.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        basicCodeArea.setData(basicData);
+//        basicPanel.setCodeArea(basicCodeArea);
+//
+//        final BinEdExampleExPanel extendedPanel = new BinEdExampleExPanel();
+//        final CodeArea extendedCodeArea = new CodeArea(); // TODO
+//        ExtCodeAreaWorker extendedWorker = new ExtCodeAreaWorker(extendedCodeArea);
+//        extendedWorker.setPainter(new DefaultCodeAreaPainter(extendedWorker));
+//        extendedCodeArea.setWorker(extendedWorker);
+//        ByteArrayEditableData extendedData = new ByteArrayEditableData();
+//        try {
+//            extendedData.loadFromStream(extendedCodeArea.getClass().getResourceAsStream(EXAMPLE_FILE_PATH));
+//        } catch (IOException ex) {
+//            Logger.getLogger(BinEdExample.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        extendedCodeArea.setData(extendedData);
+//        extendedPanel.setCodeArea(extendedCodeArea);
+//
+//        tabbedPane.addTab("Basic", basicPanel);
+//        tabbedPane.addTab("Extended", extendedPanel);
+//
+//        // TODO Keep only current tab populated
+//        tabbedPane.addChangeListener(new ChangeListener() {
+//            @Override
+//            public void stateChanged(ChangeEvent e) {
+//                switch (tabbedPane.getSelectedIndex()) {
+//                    case 0: {
+//                        tabbedPane.setSelectedComponent(basicPanel);
+//                        basicCodeArea.requestFocus();
+//                        break;
+//                    }
+//                    case 1: {
+//                        tabbedPane.setSelectedComponent(extendedPanel);
+//                        extendedCodeArea.requestFocus();
+//                        break;
+//                    }
+//                }
+//            }
+//        });
+//        frame.add(tabbedPane);
+//
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//            @Override
+//            public void run() {
+//                frame.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+//
+//                frame.addWindowListener(new java.awt.event.WindowAdapter() {
+//                    @Override
+//                    public void windowClosing(java.awt.event.WindowEvent e) {
+//                        System.exit(0);
+//                    }
+//                });
+//                frame.setVisible(true);
+//                basicCodeArea.requestFocus();
+//            }
+//        });
     }
 }

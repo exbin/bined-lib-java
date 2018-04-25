@@ -15,14 +15,14 @@
  */
 package org.exbin.bined.swt.capability;
 
-import java.awt.Font;
 import javax.annotation.Nonnull;
+import org.eclipse.swt.graphics.Font;
 import org.exbin.bined.capability.WorkerCapability;
 
 /**
  * Support for font capability.
  *
- * @version 0.2.0 2017/12/09
+ * @version 0.2.0 2017/04/25
  * @author ExBin Project (http://exbin.org)
  */
 public interface FontCapable {

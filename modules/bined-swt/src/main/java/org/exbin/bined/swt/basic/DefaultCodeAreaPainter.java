@@ -40,7 +40,7 @@ import org.exbin.bined.swt.ColorsGroup;
 /**
  * Code area component default painter.
  *
- * @version 0.1.2 2016/12/29
+ * @version 0.2.0 2018/04/25
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaPainter implements CodeAreaPainter {

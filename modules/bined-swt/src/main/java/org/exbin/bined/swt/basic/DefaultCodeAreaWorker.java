@@ -15,7 +15,6 @@
  */
 package org.exbin.bined.swt.basic;
 
-import java.awt.Font;
 import java.awt.Graphics;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -23,6 +22,7 @@ import java.util.List;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import org.eclipse.swt.graphics.Font;
 import org.exbin.bined.BasicCodeAreaSection;
 import org.exbin.bined.BasicCodeAreaZone;
 import org.exbin.bined.CaretMovedListener;
@@ -46,21 +46,22 @@ import org.exbin.bined.capability.EditationModeCapable;
 import org.exbin.bined.capability.RowWrappingCapable;
 import org.exbin.bined.capability.SelectionCapable;
 import org.exbin.bined.capability.ViewModeCapable;
-import org.exbin.bined.swing.CodeArea;
-import org.exbin.bined.swing.CodeAreaPainter;
-import org.exbin.bined.swing.CodeAreaWorker;
-import org.exbin.bined.swing.MovementDirection;
-import org.exbin.bined.swing.ScrollingDirection;
-import org.exbin.bined.swing.capability.BackgroundPaintCapable;
-import org.exbin.bined.swing.capability.FontCapable;
-import org.exbin.bined.swing.capability.ScrollingCapable;
+import org.exbin.bined.swt.CodeArea;
+import org.exbin.bined.swt.CodeAreaPainter;
+import org.exbin.bined.swt.CodeAreaWorker;
+import org.exbin.bined.swt.CodeAreaWorker.CodeAreaWorkerFactory;
 import org.exbin.bined.swt.HorizontalScrollUnit;
+import org.exbin.bined.swt.MovementDirection;
+import org.exbin.bined.swt.ScrollingDirection;
 import org.exbin.bined.swt.VerticalScrollUnit;
+import org.exbin.bined.swt.capability.BackgroundPaintCapable;
+import org.exbin.bined.swt.capability.FontCapable;
+import org.exbin.bined.swt.capability.ScrollingCapable;
 
 /**
  * Code area component default worker.
  *
- * @version 0.2.0 2018/04/24
+ * @version 0.2.0 2018/04/25
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, CaretCapable, ScrollingCapable, ViewModeCapable,

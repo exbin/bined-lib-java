@@ -50,9 +50,6 @@ public class BinEdExampleBasicPanel extends javax.swing.JPanel {
 
         DefaultCodeAreaWorker worker = (DefaultCodeAreaWorker) codeArea.getWorker();
         splitPane.setRightComponent(codeArea);
-//        charAntialiasingComboBox.setSelectedIndex(codeArea.getCharAntialiasingMode().ordinal());
-//        hexCharactersModeComboBox.setSelectedIndex(codeArea.getHexCharactersCase().ordinal());
-//        showHeaderCheckBox.setSelected(codeArea.isShowHeader());
 
         ModePanel modePanel = new ModePanel(codeArea);
         StatePanel statePanel = new StatePanel(codeArea);
