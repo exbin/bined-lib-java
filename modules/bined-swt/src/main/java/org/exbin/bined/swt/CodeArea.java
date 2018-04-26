@@ -48,7 +48,7 @@ import org.exbin.bined.capability.SelectionCapable;
 public class CodeArea extends Composite implements CodeAreaControl {
 
     @Nullable
-    private BinaryData sourceData;
+    private BinaryData contentData;
 
     @Nonnull
     private CodeAreaWorker worker;
@@ -221,22 +221,22 @@ public class CodeArea extends Composite implements CodeAreaControl {
     }
 
     @Nullable
-    public BinaryData getSourceData() {
-        return sourceData;
+    public BinaryData getContentData() {
+        return contentData;
     }
 
-    public void setSourceData(@Nullable BinaryData sourceData) {
-        this.sourceData = sourceData;
+    public void setContentData(@Nullable BinaryData contentData) {
+        this.contentData = contentData;
         notifyDataChanged();
         redraw();
     }
 
     public long getDataSize() {
-        return sourceData == null ? 0 : sourceData.getDataSize();
+        return contentData == null ? 0 : contentData.getDataSize();
     }
 
     /**
-     * Notifies component, that internal sourceData was changed.
+     * Notifies component, that internal contentData was changed.
      */
     public void notifyDataChanged() {
         resetPainter();

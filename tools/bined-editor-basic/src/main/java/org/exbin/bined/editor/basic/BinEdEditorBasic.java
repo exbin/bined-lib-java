@@ -93,7 +93,7 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
 
     private void init() {
         codeArea = new CodeArea();
-        codeArea.setSourceData(new ByteArrayEditableData());
+        codeArea.setContentData(new ByteArrayEditableData());
         undoHandler = new CodeAreaUndoHandler(codeArea);
         commandHandler = new CodeAreaOperationCommandHandler(codeArea, undoHandler);
         codeArea.setCommandHandler(commandHandler);
@@ -633,7 +633,7 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
             return;
         }
 
-        ((EditableBinaryData) codeArea.getSourceData()).clear();
+        ((EditableBinaryData) codeArea.getContentData()).clear();
         codeArea.notifyDataChanged();
         codeArea.repaint();
         undoHandler.clear();
@@ -649,7 +649,7 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
             if (chooserResult == JFileChooser.APPROVE_OPTION) {
                 file = fileChooser.getSelectedFile();
                 try (FileInputStream stream = new FileInputStream(file)) {
-                    ((EditableBinaryData) codeArea.getSourceData()).loadFromStream(stream);
+                    ((EditableBinaryData) codeArea.getContentData()).loadFromStream(stream);
                     codeArea.notifyDataChanged();
                     codeArea.repaint();
                     undoHandler.clear();
@@ -721,7 +721,7 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
             saveAsFileActionPerformed();
         } else {
             try (FileOutputStream stream = new FileOutputStream(file)) {
-                ((EditableBinaryData) codeArea.getSourceData()).saveToStream(stream);
+                ((EditableBinaryData) codeArea.getContentData()).saveToStream(stream);
                 undoHandler.setSyncPoint();
             } catch (FileNotFoundException ex) {
                 Logger.getLogger(BinEdEditorBasic.class.getName()).log(Level.SEVERE, null, ex);

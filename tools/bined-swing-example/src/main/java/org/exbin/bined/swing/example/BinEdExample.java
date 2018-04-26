@@ -58,7 +58,7 @@ public class BinEdExample {
         } catch (IOException ex) {
             Logger.getLogger(BinEdExample.class.getName()).log(Level.SEVERE, null, ex);
         }
-        basicCodeArea.setSourceData(basicData);
+        basicCodeArea.setContentData(basicData);
         basicPanel.setCodeArea(basicCodeArea);
 
         final BinEdExampleExPanel extendedPanel = new BinEdExampleExPanel();
@@ -72,7 +72,7 @@ public class BinEdExample {
         } catch (IOException ex) {
             Logger.getLogger(BinEdExample.class.getName()).log(Level.SEVERE, null, ex);
         }
-        extendedCodeArea.setSourceData(extendedData);
+        extendedCodeArea.setContentData(extendedData);
         extendedPanel.setCodeArea(extendedCodeArea);
 
         tabbedPane.addTab("Basic", basicPanel);

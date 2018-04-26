@@ -20,14 +20,13 @@ import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.List;
 import org.exbin.bined.swing.ColorsGroup;
-import org.exbin.bined.Section;
-import org.exbin.bined.swing.DefaultCodeAreaPainter;
+import org.exbin.bined.swing.basic.DefaultCodeAreaPainter;
 import org.exbin.bined.swing.CodeArea;
 
 /**
  * Hexadecimal component painter supporting search matches highlighting.
  *
- * @version 0.1.3 2017/03/16
+ * @version 0.2.0 2018/04/26
  * @author ExBin Project (http://exbin.org)
  */
 public class HighlightCodeAreaPainter extends DefaultCodeAreaPainter {
@@ -59,7 +58,7 @@ public class HighlightCodeAreaPainter extends DefaultCodeAreaPainter {
     }
 
     @Override
-    public Color getPositionColor(int byteOnLine, int charOnLine, Section section, ColorsGroup.ColorType colorType, PaintData paintData) {
+    public Color getPositionColor(int byteOnLine, int charOnLine, int section, ColorsGroup.ColorType colorType, PaintData paintData) {
         if (!matches.isEmpty() && section == Section.TEXT_PREVIEW || charOnLine < paintData.getCharsPerLine() - 1) {
             long dataPosition = paintData.getLineDataPosition() + byteOnLine;
             if (currentMatchIndex >= 0) {

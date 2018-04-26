@@ -45,7 +45,7 @@ public class OverwriteCodeEditDataOperation extends CodeEditDataOperation {
         this.codeOffset = startCodeOffset;
         this.codeType = ((CodeTypeCapable) codeArea.getWorker()).getCodeType();
         if (startCodeOffset > 0 && codeArea.getDataSize() > startPosition) {
-            undoData = (EditableBinaryData) codeArea.getSourceData().copy(startPosition, 1);
+            undoData = (EditableBinaryData) codeArea.getContentData().copy(startPosition, 1);
             length++;
         }
     }
@@ -76,7 +76,7 @@ public class OverwriteCodeEditDataOperation extends CodeEditDataOperation {
 
     @Override
     public void appendEdit(byte value) {
-        EditableBinaryData data = (EditableBinaryData) codeArea.getSourceData();
+        EditableBinaryData data = (EditableBinaryData) codeArea.getContentData();
         long editedDataPosition = startPosition + length;
 
         byte byteValue = 0;

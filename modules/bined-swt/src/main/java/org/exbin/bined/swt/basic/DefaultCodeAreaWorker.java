@@ -15,7 +15,6 @@
  */
 package org.exbin.bined.swt.basic;
 
-import java.awt.Graphics;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +22,7 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.GC;
 import org.exbin.bined.BasicCodeAreaSection;
 import org.exbin.bined.BasicCodeAreaZone;
 import org.exbin.bined.CaretMovedListener;
@@ -61,7 +61,7 @@ import org.exbin.bined.swt.capability.ScrollingCapable;
 /**
  * Code area component default worker.
  *
- * @version 0.2.0 2018/04/25
+ * @version 0.2.0 2018/04/26
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, CaretCapable, ScrollingCapable, ViewModeCapable,
@@ -157,7 +157,7 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
     }
 
     @Override
-    public void paintComponent(@Nonnull Graphics g) {
+    public void paintComponent(@Nonnull GC g) {
         painter.paintComponent(g);
     }
 
@@ -424,12 +424,12 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
 
     private void repaint() {
         codeArea.resetPainter();
-        codeArea.repaint();
+        codeArea.redraw();
     }
 
     @Override
     public void notifyCaretChanged() {
-        codeArea.repaint();
+        codeArea.redraw();
     }
 
     @Nonnull

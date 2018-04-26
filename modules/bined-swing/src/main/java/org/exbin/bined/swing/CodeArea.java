@@ -42,13 +42,13 @@ import org.exbin.utils.binary_data.BinaryData;
 /**
  * Hexadecimal viewer/editor component.
  *
- * @version 0.2.0 2018/04/24
+ * @version 0.2.0 2018/04/26
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeArea extends JComponent implements CodeAreaControl {
 
     @Nullable
-    private BinaryData sourceData;
+    private BinaryData contentData;
 
     @Nonnull
     private CodeAreaWorker worker;
@@ -207,18 +207,18 @@ public class CodeArea extends JComponent implements CodeAreaControl {
     }
 
     @Nullable
-    public BinaryData getSourceData() {
-        return sourceData;
+    public BinaryData getContentData() {
+        return contentData;
     }
 
-    public void setSourceData(@Nullable BinaryData sourceData) {
-        this.sourceData = sourceData;
+    public void setContentData(@Nullable BinaryData contentData) {
+        this.contentData = contentData;
         notifyDataChanged();
         repaint();
     }
 
     public long getDataSize() {
-        return sourceData == null ? 0 : sourceData.getDataSize();
+        return contentData == null ? 0 : contentData.getDataSize();
     }
 
     /**

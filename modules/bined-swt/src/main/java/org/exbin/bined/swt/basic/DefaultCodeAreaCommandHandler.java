@@ -29,12 +29,12 @@ import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.swt.events.KeyEvent;
+import org.exbin.bined.CodeAreaCaret;
 import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.CodeType;
 import org.exbin.bined.EditationMode;
 import org.exbin.bined.SelectionRange;
 import org.exbin.bined.swt.CodeArea;
-import org.exbin.bined.swt.extended.CodeAreaCaret;
 import org.exbin.bined.swt.CodeAreaCommandHandler;
 import org.exbin.utils.binary_data.BinaryData;
 import org.exbin.utils.binary_data.EditableBinaryData;
@@ -93,11 +93,6 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         } catch (java.lang.IllegalStateException ex) {
             canPaste = false;
         }
-    }
-
-    @Override
-    public void caretMoved() {
-        // Do nothing
     }
 
     @Override

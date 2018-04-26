@@ -30,7 +30,7 @@ import org.exbin.bined.swing.example.panel.ScrollingPanel;
 import org.exbin.bined.swing.example.panel.StatePanel;
 
 /**
- * Hexadecimal editor example panel.
+ * Basic hexadecimal component example panel.
  *
  * @version 0.2.0 2018/03/17
  * @author ExBin Project (http://exbin.org)

@@ -16,14 +16,13 @@
 package org.exbin.bined.highlight.swing;
 
 import java.awt.Color;
-import org.exbin.bined.Section;
 import org.exbin.bined.swing.CodeArea;
 import org.exbin.bined.swing.ColorsGroup;
 
 /**
  * Experimental support for highlighting of non-ascii characters.
  *
- * @version 0.1.3 2017/03/22
+ * @version 0.2.0 2018/04/26
  * @author ExBin Project (http://exbin.org)
  */
 public class HighlightNonAsciiCodeAreaPainter extends HighlightCodeAreaPainter {
