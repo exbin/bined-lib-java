@@ -17,21 +17,23 @@ package org.exbin.bined.delta;
 
 import java.io.IOException;
 import java.io.InputStream;
+import javax.annotation.Nonnull;
 import org.exbin.utils.binary_data.FinishableStream;
 import org.exbin.utils.binary_data.SeekableStream;
 
 /**
  * Delta document input stream.
  *
- * @version 0.1.1 2016/11/02
+ * @version 0.2.0 2018/04/27
  * @author ExBin Project (http://exbin.org)
  */
 public class DeltaDocumentInputStream extends InputStream implements SeekableStream, FinishableStream {
 
+    @Nonnull
     private final DeltaDocumentWindow data;
     private long position = 0;
 
-    public DeltaDocumentInputStream(DeltaDocument document) {
+    public DeltaDocumentInputStream(@Nonnull DeltaDocument document) {
         this.data = new DeltaDocumentWindow(document);
     }
 
@@ -57,13 +59,13 @@ public class DeltaDocumentInputStream extends InputStream implements SeekableStr
 
     @Override
     public int available() throws IOException {
-        long available = data.getDataSize()  - position;
+        long available = data.getDataSize() - position;
         return (available > Integer.MAX_VALUE) ? Integer.MAX_VALUE : (int) available;
     }
 
     @Override
-    public int read(byte[] output, int off, int len) throws IOException {
-        if (output.length == 0 || len == 0) {
+    public int read(@Nonnull byte[] output, int offset, int length) throws IOException {
+        if (output.length == 0 || length == 0) {
             return 0;
         }
 
@@ -72,13 +74,13 @@ public class DeltaDocumentInputStream extends InputStream implements SeekableStr
             return -1;
         }
 
-        if (position + len > dataSize) {
-            len = (int) (dataSize - position);
+        if (position + length > dataSize) {
+            length = (int) (dataSize - position);
         }
 
-        data.copyToArray(position, output, off, len);
-        position += len;
-        return len;
+        data.copyToArray(position, output, offset, length);
+        position += length;
+        return length;
     }
 
     @Override

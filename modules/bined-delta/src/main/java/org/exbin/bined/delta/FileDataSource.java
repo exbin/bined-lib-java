@@ -23,29 +23,33 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.annotation.Nonnull;
 
 /**
  * Data source for access to file resource locking it for exclusive access.
  *
- * @version 0.1.3 2017/04/01
+ * @version 0.2.0 2018/04/27
  * @author ExBin Project (http://exbin.org)
  */
 public class FileDataSource {
 
+    @Nonnull
     private final File file;
+    @Nonnull
     private final RandomAccessFile accessFile;
+    @Nonnull
     private final DeltaDataPageWindow window;
     private boolean closed = false;
 
     private final List<CacheClearListener> listeners = new ArrayList<>();
 
-    public FileDataSource(File sourceFile, EditationMode editationMode) throws FileNotFoundException, IOException {
+    public FileDataSource(@Nonnull File sourceFile, @Nonnull EditationMode editationMode) throws FileNotFoundException, IOException {
         file = sourceFile;
         accessFile = new RandomAccessFile(sourceFile, editationMode.getFileAccessMode());
         window = new DeltaDataPageWindow(this);
     }
 
-    public FileDataSource(File sourceFile) throws FileNotFoundException, IOException {
+    public FileDataSource(@Nonnull File sourceFile) throws FileNotFoundException, IOException {
         this(sourceFile, EditationMode.READ_WRITE);
     }
 
@@ -59,10 +63,12 @@ public class FileDataSource {
         accessFile.setLength(length);
     }
 
+    @Nonnull
     public File getFile() {
         return file;
     }
 
+    @Nonnull
     /* package */ RandomAccessFile getAccessFile() {
         checkClosed();
         return accessFile;
@@ -98,11 +104,11 @@ public class FileDataSource {
         }
     }
 
-    public void addCacheClearListener(CacheClearListener listener) {
+    public void addCacheClearListener(@Nonnull CacheClearListener listener) {
         listeners.add(listener);
     }
 
-    public void removeCacheClearListener(CacheClearListener listener) {
+    public void removeCacheClearListener(@Nonnull CacheClearListener listener) {
         listeners.remove(listener);
     }
 
@@ -115,12 +121,14 @@ public class FileDataSource {
         READ_WRITE("rw"),
         READ_ONLY("r");
 
+        @Nonnull
         private final String fileAccessMode;
 
-        private EditationMode(String fileAccessMode) {
+        private EditationMode(@Nonnull String fileAccessMode) {
             this.fileAccessMode = fileAccessMode;
         }
 
+        @Nonnull
         public String getFileAccessMode() {
             return fileAccessMode;
         }

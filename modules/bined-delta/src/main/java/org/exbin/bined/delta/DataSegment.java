@@ -15,17 +15,21 @@
  */
 package org.exbin.bined.delta;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.exbin.bined.delta.list.DoublyLinkedItem;
 
 /**
  * Abstract data segment of delta data source.
  *
- * @version 0.1.1 2016/11/22
+ * @version 0.2.0 2018/04/27
  * @author ExBin Project (http://exbin.org)
  */
 public abstract class DataSegment implements DoublyLinkedItem<DataSegment> {
 
+    @Nullable
     private DataSegment previous;
+    @Nullable
     private DataSegment next;
 
     public DataSegment() {
@@ -50,25 +54,28 @@ public abstract class DataSegment implements DoublyLinkedItem<DataSegment> {
      *
      * @return copy of this segment
      */
+    @Nonnull
     public abstract DataSegment copy();
 
+    @Nullable
     @Override
     public DataSegment getNext() {
         return next;
     }
 
     @Override
-    public void setNext(DataSegment next) {
+    public void setNext(@Nullable DataSegment next) {
         this.next = next;
     }
 
+    @Nullable
     @Override
     public DataSegment getPrev() {
         return previous;
     }
 
     @Override
-    public void setPrev(DataSegment previous) {
+    public void setPrev(@Nullable DataSegment previous) {
         this.previous = previous;
     }
 }

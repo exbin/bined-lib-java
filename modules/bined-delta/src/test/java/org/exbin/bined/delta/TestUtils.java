@@ -17,12 +17,13 @@ package org.exbin.bined.delta;
 
 import java.io.IOException;
 import java.io.InputStream;
-import static org.junit.Assert.*;
+import javax.annotation.Nonnull;
+import org.junit.Assert;
 
 /**
  * Tests utilities.
  *
- * @version 0.1.1 2016/11/19
+ * @version 0.2.0 2018/04/27
  * @author ExBin Project (http://exbin.org)
  */
 public class TestUtils {
@@ -33,27 +34,27 @@ public class TestUtils {
      * @param expectedStream stream to be considered as template
      * @param stream stream for matching
      */
-    public static void assertEqualsInputStream(InputStream expectedStream, InputStream stream) {
+    public static void assertEqualsInputStream(@Nonnull InputStream expectedStream, @Nonnull InputStream stream) {
         try {
             byte[] dataBlob = new byte[2];
             int position = 0;
             while (expectedStream.available() > 0) {
                 int readStat = expectedStream.read(dataBlob, 0, 1);
                 if (readStat < 0) {
-                    fail("Unable to read expected stream on position " + position);
+                    Assert.fail("Unable to read expected stream on position " + position);
                 }
                 int readStat2 = stream.read(dataBlob, 1, 1);
                 if (readStat2 < 0) {
-                    fail("Unable to read compared stream on position " + position);
+                    Assert.fail("Unable to read compared stream on position " + position);
                 }
 
-                assertEquals("Issue on position " + position, dataBlob[0], dataBlob[1]);
+                Assert.assertEquals("Issue on position " + position, dataBlob[0], dataBlob[1]);
                 position++;
             }
 
-            assertTrue(stream.available() == 0);
+            Assert.assertTrue(stream.available() == 0);
         } catch (IOException ex) {
-            fail("IOException " + ex.getMessage());
+            Assert.fail("IOException " + ex.getMessage());
         }
     }
 }

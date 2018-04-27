@@ -15,24 +15,28 @@
  */
 package org.exbin.bined.delta;
 
+import javax.annotation.Nonnull;
+
 /**
  * Data segment pointing to file.
  *
- * @version 0.1.0 2016/06/21
+ * @version 0.2.0 2018/04/27
  * @author ExBin Project (http://exbin.org)
  */
 public class FileSegment extends DataSegment {
 
+    @Nonnull
     private final FileDataSource source;
     private long startPosition;
     private long length;
 
-    public FileSegment(FileDataSource source, long startPosition, long length) {
+    public FileSegment(@Nonnull FileDataSource source, long startPosition, long length) {
         this.source = source;
         this.startPosition = startPosition;
         this.length = length;
     }
 
+    @Nonnull
     public FileDataSource getSource() {
         return source;
     }
@@ -54,11 +58,12 @@ public class FileSegment extends DataSegment {
     public void setLength(long length) {
         this.length = length;
     }
-    
+
     public byte getByte(long position) {
         return source.getByte(position);
     }
 
+    @Nonnull
     @Override
     public DataSegment copy() {
         return new FileSegment(null, startPosition, length);

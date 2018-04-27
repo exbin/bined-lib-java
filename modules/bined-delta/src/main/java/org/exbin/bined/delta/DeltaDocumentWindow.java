@@ -15,6 +15,8 @@
  */
 package org.exbin.bined.delta;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.exbin.bined.delta.list.DefaultDoublyLinkedList;
 import org.exbin.utils.binary_data.BinaryData;
 import org.exbin.utils.binary_data.OutOfBoundsException;
@@ -22,16 +24,17 @@ import org.exbin.utils.binary_data.OutOfBoundsException;
 /**
  * Access window for delta document.
  *
- * @version 0.1.3 2017/03/17
+ * @version 0.2.0 2018/04/27
  * @author ExBin Project (http://exbin.org)
  */
 public class DeltaDocumentWindow {
 
+    @Nonnull
     private final DeltaDocument document;
 
     private final DataPointer pointer = new DataPointer();
 
-    public DeltaDocumentWindow(DeltaDocument document) {
+    public DeltaDocumentWindow(@Nonnull DeltaDocument document) {
         this.document = document;
         document.addChangeListener(new DeltaDocumentChangedListener() {
             @Override
@@ -192,7 +195,7 @@ public class DeltaDocumentWindow {
         document.notifyChangeListeners(this);
     }
 
-    public void insert(long startFrom, byte[] insertedData) {
+    public void insert(long startFrom, @Nonnull byte[] insertedData) {
         DefaultDoublyLinkedList<DataSegment> segments = document.getSegments();
         SegmentsRepository repository = document.getRepository();
         if (insertedData.length == 0) {
@@ -223,7 +226,7 @@ public class DeltaDocumentWindow {
         document.notifyChangeListeners(this);
     }
 
-    public void insert(long startFrom, byte[] insertedData, int insertedDataOffset, int insertedDataLength) {
+    public void insert(long startFrom, @Nonnull byte[] insertedData, int insertedDataOffset, int insertedDataLength) {
         DefaultDoublyLinkedList<DataSegment> segments = document.getSegments();
         SegmentsRepository repository = document.getRepository();
 
@@ -251,7 +254,7 @@ public class DeltaDocumentWindow {
         document.notifyChangeListeners(this);
     }
 
-    public void insert(long startFrom, BinaryData insertedData) {
+    public void insert(long startFrom, @Nonnull BinaryData insertedData) {
         if (insertedData.isEmpty()) {
             return;
         }
@@ -309,7 +312,7 @@ public class DeltaDocumentWindow {
         document.notifyChangeListeners(this);
     }
 
-    public void insert(long startFrom, BinaryData insertedData, long insertedDataOffset, long insertedDataLength) {
+    public void insert(long startFrom, @Nonnull BinaryData insertedData, long insertedDataOffset, long insertedDataLength) {
         if (insertedDataLength == 0) {
             return;
         }
@@ -378,7 +381,7 @@ public class DeltaDocumentWindow {
      * @param startFrom start position
      * @param insertedSegment inserted segment
      */
-    public void insertSegment(long startFrom, DataSegment insertedSegment) {
+    public void insertSegment(long startFrom, @Nonnull DataSegment insertedSegment) {
         DefaultDoublyLinkedList<DataSegment> segments = document.getSegments();
         long targetLength = document.getDataSize() + insertedSegment.getLength();
         focusSegment(startFrom);
@@ -441,6 +444,7 @@ public class DeltaDocumentWindow {
         document.setDataSize(dataSize);
     }
 
+    @Nonnull
     public BinaryData copy() {
         SegmentsRepository repository = document.getRepository();
         DefaultDoublyLinkedList<DataSegment> segments = document.getSegments();
@@ -452,6 +456,7 @@ public class DeltaDocumentWindow {
         return copy;
     }
 
+    @Nonnull
     public BinaryData copy(long startFrom, long length) {
         SegmentsRepository repository = document.getRepository();
         DeltaDocument copy = repository.createDocument();
@@ -491,7 +496,7 @@ public class DeltaDocumentWindow {
         return copy;
     }
 
-    public void copyToArray(long startFrom, byte[] target, int offset, int length) {
+    public void copyToArray(long startFrom, @Nonnull byte[] target, int offset, int length) {
         document.copyToArray(startFrom, target, offset, length);
     }
 
@@ -526,6 +531,7 @@ public class DeltaDocumentWindow {
         }
     }
 
+    @Nullable
     public DataSegment getSegment(long position) {
         focusSegment(position);
         return pointer.segment;
@@ -537,8 +543,9 @@ public class DeltaDocumentWindow {
      *
      * @param position position
      * @param length length
-     * @return data segment
+     * @return data segment or null
      */
+    @Nullable
     public DataSegment getPartCopy(long position, long length) {
         focusSegment(position);
         if (pointer.segment == null) {
@@ -696,9 +703,10 @@ public class DeltaDocumentWindow {
     private static class DataPointer {
 
         long position;
+        @Nullable
         DataSegment segment;
 
-        void setPointer(long position, DataSegment segment) {
+        void setPointer(long position, @Nullable DataSegment segment) {
             this.position = position;
             this.segment = segment;
         }

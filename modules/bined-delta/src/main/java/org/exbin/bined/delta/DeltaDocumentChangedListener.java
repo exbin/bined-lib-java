@@ -15,10 +15,12 @@
  */
 package org.exbin.bined.delta;
 
+import javax.annotation.Nonnull;
+
 /**
  * Listener for delta document data changes.
  *
- * @version 0.1.2 2016/12/07
+ * @version 0.2.0 2018/04/27
  * @author ExBin Project (http://exbin.org)
  */
 public interface DeltaDocumentChangedListener {
@@ -28,5 +30,5 @@ public interface DeltaDocumentChangedListener {
      *
      * @param window updated window for reference
      */
-    void dataChanged(DeltaDocumentWindow window);
+    void dataChanged(@Nonnull DeltaDocumentWindow window);
 }

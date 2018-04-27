@@ -19,22 +19,25 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.annotation.Nonnull;
 
 /**
  * Access window for delta data.
  *
- * @version 0.1.1 2016/11/19
+ * @version 0.2.0 2018/04/27
  * @author ExBin Project (http://exbin.org)
  */
 public class DeltaDataPageWindow {
 
     public static final int PAGE_SIZE = 1024;
 
+    @Nonnull
     private final FileDataSource data;
+    @Nonnull
     private final DataPage[] dataPages = new DataPage[]{new DataPage(), new DataPage()};
     private int activeDataPage = 1;
 
-    public DeltaDataPageWindow(FileDataSource data) {
+    public DeltaDataPageWindow(@Nonnull FileDataSource data) {
         this.data = data;
         dataPages[0].pageIndex = 0;
         loadPage(0);

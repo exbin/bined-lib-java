@@ -15,10 +15,12 @@
  */
 package org.exbin.bined.delta;
 
+import javax.annotation.Nonnull;
+
 /**
  * Space placeholder segment.
  *
- * @version 0.1.2 2016/11/21
+ * @version 0.2.0 2018/04/27
  * @author ExBin Project (http://exbin.org)
  */
 public class SpaceSegment extends DataSegment {
@@ -51,6 +53,7 @@ public class SpaceSegment extends DataSegment {
         throw new IllegalStateException("Unable to read data from space placeholder segment");
     }
 
+    @Nonnull
     @Override
     public DataSegment copy() {
         return new SpaceSegment(length);

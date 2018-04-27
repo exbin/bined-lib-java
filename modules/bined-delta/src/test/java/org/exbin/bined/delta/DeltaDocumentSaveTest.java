@@ -15,9 +15,6 @@
  */
 package org.exbin.bined.delta;
 
-import org.exbin.bined.delta.SegmentsRepository;
-import org.exbin.bined.delta.FileDataSource;
-import org.exbin.bined.delta.DeltaDocument;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -25,15 +22,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.exbin.utils.binary_data.BinaryData;
 import org.exbin.utils.binary_data.EditableBinaryData;
-import static org.junit.Assert.*;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
  * Tests for delta document.
  *
- * @version 0.1.2 2017/01/03
+ * @version 0.2.0 2018/04/27
  * @author ExBin Project (http://exbin.org)
  */
 public class DeltaDocumentSaveTest {
@@ -63,24 +62,24 @@ public class DeltaDocumentSaveTest {
     @Test
     public void testSaveDocument() {
         DeltaDocument document = openTempDeltaDocument();
-        assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
+        Assert.assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
 
         try {
             document.save();
         } catch (IOException ex) {
             Logger.getLogger(DeltaDocumentSaveTest.class.getName()).log(Level.SEVERE, null, ex);
-            fail("Exception: " + ex.getMessage());
+            Assert.fail("Exception: " + ex.getMessage());
         }
 
         document.clear();
-        assertEquals(0, document.getSegments().size());
+        Assert.assertEquals(0, document.getSegments().size());
         closeTempDeltaDocument(document);
     }
 
     @Test
     public void testInsertBeginSaveDocument() {
         DeltaDocument document = openTempDeltaDocument();
-        assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
+        Assert.assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
         document.insert(0, new byte[]{0x40, 0x41});
         document.validatePointerPosition();
 
@@ -95,19 +94,19 @@ public class DeltaDocumentSaveTest {
             comparisionFile.close();
         } catch (IOException ex) {
             Logger.getLogger(DeltaDocumentSaveTest.class.getName()).log(Level.SEVERE, null, ex);
-            fail("Exception: " + ex.getMessage());
+            Assert.fail("Exception: " + ex.getMessage());
         }
 
         document.validatePointerPosition();
         document.clear();
-        assertEquals(0, document.getSegments().size());
+        Assert.assertEquals(0, document.getSegments().size());
         closeTempDeltaDocument(document);
     }
 
     @Test
     public void testInsertMiddleSaveDocument() {
         DeltaDocument document = openTempDeltaDocument();
-        assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
+        Assert.assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
         document.insert(120, new byte[]{0x40, 0x41});
         document.validatePointerPosition();
 
@@ -122,19 +121,19 @@ public class DeltaDocumentSaveTest {
             comparisionFile.close();
         } catch (IOException ex) {
             Logger.getLogger(DeltaDocumentSaveTest.class.getName()).log(Level.SEVERE, null, ex);
-            fail("Exception: " + ex.getMessage());
+            Assert.fail("Exception: " + ex.getMessage());
         }
 
         document.validatePointerPosition();
         document.clear();
-        assertEquals(0, document.getSegments().size());
+        Assert.assertEquals(0, document.getSegments().size());
         closeTempDeltaDocument(document);
     }
 
     @Test
     public void testInsertEndSaveDocument() {
         DeltaDocument document = openTempDeltaDocument();
-        assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
+        Assert.assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
         document.insert(256, new byte[]{0x40, 0x41});
         document.validatePointerPosition();
 
@@ -149,19 +148,19 @@ public class DeltaDocumentSaveTest {
             comparisionFile.close();
         } catch (IOException ex) {
             Logger.getLogger(DeltaDocumentSaveTest.class.getName()).log(Level.SEVERE, null, ex);
-            fail("Exception: " + ex.getMessage());
+            Assert.fail("Exception: " + ex.getMessage());
         }
 
         document.validatePointerPosition();
         document.clear();
-        assertEquals(0, document.getSegments().size());
+        Assert.assertEquals(0, document.getSegments().size());
         closeTempDeltaDocument(document);
     }
 
     @Test
     public void testInsertCopyBeginSaveDocument() {
         DeltaDocument document = openTempDeltaDocument();
-        assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
+        Assert.assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
         BinaryData copy = document.copy(0x40, 2);
         document.insert(0, copy);
         document.validatePointerPosition();
@@ -178,19 +177,19 @@ public class DeltaDocumentSaveTest {
             comparisionFile.close();
         } catch (IOException ex) {
             Logger.getLogger(DeltaDocumentSaveTest.class.getName()).log(Level.SEVERE, null, ex);
-            fail("Exception: " + ex.getMessage());
+            Assert.fail("Exception: " + ex.getMessage());
         }
 
         document.validatePointerPosition();
         document.clear();
-        assertEquals(0, document.getSegments().size());
+        Assert.assertEquals(0, document.getSegments().size());
         closeTempDeltaDocument(document);
     }
 
     @Test
     public void testInsertCopyMiddleSaveDocument() {
         DeltaDocument document = openTempDeltaDocument();
-        assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
+        Assert.assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
         BinaryData copy = document.copy(0x40, 2);
         document.insert(120, copy);
         document.validatePointerPosition();
@@ -207,19 +206,19 @@ public class DeltaDocumentSaveTest {
             comparisionFile.close();
         } catch (IOException ex) {
             Logger.getLogger(DeltaDocumentSaveTest.class.getName()).log(Level.SEVERE, null, ex);
-            fail("Exception: " + ex.getMessage());
+            Assert.fail("Exception: " + ex.getMessage());
         }
 
         document.validatePointerPosition();
         document.clear();
-        assertEquals(0, document.getSegments().size());
+        Assert.assertEquals(0, document.getSegments().size());
         closeTempDeltaDocument(document);
     }
 
     @Test
     public void testInsertCopyEndSaveDocument() {
         DeltaDocument document = openTempDeltaDocument();
-        assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
+        Assert.assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
         BinaryData copy = document.copy(0x40, 2);
         document.insert(256, copy);
         document.validatePointerPosition();
@@ -236,19 +235,19 @@ public class DeltaDocumentSaveTest {
             comparisionFile.close();
         } catch (IOException ex) {
             Logger.getLogger(DeltaDocumentSaveTest.class.getName()).log(Level.SEVERE, null, ex);
-            fail("Exception: " + ex.getMessage());
+            Assert.fail("Exception: " + ex.getMessage());
         }
 
         document.validatePointerPosition();
         document.clear();
-        assertEquals(0, document.getSegments().size());
+        Assert.assertEquals(0, document.getSegments().size());
         closeTempDeltaDocument(document);
     }
 
     @Test
     public void testOverwriteBeginSaveDocument() {
         DeltaDocument document = openTempDeltaDocument();
-        assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
+        Assert.assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
         document.replace(0, new byte[]{0x40, 0x41});
         document.validatePointerPosition();
 
@@ -263,19 +262,19 @@ public class DeltaDocumentSaveTest {
             comparisionFile.close();
         } catch (IOException ex) {
             Logger.getLogger(DeltaDocumentSaveTest.class.getName()).log(Level.SEVERE, null, ex);
-            fail("Exception: " + ex.getMessage());
+            Assert.fail("Exception: " + ex.getMessage());
         }
 
         document.validatePointerPosition();
         document.clear();
-        assertEquals(0, document.getSegments().size());
+        Assert.assertEquals(0, document.getSegments().size());
         closeTempDeltaDocument(document);
     }
 
     @Test
     public void testOverwriteMiddleSaveDocument() {
         DeltaDocument document = openTempDeltaDocument();
-        assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
+        Assert.assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
         document.replace(120, new byte[]{0x40, 0x41});
         document.validatePointerPosition();
 
@@ -290,19 +289,19 @@ public class DeltaDocumentSaveTest {
             comparisionFile.close();
         } catch (IOException ex) {
             Logger.getLogger(DeltaDocumentSaveTest.class.getName()).log(Level.SEVERE, null, ex);
-            fail("Exception: " + ex.getMessage());
+            Assert.fail("Exception: " + ex.getMessage());
         }
 
         document.validatePointerPosition();
         document.clear();
-        assertEquals(0, document.getSegments().size());
+        Assert.assertEquals(0, document.getSegments().size());
         closeTempDeltaDocument(document);
     }
 
     @Test
     public void testOverwriteEndSaveDocument() {
         DeltaDocument document = openTempDeltaDocument();
-        assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
+        Assert.assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
         document.replace(254, new byte[]{0x40, 0x41});
         document.validatePointerPosition();
 
@@ -317,19 +316,19 @@ public class DeltaDocumentSaveTest {
             comparisionFile.close();
         } catch (IOException ex) {
             Logger.getLogger(DeltaDocumentSaveTest.class.getName()).log(Level.SEVERE, null, ex);
-            fail("Exception: " + ex.getMessage());
+            Assert.fail("Exception: " + ex.getMessage());
         }
 
         document.validatePointerPosition();
         document.clear();
-        assertEquals(0, document.getSegments().size());
+        Assert.assertEquals(0, document.getSegments().size());
         closeTempDeltaDocument(document);
     }
 
     @Test
     public void testOverwriteCopyBeginSaveDocument() {
         DeltaDocument document = openTempDeltaDocument();
-        assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
+        Assert.assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
         BinaryData copy = document.copy(0x40, 2);
         document.replace(0, copy);
         document.validatePointerPosition();
@@ -346,19 +345,19 @@ public class DeltaDocumentSaveTest {
             comparisionFile.close();
         } catch (IOException ex) {
             Logger.getLogger(DeltaDocumentSaveTest.class.getName()).log(Level.SEVERE, null, ex);
-            fail("Exception: " + ex.getMessage());
+            Assert.fail("Exception: " + ex.getMessage());
         }
 
         document.validatePointerPosition();
         document.clear();
-        assertEquals(0, document.getSegments().size());
+        Assert.assertEquals(0, document.getSegments().size());
         closeTempDeltaDocument(document);
     }
 
     @Test
     public void testOverwriteCopyMiddleSaveDocument() {
         DeltaDocument document = openTempDeltaDocument();
-        assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
+        Assert.assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
         BinaryData copy = document.copy(0x40, 2);
         document.replace(120, copy);
         document.validatePointerPosition();
@@ -375,19 +374,19 @@ public class DeltaDocumentSaveTest {
             comparisionFile.close();
         } catch (IOException ex) {
             Logger.getLogger(DeltaDocumentSaveTest.class.getName()).log(Level.SEVERE, null, ex);
-            fail("Exception: " + ex.getMessage());
+            Assert.fail("Exception: " + ex.getMessage());
         }
 
         document.validatePointerPosition();
         document.clear();
-        assertEquals(0, document.getSegments().size());
+        Assert.assertEquals(0, document.getSegments().size());
         closeTempDeltaDocument(document);
     }
 
     @Test
     public void testOverwriteCopyEndSaveDocument() {
         DeltaDocument document = openTempDeltaDocument();
-        assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
+        Assert.assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
         BinaryData copy = document.copy(0x40, 2);
         document.replace(254, copy);
         document.validatePointerPosition();
@@ -404,19 +403,19 @@ public class DeltaDocumentSaveTest {
             comparisionFile.close();
         } catch (IOException ex) {
             Logger.getLogger(DeltaDocumentSaveTest.class.getName()).log(Level.SEVERE, null, ex);
-            fail("Exception: " + ex.getMessage());
+            Assert.fail("Exception: " + ex.getMessage());
         }
 
         document.validatePointerPosition();
         document.clear();
-        assertEquals(0, document.getSegments().size());
+        Assert.assertEquals(0, document.getSegments().size());
         closeTempDeltaDocument(document);
     }
 
     @Test
     public void testRemoveBeginSaveDocument() {
         DeltaDocument document = openTempDeltaDocument();
-        assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
+        Assert.assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
         document.remove(0, 2);
         document.validatePointerPosition();
 
@@ -431,19 +430,19 @@ public class DeltaDocumentSaveTest {
             comparisionFile.close();
         } catch (IOException ex) {
             Logger.getLogger(DeltaDocumentSaveTest.class.getName()).log(Level.SEVERE, null, ex);
-            fail("Exception: " + ex.getMessage());
+            Assert.fail("Exception: " + ex.getMessage());
         }
 
         document.validatePointerPosition();
         document.clear();
-        assertEquals(0, document.getSegments().size());
+        Assert.assertEquals(0, document.getSegments().size());
         closeTempDeltaDocument(document);
     }
 
     @Test
     public void testRemoveMiddleSaveDocument() {
         DeltaDocument document = openTempDeltaDocument();
-        assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
+        Assert.assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
         document.remove(120, 2);
         document.validatePointerPosition();
 
@@ -458,19 +457,19 @@ public class DeltaDocumentSaveTest {
             comparisionFile.close();
         } catch (IOException ex) {
             Logger.getLogger(DeltaDocumentSaveTest.class.getName()).log(Level.SEVERE, null, ex);
-            fail("Exception: " + ex.getMessage());
+            Assert.fail("Exception: " + ex.getMessage());
         }
 
         document.validatePointerPosition();
         document.clear();
-        assertEquals(0, document.getSegments().size());
+        Assert.assertEquals(0, document.getSegments().size());
         closeTempDeltaDocument(document);
     }
 
     @Test
     public void testRemoveEndSaveDocument() {
         DeltaDocument document = openTempDeltaDocument();
-        assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
+        Assert.assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
         document.remove(254, 2);
         document.validatePointerPosition();
 
@@ -485,19 +484,19 @@ public class DeltaDocumentSaveTest {
             comparisionFile.close();
         } catch (IOException ex) {
             Logger.getLogger(DeltaDocumentSaveTest.class.getName()).log(Level.SEVERE, null, ex);
-            fail("Exception: " + ex.getMessage());
+            Assert.fail("Exception: " + ex.getMessage());
         }
 
         document.validatePointerPosition();
         document.clear();
-        assertEquals(0, document.getSegments().size());
+        Assert.assertEquals(0, document.getSegments().size());
         closeTempDeltaDocument(document);
     }
 
     @Test
     public void testSwapHalfSaveDocument() {
         DeltaDocument document = openTempDeltaDocument();
-        assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
+        Assert.assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
         EditableBinaryData halfCopy = (EditableBinaryData) document.copy(0, 128);
         document.remove(0, 128);
         document.validatePointerPosition();
@@ -516,19 +515,19 @@ public class DeltaDocumentSaveTest {
             comparisionFile.close();
         } catch (IOException ex) {
             Logger.getLogger(DeltaDocumentSaveTest.class.getName()).log(Level.SEVERE, null, ex);
-            fail("Exception: " + ex.getMessage());
+            Assert.fail("Exception: " + ex.getMessage());
         }
 
         document.validatePointerPosition();
         document.clear();
-        assertEquals(0, document.getSegments().size());
+        Assert.assertEquals(0, document.getSegments().size());
         closeTempDeltaDocument(document);
     }
 
     @Test
     public void testSwapMiddleSaveDocument() {
         DeltaDocument document = openTempDeltaDocument();
-        assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
+        Assert.assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
         EditableBinaryData quarterCopy = (EditableBinaryData) document.copy(64, 64);
         document.remove(64, 64);
         document.validatePointerPosition();
@@ -547,19 +546,19 @@ public class DeltaDocumentSaveTest {
             comparisionFile.close();
         } catch (IOException ex) {
             Logger.getLogger(DeltaDocumentSaveTest.class.getName()).log(Level.SEVERE, null, ex);
-            fail("Exception: " + ex.getMessage());
+            Assert.fail("Exception: " + ex.getMessage());
         }
 
         document.validatePointerPosition();
         document.clear();
-        assertEquals(0, document.getSegments().size());
+        Assert.assertEquals(0, document.getSegments().size());
         closeTempDeltaDocument(document);
     }
 
     @Test
     public void testSwapDoubleSaveDocument() {
         DeltaDocument document = openTempDeltaDocument();
-        assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
+        Assert.assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
         EditableBinaryData quarterCopy = (EditableBinaryData) document.copy(0, 64);
         document.remove(0, 64);
         document.validatePointerPosition();
@@ -584,19 +583,19 @@ public class DeltaDocumentSaveTest {
             comparisionFile.close();
         } catch (IOException ex) {
             Logger.getLogger(DeltaDocumentSaveTest.class.getName()).log(Level.SEVERE, null, ex);
-            fail("Exception: " + ex.getMessage());
+            Assert.fail("Exception: " + ex.getMessage());
         }
 
         document.validatePointerPosition();
         document.clear();
-        assertEquals(0, document.getSegments().size());
+        Assert.assertEquals(0, document.getSegments().size());
         closeTempDeltaDocument(document);
     }
 
     @Test
     public void testSwapFirstQuarterSaveDocument() {
         DeltaDocument document = openTempDeltaDocument();
-        assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
+        Assert.assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
         EditableBinaryData quarterCopy = (EditableBinaryData) document.copy(0, 64);
         document.remove(0, 64);
         document.validatePointerPosition();
@@ -615,19 +614,19 @@ public class DeltaDocumentSaveTest {
             comparisionFile.close();
         } catch (IOException ex) {
             Logger.getLogger(DeltaDocumentSaveTest.class.getName()).log(Level.SEVERE, null, ex);
-            fail("Exception: " + ex.getMessage());
+            Assert.fail("Exception: " + ex.getMessage());
         }
 
         document.validatePointerPosition();
         document.clear();
-        assertEquals(0, document.getSegments().size());
+        Assert.assertEquals(0, document.getSegments().size());
         closeTempDeltaDocument(document);
     }
 
     @Test
     public void testSwapLastQuarterSaveDocument() {
         DeltaDocument document = openTempDeltaDocument();
-        assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
+        Assert.assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
         EditableBinaryData quarterCopy = (EditableBinaryData) document.copy(192, 64);
         document.remove(192, 64);
         document.validatePointerPosition();
@@ -646,19 +645,19 @@ public class DeltaDocumentSaveTest {
             comparisionFile.close();
         } catch (IOException ex) {
             Logger.getLogger(DeltaDocumentSaveTest.class.getName()).log(Level.SEVERE, null, ex);
-            fail("Exception: " + ex.getMessage());
+            Assert.fail("Exception: " + ex.getMessage());
         }
 
         document.validatePointerPosition();
         document.clear();
-        assertEquals(0, document.getSegments().size());
+        Assert.assertEquals(0, document.getSegments().size());
         closeTempDeltaDocument(document);
     }
 
     @Test
     public void testReverseSaveDocument() {
         DeltaDocument document = openTempDeltaDocument();
-        assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
+        Assert.assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
         for (int i = 0; i < 128; i++) {
             byte buf = document.getByte(i);
             document.setByte(i, document.getByte(255 - i));
@@ -678,19 +677,19 @@ public class DeltaDocumentSaveTest {
             comparisionFile.close();
         } catch (IOException ex) {
             Logger.getLogger(DeltaDocumentSaveTest.class.getName()).log(Level.SEVERE, null, ex);
-            fail("Exception: " + ex.getMessage());
+            Assert.fail("Exception: " + ex.getMessage());
         }
 
         document.validatePointerPosition();
         document.clear();
-        assertEquals(0, document.getSegments().size());
+        Assert.assertEquals(0, document.getSegments().size());
         closeTempDeltaDocument(document);
     }
 
     @Test
     public void testSwapReverseSaveDocument() {
         DeltaDocument document = openTempDeltaDocument();
-        assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
+        Assert.assertEquals(SAMPLE_ALLBYTES_SIZE, document.getDataSize());
         for (int i = 0; i < 128; i++) {
             BinaryData copy1 = document.copy(i, 1);
             BinaryData copy2 = document.copy(255 - i, 1);
@@ -713,15 +712,16 @@ public class DeltaDocumentSaveTest {
             comparisionFile.close();
         } catch (IOException ex) {
             Logger.getLogger(DeltaDocumentSaveTest.class.getName()).log(Level.SEVERE, null, ex);
-            fail("Exception: " + ex.getMessage());
+            Assert.fail("Exception: " + ex.getMessage());
         }
 
         document.validatePointerPosition();
         document.clear();
-        assertEquals(0, document.getSegments().size());
+        Assert.assertEquals(0, document.getSegments().size());
         closeTempDeltaDocument(document);
     }
 
+    @Nullable
     public static DeltaDocument openTempDeltaDocument() {
         SegmentsRepository segmentsRepository = new SegmentsRepository();
 
@@ -750,7 +750,7 @@ public class DeltaDocumentSaveTest {
         return null;
     }
 
-    public static void closeTempDeltaDocument(DeltaDocument document) {
+    public static void closeTempDeltaDocument(@Nonnull DeltaDocument document) {
         document.dispose();
         document.getFileSource().close();
         File tempFile = document.getFileSource().getFile();

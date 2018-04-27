@@ -15,29 +15,33 @@
  */
 package org.exbin.bined.delta;
 
+import javax.annotation.Nonnull;
+
 /**
  * Data segment pointing to memory block.
  *
- * @version 0.1.2 2016/12/12
+ * @version 0.2.0 2018/04/27
  * @author ExBin Project (http://exbin.org)
  */
 public class MemorySegment extends DataSegment {
 
+    @Nonnull
     private MemoryDataSource source;
     private long startPosition;
     private long length;
 
-    public MemorySegment(MemoryDataSource source, long startPosition, long length) {
+    public MemorySegment(@Nonnull MemoryDataSource source, long startPosition, long length) {
         this.source = source;
         this.startPosition = startPosition;
         this.length = length;
     }
 
+    @Nonnull
     public MemoryDataSource getSource() {
         return source;
     }
 
-    public void setSource(MemoryDataSource source) {
+    public void setSource(@Nonnull MemoryDataSource source) {
         this.source = source;
     }
 
@@ -63,6 +67,7 @@ public class MemorySegment extends DataSegment {
         return source.getByte(position);
     }
 
+    @Nonnull
     @Override
     public DataSegment copy() {
         return new MemorySegment(null, startPosition, length);
