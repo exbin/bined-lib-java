@@ -15,50 +15,387 @@
  */
 package org.exbin.bined.swt.basic;
 
+import java.awt.Dimension;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.swing.JPanel;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
+import javax.swing.UIManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.graphics.FontMetrics;
+import org.exbin.bined.CodeAreaCaretPosition;
 import org.exbin.bined.CodeAreaUtils;
+import org.exbin.bined.CodeAreaViewMode;
+import org.exbin.bined.CodeCharactersCase;
+import org.exbin.bined.CodeType;
 import org.exbin.bined.EditationMode;
-import org.exbin.bined.HexCharactersCase;
-import org.exbin.bined.Section;
 import org.exbin.bined.SelectionRange;
-import org.exbin.bined.ViewMode;
+import org.exbin.bined.capability.CaretCapable;
+import org.exbin.bined.capability.CharsetCapable;
+import org.exbin.bined.capability.CodeCharactersCaseCapable;
+import org.exbin.bined.capability.CodeTypeCapable;
+import org.exbin.bined.capability.EditationModeCapable;
+import org.exbin.bined.capability.SelectionCapable;
+import org.exbin.bined.capability.ViewModeCapable;
 import org.exbin.bined.swt.CodeArea;
-import org.exbin.bined.swt.extended.CodeAreaCaret;
 import org.exbin.bined.swt.CodeAreaPainter;
+import org.exbin.bined.swt.CodeAreaWorker;
 import org.exbin.bined.swt.ColorsGroup;
+import org.exbin.bined.swt.capability.FontCapable;
 
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2018/04/25
+ * @version 0.2.0 2018/04/29
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
-    public static final int MIN_MONOSPACE_CODE_POINT = 0x19;
-    public static final int MAX_MONOSPACE_CODE_POINT = 0x1C3;
-    public static final int INV_SPACE_CODE_POINT = 0x7f;
-    public static final int EXCEPTION1_CODE_POINT = 0x8e;
-    public static final int EXCEPTION2_CODE_POINT = 0x9e;
+    @Nonnull
+    protected final CodeAreaWorker worker;
+    private boolean initialized = false;
+    private boolean fontChanged = false;
 
-    protected final CodeArea codeArea;
+    private CodeAreaViewMode viewMode;
+    private final CodeAreaCaretPosition caretPosition = new CodeAreaCaretPosition();
+    private SelectionRange selectionRange = null;
+    private final CodeAreaScrollPosition scrollPosition = new CodeAreaScrollPosition();
+    @Nonnull
+    private ScrollBarVerticalScale scrollBarVerticalScale = ScrollBarVerticalScale.NORMAL;
 
+    private VerticalScrollUnit verticalScrollUnit;
+    private HorizontalScrollUnit horizontalScrollUnit;
+    private final Colors colors = new Colors();
+    private long dataSize;
+
+    private int componentWidth;
+    private int componentHeight;
+    private int dataViewX;
+    private int dataViewY;
+    private int scrollPanelWidth;
+    private int scrollPanelHeight;
+    private int dataViewWidth;
+    private int dataViewHeight;
+
+    private int rowPositionLength;
+    private int rowPositionAreaWidth;
+    private int headerAreaHeight;
+    private int rowHeight;
+    private int rowsPerPage;
+    private int rowsPerRect;
+    private int bytesPerRow;
+    private int charactersPerPage;
+    private int charactersPerRect;
+    private int charactersPerRow;
+    private CodeType codeType;
+    private CodeCharactersCase hexCharactersCase;
+    private EditationMode editationMode;
+    private BasicBackgroundPaintMode backgroundPaintMode;
+    private boolean showMirrorCursor;
+
+    private int codeLastCharPos;
+    private int previewCharPos;
+    private int previewRelativeX;
+    private int visibleCharStart;
+    private int visibleCharEnd;
+    private int visiblePreviewStart;
+    private int visiblePreviewEnd;
+    private int visibleCodeStart;
+    private int visibleCodeEnd;
+
+    @Nonnull
+    private Charset charset;
+    @Nullable
+    private Font font;
+    private int maxCharLength;
+
+    private byte[] rowData;
+    private char[] rowPositionCode;
+    private char[] rowCharacters;
+
+    // TODO replace with computation
+    private int subFontSpace = 3;
+
+    @Nullable
     private Charset charMappingCharset = null;
-    protected final char[] charMapping = new char[256];
-    protected Map<Character, Character> unprintableCharactersMapping = null;
+    private final char[] charMapping = new char[256];
+    // Debug
+    private long paintCounter = 0;
 
-    public DefaultCodeAreaPainter(CodeArea codeArea) {
-        this.codeArea = codeArea;
+    @Nullable
+    private FontMetrics fontMetrics;
+    private boolean monospaceFont;
+    private int characterWidth;
+
+    public DefaultCodeAreaPainter(@Nonnull CodeAreaWorker worker) {
+        this.worker = worker;
+        CodeArea codeArea = worker.getCodeArea();
+        dataView = new JPanel();
+        dataView.setBorder(null);
+        dataView.setVisible(false);
+        dataView.setLayout(null);
+        dataView.setOpaque(false);
+        // Fill whole area, no more suitable method found so far
+        dataView.setPreferredSize(new Dimension(0, 0));
+        scrollPanel = new JScrollPane();
+        scrollPanel.setBorder(null);
+        scrollPanel.setIgnoreRepaint(true);
+        JScrollBar verticalScrollBar = scrollPanel.getVerticalScrollBar();
+        verticalScrollBar.setIgnoreRepaint(true);
+        verticalScrollBar.addAdjustmentListener(new VerticalAdjustmentListener());
+        JScrollBar horizontalScrollBar = scrollPanel.getHorizontalScrollBar();
+        horizontalScrollBar.setIgnoreRepaint(true);
+        horizontalScrollBar.addAdjustmentListener(new HorizontalAdjustmentListener());
+        codeArea.add(scrollPanel);
+        scrollPanel.setOpaque(false);
+        scrollPanel.setViewportView(dataView);
+        scrollPanel.setViewportBorder(null);
+        scrollPanel.getViewport().setOpaque(false);
+
+        DefaultCodeAreaMouseListener codeAreaMouseListener = new DefaultCodeAreaMouseListener(codeArea, scrollPanel);
+        codeArea.addMouseListener(codeAreaMouseListener);
+        codeArea.addMouseMotionListener(codeAreaMouseListener);
+        codeArea.addMouseWheelListener(codeAreaMouseListener);
+        scrollPanel.addMouseListener(codeAreaMouseListener);
+        scrollPanel.addMouseMotionListener(codeAreaMouseListener);
+        scrollPanel.addMouseWheelListener(codeAreaMouseListener);
+    }
+
+    @Override
+    public void reset() {
+        resetColors();
+        resetFont();
+        resetLayout();
+    }
+
+    @Override
+    public void resetFont() {
+        fontChanged = true;
+    }
+
+    @Override
+    public void resetLayout() {
+        resetSizes();
+
+        viewMode = ((ViewModeCapable) worker).getViewMode();
+        hexCharactersCase = ((CodeCharactersCaseCapable) worker).getCodeCharactersCase();
+        editationMode = ((EditationModeCapable) worker).getEditationMode();
+        caretPosition.setPosition(((CaretCapable) worker).getCaret().getCaretPosition());
+        selectionRange = ((SelectionCapable) worker).getSelection();
+        backgroundPaintMode = ((BackgroundPaintCapable) worker).getBackgroundPaintMode();
+        showMirrorCursor = ((CaretCapable) worker).isShowMirrorCursor();
+        dataSize = worker.getCodeArea().getDataSize();
+
+        rowsPerRect = computeRowsPerRectangle();
+        rowsPerPage = computeRowsPerPage();
+        bytesPerRow = computeBytesPerRow();
+
+        codeType = ((CodeTypeCapable) worker).getCodeType();
+        hexCharactersCase = CodeCharactersCase.UPPER;
+
+        charactersPerPage = computeCharactersPerPage();
+        charactersPerRow = computeCharactersPerRow();
+
+        resetScrollState();
+    }
+
+    private void resetCharPositions() {
+        charactersPerRect = computeCharactersPerRectangle();
+
+        // Compute first and last visible character of the code area
+        if (viewMode != CodeAreaViewMode.TEXT_PREVIEW) {
+            codeLastCharPos = bytesPerRow * (codeType.getMaxDigitsForByte() + 1) - 1;
+        } else {
+            codeLastCharPos = 0;
+        }
+
+        if (viewMode == CodeAreaViewMode.DUAL) {
+            previewCharPos = bytesPerRow * (codeType.getMaxDigitsForByte() + 1);
+        } else {
+            previewCharPos = 0;
+        }
+        previewRelativeX = previewCharPos * characterWidth;
+
+        if (viewMode == CodeAreaViewMode.DUAL || viewMode == CodeAreaViewMode.CODE_MATRIX) {
+            visibleCharStart = (scrollPosition.getScrollCharPosition() * characterWidth + scrollPosition.getScrollCharOffset()) / characterWidth;
+            if (visibleCharStart < 0) {
+                visibleCharStart = 0;
+            }
+            visibleCharEnd = ((scrollPosition.getScrollCharPosition() + charactersPerRect) * characterWidth + scrollPosition.getScrollCharOffset()) / characterWidth;
+            if (visibleCharEnd > charactersPerRow) {
+                visibleCharEnd = charactersPerRow;
+            }
+            visibleCodeStart = computePositionByte(visibleCharStart);
+            visibleCodeEnd = computePositionByte(visibleCharEnd - 1) + 1;
+        } else {
+            visibleCharStart = 0;
+            visibleCharEnd = -1;
+            visibleCodeStart = 0;
+            visibleCodeEnd = -1;
+        }
+
+        if (viewMode == CodeAreaViewMode.DUAL || viewMode == CodeAreaViewMode.TEXT_PREVIEW) {
+            visiblePreviewStart = (scrollPosition.getScrollCharPosition() * characterWidth + scrollPosition.getScrollCharOffset()) / characterWidth - previewCharPos;
+            if (visiblePreviewStart < 0) {
+                visiblePreviewStart = 0;
+            }
+            if (visibleCodeEnd < 0) {
+                visibleCharStart = visiblePreviewStart + previewCharPos;
+            }
+            visiblePreviewEnd = (dataViewWidth + (scrollPosition.getScrollCharPosition() + 1) * characterWidth + scrollPosition.getScrollCharOffset()) / characterWidth - previewCharPos;
+            if (visiblePreviewEnd > bytesPerRow) {
+                visiblePreviewEnd = bytesPerRow;
+            }
+            if (visiblePreviewEnd >= 0) {
+                visibleCharEnd = visiblePreviewEnd + previewCharPos;
+            }
+        } else {
+            visiblePreviewStart = 0;
+            visiblePreviewEnd = -1;
+        }
+
+        rowData = new byte[bytesPerRow + maxCharLength - 1];
+        rowPositionCode = new char[rowPositionLength];
+        rowCharacters = new char[charactersPerRow];
+    }
+
+    public void resetFont(@Nonnull GC g) {
+        if (font == null) {
+            reset();
+        }
+
+        charset = ((CharsetCapable) worker).getCharset();
+        CharsetEncoder encoder = charset.newEncoder();
+        maxCharLength = (int) encoder.maxBytesPerChar();
+
+        font = ((FontCapable) worker).getFont();
+        fontMetrics = g.getFontMetrics(font);
+        /**
+         * Use small 'w' character to guess normal font width.
+         */
+        characterWidth = fontMetrics.charWidth('w');
+        /**
+         * Compare it to small 'i' to detect if font is monospaced.
+         *
+         * TODO: Is there better way?
+         */
+        monospaceFont = characterWidth == fontMetrics.charWidth(' ') && characterWidth == fontMetrics.charWidth('i');
+        int fontSize = font.getSize();
+        rowHeight = fontSize + subFontSpace;
+
+        rowPositionLength = getRowPositionLength();
+        resetSizes();
+        resetCharPositions();
+        initialized = true;
+    }
+
+    public void dataViewScrolled(@Nonnull GC g) {
+        if (!isInitialized()) {
+            return;
+        }
+
+        resetScrollState();
+        if (characterWidth > 0) {
+            resetCharPositions();
+            paintComponent(g);
+        }
+    }
+
+    private void resetScrollState() {
+        scrollPosition.setScrollPosition(((ScrollingCapable) worker).getScrollPosition());
+
+        if (characterWidth > 0) {
+            resetCharPositions();
+        }
+
+        verticalScrollUnit = ((ScrollingCapable) worker).getVerticalScrollUnit();
+        horizontalScrollUnit = ((ScrollingCapable) worker).getHorizontalScrollUnit();
+
+        if (rowHeight > 0 && characterWidth > 0) {
+            int documentDataWidth = charactersPerRow * characterWidth;
+            long rowsPerData = (dataSize + bytesPerRow - 1) / bytesPerRow;
+
+            int documentDataHeight;
+            if (rowsPerData > Integer.MAX_VALUE / rowHeight) {
+                scrollBarVerticalScale = ScrollBarVerticalScale.SCALED;
+                documentDataHeight = Integer.MAX_VALUE;
+            } else {
+                scrollBarVerticalScale = ScrollBarVerticalScale.NORMAL;
+                documentDataHeight = (int) (rowsPerData * rowHeight);
+            }
+
+            dataView.setPreferredSize(new Dimension(documentDataWidth, documentDataHeight));
+        }
+
+        // TODO on resize only
+        scrollPanel.setBounds(getScrollPanelRectangle());
+        scrollPanel.revalidate();
+    }
+
+    private void resetSizes() {
+        if (fontMetrics == null) {
+            headerAreaHeight = 0;
+        } else {
+            int fontHeight = fontMetrics.getHeight();
+            headerAreaHeight = fontHeight + fontHeight / 4;
+        }
+
+        componentWidth = worker.getCodeArea().getWidth();
+        componentHeight = worker.getCodeArea().getHeight();
+        rowPositionAreaWidth = characterWidth * (rowPositionLength + 1);
+        dataViewX = rowPositionAreaWidth;
+        dataViewY = headerAreaHeight;
+        scrollPanelWidth = componentWidth - rowPositionAreaWidth;
+        scrollPanelHeight = componentHeight - headerAreaHeight;
+        dataViewWidth = scrollPanelWidth - getVerticalScrollBarSize();
+        dataViewHeight = scrollPanelHeight - getHorizontalScrollBarSize();
+    }
+
+    private void resetColors() {
+        CodeArea codeArea = worker.getCodeArea();
+        colors.foreground = codeArea.getForeground();
+        if (colors.foreground == null) {
+            colors.foreground = java.awt.Color.BLACK;
+        }
+
+        colors.background = codeArea.getBackground();
+        if (colors.background == null) {
+            colors.background = java.awt.Color.WHITE;
+        }
+        colors.selectionForeground = UIManager.getColor("TextArea.selectionForeground");
+        if (colors.selectionForeground == null) {
+            colors.selectionForeground = java.awt.Color.WHITE;
+        }
+        colors.selectionBackground = UIManager.getColor("TextArea.selectionBackground");
+        if (colors.selectionBackground == null) {
+            colors.selectionBackground = new java.awt.Color(96, 96, 255);
+        }
+        colors.selectionMirrorForeground = colors.selectionForeground;
+        colors.selectionMirrorBackground = CodeAreaSwingUtils.computeGrayColor(colors.selectionBackground);
+        colors.cursor = UIManager.getColor("TextArea.caretForeground");
+        if (colors.cursor == null) {
+            colors.cursor = java.awt.Color.BLACK;
+        }
+        colors.negativeCursor = CodeAreaSwingUtils.createNegativeColor(colors.cursor);
+        colors.decorationLine = java.awt.Color.GRAY;
+
+        colors.stripes = CodeAreaSwingUtils.createOddColor(colors.background);
+    }
+
+    @Override
+    public boolean isInitialized() {
+        return initialized;
     }
 
     @Override
@@ -931,262 +1268,38 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         charMappingCharset = charset;
     }
 
-    private void buildUnprintableCharactersMapping() {
-        unprintableCharactersMapping = new HashMap<>();
-        // Unicode control characters, might not be supported by font
-        for (int i = 0; i < 32; i++) {
-            unprintableCharactersMapping.put((char) i, Character.toChars(9216 + i)[0]);
-        }
-        // Space -> Middle Dot
-        unprintableCharactersMapping.put(' ', Character.toChars(183)[0]);
-        // Tab -> Right-Pointing Double Angle Quotation Mark
-        unprintableCharactersMapping.put('\t', Character.toChars(187)[0]);
-        // Line Feed -> Currency Sign
-        unprintableCharactersMapping.put('\r', Character.toChars(164)[0]);
-        // Carriage Return -> Pilcrow Sign
-        unprintableCharactersMapping.put('\n', Character.toChars(182)[0]);
-        // Ideographic Space -> Degree Sign
-        unprintableCharactersMapping.put(Character.toChars(127)[0], Character.toChars(176)[0]);
+    private void notifyScrolled() {
+        resetScrollState();
+        // TODO
+    }
+
+    private static class Colors {
+
+        Color foreground;
+        Color background;
+        Color selectionForeground;
+        Color selectionBackground;
+        Color selectionMirrorForeground;
+        Color selectionMirrorBackground;
+        Color cursor;
+        Color negativeCursor;
+        Color cursorMirror;
+        Color negativeCursorMirror;
+        Color decorationLine;
+        Color stripes;
     }
 
     /**
-     * Paint cache data structure for single paint operation.
-     *
-     * Data copied from CodeArea for faster access + array space for line data.
+     * Enumeration of vertical scalling modes.
      */
-    protected static class PaintData {
-
-        protected ViewMode viewMode;
-        protected CodeArea.BackgroundPaintMode backgroundMode;
-        protected Rectangle codeSectionRect;
-        protected CodeArea.ScrollPosition scrollPosition;
-        protected int charWidth;
-        protected int bytesPerLine;
-        protected int lineHeight;
-        protected int codeDigits;
-        protected int byteGroupSize;
-        protected int spaceGroupSize;
-        protected int charsPerLine;
-        protected Charset charset;
-        protected int maxCharLength;
-        protected boolean showUnprintableCharacters;
-        protected CodeArea.CharRenderingMode charRenderingMode;
-        protected FontMetrics fontMetrics;
-        protected boolean monospaceFont;
-        protected int charsPerCodeArea;
-        protected int previewCharPos;
-        protected int visibleCharStart;
-        protected int visibleCharEnd;
-        protected int visibleCodeStart;
-        protected int visibleCodeEnd;
-        protected int visiblePreviewStart;
-        protected int visiblePreviewEnd;
-
-        protected ColorsGroup mainColors;
-        protected ColorsGroup alternateColors;
-
-        // Line related fields
-        protected int lineStart;
-        protected long lineDataPosition;
-        protected long line;
-
-        protected char[] lineChars;
-
+    public enum ScrollBarVerticalScale {
         /**
-         * Line data cache.
+         * Normal ratio 1 on 1.
          */
-        protected byte[] lineData;
-
+        NORMAL,
         /**
-         * Single line of unprintable characters.
+         * Height is more than available range and scaled.
          */
-        protected char[] unprintableChars;
-
-        public PaintData(CodeArea codeArea) {
-            viewMode = codeArea.getViewMode();
-            backgroundMode = codeArea.getBackgroundPaintMode();
-            codeSectionRect = codeArea.getCodeSectionRectangle();
-            scrollPosition = codeArea.getScrollPosition();
-            charWidth = codeArea.getCharWidth();
-            bytesPerLine = codeArea.getBytesPerLine();
-            lineHeight = codeArea.getLineHeight();
-            codeDigits = codeArea.getCodeType().getMaxDigits();
-            charset = codeArea.getCharset();
-            mainColors = codeArea.getMainColors();
-            alternateColors = codeArea.getAlternateColors();
-            charRenderingMode = codeArea.getCharRenderingMode();
-            fontMetrics = codeArea.getFontMetrics();
-            monospaceFont = codeArea.isMonospaceFontDetected();
-            byteGroupSize = codeArea.getByteGroupSize();
-            spaceGroupSize = codeArea.getSpaceGroupSize();
-
-            CharsetEncoder encoder = charset.newEncoder();
-            maxCharLength = (int) encoder.maxBytesPerChar();
-            lineData = new byte[bytesPerLine + maxCharLength - 1];
-            charsPerLine = codeArea.getCharsPerLine();
-
-            lineChars = new char[charsPerLine];
-            Arrays.fill(lineChars, ' ');
-
-            showUnprintableCharacters = codeArea.isShowUnprintableCharacters();
-            if (showUnprintableCharacters) {
-                unprintableChars = new char[charsPerLine];
-            }
-
-            charsPerCodeArea = codeArea.computeByteCharPos(bytesPerLine, false);
-            // Compute first and last visible character of the code area
-            if (viewMode == ViewMode.DUAL) {
-                previewCharPos = charsPerCodeArea + 1;
-            } else {
-                previewCharPos = 0;
-            }
-
-            if (viewMode == ViewMode.DUAL || viewMode == ViewMode.CODE_MATRIX) {
-                visibleCharStart = (scrollPosition.getScrollCharPosition() * charWidth + scrollPosition.getScrollCharOffset()) / charWidth;
-                if (visibleCharStart < 0) {
-                    visibleCharStart = 0;
-                }
-                visibleCharEnd = (codeSectionRect.width + (scrollPosition.getScrollCharPosition() + charsPerLine) * charWidth + scrollPosition.getScrollCharOffset()) / charWidth;
-                if (visibleCharEnd > charsPerCodeArea) {
-                    visibleCharEnd = charsPerCodeArea;
-                }
-                visibleCodeStart = codeArea.computeByteOffsetPerCodeCharOffset(visibleCharStart, false);
-                visibleCodeEnd = codeArea.computeByteOffsetPerCodeCharOffset(visibleCharEnd - 1, false) + 1;
-            } else {
-                visibleCharStart = 0;
-                visibleCharEnd = -1;
-                visibleCodeStart = 0;
-                visibleCodeEnd = -1;
-            }
-
-            if (viewMode == ViewMode.DUAL || viewMode == ViewMode.TEXT_PREVIEW) {
-                visiblePreviewStart = (scrollPosition.getScrollCharPosition() * charWidth + scrollPosition.getScrollCharOffset()) / charWidth - previewCharPos;
-                if (visiblePreviewStart < 0) {
-                    visiblePreviewStart = 0;
-                }
-                if (visibleCodeEnd < 0) {
-                    visibleCharStart = visiblePreviewStart + previewCharPos;
-                }
-                visiblePreviewEnd = (codeSectionRect.width + (scrollPosition.getScrollCharPosition() + 1) * charWidth + scrollPosition.getScrollCharOffset()) / charWidth - previewCharPos;
-                if (visiblePreviewEnd > bytesPerLine) {
-                    visiblePreviewEnd = bytesPerLine;
-                }
-                if (visiblePreviewEnd >= 0) {
-                    visibleCharEnd = visiblePreviewEnd + previewCharPos;
-                }
-            } else {
-                visiblePreviewStart = 0;
-                visiblePreviewEnd = -1;
-            }
-        }
-
-        public int charWidth(char character) {
-            return charWidth;
-            // TODO
-        }
-
-        public ViewMode getViewMode() {
-            return viewMode;
-        }
-
-        public CodeArea.BackgroundPaintMode getBackgroundPaintMode() {
-            return backgroundMode;
-        }
-
-        public Rectangle getCodeSectionRect() {
-            return codeSectionRect;
-        }
-
-        public CodeArea.ScrollPosition getScrollPosition() {
-            return scrollPosition;
-        }
-
-        public CodeArea.CharRenderingMode getCharRenderingMode() {
-            return charRenderingMode;
-        }
-
-        public int getCharWidth() {
-            return charWidth;
-        }
-
-        public int getBytesPerLine() {
-            return bytesPerLine;
-        }
-
-        public int getByteGroupSize() {
-            return byteGroupSize;
-        }
-
-        public int getSpaceGroupSize() {
-            return spaceGroupSize;
-        }
-
-        public int getLineHeight() {
-            return lineHeight;
-        }
-
-        public int getCodeDigits() {
-            return codeDigits;
-        }
-
-        public int getCharsPerLine() {
-            return charsPerLine;
-        }
-
-        public Charset getCharset() {
-            return charset;
-        }
-
-        public int getMaxCharLength() {
-            return maxCharLength;
-        }
-
-        public int getPreviewCharPos() {
-            return previewCharPos;
-        }
-
-        public boolean isShowUnprintableCharacters() {
-            return showUnprintableCharacters;
-        }
-
-        public ColorsGroup getMainColors() {
-            return mainColors;
-        }
-
-        public ColorsGroup getStripColors() {
-            return alternateColors;
-        }
-
-        public long getLineDataPosition() {
-            return lineDataPosition;
-        }
-
-        public long getLine() {
-            return line;
-        }
-
-        public int getVisibleCharStart() {
-            return visibleCharStart;
-        }
-
-        public int getVisibleCharEnd() {
-            return visibleCharEnd;
-        }
-
-        public int getVisibleCodeStart() {
-            return visibleCodeStart;
-        }
-
-        public int getVisibleCodeEnd() {
-            return visibleCodeEnd;
-        }
-
-        public int getVisiblePreviewStart() {
-            return visiblePreviewStart;
-        }
-
-        public int getVisiblePreviewEnd() {
-            return visiblePreviewEnd;
-        }
+        SCALED
     }
 }
