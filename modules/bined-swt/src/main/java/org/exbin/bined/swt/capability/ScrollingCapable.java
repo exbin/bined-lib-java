@@ -19,10 +19,10 @@ import javax.annotation.Nonnull;
 import org.exbin.bined.ScrollBarVisibility;
 import org.exbin.bined.ScrollingListener;
 import org.exbin.bined.capability.WorkerCapability;
-import org.exbin.bined.swt.HorizontalScrollUnit;
 import org.exbin.bined.swt.ScrollingDirection;
-import org.exbin.bined.swt.VerticalScrollUnit;
 import org.exbin.bined.swt.basic.CodeAreaScrollPosition;
+import org.exbin.bined.swt.basic.HorizontalScrollUnit;
+import org.exbin.bined.swt.basic.VerticalScrollUnit;
 
 /**
  * Support for code type capability.

@@ -50,10 +50,8 @@ import org.exbin.bined.swt.CodeArea;
 import org.exbin.bined.swt.CodeAreaPainter;
 import org.exbin.bined.swt.CodeAreaWorker;
 import org.exbin.bined.swt.CodeAreaWorker.CodeAreaWorkerFactory;
-import org.exbin.bined.swt.HorizontalScrollUnit;
 import org.exbin.bined.swt.MovementDirection;
 import org.exbin.bined.swt.ScrollingDirection;
-import org.exbin.bined.swt.VerticalScrollUnit;
 import org.exbin.bined.swt.capability.BackgroundPaintCapable;
 import org.exbin.bined.swt.capability.FontCapable;
 import org.exbin.bined.swt.capability.ScrollingCapable;
@@ -61,7 +59,7 @@ import org.exbin.bined.swt.capability.ScrollingCapable;
 /**
  * Code area component default worker.
  *
- * @version 0.2.0 2018/04/26
+ * @version 0.2.0 2018/04/30
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, CaretCapable, ScrollingCapable, ViewModeCapable,
