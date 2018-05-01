@@ -15,18 +15,22 @@
  */
 package org.exbin.bined.swt.example;
 
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
-import org.eclipse.swt.widgets.Text;
+import org.exbin.bined.swt.CodeArea;
+import org.exbin.utils.binary_data.ByteArrayEditableData;
 
 /**
  * Example Swing GUI demonstration application of the bined component.
  *
- * @version 0.2.0 2018/04/25
+ * @version 0.2.0 2018/05/01
  * @author ExBin Project (http://exbin.org)
  */
 public class BinEdExample {
@@ -50,22 +54,23 @@ public class BinEdExample {
         TabItem basicTabItem = new TabItem(tabFolder, SWT.NULL);
         basicTabItem.setText("Basic");
 
-        Text text = new Text(tabFolder, SWT.BORDER);
-        text.setText("TEST");
-        basicTabItem.setControl(text);
+//        Text text = new Text(tabFolder, SWT.BORDER);
+//        text.setText("TEST");
+//        basicTabItem.setControl(text);
 
         TabItem extendedTabItem = new TabItem(tabFolder, SWT.NULL);
         extendedTabItem.setText("Extended");
 
 //        final BinEdExampleBasicPanel basicPanel = new BinEdExampleBasicPanel();
-//        final CodeArea basicCodeArea = new CodeArea();
-//        ByteArrayEditableData basicData = new ByteArrayEditableData();
-//        try {
-//            basicData.loadFromStream(basicCodeArea.getClass().getResourceAsStream(EXAMPLE_FILE_PATH));
-//        } catch (IOException ex) {
-//            Logger.getLogger(BinEdExample.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        basicCodeArea.setData(basicData);
+        final CodeArea basicCodeArea = new CodeArea(tabFolder, SWT.BORDER);
+        ByteArrayEditableData basicData = new ByteArrayEditableData();
+        try {
+            basicData.loadFromStream(basicCodeArea.getClass().getResourceAsStream(EXAMPLE_FILE_PATH));
+        } catch (IOException ex) {
+            Logger.getLogger(BinEdExample.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        basicCodeArea.setContentData(basicData);
+        basicTabItem.setControl(basicCodeArea);
 //        basicPanel.setCodeArea(basicCodeArea);
 
         shell.open();
@@ -94,7 +99,7 @@ public class BinEdExample {
 //        } catch (IOException ex) {
 //            Logger.getLogger(BinEdExample.class.getName()).log(Level.SEVERE, null, ex);
 //        }
-//        basicCodeArea.setData(basicData);
+//        basicCodeArea.setContentData(basicData);
 //        basicPanel.setCodeArea(basicCodeArea);
 //
 //        final BinEdExampleExPanel extendedPanel = new BinEdExampleExPanel();
@@ -108,7 +113,7 @@ public class BinEdExample {
 //        } catch (IOException ex) {
 //            Logger.getLogger(BinEdExample.class.getName()).log(Level.SEVERE, null, ex);
 //        }
-//        extendedCodeArea.setData(extendedData);
+//        extendedCodeArea.setContentData(extendedData);
 //        extendedPanel.setCodeArea(extendedCodeArea);
 //
 //        tabbedPane.addTab("Basic", basicPanel);

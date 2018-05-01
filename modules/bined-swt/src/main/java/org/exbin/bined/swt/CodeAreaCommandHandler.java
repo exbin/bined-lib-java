@@ -119,6 +119,8 @@ public interface CodeAreaCommandHandler {
      */
     void wheelScroll(int scrollSize, @Nonnull ScrollbarOrientation orientation);
 
+    public void dispose();
+
     public enum ScrollbarOrientation {
         HORIZONTAL, VERTICAL
     }

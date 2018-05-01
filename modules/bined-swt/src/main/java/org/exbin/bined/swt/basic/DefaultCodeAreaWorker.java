@@ -23,6 +23,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.widgets.Display;
 import org.exbin.bined.BasicCodeAreaSection;
 import org.exbin.bined.BasicCodeAreaZone;
 import org.exbin.bined.CaretMovedListener;
@@ -59,7 +60,7 @@ import org.exbin.bined.swt.capability.ScrollingCapable;
 /**
  * Code area component default worker.
  *
- * @version 0.2.0 2018/04/30
+ * @version 0.2.0 2018/05/01
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, CaretCapable, ScrollingCapable, ViewModeCapable,
@@ -417,17 +418,21 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
 
     @Override
     public void reset() {
-        painter.reset();
+        Display.getDefault().asyncExec(() -> {
+            painter.reset();
+        });
     }
 
     private void repaint() {
         codeArea.resetPainter();
-        codeArea.redraw();
+        Display.getDefault().asyncExec(() -> {
+            codeArea.redraw();
+        });
     }
 
     @Override
     public void notifyCaretChanged() {
-        codeArea.redraw();
+        repaint();
     }
 
     @Nonnull
@@ -616,5 +621,10 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
     @Override
     public void removeEditationModeChangedListener(@Nullable EditationModeChangedListener editationModeChangedListener) {
         editationModeChangedListeners.remove(editationModeChangedListener);
+    }
+
+    @Override
+    public void dispose() {
+        painter.dispose();
     }
 }

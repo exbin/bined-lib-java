@@ -25,7 +25,7 @@ import org.exbin.bined.swt.basic.CodeAreaScrollPosition;
 /**
  * Hexadecimal editor painter.
  *
- * @version 0.2.0 2018/04/25
+ * @version 0.2.0 2018/05/01
  * @author ExBin Project (http://exbin.org)
  */
 public interface CodeAreaPainter {
@@ -152,4 +152,6 @@ public interface CodeAreaPainter {
      */
     @Nonnull
     CodeAreaScrollPosition computeScrolling(@Nonnull CodeAreaScrollPosition startPosition, @Nonnull ScrollingDirection direction);
+
+    public void dispose();
 }

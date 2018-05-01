@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.swt;
+package org.exbin.bined.swt.extended.color;
 
 import org.eclipse.swt.graphics.Color;
 

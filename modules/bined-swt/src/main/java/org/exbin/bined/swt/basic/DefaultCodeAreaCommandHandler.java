@@ -58,7 +58,7 @@ import org.exbin.utils.binary_data.EditableBinaryData;
 /**
  * Default hexadecimal editor command handler.
  *
- * @version 0.2.0 2018/04/29
+ * @version 0.2.0 2018/05/01
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
@@ -782,5 +782,9 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
     private void updateScrollBars() {
         ((ScrollingCapable) codeArea.getWorker()).updateScrollBars();
+    }
+
+    @Override
+    public void dispose() {
     }
 }

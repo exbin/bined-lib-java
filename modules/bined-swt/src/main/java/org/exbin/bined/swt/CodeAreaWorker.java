@@ -69,6 +69,8 @@ public interface CodeAreaWorker {
     @Nonnull
     CaretPosition computeMovePosition(@Nonnull CaretPosition position, @Nonnull MovementDirection direction);
 
+    public void dispose();
+
     interface CodeAreaWorkerFactory {
 
         @Nonnull

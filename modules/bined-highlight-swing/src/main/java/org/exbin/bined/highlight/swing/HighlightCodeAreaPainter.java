@@ -19,14 +19,14 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.List;
-import org.exbin.bined.swing.ColorsGroup;
+import javax.annotation.Nonnull;
 import org.exbin.bined.swing.basic.DefaultCodeAreaPainter;
-import org.exbin.bined.swing.CodeArea;
+import org.exbin.bined.swing.CodeAreaWorker;
 
 /**
  * Hexadecimal component painter supporting search matches highlighting.
  *
- * @version 0.2.0 2018/04/26
+ * @version 0.2.0 2018/05/01
  * @author ExBin Project (http://exbin.org)
  */
 public class HighlightCodeAreaPainter extends DefaultCodeAreaPainter {
@@ -42,10 +42,10 @@ public class HighlightCodeAreaPainter extends DefaultCodeAreaPainter {
     private ColorsGroup foundMatchesColors;
     private ColorsGroup currentMatchColors;
 
-    public HighlightCodeAreaPainter(CodeArea codeArea) {
-        super(codeArea);
+    public HighlightCodeAreaPainter(@Nonnull CodeAreaWorker worker) {
+        super(worker);
 
-        foundMatchesColors = new ColorsGroup(codeArea.getMainColors());
+        foundMatchesColors = new ColorsGroup(getcodeArea.getMainColors());
         foundMatchesColors.setBackgroundColor(new Color(180, 255, 180));
         currentMatchColors = new ColorsGroup(codeArea.getMainColors());
         currentMatchColors.setBackgroundColor(new Color(255, 210, 180));
@@ -55,6 +55,16 @@ public class HighlightCodeAreaPainter extends DefaultCodeAreaPainter {
     public void paintMainArea(Graphics g) {
         matchIndex = 0;
         super.paintMainArea(g);
+    }
+
+    @Override
+    public Color getPositionTextColor(long rowDataPosition, int byteOnRow, int charOnRow, int section) {
+        return super.getPositionTextColor(rowDataPosition, byteOnRow, charOnRow, section);
+    }
+
+    @Override
+    public Color getPositionBackgroundColor(long rowDataPosition, int byteOnRow, int charOnRow, int section) {
+        return super.getPositionBackgroundColor(rowDataPosition, byteOnRow, charOnRow, section);
     }
 
     @Override
@@ -177,5 +187,9 @@ public class HighlightCodeAreaPainter extends DefaultCodeAreaPainter {
         public void setLength(long length) {
             this.length = length;
         }
+    }
+
+    private static class MatchColors {
+        
     }
 }

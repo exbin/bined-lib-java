@@ -42,7 +42,7 @@ import org.exbin.bined.capability.SelectionCapable;
 /**
  * Hexadecimal viewer/editor component.
  *
- * @version 0.2.0 2018/04/24
+ * @version 0.2.0 2018/05/01
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeArea extends Composite implements CodeAreaControl {
@@ -166,8 +166,8 @@ public class CodeArea extends Composite implements CodeAreaControl {
     }
 
     void widgetDisposed(DisposeEvent e) {
-        // TODO worker.dispose();
-        // TODO commandHandler.dispose();
+        worker.dispose();
+        commandHandler.dispose();
     }
 
     @Override
