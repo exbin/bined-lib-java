@@ -22,6 +22,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.events.PaintEvent;
+import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
@@ -64,7 +66,7 @@ import org.exbin.bined.swt.capability.ScrollingCapable;
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2018/05/01
+ * @version 0.2.0 2018/05/03
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaPainter implements CodeAreaPainter {
@@ -154,6 +156,17 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         this.worker = worker;
         CodeArea codeArea = worker.getCodeArea();
         dataView = new Composite(codeArea, SWT.NONE);
+        dataView.addPaintListener(new PaintListener() {
+            @Override
+            public void paintControl(@Nonnull PaintEvent paintEvent) {
+                GC g = paintEvent.gc;
+                if (g == null) {
+                    return;
+                }
+
+                paintComponent(g);
+            }
+        });
 //        dataView.setVisible(false);
 //        dataView.setLayout(null);
         dataView.setBackgroundMode(SWT.INHERIT_NONE);

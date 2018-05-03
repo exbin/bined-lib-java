@@ -153,8 +153,8 @@ public class CodeArea extends Composite implements CodeAreaControl {
         this.commandHandler = commandHandler;
     }
 
-    void paintControl(PaintEvent e) {
-        GC g = e.gc;
+    private void paintControl(@Nonnull PaintEvent paintEvent) {
+        GC g = paintEvent.gc;
         if (g == null) {
             return;
         }

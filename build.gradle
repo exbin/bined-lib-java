@@ -15,7 +15,7 @@ buildscript {
 }
 
 task wrapper(type: Wrapper, description: 'Creates and deploys the Gradle wrapper to the current directory.') {
-    gradleVersion = '3.2'
+    gradleVersion = '4.0'
 }
 
 task('cleanDeps').doLast {
