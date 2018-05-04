@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ShellAdapter;
+import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -73,6 +75,12 @@ public class BinEdExample {
         basicTabItem.setControl(basicCodeArea);
 //        basicPanel.setCodeArea(basicCodeArea);
 
+        shell.addShellListener(new ShellAdapter() {
+            @Override
+            public void shellClosed(ShellEvent se) {
+                System.exit(0);
+            }
+        });
         shell.open();
 
         while (!shell.isDisposed()) {
