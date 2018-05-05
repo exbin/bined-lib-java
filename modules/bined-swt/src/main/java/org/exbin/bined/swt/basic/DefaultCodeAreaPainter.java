@@ -67,7 +67,7 @@ import org.exbin.bined.swt.capability.ScrollingCapable;
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2018/05/03
+ * @version 0.2.0 2018/05/05
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaPainter implements CodeAreaPainter {
@@ -193,6 +193,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         scrollPanel.addMouseMoveListener(codeAreaMouseListener);
         scrollPanel.addMouseWheelListener(codeAreaMouseListener);
         scrollPanel.addMouseTrackListener(codeAreaMouseListener);
+        dataView.layout();
+        codeArea.layout();
     }
 
     @Override
@@ -308,7 +310,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         /**
          * Use small 'w' character to guess normal font width.
          */
-        characterWidth = fontMetrics.getAverageCharWidth(); //charWidth('w');
+        characterWidth = g.textExtent("w").x;
         /**
          * Compare it to small 'i' to detect if font is monospaced.
          *
@@ -360,6 +362,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             }
 
             dataView.setSize(documentDataWidth, documentDataHeight);
+            worker.getCodeArea().layout();
         }
 
         // TODO on resize only
@@ -440,6 +443,12 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         paintMainArea(g);
 //        scrollPanel.paintComponents(g);
         paintCounter++;
+    }
+
+    @Override
+    public void repaint() {
+        scrollPanel.redraw();
+//        dataView.redraw();
     }
 
     public void paintOutsiteArea(@Nonnull GC g) {
@@ -1468,9 +1477,9 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     }
 
     @Override
-    public void paintCursor(GC g) {
+    public void paintCursor(@Nonnull GC g) {
         if (!worker.getCodeArea().isFocusControl()) {
-            return;
+//            return;
         }
 
         DefaultCodeAreaCaret caret = (DefaultCodeAreaCaret) ((CaretCapable) worker).getCaret();

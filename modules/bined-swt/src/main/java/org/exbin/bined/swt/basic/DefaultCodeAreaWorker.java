@@ -426,7 +426,8 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
     private void repaint() {
         codeArea.resetPainter();
         Display.getDefault().asyncExec(() -> {
-            codeArea.redraw();
+            codeArea.repaint();
+            painter.repaint();
         });
     }
 

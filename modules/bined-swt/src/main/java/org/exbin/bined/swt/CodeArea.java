@@ -17,13 +17,11 @@ package org.exbin.bined.swt;
 
 import org.exbin.bined.swt.basic.DefaultCodeAreaWorker;
 import org.exbin.bined.swt.basic.DefaultCodeAreaCommandHandler;
-import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.swing.UIManager;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.FocusEvent;
@@ -88,6 +86,7 @@ public class CodeArea extends Composite implements CodeAreaControl {
 //        setBackground(java.awt.Color.WHITE);
 //        setFocusable(true);
 //        setFocusTraversalKeysEnabled(false);
+        forceFocus();   
         registerControlListeners();
     }
 
@@ -128,9 +127,9 @@ public class CodeArea extends Composite implements CodeAreaControl {
                 redraw();
             }
         });
-        UIManager.addPropertyChangeListener((@Nonnull PropertyChangeEvent evt) -> {
-            worker.rebuildColors();
-        });
+//          UIManager.addPropertyChangeListener((@Nonnull PropertyChangeEvent evt) -> {
+//            worker.rebuildColors();
+//        });
     }
 
     @Nonnull
@@ -168,6 +167,12 @@ public class CodeArea extends Composite implements CodeAreaControl {
     void widgetDisposed(DisposeEvent e) {
         worker.dispose();
         commandHandler.dispose();
+    }
+
+    @Override
+    public boolean setFocus()
+    {
+        return super.forceFocus();
     }
 
     @Override
@@ -256,5 +261,10 @@ public class CodeArea extends Composite implements CodeAreaControl {
 
     public void resetPainter() {
         worker.reset();
+    }
+
+    public void repaint() {
+        layout(true, true);
+        redraw();
     }
 }

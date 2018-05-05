@@ -47,7 +47,7 @@ public class DefaultCodeAreaCaret implements CodeAreaCaret {
     private boolean cursorVisible = true;
 
     @Nonnull
-    private CursorRenderingMode renderingMode = CursorRenderingMode.NEGATIVE;
+    private CursorRenderingMode renderingMode = CursorRenderingMode.PAINT; // NEGATIVE;
 
     public DefaultCodeAreaCaret(@Nonnull CodeArea codeArea) {
         Objects.requireNonNull(codeArea, "Code area cannot be null");
