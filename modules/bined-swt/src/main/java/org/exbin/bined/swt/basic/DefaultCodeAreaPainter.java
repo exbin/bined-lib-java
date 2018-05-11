@@ -194,6 +194,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         scrollPanel.addMouseWheelListener(codeAreaMouseListener);
         scrollPanel.addMouseTrackListener(codeAreaMouseListener);
         dataView.layout();
+        codeArea.update();
         codeArea.layout();
     }
 

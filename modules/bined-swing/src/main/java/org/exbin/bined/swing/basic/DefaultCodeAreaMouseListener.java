@@ -27,6 +27,7 @@ import javax.swing.JScrollPane;
 import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.swing.CodeArea;
 import org.exbin.bined.swing.CodeAreaCommandHandler;
+import org.exbin.bined.swing.CodeAreaCommandHandler.ScrollbarOrientation;
 
 /**
  * Code Area component mouse listener.
@@ -124,6 +125,8 @@ public class DefaultCodeAreaMouseListener extends MouseAdapter implements MouseM
             return;
         }
 
-        codeArea.getCommandHandler().wheelScroll(e.getWheelRotation() > 0 ? MOUSE_SCROLL_LINES : -MOUSE_SCROLL_LINES, e.isShiftDown() ? CodeAreaCommandHandler.ScrollbarOrientation.VERTICAL : CodeAreaCommandHandler.ScrollbarOrientation.HORIZONTAL);
+        ScrollbarOrientation orientation = e.isShiftDown() ? CodeAreaCommandHandler.ScrollbarOrientation.HORIZONTAL : CodeAreaCommandHandler.ScrollbarOrientation.VERTICAL;
+        int scrollAmount = e.getWheelRotation() > 0 ? MOUSE_SCROLL_LINES : -MOUSE_SCROLL_LINES;
+        codeArea.getCommandHandler().wheelScroll(scrollAmount, orientation);
     }
 }

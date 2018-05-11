@@ -1,4 +1,4 @@
-rootProject.name = 'bined-java'
+rootProject.name = 'bined-lib-java'
 
 include ":deps"
 

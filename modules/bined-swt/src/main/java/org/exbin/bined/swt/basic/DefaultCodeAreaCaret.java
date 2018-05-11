@@ -203,14 +203,14 @@ public class DefaultCodeAreaCaret implements CodeAreaCaret {
     /**
      * Enumeration of supported cursor shapes.
      */
-    public static enum CursorShape {
+    public enum CursorShape {
         INSERT, OVERWRITE, MIRROR
     }
 
     /**
      * Method for rendering cursor into CodeArea component.
      */
-    public static enum CursorRenderingMode {
+    public enum CursorRenderingMode {
         /**
          * Cursor is just painted.
          */

@@ -70,7 +70,7 @@ import org.exbin.utils.binary_data.BinaryData;
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2018/04/20
+ * @version 0.2.0 2018/05/11
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaPainter implements CodeAreaPainter {
@@ -112,6 +112,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     private int rowHeight;
     private int rowsPerPage;
     private int rowsPerRect;
+    private long rowsPerDocument;
     private int bytesPerRow;
     private int charactersPerPage;
     private int charactersPerRect;
@@ -224,6 +225,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
         charactersPerPage = computeCharactersPerPage();
         charactersPerRow = computeCharactersPerRow();
+        rowsPerDocument = computeRowsPerDocument();
 
         resetScrollState();
     }
@@ -1394,18 +1396,24 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                 break;
             }
             case DOWN: {
-//                if (startPosition.getScrollRowPosition() < rowsPerDocument) {
-                targetPosition.setScrollRowPosition(startPosition.getScrollRowPosition() + 1);
-//                }
+                if (startPosition.getScrollRowPosition() < rowsPerDocument) {
+                    targetPosition.setScrollRowPosition(startPosition.getScrollRowPosition() + 1);
+                }
                 break;
             }
             case LEFT: {
-                throw new UnsupportedOperationException("Not supported yet.");
-                // break;
+                if (startPosition.getScrollCharPosition() == 0) {
+                    targetPosition.setScrollCharOffset(0);
+                } else {
+                    targetPosition.setScrollCharPosition(startPosition.getScrollCharPosition() - 1);
+                }
+                break;
             }
             case RIGHT: {
-                throw new UnsupportedOperationException("Not supported yet.");
-                // break;
+                if (startPosition.getScrollCharPosition() < charactersPerRow) {
+                    targetPosition.setScrollCharPosition(startPosition.getScrollCharPosition() + 1);
+                }
+                break;
             }
             case PAGE_UP: {
                 if (startPosition.getScrollRowPosition() < rowsPerPage) {
@@ -1417,10 +1425,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                 break;
             }
             case PAGE_DOWN: {
-                long rowsPerDocument = dataSize / bytesPerRow;
-                if (dataSize % bytesPerRow > 0) {
-                    rowsPerDocument++;
-                }
                 if (startPosition.getScrollRowPosition() <= rowsPerDocument - rowsPerPage * 2) {
                     targetPosition.setScrollRowPosition(startPosition.getScrollRowPosition() + rowsPerPage);
                 } else if (rowsPerDocument > rowsPerPage) {
@@ -1644,6 +1648,10 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         return charsPerRow;
     }
 
+    private long computeRowsPerDocument() {
+        return dataSize / bytesPerRow + (dataSize % bytesPerRow > 0 ? 1 : 0);
+    }
+
     private int computeCharactersPerRectangle() {
         return characterWidth == 0 ? 0 : (dataViewWidth + characterWidth - 1) / characterWidth;
     }
@@ -1658,7 +1666,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         JScrollBar horizontalScrollBar = scrollPanel.getHorizontalScrollBar();
 
         if (scrollBarVerticalScale == ScrollBarVerticalScale.SCALED) {
-            long rowsPerDocument = (dataSize / bytesPerRow) + 1;
             int scrollValue;
             if (scrollPosition.getScrollCharPosition() < Long.MAX_VALUE / Integer.MAX_VALUE) {
                 scrollValue = (int) ((scrollPosition.getScrollRowPosition() * Integer.MAX_VALUE) / rowsPerDocument);
@@ -1718,14 +1725,14 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             int scrollBarValue = scrollPanel.getVerticalScrollBar().getValue();
             if (scrollBarVerticalScale == ScrollBarVerticalScale.SCALED) {
                 int maxValue = Integer.MAX_VALUE - scrollPanel.getVerticalScrollBar().getVisibleAmount();
-                long rowsPerDocument = (dataSize / bytesPerRow) - computeRowsPerRectangle() + 1;
+                long rowsPerDocumentToLastPage = rowsPerDocument - computeRowsPerRectangle();
                 long targetRow;
-                if (scrollBarValue > 0 && rowsPerDocument > maxValue / scrollBarValue) {
-                    targetRow = scrollBarValue * (rowsPerDocument / maxValue);
-                    long rest = rowsPerDocument % maxValue;
+                if (scrollBarValue > 0 && rowsPerDocumentToLastPage > maxValue / scrollBarValue) {
+                    targetRow = scrollBarValue * (rowsPerDocumentToLastPage / maxValue);
+                    long rest = rowsPerDocumentToLastPage % maxValue;
                     targetRow += (rest * scrollBarValue) / maxValue;
                 } else {
-                    targetRow = (scrollBarValue * rowsPerDocument) / Integer.MAX_VALUE;
+                    targetRow = (scrollBarValue * rowsPerDocumentToLastPage) / Integer.MAX_VALUE;
                 }
                 scrollPosition.setScrollRowPosition(targetRow);
                 if (verticalScrollUnit != VerticalScrollUnit.ROW) {

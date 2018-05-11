@@ -734,9 +734,26 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     }
 
     @Override
-    public void wheelScroll(int scrollSize, @Nonnull ScrollbarOrientation direction) {
-        // TODO
-        scroll(ScrollingDirection.UP);
+    public void wheelScroll(int scrollSize, @Nonnull ScrollbarOrientation orientation) {
+        switch (orientation) {
+            case HORIZONTAL: {
+                if (scrollSize > 0) {
+                    scroll(ScrollingDirection.LEFT);
+                } else if (scrollSize < 0) {
+                    scroll(ScrollingDirection.RIGHT);
+                }
+
+                break;
+            }
+            case VERTICAL: {
+                if (scrollSize > 0) {
+                    scroll(ScrollingDirection.DOWN);
+                } else if (scrollSize < 0) {
+                    scroll(ScrollingDirection.UP);
+                }
+                break;
+            }
+        }
 
 //        CodeAreaScrollPosition scrollPosition = codeArea.getScrollPosition();
 //
