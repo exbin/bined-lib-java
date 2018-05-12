@@ -123,7 +123,7 @@ public interface CodeAreaCommandHandler {
         HORIZONTAL, VERTICAL
     }
 
-    interface CodeAreaCommandHandlerFactory {
+    public interface CodeAreaCommandHandlerFactory {
 
         @Nonnull
         CodeAreaCommandHandler createCommandHandler(@Nonnull CodeArea codeArea);
