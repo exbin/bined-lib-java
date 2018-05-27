@@ -70,7 +70,7 @@ import org.exbin.utils.binary_data.BinaryData;
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2018/05/11
+ * @version 0.2.0 2018/05/27
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaPainter implements CodeAreaPainter {
@@ -195,7 +195,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     public void reset() {
         resetColors();
         resetFont();
-        resetLayout();
+        updateLayout();
     }
 
     @Override
@@ -204,7 +204,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     }
 
     @Override
-    public void resetLayout() {
+    public void updateLayout() {
         resetSizes();
 
         viewMode = ((ViewModeCapable) worker).getViewMode();
@@ -382,7 +382,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         dataViewHeight = scrollPanelHeight - getHorizontalScrollBarSize();
     }
 
-    private void resetColors() {
+    @Override
+    public void resetColors() {
         CodeArea codeArea = worker.getCodeArea();
         colors.foreground = codeArea.getForeground();
         if (colors.foreground == null) {

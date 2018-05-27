@@ -69,9 +69,14 @@ public interface CodeAreaPainter {
     void resetFont();
 
     /**
-     * Resets painter layout state for new painting.
+     * Rebuilds colors after UIManager change.
      */
-    void resetLayout();
+    void resetColors();
+
+    /**
+     * Updates painter layout state for new painting.
+     */
+    void updateLayout();
 
     /**
      * Returns type of cursor for given painter relative position.

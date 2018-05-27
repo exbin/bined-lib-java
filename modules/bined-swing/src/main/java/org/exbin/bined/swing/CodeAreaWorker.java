@@ -60,6 +60,14 @@ public interface CodeAreaWorker {
     void reset();
 
     /**
+     * Requests update of the component layout.
+     *
+     * Notifies worker, that change of parameters will affect layout and it
+     * should be recomputed and updated if necessary.
+     */
+    void updateLayout();
+
+    /**
      * Computes position for movement action.
      *
      * @param position source position

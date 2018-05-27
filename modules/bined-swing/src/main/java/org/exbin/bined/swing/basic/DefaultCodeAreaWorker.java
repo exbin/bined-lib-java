@@ -58,7 +58,7 @@ import org.exbin.bined.swing.capability.ScrollingCapable;
 /**
  * Code area component default worker.
  *
- * @version 0.2.0 2018/05/12
+ * @version 0.2.0 2018/05/27
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, CaretCapable, ScrollingCapable, ViewModeCapable,
@@ -225,6 +225,7 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
 
     @Override
     public void rebuildColors() {
+        painter.resetColors();
     }
 
     @Nonnull
@@ -411,6 +412,11 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
     @Override
     public void reset() {
         painter.reset();
+    }
+
+    @Override
+    public void updateLayout() {
+        painter.updateLayout();
     }
 
     private void repaint() {

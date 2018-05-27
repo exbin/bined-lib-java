@@ -90,8 +90,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(@Nonnull ComponentEvent event) {
-                // TODO reset layout instead
-                resetPainter();
+                updateLayout();
             }
         });
 
@@ -242,5 +241,9 @@ public class CodeArea extends JComponent implements CodeAreaControl {
 
     public void resetPainter() {
         worker.reset();
+    }
+    
+    public void updateLayout() {
+        worker.updateLayout();
     }
 }
