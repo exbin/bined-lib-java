@@ -241,7 +241,11 @@ public class ExtCodeAreaWorker implements CodeAreaWorker, SelectionCapable, Care
     }
 
     @Override
-    public void rebuildColors() {
+    public void resetColors() {
+    }
+
+    @Override
+    public void updateLayout() {
     }
 
     @Nonnull

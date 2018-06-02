@@ -82,7 +82,6 @@ public class DefaultCodeAreaCaret implements CodeAreaCaret {
     }
 
     private void notifyCaredChanged() {
-        // TODO limit to cursor repaint
         ((CaretCapable) codeArea.getWorker()).notifyCaretChanged();
     }
 

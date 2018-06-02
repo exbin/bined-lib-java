@@ -118,7 +118,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
             }
         });
         UIManager.addPropertyChangeListener((@Nonnull PropertyChangeEvent evt) -> {
-            worker.rebuildColors();
+            worker.resetColors();
         });
     }
 

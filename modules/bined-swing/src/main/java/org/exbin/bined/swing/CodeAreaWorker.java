@@ -52,7 +52,7 @@ public interface CodeAreaWorker {
     /**
      * Rebuilds colors after UIManager change.
      */
-    void rebuildColors();
+    void resetColors();
 
     /**
      * Resets painter state for new painting.

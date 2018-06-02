@@ -224,7 +224,7 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
     }
 
     @Override
-    public void rebuildColors() {
+    public void resetColors() {
         painter.resetColors();
     }
 
