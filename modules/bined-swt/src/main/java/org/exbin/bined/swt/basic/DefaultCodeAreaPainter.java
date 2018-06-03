@@ -202,7 +202,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     public void reset() {
         resetColors();
         resetFont();
-        resetLayout();
+        updateLayout();
     }
 
     @Override
@@ -211,7 +211,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     }
 
     @Override
-    public void resetLayout() {
+    public void updateLayout() {
         resetSizes();
 
         viewMode = ((ViewModeCapable) worker).getViewMode();

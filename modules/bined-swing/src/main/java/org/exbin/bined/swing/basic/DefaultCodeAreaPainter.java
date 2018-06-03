@@ -70,7 +70,7 @@ import org.exbin.utils.binary_data.BinaryData;
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2018/05/27
+ * @version 0.2.0 2018/06/03
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaPainter implements CodeAreaPainter {
@@ -85,17 +85,24 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     @Nonnull
     private final JScrollPane scrollPanel;
 
+    @Nullable
     private CodeAreaViewMode viewMode;
     private final CodeAreaCaretPosition caretPosition = new CodeAreaCaretPosition();
+    @Nullable
     private SelectionRange selectionRange = null;
     private final CodeAreaScrollPosition scrollPosition = new CodeAreaScrollPosition();
     @Nonnull
     private ScrollBarVerticalScale scrollBarVerticalScale = ScrollBarVerticalScale.NORMAL;
 
+    @Nullable
     private VerticalScrollUnit verticalScrollUnit;
+    @Nullable
     private HorizontalScrollUnit horizontalScrollUnit;
     private final Colors colors = new Colors();
     private long dataSize;
+    private boolean rowWrapping;
+    private int maxBytesPerLine;
+    private int wrappingBytesGroupSize;
 
     private int componentWidth;
     private int componentHeight;
@@ -117,9 +124,13 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     private int charactersPerPage;
     private int charactersPerRect;
     private int charactersPerRow;
+    @Nullable
     private CodeType codeType;
+    @Nullable
     private CodeCharactersCase hexCharactersCase;
+    @Nullable
     private EditationMode editationMode;
+    @Nullable
     private BasicBackgroundPaintMode backgroundPaintMode;
     private boolean showMirrorCursor;
 
@@ -215,15 +226,18 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         backgroundPaintMode = ((BackgroundPaintCapable) worker).getBackgroundPaintMode();
         showMirrorCursor = ((CaretCapable) worker).isShowMirrorCursor();
         dataSize = worker.getCodeArea().getDataSize();
+        rowWrapping = ((RowWrappingCapable) worker).isRowWrapping();
+        maxBytesPerLine = ((RowWrappingCapable) worker).getMaxBytesPerRow();
+        wrappingBytesGroupSize = ((RowWrappingCapable) worker).getWrappingBytesGroupSize();
 
         rowsPerRect = computeRowsPerRectangle();
         rowsPerPage = computeRowsPerPage();
-        bytesPerRow = computeBytesPerRow();
 
         codeType = ((CodeTypeCapable) worker).getCodeType();
         hexCharactersCase = CodeCharactersCase.UPPER;
 
         charactersPerPage = computeCharactersPerPage();
+        bytesPerRow = computeBytesPerRow();
         charactersPerRow = computeCharactersPerRow();
         rowsPerDocument = computeRowsPerDocument();
 
@@ -661,15 +675,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         paintRows(g);
         g.setClip(clipBounds);
         paintCursor(g);
-
-        // TODO: Remove later
-        int x = componentWidth - rowPositionAreaWidth - 220;
-        int y = componentHeight - headerAreaHeight - 20;
-        g.setColor(Color.YELLOW);
-        g.fillRect(x, y, 200, 16);
-        g.setColor(Color.BLACK);
-        char[] headerCode = (String.valueOf(scrollPosition.getScrollCharPosition()) + "+" + String.valueOf(scrollPosition.getScrollCharOffset()) + " : " + String.valueOf(scrollPosition.getScrollRowPosition()) + "+" + String.valueOf(scrollPosition.getScrollRowOffset()) + " P: " + String.valueOf(paintCounter)).toCharArray();
-        g.drawChars(headerCode, 0, headerCode.length, x, y + rowHeight);
     }
 
     /**
@@ -726,7 +731,10 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             if (dataPosition < 0) {
                 rowStart = (int) -dataPosition;
             }
-            worker.getCodeArea().getContentData().copyToArray(dataPosition + rowStart, rowData, rowStart, rowDataSize - rowStart);
+            BinaryData content = worker.getCodeArea().getContentData();
+            if (content == null)
+                throw new IllegalStateException("Missing data on nonzero data size");
+            content.copyToArray(dataPosition + rowStart, rowData, rowStart, rowDataSize - rowStart);
             if (dataPosition + rowBytesLimit > dataSize) {
                 rowBytesLimit = (int) (dataSize - dataPosition);
             }
@@ -940,6 +948,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
     @Override
     public CodeAreaScrollPosition computeCenterOnScrollPosition(CaretPosition caretPosition) {
+        // TODO
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -1120,7 +1129,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             case NEGATIVE: {
                 g.fillRect(x, y, width, height);
                 g.setColor(colors.negativeCursor);
-                BinaryData codeAreaData = worker.getCodeArea().getContentData();
+                BinaryData contentData = worker.getCodeArea().getContentData();
                 int row = (y + scrollPosition.getScrollRowOffset() - dataViewY) / rowHeight;
                 int scrolledX = x + scrollPosition.getScrollCharPosition() * characterWidth + scrollPosition.getScrollCharOffset();
                 int posY = dataViewY + (row + 1) * rowHeight - subFontSpace - scrollPosition.getScrollRowOffset();
@@ -1140,10 +1149,10 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                             charDataLength = (int) (dataSize - dataPosition);
                         }
 
-                        if (codeAreaData == null) {
+                        if (contentData == null) {
                             previewChars[0] = ' ';
                         } else {
-                            codeAreaData.copyToArray(dataPosition, data, 0, charDataLength);
+                            contentData.copyToArray(dataPosition, data, 0, charDataLength);
                             String displayString = new String(data, 0, charDataLength, charset);
                             if (!displayString.isEmpty()) {
                                 previewChars[0] = displayString.charAt(0);
@@ -1154,10 +1163,10 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                             buildCharMapping(charset);
                         }
 
-                        if (codeAreaData == null) {
+                        if (contentData == null) {
                             previewChars[0] = ' ';
                         } else {
-                            previewChars[0] = charMapping[codeAreaData.getByte(dataPosition) & 0xFF];
+                            previewChars[0] = charMapping[contentData.getByte(dataPosition) & 0xFF];
                         }
                     }
                     int posX = previewRelativeX + charPos * characterWidth - scrollPosition.getScrollCharPosition() * characterWidth - scrollPosition.getScrollCharOffset();
@@ -1172,8 +1181,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                     int codeCharPos = computeFirstCodeCharacterPos(byteOffset);
                     char[] rowChars = new char[codeType.getMaxDigitsForByte()];
 
-                    if (codeAreaData != null && dataPosition < dataSize) {
-                        byte dataByte = codeAreaData.getByte(dataPosition);
+                    if (contentData != null && dataPosition < dataSize) {
+                        byte dataByte = contentData.getByte(dataPosition);
                         CodeAreaUtils.byteToCharsCode(dataByte, codeType, rowChars, 0, hexCharactersCase);
                     } else {
                         Arrays.fill(rowChars, ' ');
@@ -1624,12 +1633,33 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     }
 
     private int computeBytesPerRow() {
-        boolean rowWrapping = ((RowWrappingCapable) worker).isRowWrapping();
-        int maxBytesPerLine = ((RowWrappingCapable) worker).getMaxBytesPerRow();
-
-        int computedBytesPerRow = 16;
+        int computedBytesPerRow;
         if (rowWrapping) {
-            // TODO
+            int charactersPerByte = 0;
+            if (viewMode != CodeAreaViewMode.TEXT_PREVIEW) {
+                charactersPerByte += codeType.getMaxDigitsForByte();
+            }
+            if (viewMode != CodeAreaViewMode.CODE_MATRIX) {
+                charactersPerByte++;
+            }
+            computedBytesPerRow = (charactersPerPage - (viewMode == CodeAreaViewMode.DUAL ? 1 : 0)) / charactersPerByte;
+            
+            if (computedBytesPerRow > maxBytesPerLine) {
+                computedBytesPerRow = maxBytesPerLine;
+            }
+            
+            if (wrappingBytesGroupSize > 1) {
+                int wrappingBytesGroupOffset = computedBytesPerRow % wrappingBytesGroupSize;
+                if (wrappingBytesGroupOffset > 0) {
+                    computedBytesPerRow -= wrappingBytesGroupOffset;
+                }
+            }
+        } else {
+            computedBytesPerRow = maxBytesPerLine;
+        }
+        
+        if (computedBytesPerRow < 1) {
+            computedBytesPerRow = 1;
         }
 
         return computedBytesPerRow;
@@ -1812,7 +1842,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     }
 
     /**
-     * Enumeration of vertical scalling modes.
+     * Enumeration of vertical scaling modes.
      */
     public enum ScrollBarVerticalScale {
         /**

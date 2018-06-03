@@ -96,6 +96,7 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
     private CodeCharactersCase codeCharactersCase = CodeCharactersCase.UPPER;
     private boolean showMirrorCursor = true;
     private boolean lineWrapping = false;
+    private int wrappingBytesGroupSize = 0;
     private int maxBytesPerLine = 16;
 
     @Nonnull
@@ -545,6 +546,18 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
     @Override
     public void setLineWrapping(boolean lineWrapping) {
         this.lineWrapping = lineWrapping;
+        updateLayout();
+    }
+
+    @Override
+    public int getWrappingBytesGroupSize() {
+        return wrappingBytesGroupSize;
+    }
+
+    @Override
+    public void setWrappingBytesGroupSize(int groupSize) {
+        wrappingBytesGroupSize = groupSize;
+        updateLayout();
     }
 
     @Override

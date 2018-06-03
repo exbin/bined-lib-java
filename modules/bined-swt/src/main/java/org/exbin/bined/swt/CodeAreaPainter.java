@@ -71,7 +71,7 @@ public interface CodeAreaPainter {
     /**
      * Resets painter layout state for new painting.
      */
-    void resetLayout();
+    void updateLayout();
 
     /**
      * Returns type of cursor for given painter relative position.

@@ -18,7 +18,7 @@ package org.exbin.bined.capability;
 /**
  * Line wrapping capability interface.
  *
- * @version 0.2.0 2017/12/09
+ * @version 0.2.0 2018/06/03
  * @author ExBin Project (http://exbin.org)
  */
 public interface RowWrappingCapable {
@@ -30,6 +30,10 @@ public interface RowWrappingCapable {
     int getMaxBytesPerRow();
 
     void setMaxBytesPerLine(int maxBytesPerLine);
+
+    int getWrappingBytesGroupSize();
+    
+    void setWrappingBytesGroupSize(int groupSize);
 
     public static class LineWrappingCapability implements WorkerCapability {
 
