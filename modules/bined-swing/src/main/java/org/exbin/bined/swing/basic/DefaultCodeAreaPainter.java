@@ -160,8 +160,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     @Nullable
     private Charset charMappingCharset = null;
     private final char[] charMapping = new char[256];
-    // Debug
-    private long paintCounter = 0;
 
     @Nullable
     private FontMetrics fontMetrics;
@@ -447,7 +445,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         paintRowPosition(g);
         paintMainArea(g);
 //        scrollPanel.paintComponents(g);
-        paintCounter++;
     }
 
     public void paintOutsiteArea(@Nonnull Graphics g) {
@@ -732,8 +729,9 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                 rowStart = (int) -dataPosition;
             }
             BinaryData content = worker.getCodeArea().getContentData();
-            if (content == null)
+            if (content == null) {
                 throw new IllegalStateException("Missing data on nonzero data size");
+            }
             content.copyToArray(dataPosition + rowStart, rowData, rowStart, rowDataSize - rowStart);
             if (dataPosition + rowBytesLimit > dataSize) {
                 rowBytesLimit = (int) (dataSize - dataPosition);
@@ -893,7 +891,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                 bottomRowOffset = 0;
             } else {
                 if (dataViewHeight < rowHeight) {
-                    throw new UnsupportedOperationException("Not supported yet.");
+                    bottomRowOffset = 0;
                 } else {
                     bottomRowOffset = dataViewHeight % rowHeight;
                 }
@@ -926,7 +924,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                 rightCharOffset = 0;
             } else {
                 if (dataViewWidth < characterWidth) {
-                    throw new UnsupportedOperationException("Not supported yet.");
+                    rightCharOffset = 0;
                 } else {
                     rightCharOffset = dataViewWidth % characterWidth;
                 }
@@ -1583,6 +1581,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     }
 
     private int getRowPositionLength() {
+        // TODO
         return 8;
     }
 
@@ -1643,11 +1642,11 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                 charactersPerByte++;
             }
             computedBytesPerRow = (charactersPerPage - (viewMode == CodeAreaViewMode.DUAL ? 1 : 0)) / charactersPerByte;
-            
+
             if (computedBytesPerRow > maxBytesPerLine) {
                 computedBytesPerRow = maxBytesPerLine;
             }
-            
+
             if (wrappingBytesGroupSize > 1) {
                 int wrappingBytesGroupOffset = computedBytesPerRow % wrappingBytesGroupSize;
                 if (wrappingBytesGroupOffset > 0) {
@@ -1657,7 +1656,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         } else {
             computedBytesPerRow = maxBytesPerLine;
         }
-        
+
         if (computedBytesPerRow < 1) {
             computedBytesPerRow = 1;
         }

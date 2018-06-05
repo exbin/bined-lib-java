@@ -675,7 +675,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     public void selectAll() {
         long dataSize = codeArea.getDataSize();
         if (dataSize > 0) {
-            ((SelectionCapable) codeArea.getWorker()).setSelection(0, dataSize - 1);
+            ((SelectionCapable) codeArea.getWorker()).setSelection(0, dataSize);
         }
     }
 
@@ -754,54 +754,6 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                 break;
             }
         }
-
-//        CodeAreaScrollPosition scrollPosition = codeArea.getScrollPosition();
-//
-//        if (e.isShiftDown() && codeArea.getPainter().isHorizontalScrollBarVisible()) {
-//            if (e.getWheelRotation() > 0) {
-//                if (codeArea.getBytesPerRectangle() < codeArea.getCharactersPerLine()) {
-//                    int maxScroll = codeArea.getCharactersPerLine() - codeArea.getBytesPerRectangle();
-//                    if (scrollPosition.getScrollCharPosition() < maxScroll - MOUSE_SCROLL_LINES) {
-//                        scrollPosition.setScrollCharPosition(scrollPosition.getScrollCharPosition() + MOUSE_SCROLL_LINES);
-//                    } else {
-//                        scrollPosition.setScrollCharPosition(maxScroll);
-//                    }
-//                    codeArea.getPainter().updateScrollBars();
-//                    codeArea.notifyScrolled();
-//                }
-//            } else if (scrollPosition.getScrollCharPosition() > 0) {
-//                if (scrollPosition.getScrollCharPosition() > MOUSE_SCROLL_LINES) {
-//                    scrollPosition.setScrollCharPosition(scrollPosition.getScrollCharPosition() - MOUSE_SCROLL_LINES);
-//                } else {
-//                    scrollPosition.setScrollCharPosition(0);
-//                }
-//                codeArea.getPainter().updateScrollBars();
-//                codeArea.notifyScrolled();
-//            }
-//        } else if (e.getWheelRotation() > 0) {
-//            long lines = (codeArea.getDataSize() + scrollPosition.getLineDataOffset()) / codeArea.getBytesPerLine();
-//            if (lines * codeArea.getBytesPerLine() < codeArea.getDataSize()) {
-//                lines++;
-//            }
-//            lines -= codeArea.getLinesPerRectangle();
-//            if (scrollPosition.getScrollLinePosition() < lines) {
-//                if (scrollPosition.getScrollLinePosition() < lines - MOUSE_SCROLL_LINES) {
-//                    scrollPosition.setScrollLinePosition(scrollPosition.getScrollLinePosition() + MOUSE_SCROLL_LINES);
-//                } else {
-//                    scrollPosition.setScrollLinePosition(lines);
-//                }
-//                codeArea.getPainter().updateScrollBars();
-//                codeArea.notifyScrolled();
-//            }
-//        } else if (scrollPosition.getScrollLinePosition() > 0) {
-//            if (scrollPosition.getScrollLinePosition() > MOUSE_SCROLL_LINES) {
-//                scrollPosition.setScrollLinePosition(scrollPosition.getScrollLinePosition() - MOUSE_SCROLL_LINES);
-//            } else {
-//                scrollPosition.setScrollLinePosition(0);
-//            }
-//            codeArea.getPainter().updateScrollBars();
-//            codeArea.notifyScrolled();
-//        }
     }
 
     public boolean isValidChar(char value) {

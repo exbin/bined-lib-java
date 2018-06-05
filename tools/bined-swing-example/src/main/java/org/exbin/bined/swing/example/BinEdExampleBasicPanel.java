@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.swing.JPanel;
 import org.exbin.bined.swing.CodeArea;
-import org.exbin.bined.swing.basic.DefaultCodeAreaWorker;
 import org.exbin.bined.swing.example.panel.CursorPanel;
 import org.exbin.bined.swing.example.panel.DecorationPanel;
 import org.exbin.bined.swing.example.panel.LayoutPanel;
@@ -37,7 +36,6 @@ import org.exbin.bined.swing.example.panel.StatePanel;
  */
 public class BinEdExampleBasicPanel extends javax.swing.JPanel {
 
-    private CodeArea codeArea;
     private final Map<JPanel, JPanel> tabMap = new HashMap<>();
     private JPanel activeTab;
 
@@ -46,9 +44,6 @@ public class BinEdExampleBasicPanel extends javax.swing.JPanel {
     }
 
     public void setCodeArea(final CodeArea codeArea) {
-        this.codeArea = codeArea;
-
-        DefaultCodeAreaWorker worker = (DefaultCodeAreaWorker) codeArea.getWorker();
         splitPane.setRightComponent(codeArea);
 
         ModePanel modePanel = new ModePanel(codeArea);

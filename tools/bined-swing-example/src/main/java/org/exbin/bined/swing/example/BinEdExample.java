@@ -21,7 +21,6 @@ import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import org.exbin.bined.swing.CodeArea;
 import org.exbin.bined.swing.basic.DefaultCodeAreaPainter;
 import org.exbin.bined.swing.extended.ExtCodeAreaWorker;
@@ -30,7 +29,7 @@ import org.exbin.utils.binary_data.ByteArrayEditableData;
 /**
  * Example Swing GUI demonstration application of the bined component.
  *
- * @version 0.2.0 2018/03/22
+ * @version 0.2.0 2018/06/05
  * @author ExBin Project (http://exbin.org)
  */
 public class BinEdExample {
@@ -79,39 +78,33 @@ public class BinEdExample {
         tabbedPane.addTab("Extended", extendedPanel);
 
         // TODO Keep only current tab populated
-        tabbedPane.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                switch (tabbedPane.getSelectedIndex()) {
-                    case 0: {
-                        tabbedPane.setSelectedComponent(basicPanel);
-                        basicCodeArea.requestFocus();
-                        break;
-                    }
-                    case 1: {
-                        tabbedPane.setSelectedComponent(extendedPanel);
-                        extendedCodeArea.requestFocus();
-                        break;
-                    }
+        tabbedPane.addChangeListener((ChangeEvent e) -> {
+            switch (tabbedPane.getSelectedIndex()) {
+                case 0: {
+                    tabbedPane.setSelectedComponent(basicPanel);
+                    basicCodeArea.requestFocus();
+                    break;
+                }
+                case 1: {
+                    tabbedPane.setSelectedComponent(extendedPanel);
+                    extendedCodeArea.requestFocus();
+                    break;
                 }
             }
         });
         frame.add(tabbedPane);
 
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                frame.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        java.awt.EventQueue.invokeLater(() -> {
+            frame.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-                frame.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                frame.setVisible(true);
-                basicCodeArea.requestFocus();
-            }
+            frame.addWindowListener(new java.awt.event.WindowAdapter() {
+                @Override
+                public void windowClosing(java.awt.event.WindowEvent e) {
+                    System.exit(0);
+                }
+            });
+            frame.setVisible(true);
+            basicCodeArea.requestFocus();
         });
     }
 }
