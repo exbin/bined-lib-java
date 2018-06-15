@@ -98,11 +98,8 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             // Create clipboard if system one not available
             clipboard = new Clipboard("clipboard");
         }
-        clipboard.addFlavorListener(new FlavorListener() {
-            @Override
-            public void flavorsChanged(FlavorEvent e) {
-                updateCanPaste();
-            }
+        clipboard.addFlavorListener((FlavorEvent e) -> {
+            updateCanPaste();
         });
         try {
             clipboard.addFlavorListener((FlavorEvent e) -> {
@@ -123,13 +120,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
     @Nonnull
     public static CodeAreaCommandHandler.CodeAreaCommandHandlerFactory createDefaultCodeAreaCommandHandlerFactory() {
-        return new CodeAreaCommandHandlerFactory() {
-            @Nonnull
-            @Override
-            public CodeAreaCommandHandler createCommandHandler(@Nonnull CodeArea codeArea) {
-                return new DefaultCodeAreaCommandHandler(codeArea);
-            }
-        };
+        return (@Nonnull CodeArea codeArea1) -> new DefaultCodeAreaCommandHandler(codeArea1);
     }
 
     @Override
@@ -683,7 +674,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     public void selectAll() {
         long dataSize = codeArea.getDataSize();
         if (dataSize > 0) {
-            ((SelectionCapable) codeArea.getWorker()).setSelection(0, dataSize - 1);
+            ((SelectionCapable) codeArea.getWorker()).setSelection(0, dataSize);
         }
     }
 

@@ -56,13 +56,14 @@ import org.exbin.utils.binary_data.EditableBinaryData;
 /**
  * Default hexadecimal editor command handler.
  *
- * @version 0.2.0 2018/04/29
+ * @version 0.2.0 2018/06/15
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
     public static final int NO_MODIFIER = 0;
     public static final String FALLBACK_CLIPBOARD = "clipboard";
+    public static final int LAST_CONTROL_CODE = 31;
 
     private final int metaMask;
 
@@ -115,13 +116,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
     @Nonnull
     public static CodeAreaCommandHandler.CodeAreaCommandHandlerFactory createDefaultCodeAreaCommandHandlerFactory() {
-        return new CodeAreaCommandHandlerFactory() {
-            @Nonnull
-            @Override
-            public CodeAreaCommandHandler createCommandHandler(@Nonnull CodeArea codeArea) {
-                return new DefaultCodeAreaCommandHandler(codeArea);
-            }
-        };
+        return (@Nonnull CodeArea codeArea1) -> new DefaultCodeAreaCommandHandler(codeArea1);
     }
 
     @Override
@@ -335,7 +330,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             }
         } else {
             char keyChar = keyValue;
-            if (keyChar > 31 && isValidChar(keyValue)) {
+            if (keyChar > LAST_CONTROL_CODE && isValidChar(keyValue)) {
                 BinaryData data = codeArea.getContentData();
                 long dataPosition = caretPosition.getDataPosition();
                 byte[] bytes = charToBytes(keyChar);
@@ -362,6 +357,9 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         long dataPosition = caretPosition.getDataPosition();
         int codeOffset = caretPosition.getCodeOffset();
         BinaryData data = codeArea.getContentData();
+        if (data == null) {
+            throw new NullPointerException("Content data is null");
+        }
         CodeType codeType = getCodeType();
         byte byteValue = data.getByte(dataPosition);
         byte outputValue = CodeAreaUtils.setCodeValue(byteValue, value, codeOffset, codeType);
@@ -384,7 +382,11 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                 caret.setCodeOffset(0);
                 move(NO_MODIFIER, MovementDirection.LEFT);
                 caret.setCodeOffset(0);
-                ((EditableBinaryData) codeArea.getContentData()).remove(dataPosition - 1, 1);
+                EditableBinaryData data = (EditableBinaryData) codeArea.getContentData();
+                if (data == null) {
+                    throw new NullPointerException("Content data is null");
+                }
+                data.remove(dataPosition - 1, 1);
                 codeArea.notifyDataChanged();
                 revealCursor();
                 updateScrollBars();
