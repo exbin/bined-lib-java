@@ -15,55 +15,146 @@
  */
 package org.exbin.bined.javafx;
 
-import javafx.scene.Node;
+import javafx.scene.canvas.GraphicsContext;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import org.exbin.bined.BasicCodeAreaZone;
+import org.exbin.bined.CaretPosition;
+import org.exbin.bined.javafx.basic.CodeAreaScrollPosition;
 
 /**
- * Hexadecimal editor painter.
+ * Hexadecimal editor painter interface.
  *
- * @version 0.1.0 2016/09/03
+ * @version 0.2.0 2018/06/23
  * @author ExBin Project (http://exbin.org)
  */
 public interface CodeAreaPainter {
 
     /**
-     * Paints overall hexadecimal editor parts.
+     * Returns true if painter was initialized.
      *
-     * @return node
+     * @return true if initialized
      */
-    Node paintOverall();
+    boolean isInitialized();
 
     /**
-     * Paints header for hexadecimal editor.
+     * Paints the main component.
      *
-     * @return node
+     * @param g graphics
      */
-    Node paintHeader();
-
-    /**
-     * Paints background.
-     *
-     * @return node
-     */
-    Node paintBackground();
-
-    /**
-     * Paints line number.
-     *
-     * @return node
-     */
-    Node paintLineNumbers();
+    void paintComponent(@Nonnull GraphicsContext g);
 
     /**
      * Paints main hexadecimal data section of the component.
      *
-     * @return node
+     * @param g graphics
      */
-    Node paintMainArea();
+    void paintMainArea(@Nonnull GraphicsContext g);
 
     /**
      * Paints cursor symbol.
      *
-     * @return node
+     * @param g graphics
      */
-    Node paintCursor();
+    void paintCursor(@Nonnull GraphicsContext g);
+
+    /**
+     * Resets complete painter state for new painting.
+     */
+    void reset();
+
+    /**
+     * Resets painter font state for new painting.
+     */
+    void resetFont();
+
+    /**
+     * Rebuilds colors after UIManager change.
+     */
+    void resetColors();
+
+    /**
+     * Updates painter layout state for new painting.
+     */
+    void updateLayout();
+
+    /**
+     * Returns type of cursor for given painter relative position.
+     *
+     * @param positionX component relative position X
+     * @param positionY component relative position Y
+     * @return java.awt.Cursor cursor type value
+     */
+    int getMouseCursorShape(int positionX, int positionY);
+
+    /**
+     * Returns zone type for given position.
+     *
+     * @param x x-coordinate
+     * @param y y-coordinate
+     * @return specific zone in component
+     */
+    @Nonnull
+    BasicCodeAreaZone getPositionZone(int x, int y);
+
+    /**
+     * Returns closest caret position for provided component relative mouse
+     * position.
+     *
+     * @param positionX component relative position X
+     * @param positionY component relative position Y
+     * @return closest caret position
+     */
+    @Nonnull
+    CaretPosition mousePositionToClosestCaretPosition(int positionX, int positionY);
+
+    void updateScrollBars();
+
+    /**
+     * Returns scroll position so that provided caret position is visible in
+     * scrolled area.
+     *
+     * Performs minimal scrolling and tries to preserve current vertical /
+     * horizontal scrolling if possible. If given position cannot be fully
+     * shown, top left corner is preferred.
+     *
+     * @param caretPosition caret position
+     * @return scroll position or null if caret position is already visible /
+     * scrolled to the best fit
+     */
+    @Nullable
+    CodeAreaScrollPosition computeRevealScrollPosition(@Nonnull CaretPosition caretPosition);
+
+    /**
+     * Returns scroll position so that provided caret position is visible in the
+     * center of the scrolled area.
+     *
+     * Attempts to center as much as possible while preserving scrolling limits.
+     *
+     * @param caretPosition caret position
+     * @return scroll position or null if desired scroll position is the same as
+     * current scroll position.
+     */
+    @Nullable
+    CodeAreaScrollPosition computeCenterOnScrollPosition(@Nonnull CaretPosition caretPosition);
+
+    /**
+     * Computes position for movement action.
+     *
+     * @param position source position
+     * @param direction movement direction
+     * @return target position
+     */
+    @Nonnull
+    CaretPosition computeMovePosition(@Nonnull CaretPosition position, @Nonnull MovementDirection direction);
+
+    /**
+     * Computes scrolling position for given shift action.
+     *
+     * @param startPosition start position
+     * @param direction scrolling direction
+     * @return target position
+     */
+    @Nonnull
+    CodeAreaScrollPosition computeScrolling(@Nonnull CodeAreaScrollPosition startPosition, @Nonnull ScrollingDirection direction);
 }
