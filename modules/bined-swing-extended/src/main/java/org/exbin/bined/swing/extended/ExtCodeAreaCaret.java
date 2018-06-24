@@ -17,15 +17,16 @@ package org.exbin.bined.swing.extended;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.swing.Timer;
 import org.exbin.bined.CaretPosition;
 import org.exbin.bined.CodeAreaCaret;
 import org.exbin.bined.CodeAreaCaretPosition;
+import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.swing.CodeArea;
+import org.exbin.bined.swing.CodeAreaSwingUtils;
 
 /**
  * Default implementation of code area caret.
@@ -55,7 +56,7 @@ public class ExtCodeAreaCaret implements CodeAreaCaret {
     private CursorRenderingMode renderingMode = CursorRenderingMode.PAINT; //NEGATIVE;
 
     public ExtCodeAreaCaret(@Nonnull CodeArea codeArea) {
-        Objects.requireNonNull(codeArea, "Code area cannot be null");
+        CodeAreaUtils.requireNonNull(codeArea);
 
         this.codeArea = codeArea;
         privateSetBlinkRate(DEFAULT_BLINK_RATE);
@@ -171,7 +172,7 @@ public class ExtCodeAreaCaret implements CodeAreaCaret {
     }
 
     public void setInsertCursorShape(@Nonnull CursorShape insertCursorShape) {
-        Objects.requireNonNull(insertCursorShape, "Insert cursor shape cannot be null");
+        CodeAreaUtils.requireNonNull(insertCursorShape);
 
         this.insertCursorShape = insertCursorShape;
         notifyCaredChanged();
@@ -183,7 +184,7 @@ public class ExtCodeAreaCaret implements CodeAreaCaret {
     }
 
     public void setOverwriteCursorShape(@Nonnull CursorShape overwriteCursorShape) {
-        Objects.requireNonNull(overwriteCursorShape, "Overwrite cursor shape cannot be null");
+        CodeAreaUtils.requireNonNull(overwriteCursorShape);
 
         this.overwriteCursorShape = overwriteCursorShape;
         notifyCaredChanged();
@@ -199,7 +200,7 @@ public class ExtCodeAreaCaret implements CodeAreaCaret {
     }
 
     public void setRenderingMode(@Nonnull CursorRenderingMode renderingMode) {
-        Objects.requireNonNull(renderingMode, "Cursor rendering mode cannot be null");
+        CodeAreaUtils.requireNonNull(renderingMode);
 
         this.renderingMode = renderingMode;
         notifyCaredChanged();

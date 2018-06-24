@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.Arrays;
+import java.util.Objects;
 import javax.annotation.Nonnull;
 import org.exbin.utils.binary_data.BinaryData;
 import org.exbin.utils.binary_data.EditableBinaryData;
@@ -32,7 +33,7 @@ import org.exbin.utils.binary_data.EditableBinaryData;
 /**
  * Hexadecimal editor component utilities.
  *
- * @version 0.2.0 2018/03/28
+ * @version 0.2.0 2018/06/24
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeAreaUtils {
@@ -462,6 +463,12 @@ public class CodeAreaUtils {
         }
 
         return byteValue;
+    }
+
+    public static void requireNonNull(Object... objects) {
+        for (Object object : objects) {
+            Objects.requireNonNull(object, "Field cannot be null");
+        }
     }
 
     public static boolean canPaste(@Nonnull Clipboard clipboard, @Nonnull DataFlavor binaryDataFlavor) {

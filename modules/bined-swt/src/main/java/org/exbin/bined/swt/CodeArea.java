@@ -19,7 +19,6 @@ import org.exbin.bined.swt.basic.DefaultCodeAreaWorker;
 import org.exbin.bined.swt.basic.DefaultCodeAreaCommandHandler;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.eclipse.swt.events.DisposeEvent;
@@ -35,6 +34,7 @@ import org.exbin.utils.binary_data.BinaryData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.graphics.GC;
 import org.exbin.bined.CodeAreaControl;
+import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.capability.SelectionCapable;
 
 /**
@@ -86,7 +86,7 @@ public class CodeArea extends Composite implements CodeAreaControl {
 //        setBackground(java.awt.Color.WHITE);
 //        setFocusable(true);
 //        setFocusTraversalKeysEnabled(false);
-        forceFocus();   
+        forceFocus();
         registerControlListeners();
     }
 
@@ -138,7 +138,7 @@ public class CodeArea extends Composite implements CodeAreaControl {
     }
 
     public void setWorker(@Nonnull CodeAreaWorker worker) {
-        Objects.requireNonNull(worker, "Worker cannot be null");
+        CodeAreaUtils.requireNonNull(worker);
 
         this.worker = worker;
     }
@@ -170,8 +170,7 @@ public class CodeArea extends Composite implements CodeAreaControl {
     }
 
     @Override
-    public boolean setFocus()
-    {
+    public boolean setFocus() {
         return super.forceFocus();
     }
 

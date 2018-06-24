@@ -15,7 +15,6 @@
  */
 package org.exbin.bined;
 
-import java.util.Objects;
 import javax.annotation.Nonnull;
 
 /**
@@ -34,7 +33,7 @@ public class CodeAreaSpaceSize {
     }
 
     public CodeAreaSpaceSize(@Nonnull SpaceSizeType spaceType) {
-        Objects.requireNonNull(spaceType, "Space type cannot be null");
+        CodeAreaUtils.requireNonNull(spaceType);
 
         this.spaceType = spaceType;
     }
@@ -45,7 +44,7 @@ public class CodeAreaSpaceSize {
     }
 
     public void setSpaceType(@Nonnull SpaceSizeType spaceType) {
-        Objects.requireNonNull(spaceType, "Space type cannot be null");
+        CodeAreaUtils.requireNonNull(spaceType);
 
         this.spaceType = spaceType;
     }

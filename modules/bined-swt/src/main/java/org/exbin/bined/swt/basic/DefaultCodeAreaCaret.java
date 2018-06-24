@@ -17,13 +17,13 @@ package org.exbin.bined.swt.basic;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.swing.Timer;
 import org.exbin.bined.CaretPosition;
 import org.exbin.bined.CodeAreaCaret;
 import org.exbin.bined.CodeAreaCaretPosition;
+import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.swt.CodeArea;
 
@@ -50,7 +50,7 @@ public class DefaultCodeAreaCaret implements CodeAreaCaret {
     private CursorRenderingMode renderingMode = CursorRenderingMode.PAINT; // NEGATIVE;
 
     public DefaultCodeAreaCaret(@Nonnull CodeArea codeArea) {
-        Objects.requireNonNull(codeArea, "Code area cannot be null");
+        CodeAreaUtils.requireNonNull(codeArea);
 
         this.codeArea = codeArea;
         privateSetBlinkRate(DEFAULT_BLINK_RATE);
@@ -162,7 +162,7 @@ public class DefaultCodeAreaCaret implements CodeAreaCaret {
     }
 
     public void setRenderingMode(@Nonnull CursorRenderingMode renderingMode) {
-        Objects.requireNonNull(renderingMode, "Cursor rendering mode cannot be null");
+        CodeAreaUtils.requireNonNull(renderingMode);
 
         this.renderingMode = renderingMode;
         notifyCaredChanged();

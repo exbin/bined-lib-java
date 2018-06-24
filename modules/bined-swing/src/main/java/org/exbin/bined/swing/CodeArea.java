@@ -26,12 +26,12 @@ import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.swing.JComponent;
 import javax.swing.UIManager;
 import org.exbin.bined.CodeAreaControl;
+import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.DataChangedListener;
 import org.exbin.bined.capability.SelectionCapable;
 import org.exbin.bined.swing.basic.DefaultCodeAreaCommandHandler;
@@ -128,7 +128,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
     }
 
     public void setWorker(@Nonnull CodeAreaWorker worker) {
-        Objects.requireNonNull(worker, "Worker cannot be null");
+        CodeAreaUtils.requireNonNull(worker);
 
         this.worker = worker;
     }
@@ -242,7 +242,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
     public void resetPainter() {
         worker.reset();
     }
-    
+
     public void updateLayout() {
         worker.updateLayout();
     }

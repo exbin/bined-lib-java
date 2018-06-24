@@ -20,7 +20,6 @@ import java.awt.Graphics;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.exbin.bined.BasicCodeAreaSection;
@@ -28,6 +27,7 @@ import org.exbin.bined.BasicCodeAreaZone;
 import org.exbin.bined.CaretMovedListener;
 import org.exbin.bined.CaretPosition;
 import org.exbin.bined.CodeAreaCaretPosition;
+import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.CodeAreaViewMode;
 import org.exbin.bined.CodeCharactersCase;
 import org.exbin.bined.CodeType;
@@ -48,6 +48,7 @@ import org.exbin.bined.capability.SelectionCapable;
 import org.exbin.bined.capability.ViewModeCapable;
 import org.exbin.bined.swing.CodeArea;
 import org.exbin.bined.swing.CodeAreaPainter;
+import org.exbin.bined.swing.CodeAreaSwingUtils;
 import org.exbin.bined.swing.CodeAreaWorker;
 import org.exbin.bined.swing.MovementDirection;
 import org.exbin.bined.swing.ScrollingDirection;
@@ -137,7 +138,7 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
     }
 
     public void setPainter(@Nonnull CodeAreaPainter painter) {
-        Objects.requireNonNull(painter, "Painter cannot be null");
+        CodeAreaUtils.requireNonNull(painter);
 
         this.painter = painter;
         repaint();
@@ -438,7 +439,7 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
 
     @Override
     public void setSelection(@Nonnull SelectionRange selection) {
-        Objects.requireNonNull(painter, "Selection cannot be null");
+        CodeAreaUtils.requireNonNull(selection);
 
         this.selection.setSelection(selection);
         notifySelectionChanged();
@@ -472,7 +473,7 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
 
     @Override
     public void setCharset(@Nonnull Charset charset) {
-        Objects.requireNonNull(charset, "Charset cannot be null");
+        CodeAreaUtils.requireNonNull(charset);
 
         this.charset = charset;
         painter.reset();
