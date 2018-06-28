@@ -23,7 +23,6 @@ import javax.annotation.Nullable;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.PaintEvent;
-import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
@@ -51,6 +50,7 @@ import org.exbin.bined.capability.CodeCharactersCaseCapable;
 import org.exbin.bined.capability.CodeTypeCapable;
 import org.exbin.bined.capability.EditationModeCapable;
 import org.exbin.bined.capability.RowWrappingCapable;
+import org.exbin.bined.capability.RowWrappingCapable.RowWrappingMode;
 import org.exbin.bined.capability.SelectionCapable;
 import org.exbin.bined.capability.ViewModeCapable;
 import org.exbin.bined.swt.CodeArea;
@@ -63,11 +63,12 @@ import org.exbin.bined.swt.basic.DefaultCodeAreaCaret.CursorRenderingMode;
 import org.exbin.bined.swt.capability.BackgroundPaintCapable;
 import org.exbin.bined.swt.capability.FontCapable;
 import org.exbin.bined.swt.capability.ScrollingCapable;
+import org.exbin.utils.binary_data.BinaryData;
 
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2018/05/05
+ * @version 0.2.0 2018/06/28
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaPainter implements CodeAreaPainter {
@@ -82,17 +83,26 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     @Nonnull
     private final ScrolledComposite scrollPanel;
 
+    @Nullable
     private CodeAreaViewMode viewMode;
     private final CodeAreaCaretPosition caretPosition = new CodeAreaCaretPosition();
+    @Nullable
     private SelectionRange selectionRange = null;
     private final CodeAreaScrollPosition scrollPosition = new CodeAreaScrollPosition();
     @Nonnull
     private ScrollBarVerticalScale scrollBarVerticalScale = ScrollBarVerticalScale.NORMAL;
 
+    @Nullable
     private VerticalScrollUnit verticalScrollUnit;
+    @Nullable
     private HorizontalScrollUnit horizontalScrollUnit;
+
     private final Colors colors = new Colors();
     private long dataSize;
+    @Nonnull
+    private RowWrappingCapable.RowWrappingMode rowWrapping = RowWrappingCapable.RowWrappingMode.NO_WRAPPING;
+    private int maxBytesPerLine;
+    private int wrappingBytesGroupSize;
 
     private int componentWidth;
     private int componentHeight;
@@ -109,13 +119,18 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     private int rowHeight;
     private int rowsPerPage;
     private int rowsPerRect;
+    private long rowsPerDocument;
     private int bytesPerRow;
     private int charactersPerPage;
     private int charactersPerRect;
     private int charactersPerRow;
+    @Nullable
     private CodeType codeType;
+    @Nullable
     private CodeCharactersCase hexCharactersCase;
+    @Nullable
     private EditationMode editationMode;
+    @Nullable
     private BasicBackgroundPaintMode backgroundPaintMode;
     private boolean showMirrorCursor;
 
@@ -157,16 +172,13 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         this.worker = worker;
         CodeArea codeArea = worker.getCodeArea();
         dataView = new Composite(codeArea, SWT.NONE);
-        dataView.addPaintListener(new PaintListener() {
-            @Override
-            public void paintControl(@Nonnull PaintEvent paintEvent) {
-                GC g = paintEvent.gc;
-                if (g == null) {
-                    return;
-                }
-
-                paintComponent(g);
+        dataView.addPaintListener((@Nonnull PaintEvent paintEvent) -> {
+            GC g = paintEvent.gc;
+            if (g == null) {
+                return;
             }
+
+            paintComponent(g);
         });
 //        dataView.setVisible(false);
 //        dataView.setLayout(null);
@@ -222,6 +234,9 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         backgroundPaintMode = ((BackgroundPaintCapable) worker).getBackgroundPaintMode();
         showMirrorCursor = ((CaretCapable) worker).isShowMirrorCursor();
         dataSize = worker.getCodeArea().getDataSize();
+        rowWrapping = ((RowWrappingCapable) worker).isRowWrapping();
+        maxBytesPerLine = ((RowWrappingCapable) worker).getMaxBytesPerRow();
+        wrappingBytesGroupSize = ((RowWrappingCapable) worker).getWrappingBytesGroupSize();
 
         rowsPerRect = computeRowsPerRectangle();
         rowsPerPage = computeRowsPerPage();
@@ -317,7 +332,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
          *
          * TODO: Is there better way?
          */
-        monospaceFont = characterWidth == g.textExtent(" ").x && characterWidth == g.textExtent("i").x;
+        monospaceFont = false; // TODO characterWidth == g.textExtent(" ").x && characterWidth == g.textExtent("i").x;
         int fontSize = fontMetrics.getHeight();
         rowHeight = fontSize + subFontSpace;
 
@@ -763,7 +778,11 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             if (dataPosition < 0) {
                 rowStart = (int) -dataPosition;
             }
-            worker.getCodeArea().getContentData().copyToArray(dataPosition + rowStart, rowData, rowStart, rowDataSize - rowStart);
+            BinaryData content = worker.getCodeArea().getContentData();
+            if (content == null) {
+                throw new IllegalStateException("Missing data on nonzero data size");
+            }
+            content.copyToArray(dataPosition + rowStart, rowData, rowStart, rowDataSize - rowStart);
             if (dataPosition + rowBytesLimit > dataSize) {
                 rowBytesLimit = (int) (dataSize - dataPosition);
             }
@@ -1498,13 +1517,12 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             g.setClipping(intersection);
             DefaultCodeAreaCaret.CursorRenderingMode renderingMode = caret.getRenderingMode();
             g.setForeground(colors.cursor);
-            
+
 //            if (renderingMode == DefaultCodeAreaCaret.CursorRenderingMode.XOR) {
 //                g.setXORMode(true); // Color.WHITE
 //            }
-
             paintCursorRect(g, intersection.x, intersection.y, intersection.width, intersection.height, renderingMode, caret);
-            
+
 //            if (renderingMode == DefaultCodeAreaCaret.CursorRenderingMode.XOR) {
 //                throw new UnsupportedOperationException("Not supported yet.");
 //                // TODO g.setPaintMode();
@@ -1526,7 +1544,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         }
         g.setClipping(clipBounds);
     }
-        
+
     private void paintCursorRect(@Nonnull GC g, int x, int y, int width, int height, @Nonnull CursorRenderingMode renderingMode, @Nonnull DefaultCodeAreaCaret caret) {
         switch (renderingMode) {
             case PAINT: {
@@ -1542,7 +1560,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                 break;
             }
             case NEGATIVE: {
-/*                Rectangle rect = new Rectangle(x, y, width, height);
+                /*                Rectangle rect = new Rectangle(x, y, width, height);
                 Rectangle intersection = rect.intersection(g.getClipping());
                 if (intersection.isEmpty()) {
                     break;
@@ -2066,12 +2084,33 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     }
 
     private int computeBytesPerRow() {
-        boolean rowWrapping = ((RowWrappingCapable) worker).isRowWrapping();
-        int maxBytesPerLine = ((RowWrappingCapable) worker).getMaxBytesPerRow();
+        int computedBytesPerRow;
+        if (rowWrapping == RowWrappingMode.WRAPPING) {
+            int charactersPerByte = 0;
+            if (viewMode != CodeAreaViewMode.TEXT_PREVIEW) {
+                charactersPerByte += codeType.getMaxDigitsForByte();
+            }
+            if (viewMode != CodeAreaViewMode.CODE_MATRIX) {
+                charactersPerByte++;
+            }
+            computedBytesPerRow = (charactersPerPage - (viewMode == CodeAreaViewMode.DUAL ? 1 : 0)) / charactersPerByte;
 
-        int computedBytesPerRow = 16;
-        if (rowWrapping) {
-            // TODO
+            if (computedBytesPerRow > maxBytesPerLine) {
+                computedBytesPerRow = maxBytesPerLine;
+            }
+
+            if (wrappingBytesGroupSize > 1) {
+                int wrappingBytesGroupOffset = computedBytesPerRow % wrappingBytesGroupSize;
+                if (wrappingBytesGroupOffset > 0) {
+                    computedBytesPerRow -= wrappingBytesGroupOffset;
+                }
+            }
+        } else {
+            computedBytesPerRow = maxBytesPerLine;
+        }
+
+        if (computedBytesPerRow < 1) {
+            computedBytesPerRow = 1;
         }
 
         return computedBytesPerRow;
@@ -2105,7 +2144,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         ScrollBar horizontalScrollBar = scrollPanel.getHorizontalBar();
 
         if (scrollBarVerticalScale == ScrollBarVerticalScale.SCALED) {
-            long rowsPerDocument = (dataSize / bytesPerRow) + 1;
+            rowsPerDocument = (dataSize / bytesPerRow) + 1;
             int scrollValue;
             if (scrollPosition.getScrollCharPosition() < Long.MAX_VALUE / Integer.MAX_VALUE) {
                 scrollValue = (int) ((scrollPosition.getScrollRowPosition() * Integer.MAX_VALUE) / rowsPerDocument);
@@ -2279,7 +2318,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     }
 
     /**
-     * Enumeration of vertical scalling modes.
+     * Enumeration of vertical scaling modes.
      */
     public enum ScrollBarVerticalScale {
         /**

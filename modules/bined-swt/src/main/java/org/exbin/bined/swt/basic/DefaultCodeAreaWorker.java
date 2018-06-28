@@ -97,7 +97,8 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
     @Nonnull
     private CodeCharactersCase codeCharactersCase = CodeCharactersCase.UPPER;
     private boolean showMirrorCursor = true;
-    private boolean lineWrapping = false;
+    @Nonnull
+    private RowWrappingMode lineWrapping = RowWrappingMode.NO_WRAPPING;
     private int wrappingBytesGroupSize = 0;
     private int maxBytesPerLine = 16;
 
@@ -552,13 +553,14 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
         repaint();
     }
 
+    @Nonnull
     @Override
-    public boolean isRowWrapping() {
+    public RowWrappingMode isRowWrapping() {
         return lineWrapping;
     }
 
     @Override
-    public void setLineWrapping(boolean lineWrapping) {
+    public void setLineWrapping(@Nonnull RowWrappingMode lineWrapping) {
         this.lineWrapping = lineWrapping;
         updateLayout();
     }

@@ -48,7 +48,6 @@ import org.exbin.bined.capability.SelectionCapable;
 import org.exbin.bined.capability.ViewModeCapable;
 import org.exbin.bined.swing.CodeArea;
 import org.exbin.bined.swing.CodeAreaPainter;
-import org.exbin.bined.swing.CodeAreaSwingUtils;
 import org.exbin.bined.swing.CodeAreaWorker;
 import org.exbin.bined.swing.MovementDirection;
 import org.exbin.bined.swing.ScrollingDirection;
@@ -107,7 +106,8 @@ public class ExtCodeAreaWorker implements CodeAreaWorker, SelectionCapable, Care
     @Nonnull
     private CodeCharactersCase codeCharactersCase = CodeCharactersCase.UPPER;
     private boolean showMirrorCursor = true;
-    private boolean lineWrapping = false;
+    @Nonnull
+    private RowWrappingMode lineWrapping = RowWrappingMode.NO_WRAPPING;
     private int wrappingBytesGroupSize = 0;
     private int maxBytesPerLine = 16;
 
@@ -579,13 +579,14 @@ public class ExtCodeAreaWorker implements CodeAreaWorker, SelectionCapable, Care
         repaint();
     }
 
+    @Nonnull
     @Override
-    public boolean isRowWrapping() {
+    public RowWrappingMode isRowWrapping() {
         return lineWrapping;
     }
 
     @Override
-    public void setLineWrapping(boolean lineWrapping) {
+    public void setLineWrapping(@Nonnull RowWrappingMode lineWrapping) {
         this.lineWrapping = lineWrapping;
         updateLayout();
     }

@@ -53,6 +53,7 @@ import org.exbin.bined.capability.CodeCharactersCaseCapable;
 import org.exbin.bined.capability.CodeTypeCapable;
 import org.exbin.bined.capability.EditationModeCapable;
 import org.exbin.bined.capability.RowWrappingCapable;
+import org.exbin.bined.capability.RowWrappingCapable.RowWrappingMode;
 import org.exbin.bined.capability.SelectionCapable;
 import org.exbin.bined.capability.ViewModeCapable;
 import org.exbin.bined.swing.CodeArea;
@@ -70,7 +71,7 @@ import org.exbin.utils.binary_data.BinaryData;
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2018/06/03
+ * @version 0.2.0 2018/06/28
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaPainter implements CodeAreaPainter {
@@ -100,7 +101,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     private HorizontalScrollUnit horizontalScrollUnit;
     private final Colors colors = new Colors();
     private long dataSize;
-    private boolean rowWrapping;
+    @Nonnull
+    private RowWrappingMode rowWrapping = RowWrappingMode.NO_WRAPPING;
     private int maxBytesPerLine;
     private int wrappingBytesGroupSize;
 
@@ -1633,7 +1635,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
     private int computeBytesPerRow() {
         int computedBytesPerRow;
-        if (rowWrapping) {
+        if (rowWrapping == RowWrappingMode.WRAPPING) {
             int charactersPerByte = 0;
             if (viewMode != CodeAreaViewMode.TEXT_PREVIEW) {
                 charactersPerByte += codeType.getMaxDigitsForByte();
