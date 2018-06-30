@@ -26,7 +26,6 @@ import org.exbin.bined.CodeAreaCaretPosition;
 import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.swing.CodeArea;
-import org.exbin.bined.swing.CodeAreaSwingUtils;
 
 /**
  * Default implementation of code area caret.

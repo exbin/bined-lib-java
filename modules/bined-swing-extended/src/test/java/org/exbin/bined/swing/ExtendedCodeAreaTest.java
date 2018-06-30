@@ -15,7 +15,6 @@
  */
 package org.exbin.bined.swing;
 
-import org.exbin.bined.swing.CodeArea;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Level;

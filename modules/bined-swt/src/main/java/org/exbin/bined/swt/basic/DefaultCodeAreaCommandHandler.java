@@ -19,7 +19,6 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.FlavorEvent;
-import java.awt.datatransfer.FlavorListener;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 import java.nio.ByteBuffer;

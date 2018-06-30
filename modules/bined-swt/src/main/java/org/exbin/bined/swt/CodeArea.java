@@ -15,8 +15,6 @@
  */
 package org.exbin.bined.swt;
 
-import org.exbin.bined.swt.basic.DefaultCodeAreaWorker;
-import org.exbin.bined.swt.basic.DefaultCodeAreaCommandHandler;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
@@ -29,13 +27,15 @@ import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
-import org.exbin.bined.DataChangedListener;
-import org.exbin.utils.binary_data.BinaryData;
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.widgets.Composite;
 import org.exbin.bined.CodeAreaControl;
 import org.exbin.bined.CodeAreaUtils;
+import org.exbin.bined.DataChangedListener;
 import org.exbin.bined.capability.SelectionCapable;
+import org.exbin.bined.swt.basic.DefaultCodeAreaCommandHandler;
+import org.exbin.bined.swt.basic.DefaultCodeAreaWorker;
+import org.exbin.utils.binary_data.BinaryData;
 
 /**
  * Hexadecimal viewer/editor component.

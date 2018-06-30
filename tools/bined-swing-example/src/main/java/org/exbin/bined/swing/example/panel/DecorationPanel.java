@@ -23,7 +23,6 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.plaf.basic.BasicBorders;
-import org.exbin.bined.capability.CodeTypeCapable;
 import org.exbin.bined.swing.CodeArea;
 import org.exbin.bined.swing.basic.BasicBackgroundPaintMode;
 import org.exbin.bined.swing.basic.DefaultCodeAreaWorker;
