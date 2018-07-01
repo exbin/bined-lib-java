@@ -94,6 +94,7 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
     private BasicBackgroundPaintMode borderPaintMode = BasicBackgroundPaintMode.STRIPED;
     @Nonnull
     private CodeType codeType = CodeType.HEXADECIMAL;
+    private int rowPositionNumberLength = 0;
     @Nonnull
     private CodeCharactersCase codeCharactersCase = CodeCharactersCase.UPPER;
     private boolean showMirrorCursor = true;
@@ -176,6 +177,18 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
     @Override
     public void setShowMirrorCursor(boolean showMirrorCursor) {
         this.showMirrorCursor = showMirrorCursor;
+        repaint();
+    }
+
+    @Override
+    public int getRowPositionNumberLength() {
+        return rowPositionNumberLength;
+    }
+
+    @Override
+    public void setRowPositionNumberLength(int rowPositionNumberLength) {
+        this.rowPositionNumberLength = rowPositionNumberLength;
+        reset();
         repaint();
     }
 
@@ -560,7 +573,7 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
     }
 
     @Override
-    public void setLineWrapping(@Nonnull RowWrappingMode lineWrapping) {
+    public void setRowWrapping(@Nonnull RowWrappingMode lineWrapping) {
         this.lineWrapping = lineWrapping;
         updateLayout();
     }
