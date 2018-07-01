@@ -23,6 +23,8 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.plaf.basic.BasicBorders;
+import org.exbin.bined.CodeCharactersCase;
+import org.exbin.bined.capability.CodeCharactersCaseCapable;
 import org.exbin.bined.swing.CodeArea;
 import org.exbin.bined.swing.basic.BasicBackgroundPaintMode;
 import org.exbin.bined.swing.basic.DefaultCodeAreaWorker;
@@ -46,6 +48,7 @@ public class DecorationPanel extends javax.swing.JPanel {
         initComponents();
 
         backgroundModeComboBox.setSelectedIndex(((BackgroundPaintCapable) worker).getBackgroundPaintMode().ordinal());
+        hexCharactersModeComboBox.setSelectedIndex(((CodeCharactersCaseCapable) worker).getCodeCharactersCase().ordinal());
 //        positionCodeTypeComboBox.setSelectedIndex((((CodeTypeCapable) worker).getPositionCodeType().ordinal());
 //        lineNumbersBackgroundCheckBox.setSelected(codeArea.isLineNumberBackground());
 //        showLineNumbersCheckBox.setSelected(codeArea.isShowLineNumbers());
@@ -164,7 +167,7 @@ public class DecorationPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void hexCharactersModeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hexCharactersModeComboBoxActionPerformed
-        //        codeArea.setHexCharactersCase(HexCharactersCase.values()[hexCharactersModeComboBox.getSelectedIndex()]);
+        ((CodeCharactersCaseCapable) worker).setCodeCharactersCase(CodeCharactersCase.values()[hexCharactersModeComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_hexCharactersModeComboBoxActionPerformed
 
     private void backgroundModeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backgroundModeComboBoxActionPerformed
@@ -176,7 +179,7 @@ public class DecorationPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_lineNumbersBackgroundCheckBoxItemStateChanged
 
     private void positionCodeTypeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_positionCodeTypeComboBoxActionPerformed
-        //        codeArea.setPositionCodeType(PositionCodeType.values()[positionCodeTypeComboBox.getSelectedIndex()]);
+        // codeArea.setPositionCodeType(PositionCodeType.values()[positionCodeTypeComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_positionCodeTypeComboBoxActionPerformed
 
     private void borderTypeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_borderTypeComboBoxActionPerformed

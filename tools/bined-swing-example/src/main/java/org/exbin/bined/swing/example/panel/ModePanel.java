@@ -30,7 +30,7 @@ import org.exbin.bined.swing.basic.DefaultCodeAreaWorker;
 /**
  * Hexadecimal editor example panel.
  *
- * @version 0.2.0 2018/03/22
+ * @version 0.2.0 2018/07/01
  * @author ExBin Project (http://exbin.org)
  */
 public class ModePanel extends javax.swing.JPanel {
@@ -211,39 +211,39 @@ public class ModePanel extends javax.swing.JPanel {
     }//GEN-LAST:event_codeTypeComboBoxActionPerformed
 
     private void editationAllowedComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editationAllowedComboBoxActionPerformed
-        ((EditationModeCapable) codeArea.getWorker()).setEditationMode(EditationMode.values()[editationAllowedComboBox.getSelectedIndex()]);
+        ((EditationModeCapable) worker).setEditationMode(EditationMode.values()[editationAllowedComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_editationAllowedComboBoxActionPerformed
 
     private void fontFamilyComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fontFamilyComboBoxActionPerformed
-        int size = codeArea.getFont().getSize();
+        int size = worker.getFont().getSize();
         switch (fontFamilyComboBox.getSelectedIndex()) {
             case 0: {
-                codeArea.setFont(new Font(Font.DIALOG, Font.PLAIN, size));
+                worker.setFont(new Font(Font.DIALOG, Font.PLAIN, size));
                 break;
             }
             case 1: {
-                codeArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, size));
+                worker.setFont(new Font(Font.MONOSPACED, Font.PLAIN, size));
                 break;
             }
             case 2: {
-                codeArea.setFont(new Font(Font.SERIF, Font.PLAIN, size));
+                worker.setFont(new Font(Font.SERIF, Font.PLAIN, size));
                 break;
             }
         }
     }//GEN-LAST:event_fontFamilyComboBoxActionPerformed
 
     private void fontSizeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fontSizeComboBoxActionPerformed
-        Font font = codeArea.getFont();
+        Font font = worker.getFont();
         Font derivedFont = font.deriveFont(Font.PLAIN, Integer.valueOf((String) fontSizeComboBox.getSelectedItem()));
-        codeArea.setFont(derivedFont);
+        worker.setFont(derivedFont);
     }//GEN-LAST:event_fontSizeComboBoxActionPerformed
 
     private void viewModeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewModeComboBoxActionPerformed
-        ((ViewModeCapable) codeArea.getWorker()).setViewMode(CodeAreaViewMode.values()[viewModeComboBox.getSelectedIndex()]);
+        ((ViewModeCapable) worker).setViewMode(CodeAreaViewMode.values()[viewModeComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_viewModeComboBoxActionPerformed
 
     private void charsetComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_charsetComboBoxActionPerformed
-        ((CharsetCapable) codeArea.getWorker()).setCharset(Charset.forName((String) charsetComboBox.getSelectedItem()));
+        ((CharsetCapable) worker).setCharset(Charset.forName((String) charsetComboBox.getSelectedItem()));
     }//GEN-LAST:event_charsetComboBoxActionPerformed
 
 

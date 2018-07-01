@@ -18,6 +18,9 @@ package org.exbin.bined.swing;
 import java.awt.Color;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.swing.JScrollBar;
+import javax.swing.ScrollPaneConstants;
+import org.exbin.bined.ScrollBarVisibility;
 
 /**
  * Hexadecimal editor component swing utilities.
@@ -81,4 +84,29 @@ public class CodeAreaSwingUtils {
         return new Color(grayLevel, grayLevel, grayLevel);
     }
 
+    public static int getVerticalScrollBarPolicy(@Nonnull ScrollBarVisibility scrollBarVisibility) {
+        switch (scrollBarVisibility) {
+            case NEVER:
+                return ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER;
+            case ALWAYS:
+                return ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS;
+            case IF_NEEDED:
+                return ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED;
+            default:
+                throw new IllegalStateException("Unexpected scrollBarVisibility type " + scrollBarVisibility.name());
+        }
+    }
+
+    public static int getHorizontalScrollBarPolicy(@Nonnull ScrollBarVisibility scrollBarVisibility) {
+        switch (scrollBarVisibility) {
+            case NEVER:
+                return ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER;
+            case ALWAYS:
+                return ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS;
+            case IF_NEEDED:
+                return ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED;
+            default:
+                throw new IllegalStateException("Unexpected scrollBarVisibility type " + scrollBarVisibility.name());
+        }
+    }
 }

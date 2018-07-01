@@ -65,7 +65,7 @@ import org.exbin.bined.swing.extended.capability.AntialiasingCapable;
 /**
  * Code area component extended worker.
  *
- * @version 0.2.0 2018/04/12
+ * @version 0.2.0 2018/07/01
  * @author ExBin Project (http://exbin.org)
  */
 public class ExtCodeAreaWorker implements CodeAreaWorker, SelectionCapable, CaretCapable, ScrollingCapable, ViewModeCapable,
@@ -103,6 +103,7 @@ public class ExtCodeAreaWorker implements CodeAreaWorker, SelectionCapable, Care
     private AntialiasingMode antialiasingMode = AntialiasingMode.AUTO;
     @Nonnull
     private CodeType codeType = CodeType.HEXADECIMAL;
+    private int rowPositionNumberLength = 0;
     @Nonnull
     private CodeCharactersCase codeCharactersCase = CodeCharactersCase.UPPER;
     private boolean showMirrorCursor = true;
@@ -185,6 +186,18 @@ public class ExtCodeAreaWorker implements CodeAreaWorker, SelectionCapable, Care
     @Override
     public void setShowMirrorCursor(boolean showMirrorCursor) {
         this.showMirrorCursor = showMirrorCursor;
+        repaint();
+    }
+
+    @Override
+    public int getRowPositionNumberLength() {
+        return rowPositionNumberLength;
+    }
+
+    @Override
+    public void setRowPositionNumberLength(int rowPositionNumberLength) {
+        this.rowPositionNumberLength = rowPositionNumberLength;
+        reset();
         repaint();
     }
 
@@ -586,7 +599,7 @@ public class ExtCodeAreaWorker implements CodeAreaWorker, SelectionCapable, Care
     }
 
     @Override
-    public void setLineWrapping(@Nonnull RowWrappingMode lineWrapping) {
+    public void setRowWrapping(@Nonnull RowWrappingMode lineWrapping) {
         this.lineWrapping = lineWrapping;
         updateLayout();
     }

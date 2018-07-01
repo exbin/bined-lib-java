@@ -353,6 +353,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                 revealCursor();
             }
         }
+        codeArea.redraw();
     }
 
     private void setCodeValue(int value) {

@@ -68,8 +68,8 @@ public class CodeAreaUtils {
      * @param value byte value
      */
     public static void byteToHexChars(@Nonnull char[] target, byte value) {
-        target[0] = UPPER_HEX_CODES[(value >> 4) & 15];
-        target[1] = UPPER_HEX_CODES[value & 15];
+        target[0] = UPPER_HEX_CODES[(value >> 4) & 0xf];
+        target[1] = UPPER_HEX_CODES[value & 0xf];
     }
 
     /**
@@ -97,7 +97,7 @@ public class CodeAreaUtils {
      */
     public static void longToHexChars(@Nonnull char[] target, long value, int length) {
         for (int i = length - 1; i >= 0; i--) {
-            target[i] = UPPER_HEX_CODES[(int) (value & 15)];
+            target[i] = UPPER_HEX_CODES[(int) (value & 0xf)];
             value = value >> 4;
         }
     }
@@ -144,9 +144,9 @@ public class CodeAreaUtils {
                 break;
             }
             case HEXADECIMAL: {
-                int codeValue0 = (dataByte >> 4) & 15;
+                int codeValue0 = (dataByte >> 4) & 0xf;
                 targetData[targetPosition] = hexCharacters[codeValue0];
-                int codeValue1 = dataByte & 15;
+                int codeValue1 = dataByte & 0xf;
                 targetData[targetPosition + 1] = hexCharacters[codeValue1];
                 break;
             }

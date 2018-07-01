@@ -92,11 +92,12 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
     private BasicBackgroundPaintMode borderPaintMode = BasicBackgroundPaintMode.STRIPED;
     @Nonnull
     private CodeType codeType = CodeType.HEXADECIMAL;
+    private int rowPositionNumberLength = 0;
     @Nonnull
     private CodeCharactersCase codeCharactersCase = CodeCharactersCase.UPPER;
     private boolean showMirrorCursor = true;
     @Nonnull
-    private RowWrappingMode lineWrapping = RowWrappingMode.NO_WRAPPING;
+    private RowWrappingMode rowWrapping = RowWrappingMode.NO_WRAPPING;
     private int wrappingBytesGroupSize = 0;
     private int maxBytesPerLine = 16;
 
@@ -171,6 +172,18 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
         repaint();
     }
 
+    @Override
+    public int getRowPositionNumberLength() {
+        return rowPositionNumberLength;
+    }
+
+    @Override
+    public void setRowPositionNumberLength(int rowPositionNumberLength) {
+        this.rowPositionNumberLength = rowPositionNumberLength;
+        reset();
+        repaint();
+    }
+
     public long getDataPosition() {
         return caret.getDataPosition();
     }
@@ -222,6 +235,7 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
     @Override
     public void setCodeCharactersCase(@Nonnull CodeCharactersCase codeCharactersCase) {
         this.codeCharactersCase = codeCharactersCase;
+        updateLayout();
         repaint();
     }
 
@@ -238,15 +252,25 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
 
     @Override
     public void setViewMode(@Nonnull CodeAreaViewMode viewMode) {
-        this.viewMode = viewMode;
-        if (viewMode == CodeAreaViewMode.CODE_MATRIX) {
-            getCaret().setSection(BasicCodeAreaSection.CODE_MATRIX.getSection());
-            notifyCaretMoved();
-        } else if (viewMode == CodeAreaViewMode.TEXT_PREVIEW) {
-            getCaret().setSection(BasicCodeAreaSection.TEXT_PREVIEW.getSection());
-            notifyCaretMoved();
+        if (viewMode != this.viewMode) {
+            this.viewMode = viewMode;
+            switch (viewMode) {
+                case CODE_MATRIX:
+                    getCaret().setSection(BasicCodeAreaSection.CODE_MATRIX.getSection());
+                    reset();
+                    notifyCaretMoved();
+                    break;
+                case TEXT_PREVIEW:
+                    getCaret().setSection(BasicCodeAreaSection.TEXT_PREVIEW.getSection());
+                    reset();
+                    notifyCaretMoved();
+                    break;
+                default:
+                    reset();
+                    break;
+            }
+            repaint();
         }
-        repaint();
     }
 
     @Override
@@ -258,7 +282,7 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
     @Override
     public void setCodeType(@Nonnull CodeType codeType) {
         this.codeType = codeType;
-        painter.reset();
+        reset();
         repaint();
     }
 
@@ -476,7 +500,7 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
         CodeAreaUtils.requireNonNull(charset);
 
         this.charset = charset;
-        painter.reset();
+        reset();
         repaint();
     }
 
@@ -523,7 +547,7 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
     @Override
     public void setFont(@Nonnull Font font) {
         this.font = font;
-        painter.reset();
+        reset();
         repaint();
     }
 
@@ -542,12 +566,12 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
     @Nonnull
     @Override
     public RowWrappingMode isRowWrapping() {
-        return lineWrapping;
+        return rowWrapping;
     }
 
     @Override
-    public void setLineWrapping(@Nonnull RowWrappingMode lineWrapping) {
-        this.lineWrapping = lineWrapping;
+    public void setRowWrapping(@Nonnull RowWrappingMode rowWrapping) {
+        this.rowWrapping = rowWrapping;
         updateLayout();
     }
 

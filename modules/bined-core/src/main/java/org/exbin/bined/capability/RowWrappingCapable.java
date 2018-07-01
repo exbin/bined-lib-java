@@ -28,7 +28,7 @@ public interface RowWrappingCapable {
     @Nonnull
     RowWrappingMode isRowWrapping();
 
-    void setLineWrapping(@Nonnull RowWrappingMode lineWrapping);
+    void setRowWrapping(@Nonnull RowWrappingMode lineWrapping);
 
     int getMaxBytesPerRow();
 
@@ -37,6 +37,10 @@ public interface RowWrappingCapable {
     int getWrappingBytesGroupSize();
 
     void setWrappingBytesGroupSize(int groupSize);
+
+    int getRowPositionNumberLength();
+
+    void setRowPositionNumberLength(int rowPositionNumberLength);
 
     public static class LineWrappingCapability implements WorkerCapability {
 
