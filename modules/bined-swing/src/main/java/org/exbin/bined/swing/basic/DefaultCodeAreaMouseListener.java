@@ -28,6 +28,7 @@ import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.swing.CodeArea;
 import org.exbin.bined.swing.CodeAreaCommandHandler;
 import org.exbin.bined.swing.CodeAreaCommandHandler.ScrollbarOrientation;
+import org.exbin.bined.swing.capability.ScrollingCapable;
 
 /**
  * Code Area component mouse listener.
@@ -65,7 +66,7 @@ public class DefaultCodeAreaMouseListener extends MouseAdapter implements MouseM
     private void moveCaret(@Nonnull MouseEvent me) {
         boolean selecting = (me.getModifiersEx() & KeyEvent.SHIFT_DOWN_MASK) > 0;
         codeArea.getCommandHandler().moveCaret(computeRelativeX(me), computeRelativeY(me), selecting);
-        ((CaretCapable) codeArea.getWorker()).revealCursor();
+        ((ScrollingCapable) codeArea.getWorker()).revealCursor();
     }
 
     @Override
@@ -105,7 +106,7 @@ public class DefaultCodeAreaMouseListener extends MouseAdapter implements MouseM
         updateMouseCursor(me);
         if (codeArea.isEnabled() && mouseDown) {
             codeArea.getCommandHandler().moveCaret(computeRelativeX(me), computeRelativeY(me), true);
-            ((CaretCapable) codeArea.getWorker()).revealCursor();
+            ((ScrollingCapable) codeArea.getWorker()).revealCursor();
         }
     }
 

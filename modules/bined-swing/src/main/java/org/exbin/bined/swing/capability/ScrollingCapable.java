@@ -16,6 +16,7 @@
 package org.exbin.bined.swing.capability;
 
 import javax.annotation.Nonnull;
+import org.exbin.bined.CaretPosition;
 import org.exbin.bined.ScrollBarVisibility;
 import org.exbin.bined.ScrollingListener;
 import org.exbin.bined.capability.WorkerCapability;
@@ -65,8 +66,33 @@ public interface ScrollingCapable {
 
     @Nonnull
     CodeAreaScrollPosition computeScrolling(@Nonnull CodeAreaScrollPosition startPosition, @Nonnull ScrollingDirection direction);
-    
+
     void updateScrollBars();
+
+    /**
+     * Reveals scrolling area for current cursor position.
+     */
+    void revealCursor();
+
+    /**
+     * Reveals scrolling area for given caret position.
+     *
+     * @param caretPosition caret position
+     */
+    void revealPosition(@Nonnull CaretPosition caretPosition);
+
+    /**
+     * Scrolls scrolling area as centered as possible for current cursor
+     * position.
+     */
+    void centerOnCursor();
+
+    /**
+     * Scrolls scrolling area as centered as possible for given caret position.
+     *
+     * @param caretPosition caret position
+     */
+    void centerOnPosition(@Nonnull CaretPosition caretPosition);
 
     public static class ScrollingCapability implements WorkerCapability {
 

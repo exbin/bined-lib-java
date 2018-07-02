@@ -82,7 +82,7 @@ public class ModePanel extends javax.swing.JPanel {
 
         editationAllowedLabel.setText("Editation");
 
-        editationAllowedComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "READ_ONLY", "OVERWRITE_ONLY", "ALLOWED" }));
+        editationAllowedComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "READ_ONLY", "INSERT", "OVERWRITE", "INPLACE" }));
         editationAllowedComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 editationAllowedComboBoxActionPerformed(evt);

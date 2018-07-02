@@ -25,7 +25,7 @@ import org.exbin.bined.CodeAreaCaret;
 /**
  * Support for caret / cursor capability.
  *
- * @version 0.2.0 2018/02/25
+ * @version 0.2.0 2018/07/02
  * @author ExBin Project (http://exbin.org)
  */
 public interface CaretCapable {
@@ -37,31 +37,6 @@ public interface CaretCapable {
      */
     @Nonnull
     CodeAreaCaret getCaret();
-
-    /**
-     * Reveals scrolling area for current cursor position.
-     */
-    void revealCursor();
-
-    /**
-     * Reveals scrolling area for given caret position.
-     *
-     * @param caretPosition caret position
-     */
-    void revealPosition(@Nonnull CaretPosition caretPosition);
-
-    /**
-     * Scrolls scrolling area as centered as possible for current cursor
-     * position.
-     */
-    void centerOnCursor();
-
-    /**
-     * Scrolls scrolling area as centered as possible for given caret position.
-     *
-     * @param caretPosition caret position
-     */
-    void centerOnPosition(@Nonnull CaretPosition caretPosition);
 
     @Nullable
     CaretPosition mousePositionToClosestCaretPosition(int positionX, int positionY);

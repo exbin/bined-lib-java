@@ -79,7 +79,7 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
     private final CodeAreaScrollPosition scrollPosition = new CodeAreaScrollPosition();
 
     @Nonnull
-    private Charset charset = Charset.defaultCharset();
+    private Charset charset = Charset.forName(CodeAreaUtils.DEFAULT_ENCODING);
     private boolean handleClipboard = true;
 
     @Nonnull
