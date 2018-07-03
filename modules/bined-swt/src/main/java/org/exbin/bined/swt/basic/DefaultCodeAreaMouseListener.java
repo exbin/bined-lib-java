@@ -26,6 +26,7 @@ import org.eclipse.swt.events.MouseWheelListener;
 import org.eclipse.swt.graphics.Cursor;
 import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.swt.CodeArea;
+import org.exbin.bined.swt.capability.ScrollingCapable;
 
 /**
  * Code Area component mouse listener.
@@ -73,7 +74,7 @@ public class DefaultCodeAreaMouseListener implements MouseListener, MouseMoveLis
     private void moveCaret(@Nonnull MouseEvent me) {
         boolean selecting = (me.stateMask & SWT.SHIFT) > 0;
         codeArea.getCommandHandler().moveCaret(computeRelativeX(me), computeRelativeY(me), selecting);
-        ((CaretCapable) codeArea.getWorker()).revealCursor();
+        ((ScrollingCapable) codeArea.getWorker()).revealCursor();
     }
 
     @Override
@@ -108,7 +109,7 @@ public class DefaultCodeAreaMouseListener implements MouseListener, MouseMoveLis
         updateMouseCursor(me);
         if (codeArea.isEnabled() && mouseDown) {
             codeArea.getCommandHandler().moveCaret(computeRelativeX(me), computeRelativeY(me), true);
-            ((CaretCapable) codeArea.getWorker()).revealCursor();
+            ((ScrollingCapable) codeArea.getWorker()).revealCursor();
         }
     }
 

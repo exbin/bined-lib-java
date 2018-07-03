@@ -16,12 +16,13 @@
 package org.exbin.bined.swing.basic;
 
 import java.util.Objects;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
  * Code Area scrolling position.
  *
- * @version 0.2.0 2018/03/24
+ * @version 0.2.0 2018/07/03
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeAreaScrollPosition {
@@ -29,63 +30,63 @@ public class CodeAreaScrollPosition {
     /**
      * Scrollbar document row position.
      */
-    private long scrollRowPosition = 0;
+    private long rowPosition = 0;
 
     /**
      * Scrollbar document row pixel offset position.
      */
-    private int scrollRowOffset = 0;
+    private int rowOffset = 0;
 
     /**
      * Scrollbar document character position.
      */
-    private int scrollCharPosition = 0;
+    private int charPosition = 0;
 
     /**
      * Scrollbar document character pixel offset position.
      */
-    private int scrollCharOffset = 0;
+    private int charOffset = 0;
 
-    public long getScrollRowPosition() {
-        return scrollRowPosition;
+    public long getRowPosition() {
+        return rowPosition;
     }
 
-    public int getScrollRowOffset() {
-        return scrollRowOffset;
+    public int getRowOffset() {
+        return rowOffset;
     }
 
-    public int getScrollCharPosition() {
-        return scrollCharPosition;
+    public int getCharPosition() {
+        return charPosition;
     }
 
-    public int getScrollCharOffset() {
-        return scrollCharOffset;
+    public int getCharOffset() {
+        return charOffset;
     }
 
-    public void setScrollRowPosition(long scrollRowPosition) {
-        this.scrollRowPosition = scrollRowPosition;
+    public void setRowPosition(long rowPosition) {
+        this.rowPosition = rowPosition;
     }
 
-    public void setScrollRowOffset(int scrollRowOffset) {
-        this.scrollRowOffset = scrollRowOffset;
+    public void setRowOffset(int rowOffset) {
+        this.rowOffset = rowOffset;
     }
 
-    public void setScrollCharPosition(int scrollCharPosition) {
-        this.scrollCharPosition = scrollCharPosition;
+    public void setCharPosition(int charPosition) {
+        this.charPosition = charPosition;
     }
 
-    public void setScrollCharOffset(int scrollCharOffset) {
-        this.scrollCharOffset = scrollCharOffset;
+    public void setCharOffset(int charOffset) {
+        this.charOffset = charOffset;
     }
 
     public void setScrollPosition(@Nullable CodeAreaScrollPosition scrollPosition) {
         if (scrollPosition == null) {
             reset();
         } else {
-            scrollRowPosition = scrollPosition.getScrollRowPosition();
-            scrollRowOffset = scrollPosition.getScrollRowOffset();
-            scrollCharPosition = scrollPosition.getScrollCharPosition();
-            scrollCharOffset = scrollPosition.getScrollCharOffset();
+            rowPosition = scrollPosition.getRowPosition();
+            rowOffset = scrollPosition.getRowOffset();
+            charPosition = scrollPosition.getCharPosition();
+            charOffset = scrollPosition.getCharOffset();
         }
     }
 
@@ -93,19 +94,19 @@ public class CodeAreaScrollPosition {
      * Resets scrolling position to top left corner.
      */
     public void reset() {
-        scrollRowPosition = 0;
-        scrollRowOffset = 0;
-        scrollCharPosition = 0;
-        scrollCharOffset = 0;
+        rowPosition = 0;
+        rowOffset = 0;
+        charPosition = 0;
+        charOffset = 0;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(scrollRowPosition, scrollRowOffset, scrollCharPosition, scrollCharOffset);
+        return Objects.hash(rowPosition, rowOffset, charPosition, charOffset);
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(@Nullable Object obj) {
         if (this == obj) {
             return true;
         }
@@ -116,15 +117,23 @@ public class CodeAreaScrollPosition {
             return false;
         }
         final CodeAreaScrollPosition other = (CodeAreaScrollPosition) obj;
-        if (this.scrollRowPosition != other.scrollRowPosition) {
+        if (this.rowPosition != other.rowPosition) {
             return false;
         }
-        if (this.scrollRowOffset != other.scrollRowOffset) {
+        if (this.rowOffset != other.rowOffset) {
             return false;
         }
-        if (this.scrollCharPosition != other.scrollCharPosition) {
+        if (this.charPosition != other.charPosition) {
             return false;
         }
-        return this.scrollCharOffset != other.scrollCharOffset;
+        return this.charOffset != other.charOffset;
+    }
+
+    public boolean isCharPositionGreaterThan(@Nonnull CodeAreaScrollPosition compPosition) {
+        return charPosition > compPosition.charPosition || (charPosition == compPosition.charPosition && charOffset > compPosition.charOffset);
+    }
+
+    public boolean isRowPositionGreaterThan(@Nonnull CodeAreaScrollPosition compPosition) {
+        return rowPosition > compPosition.rowPosition || (rowPosition == compPosition.rowPosition && rowOffset > compPosition.rowOffset);
     }
 }

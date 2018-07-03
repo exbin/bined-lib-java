@@ -970,7 +970,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
             codeArea.clearSelection();
             CodeAreaCaret caret = ((CaretCapable) codeArea.getWorker()).getCaret();
             caret.setCaretPosition(position);
-            ((CaretCapable) codeArea.getWorker()).revealCursor();
+            ((ScrollingCapable) codeArea.getWorker()).revealCursor();
             codeArea.notifyDataChanged();
             ((ScrollingCapable) codeArea.getWorker()).updateScrollBars();
         }
@@ -981,7 +981,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
             codeArea.clearSelection();
             CodeAreaCaret caret = ((CaretCapable) codeArea.getWorker()).getCaret();
             caret.setCaretPosition(size);
-            ((CaretCapable) codeArea.getWorker()).revealCursor();
+            ((ScrollingCapable) codeArea.getWorker()).revealCursor();
             codeArea.notifyDataChanged();
             ((ScrollingCapable) codeArea.getWorker()).updateScrollBars();
         }
@@ -1011,7 +1011,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
     }
 
     private void revealCursor() {
-        ((CaretCapable) codeArea.getWorker()).revealCursor();
+        ((ScrollingCapable) codeArea.getWorker()).revealCursor();
         codeArea.repaint();
     }
 

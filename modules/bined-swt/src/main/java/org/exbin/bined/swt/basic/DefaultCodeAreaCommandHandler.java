@@ -759,7 +759,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     }
 
     private void revealCursor() {
-        ((CaretCapable) codeArea.getWorker()).revealCursor();
+        ((ScrollingCapable) codeArea.getWorker()).revealCursor();
         codeArea.redraw();
     }
 
