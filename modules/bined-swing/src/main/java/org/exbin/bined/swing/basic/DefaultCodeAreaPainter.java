@@ -73,7 +73,7 @@ import org.exbin.utils.binary_data.BinaryData;
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2018/07/03
+ * @version 0.2.0 2018/07/07
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaPainter implements CodeAreaPainter {
@@ -82,6 +82,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     protected final CodeAreaWorker worker;
     private boolean initialized = false;
     private boolean fontChanged = false;
+    private boolean updateLayout = true;
+    private boolean resetColors = true;
     private volatile ScrollingState scrollingState = ScrollingState.NO_SCROLLING;
 
     @Nonnull
@@ -224,38 +226,18 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     }
 
     @Override
+    public void resetColors() {
+        resetColors = true;
+    }
+
+    @Override
     public void resetFont() {
         fontChanged = true;
     }
 
     @Override
     public void updateLayout() {
-        resetSizes();
-
-        viewMode = ((ViewModeCapable) worker).getViewMode();
-        codeType = ((CodeTypeCapable) worker).getCodeType();
-        hexCharactersCase = ((CodeCharactersCaseCapable) worker).getCodeCharactersCase();
-        editationMode = ((EditationModeCapable) worker).getEditationMode();
-        caretPosition.setPosition(((CaretCapable) worker).getCaret().getCaretPosition());
-        selectionRange = ((SelectionCapable) worker).getSelection();
-        backgroundPaintMode = ((BackgroundPaintCapable) worker).getBackgroundPaintMode();
-        showMirrorCursor = ((CaretCapable) worker).isShowMirrorCursor();
-        dataSize = worker.getCodeArea().getDataSize();
-        rowWrapping = ((RowWrappingCapable) worker).isRowWrapping();
-        maxBytesPerLine = ((RowWrappingCapable) worker).getMaxBytesPerRow();
-        wrappingBytesGroupSize = ((RowWrappingCapable) worker).getWrappingBytesGroupSize();
-        rowPositionNumberLength = ((RowWrappingCapable) worker).getRowPositionNumberLength();
-
-        rowsPerRect = computeRowsPerRectangle();
-        rowsPerPage = computeRowsPerPage();
-
-        charactersPerPage = computeCharactersPerPage();
-        bytesPerRow = computeBytesPerRow();
-        charactersPerRow = computeCharactersPerRow();
-        rowsPerDocument = computeRowsPerDocument();
-        maximumScrollPosition = computeMaximumScrollPosition();
-
-        resetScrollState();
+        updateLayout = true;
     }
 
     private void resetCharPositions() {
@@ -400,6 +382,100 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         scrollPanel.revalidate();
     }
 
+    @Override
+    public boolean isInitialized() {
+        return initialized;
+    }
+
+    @Override
+    public void paintComponent(@Nonnull Graphics g) {
+        if (!initialized) {
+            reset();
+        }
+        updateCache();
+        if (font == null) {
+            resetFont(g);
+        }
+        if (rowDataCache == null) {
+            return;
+        }
+        if (scrollingState == ScrollingState.SCROLLING_BY_SCROLLBAR) {
+            return;
+        }
+
+        paintOutsiteArea(g);
+        paintHeader(g);
+        paintRowPosition(g);
+        paintMainArea(g);
+    }
+
+    protected synchronized void updateCache() {
+        if (resetColors) {
+            resetColors = false;
+
+            CodeArea codeArea = worker.getCodeArea();
+            colors.foreground = codeArea.getForeground();
+            if (colors.foreground == null) {
+                colors.foreground = Color.BLACK;
+            }
+
+            colors.background = codeArea.getBackground();
+            if (colors.background == null) {
+                colors.background = Color.WHITE;
+            }
+            colors.selectionForeground = UIManager.getColor("TextArea.selectionForeground");
+            if (colors.selectionForeground == null) {
+                colors.selectionForeground = Color.WHITE;
+            }
+            colors.selectionBackground = UIManager.getColor("TextArea.selectionBackground");
+            if (colors.selectionBackground == null) {
+                colors.selectionBackground = new Color(96, 96, 255);
+            }
+            colors.selectionMirrorForeground = colors.selectionForeground;
+            colors.selectionMirrorBackground = CodeAreaSwingUtils.computeGrayColor(colors.selectionBackground);
+            colors.cursor = UIManager.getColor("TextArea.caretForeground");
+            if (colors.cursor == null) {
+                colors.cursor = Color.BLACK;
+            }
+            colors.negativeCursor = CodeAreaSwingUtils.createNegativeColor(colors.cursor);
+            colors.decorationLine = Color.GRAY;
+
+            colors.stripes = CodeAreaSwingUtils.createOddColor(colors.background);
+        }
+
+        if (updateLayout) {
+            updateLayout = false;
+
+            resetSizes();
+
+            viewMode = ((ViewModeCapable) worker).getViewMode();
+            codeType = ((CodeTypeCapable) worker).getCodeType();
+            hexCharactersCase = ((CodeCharactersCaseCapable) worker).getCodeCharactersCase();
+            editationMode = ((EditationModeCapable) worker).getEditationMode();
+            caretPosition.setPosition(((CaretCapable) worker).getCaret().getCaretPosition());
+            selectionRange = ((SelectionCapable) worker).getSelection();
+            backgroundPaintMode = ((BackgroundPaintCapable) worker).getBackgroundPaintMode();
+            showMirrorCursor = ((CaretCapable) worker).isShowMirrorCursor();
+            dataSize = worker.getCodeArea().getDataSize();
+            rowWrapping = ((RowWrappingCapable) worker).isRowWrapping();
+            maxBytesPerLine = ((RowWrappingCapable) worker).getMaxBytesPerRow();
+            wrappingBytesGroupSize = ((RowWrappingCapable) worker).getWrappingBytesGroupSize();
+            rowPositionNumberLength = ((RowWrappingCapable) worker).getRowPositionNumberLength();
+
+            rowsPerRect = computeRowsPerRectangle();
+            rowsPerPage = computeRowsPerPage();
+
+            charactersPerPage = computeCharactersPerPage();
+            bytesPerRow = computeBytesPerRow();
+            charactersPerRow = computeCharactersPerRow();
+            rowsPerDocument = computeRowsPerDocument();
+            maximumScrollPosition = computeMaximumScrollPosition();
+
+            resetScrollState();
+        }
+
+    }
+
     private void resetSizes() {
         if (fontMetrics == null) {
             headerAreaHeight = 0;
@@ -418,64 +494,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         scrollPanelHeight = componentHeight - headerAreaHeight;
         dataViewWidth = scrollPanelWidth - getVerticalScrollBarSize();
         dataViewHeight = scrollPanelHeight - getHorizontalScrollBarSize();
-    }
-
-    @Override
-    public void resetColors() {
-        CodeArea codeArea = worker.getCodeArea();
-        colors.foreground = codeArea.getForeground();
-        if (colors.foreground == null) {
-            colors.foreground = Color.BLACK;
-        }
-
-        colors.background = codeArea.getBackground();
-        if (colors.background == null) {
-            colors.background = Color.WHITE;
-        }
-        colors.selectionForeground = UIManager.getColor("TextArea.selectionForeground");
-        if (colors.selectionForeground == null) {
-            colors.selectionForeground = Color.WHITE;
-        }
-        colors.selectionBackground = UIManager.getColor("TextArea.selectionBackground");
-        if (colors.selectionBackground == null) {
-            colors.selectionBackground = new Color(96, 96, 255);
-        }
-        colors.selectionMirrorForeground = colors.selectionForeground;
-        colors.selectionMirrorBackground = CodeAreaSwingUtils.computeGrayColor(colors.selectionBackground);
-        colors.cursor = UIManager.getColor("TextArea.caretForeground");
-        if (colors.cursor == null) {
-            colors.cursor = Color.BLACK;
-        }
-        colors.negativeCursor = CodeAreaSwingUtils.createNegativeColor(colors.cursor);
-        colors.decorationLine = Color.GRAY;
-
-        colors.stripes = CodeAreaSwingUtils.createOddColor(colors.background);
-    }
-
-    @Override
-    public boolean isInitialized() {
-        return initialized;
-    }
-
-    @Override
-    public void paintComponent(@Nonnull Graphics g) {
-        if (!initialized) {
-            reset();
-        }
-        if (font == null) {
-            resetFont(g);
-        }
-        if (rowDataCache == null) {
-            return;
-        }
-        if (scrollingState == ScrollingState.SCROLLING_BY_SCROLLBAR) {
-            return;
-        }
-
-        paintOutsiteArea(g);
-        paintHeader(g);
-        paintRowPosition(g);
-        paintMainArea(g);
     }
 
     public void paintOutsiteArea(@Nonnull Graphics g) {
