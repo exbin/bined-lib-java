@@ -18,7 +18,6 @@ package org.exbin.bined.swing;
 import java.awt.Color;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.swing.JScrollBar;
 import javax.swing.ScrollPaneConstants;
 import org.exbin.bined.ScrollBarVisibility;
 

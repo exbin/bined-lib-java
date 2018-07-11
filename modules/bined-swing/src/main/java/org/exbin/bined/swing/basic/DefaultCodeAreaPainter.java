@@ -73,17 +73,17 @@ import org.exbin.utils.binary_data.BinaryData;
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2018/07/07
+ * @version 0.2.0 2018/07/11
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
     @Nonnull
     protected final CodeAreaWorker worker;
-    private boolean initialized = false;
-    private boolean fontChanged = false;
-    private boolean updateLayout = true;
-    private boolean resetColors = true;
+    private volatile boolean initialized = false;
+    private volatile boolean fontChanged = false;
+    private volatile boolean updateLayout = true;
+    private volatile boolean resetColors = true;
     private volatile ScrollingState scrollingState = ScrollingState.NO_SCROLLING;
 
     @Nonnull
@@ -473,7 +473,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
             resetScrollState();
         }
-
     }
 
     private void resetSizes() {
@@ -563,8 +562,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             int renderOffset = visibleHeaderCharStart;
             Color renderColor = null;
             for (int characterOnRow = visibleHeaderCharStart; characterOnRow < visibleHeaderCharEnd; characterOnRow++) {
-                int byteOnRow;
-                byteOnRow = computePositionByte(characterOnRow);
                 boolean sequenceBreak = false;
                 boolean nativeWidth = true;
 
@@ -587,12 +584,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                 }
 
                 Color color = colors.foreground;
-//                getHeaderPositionColor(byteOnRow, charOnRow);
-//                if (renderColorType == null) {
-//                    renderColorType = colorType;
-//                    renderColor = color;
-//                    g.setColor(color);
-//                }
 
                 if (!nativeWidth || !CodeAreaSwingUtils.areSameColors(color, renderColor)) { // || !colorType.equals(renderColorType)
                     sequenceBreak = true;
