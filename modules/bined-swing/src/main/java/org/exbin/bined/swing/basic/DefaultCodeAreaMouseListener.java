@@ -28,6 +28,7 @@ import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.swing.CodeArea;
 import org.exbin.bined.swing.CodeAreaCommandHandler;
 import org.exbin.bined.swing.CodeAreaCommandHandler.ScrollbarOrientation;
+import org.exbin.bined.swing.CodeAreaCommandHandler.SelectingMode;
 import org.exbin.bined.swing.capability.ScrollingCapable;
 
 /**
@@ -64,7 +65,7 @@ public class DefaultCodeAreaMouseListener extends MouseAdapter implements MouseM
     }
 
     private void moveCaret(@Nonnull MouseEvent me) {
-        boolean selecting = (me.getModifiersEx() & KeyEvent.SHIFT_DOWN_MASK) > 0;
+        SelectingMode selecting = (me.getModifiersEx() & KeyEvent.SHIFT_DOWN_MASK) > 0 ? SelectingMode.SELECTING : SelectingMode.NONE;
         codeArea.getCommandHandler().moveCaret(computeRelativeX(me), computeRelativeY(me), selecting);
         ((ScrollingCapable) codeArea.getWorker()).revealCursor();
     }
@@ -105,7 +106,7 @@ public class DefaultCodeAreaMouseListener extends MouseAdapter implements MouseM
     public void mouseDragged(@Nonnull MouseEvent me) {
         updateMouseCursor(me);
         if (codeArea.isEnabled() && mouseDown) {
-            codeArea.getCommandHandler().moveCaret(computeRelativeX(me), computeRelativeY(me), true);
+            codeArea.getCommandHandler().moveCaret(computeRelativeX(me), computeRelativeY(me), SelectingMode.SELECTING);
             ((ScrollingCapable) codeArea.getWorker()).revealCursor();
         }
     }

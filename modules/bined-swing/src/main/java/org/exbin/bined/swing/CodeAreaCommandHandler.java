@@ -109,7 +109,7 @@ public interface CodeAreaCommandHandler {
      * @param positionY relative position Y
      * @param selecting selection selecting
      */
-    void moveCaret(int positionX, int positionY, boolean selecting);
+    void moveCaret(int positionX, int positionY, @Nonnull SelectingMode selecting);
 
     /**
      * Performs scrolling.
@@ -121,6 +121,10 @@ public interface CodeAreaCommandHandler {
 
     public enum ScrollbarOrientation {
         HORIZONTAL, VERTICAL
+    }
+
+    public enum SelectingMode {
+        NONE, SELECTING
     }
 
     public interface CodeAreaCommandHandlerFactory {

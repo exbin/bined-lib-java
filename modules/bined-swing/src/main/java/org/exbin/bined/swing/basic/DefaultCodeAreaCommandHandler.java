@@ -713,10 +713,10 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         ((SelectionCapable) codeArea.getWorker()).clearSelection();
     }
 
-    public void updateSelection(boolean selecting, @Nonnull CaretPosition caretPosition) {
+    public void updateSelection(@Nonnull SelectingMode selecting, @Nonnull CaretPosition caretPosition) {
         DefaultCodeAreaCaret caret = (DefaultCodeAreaCaret) ((CaretCapable) codeArea.getWorker()).getCaret();
         SelectionRange selection = ((SelectionCapable) codeArea.getWorker()).getSelection();
-        if (selecting) {
+        if (selecting == SelectingMode.SELECTING) {
             ((SelectionCapable) codeArea.getWorker()).setSelection(selection.getStart(), caret.getDataPosition());
         } else {
             ((SelectionCapable) codeArea.getWorker()).setSelection(caret.getDataPosition(), caret.getDataPosition());
@@ -728,7 +728,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     }
 
     @Override
-    public void moveCaret(int positionX, int positionY, boolean selecting) {
+    public void moveCaret(int positionX, int positionY, @Nonnull SelectingMode selecting) {
         CaretPosition caretPosition = ((CaretCapable) codeArea.getWorker()).mousePositionToClosestCaretPosition(positionX, positionY);
         if (caretPosition != null) {
             ((CaretCapable) codeArea.getWorker()).getCaret().setCaretPosition(caretPosition);
@@ -746,7 +746,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         CaretPosition movePosition = codeArea.getWorker().computeMovePosition(caretPosition, direction);
         if (!caretPosition.equals(movePosition)) {
             caret.setCaretPosition(movePosition);
-            updateSelection((modifiers & KeyEvent.SHIFT_DOWN_MASK) > 0, movePosition);
+            updateSelection((modifiers & KeyEvent.SHIFT_DOWN_MASK) > 0 ? SelectingMode.SELECTING : SelectingMode.NONE, movePosition);
             notifyCaretMoved();
         }
     }
