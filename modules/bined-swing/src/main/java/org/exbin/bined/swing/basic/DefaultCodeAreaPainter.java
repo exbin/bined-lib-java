@@ -73,7 +73,7 @@ import org.exbin.utils.binary_data.BinaryData;
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2018/07/11
+ * @version 0.2.0 2018/07/23
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaPainter implements CodeAreaPainter {
@@ -81,9 +81,12 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     @Nonnull
     protected final CodeAreaWorker worker;
     private volatile boolean initialized = false;
+    private volatile boolean adjusting = false;
     private volatile boolean fontChanged = false;
     private volatile boolean updateLayout = true;
     private volatile boolean resetColors = true;
+
+    @Nonnull
     private volatile ScrollingState scrollingState = ScrollingState.NO_SCROLLING;
 
     @Nonnull
@@ -222,6 +225,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     public void reset() {
         resetColors();
         resetFont();
+        resetScrollState();
         updateLayout();
     }
 
@@ -926,7 +930,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                 }
             }
 
-            if (rowPosition > scrollPosition.getRowPosition() + rowsPerPage) {
+            if (rowPosition >= scrollPosition.getRowPosition() + rowsPerPage) {
                 // Scroll row down
                 long targetRowPosition = rowPosition - rowsPerPage;
                 if (verticalScrollUnit == VerticalScrollUnit.ROW && (dataViewHeight % rowHeight) > 0) {
@@ -1823,6 +1827,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
     @Override
     public void updateScrollBars() {
+        adjusting = true;
         JScrollBar verticalScrollBar = scrollPanel.getVerticalScrollBar();
         scrollPanel.setVerticalScrollBarPolicy(CodeAreaSwingUtils.getVerticalScrollBarPolicy(verticalScrollBarVisibility));
         JScrollBar horizontalScrollBar = scrollPanel.getHorizontalScrollBar();
@@ -1847,6 +1852,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         } else {
             horizontalScrollBar.setValue(scrollPosition.getCharPosition() * characterWidth + scrollPosition.getCharOffset());
         }
+        adjusting = false;
     }
 
     @Nonnull
@@ -1885,6 +1891,10 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
         @Override
         public void adjustmentValueChanged(AdjustmentEvent e) {
+            if (e == null || adjusting) {
+                return;
+            }
+
             int scrollBarValue = scrollPanel.getVerticalScrollBar().getValue();
             if (scrollBarVerticalScale == ScrollBarVerticalScale.SCALED) {
                 int maxValue = Integer.MAX_VALUE - scrollPanel.getVerticalScrollBar().getVisibleAmount();
@@ -1932,7 +1942,11 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         }
 
         @Override
-        public void adjustmentValueChanged(AdjustmentEvent e) {
+        public void adjustmentValueChanged(@Nullable AdjustmentEvent e) {
+            if (e == null || adjusting) {
+                return;
+            }
+
             int scrollBarValue = scrollPanel.getHorizontalScrollBar().getValue();
             if (horizontalScrollUnit == HorizontalScrollUnit.CHARACTER) {
                 scrollPosition.setCharPosition(scrollBarValue);

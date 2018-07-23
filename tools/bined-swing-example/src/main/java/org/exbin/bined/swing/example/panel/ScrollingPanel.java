@@ -82,7 +82,7 @@ public class ScrollingPanel extends javax.swing.JPanel {
         verticalPositionTextField = new javax.swing.JTextField();
         horizontalByteShiftLabel = new javax.swing.JLabel();
         horizontalByteShiftTextField = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
+        testButton = new javax.swing.JButton();
 
         horizontalPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Horizontal"));
 
@@ -124,7 +124,7 @@ public class ScrollingPanel extends javax.swing.JPanel {
                             .addComponent(horizontalScrollBarVisibilityLabel)
                             .addComponent(horizontalScrollModeLabel)
                             .addComponent(horizontalPositionLabel))
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addGap(0, 187, Short.MAX_VALUE))
                     .addComponent(horizontalPositionTextField))
                 .addContainerGap())
         );
@@ -187,7 +187,7 @@ public class ScrollingPanel extends javax.swing.JPanel {
                             .addComponent(verticalScrollBarVisibilityModeLabel)
                             .addComponent(verticalScrollModeLabel)
                             .addComponent(verticalPositionLabel))
-                        .addGap(0, 23, Short.MAX_VALUE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         verticalPanelLayout.setVerticalGroup(
@@ -213,10 +213,10 @@ public class ScrollingPanel extends javax.swing.JPanel {
         horizontalByteShiftTextField.setEditable(false);
         horizontalByteShiftTextField.setText("0");
 
-        jButton1.setText("jButton1");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        testButton.setText("Test");
+        testButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                testButtonActionPerformed(evt);
             }
         });
 
@@ -232,26 +232,26 @@ public class ScrollingPanel extends javax.swing.JPanel {
                         .addComponent(horizontalByteShiftLabel)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(verticalPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 94, Short.MAX_VALUE)
-                        .addComponent(jButton1))
-                    .addComponent(horizontalPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(testButton))
+                    .addComponent(horizontalPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(verticalPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(verticalPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1))
+                .addComponent(testButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(verticalPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(horizontalPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(horizontalByteShiftLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(horizontalByteShiftTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(104, Short.MAX_VALUE))
+                .addContainerGap(67, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -271,12 +271,12 @@ public class ScrollingPanel extends javax.swing.JPanel {
         ((ScrollingCapable) worker).setVerticalScrollUnit(VerticalScrollUnit.values()[verticalScrollModeComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_verticalScrollModeComboBoxActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void testButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_testButtonActionPerformed
         CaretPosition caretPosition = new CodeAreaCaretPosition(1000, 0, BasicCodeAreaSection.TEXT_PREVIEW.getSection());
         ((CaretCapable) worker).getCaret().setCaretPosition(caretPosition);
         ((ScrollingCapable) worker).centerOnCursor();
         codeArea.requestFocus();
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_testButtonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -289,7 +289,7 @@ public class ScrollingPanel extends javax.swing.JPanel {
     private javax.swing.JLabel horizontalScrollBarVisibilityLabel;
     private javax.swing.JComboBox<String> horizontalScrollModeComboBox;
     private javax.swing.JLabel horizontalScrollModeLabel;
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton testButton;
     private javax.swing.JPanel verticalPanel;
     private javax.swing.JLabel verticalPositionLabel;
     private javax.swing.JTextField verticalPositionTextField;
