@@ -1449,17 +1449,17 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                 long increment = bytesPerRow * rowsPerPage;
                 if (dataPosition > dataSize - increment) {
                     long positionOnRow = dataPosition % bytesPerRow;
-                    long rowDataStart = dataSize / bytesPerRow;
-                    if (rowDataStart == dataSize - positionOnRow) {
+                    long lastRowDataStart = dataSize - (dataSize % bytesPerRow);
+                    if (lastRowDataStart == dataSize - positionOnRow) {
                         target.setDataPosition(dataSize);
                         target.setCodeOffset(0);
-                    } else if (rowDataStart > dataSize - positionOnRow) {
-                        if (rowDataStart > bytesPerRow) {
-                            rowDataStart -= bytesPerRow;
-                            target.setDataPosition(rowDataStart + positionOnRow);
+                    } else if (lastRowDataStart > dataSize - positionOnRow) {
+                        if (lastRowDataStart > bytesPerRow) {
+                            lastRowDataStart -= bytesPerRow;
+                            target.setDataPosition(lastRowDataStart + positionOnRow);
                         }
                     } else {
-                        target.setDataPosition(rowDataStart + positionOnRow);
+                        target.setDataPosition(lastRowDataStart + positionOnRow);
                     }
                 } else {
                     target.setDataPosition(dataPosition + increment);
