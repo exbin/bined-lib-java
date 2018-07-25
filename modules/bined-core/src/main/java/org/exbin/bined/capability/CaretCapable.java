@@ -21,6 +21,7 @@ import org.exbin.bined.BasicCodeAreaZone;
 import org.exbin.bined.CaretMovedListener;
 import org.exbin.bined.CaretPosition;
 import org.exbin.bined.CodeAreaCaret;
+import org.exbin.bined.PositionOverflowMode;
 
 /**
  * Support for caret / cursor capability.
@@ -39,7 +40,7 @@ public interface CaretCapable {
     CodeAreaCaret getCaret();
 
     @Nullable
-    CaretPosition mousePositionToClosestCaretPosition(int positionX, int positionY);
+    CaretPosition mousePositionToClosestCaretPosition(int positionX, int positionY, @Nonnull PositionOverflowMode overflowMode);
 
     /**
      * Returns if cursor should be visible in other sections.

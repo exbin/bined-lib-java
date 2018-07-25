@@ -32,6 +32,7 @@ import org.exbin.bined.CodeAreaViewMode;
 import org.exbin.bined.CodeCharactersCase;
 import org.exbin.bined.CodeType;
 import org.exbin.bined.EditationMode;
+import org.exbin.bined.PositionOverflowMode;
 import org.exbin.bined.SelectionRange;
 import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.capability.CharsetCapable;
@@ -899,7 +900,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
 
     @Override
     public void moveCaret(int positionX, int positionY, @Nonnull SelectingMode selecting) {
-        CaretPosition caretPosition = ((CaretCapable) codeArea.getWorker()).mousePositionToClosestCaretPosition(positionX, positionY);
+        CaretPosition caretPosition = ((CaretCapable) codeArea.getWorker()).mousePositionToClosestCaretPosition(positionX, positionY, PositionOverflowMode.VISIBLE_AREA);
         if (caretPosition != null) {
             ((CaretCapable) codeArea.getWorker()).getCaret().setCaretPosition(caretPosition);
             updateSelection(selecting, caretPosition);

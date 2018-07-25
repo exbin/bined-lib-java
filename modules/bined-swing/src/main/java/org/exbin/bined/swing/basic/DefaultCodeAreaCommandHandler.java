@@ -34,6 +34,7 @@ import org.exbin.bined.CodeAreaViewMode;
 import org.exbin.bined.CodeCharactersCase;
 import org.exbin.bined.CodeType;
 import org.exbin.bined.EditationMode;
+import org.exbin.bined.PositionOverflowMode;
 import org.exbin.bined.SelectionRange;
 import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.capability.CharsetCapable;
@@ -539,11 +540,14 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             return;
         }
 
+        EditationMode editationMode = ((EditationModeCapable) codeArea.getWorker()).getEditationMode();
         SelectionRange selection = ((SelectionCapable) codeArea.getWorker()).getSelection();
         if (!selection.isEmpty()) {
             copy();
-            deleteSelection();
-            codeArea.notifyDataChanged();
+            if (editationMode == EditationMode.OVERWRITE || editationMode == EditationMode.INSERT) {
+                deleteSelection();
+                codeArea.notifyDataChanged();
+            }
         }
     }
 
@@ -557,6 +561,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             throw new NullPointerException("Content data is null");
         }
 
+        EditationMode editationMode = ((EditationModeCapable) codeArea.getWorker()).getEditationMode();
         try {
             if (clipboard.isDataFlavorAvailable(binaryDataFlavor)) {
                 if (codeArea.hasSelection()) {
@@ -572,17 +577,23 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
                         BinaryData clipboardData = (BinaryData) object;
                         long dataSize = clipboardData.getDataSize();
-                        if (((EditationModeCapable) codeArea.getWorker()).getEditationMode() == EditationMode.OVERWRITE) {
-                            long toRemove = dataSize;
+                        long toRemove = dataSize;
+                        if (editationMode == EditationMode.OVERWRITE || editationMode == EditationMode.INPLACE) {
                             if (dataPosition + toRemove > codeArea.getDataSize()) {
                                 toRemove = codeArea.getDataSize() - dataPosition;
                             }
                             ((EditableBinaryData) data).remove(dataPosition, toRemove);
                         }
-                        ((EditableBinaryData) data).insert(dataPosition, clipboardData);
-                        codeArea.notifyDataChanged();
+                        if (editationMode == EditationMode.INPLACE && dataSize > toRemove) {
+                            ((EditableBinaryData) data).insert(dataPosition, clipboardData, 0, toRemove);
+                            codeArea.notifyDataChanged();
+                            caret.setCaretPosition(caret.getDataPosition() + toRemove);
+                        } else {
+                            ((EditableBinaryData) data).insert(dataPosition, clipboardData);
+                            codeArea.notifyDataChanged();
+                            caret.setCaretPosition(caret.getDataPosition() + dataSize);
+                        }
 
-                        caret.setCaretPosition(caret.getDataPosition() + dataSize);
                         caret.setCodeOffset(0);
                         updateScrollBars();
                         notifyCaretMoved();
@@ -606,17 +617,23 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
                         byte[] bytes = ((String) insertedData).getBytes(Charset.forName(CodeAreaUtils.DEFAULT_ENCODING));
                         int length = bytes.length;
-                        if (((EditationModeCapable) codeArea.getWorker()).getEditationMode() == EditationMode.OVERWRITE) {
-                            long toRemove = length;
+                        long toRemove = length;
+                        if (editationMode == EditationMode.OVERWRITE || editationMode == EditationMode.INPLACE) {
                             if (dataPosition + toRemove > codeArea.getDataSize()) {
                                 toRemove = codeArea.getDataSize() - dataPosition;
                             }
                             ((EditableBinaryData) data).remove(dataPosition, toRemove);
                         }
-                        ((EditableBinaryData) data).insert(dataPosition, bytes);
-                        codeArea.notifyDataChanged();
+                        if (editationMode == EditationMode.INPLACE && length > toRemove) {
+                            ((EditableBinaryData) data).insert(dataPosition, bytes, 0, (int) toRemove);
+                            codeArea.notifyDataChanged();
+                            caret.setCaretPosition(caret.getDataPosition() + length);
+                        } else {
+                            ((EditableBinaryData) data).insert(dataPosition, bytes);
+                            codeArea.notifyDataChanged();
+                            caret.setCaretPosition(caret.getDataPosition() + length);
+                        }
 
-                        caret.setCaretPosition(caret.getDataPosition() + length);
                         caret.setCodeOffset(0);
                         updateScrollBars();
                         notifyCaretMoved();
@@ -641,6 +658,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             throw new NullPointerException("Content data is null");
         }
 
+        EditationMode editationMode = ((EditationModeCapable) codeArea.getWorker()).getEditationMode();
         try {
             if (!clipboard.isDataFlavorAvailable(binaryDataFlavor) && !clipboard.isDataFlavorAvailable(DataFlavor.stringFlavor)) {
                 return;
@@ -670,17 +688,23 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                         CodeAreaUtils.insertHexStringIntoData((String) insertedData, pastedData, codeType);
 
                         long length = pastedData.getDataSize();
-                        if (((EditationModeCapable) codeArea.getWorker()).getEditationMode() == EditationMode.OVERWRITE) {
-                            long toRemove = length;
+                        long toRemove = length;
+                        if (editationMode == EditationMode.OVERWRITE) {
                             if (dataPosition + toRemove > codeArea.getDataSize()) {
                                 toRemove = codeArea.getDataSize() - dataPosition;
                             }
                             ((EditableBinaryData) data).remove(dataPosition, toRemove);
                         }
-                        ((EditableBinaryData) data).insert(caret.getDataPosition(), pastedData);
-                        codeArea.notifyDataChanged();
+                        if (editationMode == EditationMode.INPLACE && length > toRemove) {
+                            ((EditableBinaryData) data).insert(caret.getDataPosition(), pastedData, 0, toRemove);
+                            codeArea.notifyDataChanged();
+                            caret.setCaretPosition(caret.getDataPosition() + toRemove);
+                        } else {
+                            ((EditableBinaryData) data).insert(caret.getDataPosition(), pastedData);
+                            codeArea.notifyDataChanged();
+                            caret.setCaretPosition(caret.getDataPosition() + length);
+                        }
 
-                        caret.setCaretPosition(caret.getDataPosition() + length);
                         caret.setCodeOffset(0);
                         updateScrollBars();
                         notifyCaretMoved();
@@ -729,7 +753,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
     @Override
     public void moveCaret(int positionX, int positionY, @Nonnull SelectingMode selecting) {
-        CaretPosition caretPosition = ((CaretCapable) codeArea.getWorker()).mousePositionToClosestCaretPosition(positionX, positionY);
+        CaretPosition caretPosition = ((CaretCapable) codeArea.getWorker()).mousePositionToClosestCaretPosition(positionX, positionY, PositionOverflowMode.VISIBLE_AREA);
         if (caretPosition != null) {
             ((CaretCapable) codeArea.getWorker()).getCaret().setCaretPosition(caretPosition);
             updateSelection(selecting, caretPosition);

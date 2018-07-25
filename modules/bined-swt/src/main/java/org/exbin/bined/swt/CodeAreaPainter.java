@@ -20,6 +20,7 @@ import javax.annotation.Nullable;
 import org.eclipse.swt.graphics.GC;
 import org.exbin.bined.BasicCodeAreaZone;
 import org.exbin.bined.CaretPosition;
+import org.exbin.bined.PositionOverflowMode;
 import org.exbin.bined.swt.basic.CodeAreaScrollPosition;
 
 /**
@@ -98,10 +99,11 @@ public interface CodeAreaPainter {
      *
      * @param positionX component relative position X
      * @param positionY component relative position Y
+     * @param overlowMode overflow mode
      * @return closest caret position
      */
     @Nonnull
-    CaretPosition mousePositionToClosestCaretPosition(int positionX, int positionY);
+    CaretPosition mousePositionToClosestCaretPosition(int positionX, int positionY, @Nonnull PositionOverflowMode overlowMode);
 
     void updateScrollBars();
 
