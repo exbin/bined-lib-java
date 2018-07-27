@@ -202,6 +202,11 @@ public class ExtCodeAreaWorker implements CodeAreaWorker, SelectionCapable, Care
         repaint();
     }
 
+    @Override
+    public long getDataSize() {
+        return codeArea.getDataSize();
+    }
+
     public long getDataPosition() {
         return caret.getDataPosition();
     }

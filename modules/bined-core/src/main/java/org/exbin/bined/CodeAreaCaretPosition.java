@@ -100,13 +100,10 @@ public class CodeAreaCaretPosition implements CaretPosition {
         if (getClass() != obj.getClass()) {
             return false;
         }
+
         final CodeAreaCaretPosition other = (CodeAreaCaretPosition) obj;
-        if (this.dataPosition != other.dataPosition) {
-            return false;
-        }
-        if (this.codeOffset != other.codeOffset) {
-            return false;
-        }
-        return this.section == other.section;
+        return Objects.equals(this.dataPosition, other.dataPosition)
+                && Objects.equals(this.codeOffset, other.codeOffset)
+                && Objects.equals(this.section, other.section);
     }
 }

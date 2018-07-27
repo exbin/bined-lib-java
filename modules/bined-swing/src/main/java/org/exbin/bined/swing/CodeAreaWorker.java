@@ -18,14 +18,15 @@ package org.exbin.bined.swing;
 import java.awt.Graphics;
 import javax.annotation.Nonnull;
 import org.exbin.bined.CaretPosition;
+import org.exbin.bined.DataProvider;
 
 /**
  * Hexadecimal editor worker interface.
  *
- * @version 0.2.0 2018/04/12
+ * @version 0.2.0 2018/07/27
  * @author ExBin Project (http://exbin.org)
  */
-public interface CodeAreaWorker {
+public interface CodeAreaWorker extends DataProvider {
 
     /**
      * Returns code area used by this worker.

@@ -185,6 +185,11 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
         repaint();
     }
 
+    @Override
+    public long getDataSize() {
+        return codeArea.getDataSize();
+    }
+
     public long getDataPosition() {
         return caret.getDataPosition();
     }
