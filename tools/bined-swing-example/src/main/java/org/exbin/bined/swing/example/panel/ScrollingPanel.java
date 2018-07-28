@@ -22,7 +22,7 @@ import org.exbin.bined.CodeAreaCaretPosition;
 import org.exbin.bined.ScrollBarVisibility;
 import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.swing.CodeArea;
-import org.exbin.bined.swing.basic.CodeAreaScrollPosition;
+import org.exbin.bined.basic.CodeAreaScrollPosition;
 import org.exbin.bined.swing.basic.DefaultCodeAreaWorker;
 import org.exbin.bined.swing.basic.HorizontalScrollUnit;
 import org.exbin.bined.swing.basic.VerticalScrollUnit;

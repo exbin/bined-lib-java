@@ -15,6 +15,7 @@
  */
 package org.exbin.bined.swing.basic;
 
+import org.exbin.bined.basic.CodeAreaScrollPosition;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Cursor;
@@ -60,7 +61,7 @@ import org.exbin.bined.swing.CodeArea;
 import org.exbin.bined.swing.CodeAreaPainter;
 import org.exbin.bined.swing.CodeAreaSwingUtils;
 import org.exbin.bined.swing.CodeAreaWorker;
-import org.exbin.bined.swing.MovementDirection;
+import org.exbin.bined.basic.MovementDirection;
 import org.exbin.bined.swing.ScrollingDirection;
 import org.exbin.bined.swing.basic.DefaultCodeAreaCaret.CursorRenderingMode;
 import org.exbin.bined.swing.capability.BackgroundPaintCapable;
@@ -126,7 +127,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     private int rowPositionAreaWidth;
     private int headerAreaHeight;
     private int rowHeight;
-    private int rowsPerPage;
     private int rowsPerRect;
     private int charactersPerPage;
     private int charactersPerRect;
@@ -231,8 +231,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
     public void resetCharPositions() {
         charactersPerRect = computeCharactersPerRectangle();
-
-        structure.resetCharPositions();
 
         int previewCharPos = structure.getPreviewCharPos();
         previewRelativeX = previewCharPos * characterWidth;
@@ -439,7 +437,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             rowPositionNumberLength = ((RowWrappingCapable) worker).getRowPositionNumberLength();
 
             rowsPerRect = computeRowsPerRectangle();
-            rowsPerPage = computeRowsPerPage();
+            structure.setRowsPerPage(computeRowsPerPage());
 
             maximumScrollPosition = computeMaximumScrollPosition();
 
@@ -739,7 +737,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             if (dataPosition < 0) {
                 rowStart = (int) -dataPosition;
             }
-            BinaryData data = worker.getCodeArea().getContentData();
+            BinaryData data = worker.getContentData();
             if (data == null) {
                 throw new IllegalStateException("Missing data on nonzero data size");
             }
@@ -916,6 +914,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                 }
             }
 
+            int rowsPerPage = structure.getRowsPerPage();
             if (rowPosition >= scrollPosition.getRowPosition() + rowsPerPage) {
                 // Scroll row down
                 long targetRowPosition = rowPosition - rowsPerPage;
@@ -1238,7 +1237,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                 CodeType codeType = structure.getCodeType();
                 g.fillRect(cursorX, cursorY, width, height);
                 g.setColor(colors.negativeCursor);
-                BinaryData contentData = worker.getCodeArea().getContentData();
+                BinaryData contentData = worker.getContentData();
                 int row = (cursorY + scrollPosition.getRowOffset() - dataViewY) / rowHeight;
                 int scrolledX = cursorX + scrollPosition.getCharPosition() * characterWidth + scrollPosition.getCharOffset();
                 int posY = dataViewY + (row + 1) * rowHeight - subFontSpace - scrollPosition.getRowOffset();
@@ -1370,137 +1369,13 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
     @Override
     public CaretPosition computeMovePosition(@Nonnull CaretPosition position, @Nonnull MovementDirection direction) {
-        CodeType codeType = structure.getCodeType();
-        long dataSize = structure.getDataSize();
-        int bytesPerRow = structure.getBytesPerRow();
-        CodeAreaCaretPosition caretPosition = structure.getCaretPosition();
-        CodeAreaCaretPosition target = new CodeAreaCaretPosition(position.getDataPosition(), position.getCodeOffset(), position.getSection());
-        switch (direction) {
-            case LEFT: {
-                if (position.getSection() == BasicCodeAreaSection.CODE_MATRIX.getSection()) {
-                    int codeOffset = position.getCodeOffset();
-                    if (codeOffset > 0) {
-                        target.setCodeOffset(codeOffset - 1);
-                    } else if (position.getDataPosition() > 0) {
-                        target.setDataPosition(position.getDataPosition() - 1);
-                        target.setCodeOffset(codeType.getMaxDigitsForByte() - 1);
-                    }
-                } else if (position.getDataPosition() > 0) {
-                    target.setDataPosition(position.getDataPosition() - 1);
-                }
-                break;
-            }
-            case RIGHT: {
-                if (position.getSection() == BasicCodeAreaSection.CODE_MATRIX.getSection()) {
-                    int codeOffset = position.getCodeOffset();
-                    if (position.getDataPosition() < dataSize && codeOffset < codeType.getMaxDigitsForByte() - 1) {
-                        target.setCodeOffset(codeOffset + 1);
-                    } else if (position.getDataPosition() < dataSize) {
-                        target.setDataPosition(position.getDataPosition() + 1);
-                        target.setCodeOffset(0);
-                    }
-                } else if (position.getDataPosition() < dataSize) {
-                    target.setDataPosition(position.getDataPosition() + 1);
-                }
-                break;
-            }
-            case UP: {
-                if (position.getDataPosition() >= bytesPerRow) {
-                    target.setDataPosition(position.getDataPosition() - bytesPerRow);
-                }
-                break;
-            }
-            case DOWN: {
-                if (position.getDataPosition() + bytesPerRow < dataSize || (position.getDataPosition() + bytesPerRow == dataSize && position.getCodeOffset() == 0)) {
-                    target.setDataPosition(position.getDataPosition() + bytesPerRow);
-                }
-                break;
-            }
-            case ROW_START: {
-                long dataPosition = position.getDataPosition();
-                dataPosition -= (dataPosition % bytesPerRow);
-                target.setDataPosition(dataPosition);
-                target.setCodeOffset(0);
-                break;
-            }
-            case ROW_END: {
-                long dataPosition = position.getDataPosition();
-                long increment = bytesPerRow - 1 - (dataPosition % bytesPerRow);
-                if (dataPosition > Long.MAX_VALUE - increment || dataPosition + increment > dataSize) {
-                    target.setDataPosition(dataSize);
-                } else {
-                    target.setDataPosition(dataPosition + increment);
-                }
-                if (position.getSection() == BasicCodeAreaSection.CODE_MATRIX.getSection()) {
-                    if (target.getDataPosition() == dataSize) {
-                        target.setCodeOffset(0);
-                    } else {
-                        target.setCodeOffset(codeType.getMaxDigitsForByte() - 1);
-                    }
-                }
-                break;
-            }
-            case PAGE_UP: {
-                long dataPosition = position.getDataPosition();
-                long increment = bytesPerRow * rowsPerPage;
-                if (dataPosition < increment) {
-                    target.setDataPosition(dataPosition % bytesPerRow);
-                } else {
-                    target.setDataPosition(dataPosition - increment);
-                }
-                break;
-            }
-            case PAGE_DOWN: {
-                long dataPosition = position.getDataPosition();
-                long increment = bytesPerRow * rowsPerPage;
-                if (dataPosition > dataSize - increment) {
-                    long positionOnRow = dataPosition % bytesPerRow;
-                    long lastRowDataStart = dataSize - (dataSize % bytesPerRow);
-                    if (lastRowDataStart == dataSize - positionOnRow) {
-                        target.setDataPosition(dataSize);
-                        target.setCodeOffset(0);
-                    } else if (lastRowDataStart > dataSize - positionOnRow) {
-                        if (lastRowDataStart > bytesPerRow) {
-                            lastRowDataStart -= bytesPerRow;
-                            target.setDataPosition(lastRowDataStart + positionOnRow);
-                        }
-                    } else {
-                        target.setDataPosition(lastRowDataStart + positionOnRow);
-                    }
-                } else {
-                    target.setDataPosition(dataPosition + increment);
-                }
-                break;
-            }
-            case DOC_START: {
-                target.setDataPosition(0);
-                target.setCodeOffset(0);
-                break;
-            }
-            case DOC_END: {
-                target.setDataPosition(dataSize);
-                target.setCodeOffset(0);
-                break;
-            }
-            case SWITCH_SECTION: {
-                int activeSection = caretPosition.getSection() == BasicCodeAreaSection.CODE_MATRIX.getSection() ? BasicCodeAreaSection.TEXT_PREVIEW.getSection() : BasicCodeAreaSection.CODE_MATRIX.getSection();
-                if (activeSection == BasicCodeAreaSection.TEXT_PREVIEW.getSection()) {
-                    target.setCodeOffset(0);
-                }
-                target.setSection(activeSection);
-                break;
-            }
-            default: {
-                throw new IllegalStateException("Unexpected movement direction " + direction.name());
-            }
-        }
-
-        return target;
+        return structure.computeMovePosition(position, direction);
     }
 
     @Nonnull
     @Override
     public CodeAreaScrollPosition computeScrolling(@Nonnull CodeAreaScrollPosition startPosition, @Nonnull ScrollingDirection direction) {
+        int rowsPerPage = structure.getRowsPerPage();
         CodeAreaScrollPosition targetPosition = new CodeAreaScrollPosition();
         targetPosition.setScrollPosition(startPosition);
 
@@ -1564,6 +1439,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     private CodeAreaScrollPosition computeMaximumScrollPosition() {
         long rowsPerDocument = structure.getRowsPerDocument();
         int charactersPerRow = structure.getCharactersPerRow();
+        int rowsPerPage = structure.getRowsPerPage();
         CodeAreaScrollPosition position = new CodeAreaScrollPosition();
         if (rowHeight == 0 || characterWidth == 0) {
             return position;
@@ -1597,7 +1473,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     @Nullable
     public Point getPositionPoint(long dataPosition, int codeOffset, int section) {
         int bytesPerRow = structure.getBytesPerRow();
-        CodeType codeType = structure.getCodeType();
         long row = dataPosition / bytesPerRow - scrollPosition.getRowPosition();
         if (row < -1 || row > rowsPerRect) {
             return null;

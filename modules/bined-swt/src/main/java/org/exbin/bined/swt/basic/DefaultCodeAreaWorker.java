@@ -39,6 +39,7 @@ import org.exbin.bined.ScrollBarVisibility;
 import org.exbin.bined.ScrollingListener;
 import org.exbin.bined.SelectionChangedListener;
 import org.exbin.bined.SelectionRange;
+import org.exbin.bined.basic.CodeAreaScrollPosition;
 import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.capability.CharsetCapable;
 import org.exbin.bined.capability.ClipboardCapable;
@@ -390,12 +391,12 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
     @Override
     public void setVerticalScrollUnit(@Nonnull VerticalScrollUnit verticalScrollUnit) {
         this.verticalScrollUnit = verticalScrollUnit;
-        long linePosition = scrollPosition.getScrollRowPosition();
+        long linePosition = scrollPosition.getRowPosition();
         if (verticalScrollUnit == VerticalScrollUnit.ROW) {
-            scrollPosition.setScrollRowOffset(0);
+            scrollPosition.setRowOffset(0);
         }
         codeArea.resetPainter();
-        scrollPosition.setScrollRowPosition(linePosition);
+        scrollPosition.setRowPosition(linePosition);
         updateScrollBars();
         notifyScrolled();
     }
@@ -422,12 +423,12 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
     @Override
     public void setHorizontalScrollUnit(@Nonnull HorizontalScrollUnit horizontalScrollUnit) {
         this.horizontalScrollUnit = horizontalScrollUnit;
-        int bytePosition = scrollPosition.getScrollCharPosition();
+        int bytePosition = scrollPosition.getCharPosition();
         if (horizontalScrollUnit == HorizontalScrollUnit.CHARACTER) {
-            scrollPosition.setScrollCharOffset(0);
+            scrollPosition.setCharOffset(0);
         }
         codeArea.resetPainter();
-        scrollPosition.setScrollCharPosition(bytePosition);
+        scrollPosition.setCharPosition(bytePosition);
         updateScrollBars();
         notifyScrolled();
     }

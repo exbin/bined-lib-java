@@ -17,7 +17,7 @@ package org.exbin.bined.swing.example.panel;
 
 import javax.annotation.Nonnull;
 import org.exbin.bined.swing.CodeArea;
-import org.exbin.bined.swing.basic.CodeAreaScrollPosition;
+import org.exbin.bined.basic.CodeAreaScrollPosition;
 import org.exbin.bined.swing.capability.ScrollingCapable;
 import org.exbin.bined.swing.extended.ExtCodeAreaWorker;
 

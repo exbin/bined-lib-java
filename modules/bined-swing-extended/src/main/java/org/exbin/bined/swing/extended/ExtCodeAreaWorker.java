@@ -50,10 +50,10 @@ import org.exbin.bined.capability.ViewModeCapable;
 import org.exbin.bined.swing.CodeArea;
 import org.exbin.bined.swing.CodeAreaPainter;
 import org.exbin.bined.swing.CodeAreaWorker;
-import org.exbin.bined.swing.MovementDirection;
+import org.exbin.bined.basic.MovementDirection;
 import org.exbin.bined.swing.ScrollingDirection;
 import org.exbin.bined.swing.basic.BasicBackgroundPaintMode;
-import org.exbin.bined.swing.basic.CodeAreaScrollPosition;
+import org.exbin.bined.basic.CodeAreaScrollPosition;
 import org.exbin.bined.swing.basic.DefaultCodeAreaCaret;
 import org.exbin.bined.swing.basic.DefaultCodeAreaPainter;
 import org.exbin.bined.swing.basic.HorizontalScrollUnit;
@@ -62,6 +62,7 @@ import org.exbin.bined.swing.capability.BackgroundPaintCapable;
 import org.exbin.bined.swing.capability.FontCapable;
 import org.exbin.bined.swing.capability.ScrollingCapable;
 import org.exbin.bined.swing.extended.capability.AntialiasingCapable;
+import org.exbin.utils.binary_data.BinaryData;
 
 /**
  * Code area component extended worker.
@@ -136,13 +137,7 @@ public class ExtCodeAreaWorker implements CodeAreaWorker, SelectionCapable, Care
 
     @Nonnull
     public static CodeAreaWorker.CodeAreaWorkerFactory createDefaultCodeAreaWorkerFactory() {
-        return new CodeAreaWorkerFactory() {
-            @Nonnull
-            @Override
-            public CodeAreaWorker createWorker(@Nonnull CodeArea codeArea) {
-                return new ExtCodeAreaWorker(codeArea);
-            }
-        };
+        return ExtCodeAreaWorker::new;
     }
 
     @Nonnull
@@ -205,6 +200,11 @@ public class ExtCodeAreaWorker implements CodeAreaWorker, SelectionCapable, Care
     @Override
     public long getDataSize() {
         return codeArea.getDataSize();
+    }
+
+    @Override
+    public BinaryData getContentData() {
+        return codeArea.getContentData();
     }
 
     public long getDataPosition() {

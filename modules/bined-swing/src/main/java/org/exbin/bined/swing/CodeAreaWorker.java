@@ -15,6 +15,7 @@
  */
 package org.exbin.bined.swing;
 
+import org.exbin.bined.basic.MovementDirection;
 import java.awt.Graphics;
 import javax.annotation.Nonnull;
 import org.exbin.bined.CaretPosition;

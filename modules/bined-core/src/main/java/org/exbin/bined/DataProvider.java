@@ -15,6 +15,9 @@
  */
 package org.exbin.bined;
 
+import javax.annotation.Nullable;
+import org.exbin.utils.binary_data.BinaryData;
+
 /**
  * Data provider.
  *
@@ -23,6 +26,8 @@ package org.exbin.bined;
  */
 public interface DataProvider {
 
-    long getDataSize();
+    @Nullable
+    BinaryData getContentData();
 
+    long getDataSize();
 }

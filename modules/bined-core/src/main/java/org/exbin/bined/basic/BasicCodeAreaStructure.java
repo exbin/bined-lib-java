@@ -17,6 +17,8 @@ package org.exbin.bined.basic;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import org.exbin.bined.BasicCodeAreaSection;
+import org.exbin.bined.CaretPosition;
 import org.exbin.bined.CodeAreaCaretPosition;
 import org.exbin.bined.CodeAreaViewMode;
 import org.exbin.bined.CodeType;
@@ -37,14 +39,15 @@ import org.exbin.bined.capability.ViewModeCapable;
  */
 public class BasicCodeAreaStructure {
 
-    @Nullable
-    private CodeAreaViewMode viewMode;
+    @Nonnull
+    private CodeAreaViewMode viewMode = CodeAreaViewMode.DUAL;
+    @Nonnull
     private final CodeAreaCaretPosition caretPosition = new CodeAreaCaretPosition();
     @Nullable
     private SelectionRange selectionRange = null;
 
-    @Nullable
-    private CodeType codeType;
+    @Nonnull
+    private CodeType codeType = CodeType.HEXADECIMAL;
 
     private long dataSize;
     @Nonnull
@@ -54,26 +57,11 @@ public class BasicCodeAreaStructure {
 
     private long rowsPerDocument;
     private int bytesPerRow;
+    private int rowsPerPage;
     private int charactersPerRow;
 
     private int codeLastCharPos;
     private int previewCharPos;
-
-    public void resetCharPositions() {
-        // Compute first and last visible character of the code area
-        if (viewMode != CodeAreaViewMode.TEXT_PREVIEW) {
-            codeLastCharPos = bytesPerRow * (codeType.getMaxDigitsForByte() + 1) - 1;
-        } else {
-            codeLastCharPos = 0;
-        }
-
-        if (viewMode == CodeAreaViewMode.DUAL) {
-            previewCharPos = bytesPerRow * (codeType.getMaxDigitsForByte() + 1);
-        } else {
-            previewCharPos = 0;
-        }
-
-    }
 
     public void updateCache(@Nonnull DataProvider worker, int charactersPerPage) {
         viewMode = ((ViewModeCapable) worker).getViewMode();
@@ -87,6 +75,19 @@ public class BasicCodeAreaStructure {
         bytesPerRow = computeBytesPerRow(charactersPerPage);
         charactersPerRow = computeCharactersPerRow();
         rowsPerDocument = computeRowsPerDocument();
+
+        // Compute first and last visible character of the code area
+        if (viewMode != CodeAreaViewMode.TEXT_PREVIEW) {
+            codeLastCharPos = bytesPerRow * (codeType.getMaxDigitsForByte() + 1) - 1;
+        } else {
+            codeLastCharPos = 0;
+        }
+
+        if (viewMode == CodeAreaViewMode.DUAL) {
+            previewCharPos = bytesPerRow * (codeType.getMaxDigitsForByte() + 1);
+        } else {
+            previewCharPos = 0;
+        }
     }
 
     private int computeCharactersPerRow() {
@@ -152,12 +153,137 @@ public class BasicCodeAreaStructure {
         return computedBytesPerRow;
     }
 
-    @Nullable
+    public CaretPosition computeMovePosition(@Nonnull CaretPosition position, @Nonnull MovementDirection direction) {
+        CodeAreaCaretPosition target = new CodeAreaCaretPosition(position.getDataPosition(), position.getCodeOffset(), position.getSection());
+        switch (direction) {
+            case LEFT: {
+                if (position.getSection() == BasicCodeAreaSection.CODE_MATRIX.getSection()) {
+                    int codeOffset = position.getCodeOffset();
+                    if (codeOffset > 0) {
+                        target.setCodeOffset(codeOffset - 1);
+                    } else if (position.getDataPosition() > 0) {
+                        target.setDataPosition(position.getDataPosition() - 1);
+                        target.setCodeOffset(codeType.getMaxDigitsForByte() - 1);
+                    }
+                } else if (position.getDataPosition() > 0) {
+                    target.setDataPosition(position.getDataPosition() - 1);
+                }
+                break;
+            }
+            case RIGHT: {
+                if (position.getSection() == BasicCodeAreaSection.CODE_MATRIX.getSection()) {
+                    int codeOffset = position.getCodeOffset();
+                    if (position.getDataPosition() < dataSize && codeOffset < codeType.getMaxDigitsForByte() - 1) {
+                        target.setCodeOffset(codeOffset + 1);
+                    } else if (position.getDataPosition() < dataSize) {
+                        target.setDataPosition(position.getDataPosition() + 1);
+                        target.setCodeOffset(0);
+                    }
+                } else if (position.getDataPosition() < dataSize) {
+                    target.setDataPosition(position.getDataPosition() + 1);
+                }
+                break;
+            }
+            case UP: {
+                if (position.getDataPosition() >= bytesPerRow) {
+                    target.setDataPosition(position.getDataPosition() - bytesPerRow);
+                }
+                break;
+            }
+            case DOWN: {
+                if (position.getDataPosition() + bytesPerRow < dataSize || (position.getDataPosition() + bytesPerRow == dataSize && position.getCodeOffset() == 0)) {
+                    target.setDataPosition(position.getDataPosition() + bytesPerRow);
+                }
+                break;
+            }
+            case ROW_START: {
+                long dataPosition = position.getDataPosition();
+                dataPosition -= (dataPosition % bytesPerRow);
+                target.setDataPosition(dataPosition);
+                target.setCodeOffset(0);
+                break;
+            }
+            case ROW_END: {
+                long dataPosition = position.getDataPosition();
+                long increment = bytesPerRow - 1 - (dataPosition % bytesPerRow);
+                if (dataPosition > Long.MAX_VALUE - increment || dataPosition + increment > dataSize) {
+                    target.setDataPosition(dataSize);
+                } else {
+                    target.setDataPosition(dataPosition + increment);
+                }
+                if (position.getSection() == BasicCodeAreaSection.CODE_MATRIX.getSection()) {
+                    if (target.getDataPosition() == dataSize) {
+                        target.setCodeOffset(0);
+                    } else {
+                        target.setCodeOffset(codeType.getMaxDigitsForByte() - 1);
+                    }
+                }
+                break;
+            }
+            case PAGE_UP: {
+                long dataPosition = position.getDataPosition();
+                long increment = bytesPerRow * rowsPerPage;
+                if (dataPosition < increment) {
+                    target.setDataPosition(dataPosition % bytesPerRow);
+                } else {
+                    target.setDataPosition(dataPosition - increment);
+                }
+                break;
+            }
+            case PAGE_DOWN: {
+                long dataPosition = position.getDataPosition();
+                long increment = bytesPerRow * rowsPerPage;
+                if (dataPosition > dataSize - increment) {
+                    long positionOnRow = dataPosition % bytesPerRow;
+                    long lastRowDataStart = dataSize - (dataSize % bytesPerRow);
+                    if (lastRowDataStart == dataSize - positionOnRow) {
+                        target.setDataPosition(dataSize);
+                        target.setCodeOffset(0);
+                    } else if (lastRowDataStart > dataSize - positionOnRow) {
+                        if (lastRowDataStart > bytesPerRow) {
+                            lastRowDataStart -= bytesPerRow;
+                            target.setDataPosition(lastRowDataStart + positionOnRow);
+                        }
+                    } else {
+                        target.setDataPosition(lastRowDataStart + positionOnRow);
+                    }
+                } else {
+                    target.setDataPosition(dataPosition + increment);
+                }
+                break;
+            }
+            case DOC_START: {
+                target.setDataPosition(0);
+                target.setCodeOffset(0);
+                break;
+            }
+            case DOC_END: {
+                target.setDataPosition(dataSize);
+                target.setCodeOffset(0);
+                break;
+            }
+            case SWITCH_SECTION: {
+                int activeSection = caretPosition.getSection() == BasicCodeAreaSection.CODE_MATRIX.getSection() ? BasicCodeAreaSection.TEXT_PREVIEW.getSection() : BasicCodeAreaSection.CODE_MATRIX.getSection();
+                if (activeSection == BasicCodeAreaSection.TEXT_PREVIEW.getSection()) {
+                    target.setCodeOffset(0);
+                }
+                target.setSection(activeSection);
+                break;
+            }
+            default: {
+                throw new IllegalStateException("Unexpected movement direction " + direction.name());
+            }
+        }
+
+        return target;
+    }
+
+    @Nonnull
     public CodeAreaViewMode getViewMode() {
         return viewMode;
     }
 
-    @Nullable
+    @Nonnull
     public CodeAreaCaretPosition getCaretPosition() {
         return caretPosition;
     }
@@ -167,7 +293,7 @@ public class BasicCodeAreaStructure {
         return selectionRange;
     }
 
-    @Nullable
+    @Nonnull
     public CodeType getCodeType() {
         return codeType;
     }
@@ -176,7 +302,7 @@ public class BasicCodeAreaStructure {
         return dataSize;
     }
 
-    @Nullable
+    @Nonnull
     public RowWrappingMode getRowWrapping() {
         return rowWrapping;
     }
@@ -207,5 +333,13 @@ public class BasicCodeAreaStructure {
 
     public int getPreviewCharPos() {
         return previewCharPos;
+    }
+
+    public int getRowsPerPage() {
+        return rowsPerPage;
+    }
+
+    public void setRowsPerPage(int rowsPerPage) {
+        this.rowsPerPage = rowsPerPage;
     }
 }

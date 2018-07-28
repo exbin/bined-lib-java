@@ -21,7 +21,7 @@ import org.eclipse.swt.graphics.GC;
 import org.exbin.bined.BasicCodeAreaZone;
 import org.exbin.bined.CaretPosition;
 import org.exbin.bined.PositionOverflowMode;
-import org.exbin.bined.swt.basic.CodeAreaScrollPosition;
+import org.exbin.bined.basic.CodeAreaScrollPosition;
 
 /**
  * Hexadecimal editor painter.
