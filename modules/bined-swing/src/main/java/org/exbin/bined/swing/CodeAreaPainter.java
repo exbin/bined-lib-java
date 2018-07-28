@@ -22,7 +22,7 @@ import javax.annotation.Nullable;
 import org.exbin.bined.BasicCodeAreaZone;
 import org.exbin.bined.CaretPosition;
 import org.exbin.bined.PositionOverflowMode;
-import org.exbin.bined.basic.CodeAreaScrollPosition;
+import org.exbin.bined.swing.basic.CodeAreaScrollPosition;
 
 /**
  * Hexadecimal editor painter interface.

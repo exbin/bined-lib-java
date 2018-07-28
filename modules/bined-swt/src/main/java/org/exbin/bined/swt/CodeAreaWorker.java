@@ -18,6 +18,7 @@ package org.exbin.bined.swt;
 import javax.annotation.Nonnull;
 import org.eclipse.swt.graphics.GC;
 import org.exbin.bined.CaretPosition;
+import org.exbin.bined.basic.MovementDirection;
 
 /**
  * Hexadecimal editor worker interface.

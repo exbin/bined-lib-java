@@ -15,7 +15,6 @@
  */
 package org.exbin.bined.swing.basic;
 
-import org.exbin.bined.basic.CodeAreaScrollPosition;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.nio.charset.Charset;

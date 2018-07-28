@@ -15,7 +15,6 @@
  */
 package org.exbin.bined.swing.basic;
 
-import org.exbin.bined.basic.CodeAreaScrollPosition;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;

@@ -19,7 +19,7 @@ import javax.annotation.Nonnull;
 import org.exbin.bined.CaretPosition;
 import org.exbin.bined.ScrollBarVisibility;
 import org.exbin.bined.ScrollingListener;
-import org.exbin.bined.basic.CodeAreaScrollPosition;
+import org.exbin.bined.swt.basic.CodeAreaScrollPosition;
 import org.exbin.bined.capability.WorkerCapability;
 import org.exbin.bined.swt.ScrollingDirection;
 import org.exbin.bined.swt.basic.HorizontalScrollUnit;

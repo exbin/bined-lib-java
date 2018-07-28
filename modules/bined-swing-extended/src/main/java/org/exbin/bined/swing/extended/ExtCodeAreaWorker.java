@@ -53,7 +53,7 @@ import org.exbin.bined.swing.CodeAreaWorker;
 import org.exbin.bined.basic.MovementDirection;
 import org.exbin.bined.swing.ScrollingDirection;
 import org.exbin.bined.swing.basic.BasicBackgroundPaintMode;
-import org.exbin.bined.basic.CodeAreaScrollPosition;
+import org.exbin.bined.swing.basic.CodeAreaScrollPosition;
 import org.exbin.bined.swing.basic.DefaultCodeAreaCaret;
 import org.exbin.bined.swing.basic.DefaultCodeAreaPainter;
 import org.exbin.bined.swing.basic.HorizontalScrollUnit;

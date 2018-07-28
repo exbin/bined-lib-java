@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.basic;
+package org.exbin.bined.swing.basic;
 
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
- * Code Area scrolling position.
+ * Code area scrolling position.
  *
  * @version 0.2.0 2018/07/03
  * @author ExBin Project (http://exbin.org)
