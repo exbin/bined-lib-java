@@ -13,22 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.swt.capability;
+package org.exbin.bined.capability;
 
 import javax.annotation.Nonnull;
 import org.exbin.bined.CaretPosition;
 import org.exbin.bined.ScrollBarVisibility;
 import org.exbin.bined.ScrollingListener;
-import org.exbin.bined.swt.basic.CodeAreaScrollPosition;
-import org.exbin.bined.capability.WorkerCapability;
-import org.exbin.bined.swt.ScrollingDirection;
-import org.exbin.bined.swt.basic.HorizontalScrollUnit;
-import org.exbin.bined.swt.basic.VerticalScrollUnit;
+import org.exbin.bined.basic.ScrollingDirection;
+import org.exbin.bined.basic.CodeAreaScrollPosition;
+import org.exbin.bined.basic.HorizontalScrollUnit;
+import org.exbin.bined.basic.VerticalScrollUnit;
 
 /**
  * Support for code type capability.
  *
- * @version 0.2.0 2018/07/03
+ * @version 0.2.0 2018/01/29
  * @author ExBin Project (http://exbin.org)
  */
 public interface ScrollingCapable {

@@ -13,21 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.swt.basic;
+package org.exbin.bined.basic;
 
 /**
- * Enumeration of horizontal scrolling unit sizes.
+ * Enumeration of vertical scaling modes.
  *
- * @version 0.2.0 2018/04/29
+ * @version 0.2.0 2018/07/29
  * @author ExBin Project (http://exbin.org)
  */
-public enum HorizontalScrollUnit {
+public enum ScrollBarVerticalScale {
     /**
-     * Scroll per whole character.
+     * Normal ratio 1 on 1.
      */
-    CHARACTER,
+    NORMAL,
     /**
-     * Scroll per pixel.
+     * Height is more than available range and scaled.
      */
-    PIXEL
+    SCALED
+
 }

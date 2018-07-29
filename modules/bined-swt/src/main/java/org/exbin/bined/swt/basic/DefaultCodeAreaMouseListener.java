@@ -26,7 +26,7 @@ import org.eclipse.swt.events.MouseWheelListener;
 import org.eclipse.swt.graphics.Cursor;
 import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.swt.CodeArea;
-import org.exbin.bined.swt.capability.ScrollingCapable;
+import org.exbin.bined.capability.ScrollingCapable;
 
 /**
  * Code Area component mouse listener.

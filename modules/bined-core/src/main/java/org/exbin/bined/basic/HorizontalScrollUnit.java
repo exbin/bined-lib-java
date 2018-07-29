@@ -13,22 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.swing.basic;
+package org.exbin.bined.basic;
 
 /**
- * Enumeration of vertical scrolling unit sizes.
+ * Enumeration of horizontal scrolling unit sizes.
  *
  * @version 0.2.0 2017/10/31
  * @author ExBin Project (http://exbin.org)
  */
-public enum VerticalScrollUnit {
+public enum HorizontalScrollUnit {
     /**
-     * Scroll per whole line.
+     * Scroll per whole character.
      */
-    ROW,
+    CHARACTER,
     /**
      * Scroll per pixel.
      */
     PIXEL
-
 }

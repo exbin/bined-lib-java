@@ -45,6 +45,10 @@ import org.exbin.bined.CodeType;
 import org.exbin.bined.EditationMode;
 import org.exbin.bined.PositionOverflowMode;
 import org.exbin.bined.SelectionRange;
+import org.exbin.bined.basic.BasicCodeAreaScrolling;
+import org.exbin.bined.basic.BasicCodeAreaStructure;
+import org.exbin.bined.basic.CodeAreaScrollPosition;
+import org.exbin.bined.basic.HorizontalScrollUnit;
 import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.capability.CharsetCapable;
 import org.exbin.bined.capability.CodeCharactersCaseCapable;
@@ -59,30 +63,42 @@ import org.exbin.bined.swt.CodeAreaPainter;
 import org.exbin.bined.swt.CodeAreaSwtUtils;
 import org.exbin.bined.swt.CodeAreaWorker;
 import org.exbin.bined.basic.MovementDirection;
-import org.exbin.bined.swt.ScrollingDirection;
+import org.exbin.bined.basic.ScrollBarVerticalScale;
+import org.exbin.bined.basic.ScrollingDirection;
+import org.exbin.bined.basic.VerticalScrollUnit;
 import org.exbin.bined.swt.basic.DefaultCodeAreaCaret.CursorRenderingMode;
 import org.exbin.bined.swt.capability.BackgroundPaintCapable;
 import org.exbin.bined.swt.capability.FontCapable;
-import org.exbin.bined.swt.capability.ScrollingCapable;
+import org.exbin.bined.capability.ScrollingCapable;
 import org.exbin.utils.binary_data.BinaryData;
 
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2018/06/28
+ * @version 0.2.0 2018/07/29
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
     @Nonnull
     protected final CodeAreaWorker worker;
-    private boolean initialized = false;
-    private boolean fontChanged = false;
+    private volatile boolean initialized = false;
+    private volatile boolean adjusting = false;
+    private volatile boolean fontChanged = false;
+    private volatile boolean updateLayout = true;
+    private volatile boolean resetColors = true;
 
     @Nonnull
     private final Composite dataView;
     @Nonnull
     private final ScrolledComposite scrollPanel;
+
+    @Nonnull
+    private final BasicCodeAreaStructure structure = new BasicCodeAreaStructure();
+    @Nonnull
+    private final BasicCodeAreaScrolling scrolling = new BasicCodeAreaScrolling();
+    @Nonnull
+    private volatile ScrollingState scrollingState = ScrollingState.NO_SCROLLING;
 
     @Nullable
     private CodeAreaViewMode viewMode;
@@ -406,7 +422,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         dataViewHeight = scrollPanelHeight - getHorizontalScrollBarSize();
     }
 
-    private void resetColors() {
+    @Override
+    public void resetColors() {
         Display display = Display.getCurrent();
         CodeArea codeArea = worker.getCodeArea();
         colors.foreground = codeArea.getForeground();
@@ -2318,17 +2335,9 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         }
     }
 
-    /**
-     * Enumeration of vertical scaling modes.
-     */
-    public enum ScrollBarVerticalScale {
-        /**
-         * Normal ratio 1 on 1.
-         */
-        NORMAL,
-        /**
-         * Height is more than available range and scaled.
-         */
-        SCALED
+    protected enum ScrollingState {
+        NO_SCROLLING,
+        SCROLLING_BY_SCROLLBAR,
+        SCROLLING_BY_MOVEMENT
     }
 }

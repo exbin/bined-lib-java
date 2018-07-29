@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.swt;
+package org.exbin.bined.basic;
 
 /**
  * Enumeration of supported scrolling directions.
  *
- * @version 0.2.0 2018/04/22
+ * @version 0.2.0 2018/01/28
  * @author ExBin Project (http://exbin.org)
  */
 public enum ScrollingDirection {

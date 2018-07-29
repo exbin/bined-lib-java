@@ -13,14 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.swing.basic;
+package org.exbin.bined.basic;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.exbin.bined.DataProvider;
 import org.exbin.bined.ScrollBarVisibility;
-import org.exbin.bined.swing.ScrollingDirection;
-import org.exbin.bined.swing.capability.ScrollingCapable;
+import org.exbin.bined.capability.ScrollingCapable;
 
 /**
  * Code area scrolling.
@@ -386,17 +385,4 @@ public class BasicCodeAreaScrolling {
         return maximumScrollPosition;
     }
 
-    /**
-     * Enumeration of vertical scaling modes.
-     */
-    protected enum ScrollBarVerticalScale {
-        /**
-         * Normal ratio 1 on 1.
-         */
-        NORMAL,
-        /**
-         * Height is more than available range and scaled.
-         */
-        SCALED
-    }
 }

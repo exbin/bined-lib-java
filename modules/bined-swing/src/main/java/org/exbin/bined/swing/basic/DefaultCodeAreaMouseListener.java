@@ -29,7 +29,7 @@ import org.exbin.bined.swing.CodeArea;
 import org.exbin.bined.swing.CodeAreaCommandHandler;
 import org.exbin.bined.swing.CodeAreaCommandHandler.ScrollbarOrientation;
 import org.exbin.bined.swing.CodeAreaCommandHandler.SelectingMode;
-import org.exbin.bined.swing.capability.ScrollingCapable;
+import org.exbin.bined.capability.ScrollingCapable;
 
 /**
  * Code Area component mouse listener.

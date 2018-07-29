@@ -15,6 +15,10 @@
  */
 package org.exbin.bined.swing.basic;
 
+import org.exbin.bined.basic.BasicBackgroundPaintMode;
+import org.exbin.bined.basic.CodeAreaScrollPosition;
+import org.exbin.bined.basic.VerticalScrollUnit;
+import org.exbin.bined.basic.HorizontalScrollUnit;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.nio.charset.Charset;
@@ -51,10 +55,10 @@ import org.exbin.bined.swing.CodeArea;
 import org.exbin.bined.swing.CodeAreaPainter;
 import org.exbin.bined.swing.CodeAreaWorker;
 import org.exbin.bined.basic.MovementDirection;
-import org.exbin.bined.swing.ScrollingDirection;
+import org.exbin.bined.basic.ScrollingDirection;
 import org.exbin.bined.swing.capability.BackgroundPaintCapable;
 import org.exbin.bined.swing.capability.FontCapable;
-import org.exbin.bined.swing.capability.ScrollingCapable;
+import org.exbin.bined.capability.ScrollingCapable;
 import org.exbin.utils.binary_data.BinaryData;
 
 /**

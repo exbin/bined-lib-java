@@ -22,7 +22,8 @@ import org.exbin.bined.BasicCodeAreaZone;
 import org.exbin.bined.CaretPosition;
 import org.exbin.bined.PositionOverflowMode;
 import org.exbin.bined.basic.MovementDirection;
-import org.exbin.bined.swt.basic.CodeAreaScrollPosition;
+import org.exbin.bined.basic.ScrollingDirection;
+import org.exbin.bined.basic.CodeAreaScrollPosition;
 
 /**
  * Hexadecimal editor painter.
@@ -69,6 +70,11 @@ public interface CodeAreaPainter {
      * Resets painter font state for new painting.
      */
     void resetFont();
+
+    /**
+     * Rebuilds colors after UIManager change.
+     */
+    void resetColors();
 
     /**
      * Resets painter layout state for new painting.

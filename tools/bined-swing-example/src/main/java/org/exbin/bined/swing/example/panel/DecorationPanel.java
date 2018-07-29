@@ -26,7 +26,7 @@ import javax.swing.plaf.basic.BasicBorders;
 import org.exbin.bined.CodeCharactersCase;
 import org.exbin.bined.capability.CodeCharactersCaseCapable;
 import org.exbin.bined.swing.CodeArea;
-import org.exbin.bined.swing.basic.BasicBackgroundPaintMode;
+import org.exbin.bined.basic.BasicBackgroundPaintMode;
 import org.exbin.bined.swing.basic.DefaultCodeAreaWorker;
 import org.exbin.bined.swing.capability.BackgroundPaintCapable;
 

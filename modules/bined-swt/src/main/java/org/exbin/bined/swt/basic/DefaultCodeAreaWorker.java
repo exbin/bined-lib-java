@@ -39,6 +39,8 @@ import org.exbin.bined.ScrollBarVisibility;
 import org.exbin.bined.ScrollingListener;
 import org.exbin.bined.SelectionChangedListener;
 import org.exbin.bined.SelectionRange;
+import org.exbin.bined.basic.CodeAreaScrollPosition;
+import org.exbin.bined.basic.HorizontalScrollUnit;
 import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.capability.CharsetCapable;
 import org.exbin.bined.capability.ClipboardCapable;
@@ -51,12 +53,12 @@ import org.exbin.bined.capability.ViewModeCapable;
 import org.exbin.bined.swt.CodeArea;
 import org.exbin.bined.swt.CodeAreaPainter;
 import org.exbin.bined.swt.CodeAreaWorker;
-import org.exbin.bined.swt.CodeAreaWorker.CodeAreaWorkerFactory;
 import org.exbin.bined.basic.MovementDirection;
-import org.exbin.bined.swt.ScrollingDirection;
+import org.exbin.bined.basic.ScrollingDirection;
+import org.exbin.bined.basic.VerticalScrollUnit;
 import org.exbin.bined.swt.capability.BackgroundPaintCapable;
 import org.exbin.bined.swt.capability.FontCapable;
-import org.exbin.bined.swt.capability.ScrollingCapable;
+import org.exbin.bined.capability.ScrollingCapable;
 
 /**
  * Code area component default worker.
@@ -127,13 +129,7 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
 
     @Nonnull
     public static CodeAreaWorker.CodeAreaWorkerFactory createDefaultCodeAreaWorkerFactory() {
-        return new CodeAreaWorkerFactory() {
-            @Nonnull
-            @Override
-            public CodeAreaWorker createWorker(@Nonnull CodeArea codeArea) {
-                return new DefaultCodeAreaWorker(codeArea);
-            }
-        };
+        return DefaultCodeAreaWorker::new;
     }
 
     @Nonnull
@@ -248,7 +244,8 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
     }
 
     @Override
-    public void rebuildColors() {
+    public void resetColors() {
+        painter.resetColors();
     }
 
     @Nonnull
@@ -259,15 +256,25 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
 
     @Override
     public void setViewMode(@Nonnull CodeAreaViewMode viewMode) {
-        this.viewMode = viewMode;
-        if (viewMode == CodeAreaViewMode.CODE_MATRIX) {
-            getCaret().setSection(BasicCodeAreaSection.CODE_MATRIX.getSection());
-            notifyCaretMoved();
-        } else if (viewMode == CodeAreaViewMode.TEXT_PREVIEW) {
-            getCaret().setSection(BasicCodeAreaSection.TEXT_PREVIEW.getSection());
-            notifyCaretMoved();
+        if (viewMode != this.viewMode) {
+            this.viewMode = viewMode;
+            switch (viewMode) {
+                case CODE_MATRIX:
+                    getCaret().setSection(BasicCodeAreaSection.CODE_MATRIX.getSection());
+                    reset();
+                    notifyCaretMoved();
+                    break;
+                case TEXT_PREVIEW:
+                    getCaret().setSection(BasicCodeAreaSection.TEXT_PREVIEW.getSection());
+                    reset();
+                    notifyCaretMoved();
+                    break;
+                default:
+                    reset();
+                    break;
+            }
+            repaint();
         }
-        repaint();
     }
 
     @Override

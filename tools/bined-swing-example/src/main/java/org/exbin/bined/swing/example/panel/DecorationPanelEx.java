@@ -24,7 +24,7 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.plaf.basic.BasicBorders;
 import org.exbin.bined.swing.CodeArea;
-import org.exbin.bined.swing.basic.BasicBackgroundPaintMode;
+import org.exbin.bined.basic.BasicBackgroundPaintMode;
 import org.exbin.bined.swing.capability.BackgroundPaintCapable;
 import org.exbin.bined.swing.extended.ExtCodeAreaWorker;
 

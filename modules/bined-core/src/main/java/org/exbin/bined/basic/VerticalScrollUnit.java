@@ -13,15 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.swing;
+package org.exbin.bined.basic;
 
 /**
- * Enumeration of supported scrolling directions.
+ * Enumeration of vertical scrolling unit sizes.
  *
- * @version 0.2.0 2018/01/28
+ * @version 0.2.0 2017/10/31
  * @author ExBin Project (http://exbin.org)
  */
-public enum ScrollingDirection {
-    UP, DOWN, LEFT, RIGHT,
-    PAGE_UP, PAGE_DOWN
+public enum VerticalScrollUnit {
+    /**
+     * Scroll per whole line.
+     */
+    ROW,
+    /**
+     * Scroll per pixel.
+     */
+    PIXEL
+
 }

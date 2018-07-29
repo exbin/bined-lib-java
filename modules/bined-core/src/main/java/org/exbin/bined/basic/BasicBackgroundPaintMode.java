@@ -13,22 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.swt.basic;
+package org.exbin.bined.basic;
 
 /**
- * Enumeration of vertical scrolling unit sizes.
+ * Border paint modes for basic painter.
  *
- * @version 0.2.0 2018/04/29
+ * @version 0.2.0 2017/11/02
  * @author ExBin Project (http://exbin.org)
  */
-public enum VerticalScrollUnit {
-    /**
-     * Scroll per whole line.
-     */
-    ROW,
-    /**
-     * Scroll per pixel.
-     */
-    PIXEL
-
+public enum BasicBackgroundPaintMode {
+    TRANSPARENT,
+    PLAIN,
+    STRIPED
 }

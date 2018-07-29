@@ -15,6 +15,7 @@
  */
 package org.exbin.bined.swing.basic;
 
+import org.exbin.bined.basic.CodeAreaScrollPosition;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
@@ -48,8 +49,8 @@ import org.exbin.bined.swing.CodeArea;
 import org.exbin.bined.swing.CodeAreaCommandHandler;
 import org.exbin.bined.swing.CodeAreaWorker;
 import org.exbin.bined.basic.MovementDirection;
-import org.exbin.bined.swing.ScrollingDirection;
-import org.exbin.bined.swing.capability.ScrollingCapable;
+import org.exbin.bined.basic.ScrollingDirection;
+import org.exbin.bined.capability.ScrollingCapable;
 import org.exbin.utils.binary_data.BinaryData;
 import org.exbin.utils.binary_data.ByteArrayEditableData;
 import org.exbin.utils.binary_data.EditableBinaryData;
