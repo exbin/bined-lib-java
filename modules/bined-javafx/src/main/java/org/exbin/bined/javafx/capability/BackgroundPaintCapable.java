@@ -16,8 +16,8 @@
 package org.exbin.bined.javafx.capability;
 
 import javax.annotation.Nonnull;
+import org.exbin.bined.basic.BasicBackgroundPaintMode;
 import org.exbin.bined.capability.WorkerCapability;
-import org.exbin.bined.javafx.basic.BasicBackgroundPaintMode;
 
 /**
  * Support for background paint mode capability.

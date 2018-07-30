@@ -21,13 +21,13 @@ import javax.annotation.Nonnull;
 /**
  * Interface for code area data manipulation.
  *
- * @version 0.2.0 2018/06/23
+ * @version 0.2.0 2018/07/30
  * @author ExBin Project (http://exbin.org)
  */
 public interface CodeAreaCommandHandler {
 
     /**
-     * Notifies command handler about end of sequence of appendable commands.
+     * Notifies command handler about end of sequence of append-able commands.
      */
     void undoSequenceBreak();
 
@@ -109,7 +109,7 @@ public interface CodeAreaCommandHandler {
      * @param positionY relative position Y
      * @param selecting selection selecting
      */
-    void moveCaret(int positionX, int positionY, boolean selecting);
+    void moveCaret(int positionX, int positionY, @Nonnull SelectingMode selecting);
 
     /**
      * Performs scrolling.
@@ -121,6 +121,10 @@ public interface CodeAreaCommandHandler {
 
     public enum ScrollbarOrientation {
         HORIZONTAL, VERTICAL
+    }
+
+    public enum SelectingMode {
+        NONE, SELECTING
     }
 
     public interface CodeAreaCommandHandlerFactory {

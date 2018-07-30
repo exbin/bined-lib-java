@@ -15,14 +15,13 @@
  */
 package org.exbin.bined.javafx;
 
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import javafx.beans.value.ObservableValue;
-import javafx.scene.canvas.GraphicsContext;
+import javafx.event.Event;
+import javafx.event.EventType;
 import javafx.scene.control.Control;
 import javafx.scene.layout.Background;
 import javax.annotation.Nonnull;
@@ -33,13 +32,12 @@ import org.exbin.bined.DataChangedListener;
 import org.exbin.bined.capability.SelectionCapable;
 import org.exbin.bined.javafx.basic.DefaultCodeAreaCommandHandler;
 import org.exbin.bined.javafx.basic.DefaultCodeAreaWorker;
-import org.exbin.bined.javafx.capability.FontCapable;
 import org.exbin.utils.binary_data.BinaryData;
 
 /**
  * Hexadecimal viewer/editor component.
  *
- * @version 0.2.0 2018/06/23
+ * @version 0.2.0 2018/07/30
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeArea extends Control implements CodeAreaControl {
@@ -83,11 +81,8 @@ public class CodeArea extends Control implements CodeAreaControl {
     }
 
     private void registerControlListeners() {
-        addComponentListener(new ComponentAdapter() {
-            @Override
-            public void componentResized(@Nonnull ComponentEvent event) {
-                updateLayout();
-            }
+        addEventHandler(EventType.ROOT, (Event t) -> {
+            updateLayout();
         });
 
         setOnKeyPressed((javafx.scene.input.KeyEvent keyEvent) -> {
@@ -98,7 +93,7 @@ public class CodeArea extends Control implements CodeAreaControl {
         });
 
         focusedProperty().addListener((ObservableValue<? extends Boolean> ov, Boolean t, Boolean t1) -> {
-            repaint();
+            requestLayout();
         });
 
         UIManager.addPropertyChangeListener((@Nonnull PropertyChangeEvent evt) -> {
@@ -126,18 +121,17 @@ public class CodeArea extends Control implements CodeAreaControl {
         this.commandHandler = commandHandler;
     }
 
-    @Override
-    protected void paintComponent(@Nullable GraphicsContext g) {
-        super.paintComponent(g);
-        if (g == null) {
-            return;
-        }
-
-        if (!worker.isInitialized()) {
-            ((FontCapable) worker).setFont(getFont());
-        }
-        worker.paintComponent(g);
-    }
+//    protected void paintComponent(@Nullable GraphicsContext g) {
+//        super.paintComponent(g);
+//        if (g == null) {
+//            return;
+//        }
+//
+//        if (!worker.isInitialized()) {
+//            ((FontCapable) worker).setFont(getFont());
+//        }
+//        worker.paintComponent(g);
+//    }
 
     @Override
     public void copy() {
@@ -197,7 +191,7 @@ public class CodeArea extends Control implements CodeAreaControl {
     public void setContentData(@Nullable BinaryData contentData) {
         this.contentData = contentData;
         notifyDataChanged();
-        repaint();
+        requestLayout();
     }
 
     public long getDataSize() {
@@ -226,7 +220,7 @@ public class CodeArea extends Control implements CodeAreaControl {
     public void resetPainter() {
         worker.reset();
     }
-    
+
     public void updateLayout() {
         worker.updateLayout();
     }

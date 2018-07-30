@@ -20,12 +20,15 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.exbin.bined.BasicCodeAreaZone;
 import org.exbin.bined.CaretPosition;
-import org.exbin.bined.javafx.basic.CodeAreaScrollPosition;
+import org.exbin.bined.PositionOverflowMode;
+import org.exbin.bined.basic.CodeAreaScrollPosition;
+import org.exbin.bined.basic.MovementDirection;
+import org.exbin.bined.basic.ScrollingDirection;
 
 /**
  * Hexadecimal editor painter interface.
  *
- * @version 0.2.0 2018/06/23
+ * @version 0.2.0 2018/07/30
  * @author ExBin Project (http://exbin.org)
  */
 public interface CodeAreaPainter {
@@ -103,10 +106,11 @@ public interface CodeAreaPainter {
      *
      * @param positionX component relative position X
      * @param positionY component relative position Y
+     * @param overflowMode overflow mode
      * @return closest caret position
      */
     @Nonnull
-    CaretPosition mousePositionToClosestCaretPosition(int positionX, int positionY);
+    CaretPosition mousePositionToClosestCaretPosition(int positionX, int positionY, @Nonnull PositionOverflowMode overflowMode);
 
     void updateScrollBars();
 

@@ -59,6 +59,7 @@ import org.exbin.bined.basic.VerticalScrollUnit;
 import org.exbin.bined.swt.capability.BackgroundPaintCapable;
 import org.exbin.bined.swt.capability.FontCapable;
 import org.exbin.bined.capability.ScrollingCapable;
+import org.exbin.utils.binary_data.BinaryData;
 
 /**
  * Code area component default worker.
@@ -187,6 +188,16 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
         this.rowPositionNumberLength = rowPositionNumberLength;
         reset();
         repaint();
+    }
+
+    @Override
+    public long getDataSize() {
+        return codeArea.getDataSize();
+    }
+
+    @Override
+    public BinaryData getContentData() {
+        return codeArea.getContentData();
     }
 
     public long getDataPosition() {

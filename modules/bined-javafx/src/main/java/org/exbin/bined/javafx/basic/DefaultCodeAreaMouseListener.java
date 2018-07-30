@@ -50,22 +50,22 @@ public class DefaultCodeAreaMouseListener extends MouseAdapter implements MouseM
     public DefaultCodeAreaMouseListener(@Nonnull CodeArea codeArea, @Nonnull JScrollPane view) {
         this.codeArea = codeArea;
         this.view = view;
-        currentCursor = codeArea.getCursor();
+//        currentCursor = codeArea.getCursor();
     }
 
     @Override
     public void mousePressed(@Nonnull MouseEvent me) {
-        codeArea.requestFocus();
-        if (codeArea.isEnabled() && me.getButton() == MouseEvent.BUTTON1) {
-            moveCaret(me);
-            mouseDown = true;
-        }
+//        codeArea.requestFocus();
+//        if (codeArea.isEnabled() && me.getButton() == MouseEvent.BUTTON1) {
+//            moveCaret(me);
+//            mouseDown = true;
+//        }
     }
 
     private void moveCaret(@Nonnull MouseEvent me) {
-        boolean selecting = (me.getModifiersEx() & KeyEvent.SHIFT_DOWN_MASK) > 0;
-        codeArea.getCommandHandler().moveCaret(computeRelativeX(me), computeRelativeY(me), selecting);
-        ((CaretCapable) codeArea.getWorker()).revealCursor();
+//        boolean selecting = (me.getModifiersEx() & KeyEvent.SHIFT_DOWN_MASK) > 0;
+//        codeArea.getCommandHandler().moveCaret(computeRelativeX(me), computeRelativeY(me), selecting);
+//        ((CaretCapable) codeArea.getWorker()).revealCursor();
     }
 
     @Override
@@ -76,7 +76,7 @@ public class DefaultCodeAreaMouseListener extends MouseAdapter implements MouseM
     @Override
     public void mouseExited(@Nonnull MouseEvent e) {
         currentCursor = defaultCursor;
-        codeArea.setCursor(defaultCursor);
+//        codeArea.setCursor(defaultCursor);
     }
 
     @Override
@@ -90,23 +90,23 @@ public class DefaultCodeAreaMouseListener extends MouseAdapter implements MouseM
     }
 
     private void updateMouseCursor(@Nonnull MouseEvent me) {
-        int cursorShape = ((CaretCapable) codeArea.getWorker()).getMouseCursorShape(computeRelativeX(me), computeRelativeY(me));
-
-        // Reuse current cursor if unchanged
-        Cursor newCursor = cursorShape == 0 ? defaultCursor : textCursor;
-        if (newCursor != currentCursor) {
-            currentCursor = newCursor;
-            codeArea.setCursor(newCursor);
-        }
+//        int cursorShape = ((CaretCapable) codeArea.getWorker()).getMouseCursorShape(computeRelativeX(me), computeRelativeY(me));
+//
+//        // Reuse current cursor if unchanged
+//        Cursor newCursor = cursorShape == 0 ? defaultCursor : textCursor;
+//        if (newCursor != currentCursor) {
+//            currentCursor = newCursor;
+//            codeArea.setCursor(newCursor);
+//        }
     }
 
     @Override
     public void mouseDragged(@Nonnull MouseEvent me) {
-        updateMouseCursor(me);
-        if (codeArea.isEnabled() && mouseDown) {
-            codeArea.getCommandHandler().moveCaret(computeRelativeX(me), computeRelativeY(me), true);
-            ((CaretCapable) codeArea.getWorker()).revealCursor();
-        }
+//        updateMouseCursor(me);
+//        if (codeArea.isEnabled() && mouseDown) {
+//            codeArea.getCommandHandler().moveCaret(computeRelativeX(me), computeRelativeY(me), true);
+//            ((CaretCapable) codeArea.getWorker()).revealCursor();
+//        }
     }
 
     private int computeRelativeX(@Nonnull MouseEvent me) {
@@ -121,9 +121,9 @@ public class DefaultCodeAreaMouseListener extends MouseAdapter implements MouseM
 
     @Override
     public void mouseWheelMoved(@Nonnull MouseWheelEvent e) {
-        if (!codeArea.isEnabled() || e.getWheelRotation() == 0) {
-            return;
-        }
+//        if (!codeArea.isEnabled() || e.getWheelRotation() == 0) {
+//            return;
+//        }
 
         ScrollbarOrientation orientation = e.isShiftDown() ? CodeAreaCommandHandler.ScrollbarOrientation.HORIZONTAL : CodeAreaCommandHandler.ScrollbarOrientation.VERTICAL;
         int scrollAmount = e.getWheelRotation() > 0 ? MOUSE_SCROLL_LINES : -MOUSE_SCROLL_LINES;

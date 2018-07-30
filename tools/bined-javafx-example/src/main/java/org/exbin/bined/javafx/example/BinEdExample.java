@@ -22,26 +22,26 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import org.exbin.bined.javafx.CodeAreaFX;
+import org.exbin.bined.javafx.CodeArea;
 import org.exbin.utils.binary_data.ByteArrayEditableData;
 
 /**
  * Hexadecimal editor JavaFX examples.
  *
- * @version 0.1.1 2016/09/02
+ * @version 0.2.0 2018/07/30
  * @author ExBin Project (http://exbin.org)
  */
 public class BinEdExample extends Application {
 
     private void init(Stage stage) {
-        final CodeAreaFX codeArea = new CodeAreaFX();
+        final CodeArea codeArea = new CodeArea();
         ByteArrayEditableData data = new ByteArrayEditableData();
         try {
             data.loadFromStream(codeArea.getClass().getResourceAsStream("/org/exbin/bined/javafx/example/resources/lorem_1.txt"));
         } catch (IOException ex) {
             Logger.getLogger(BinEdExample.class.getName()).log(Level.SEVERE, null, ex);
         }
-        codeArea.setData(data);
+        codeArea.setContentData(data);
 
         stage.setScene(new Scene(codeArea, 600, 480));
         stage.setOnCloseRequest(e -> Platform.exit());
