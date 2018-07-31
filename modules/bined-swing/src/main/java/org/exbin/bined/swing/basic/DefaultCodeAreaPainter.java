@@ -337,6 +337,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         if (rowHeight > 0 && characterWidth > 0) {
             int documentDataWidth = structure.getCharactersPerRow() * characterWidth;
             long rowsPerData = (structure.getDataSize() / structure.getBytesPerRow()) + 1;
+            scrolling.updateCache(worker);
 
             int documentDataHeight;
             if (rowsPerData > Integer.MAX_VALUE / rowHeight) {
@@ -1179,18 +1180,24 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     public CaretPosition mousePositionToClosestCaretPosition(int positionX, int positionY, @Nonnull PositionOverflowMode overflowMode) {
         CodeAreaCaretPosition caret = new CodeAreaCaretPosition();
         CodeAreaScrollPosition scrollPosition = scrolling.getScrollPosition();
+        int diffX = 0;
         if (positionX < rowPositionAreaWidth) {
+            if (overflowMode == PositionOverflowMode.OVERFLOW)
+                diffX = 1;
             positionX = rowPositionAreaWidth;
         }
-        int cursorCharX = (positionX - rowPositionAreaWidth + scrollPosition.getCharOffset()) / characterWidth + scrollPosition.getCharPosition();
+        int cursorCharX = (positionX - rowPositionAreaWidth + scrollPosition.getCharOffset()) / characterWidth + scrollPosition.getCharPosition() - diffX;
         if (cursorCharX < 0) {
             cursorCharX = 0;
         }
 
+        int diffY = 0;
         if (positionY < headerAreaHeight) {
+            if (overflowMode == PositionOverflowMode.OVERFLOW)
+                diffY = 1;
             positionY = headerAreaHeight;
         }
-        long cursorRowY = (positionY - headerAreaHeight + scrollPosition.getRowOffset()) / rowHeight + scrollPosition.getRowPosition();
+        long cursorRowY = (positionY - headerAreaHeight + scrollPosition.getRowOffset()) / rowHeight + scrollPosition.getRowPosition() - diffY;
         if (cursorRowY < 0) {
             cursorRowY = 0;
         }

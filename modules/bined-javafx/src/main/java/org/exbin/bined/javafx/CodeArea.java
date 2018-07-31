@@ -22,8 +22,8 @@ import java.util.Objects;
 import javafx.beans.value.ObservableValue;
 import javafx.event.Event;
 import javafx.event.EventType;
-import javafx.scene.control.Control;
 import javafx.scene.layout.Background;
+import javafx.scene.layout.Pane;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.swing.UIManager;
@@ -40,7 +40,7 @@ import org.exbin.utils.binary_data.BinaryData;
  * @version 0.2.0 2018/07/30
  * @author ExBin Project (http://exbin.org)
  */
-public class CodeArea extends Control implements CodeAreaControl {
+public class CodeArea extends Pane implements CodeAreaControl {
 
     @Nullable
     private BinaryData contentData;

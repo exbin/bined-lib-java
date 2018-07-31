@@ -24,7 +24,7 @@ import org.exbin.bined.capability.ScrollingCapable;
 /**
  * Code area scrolling.
  *
- * @version 0.2.0 2018/07/28
+ * @version 0.2.0 2018/07/31
  * @author ExBin Project (http://exbin.org)
  */
 public class BasicCodeAreaScrolling {
@@ -201,35 +201,38 @@ public class BasicCodeAreaScrolling {
             targetScrollPosition.setRowPosition(rowPosition);
             targetScrollPosition.setRowOffset(0);
             scrolled = true;
-        } else if ((rowPosition == scrollPosition.getRowPosition() && scrollPosition.getRowOffset() > 0)) {
-            // Scroll row offset up
-            targetScrollPosition.setRowOffset(0);
-            scrolled = true;
         } else {
-            int bottomRowOffset;
-            if (verticalScrollUnit == VerticalScrollUnit.ROW) {
-                bottomRowOffset = 0;
+
+            if (rowPosition == scrollPosition.getRowPosition() && scrollPosition.getRowOffset() > 0) {
+                // Scroll row offset up
+                targetScrollPosition.setRowOffset(0);
+                scrolled = true;
             } else {
-                if (dataViewHeight < rowHeight) {
+                int bottomRowOffset;
+                if (verticalScrollUnit == VerticalScrollUnit.ROW) {
                     bottomRowOffset = 0;
                 } else {
-                    bottomRowOffset = dataViewHeight % rowHeight;
+                    if (dataViewHeight < rowHeight) {
+                        bottomRowOffset = 0;
+                    } else {
+                        bottomRowOffset = rowHeight - (dataViewHeight % rowHeight);
+                    }
                 }
-            }
 
-            if (rowPosition >= scrollPosition.getRowPosition() + rowsPerPage) {
-                // Scroll row down
-                long targetRowPosition = rowPosition - rowsPerPage;
-                if (verticalScrollUnit == VerticalScrollUnit.ROW && (dataViewHeight % rowHeight) > 0) {
-                    targetRowPosition++;
+                if (rowPosition >= scrollPosition.getRowPosition() + rowsPerPage) {
+                    // Scroll row down
+                    long targetRowPosition = rowPosition - rowsPerPage;
+                    if (verticalScrollUnit == VerticalScrollUnit.ROW && (dataViewHeight % rowHeight) > 0) {
+                        targetRowPosition++;
+                    }
+                    targetScrollPosition.setRowPosition(targetRowPosition);
+                    targetScrollPosition.setRowOffset(bottomRowOffset);
+                    scrolled = true;
+                } else if (rowPosition == scrollPosition.getRowPosition() + rowsPerPage && scrollPosition.getRowOffset() > bottomRowOffset) {
+                    // Scroll row offset down
+                    targetScrollPosition.setRowOffset(bottomRowOffset);
+                    scrolled = true;
                 }
-                targetScrollPosition.setRowPosition(targetRowPosition);
-                targetScrollPosition.setRowOffset(bottomRowOffset);
-                scrolled = true;
-            } else if (rowPosition == scrollPosition.getRowPosition() + rowsPerPage && scrollPosition.getRowOffset() > bottomRowOffset) {
-                // Scroll row offset down
-                targetScrollPosition.setRowOffset(bottomRowOffset);
-                scrolled = true;
             }
         }
 
@@ -238,31 +241,33 @@ public class BasicCodeAreaScrolling {
             targetScrollPosition.setCharPosition(charPosition);
             targetScrollPosition.setCharOffset(0);
             scrolled = true;
-        } else if (charPosition == scrollPosition.getCharPosition() && scrollPosition.getCharOffset() > 0) {
-            // Scroll character offset left
-            targetScrollPosition.setCharOffset(0);
-            scrolled = true;
         } else {
-            int rightCharOffset;
-            if (horizontalScrollUnit == HorizontalScrollUnit.CHARACTER) {
-                rightCharOffset = 0;
+            if (charPosition == scrollPosition.getCharPosition() && scrollPosition.getCharOffset() > 0) {
+                // Scroll character offset left
+                targetScrollPosition.setCharOffset(0);
+                scrolled = true;
             } else {
-                if (dataViewWidth < characterWidth) {
+                int rightCharOffset;
+                if (horizontalScrollUnit == HorizontalScrollUnit.CHARACTER) {
                     rightCharOffset = 0;
                 } else {
-                    rightCharOffset = dataViewWidth % characterWidth;
+                    if (dataViewWidth < characterWidth) {
+                        rightCharOffset = 0;
+                    } else {
+                        rightCharOffset = characterWidth - (dataViewWidth % characterWidth);
+                    }
                 }
-            }
 
-            if (charPosition > scrollPosition.getCharPosition() + charactersPerPage) {
-                // Scroll character right
-                targetScrollPosition.setCharPosition(charPosition - charactersPerPage);
-                targetScrollPosition.setCharOffset(rightCharOffset);
-                scrolled = true;
-            } else if (charPosition == scrollPosition.getCharPosition() + charactersPerPage && scrollPosition.getCharOffset() > rightCharOffset) {
-                // Scroll row offset down
-                targetScrollPosition.setCharOffset(rightCharOffset);
-                scrolled = true;
+                if (charPosition >= scrollPosition.getCharPosition() + charactersPerPage) {
+                    // Scroll character right
+                    targetScrollPosition.setCharPosition(charPosition - charactersPerPage);
+                    targetScrollPosition.setCharOffset(rightCharOffset);
+                    scrolled = true;
+                } else if (charPosition == scrollPosition.getCharPosition() + charactersPerPage && scrollPosition.getCharOffset() > rightCharOffset) {
+                    // Scroll row offset down
+                    targetScrollPosition.setCharOffset(rightCharOffset);
+                    scrolled = true;
+                }
             }
         }
         return scrolled ? targetScrollPosition : null;
@@ -384,5 +389,4 @@ public class BasicCodeAreaScrolling {
     public CodeAreaScrollPosition getMaximumScrollPosition() {
         return maximumScrollPosition;
     }
-
 }

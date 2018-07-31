@@ -900,7 +900,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
 
     @Override
     public void moveCaret(int positionX, int positionY, @Nonnull SelectingMode selecting) {
-        CaretPosition caretPosition = ((CaretCapable) codeArea.getWorker()).mousePositionToClosestCaretPosition(positionX, positionY, PositionOverflowMode.VISIBLE_AREA);
+        CaretPosition caretPosition = ((CaretCapable) codeArea.getWorker()).mousePositionToClosestCaretPosition(positionX, positionY, PositionOverflowMode.OVERFLOW);
         if (caretPosition != null) {
             ((CaretCapable) codeArea.getWorker()).getCaret().setCaretPosition(caretPosition);
             updateSelection(selecting, caretPosition);

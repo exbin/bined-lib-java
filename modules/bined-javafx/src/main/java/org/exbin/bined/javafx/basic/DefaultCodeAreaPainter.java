@@ -29,9 +29,9 @@ import java.util.Arrays;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.layout.Border;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.swing.UIManager;
 import org.exbin.bined.BasicCodeAreaSection;
 import org.exbin.bined.BasicCodeAreaZone;
 import org.exbin.bined.CaretPosition;
@@ -65,7 +65,7 @@ import org.exbin.utils.binary_data.BinaryData;
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2018/07/30
+ * @version 0.2.0 2018/07/31
  * @author ExBin Project (http://exbin.org)
  */
 public class DefaultCodeAreaPainter implements CodeAreaPainter {
@@ -163,10 +163,13 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 //        dataView.setLayout(null);
 //        dataView.setOpaque(false);
         // Fill whole area, no more suitable method found so far
-        dataView.setWidth(0);
-        dataView.setHeight(0);
+        dataView.setWidth(200);
+        dataView.setHeight(200);
+        codeArea.getChildren().add(dataView);
         scrollPanel = new ScrollPane();
-        scrollPanel.setBorder(null);
+        scrollPanel.setBorder(Border.EMPTY);
+        scrollPanel.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+        scrollPanel.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
 //        scrollPanel.setIgnoreRepaint(true);
 //        JScrollBar verticalScrollBar = scrollPanel.getVerticalScrollBar();
 //        verticalScrollBar.setIgnoreRepaint(true);
@@ -174,10 +177,11 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 //        JScrollBar horizontalScrollBar = scrollPanel.getHorizontalScrollBar();
 //        horizontalScrollBar.setIgnoreRepaint(true);
 //        horizontalScrollBar.addAdjustmentListener(new HorizontalAdjustmentListener());
-//        codeArea.add(scrollPanel);
+        codeArea.getChildren().add(scrollPanel);
 //        scrollPanel.setOpaque(false);
 //        scrollPanel.setViewportView(dataView);
-//        scrollPanel.setViewportBorder(null);
+        scrollPanel.setMinViewportWidth(200);
+        scrollPanel.setMinViewportHeight(200);
 //        scrollPanel.getViewport().setOpaque(false);
 //
 //        DefaultCodeAreaMouseListener codeAreaMouseListener = new DefaultCodeAreaMouseListener(codeArea, scrollPanel);
@@ -329,6 +333,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         if (rowHeight > 0 && characterWidth > 0) {
             int documentDataWidth = structure.getCharactersPerRow() * characterWidth;
             long rowsPerData = (structure.getDataSize() / structure.getBytesPerRow()) + 1;
+            scrolling.updateCache(worker);
 
             int documentDataHeight;
             if (rowsPerData > Integer.MAX_VALUE / rowHeight) {
@@ -1175,18 +1180,24 @@ CodeType codeType = structure.getCodeType();
     public CaretPosition mousePositionToClosestCaretPosition(int positionX, int positionY, @Nonnull PositionOverflowMode overflowMode) {
         CodeAreaCaretPosition caret = new CodeAreaCaretPosition();
         CodeAreaScrollPosition scrollPosition = scrolling.getScrollPosition();
+        int diffX = 0;
         if (positionX < rowPositionAreaWidth) {
+            if (overflowMode == PositionOverflowMode.OVERFLOW)
+                diffX = 1;
             positionX = rowPositionAreaWidth;
         }
-        int cursorCharX = (positionX - rowPositionAreaWidth + scrollPosition.getCharOffset()) / characterWidth + scrollPosition.getCharPosition();
+        int cursorCharX = (positionX - rowPositionAreaWidth + scrollPosition.getCharOffset()) / characterWidth + scrollPosition.getCharPosition() - diffX;
         if (cursorCharX < 0) {
             cursorCharX = 0;
         }
 
+        int diffY = 0;
         if (positionY < headerAreaHeight) {
+            if (overflowMode == PositionOverflowMode.OVERFLOW)
+                diffY = 1;
             positionY = headerAreaHeight;
         }
-        long cursorRowY = (positionY - headerAreaHeight + scrollPosition.getRowOffset()) / rowHeight + scrollPosition.getRowPosition();
+        long cursorRowY = (positionY - headerAreaHeight + scrollPosition.getRowOffset()) / rowHeight + scrollPosition.getRowPosition() - diffY;
         if (cursorRowY < 0) {
             cursorRowY = 0;
         }

@@ -28,7 +28,7 @@ import org.exbin.utils.binary_data.ByteArrayEditableData;
 /**
  * Hexadecimal editor JavaFX examples.
  *
- * @version 0.2.0 2018/07/30
+ * @version 0.2.0 2018/07/31
  * @author ExBin Project (http://exbin.org)
  */
 public class BinEdExample extends Application {
@@ -42,6 +42,8 @@ public class BinEdExample extends Application {
             Logger.getLogger(BinEdExample.class.getName()).log(Level.SEVERE, null, ex);
         }
         codeArea.setContentData(data);
+        codeArea.resizeRelocate(100, 100, 60, 100);
+        codeArea.setPrefSize(600, 480);
 
         stage.setScene(new Scene(codeArea, 600, 480));
         stage.setOnCloseRequest(e -> Platform.exit());
