@@ -42,10 +42,8 @@ public interface CodeAreaPainter {
 
     /**
      * Paints the main component.
-     *
-     * @param g graphics
      */
-    void paintComponent(@Nonnull GraphicsContext g);
+    void paintComponent();
 
     /**
      * Paints main hexadecimal data section of the component.

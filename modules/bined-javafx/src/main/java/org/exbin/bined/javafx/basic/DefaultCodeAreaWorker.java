@@ -15,12 +15,11 @@
  */
 package org.exbin.bined.javafx.basic;
 
-import java.awt.Font;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.text.Font;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.exbin.bined.BasicCodeAreaSection;
@@ -155,9 +154,9 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
         return painter.isInitialized();
     }
 
-//    @Override
-    public void paintComponent(@Nonnull GraphicsContext g) {
-        painter.paintComponent(g);
+    @Override
+    public void paintComponent() {
+        painter.paintComponent();
     }
 
     @Nonnull

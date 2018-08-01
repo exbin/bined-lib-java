@@ -16,7 +16,7 @@
 package org.exbin.bined.swing.extended;
 
 /**
- * Antialiasing mode.
+ * Anti-aliasing mode.
  *
  * @version 0.2.0 2017/03/18
  * @author ExBin Project (http://exbin.org)

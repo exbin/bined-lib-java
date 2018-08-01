@@ -24,6 +24,7 @@ import javafx.event.Event;
 import javafx.event.EventType;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.Pane;
+import javafx.scene.text.Font;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.swing.UIManager;
@@ -32,12 +33,13 @@ import org.exbin.bined.DataChangedListener;
 import org.exbin.bined.capability.SelectionCapable;
 import org.exbin.bined.javafx.basic.DefaultCodeAreaCommandHandler;
 import org.exbin.bined.javafx.basic.DefaultCodeAreaWorker;
+import org.exbin.bined.javafx.capability.FontCapable;
 import org.exbin.utils.binary_data.BinaryData;
 
 /**
  * Hexadecimal viewer/editor component.
  *
- * @version 0.2.0 2018/07/30
+ * @version 0.2.0 2018/08/01
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeArea extends Pane implements CodeAreaControl {
@@ -121,17 +123,15 @@ public class CodeArea extends Pane implements CodeAreaControl {
         this.commandHandler = commandHandler;
     }
 
-//    protected void paintComponent(@Nullable GraphicsContext g) {
-//        super.paintComponent(g);
-//        if (g == null) {
-//            return;
-//        }
-//
-//        if (!worker.isInitialized()) {
-//            ((FontCapable) worker).setFont(getFont());
-//        }
-//        worker.paintComponent(g);
-//    }
+    @Override
+    protected void layoutChildren() {
+        super.layoutChildren();
+
+        if (!worker.isInitialized()) {
+            ((FontCapable) worker).setFont(new Font("Arial", 10.0));
+        }
+        worker.paintComponent();
+    }
 
     @Override
     public void copy() {

@@ -15,14 +15,16 @@
  */
 package org.exbin.bined.javafx;
 
+import javafx.scene.control.ScrollPane;
 import javafx.scene.paint.Color;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import org.exbin.bined.ScrollBarVisibility;
 
 /**
  * Hexadecimal editor component JavaFX utilities.
  *
- * @version 0.2.0 2018/06/23
+ * @version 0.2.0 2018/08/01
  * @author ExBin Project (http://exbin.org)
  */
 public class CodeAreaJavaFxUtils {
@@ -79,5 +81,33 @@ public class CodeAreaJavaFxUtils {
     public static Color computeGrayColor(@Nonnull Color color) {
         double grayLevel = (color.getRed() + color.getGreen() + color.getBlue()) / 3;
         return Color.color(grayLevel, grayLevel, grayLevel);
+    }
+
+    @Nonnull
+    public static ScrollPane.ScrollBarPolicy getVerticalScrollBarPolicy(@Nonnull ScrollBarVisibility scrollBarVisibility) {
+        switch (scrollBarVisibility) {
+            case NEVER:
+                return ScrollPane.ScrollBarPolicy.NEVER;
+            case ALWAYS:
+                return ScrollPane.ScrollBarPolicy.ALWAYS;
+            case IF_NEEDED:
+                return ScrollPane.ScrollBarPolicy.AS_NEEDED;
+            default:
+                throw new IllegalStateException("Unexpected scrollBarVisibility type " + scrollBarVisibility.name());
+        }
+    }
+
+    @Nonnull
+    public static ScrollPane.ScrollBarPolicy getHorizontalScrollBarPolicy(@Nonnull ScrollBarVisibility scrollBarVisibility) {
+        switch (scrollBarVisibility) {
+            case NEVER:
+                return ScrollPane.ScrollBarPolicy.NEVER;
+            case ALWAYS:
+                return ScrollPane.ScrollBarPolicy.ALWAYS;
+            case IF_NEEDED:
+                return ScrollPane.ScrollBarPolicy.AS_NEEDED;
+            default:
+                throw new IllegalStateException("Unexpected scrollBarVisibility type " + scrollBarVisibility.name());
+        }
     }
 }

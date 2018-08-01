@@ -16,7 +16,6 @@
 package org.exbin.bined.javafx.basic;
 
 import java.awt.Cursor;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
@@ -24,7 +23,6 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import javax.annotation.Nonnull;
 import javax.swing.JScrollPane;
-import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.javafx.CodeArea;
 import org.exbin.bined.javafx.CodeAreaCommandHandler;
 import org.exbin.bined.javafx.CodeAreaCommandHandler.ScrollbarOrientation;

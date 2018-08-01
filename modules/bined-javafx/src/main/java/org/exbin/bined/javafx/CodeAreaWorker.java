@@ -15,7 +15,6 @@
  */
 package org.exbin.bined.javafx;
 
-import java.awt.Graphics;
 import javax.annotation.Nonnull;
 import org.exbin.bined.CaretPosition;
 import org.exbin.bined.DataProvider;
@@ -24,7 +23,7 @@ import org.exbin.bined.basic.MovementDirection;
 /**
  * Hexadecimal editor worker interface.
  *
- * @version 0.2.0 2018/07/30
+ * @version 0.2.0 2018/08/01
  * @author ExBin Project (http://exbin.org)
  */
 public interface CodeAreaWorker extends DataProvider {
@@ -46,10 +45,8 @@ public interface CodeAreaWorker extends DataProvider {
 
     /**
      * Paints the main component.
-     *
-     * @param g graphics
      */
-//    void paintComponent(@Nonnull Graphics g);
+    void paintComponent();
 
     /**
      * Rebuilds colors after UIManager change.

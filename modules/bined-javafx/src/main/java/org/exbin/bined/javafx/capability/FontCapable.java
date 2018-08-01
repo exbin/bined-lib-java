@@ -15,14 +15,14 @@
  */
 package org.exbin.bined.javafx.capability;
 
-import java.awt.Font;
+import javafx.scene.text.Font;
 import javax.annotation.Nonnull;
 import org.exbin.bined.capability.WorkerCapability;
 
 /**
  * Support for font capability.
  *
- * @version 0.2.0 2017/12/09
+ * @version 0.2.0 2018/08/01
  * @author ExBin Project (http://exbin.org)
  */
 public interface FontCapable {
