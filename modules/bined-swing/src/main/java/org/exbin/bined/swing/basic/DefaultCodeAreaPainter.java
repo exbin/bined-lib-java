@@ -83,7 +83,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     private volatile boolean initialized = false;
     private volatile boolean adjusting = false;
     private volatile boolean fontChanged = false;
-    private volatile boolean updateLayout = true;
     private volatile boolean resetColors = true;
 
     @Nonnull
@@ -199,8 +198,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     public void reset() {
         resetColors();
         resetFont();
-        resetScrollState();
         updateLayout();
+        resetScrollState();
     }
 
     @Override
@@ -215,7 +214,25 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
     @Override
     public void updateLayout() {
-        updateLayout = true;
+        resetSizes();
+
+        charactersPerPage = computeCharactersPerPage();
+        structure.updateCache(codeArea, charactersPerPage);
+        hexCharactersCase = ((CodeCharactersCaseCapable) codeArea).getCodeCharactersCase();
+        editationMode = ((EditationModeCapable) codeArea).getEditationMode();
+        backgroundPaintMode = ((BackgroundPaintCapable) codeArea).getBackgroundPaintMode();
+        showMirrorCursor = ((CaretCapable) codeArea).isShowMirrorCursor();
+        rowPositionNumberLength = ((RowWrappingCapable) codeArea).getRowPositionNumberLength();
+
+        rowsPerRect = computeRowsPerRectangle();
+        structure.setRowsPerPage(computeRowsPerPage());
+
+        long rowsPerDocument = structure.getRowsPerDocument();
+        int charactersPerRow = structure.getCharactersPerRow();
+        int rowsPerPage = structure.getRowsPerPage();
+        scrolling.updateMaximumScrollPosition(rowsPerDocument, rowsPerPage, charactersPerRow, charactersPerPage, dataViewWidth, dataViewHeight, characterWidth, rowHeight);
+
+        resetScrollState();
     }
 
     public void resetCharPositions() {
@@ -413,30 +430,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             colors.decorationLine = Color.GRAY;
 
             colors.stripes = CodeAreaSwingUtils.createOddColor(colors.background);
-        }
-
-        if (updateLayout) {
-            updateLayout = false;
-
-            resetSizes();
-
-            charactersPerPage = computeCharactersPerPage();
-            structure.updateCache(codeArea, charactersPerPage);
-            hexCharactersCase = ((CodeCharactersCaseCapable) codeArea).getCodeCharactersCase();
-            editationMode = ((EditationModeCapable) codeArea).getEditationMode();
-            backgroundPaintMode = ((BackgroundPaintCapable) codeArea).getBackgroundPaintMode();
-            showMirrorCursor = ((CaretCapable) codeArea).isShowMirrorCursor();
-            rowPositionNumberLength = ((RowWrappingCapable) codeArea).getRowPositionNumberLength();
-
-            rowsPerRect = computeRowsPerRectangle();
-            structure.setRowsPerPage(computeRowsPerPage());
-
-            long rowsPerDocument = structure.getRowsPerDocument();
-            int charactersPerRow = structure.getCharactersPerRow();
-            int rowsPerPage = structure.getRowsPerPage();
-            scrolling.updateMaximumScrollPosition(rowsPerDocument, rowsPerPage, charactersPerRow, charactersPerPage, dataViewWidth, dataViewHeight, characterWidth, rowHeight);
-
-            resetScrollState();
         }
     }
 

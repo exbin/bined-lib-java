@@ -81,7 +81,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     private volatile boolean initialized = false;
     private volatile boolean adjusting = false;
     private volatile boolean fontChanged = false;
-    private volatile boolean updateLayout = true;
     private volatile boolean resetColors = true;
 
     @Nonnull
@@ -223,7 +222,25 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
     @Override
     public void updateLayout() {
-        updateLayout = true;
+        resetSizes();
+
+        charactersPerPage = computeCharactersPerPage();
+        structure.updateCache(codeArea, charactersPerPage);
+        hexCharactersCase = ((CodeCharactersCaseCapable) codeArea).getCodeCharactersCase();
+        editationMode = ((EditationModeCapable) codeArea).getEditationMode();
+        backgroundPaintMode = ((BackgroundPaintCapable) codeArea).getBackgroundPaintMode();
+        showMirrorCursor = ((CaretCapable) codeArea).isShowMirrorCursor();
+        rowPositionNumberLength = ((RowWrappingCapable) codeArea).getRowPositionNumberLength();
+
+        rowsPerRect = computeRowsPerRectangle();
+        structure.setRowsPerPage(computeRowsPerPage());
+
+        long rowsPerDocument = structure.getRowsPerDocument();
+        int charactersPerRow = structure.getCharactersPerRow();
+        int rowsPerPage = structure.getRowsPerPage();
+        scrolling.updateMaximumScrollPosition(rowsPerDocument, rowsPerPage, charactersPerRow, charactersPerPage, dataViewWidth, dataViewHeight, characterWidth, rowHeight);
+
+        resetScrollState();
     }
 
     private void resetCharPositions() {
@@ -428,30 +445,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
             colors.stripes = CodeAreaSwtUtils.createOddColor(colors.background);
         }
-
-        if (updateLayout) {
-            updateLayout = false;
-
-            resetSizes();
-
-            charactersPerPage = computeCharactersPerPage();
-            structure.updateCache(codeArea, charactersPerPage);
-            hexCharactersCase = ((CodeCharactersCaseCapable) codeArea).getCodeCharactersCase();
-            editationMode = ((EditationModeCapable) codeArea).getEditationMode();
-            backgroundPaintMode = ((BackgroundPaintCapable) codeArea).getBackgroundPaintMode();
-            showMirrorCursor = ((CaretCapable) codeArea).isShowMirrorCursor();
-            rowPositionNumberLength = ((RowWrappingCapable) codeArea).getRowPositionNumberLength();
-
-            rowsPerRect = computeRowsPerRectangle();
-            structure.setRowsPerPage(computeRowsPerPage());
-
-            long rowsPerDocument = structure.getRowsPerDocument();
-            int charactersPerRow = structure.getCharactersPerRow();
-            int rowsPerPage = structure.getRowsPerPage();
-            scrolling.updateMaximumScrollPosition(rowsPerDocument, rowsPerPage, charactersPerRow, charactersPerPage, dataViewWidth, dataViewHeight, characterWidth, rowHeight);
-
-            resetScrollState();
-        }
     }
 
     private void resetSizes() {
@@ -477,11 +470,13 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     @Override
     public void repaint() {
         scrollPanel.redraw();
-//        dataView.redraw();
+        dataView.redraw();
     }
 
+    boolean test = false;
+
     public void paintOutsiteArea(@Nonnull GC g) {
-        g.setForeground(colors.background);
+        g.setBackground(colors.background);
         g.fillRectangle(0, 0, componentWidth, headerAreaHeight);
 
         // Decoration lines
@@ -501,12 +496,12 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         Rectangle headerArea = new Rectangle(rowPositionAreaWidth, 0, componentWidth - rowPositionAreaWidth - getVerticalScrollBarSize(), headerAreaHeight);
         g.setClipping(clipBounds != null ? headerArea.intersection(clipBounds) : headerArea);
 
-        g.setForeground(colors.background);
+        g.setBackground(colors.background);
         g.fillRectangle(headerArea.x, headerArea.y, headerArea.width, headerArea.height);
 
         // Decoration lines
         CodeAreaScrollPosition scrollPosition = scrolling.getScrollPosition();
-        g.setForeground(colors.decorationLine);
+        g.setBackground(colors.decorationLine);
         g.fillRectangle(0, headerAreaHeight - 1, componentWidth, 1);
         int lineX = dataViewX + previewRelativeX - scrollPosition.getCharPosition() * characterWidth - scrollPosition.getCharOffset() - characterWidth / 2;
         if (lineX >= dataViewX) {
@@ -626,7 +621,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         Rectangle rowPositionsArea = new Rectangle(0, headerAreaHeight, rowPositionAreaWidth, componentHeight - headerAreaHeight - getHorizontalScrollBarSize());
         g.setClipping(clipBounds != null ? rowPositionsArea.intersection(clipBounds) : rowPositionsArea);
 
-        g.setForeground(colors.background);
+        g.setBackground(colors.background);
         g.fillRectangle(rowPositionsArea.x, rowPositionsArea.y, rowPositionsArea.width, rowPositionsArea.height);
 
         CodeAreaScrollPosition scrollPosition = scrolling.getScrollPosition();
@@ -707,7 +702,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         int x = componentWidth - rowPositionAreaWidth - 220;
         int y = componentHeight - headerAreaHeight - 20;
         Display display = Display.getCurrent();
-        g.setForeground(display.getSystemColor(SWT.COLOR_YELLOW));
+        g.setBackground(display.getSystemColor(SWT.COLOR_YELLOW));
         g.fillRectangle(x, y, 200, 16);
         g.setForeground(display.getSystemColor(SWT.COLOR_BLACK));
         char[] headerCode = (String.valueOf(scrollPosition.getCharPosition()) + "+" + String.valueOf(scrollPosition.getCharOffset()) + " : " + String.valueOf(scrollPosition.getRowPosition()) + "+" + String.valueOf(scrollPosition.getRowOffset()) + " P: " + String.valueOf(paintCounter)).toCharArray();
@@ -732,7 +727,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 //            }
 //        }
 //        if (codeArea.getBackgroundPaintMode() != CodeArea.BackgroundPaintMode.NONE) {
-//            g.setForeground(mainColors.getBackgroundColor());
+//            g.setBackground(mainColors.getBackgroundColor());
 //            g.fillRectangle(startX, clipBounds.y, width, clipBounds.height);
 //        }
 //
@@ -1496,7 +1491,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         if (cursorVisible) {
             g.setClipping(intersection);
             DefaultCodeAreaCaret.CursorRenderingMode renderingMode = caret.getRenderingMode();
-            g.setForeground(colors.cursor);
+            g.setBackground(colors.cursor);
 
 //            if (renderingMode == DefaultCodeAreaCaret.CursorRenderingMode.XOR) {
 //                g.setXORMode(true); // Color.WHITE
@@ -1525,14 +1520,14 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         g.setClipping(clipBounds);
     }
 
-    private void paintCursorRect(@Nonnull GC g, int x, int y, int width, int height, @Nonnull CursorRenderingMode renderingMode, @Nonnull DefaultCodeAreaCaret caret) {
+    private void paintCursorRect(@Nonnull GC g, int cursorX, int cursorY, int width, int height, @Nonnull CursorRenderingMode renderingMode, @Nonnull DefaultCodeAreaCaret caret) {
         switch (renderingMode) {
             case PAINT: {
-                g.fillRectangle(x, y, width, height);
+                g.fillRectangle(cursorX, cursorY, width, height);
                 break;
             }
             case XOR: {
-                Rectangle rect = new Rectangle(x, y, width, height);
+                Rectangle rect = new Rectangle(cursorX, cursorY, width, height);
                 Rectangle intersection = rect.intersection(g.getClipping());
                 if (!intersection.isEmpty()) {
                     g.fillRectangle(intersection.x, intersection.y, intersection.width, intersection.height);
@@ -1641,8 +1636,9 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         CodeAreaScrollPosition scrollPosition = scrolling.getScrollPosition();
         int diffX = 0;
         if (positionX < rowPositionAreaWidth) {
-            if (overflowMode == PositionOverflowMode.OVERFLOW)
+            if (overflowMode == PositionOverflowMode.OVERFLOW) {
                 diffX = 1;
+            }
             positionX = rowPositionAreaWidth;
         }
         int cursorCharX = (positionX - rowPositionAreaWidth + scrollPosition.getCharOffset()) / characterWidth + scrollPosition.getCharPosition() - diffX;
@@ -1652,8 +1648,9 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
         int diffY = 0;
         if (positionY < headerAreaHeight) {
-            if (overflowMode == PositionOverflowMode.OVERFLOW)
+            if (overflowMode == PositionOverflowMode.OVERFLOW) {
                 diffY = 1;
+            }
             positionY = headerAreaHeight;
         }
         long cursorRowY = (positionY - headerAreaHeight + scrollPosition.getRowOffset()) / rowHeight + scrollPosition.getRowPosition() - diffY;

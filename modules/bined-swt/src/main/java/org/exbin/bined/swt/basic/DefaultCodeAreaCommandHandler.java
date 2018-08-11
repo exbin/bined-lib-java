@@ -134,28 +134,28 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         }
 
         switch (keyEvent.keyCode) {
-            case SWT.LEFT: {
+            case SWT.ARROW_LEFT: {
                 move(keyEvent.stateMask, MovementDirection.LEFT);
                 undoSequenceBreak();
                 revealCursor();
                 keyEvent.doit = false;
                 break;
             }
-            case SWT.RIGHT: {
+            case SWT.ARROW_RIGHT: {
                 move(keyEvent.stateMask, MovementDirection.RIGHT);
                 undoSequenceBreak();
                 revealCursor();
                 keyEvent.doit = false;
                 break;
             }
-            case SWT.UP: {
+            case SWT.ARROW_UP: {
                 move(keyEvent.stateMask, MovementDirection.UP);
                 undoSequenceBreak();
                 revealCursor();
                 keyEvent.doit = false;
                 break;
             }
-            case SWT.DOWN: {
+            case SWT.ARROW_DOWN: {
                 move(keyEvent.stateMask, MovementDirection.DOWN);
                 undoSequenceBreak();
                 revealCursor();

@@ -181,10 +181,10 @@ public abstract class CodeAreaCore extends JComponent implements CodeAreaControl
      * Notifies component, that internal data was changed.
      */
     public void notifyDataChanged() {
+        updateLayout();
         dataChangedListeners.forEach((listener) -> {
             listener.dataChanged();
         });
-
         resetPainter();
     }
 

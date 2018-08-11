@@ -170,10 +170,10 @@ public abstract class CodeAreaCore extends Pane implements CodeAreaControl {
      * Notifies component, that internal data was changed.
      */
     public void notifyDataChanged() {
+        updateLayout();
         dataChangedListeners.forEach((listener) -> {
             listener.dataChanged();
         });
-
         resetPainter();
     }
 

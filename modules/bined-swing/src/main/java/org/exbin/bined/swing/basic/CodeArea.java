@@ -34,7 +34,6 @@ import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.CodeAreaViewMode;
 import org.exbin.bined.CodeCharactersCase;
 import org.exbin.bined.CodeType;
-import org.exbin.bined.DataChangedListener;
 import org.exbin.bined.EditationMode;
 import org.exbin.bined.EditationModeChangedListener;
 import org.exbin.bined.PositionOverflowMode;
@@ -135,8 +134,6 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
     private void init() {
         // TODO: Use swing color instead
         setBackground(Color.WHITE);
-
-        addDataChangedListener(painter::updateLayout);
 
         UIManager.addPropertyChangeListener((@Nonnull PropertyChangeEvent evt) -> {
             resetColors();

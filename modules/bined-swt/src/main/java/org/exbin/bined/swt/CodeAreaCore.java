@@ -19,13 +19,13 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import org.eclipse.swt.events.ControlAdapter;
+import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
-import org.eclipse.swt.events.PaintEvent;
-import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.widgets.Composite;
 import org.exbin.bined.CodeAreaControl;
 import org.exbin.bined.DataChangedListener;
@@ -75,8 +75,12 @@ public abstract class CodeAreaCore extends Composite implements CodeAreaControl 
         addDisposeListener((DisposeEvent disposeEvent) -> {
             CodeAreaCore.this.widgetDisposed(disposeEvent);
         });
-        addPaintListener((PaintEvent paintEvent) -> {
-            CodeAreaCore.this.paintControl(paintEvent);
+
+        addControlListener(new ControlAdapter() {
+            @Override
+            public void controlResized(ControlEvent ce) {
+                updateLayout();
+            }
         });
 
         addKeyListener(new KeyListener() {
@@ -114,15 +118,6 @@ public abstract class CodeAreaCore extends Composite implements CodeAreaControl 
 
     public void setCommandHandler(@Nonnull CodeAreaCommandHandler commandHandler) {
         this.commandHandler = commandHandler;
-    }
-
-    private void paintControl(@Nonnull PaintEvent paintEvent) {
-        GC g = paintEvent.gc;
-        if (g == null) {
-            return;
-        }
-
-        repaint();
     }
 
     void widgetDisposed(DisposeEvent e) {
@@ -210,10 +205,10 @@ public abstract class CodeAreaCore extends Composite implements CodeAreaControl 
      * Notifies component, that internal contentData was changed.
      */
     public void notifyDataChanged() {
+        updateLayout();
         dataChangedListeners.forEach((listener) -> {
             listener.dataChanged();
         });
-
         resetPainter();
     }
 
@@ -227,5 +222,5 @@ public abstract class CodeAreaCore extends Composite implements CodeAreaControl 
 
     public abstract void resetPainter();
 
-    public abstract void repaint();
+    public abstract void updateLayout();
 }

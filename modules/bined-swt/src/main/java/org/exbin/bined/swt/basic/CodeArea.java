@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import org.eclipse.swt.events.PaintEvent;
+import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.widgets.Composite;
@@ -116,6 +118,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
 
         caret = new DefaultCodeAreaCaret(this);
         painter = new DefaultCodeAreaPainter(this);
+        init();
     }
 
     /**
@@ -130,6 +133,18 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
 
         caret = new DefaultCodeAreaCaret(this);
         painter = new DefaultCodeAreaPainter(this);
+        init();
+    }
+
+    private void init() {
+        addPaintListener((PaintEvent paintEvent) -> {
+            GC g = paintEvent.gc;
+            if (g == null) {
+                return;
+            }
+
+            painter.paintComponent(g);
+        });
     }
 
     @Nonnull
@@ -442,11 +457,11 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
     @Override
     public void updateLayout() {
         Display.getDefault().asyncExec(() -> {
+            layout(true, true);
             painter.updateLayout();
         });
     }
 
-    @Override
     public void repaint() {
         Display.getDefault().asyncExec(() -> {
             layout(true, true);
