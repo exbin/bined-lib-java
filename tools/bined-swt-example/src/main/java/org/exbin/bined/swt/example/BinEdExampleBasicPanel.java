@@ -22,7 +22,7 @@ import org.eclipse.swt.widgets.Composite;
  * Basic hexadecimal component example panel.
  *
  * @version 0.2.0 2018/04/26
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public class BinEdExampleBasicPanel extends Composite {
 

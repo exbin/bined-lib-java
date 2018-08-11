@@ -25,13 +25,13 @@ import org.exbin.bined.operation.BinaryDataCommand;
 import org.exbin.bined.operation.BinaryDataOperationException;
 import org.exbin.bined.operation.undo.BinaryDataUndoHandler;
 import org.exbin.bined.operation.undo.BinaryDataUndoUpdateListener;
-import org.exbin.bined.swing.CodeArea;
+import org.exbin.bined.swing.CodeAreaCore;
 
 /**
  * Undo handler for hexadecimal editor.
  *
- * @version 0.2.0 2018/04/10
- * @author ExBin Project (http://exbin.org)
+ * @version 0.2.0 2018/08/11
+ * @author ExBin Project (https://exbin.org)
  */
 public class CodeAreaUndoHandler implements BinaryDataUndoHandler {
 
@@ -41,7 +41,7 @@ public class CodeAreaUndoHandler implements BinaryDataUndoHandler {
     private long commandPosition;
     private long syncPointPosition = -1;
     private final List<BinaryDataCommand> commands = new ArrayList<>();
-    private final CodeArea codeArea;
+    private final CodeAreaCore codeArea;
     private final List<BinaryDataUndoUpdateListener> listeners = new ArrayList<>();
 
     /**
@@ -49,7 +49,7 @@ public class CodeAreaUndoHandler implements BinaryDataUndoHandler {
      *
      * @param codeArea hexadecimal component
      */
-    public CodeAreaUndoHandler(@Nonnull CodeArea codeArea) {
+    public CodeAreaUndoHandler(@Nonnull CodeAreaCore codeArea) {
         this.codeArea = codeArea;
         undoMaximumCount = 1024;
         undoMaximumSize = 65535;
@@ -95,9 +95,9 @@ public class CodeAreaUndoHandler implements BinaryDataUndoHandler {
         commandPosition++;
 
         undoUpdated();
-        for (BinaryDataUndoUpdateListener listener : listeners) {
+        listeners.forEach((listener) -> {
             listener.undoCommandAdded(addedCommand);
-        }
+        });
     }
 
     /**
@@ -172,13 +172,13 @@ public class CodeAreaUndoHandler implements BinaryDataUndoHandler {
 
     @Override
     public void clear() {
-        for (BinaryDataCommand command : commands) {
+        commands.forEach((command) -> {
             try {
                 command.dispose();
             } catch (BinaryDataOperationException ex) {
                 Logger.getLogger(CodeAreaUndoHandler.class.getName()).log(Level.SEVERE, null, ex);
             }
-        }
+        });
         commands.clear();
         init();
         undoUpdated();
@@ -270,10 +270,10 @@ public class CodeAreaUndoHandler implements BinaryDataUndoHandler {
 
     private void undoUpdated() {
         codeArea.notifyDataChanged();
-        ((CaretCapable) codeArea.getWorker()).notifyCaretMoved();
-        for (BinaryDataUndoUpdateListener listener : listeners) {
+        ((CaretCapable) codeArea).notifyCaretMoved();
+        listeners.forEach((listener) -> {
             listener.undoCommandPositionChanged();
-        }
+        });
     }
 
     @Override

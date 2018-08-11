@@ -28,7 +28,7 @@ import org.exbin.bined.swt.CodeArea;
  * Code area caret.
  *
  * @version 0.1.2 2016/12/17
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public class CodeAreaCaret {
 

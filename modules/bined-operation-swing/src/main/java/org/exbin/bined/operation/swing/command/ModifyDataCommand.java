@@ -17,14 +17,14 @@
 package org.exbin.bined.operation.swing.command;
 
 import org.exbin.bined.operation.swing.ModifyDataOperation;
-import org.exbin.bined.swing.CodeArea;
+import org.exbin.bined.swing.basic.CodeArea;
 import org.exbin.utils.binary_data.BinaryData;
 
 /**
  * Command for modifying data.
  *
  * @version 0.1.0 2016/05/03
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public class ModifyDataCommand extends OpCodeAreaCommand {
 

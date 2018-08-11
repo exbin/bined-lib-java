@@ -25,13 +25,13 @@ import org.exbin.bined.operation.swing.CodeEditDataOperation;
 import org.exbin.bined.operation.swing.DeleteCodeEditDataOperation;
 import org.exbin.bined.operation.swing.InsertCodeEditDataOperation;
 import org.exbin.bined.operation.swing.OverwriteCodeEditDataOperation;
-import org.exbin.bined.swing.CodeArea;
+import org.exbin.bined.swing.CodeAreaCore;
 
 /**
  * Command for editing data in hexadecimal mode.
  *
  * @version 0.1.2 2016/12/20
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public class EditCodeDataCommand extends EditDataCommand {
 
@@ -39,7 +39,7 @@ public class EditCodeDataCommand extends EditDataCommand {
     protected boolean operationPerformed = false;
     private CodeAreaOperation[] operations = null;
 
-    public EditCodeDataCommand(CodeArea codeArea, EditCommandType commandType, long position, int positionCodeOffset) {
+    public EditCodeDataCommand(CodeAreaCore codeArea, EditCommandType commandType, long position, int positionCodeOffset) {
         super(codeArea);
         this.commandType = commandType;
         CodeAreaOperation operation;

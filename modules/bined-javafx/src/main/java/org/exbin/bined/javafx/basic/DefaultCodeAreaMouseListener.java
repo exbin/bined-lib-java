@@ -23,21 +23,21 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import javax.annotation.Nonnull;
 import javax.swing.JScrollPane;
-import org.exbin.bined.javafx.CodeArea;
 import org.exbin.bined.javafx.CodeAreaCommandHandler;
 import org.exbin.bined.javafx.CodeAreaCommandHandler.ScrollbarOrientation;
+import org.exbin.bined.javafx.CodeAreaCore;
 
 /**
  * Code Area component mouse listener.
  *
  * @version 0.2.0 2018/06/23
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public class DefaultCodeAreaMouseListener extends MouseAdapter implements MouseMotionListener, MouseWheelListener {
 
     public static final int MOUSE_SCROLL_LINES = 3;
 
-    private final CodeArea codeArea;
+    private final CodeAreaCore codeArea;
     private final JScrollPane view;
 
     private final Cursor defaultCursor = Cursor.getDefaultCursor();
@@ -45,7 +45,7 @@ public class DefaultCodeAreaMouseListener extends MouseAdapter implements MouseM
     private Cursor currentCursor;
     private boolean mouseDown = false;
 
-    public DefaultCodeAreaMouseListener(@Nonnull CodeArea codeArea, @Nonnull JScrollPane view) {
+    public DefaultCodeAreaMouseListener(@Nonnull CodeAreaCore codeArea, @Nonnull JScrollPane view) {
         this.codeArea = codeArea;
         this.view = view;
 //        currentCursor = codeArea.getCursor();
@@ -63,7 +63,7 @@ public class DefaultCodeAreaMouseListener extends MouseAdapter implements MouseM
     private void moveCaret(@Nonnull MouseEvent me) {
 //        boolean selecting = (me.getModifiersEx() & KeyEvent.SHIFT_DOWN_MASK) > 0;
 //        codeArea.getCommandHandler().moveCaret(computeRelativeX(me), computeRelativeY(me), selecting);
-//        ((CaretCapable) codeArea.getWorker()).revealCursor();
+//        ((CaretCapable) codeArea).revealCursor();
     }
 
     @Override
@@ -88,7 +88,7 @@ public class DefaultCodeAreaMouseListener extends MouseAdapter implements MouseM
     }
 
     private void updateMouseCursor(@Nonnull MouseEvent me) {
-//        int cursorShape = ((CaretCapable) codeArea.getWorker()).getMouseCursorShape(computeRelativeX(me), computeRelativeY(me));
+//        int cursorShape = ((CaretCapable) codeArea).getMouseCursorShape(computeRelativeX(me), computeRelativeY(me));
 //
 //        // Reuse current cursor if unchanged
 //        Cursor newCursor = cursorShape == 0 ? defaultCursor : textCursor;
@@ -103,7 +103,7 @@ public class DefaultCodeAreaMouseListener extends MouseAdapter implements MouseM
 //        updateMouseCursor(me);
 //        if (codeArea.isEnabled() && mouseDown) {
 //            codeArea.getCommandHandler().moveCaret(computeRelativeX(me), computeRelativeY(me), true);
-//            ((CaretCapable) codeArea.getWorker()).revealCursor();
+//            ((CaretCapable) codeArea).revealCursor();
 //        }
     }
 

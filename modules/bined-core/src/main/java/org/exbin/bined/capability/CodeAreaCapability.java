@@ -18,8 +18,8 @@ package org.exbin.bined.capability;
 /**
  * Hexadecimal component capability parent interface.
  *
- * @version 0.2.0 2017/11/05
- * @author ExBin Project (http://exbin.org)
+ * @version 0.2.0 2018/08/11
+ * @author ExBin Project (https://exbin.org)
  */
-public interface WorkerCapability {
+public interface CodeAreaCapability {
 }

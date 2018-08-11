@@ -21,7 +21,7 @@ import javax.annotation.Nonnull;
  * Line number length.
  *
  * @version 0.2.0 2017/05/07
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public class LineNumberLength {
 

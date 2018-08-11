@@ -35,7 +35,7 @@ import org.exbin.utils.binary_data.BinaryData;
  * Repository of delta segments.
  *
  * @version 0.2.0 2018/04/27
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public class SegmentsRepository {
 

@@ -15,34 +15,16 @@
  */
 package org.exbin.bined.swing;
 
-import org.exbin.bined.basic.MovementDirection;
 import java.awt.Graphics;
 import javax.annotation.Nonnull;
-import org.exbin.bined.CaretPosition;
-import org.exbin.bined.DataProvider;
 
 /**
- * Hexadecimal editor worker interface.
+ * Code area swing control.
  *
- * @version 0.2.0 2018/07/27
- * @author ExBin Project (http://exbin.org)
+ * @version 0.2.0 2018/08/11
+ * @author ExBin Project (https://exbin.org)
  */
-public interface CodeAreaWorker extends DataProvider {
-
-    /**
-     * Returns code area used by this worker.
-     *
-     * @return code area
-     */
-    @Nonnull
-    CodeArea getCodeArea();
-
-    /**
-     * Returns true if painter was initialized.
-     *
-     * @return true if initialized
-     */
-    boolean isInitialized();
+public interface CodeAreaSwingControl {
 
     /**
      * Paints the main component.
@@ -64,24 +46,8 @@ public interface CodeAreaWorker extends DataProvider {
     /**
      * Requests update of the component layout.
      *
-     * Notifies worker, that change of parameters will affect layout and it
+     * Notifies code area, that change of parameters will affect layout and it
      * should be recomputed and updated if necessary.
      */
     void updateLayout();
-
-    /**
-     * Computes position for movement action.
-     *
-     * @param position source position
-     * @param direction movement direction
-     * @return target position
-     */
-    @Nonnull
-    CaretPosition computeMovePosition(@Nonnull CaretPosition position, @Nonnull MovementDirection direction);
-
-    interface CodeAreaWorkerFactory {
-
-        @Nonnull
-        CodeAreaWorker createWorker(@Nonnull CodeArea codeArea);
-    }
 }

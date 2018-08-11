@@ -19,7 +19,7 @@ package org.exbin.bined.capability;
  * Hexadecimal component capability interface.
  *
  * @version 0.2.0 2017/11/05
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public interface PainterCapability {
 }

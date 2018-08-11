@@ -22,7 +22,7 @@ import org.exbin.bined.CodeType;
  * Support for code type capability.
  *
  * @version 0.2.0 2017/11/05
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public interface CodeTypeCapable {
 
@@ -31,7 +31,7 @@ public interface CodeTypeCapable {
 
     void setCodeType(@Nonnull CodeType codeType);
 
-    public static class CodeTypeCapability implements WorkerCapability {
+    public static class CodeTypeCapability implements CodeAreaCapability {
 
     }
 }

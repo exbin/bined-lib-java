@@ -19,7 +19,7 @@ package org.exbin.bined.basic;
  * Border paint modes for basic painter.
  *
  * @version 0.2.0 2017/11/02
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public enum BasicBackgroundPaintMode {
     TRANSPARENT,

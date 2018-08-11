@@ -19,7 +19,7 @@ package org.exbin.bined.operation;
  * Exception for code are command handling.
  *
  * @version 0.1.2 2016/12/20
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public class BinaryDataOperationException extends Exception {
 

@@ -21,16 +21,15 @@ import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 import javax.swing.event.ChangeEvent;
-import org.exbin.bined.swing.CodeArea;
-import org.exbin.bined.swing.basic.DefaultCodeAreaPainter;
-import org.exbin.bined.swing.extended.ExtCodeAreaWorker;
+import org.exbin.bined.swing.basic.CodeArea;
+import org.exbin.bined.swing.extended.ExtCodeArea;
 import org.exbin.utils.binary_data.ByteArrayEditableData;
 
 /**
  * Example Swing GUI demonstration application of the bined component.
  *
- * @version 0.2.0 2018/06/05
- * @author ExBin Project (http://exbin.org)
+ * @version 0.2.0 2018/08/11
+ * @author ExBin Project (https://exbin.org)
  */
 public class BinEdExample {
 
@@ -61,10 +60,7 @@ public class BinEdExample {
         basicPanel.setCodeArea(basicCodeArea);
 
         final BinEdExampleExPanel extendedPanel = new BinEdExampleExPanel();
-        final CodeArea extendedCodeArea = new CodeArea(); // TODO
-        ExtCodeAreaWorker extendedWorker = new ExtCodeAreaWorker(extendedCodeArea);
-        extendedWorker.setPainter(new DefaultCodeAreaPainter(extendedWorker));
-        extendedCodeArea.setWorker(extendedWorker);
+        final ExtCodeArea extendedCodeArea = new ExtCodeArea();
         ByteArrayEditableData extendedData = new ByteArrayEditableData();
         try {
             extendedData.loadFromStream(extendedCodeArea.getClass().getResourceAsStream(EXAMPLE_FILE_PATH));

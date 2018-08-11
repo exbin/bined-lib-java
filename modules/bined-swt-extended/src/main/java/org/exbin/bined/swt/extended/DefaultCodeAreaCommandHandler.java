@@ -43,7 +43,7 @@ import org.exbin.utils.binary_data.EditableBinaryData;
  * Default hexadecimal editor command handler.
  *
  * @version 0.1.1 2016/10/05
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 

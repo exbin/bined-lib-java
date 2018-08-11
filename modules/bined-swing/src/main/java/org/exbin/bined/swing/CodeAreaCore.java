@@ -15,72 +15,50 @@
  */
 package org.exbin.bined.swing;
 
-import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.swing.JComponent;
-import javax.swing.UIManager;
 import org.exbin.bined.CodeAreaControl;
-import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.DataChangedListener;
 import org.exbin.bined.capability.SelectionCapable;
-import org.exbin.bined.swing.basic.DefaultCodeAreaCommandHandler;
-import org.exbin.bined.swing.basic.DefaultCodeAreaWorker;
-import org.exbin.bined.swing.capability.FontCapable;
 import org.exbin.utils.binary_data.BinaryData;
 
 /**
  * Hexadecimal viewer/editor component.
  *
- * @version 0.2.0 2018/04/26
- * @author ExBin Project (http://exbin.org)
+ * @version 0.2.0 2018/08/11
+ * @author ExBin Project (https://exbin.org)
  */
-public class CodeArea extends JComponent implements CodeAreaControl {
+public abstract class CodeAreaCore extends JComponent implements CodeAreaControl {
 
     @Nullable
     private BinaryData contentData;
 
-    @Nonnull
-    private CodeAreaWorker worker;
     @Nonnull
     private CodeAreaCommandHandler commandHandler;
 
     private final List<DataChangedListener> dataChangedListeners = new ArrayList<>();
 
     /**
-     * Creates new instance with default command handler and painter.
-     */
-    public CodeArea() {
-        this(null, null);
-    }
-
-    /**
-     * Creates new instance with provided command handler and worker factory
-     * methods.
+     * Creates new instance with provided command handler factory method.
      *
-     * @param workerFactory code area worker or null for default worker
      * @param commandHandlerFactory command handler or null for default handler
      */
-    public CodeArea(@Nullable CodeAreaWorker.CodeAreaWorkerFactory workerFactory, @Nullable CodeAreaCommandHandler.CodeAreaCommandHandlerFactory commandHandlerFactory) {
+    public CodeAreaCore(@Nonnull CodeAreaCommandHandler.CodeAreaCommandHandlerFactory commandHandlerFactory) {
         super();
-        this.worker = workerFactory == null ? new DefaultCodeAreaWorker(this) : workerFactory.createWorker(this);
-        this.commandHandler = commandHandlerFactory == null ? new DefaultCodeAreaCommandHandler(this) : commandHandlerFactory.createCommandHandler(this);
+        this.commandHandler = commandHandlerFactory.createCommandHandler(this);
         init();
     }
 
     private void init() {
-        // TODO: Use swing color instead
-        setBackground(Color.WHITE);
         setFocusable(true);
         setFocusTraversalKeysEnabled(false);
         registerControlListeners();
@@ -117,20 +95,6 @@ public class CodeArea extends JComponent implements CodeAreaControl {
                 repaint();
             }
         });
-        UIManager.addPropertyChangeListener((@Nonnull PropertyChangeEvent evt) -> {
-            worker.resetColors();
-        });
-    }
-
-    @Nonnull
-    public CodeAreaWorker getWorker() {
-        return worker;
-    }
-
-    public void setWorker(@Nonnull CodeAreaWorker worker) {
-        CodeAreaUtils.requireNonNull(worker);
-
-        this.worker = worker;
     }
 
     @Nonnull
@@ -140,19 +104,6 @@ public class CodeArea extends JComponent implements CodeAreaControl {
 
     public void setCommandHandler(@Nonnull CodeAreaCommandHandler commandHandler) {
         this.commandHandler = commandHandler;
-    }
-
-    @Override
-    protected void paintComponent(@Nullable Graphics g) {
-        super.paintComponent(g);
-        if (g == null) {
-            return;
-        }
-
-        if (!worker.isInitialized()) {
-            ((FontCapable) worker).setFont(getFont());
-        }
-        worker.paintComponent(g);
     }
 
     @Override
@@ -202,10 +153,15 @@ public class CodeArea extends JComponent implements CodeAreaControl {
 
     @Override
     public boolean hasSelection() {
-        return ((SelectionCapable) worker).hasSelection();
+        if (this instanceof SelectionCapable) {
+            return ((SelectionCapable) this).hasSelection();
+        }
+
+        return false;
     }
 
     @Nullable
+    @Override
     public BinaryData getContentData() {
         return contentData;
     }
@@ -216,6 +172,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
         repaint();
     }
 
+    @Override
     public long getDataSize() {
         return contentData == null ? 0 : contentData.getDataSize();
     }
@@ -224,11 +181,11 @@ public class CodeArea extends JComponent implements CodeAreaControl {
      * Notifies component, that internal data was changed.
      */
     public void notifyDataChanged() {
-        resetPainter();
-
         dataChangedListeners.forEach((listener) -> {
             listener.dataChanged();
         });
+
+        resetPainter();
     }
 
     public void addDataChangedListener(@Nonnull DataChangedListener dataChangedListener) {
@@ -239,11 +196,7 @@ public class CodeArea extends JComponent implements CodeAreaControl {
         dataChangedListeners.remove(dataChangedListener);
     }
 
-    public void resetPainter() {
-        worker.reset();
-    }
+    public abstract void resetPainter();
 
-    public void updateLayout() {
-        worker.updateLayout();
-    }
+    public abstract void updateLayout();
 }

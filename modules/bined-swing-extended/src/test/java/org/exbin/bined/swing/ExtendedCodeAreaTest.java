@@ -22,6 +22,7 @@ import java.util.logging.Logger;
 import org.exbin.bined.EditationMode;
 import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.capability.EditationModeCapable;
+import org.exbin.bined.swing.basic.CodeArea;
 import org.exbin.utils.binary_data.ByteArrayEditableData;
 import org.exbin.utils.binary_data.EditableBinaryData;
 import org.junit.Assert;
@@ -31,7 +32,7 @@ import org.junit.Test;
  * Tests for codeArea component.
  *
  * @version 0.2.0 2017/12/31
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public class ExtendedCodeAreaTest {
 
@@ -68,7 +69,7 @@ public class ExtendedCodeAreaTest {
     @Test
     public void testCopyPasteInInsertMode() {
         CodeArea codeArea = new CodeArea();
-        ((EditationModeCapable) codeArea.getWorker()).setEditationMode(EditationMode.INSERT);
+        ((EditationModeCapable) codeArea).setEditationMode(EditationMode.INSERT);
         EditableBinaryData sampleData = getSampleData(SAMPLE_ALLBYTES);
         codeArea.setContentData(sampleData);
         long dataSize = sampleData.getDataSize();
@@ -88,7 +89,7 @@ public class ExtendedCodeAreaTest {
         codeArea.selectAll();
         codeArea.copy();
         codeArea.clearSelection();
-        ((CaretCapable) codeArea.getWorker()).getCaret().setCaretPosition(dataSize / 2);
+        ((CaretCapable) codeArea).getCaret().setCaretPosition(dataSize / 2);
         codeArea.paste();
         Assert.assertTrue(codeArea.getDataSize() == (dataSize / 2 + dataSize));
     }

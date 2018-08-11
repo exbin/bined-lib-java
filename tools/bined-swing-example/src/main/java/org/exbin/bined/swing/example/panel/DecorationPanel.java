@@ -24,32 +24,29 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.plaf.basic.BasicBorders;
 import org.exbin.bined.CodeCharactersCase;
-import org.exbin.bined.capability.CodeCharactersCaseCapable;
-import org.exbin.bined.swing.CodeArea;
 import org.exbin.bined.basic.BasicBackgroundPaintMode;
-import org.exbin.bined.swing.basic.DefaultCodeAreaWorker;
+import org.exbin.bined.capability.CodeCharactersCaseCapable;
+import org.exbin.bined.swing.basic.CodeArea;
 import org.exbin.bined.swing.capability.BackgroundPaintCapable;
 
 /**
  * Hexadecimal editor example panel.
  *
- * @version 0.2.0 2018/03/18
- * @author ExBin Project (http://exbin.org)
+ * @version 0.2.0 2018/08/11
+ * @author ExBin Project (https://exbin.org)
  */
 public class DecorationPanel extends javax.swing.JPanel {
 
     private final CodeArea codeArea;
-    private final DefaultCodeAreaWorker worker;
 
     public DecorationPanel(@Nonnull CodeArea codeArea) {
         this.codeArea = codeArea;
-        worker = (DefaultCodeAreaWorker) codeArea.getWorker();
 
         initComponents();
 
-        backgroundModeComboBox.setSelectedIndex(((BackgroundPaintCapable) worker).getBackgroundPaintMode().ordinal());
-        hexCharactersModeComboBox.setSelectedIndex(((CodeCharactersCaseCapable) worker).getCodeCharactersCase().ordinal());
-//        positionCodeTypeComboBox.setSelectedIndex((((CodeTypeCapable) worker).getPositionCodeType().ordinal());
+        backgroundModeComboBox.setSelectedIndex(((BackgroundPaintCapable) codeArea).getBackgroundPaintMode().ordinal());
+        hexCharactersModeComboBox.setSelectedIndex(((CodeCharactersCaseCapable) codeArea).getCodeCharactersCase().ordinal());
+//        positionCodeTypeComboBox.setSelectedIndex((((CodeTypeCapable) codeArea).getPositionCodeType().ordinal());
 //        lineNumbersBackgroundCheckBox.setSelected(codeArea.isLineNumberBackground());
 //        showLineNumbersCheckBox.setSelected(codeArea.isShowLineNumbers());
     }
@@ -167,11 +164,11 @@ public class DecorationPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void hexCharactersModeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hexCharactersModeComboBoxActionPerformed
-        ((CodeCharactersCaseCapable) worker).setCodeCharactersCase(CodeCharactersCase.values()[hexCharactersModeComboBox.getSelectedIndex()]);
+        ((CodeCharactersCaseCapable) codeArea).setCodeCharactersCase(CodeCharactersCase.values()[hexCharactersModeComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_hexCharactersModeComboBoxActionPerformed
 
     private void backgroundModeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backgroundModeComboBoxActionPerformed
-        ((BackgroundPaintCapable) worker).setBackgroundPaintMode(BasicBackgroundPaintMode.values()[backgroundModeComboBox.getSelectedIndex()]);
+        ((BackgroundPaintCapable) codeArea).setBackgroundPaintMode(BasicBackgroundPaintMode.values()[backgroundModeComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_backgroundModeComboBoxActionPerformed
 
     private void lineNumbersBackgroundCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_lineNumbersBackgroundCheckBoxItemStateChanged

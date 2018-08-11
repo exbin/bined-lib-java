@@ -25,13 +25,12 @@ import org.exbin.bined.CodeAreaCaret;
 import org.exbin.bined.CodeAreaCaretPosition;
 import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.capability.CaretCapable;
-import org.exbin.bined.swt.CodeArea;
 
 /**
  * Default implementation of code area caret.
  *
- * @version 0.2.0 2018/04/24
- * @author ExBin Project (http://exbin.org)
+ * @version 0.2.0 2018/08/11
+ * @author ExBin Project (https://exbin.org)
  */
 public class DefaultCodeAreaCaret implements CodeAreaCaret {
 
@@ -83,7 +82,7 @@ public class DefaultCodeAreaCaret implements CodeAreaCaret {
 
     private void notifyCaredChanged() {
         // TODO limit to cursor repaint
-        ((CaretCapable) codeArea.getWorker()).notifyCaretChanged();
+        ((CaretCapable) codeArea).notifyCaretChanged();
     }
 
     @Override

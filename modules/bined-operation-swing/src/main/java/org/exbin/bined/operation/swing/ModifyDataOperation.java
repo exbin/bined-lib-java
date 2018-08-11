@@ -16,7 +16,7 @@
 package org.exbin.bined.operation.swing;
 
 import org.exbin.bined.operation.BinaryDataOperationException;
-import org.exbin.bined.swing.CodeArea;
+import org.exbin.bined.swing.CodeAreaCore;
 import org.exbin.utils.binary_data.BinaryData;
 import org.exbin.utils.binary_data.EditableBinaryData;
 
@@ -24,14 +24,14 @@ import org.exbin.utils.binary_data.EditableBinaryData;
  * Operation for modifying data.
  *
  * @version 0.1.2 2017/01/02
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public class ModifyDataOperation extends CodeAreaOperation {
 
     private final long position;
     private final BinaryData data;
 
-    public ModifyDataOperation(CodeArea codeArea, long position, BinaryData data) {
+    public ModifyDataOperation(CodeAreaCore codeArea, long position, BinaryData data) {
         super(codeArea);
         this.position = position;
         this.data = data;

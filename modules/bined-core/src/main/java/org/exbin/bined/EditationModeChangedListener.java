@@ -21,7 +21,7 @@ import javax.annotation.Nonnull;
  * Interface for editation mode change listener.
  *
  * @version 0.2.0 2017/05/07
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public interface EditationModeChangedListener {
 

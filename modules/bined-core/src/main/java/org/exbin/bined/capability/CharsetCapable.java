@@ -22,7 +22,7 @@ import javax.annotation.Nonnull;
  * Support for charset capability.
  *
  * @version 0.2.0 2017/11/12
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public interface CharsetCapable {
 
@@ -41,7 +41,7 @@ public interface CharsetCapable {
      */
     void setCharset(@Nonnull Charset charset);
 
-    public static class CharsetCapability implements WorkerCapability {
+    public static class CharsetCapability implements CodeAreaCapability {
 
     }
 }

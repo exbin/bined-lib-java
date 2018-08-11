@@ -24,7 +24,7 @@ import org.exbin.bined.SelectionRange;
  * Support for selection capability.
  *
  * @version 0.2.0 2018/03/04
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public interface SelectionCapable {
 
@@ -48,7 +48,7 @@ public interface SelectionCapable {
 
     void removeSelectionChangedListener(@Nullable SelectionChangedListener selectionChangedListener);
 
-    public static class SelectionCapability implements WorkerCapability {
+    public static class SelectionCapability implements CodeAreaCapability {
 
     }
 }

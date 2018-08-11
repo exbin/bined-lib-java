@@ -33,7 +33,7 @@ import javax.annotation.Nonnull;
  * charset.
  *
  * @version 0.2.0 2017/11/05
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public class CharsetStreamTranslator extends InputStream {
 

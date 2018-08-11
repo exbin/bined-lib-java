@@ -22,12 +22,13 @@ import org.exbin.bined.CaretMovedListener;
 import org.exbin.bined.CaretPosition;
 import org.exbin.bined.CodeAreaCaret;
 import org.exbin.bined.PositionOverflowMode;
+import org.exbin.bined.basic.MovementDirection;
 
 /**
  * Support for caret / cursor capability.
  *
- * @version 0.2.0 2018/07/02
- * @author ExBin Project (http://exbin.org)
+ * @version 0.2.0 2018/08/11
+ * @author ExBin Project (https://exbin.org)
  */
 public interface CaretCapable {
 
@@ -39,6 +40,24 @@ public interface CaretCapable {
     @Nonnull
     CodeAreaCaret getCaret();
 
+    /**
+     * Computes position for movement action.
+     *
+     * @param position source position
+     * @param direction movement direction
+     * @return target position
+     */
+    @Nonnull
+    CaretPosition computeMovePosition(@Nonnull CaretPosition position, @Nonnull MovementDirection direction);
+
+    /**
+     * Computes closest caret position for given relative component position.
+     *
+     * @param positionX x-coordinate
+     * @param positionY y-coordinate
+     * @param overflowMode overflow mode
+     * @return mouse position
+     */
     @Nullable
     CaretPosition mousePositionToClosestCaretPosition(int positionX, int positionY, @Nonnull PositionOverflowMode overflowMode);
 
@@ -87,7 +106,7 @@ public interface CaretCapable {
 
     void removeCaretMovedListener(@Nullable CaretMovedListener caretMovedListener);
 
-    public static class CaretCapability implements WorkerCapability {
+    public static class CaretCapability implements CodeAreaCapability {
 
     }
 }

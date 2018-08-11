@@ -19,7 +19,7 @@ package org.exbin.bined.capability;
  * Support for clipboard capability.
  *
  * @version 0.2.0 2017/12/15
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public interface ClipboardCapable {
 
@@ -27,7 +27,7 @@ public interface ClipboardCapable {
 
     void setHandleClipboard(boolean handleClipboard);
 
-    public static class ClipboardCapability implements WorkerCapability {
+    public static class ClipboardCapability implements CodeAreaCapability {
 
     }
 }

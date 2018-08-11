@@ -16,17 +16,17 @@
  */
 package org.exbin.bined.operation.swing.command;
 
-import org.exbin.bined.swing.CodeArea;
+import org.exbin.bined.swing.CodeAreaCore;
 
 /**
  * Command for editing data in text mode.
  *
  * @version 0.1.0 2016/05/17
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public abstract class EditDataCommand extends CodeAreaCommand {
 
-    public EditDataCommand(CodeArea codeArea) {
+    public EditDataCommand(CodeAreaCore codeArea) {
         super(codeArea);
     }
 

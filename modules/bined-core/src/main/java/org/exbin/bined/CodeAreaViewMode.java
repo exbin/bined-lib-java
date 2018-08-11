@@ -19,7 +19,7 @@ package org.exbin.bined;
  * Enumeration of supported view modes.
  *
  * @version 0.1.1 2016/08/31
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public enum CodeAreaViewMode {
 

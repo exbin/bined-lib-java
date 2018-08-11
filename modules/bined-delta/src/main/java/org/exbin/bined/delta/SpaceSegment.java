@@ -21,7 +21,7 @@ import javax.annotation.Nonnull;
  * Space placeholder segment.
  *
  * @version 0.2.0 2018/04/27
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public class SpaceSegment extends DataSegment {
 

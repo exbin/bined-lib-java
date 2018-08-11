@@ -17,33 +17,30 @@ package org.exbin.bined.swing.example.panel;
 
 import javax.annotation.Nonnull;
 import org.exbin.bined.capability.CaretCapable;
-import org.exbin.bined.swing.CodeArea;
 import org.exbin.bined.swing.basic.DefaultCodeAreaCaret;
-import org.exbin.bined.swing.extended.ExtCodeAreaWorker;
+import org.exbin.bined.swing.extended.ExtCodeArea;
 
 /**
  * Hexadecimal editor example panel.
  *
  * @version 0.2.0 2018/03/18
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public class CursorPanelEx extends javax.swing.JPanel {
 
-    private final CodeArea codeArea;
-    private final ExtCodeAreaWorker worker;
+    private final ExtCodeArea codeArea;
 
-    public CursorPanelEx(@Nonnull CodeArea codeArea) {
+    public CursorPanelEx(@Nonnull ExtCodeArea codeArea) {
         this.codeArea = codeArea;
-        worker = (ExtCodeAreaWorker) codeArea.getWorker();
 
         initComponents();
 
-        cursorRenderingModeComboBox.setSelectedIndex(worker.getCaret().getRenderingMode().ordinal());
-        showShadowCursorCheckBox.setSelected(worker.isShowMirrorCursor());
+        cursorRenderingModeComboBox.setSelectedIndex(codeArea.getCaret().getRenderingMode().ordinal());
+        showShadowCursorCheckBox.setSelected(codeArea.isShowMirrorCursor());
 
-//        cursorInsertShapeComboBox.setSelectedIndex(((CaretCapable) codeArea.getWorker()).getCaret().getInsertCursorShape().ordinal());
-//        cursorOverwriteShapeComboBox.setSelectedIndex(((CaretCapable) codeArea.getWorker()).getCaret().getOverwriteCursorShape().ordinal());
-//        cursorBlinkingRateSpinner.setValue(((CaretCapable) codeArea.getWorker()).getCaret().getBlinkRate());
+//        cursorInsertShapeComboBox.setSelectedIndex(((CaretCapable) codeArea).getCaret().getInsertCursorShape().ordinal());
+//        cursorOverwriteShapeComboBox.setSelectedIndex(((CaretCapable) codeArea).getCaret().getOverwriteCursorShape().ordinal());
+//        cursorBlinkingRateSpinner.setValue(((CaretCapable) codeArea).getCaret().getBlinkRate());
     }
 
     /**
@@ -159,23 +156,23 @@ public class CursorPanelEx extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void showShadowCursorCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_showShadowCursorCheckBoxItemStateChanged
-        ((CaretCapable) codeArea.getWorker()).setShowMirrorCursor(showShadowCursorCheckBox.isSelected());
+        ((CaretCapable) codeArea).setShowMirrorCursor(showShadowCursorCheckBox.isSelected());
     }//GEN-LAST:event_showShadowCursorCheckBoxItemStateChanged
 
     private void cursorRenderingModeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cursorRenderingModeComboBoxActionPerformed
-        ((DefaultCodeAreaCaret) ((CaretCapable) codeArea.getWorker()).getCaret()).setRenderingMode(DefaultCodeAreaCaret.CursorRenderingMode.values()[cursorRenderingModeComboBox.getSelectedIndex()]);
+        ((DefaultCodeAreaCaret) ((CaretCapable) codeArea).getCaret()).setRenderingMode(DefaultCodeAreaCaret.CursorRenderingMode.values()[cursorRenderingModeComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_cursorRenderingModeComboBoxActionPerformed
 
     private void cursorInsertShapeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cursorInsertShapeComboBoxActionPerformed
-        //        ((CaretCapable) codeArea.getWorker()).getCaret().setInsertCursorShape(DefaultCodeAreaCaret.CursorShape.values()[cursorInsertShapeComboBox.getSelectedIndex()]);
+        //        ((CaretCapable) codeArea).getCaret().setInsertCursorShape(DefaultCodeAreaCaret.CursorShape.values()[cursorInsertShapeComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_cursorInsertShapeComboBoxActionPerformed
 
     private void cursorOverwriteShapeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cursorOverwriteShapeComboBoxActionPerformed
-        //        ((CaretCapable) codeArea.getWorker()).getCaret().setOverwriteCursorShape(DefaultCodeAreaCaret.CursorShape.values()[cursorOverwriteShapeComboBox.getSelectedIndex()]);
+        //        ((CaretCapable) codeArea).getCaret().setOverwriteCursorShape(DefaultCodeAreaCaret.CursorShape.values()[cursorOverwriteShapeComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_cursorOverwriteShapeComboBoxActionPerformed
 
     private void cursorBlinkingRateSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_cursorBlinkingRateSpinnerStateChanged
-        //        ((CaretCapable) codeArea.getWorker()).getCaret().setBlinkRate((Integer) cursorBlinkingRateSpinner.getValue());
+        //        ((CaretCapable) codeArea).getCaret().setBlinkRate((Integer) cursorBlinkingRateSpinner.getValue());
     }//GEN-LAST:event_cursorBlinkingRateSpinnerStateChanged
 
 

@@ -27,7 +27,7 @@ import org.exbin.bined.swing.CodeAreaWorker;
  * Hexadecimal component painter supporting search matches highlighting.
  *
  * @version 0.2.0 2018/05/01
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public class HighlightCodeAreaPainter extends DefaultCodeAreaPainter {
 

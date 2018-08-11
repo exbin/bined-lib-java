@@ -16,18 +16,19 @@
 package org.exbin.bined.operation.swing;
 
 import java.nio.charset.Charset;
+import javax.annotation.Nonnull;
 import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.capability.CharsetCapable;
 import org.exbin.bined.operation.BinaryDataOperationException;
-import org.exbin.bined.swing.CodeArea;
+import org.exbin.bined.swing.CodeAreaCore;
 import org.exbin.utils.binary_data.EditableBinaryData;
 
 /**
  * Operation for editing data using overwrite mode.
  *
  * @version 0.1.2 2017/01/07
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public class OverwriteCharEditDataOperation extends CharEditDataOperation {
 
@@ -35,7 +36,7 @@ public class OverwriteCharEditDataOperation extends CharEditDataOperation {
     private long length = 0;
     private EditableBinaryData undoData = null;
 
-    public OverwriteCharEditDataOperation(CodeArea coreArea, long startPosition) {
+    public OverwriteCharEditDataOperation(@Nonnull CodeAreaCore coreArea, long startPosition) {
         super(coreArea);
         this.startPosition = startPosition;
     }
@@ -64,7 +65,7 @@ public class OverwriteCharEditDataOperation extends CharEditDataOperation {
         EditableBinaryData data = (EditableBinaryData) codeArea.getContentData();
         long editedDataPosition = startPosition + length;
 
-        Charset charset = ((CharsetCapable) codeArea.getWorker()).getCharset();
+        Charset charset = ((CharsetCapable) codeArea).getCharset();
         byte[] bytes = CodeAreaUtils.characterToBytes(value, charset);
         if (editedDataPosition < data.getDataSize()) {
             long overwritten = data.getDataSize() - editedDataPosition;
@@ -95,7 +96,7 @@ public class OverwriteCharEditDataOperation extends CharEditDataOperation {
         }
 
         length += bytes.length;
-        ((CaretCapable) codeArea.getWorker()).getCaret().setCaretPosition(startPosition + length);
+        ((CaretCapable) codeArea).getCaret().setCaretPosition(startPosition + length);
     }
 
     @Override

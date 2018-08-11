@@ -25,15 +25,15 @@ import org.exbin.bined.CodeAreaCaret;
 import org.exbin.bined.CodeAreaCaretPosition;
 import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.capability.CaretCapable;
-import org.exbin.bined.swing.CodeArea;
+import org.exbin.bined.swing.basic.CodeArea;
 
 /**
  * Default implementation of code area caret.
  *
- * @version 0.2.0 2018/02/13
- * @author ExBin Project (http://exbin.org)
+ * @version 0.2.0 2018/08/11
+ * @author ExBin Project (https://exbin.org)
  */
-public class ExtCodeAreaCaret implements CodeAreaCaret {
+public class ExtendedCodeAreaCaret implements CodeAreaCaret {
 
     private static final int LINE_CURSOR_WIDTH = 1;
     private static final int DOUBLE_CURSOR_WIDTH = 2;
@@ -54,7 +54,7 @@ public class ExtCodeAreaCaret implements CodeAreaCaret {
     @Nonnull
     private CursorRenderingMode renderingMode = CursorRenderingMode.PAINT; //NEGATIVE;
 
-    public ExtCodeAreaCaret(@Nonnull CodeArea codeArea) {
+    public ExtendedCodeAreaCaret(@Nonnull CodeArea codeArea) {
         CodeAreaUtils.requireNonNull(codeArea);
 
         this.codeArea = codeArea;
@@ -100,7 +100,7 @@ public class ExtCodeAreaCaret implements CodeAreaCaret {
     }
 
     private void notifyCaredChanged() {
-        ((CaretCapable) codeArea.getWorker()).notifyCaretChanged();
+        ((CaretCapable) codeArea).notifyCaretChanged();
     }
 
     @Override

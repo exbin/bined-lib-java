@@ -23,7 +23,7 @@ import javax.annotation.Nonnull;
  * Interface for compound command.
  *
  * @version 0.2.0 2018/02/13
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public interface BinaryDataCompoundCommand extends BinaryDataCommand {
 

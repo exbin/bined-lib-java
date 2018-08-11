@@ -17,22 +17,22 @@ package org.exbin.bined.swing.capability;
 
 import java.awt.Font;
 import javax.annotation.Nonnull;
-import org.exbin.bined.capability.WorkerCapability;
+import org.exbin.bined.capability.CodeAreaCapability;
 
 /**
  * Support for font capability.
  *
- * @version 0.2.0 2017/12/09
- * @author ExBin Project (http://exbin.org)
+ * @version 0.2.0 2018/08/11
+ * @author ExBin Project (https://exbin.org)
  */
 public interface FontCapable {
 
     @Nonnull
-    Font getFont();
+    Font getCodeFont();
 
-    void setFont(@Nonnull Font font);
+    void setCodeFont(@Nonnull Font font);
 
-    public static class FontCapability implements WorkerCapability {
+    public static class FontCapability implements CodeAreaCapability {
 
     }
 }

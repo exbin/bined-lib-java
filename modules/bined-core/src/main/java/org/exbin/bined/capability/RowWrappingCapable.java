@@ -21,7 +21,7 @@ import javax.annotation.Nonnull;
  * Line wrapping capability interface.
  *
  * @version 0.2.0 2018/06/28
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public interface RowWrappingCapable {
 
@@ -42,7 +42,7 @@ public interface RowWrappingCapable {
 
     void setRowPositionNumberLength(int rowPositionNumberLength);
 
-    public static class LineWrappingCapability implements WorkerCapability {
+    public static class LineWrappingCapability implements CodeAreaCapability {
 
     }
 

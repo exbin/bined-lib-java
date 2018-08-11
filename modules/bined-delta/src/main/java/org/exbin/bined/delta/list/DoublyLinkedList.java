@@ -23,7 +23,7 @@ import javax.annotation.Nullable;
  * Doubly linked list of items.
  *
  * @version 0.2.0 2017/05/31
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  * @param <T> doubly linked list item
  */
 public interface DoublyLinkedList<T> extends List<T> {

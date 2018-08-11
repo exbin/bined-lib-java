@@ -21,7 +21,7 @@ import javax.annotation.Nonnull;
  * Enumeration of basic color types.
  *
  * @version 0.2.0 2018/04/12
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public enum CodeAreaBasicColorType implements CodeAreaColorType {
     COLOR("basic.color"),

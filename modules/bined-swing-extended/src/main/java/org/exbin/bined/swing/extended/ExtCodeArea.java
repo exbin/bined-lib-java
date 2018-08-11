@@ -13,16 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.swt.basic;
+package org.exbin.bined.swing.extended;
 
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.beans.PropertyChangeEvent;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.GC;
-import org.eclipse.swt.widgets.Display;
+import javax.swing.UIManager;
 import org.exbin.bined.BasicCodeAreaSection;
 import org.exbin.bined.BasicCodeAreaZone;
 import org.exbin.bined.CaretMovedListener;
@@ -39,40 +41,28 @@ import org.exbin.bined.ScrollBarVisibility;
 import org.exbin.bined.ScrollingListener;
 import org.exbin.bined.SelectionChangedListener;
 import org.exbin.bined.SelectionRange;
+import org.exbin.bined.basic.BasicBackgroundPaintMode;
 import org.exbin.bined.basic.CodeAreaScrollPosition;
 import org.exbin.bined.basic.HorizontalScrollUnit;
-import org.exbin.bined.capability.CaretCapable;
-import org.exbin.bined.capability.CharsetCapable;
-import org.exbin.bined.capability.ClipboardCapable;
-import org.exbin.bined.capability.CodeCharactersCaseCapable;
-import org.exbin.bined.capability.CodeTypeCapable;
-import org.exbin.bined.capability.EditationModeCapable;
-import org.exbin.bined.capability.RowWrappingCapable;
-import org.exbin.bined.capability.SelectionCapable;
-import org.exbin.bined.capability.ViewModeCapable;
-import org.exbin.bined.swt.CodeArea;
-import org.exbin.bined.swt.CodeAreaPainter;
-import org.exbin.bined.swt.CodeAreaWorker;
 import org.exbin.bined.basic.MovementDirection;
 import org.exbin.bined.basic.ScrollingDirection;
 import org.exbin.bined.basic.VerticalScrollUnit;
-import org.exbin.bined.swt.capability.BackgroundPaintCapable;
-import org.exbin.bined.swt.capability.FontCapable;
-import org.exbin.bined.capability.ScrollingCapable;
-import org.exbin.utils.binary_data.BinaryData;
+import org.exbin.bined.swing.CodeAreaCommandHandler;
+import org.exbin.bined.swing.CodeAreaCore;
+import org.exbin.bined.swing.CodeAreaPainter;
+import org.exbin.bined.swing.CodeAreaSwingControl;
+import org.exbin.bined.swing.basic.DefaultCodeAreaCaret;
+import org.exbin.bined.swing.basic.DefaultCodeAreaCommandHandler;
+import org.exbin.bined.swing.basic.DefaultCodeAreaPainter;
+import org.exbin.bined.swing.capability.FontCapable;
 
 /**
- * Code area component default worker.
+ * Code area component extended code area.
  *
- * @version 0.2.0 2018/06/24
- * @author ExBin Project (http://exbin.org)
+ * @version 0.2.0 2018/08/11
+ * @author ExBin Project (https://exbin.org)
  */
-public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, CaretCapable, ScrollingCapable, ViewModeCapable,
-        CodeTypeCapable, EditationModeCapable, CharsetCapable, CodeCharactersCaseCapable, FontCapable,
-        BackgroundPaintCapable, RowWrappingCapable, ClipboardCapable {
-
-    @Nonnull
-    protected final CodeArea codeArea;
+public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeAreaSwingControl {
 
     @Nonnull
     private CodeAreaPainter painter;
@@ -96,6 +86,10 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
     private Font font;
     @Nonnull
     private BasicBackgroundPaintMode borderPaintMode = BasicBackgroundPaintMode.STRIPED;
+    @Nonnull
+    private CharacterRenderingMode characterRenderingMode = CharacterRenderingMode.AUTO;
+    @Nonnull
+    private AntialiasingMode antialiasingMode = AntialiasingMode.AUTO;
     @Nonnull
     private CodeType codeType = CodeType.HEXADECIMAL;
     private int rowPositionNumberLength = 0;
@@ -121,24 +115,39 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
     private final List<SelectionChangedListener> selectionChangedListeners = new ArrayList<>();
     private final List<EditationModeChangedListener> editationModeChangedListeners = new ArrayList<>();
 
-    public DefaultCodeAreaWorker(@Nonnull CodeArea codeArea) {
-        this.codeArea = codeArea;
+    /**
+     * Creates new instance with default command handler and painter.
+     */
+    public ExtCodeArea() {
+        super(DefaultCodeAreaCommandHandler.createDefaultCodeAreaCommandHandlerFactory());
 
-        caret = new DefaultCodeAreaCaret(codeArea);
+        caret = new DefaultCodeAreaCaret(this);
         painter = new DefaultCodeAreaPainter(this);
+        init();
     }
 
-    @Nonnull
-    public static CodeAreaWorker.CodeAreaWorkerFactory createDefaultCodeAreaWorkerFactory() {
-        return DefaultCodeAreaWorker::new;
+    /**
+     * Creates new instance with provided command handler factory method.
+     *
+     * @param commandHandlerFactory command handler or null for default handler
+     */
+    public ExtCodeArea(@Nullable CodeAreaCommandHandler.CodeAreaCommandHandlerFactory commandHandlerFactory) {
+        super(commandHandlerFactory);
+
+        caret = new DefaultCodeAreaCaret(this);
+        painter = new DefaultCodeAreaPainter(this);
+        init();
     }
 
-    @Nonnull
-    @Override
-    public CodeArea getCodeArea() {
-        return codeArea;
-    }
+    private void init() {
+        // TODO: Use swing color instead
+        setBackground(Color.WHITE);
 
+        UIManager.addPropertyChangeListener((@Nonnull PropertyChangeEvent evt) -> {
+            resetColors();
+        });
+    }
+    
     @Nonnull
     public CodeAreaPainter getPainter() {
         return painter;
@@ -151,13 +160,16 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
         repaint();
     }
 
-    @Override
     public boolean isInitialized() {
         return painter.isInitialized();
     }
 
     @Override
-    public void paintComponent(@Nonnull GC g) {
+    public void paintComponent(@Nonnull Graphics g) {
+        if (!isInitialized()) {
+            ((FontCapable) this).setCodeFont(getCodeFont());
+        }
+
         painter.paintComponent(g);
     }
 
@@ -188,16 +200,6 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
         this.rowPositionNumberLength = rowPositionNumberLength;
         reset();
         repaint();
-    }
-
-    @Override
-    public long getDataSize() {
-        return codeArea.getDataSize();
-    }
-
-    @Override
-    public BinaryData getContentData() {
-        return codeArea.getContentData();
     }
 
     public long getDataPosition() {
@@ -267,25 +269,15 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
 
     @Override
     public void setViewMode(@Nonnull CodeAreaViewMode viewMode) {
-        if (viewMode != this.viewMode) {
-            this.viewMode = viewMode;
-            switch (viewMode) {
-                case CODE_MATRIX:
-                    getCaret().setSection(BasicCodeAreaSection.CODE_MATRIX.getSection());
-                    reset();
-                    notifyCaretMoved();
-                    break;
-                case TEXT_PREVIEW:
-                    getCaret().setSection(BasicCodeAreaSection.TEXT_PREVIEW.getSection());
-                    reset();
-                    notifyCaretMoved();
-                    break;
-                default:
-                    reset();
-                    break;
-            }
-            repaint();
+        this.viewMode = viewMode;
+        if (viewMode == CodeAreaViewMode.CODE_MATRIX) {
+            getCaret().setSection(BasicCodeAreaSection.CODE_MATRIX.getSection());
+            notifyCaretMoved();
+        } else if (viewMode == CodeAreaViewMode.TEXT_PREVIEW) {
+            getCaret().setSection(BasicCodeAreaSection.TEXT_PREVIEW.getSection());
+            notifyCaretMoved();
         }
+        repaint();
     }
 
     @Override
@@ -316,7 +308,7 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
         CodeAreaScrollPosition revealScrollPosition = painter.computeRevealScrollPosition(caretPosition);
         if (revealScrollPosition != null) {
             setScrollPosition(revealScrollPosition);
-            codeArea.resetPainter();
+            resetPainter();
             updateScrollBars();
             notifyScrolled();
         }
@@ -341,7 +333,7 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
         CodeAreaScrollPosition centerOnScrollPosition = painter.computeCenterOnScrollPosition(caretPosition);
         if (centerOnScrollPosition != null) {
             setScrollPosition(centerOnScrollPosition);
-            codeArea.resetPainter();
+            resetPainter();
             updateScrollBars();
             notifyScrolled();
         }
@@ -353,8 +345,8 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
 
     @Nullable
     @Override
-    public CaretPosition mousePositionToClosestCaretPosition(int positionX, int positionY, @Nonnull PositionOverflowMode overlowMode) {
-        return painter.mousePositionToClosestCaretPosition(positionX, positionY, overlowMode);
+    public CaretPosition mousePositionToClosestCaretPosition(int positionX, int positionY, @Nonnull PositionOverflowMode overflowMode) {
+        return painter.mousePositionToClosestCaretPosition(positionX, positionY, overflowMode);
     }
 
     @Nonnull
@@ -395,7 +387,7 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
     @Override
     public void setVerticalScrollBarVisibility(ScrollBarVisibility verticalScrollBarVisibility) {
         this.verticalScrollBarVisibility = verticalScrollBarVisibility;
-        codeArea.resetPainter();
+        resetPainter();
         updateScrollBars();
     }
 
@@ -412,7 +404,7 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
         if (verticalScrollUnit == VerticalScrollUnit.ROW) {
             scrollPosition.setRowOffset(0);
         }
-        codeArea.resetPainter();
+        resetPainter();
         scrollPosition.setRowPosition(linePosition);
         updateScrollBars();
         notifyScrolled();
@@ -427,7 +419,7 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
     @Override
     public void setHorizontalScrollBarVisibility(@Nonnull ScrollBarVisibility horizontalScrollBarVisibility) {
         this.horizontalScrollBarVisibility = horizontalScrollBarVisibility;
-        codeArea.resetPainter();
+        resetPainter();
         updateScrollBars();
     }
 
@@ -444,7 +436,7 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
         if (horizontalScrollUnit == HorizontalScrollUnit.CHARACTER) {
             scrollPosition.setCharOffset(0);
         }
-        codeArea.resetPainter();
+        resetPainter();
         scrollPosition.setCharPosition(bytePosition);
         updateScrollBars();
         notifyScrolled();
@@ -452,28 +444,52 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
 
     @Override
     public void reset() {
-        Display.getDefault().asyncExec(() -> {
-            painter.reset();
-        });
+        painter.reset();
     }
 
     @Override
     public void updateLayout() {
-        Display.getDefault().asyncExec(() -> {
-            painter.updateLayout();
-        });
+        painter.updateLayout();
     }
 
-    private void repaint() {
-        codeArea.resetPainter();
-        Display.getDefault().asyncExec(() -> {
-            codeArea.repaint();
-            painter.repaint();
-        });
+    @Override
+    public void repaint() {
+        resetPainter();
+        super.repaint();
+    }
+
+    @Override
+    public void resetPainter() {
+        painter.reset();
     }
 
     @Override
     public void notifyCaretChanged() {
+        repaint();
+    }
+
+    @Nonnull
+    @Override
+    public CharacterRenderingMode getCharacterRenderingMode() {
+        return characterRenderingMode;
+    }
+
+    @Override
+    public void setCharacterRenderingMode(@Nonnull CharacterRenderingMode characterRenderingMode) {
+        this.characterRenderingMode = characterRenderingMode;
+        painter.reset();
+        repaint();
+    }
+
+    @Override
+    public AntialiasingMode getAntialiasingMode() {
+        return antialiasingMode;
+    }
+
+    @Override
+    public void setAntialiasingMode(AntialiasingMode antialiasingMode) {
+        this.antialiasingMode = antialiasingMode;
+        reset();
         repaint();
     }
 
@@ -562,12 +578,12 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
 
     @Nonnull
     @Override
-    public Font getFont() {
+    public Font getCodeFont() {
         return font;
     }
 
     @Override
-    public void setFont(@Nonnull Font font) {
+    public void setCodeFont(@Nonnull Font font) {
         this.font = font;
         painter.reset();
         repaint();
@@ -676,10 +692,5 @@ public class DefaultCodeAreaWorker implements CodeAreaWorker, SelectionCapable, 
     @Override
     public void removeEditationModeChangedListener(@Nullable EditationModeChangedListener editationModeChangedListener) {
         editationModeChangedListeners.remove(editationModeChangedListener);
-    }
-
-    @Override
-    public void dispose() {
-        painter.dispose();
     }
 }

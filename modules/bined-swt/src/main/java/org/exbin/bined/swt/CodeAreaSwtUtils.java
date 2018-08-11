@@ -23,7 +23,7 @@ import org.eclipse.swt.graphics.Color;
  * Hexadecimal editor component SWT utilities.
  *
  * @version 0.2.0 2018/04/30
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public class CodeAreaSwtUtils {
 

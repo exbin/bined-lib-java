@@ -21,7 +21,7 @@ import javax.annotation.Nonnull;
  * Operation execution event.
  *
  * @version 0.2.0 2018/02/13
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public class BinaryDataOperationEvent {
 

@@ -15,8 +15,6 @@
  */
 package org.exbin.bined.swing;
 
-import org.exbin.bined.basic.ScrollingDirection;
-import org.exbin.bined.basic.MovementDirection;
 import java.awt.Graphics;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -24,12 +22,14 @@ import org.exbin.bined.BasicCodeAreaZone;
 import org.exbin.bined.CaretPosition;
 import org.exbin.bined.PositionOverflowMode;
 import org.exbin.bined.basic.CodeAreaScrollPosition;
+import org.exbin.bined.basic.MovementDirection;
+import org.exbin.bined.basic.ScrollingDirection;
 
 /**
  * Hexadecimal editor painter interface.
  *
  * @version 0.2.0 2018/02/07
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public interface CodeAreaPainter {
 

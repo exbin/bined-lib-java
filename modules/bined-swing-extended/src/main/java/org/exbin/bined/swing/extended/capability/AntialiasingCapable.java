@@ -16,15 +16,15 @@
 package org.exbin.bined.swing.extended.capability;
 
 import javax.annotation.Nonnull;
-import org.exbin.bined.capability.WorkerCapability;
 import org.exbin.bined.swing.extended.AntialiasingMode;
 import org.exbin.bined.swing.extended.CharacterRenderingMode;
+import org.exbin.bined.capability.CodeAreaCapability;
 
 /**
  * Support for anti-aliasing capability.
  *
  * @version 0.2.0 2017/03/18
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public interface AntialiasingCapable {
 
@@ -38,7 +38,7 @@ public interface AntialiasingCapable {
 
     void setCharacterRenderingMode(@Nonnull CharacterRenderingMode characterRenderingMode);
 
-    public static class AntialiasingCapability implements WorkerCapability {
+    public static class AntialiasingCapability implements CodeAreaCapability {
 
     }
 }

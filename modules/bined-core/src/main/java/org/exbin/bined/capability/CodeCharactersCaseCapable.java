@@ -22,7 +22,7 @@ import org.exbin.bined.CodeCharactersCase;
  * Support for view mode capability.
  *
  * @version 0.2.0 2017/11/17
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public interface CodeCharactersCaseCapable {
 
@@ -31,7 +31,7 @@ public interface CodeCharactersCaseCapable {
 
     void setCodeCharactersCase(@Nonnull CodeCharactersCase codeCharactersCase);
 
-    public static class CodeCharactersCaseCapability implements WorkerCapability {
+    public static class CodeCharactersCaseCapability implements CodeAreaCapability {
 
     }
 }

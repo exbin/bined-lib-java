@@ -3,7 +3,7 @@ BinEd Library
 
 Library for hexadecimal viewer/editor component written in Java.
 
-Homepage: http://bined.exbin.org/library  
+Homepage: https://bined.exbin.org/library  
 
 Screenshot
 ----------
@@ -30,7 +30,7 @@ Compiling
 
 Java Development Kit (JDK) version 8 or later is required to build this project.
 
-For project compiling Gradle 4.0 build system is used. You can either download and install gradle and run
+For project compiling Gradle 4 build system is used. You can either download and install gradle and run
 
   gradle build
 

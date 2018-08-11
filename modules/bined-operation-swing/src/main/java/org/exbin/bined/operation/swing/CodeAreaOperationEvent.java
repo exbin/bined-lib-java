@@ -20,7 +20,7 @@ package org.exbin.bined.operation.swing;
  * Operation execution event.
  *
  * @version 0.1.0 2016/05/25
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public class CodeAreaOperationEvent {
 

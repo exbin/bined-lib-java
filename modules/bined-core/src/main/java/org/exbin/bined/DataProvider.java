@@ -22,7 +22,7 @@ import org.exbin.utils.binary_data.BinaryData;
  * Data provider.
  *
  * @version 0.2.0 2018/07/27
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public interface DataProvider {
 

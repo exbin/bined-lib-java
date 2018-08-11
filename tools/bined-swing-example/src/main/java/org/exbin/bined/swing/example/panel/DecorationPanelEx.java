@@ -23,29 +23,26 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.plaf.basic.BasicBorders;
-import org.exbin.bined.swing.CodeArea;
 import org.exbin.bined.basic.BasicBackgroundPaintMode;
 import org.exbin.bined.swing.capability.BackgroundPaintCapable;
-import org.exbin.bined.swing.extended.ExtCodeAreaWorker;
+import org.exbin.bined.swing.extended.ExtCodeArea;
 
 /**
  * Hexadecimal editor example panel.
  *
- * @version 0.2.0 2018/03/18
- * @author ExBin Project (http://exbin.org)
+ * @version 0.2.0 2018/08/11
+ * @author ExBin Project (https://exbin.org)
  */
 public class DecorationPanelEx extends javax.swing.JPanel {
 
-    private final CodeArea codeArea;
-    private final ExtCodeAreaWorker worker;
+    private final ExtCodeArea codeArea;
 
-    public DecorationPanelEx(@Nonnull CodeArea codeArea) {
+    public DecorationPanelEx(@Nonnull ExtCodeArea codeArea) {
         this.codeArea = codeArea;
-        worker = (ExtCodeAreaWorker) codeArea.getWorker();
 
         initComponents();
 
-        backgroundModeComboBox.setSelectedIndex(((BackgroundPaintCapable) worker).getBackgroundPaintMode().ordinal());
+        backgroundModeComboBox.setSelectedIndex(((BackgroundPaintCapable) codeArea).getBackgroundPaintMode().ordinal());
 //        positionCodeTypeComboBox.setSelectedIndex(codeArea.getPositionCodeType().ordinal());
 //        lineNumbersBackgroundCheckBox.setSelected(codeArea.isLineNumberBackground());
 //        showLineNumbersCheckBox.setSelected(codeArea.isShowLineNumbers());
@@ -237,7 +234,7 @@ public class DecorationPanelEx extends javax.swing.JPanel {
     }//GEN-LAST:event_hexCharactersModeComboBoxActionPerformed
 
     private void backgroundModeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backgroundModeComboBoxActionPerformed
-        ((BackgroundPaintCapable) worker).setBackgroundPaintMode(BasicBackgroundPaintMode.values()[backgroundModeComboBox.getSelectedIndex()]);
+        ((BackgroundPaintCapable) codeArea).setBackgroundPaintMode(BasicBackgroundPaintMode.values()[backgroundModeComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_backgroundModeComboBoxActionPerformed
 
     private void lineNumbersBackgroundCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_lineNumbersBackgroundCheckBoxItemStateChanged

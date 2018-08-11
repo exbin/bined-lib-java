@@ -21,7 +21,7 @@ import javax.annotation.Nullable;
  * Interface for item of doubly linked list.
  *
  * @version 0.2.0 2017/05/31
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  * @param <T> instance class
  */
 public interface DoublyLinkedItem<T> {

@@ -20,7 +20,7 @@ package org.exbin.bined;
  * offset of code representation.
  *
  * @version 0.2.0 2018/02/17
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public interface CaretPosition {
 

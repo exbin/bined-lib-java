@@ -18,26 +18,27 @@ package org.exbin.bined.operation.swing.command;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import javax.annotation.Nonnull;
 import org.exbin.bined.operation.BinaryDataCommand;
 import org.exbin.bined.operation.BinaryDataCompoundCommand;
 import org.exbin.bined.operation.BinaryDataOperationException;
-import org.exbin.bined.swing.CodeArea;
+import org.exbin.bined.swing.CodeAreaCore;
 
 /**
  * Class for compound command on hexadecimal document.
  *
  * @version 0.1.2 2016/12/20
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public class HexCompoundCommand extends CodeAreaCommand implements BinaryDataCompoundCommand {
 
     private final List<BinaryDataCommand> commands = new ArrayList<>();
 
-    public HexCompoundCommand(CodeArea codeArea) {
+    public HexCompoundCommand(@Nonnull CodeAreaCore codeArea) {
         super(codeArea);
     }
 
-    public static CodeAreaCommand buildCompoundCommand(CodeArea codeArea, CodeAreaCommand... commands) {
+    public static CodeAreaCommand buildCompoundCommand(@Nonnull CodeAreaCore codeArea, CodeAreaCommand... commands) {
         CodeAreaCommand resultCommand = null;
         for (CodeAreaCommand command : commands) {
             if (command != null) {

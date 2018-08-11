@@ -18,14 +18,14 @@ package org.exbin.bined.operation.swing;
 import org.exbin.bined.CodeType;
 import org.exbin.bined.capability.CodeTypeCapable;
 import org.exbin.bined.operation.BinaryDataOperationException;
-import org.exbin.bined.swing.CodeArea;
+import org.exbin.bined.swing.CodeAreaCore;
 import org.exbin.utils.binary_data.EditableBinaryData;
 
 /**
- * Operation for editing data unsing insert mode.
+ * Operation for editing data using insert mode.
  *
  * @version 0.2.0 2018/02/14
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public class InsertCodeEditDataOperation extends CodeEditDataOperation {
 
@@ -38,9 +38,9 @@ public class InsertCodeEditDataOperation extends CodeEditDataOperation {
     private long length;
     private int codeOffset = 0;
 
-    public InsertCodeEditDataOperation(CodeArea codeArea, long startPosition, int startCodeOffset) {
+    public InsertCodeEditDataOperation(CodeAreaCore codeArea, long startPosition, int startCodeOffset) {
         super(codeArea);
-        codeType = ((CodeTypeCapable) codeArea.getWorker()).getCodeType();
+        codeType = ((CodeTypeCapable) codeArea).getCodeType();
         this.startPosition = startPosition;
         this.startCodeOffset = startCodeOffset;
         this.codeOffset = startCodeOffset;

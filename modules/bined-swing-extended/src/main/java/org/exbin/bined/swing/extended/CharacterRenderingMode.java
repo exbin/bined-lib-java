@@ -19,7 +19,7 @@ package org.exbin.bined.swing.extended;
  * Character rendering mode.
  *
  * @version 0.2.0 2017/07/26
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public enum CharacterRenderingMode {
     /**

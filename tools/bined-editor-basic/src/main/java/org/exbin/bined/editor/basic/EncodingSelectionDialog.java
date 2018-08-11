@@ -30,7 +30,7 @@ import javax.swing.KeyStroke;
  * Basic encoding selection dialog.
  *
  * @version 0.2.0 2018/03/23
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public class EncodingSelectionDialog extends javax.swing.JDialog {
 

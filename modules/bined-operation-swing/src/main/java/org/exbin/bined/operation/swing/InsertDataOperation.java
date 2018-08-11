@@ -17,7 +17,7 @@ package org.exbin.bined.operation.swing;
 
 import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.operation.BinaryDataOperationException;
-import org.exbin.bined.swing.CodeArea;
+import org.exbin.bined.swing.CodeAreaCore;
 import org.exbin.utils.binary_data.BinaryData;
 import org.exbin.utils.binary_data.EditableBinaryData;
 
@@ -25,7 +25,7 @@ import org.exbin.utils.binary_data.EditableBinaryData;
  * Operation for inserting data.
  *
  * @version 0.1.2 2017/01/02
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public class InsertDataOperation extends CodeAreaOperation {
 
@@ -33,7 +33,7 @@ public class InsertDataOperation extends CodeAreaOperation {
     private final int codeOffset;
     private final EditableBinaryData data;
 
-    public InsertDataOperation(CodeArea codeArea, long position, int codeOffset, EditableBinaryData data) {
+    public InsertDataOperation(CodeAreaCore codeArea, long position, int codeOffset, EditableBinaryData data) {
         super(codeArea);
         this.position = position;
         this.codeOffset = codeOffset;
@@ -61,7 +61,7 @@ public class InsertDataOperation extends CodeAreaOperation {
         if (withUndo) {
             undoOperation = new RemoveDataOperation(codeArea, position, codeOffset, data.getDataSize());
         }
-        ((CaretCapable) codeArea.getWorker()).getCaret().setCaretPosition(position + data.getDataSize(), codeOffset);
+        ((CaretCapable) codeArea).getCaret().setCaretPosition(position + data.getDataSize(), codeOffset);
         return undoOperation;
     }
 

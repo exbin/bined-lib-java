@@ -17,27 +17,24 @@ package org.exbin.bined.swing.example.panel;
 
 import javax.annotation.Nonnull;
 import org.exbin.bined.capability.RowWrappingCapable;
-import org.exbin.bined.swing.CodeArea;
-import org.exbin.bined.swing.basic.DefaultCodeAreaWorker;
+import org.exbin.bined.swing.basic.CodeArea;
 
 /**
  * Hexadecimal editor example panel.
  *
  * @version 0.2.0 2018/07/01
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public class LayoutPanel extends javax.swing.JPanel {
 
     private final CodeArea codeArea;
-    private final DefaultCodeAreaWorker worker;
 
     public LayoutPanel(@Nonnull CodeArea codeArea) {
         this.codeArea = codeArea;
-        worker = (DefaultCodeAreaWorker) codeArea.getWorker();
 
         initComponents();
 
-        rowWrappingModeCheckBox.setSelected(worker.isRowWrapping() == RowWrappingCapable.RowWrappingMode.WRAPPING);
+        rowWrappingModeCheckBox.setSelected(codeArea.isRowWrapping() == RowWrappingCapable.RowWrappingMode.WRAPPING);
 //        lineLengthSpinner.setValue(codeArea.getLineLength());
 //        headerSpaceComboBox.setSelectedIndex(codeArea.getHeaderSpaceType().ordinal());
 //        headerSpaceSpinner.setValue(codeArea.getHeaderSpaceSize());
@@ -166,12 +163,12 @@ public class LayoutPanel extends javax.swing.JPanel {
     private void lineLengthSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_lineLengthSpinnerStateChanged
         int value = (Integer) lineLengthSpinner.getValue();
         if (value >= 0) {
-            worker.setRowPositionNumberLength(value);
+            codeArea.setRowPositionNumberLength(value);
         }
     }//GEN-LAST:event_lineLengthSpinnerStateChanged
 
     private void lineNumbersLengthSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_lineNumbersLengthSpinnerStateChanged
-        worker.setRowPositionNumberLength((Integer) lineNumbersLengthSpinner.getValue());
+        codeArea.setRowPositionNumberLength((Integer) lineNumbersLengthSpinner.getValue());
     }//GEN-LAST:event_lineNumbersLengthSpinnerStateChanged
 
     private void byteGroupSizeSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_byteGroupSizeSpinnerStateChanged
@@ -183,7 +180,7 @@ public class LayoutPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_spaceGroupSizeSpinnerStateChanged
 
     private void rowWrappingModeCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_rowWrappingModeCheckBoxItemStateChanged
-        worker.setRowWrapping(rowWrappingModeCheckBox.isSelected() ? RowWrappingCapable.RowWrappingMode.WRAPPING : RowWrappingCapable.RowWrappingMode.NO_WRAPPING);
+        codeArea.setRowWrapping(rowWrappingModeCheckBox.isSelected() ? RowWrappingCapable.RowWrappingMode.WRAPPING : RowWrappingCapable.RowWrappingMode.NO_WRAPPING);
     }//GEN-LAST:event_rowWrappingModeCheckBoxItemStateChanged
 
 

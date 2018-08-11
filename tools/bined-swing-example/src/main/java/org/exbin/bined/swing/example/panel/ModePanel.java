@@ -24,29 +24,26 @@ import org.exbin.bined.EditationMode;
 import org.exbin.bined.capability.CharsetCapable;
 import org.exbin.bined.capability.EditationModeCapable;
 import org.exbin.bined.capability.ViewModeCapable;
-import org.exbin.bined.swing.CodeArea;
-import org.exbin.bined.swing.basic.DefaultCodeAreaWorker;
+import org.exbin.bined.swing.basic.CodeArea;
 
 /**
  * Hexadecimal editor example panel.
  *
  * @version 0.2.0 2018/07/01
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public class ModePanel extends javax.swing.JPanel {
 
     private final CodeArea codeArea;
-    private final DefaultCodeAreaWorker worker;
 
     public ModePanel(@Nonnull CodeArea codeArea) {
         this.codeArea = codeArea;
-        worker = (DefaultCodeAreaWorker) codeArea.getWorker();
 
         initComponents();
 
-        viewModeComboBox.setSelectedIndex(worker.getViewMode().ordinal());
-        codeTypeComboBox.setSelectedIndex(worker.getCodeType().ordinal());
-        editationAllowedComboBox.setSelectedIndex(worker.getEditationMode().ordinal());
+        viewModeComboBox.setSelectedIndex(codeArea.getViewMode().ordinal());
+        codeTypeComboBox.setSelectedIndex(codeArea.getCodeType().ordinal());
+        editationAllowedComboBox.setSelectedIndex(codeArea.getEditationMode().ordinal());
     }
 
     /**
@@ -207,43 +204,43 @@ public class ModePanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void codeTypeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_codeTypeComboBoxActionPerformed
-        worker.setCodeType(CodeType.values()[codeTypeComboBox.getSelectedIndex()]);
+        codeArea.setCodeType(CodeType.values()[codeTypeComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_codeTypeComboBoxActionPerformed
 
     private void editationAllowedComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editationAllowedComboBoxActionPerformed
-        ((EditationModeCapable) worker).setEditationMode(EditationMode.values()[editationAllowedComboBox.getSelectedIndex()]);
+        ((EditationModeCapable) codeArea).setEditationMode(EditationMode.values()[editationAllowedComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_editationAllowedComboBoxActionPerformed
 
     private void fontFamilyComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fontFamilyComboBoxActionPerformed
-        int size = worker.getFont().getSize();
+        int size = codeArea.getCodeFont().getSize();
         switch (fontFamilyComboBox.getSelectedIndex()) {
             case 0: {
-                worker.setFont(new Font(Font.DIALOG, Font.PLAIN, size));
+                codeArea.setCodeFont(new Font(Font.DIALOG, Font.PLAIN, size));
                 break;
             }
             case 1: {
-                worker.setFont(new Font(Font.MONOSPACED, Font.PLAIN, size));
+                codeArea.setCodeFont(new Font(Font.MONOSPACED, Font.PLAIN, size));
                 break;
             }
             case 2: {
-                worker.setFont(new Font(Font.SERIF, Font.PLAIN, size));
+                codeArea.setCodeFont(new Font(Font.SERIF, Font.PLAIN, size));
                 break;
             }
         }
     }//GEN-LAST:event_fontFamilyComboBoxActionPerformed
 
     private void fontSizeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fontSizeComboBoxActionPerformed
-        Font font = worker.getFont();
+        Font font = codeArea.getCodeFont();
         Font derivedFont = font.deriveFont(Font.PLAIN, Integer.valueOf((String) fontSizeComboBox.getSelectedItem()));
-        worker.setFont(derivedFont);
+        codeArea.setCodeFont(derivedFont);
     }//GEN-LAST:event_fontSizeComboBoxActionPerformed
 
     private void viewModeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewModeComboBoxActionPerformed
-        ((ViewModeCapable) worker).setViewMode(CodeAreaViewMode.values()[viewModeComboBox.getSelectedIndex()]);
+        ((ViewModeCapable) codeArea).setViewMode(CodeAreaViewMode.values()[viewModeComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_viewModeComboBoxActionPerformed
 
     private void charsetComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_charsetComboBoxActionPerformed
-        ((CharsetCapable) worker).setCharset(Charset.forName((String) charsetComboBox.getSelectedItem()));
+        ((CharsetCapable) codeArea).setCharset(Charset.forName((String) charsetComboBox.getSelectedItem()));
     }//GEN-LAST:event_charsetComboBoxActionPerformed
 
 

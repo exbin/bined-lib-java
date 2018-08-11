@@ -19,7 +19,7 @@ package org.exbin.bined.operation.swing;
  * Operation type enumeration.
  *
  * @version 0.1.0 2016/04/30
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public enum CodeAreaOperationType {
 

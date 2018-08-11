@@ -27,23 +27,23 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.plaf.basic.BasicBorders;
-import org.exbin.bined.swing.CodeArea;
 import org.exbin.bined.swing.example.panel.CursorPanelEx;
 import org.exbin.bined.swing.example.panel.DecorationPanelEx;
 import org.exbin.bined.swing.example.panel.LayoutPanelEx;
 import org.exbin.bined.swing.example.panel.ModePanelEx;
 import org.exbin.bined.swing.example.panel.ScrollingPanelEx;
 import org.exbin.bined.swing.example.panel.StatePanelEx;
+import org.exbin.bined.swing.extended.ExtCodeArea;
 
 /**
  * Hexadecimal editor example panel.
  *
  * @version 0.2.0 2018/03/18
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public class BinEdExampleExPanel extends javax.swing.JPanel {
 
-    private CodeArea codeArea;
+    private ExtCodeArea codeArea;
     private final Map<JPanel, JPanel> tabMap = new HashMap<>();
     private JPanel activeTab;
 
@@ -51,7 +51,7 @@ public class BinEdExampleExPanel extends javax.swing.JPanel {
         initComponents();
     }
 
-    public void setCodeArea(final CodeArea codeArea) {
+    public void setCodeArea(final ExtCodeArea codeArea) {
         this.codeArea = codeArea;
         splitPane.setRightComponent(codeArea);
 

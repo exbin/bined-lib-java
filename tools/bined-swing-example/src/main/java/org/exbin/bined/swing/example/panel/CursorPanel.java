@@ -17,30 +17,27 @@ package org.exbin.bined.swing.example.panel;
 
 import javax.annotation.Nonnull;
 import org.exbin.bined.capability.CaretCapable;
-import org.exbin.bined.swing.CodeArea;
+import org.exbin.bined.swing.basic.CodeArea;
 import org.exbin.bined.swing.basic.DefaultCodeAreaCaret;
-import org.exbin.bined.swing.basic.DefaultCodeAreaWorker;
 
 /**
  * Hexadecimal editor example panel.
  *
- * @version 0.2.0 2018/07/01
- * @author ExBin Project (http://exbin.org)
+ * @version 0.2.0 2018/08/11
+ * @author ExBin Project (https://exbin.org)
  */
 public class CursorPanel extends javax.swing.JPanel {
 
     private final CodeArea codeArea;
-    private final DefaultCodeAreaWorker worker;
 
     public CursorPanel(@Nonnull CodeArea codeArea) {
         this.codeArea = codeArea;
-        worker = (DefaultCodeAreaWorker) codeArea.getWorker();
 
         initComponents();
 
-        cursorRenderingModeComboBox.setSelectedIndex(worker.getCaret().getRenderingMode().ordinal());
-        showShadowCursorCheckBox.setSelected(worker.isShowMirrorCursor());
-        cursorBlinkingRateSpinner.setValue(((DefaultCodeAreaCaret) ((CaretCapable) worker).getCaret()).getBlinkRate());
+        cursorRenderingModeComboBox.setSelectedIndex(codeArea.getCaret().getRenderingMode().ordinal());
+        showShadowCursorCheckBox.setSelected(codeArea.isShowMirrorCursor());
+        cursorBlinkingRateSpinner.setValue(((DefaultCodeAreaCaret) ((CaretCapable) codeArea).getCaret()).getBlinkRate());
     }
 
     /**
@@ -121,15 +118,15 @@ public class CursorPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void showShadowCursorCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_showShadowCursorCheckBoxItemStateChanged
-        ((CaretCapable) worker).setShowMirrorCursor(showShadowCursorCheckBox.isSelected());
+        ((CaretCapable) codeArea).setShowMirrorCursor(showShadowCursorCheckBox.isSelected());
     }//GEN-LAST:event_showShadowCursorCheckBoxItemStateChanged
 
     private void cursorRenderingModeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cursorRenderingModeComboBoxActionPerformed
-        ((DefaultCodeAreaCaret) ((CaretCapable) worker).getCaret()).setRenderingMode(DefaultCodeAreaCaret.CursorRenderingMode.values()[cursorRenderingModeComboBox.getSelectedIndex()]);
+        ((DefaultCodeAreaCaret) ((CaretCapable) codeArea).getCaret()).setRenderingMode(DefaultCodeAreaCaret.CursorRenderingMode.values()[cursorRenderingModeComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_cursorRenderingModeComboBoxActionPerformed
 
     private void cursorBlinkingRateSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_cursorBlinkingRateSpinnerStateChanged
-        ((DefaultCodeAreaCaret) ((CaretCapable) worker).getCaret()).setBlinkRate((Integer) cursorBlinkingRateSpinner.getValue());
+        ((DefaultCodeAreaCaret) ((CaretCapable) codeArea).getCaret()).setBlinkRate((Integer) cursorBlinkingRateSpinner.getValue());
     }//GEN-LAST:event_cursorBlinkingRateSpinnerStateChanged
 
 

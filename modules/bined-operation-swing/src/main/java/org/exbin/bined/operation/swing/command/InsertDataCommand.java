@@ -20,14 +20,14 @@ import javax.annotation.Nonnull;
 import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.operation.BinaryDataOperationException;
 import org.exbin.bined.operation.swing.InsertDataOperation;
-import org.exbin.bined.swing.CodeArea;
+import org.exbin.bined.swing.basic.CodeArea;
 import org.exbin.utils.binary_data.EditableBinaryData;
 
 /**
  * Command for inserting data.
  *
  * @version 0.2.0 2018/02/14
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public class InsertDataCommand extends OpCodeAreaCommand {
 
@@ -50,12 +50,12 @@ public class InsertDataCommand extends OpCodeAreaCommand {
     @Override
     public void redo() throws BinaryDataOperationException {
         super.redo();
-        ((CaretCapable) codeArea.getWorker()).getCaret().setCaretPosition(position + dataLength);
+        ((CaretCapable) codeArea).getCaret().setCaretPosition(position + dataLength);
     }
 
     @Override
     public void undo() throws BinaryDataOperationException {
         super.undo();
-        ((CaretCapable) codeArea.getWorker()).getCaret().setCaretPosition(position);
+        ((CaretCapable) codeArea).getCaret().setCaretPosition(position);
     }
 }

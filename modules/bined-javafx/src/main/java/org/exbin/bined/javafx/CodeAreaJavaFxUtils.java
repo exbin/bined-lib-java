@@ -25,7 +25,7 @@ import org.exbin.bined.ScrollBarVisibility;
  * Hexadecimal editor component JavaFX utilities.
  *
  * @version 0.2.0 2018/08/01
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public class CodeAreaJavaFxUtils {
 

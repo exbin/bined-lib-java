@@ -23,7 +23,7 @@ import javax.annotation.Nullable;
  * Code area scrolling position.
  *
  * @version 0.2.0 2018/07/03
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public class CodeAreaScrollPosition {
 

@@ -19,7 +19,7 @@ package org.exbin.bined.swing.extended.capability;
  * Support for anti-aliasing capability.
  *
  * @version 0.2.0 2018/03/17
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public interface LineOffsetCapable {
 

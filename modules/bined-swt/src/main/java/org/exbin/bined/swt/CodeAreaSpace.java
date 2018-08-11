@@ -19,7 +19,7 @@ package org.exbin.bined.swt;
  * Empty space definition.
  *
  * @version 0.1.2 2016/12/14
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public class CodeAreaSpace {
 

@@ -20,21 +20,21 @@ import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.capability.CharsetCapable;
 import org.exbin.bined.operation.BinaryDataOperationException;
-import org.exbin.bined.swing.CodeArea;
+import org.exbin.bined.swing.CodeAreaCore;
 import org.exbin.utils.binary_data.EditableBinaryData;
 
 /**
- * Operation for editing data unsing insert mode.
+ * Operation for editing data using insert mode.
  *
  * @version 0.1.2 2016/12/20
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public class InsertCharEditDataOperation extends CharEditDataOperation {
 
     private final long startPosition;
     private long length;
 
-    public InsertCharEditDataOperation(CodeArea coreArea, long startPosition) {
+    public InsertCharEditDataOperation(CodeAreaCore coreArea, long startPosition) {
         super(coreArea);
         this.startPosition = startPosition;
     }
@@ -63,11 +63,11 @@ public class InsertCharEditDataOperation extends CharEditDataOperation {
         EditableBinaryData data = (EditableBinaryData) codeArea.getContentData();
         long editedDataPosition = startPosition + length;
 
-        Charset charset = ((CharsetCapable) codeArea.getWorker()).getCharset();
+        Charset charset = ((CharsetCapable) codeArea).getCharset();
         byte[] bytes = CodeAreaUtils.characterToBytes(value, charset);
         data.insert(editedDataPosition, bytes);
         length += bytes.length;
-        ((CaretCapable) codeArea.getWorker()).getCaret().setCaretPosition(startPosition + length);
+        ((CaretCapable) codeArea).getCaret().setCaretPosition(startPosition + length);
     }
 
     @Override

@@ -16,6 +16,7 @@
  */
 package org.exbin.bined.operation.swing.command;
 
+import javax.annotation.Nonnull;
 import org.exbin.bined.operation.BinaryDataOperationException;
 import org.exbin.bined.operation.BinaryDataOperationListener;
 import org.exbin.bined.operation.swing.CharEditDataOperation;
@@ -25,13 +26,13 @@ import org.exbin.bined.operation.swing.CodeAreaOperationListener;
 import org.exbin.bined.operation.swing.DeleteCharEditDataOperation;
 import org.exbin.bined.operation.swing.InsertCharEditDataOperation;
 import org.exbin.bined.operation.swing.OverwriteCharEditDataOperation;
-import org.exbin.bined.swing.CodeArea;
+import org.exbin.bined.swing.CodeAreaCore;
 
 /**
  * Command for editing data in text mode.
  *
- * @version 0.1.2 2016/12/20
- * @author ExBin Project (http://exbin.org)
+ * @version 0.2.0 2018/08/11
+ * @author ExBin Project (https://exbin.org)
  */
 public class EditCharDataCommand extends EditDataCommand {
 
@@ -39,7 +40,7 @@ public class EditCharDataCommand extends EditDataCommand {
     protected boolean operationPerformed = false;
     private CodeAreaOperation[] operations = null;
 
-    public EditCharDataCommand(CodeArea codeArea, EditCommandType commandType, long position) {
+    public EditCharDataCommand(@Nonnull CodeAreaCore codeArea, @Nonnull EditCommandType commandType, long position) {
         super(codeArea);
         this.commandType = commandType;
         CodeAreaOperation operation;

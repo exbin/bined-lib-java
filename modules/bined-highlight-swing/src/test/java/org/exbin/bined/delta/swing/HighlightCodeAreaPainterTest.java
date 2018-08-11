@@ -23,7 +23,7 @@ import org.junit.Test;
  * Tests for highlighting code area painter.
  *
  * @version 0.1.2 2016/12/10
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public class HighlightCodeAreaPainterTest {
 

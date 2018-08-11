@@ -16,17 +16,17 @@
 package org.exbin.bined.operation.swing;
 
 import org.exbin.bined.CodeType;
-import org.exbin.bined.swing.CodeArea;
+import org.exbin.bined.swing.CodeAreaCore;
 
 /**
  * Abstract operation for editing data.
  *
  * @version 0.1.0 2015/05/17
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public abstract class CodeEditDataOperation extends CodeAreaOperation {
 
-    public CodeEditDataOperation(CodeArea coreArea) {
+    public CodeEditDataOperation(CodeAreaCore coreArea) {
         super(coreArea);
     }
 

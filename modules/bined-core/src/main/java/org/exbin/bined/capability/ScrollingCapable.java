@@ -19,16 +19,16 @@ import javax.annotation.Nonnull;
 import org.exbin.bined.CaretPosition;
 import org.exbin.bined.ScrollBarVisibility;
 import org.exbin.bined.ScrollingListener;
-import org.exbin.bined.basic.ScrollingDirection;
 import org.exbin.bined.basic.CodeAreaScrollPosition;
 import org.exbin.bined.basic.HorizontalScrollUnit;
+import org.exbin.bined.basic.ScrollingDirection;
 import org.exbin.bined.basic.VerticalScrollUnit;
 
 /**
  * Support for code type capability.
  *
  * @version 0.2.0 2018/01/29
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public interface ScrollingCapable {
 
@@ -93,7 +93,7 @@ public interface ScrollingCapable {
      */
     void centerOnPosition(@Nonnull CaretPosition caretPosition);
 
-    public static class ScrollingCapability implements WorkerCapability {
+    public static class ScrollingCapability implements CodeAreaCapability {
 
     }
 }

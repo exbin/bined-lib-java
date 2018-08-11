@@ -17,20 +17,20 @@ package org.exbin.bined.operation.swing.command;
 
 import javax.annotation.Nonnull;
 import org.exbin.bined.operation.BinaryDataAbstractCommand;
-import org.exbin.bined.swing.CodeArea;
+import org.exbin.bined.swing.CodeAreaCore;
 
 /**
  * Abstract class for operation on code area component.
  *
  * @version 0.2.0 2018/02/14
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public abstract class CodeAreaCommand extends BinaryDataAbstractCommand {
 
     @Nonnull
-    protected final CodeArea codeArea;
+    protected final CodeAreaCore codeArea;
 
-    public CodeAreaCommand(@Nonnull CodeArea codeArea) {
+    public CodeAreaCommand(@Nonnull CodeAreaCore codeArea) {
         this.codeArea = codeArea;
     }
 

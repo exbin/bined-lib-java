@@ -29,7 +29,7 @@ import javax.annotation.Nonnull;
  * Data source for access to file resource locking it for exclusive access.
  *
  * @version 0.2.0 2018/04/27
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public class FileDataSource {
 

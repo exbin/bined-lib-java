@@ -26,14 +26,14 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
-import org.exbin.bined.swt.CodeArea;
+import org.exbin.bined.swt.basic.CodeArea;
 import org.exbin.utils.binary_data.ByteArrayEditableData;
 
 /**
  * Example Swing GUI demonstration application of the bined component.
  *
  * @version 0.2.0 2018/05/01
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public class BinEdExample {
 

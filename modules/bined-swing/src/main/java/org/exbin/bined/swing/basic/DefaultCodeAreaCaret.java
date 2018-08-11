@@ -25,13 +25,13 @@ import org.exbin.bined.CodeAreaCaret;
 import org.exbin.bined.CodeAreaCaretPosition;
 import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.capability.CaretCapable;
-import org.exbin.bined.swing.CodeArea;
+import org.exbin.bined.swing.CodeAreaCore;
 
 /**
  * Default implementation of code area caret.
  *
- * @version 0.2.0 2018/02/14
- * @author ExBin Project (http://exbin.org)
+ * @version 0.2.0 2018/08/11
+ * @author ExBin Project (https://exbin.org)
  */
 public class DefaultCodeAreaCaret implements CodeAreaCaret {
 
@@ -39,7 +39,7 @@ public class DefaultCodeAreaCaret implements CodeAreaCaret {
     private static final int DEFAULT_BLINK_RATE = 450;
 
     @Nonnull
-    private final CodeArea codeArea;
+    private final CodeAreaCore codeArea;
     private final CodeAreaCaretPosition caretPosition = new CodeAreaCaretPosition();
 
     private int blinkRate = 0;
@@ -49,7 +49,7 @@ public class DefaultCodeAreaCaret implements CodeAreaCaret {
     @Nonnull
     private CursorRenderingMode renderingMode = CursorRenderingMode.NEGATIVE;
 
-    public DefaultCodeAreaCaret(@Nonnull CodeArea codeArea) {
+    public DefaultCodeAreaCaret(@Nonnull CodeAreaCore codeArea) {
         CodeAreaUtils.requireNonNull(codeArea);
 
         this.codeArea = codeArea;
@@ -82,7 +82,7 @@ public class DefaultCodeAreaCaret implements CodeAreaCaret {
     }
 
     private void notifyCaredChanged() {
-        ((CaretCapable) codeArea.getWorker()).notifyCaretChanged();
+        ((CaretCapable) codeArea).notifyCaretChanged();
     }
 
     @Override

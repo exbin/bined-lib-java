@@ -19,7 +19,7 @@ package org.exbin.bined.swing.extended;
  * Anti-aliasing mode.
  *
  * @version 0.2.0 2017/03/18
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public enum AntialiasingMode {
 

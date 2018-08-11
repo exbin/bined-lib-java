@@ -21,7 +21,7 @@ import javax.annotation.Nonnull;
  * Empty space size definition.
  *
  * @version 0.2.0 2017/04/09
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public class CodeAreaSpaceSize {
 

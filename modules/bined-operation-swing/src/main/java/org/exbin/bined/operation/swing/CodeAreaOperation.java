@@ -21,26 +21,26 @@ import org.exbin.bined.CaretPosition;
 import org.exbin.bined.CodeAreaCaretPosition;
 import org.exbin.bined.operation.BinaryDataOperation;
 import org.exbin.bined.operation.BinaryDataOperationException;
-import org.exbin.bined.swing.CodeArea;
+import org.exbin.bined.swing.CodeAreaCore;
 
 /**
  * Abstract class for operation on code area component.
  *
- * @version 0.2.0 2018/02/14
- * @author ExBin Project (http://exbin.org)
+ * @version 0.2.0 2018/08/11
+ * @author ExBin Project (https://exbin.org)
  */
 public abstract class CodeAreaOperation implements BinaryDataOperation {
 
     @Nonnull
-    protected final CodeArea codeArea;
+    protected final CodeAreaCore codeArea;
     @Nonnull
     protected final CodeAreaCaretPosition backPosition = new CodeAreaCaretPosition();
 
-    public CodeAreaOperation(@Nonnull CodeArea codeArea) {
+    public CodeAreaOperation(@Nonnull CodeAreaCore codeArea) {
         this(codeArea, null);
     }
 
-    public CodeAreaOperation(@Nonnull CodeArea codeArea, @Nullable CaretPosition backPosition) {
+    public CodeAreaOperation(@Nonnull CodeAreaCore codeArea, @Nullable CaretPosition backPosition) {
         this.codeArea = codeArea;
         if (backPosition != null) {
             this.backPosition.setPosition(backPosition);
@@ -56,7 +56,7 @@ public abstract class CodeAreaOperation implements BinaryDataOperation {
     public abstract CodeAreaOperationType getType();
 
     @Nonnull
-    public CodeArea getCodeArea() {
+    public CodeAreaCore getCodeArea() {
         return codeArea;
     }
 

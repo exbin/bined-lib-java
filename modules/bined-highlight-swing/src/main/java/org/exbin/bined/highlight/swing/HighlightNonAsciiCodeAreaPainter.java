@@ -23,7 +23,7 @@ import org.exbin.bined.swing.ColorsGroup;
  * Experimental support for highlighting of non-ascii characters.
  *
  * @version 0.2.0 2018/04/26
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public class HighlightNonAsciiCodeAreaPainter extends HighlightCodeAreaPainter {
 

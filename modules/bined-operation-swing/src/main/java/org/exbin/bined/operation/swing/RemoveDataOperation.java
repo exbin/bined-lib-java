@@ -17,14 +17,14 @@ package org.exbin.bined.operation.swing;
 
 import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.operation.BinaryDataOperationException;
-import org.exbin.bined.swing.CodeArea;
+import org.exbin.bined.swing.CodeAreaCore;
 import org.exbin.utils.binary_data.EditableBinaryData;
 
 /**
  * Operation for deleting child block.
  *
  * @version 0.2.0 2018/02/14
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public class RemoveDataOperation extends CodeAreaOperation {
 
@@ -32,7 +32,7 @@ public class RemoveDataOperation extends CodeAreaOperation {
     private final int codeOffset;
     private final long length;
 
-    public RemoveDataOperation(CodeArea codeArea, long position, int codeOffset, long length) {
+    public RemoveDataOperation(CodeAreaCore codeArea, long position, int codeOffset, long length) {
         super(codeArea);
         this.position = position;
         this.codeOffset = codeOffset;
@@ -61,7 +61,7 @@ public class RemoveDataOperation extends CodeAreaOperation {
             undoOperation = new InsertDataOperation(codeArea, position, codeOffset, undoData);
         }
         ((EditableBinaryData) codeArea.getContentData()).remove(position, length);
-        ((CaretCapable) codeArea.getWorker()).getCaret().setCaretPosition(position, codeOffset);
+        ((CaretCapable) codeArea).getCaret().setCaretPosition(position, codeOffset);
         return undoOperation;
     }
 }

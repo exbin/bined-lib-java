@@ -29,7 +29,7 @@ import org.exbin.bined.basic.ScrollingDirection;
  * Hexadecimal editor painter interface.
  *
  * @version 0.2.0 2018/07/30
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public interface CodeAreaPainter {
 

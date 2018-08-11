@@ -22,21 +22,21 @@ import org.exbin.bined.operation.BinaryDataOperationListener;
 import org.exbin.bined.operation.swing.CodeAreaOperation;
 import org.exbin.bined.operation.swing.CodeAreaOperationEvent;
 import org.exbin.bined.operation.swing.CodeAreaOperationListener;
-import org.exbin.bined.swing.CodeArea;
+import org.exbin.bined.swing.CodeAreaCore;
 
 
 /**
  * Abstract class for operation on hexadecimal document.
  *
  * @version 0.1.2 2016/12/20
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public abstract class OpCodeAreaCommand extends CodeAreaCommand {
 
     protected CodeAreaOperation operation;
     protected boolean operationPerformed = false;
 
-    public OpCodeAreaCommand(CodeArea codeArea) {
+    public OpCodeAreaCommand(CodeAreaCore codeArea) {
         super(codeArea);
     }
 

@@ -35,7 +35,7 @@ import org.exbin.bined.capability.ViewModeCapable;
  * Code area data representation structure for basic variant.
  *
  * @version 0.2.0 2018/07/27
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public class BasicCodeAreaStructure {
 
@@ -63,15 +63,15 @@ public class BasicCodeAreaStructure {
     private int codeLastCharPos;
     private int previewCharPos;
 
-    public void updateCache(@Nonnull DataProvider worker, int charactersPerPage) {
-        viewMode = ((ViewModeCapable) worker).getViewMode();
-        codeType = ((CodeTypeCapable) worker).getCodeType();
-        caretPosition.setPosition(((CaretCapable) worker).getCaret().getCaretPosition());
-        selectionRange = ((SelectionCapable) worker).getSelection();
-        dataSize = worker.getDataSize();
-        rowWrapping = ((RowWrappingCapable) worker).isRowWrapping();
-        maxBytesPerLine = ((RowWrappingCapable) worker).getMaxBytesPerRow();
-        wrappingBytesGroupSize = ((RowWrappingCapable) worker).getWrappingBytesGroupSize();
+    public void updateCache(@Nonnull DataProvider codeArea, int charactersPerPage) {
+        viewMode = ((ViewModeCapable) codeArea).getViewMode();
+        codeType = ((CodeTypeCapable) codeArea).getCodeType();
+        caretPosition.setPosition(((CaretCapable) codeArea).getCaret().getCaretPosition());
+        selectionRange = ((SelectionCapable) codeArea).getSelection();
+        dataSize = codeArea.getDataSize();
+        rowWrapping = ((RowWrappingCapable) codeArea).isRowWrapping();
+        maxBytesPerLine = ((RowWrappingCapable) codeArea).getMaxBytesPerRow();
+        wrappingBytesGroupSize = ((RowWrappingCapable) codeArea).getWrappingBytesGroupSize();
         bytesPerRow = computeBytesPerRow(charactersPerPage);
         charactersPerRow = computeCharactersPerRow();
         rowsPerDocument = computeRowsPerDocument();

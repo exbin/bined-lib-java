@@ -28,8 +28,7 @@ import org.exbin.bined.CaretPosition;
 import org.exbin.bined.SelectionRange;
 import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.capability.SelectionCapable;
-import org.exbin.bined.swing.CodeArea;
-import org.exbin.bined.swing.basic.DefaultCodeAreaWorker;
+import org.exbin.bined.swing.basic.CodeArea;
 import org.exbin.bined.swing.example.BinEdExampleBasicPanel;
 import org.exbin.utils.binary_data.EditableBinaryData;
 
@@ -37,32 +36,30 @@ import org.exbin.utils.binary_data.EditableBinaryData;
  * Hexadecimal editor example panel.
  *
  * @version 0.2.0 2018/03/18
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public class StatePanel extends javax.swing.JPanel {
 
     private final CodeArea codeArea;
-    private final DefaultCodeAreaWorker worker;
 
     public StatePanel(@Nonnull CodeArea codeArea) {
         this.codeArea = codeArea;
-        worker = (DefaultCodeAreaWorker) codeArea.getWorker();
 
         initComponents();
 
-        activeSectionComboBox.setSelectedIndex(((CaretCapable) codeArea.getWorker()).getCaret().getCaretPosition().getSection());
+        activeSectionComboBox.setSelectedIndex(((CaretCapable) codeArea).getCaret().getCaretPosition().getSection());
         dataSizeTextField.setText(String.valueOf(codeArea.getDataSize()));
 
-        worker.addCaretMovedListener((CaretPosition caretPosition) -> {
+        codeArea.addCaretMovedListener((CaretPosition caretPosition) -> {
             positionTextField.setText(String.valueOf(caretPosition.getDataPosition()));
             codeOffsetTextField.setText(String.valueOf(caretPosition.getCodeOffset()));
             activeSectionComboBox.setSelectedIndex(caretPosition.getSection());
         });
-        ((SelectionCapable) codeArea.getWorker()).addSelectionChangedListener((SelectionRange selection) -> {
+        ((SelectionCapable) codeArea).addSelectionChangedListener((SelectionRange selection) -> {
             if (selection != null) {
-                long first = ((SelectionCapable) codeArea.getWorker()).getSelection().getFirst();
+                long first = ((SelectionCapable) codeArea).getSelection().getFirst();
                 selectionStartTextField.setText(String.valueOf(first));
-                long last = ((SelectionCapable) codeArea.getWorker()).getSelection().getLast();
+                long last = ((SelectionCapable) codeArea).getSelection().getLast();
                 selectionEndTextField.setText(String.valueOf(last));
             } else {
                 selectionStartTextField.setText("");

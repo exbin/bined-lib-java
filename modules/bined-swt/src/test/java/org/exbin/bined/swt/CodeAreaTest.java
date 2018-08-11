@@ -26,7 +26,7 @@ import org.exbin.utils.binary_data.EditableBinaryData;
  * Tests for codeArea component.
  *
  * @version 0.1.0 2016/06/13
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public class CodeAreaTest {
 

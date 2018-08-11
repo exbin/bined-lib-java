@@ -24,7 +24,7 @@ import org.exbin.bined.EditationModeChangedListener;
  * Support for editation mode capability.
  *
  * @version 0.2.0 2017/12/15
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public interface EditationModeCapable {
 
@@ -39,7 +39,7 @@ public interface EditationModeCapable {
 
     void removeEditationModeChangedListener(@Nullable EditationModeChangedListener editationModeChangedListener);
 
-    public static class EditationModeCapability implements WorkerCapability {
+    public static class EditationModeCapability implements CodeAreaCapability {
 
     }
 }

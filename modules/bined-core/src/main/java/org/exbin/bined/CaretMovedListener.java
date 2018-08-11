@@ -21,7 +21,7 @@ import javax.annotation.Nonnull;
  * Interface for caret moved listener.
  *
  * @version 0.2.0 2017/04/02
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public interface CaretMovedListener {
 

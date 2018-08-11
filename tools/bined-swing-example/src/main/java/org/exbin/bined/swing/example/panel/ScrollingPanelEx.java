@@ -16,35 +16,32 @@
 package org.exbin.bined.swing.example.panel;
 
 import javax.annotation.Nonnull;
-import org.exbin.bined.swing.CodeArea;
 import org.exbin.bined.basic.CodeAreaScrollPosition;
 import org.exbin.bined.capability.ScrollingCapable;
-import org.exbin.bined.swing.extended.ExtCodeAreaWorker;
+import org.exbin.bined.swing.extended.ExtCodeArea;
 
 /**
  * Hexadecimal editor example panel.
  *
  * @version 0.2.0 2018/03/18
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public class ScrollingPanelEx extends javax.swing.JPanel {
 
-    private final CodeArea codeArea;
-    private final ExtCodeAreaWorker worker;
+    private final ExtCodeArea codeArea;
 
-    public ScrollingPanelEx(@Nonnull CodeArea codeArea) {
+    public ScrollingPanelEx(@Nonnull ExtCodeArea codeArea) {
         this.codeArea = codeArea;
-        worker = (ExtCodeAreaWorker) codeArea.getWorker();
 
         initComponents();
 
-        verticalScrollBarVisibilityComboBox.setSelectedIndex(((ScrollingCapable) worker).getVerticalScrollBarVisibility().ordinal());
+        verticalScrollBarVisibilityComboBox.setSelectedIndex(((ScrollingCapable) codeArea).getVerticalScrollBarVisibility().ordinal());
 //        verticalScrollModeComboBox.setSelectedIndex(codeArea.getVerticalScrollMode().ordinal());
-        horizontalScrollBarVisibilityComboBox.setSelectedIndex(((ScrollingCapable) worker).getHorizontalScrollBarVisibility().ordinal());
+        horizontalScrollBarVisibilityComboBox.setSelectedIndex(((ScrollingCapable) codeArea).getHorizontalScrollBarVisibility().ordinal());
 //        horizontalScrollModeComboBox.setSelectedIndex(codeArea.getHorizontalScrollMode().ordinal());
 
-        ((ScrollingCapable) codeArea.getWorker()).addScrollingListener(() -> {
-            CodeAreaScrollPosition scrollPosition = ((ScrollingCapable) codeArea.getWorker()).getScrollPosition();
+        ((ScrollingCapable) codeArea).addScrollingListener(() -> {
+            CodeAreaScrollPosition scrollPosition = ((ScrollingCapable) codeArea).getScrollPosition();
             verticalPositionTextField.setText(scrollPosition.getRowPosition() + ":" + scrollPosition.getRowOffset());
             horizontalPositionTextField.setText(scrollPosition.getCharPosition() + ":" + scrollPosition.getCharOffset());
         });

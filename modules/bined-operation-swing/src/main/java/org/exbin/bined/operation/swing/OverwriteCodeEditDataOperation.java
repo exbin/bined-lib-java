@@ -19,14 +19,14 @@ import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.CodeType;
 import org.exbin.bined.capability.CodeTypeCapable;
 import org.exbin.bined.operation.BinaryDataOperationException;
-import org.exbin.bined.swing.CodeArea;
+import org.exbin.bined.swing.CodeAreaCore;
 import org.exbin.utils.binary_data.EditableBinaryData;
 
 /**
  * Operation for editing data using overwrite mode.
  *
  * @version 0.2.0 2018/02/14
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public class OverwriteCodeEditDataOperation extends CodeEditDataOperation {
 
@@ -38,12 +38,12 @@ public class OverwriteCodeEditDataOperation extends CodeEditDataOperation {
 
     private int codeOffset = 0;
 
-    public OverwriteCodeEditDataOperation(CodeArea codeArea, long startPosition, int startCodeOffset) {
+    public OverwriteCodeEditDataOperation(CodeAreaCore codeArea, long startPosition, int startCodeOffset) {
         super(codeArea);
         this.startPosition = startPosition;
         this.startCodeOffset = startCodeOffset;
         this.codeOffset = startCodeOffset;
-        this.codeType = ((CodeTypeCapable) codeArea.getWorker()).getCodeType();
+        this.codeType = ((CodeTypeCapable) codeArea).getCodeType();
         if (startCodeOffset > 0 && codeArea.getDataSize() > startPosition) {
             undoData = (EditableBinaryData) codeArea.getContentData().copy(startPosition, 1);
             length++;

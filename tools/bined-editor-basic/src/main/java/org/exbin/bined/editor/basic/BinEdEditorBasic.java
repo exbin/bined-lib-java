@@ -51,16 +51,16 @@ import org.exbin.bined.operation.BinaryDataCommand;
 import org.exbin.bined.operation.swing.CodeAreaOperationCommandHandler;
 import org.exbin.bined.operation.swing.CodeAreaUndoHandler;
 import org.exbin.bined.operation.undo.BinaryDataUndoUpdateListener;
-import org.exbin.bined.swing.CodeArea;
 import org.exbin.bined.swing.CodeAreaCommandHandler;
+import org.exbin.bined.swing.basic.CodeArea;
 import org.exbin.utils.binary_data.ByteArrayEditableData;
 import org.exbin.utils.binary_data.EditableBinaryData;
 
 /**
  * Basic single jar swing version of BinEd Hexadecimal editor.
  *
- * @version 0.2.0 2018/04/22
- * @author ExBin Project (http://exbin.org)
+ * @version 0.2.0 2018/08/11
+ * @author ExBin Project (https://exbin.org)
  */
 public class BinEdEditorBasic extends javax.swing.JFrame {
 
@@ -267,7 +267,7 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
                 codeArea.repaint();
             }
         });
-        ((EditationModeCapable) codeArea.getWorker()).addEditationModeChangedListener(new EditationModeChangedListener() {
+        ((EditationModeCapable) codeArea).addEditationModeChangedListener(new EditationModeChangedListener() {
             @Override
             public void editationModeChanged(EditationMode editationMode) {
                 switch (editationMode) {
@@ -285,13 +285,13 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
                 }
             }
         });
-        ((CaretCapable) codeArea.getWorker()).addCaretMovedListener(new CaretMovedListener() {
+        ((CaretCapable) codeArea).addCaretMovedListener(new CaretMovedListener() {
             @Override
             public void caretMoved(CaretPosition caretPosition) {
                 positionLabel.setText(caretPosition.getDataPosition() + ":" + caretPosition.getCodeOffset());
             }
         });
-        ((SelectionCapable) codeArea.getWorker()).addSelectionChangedListener(new SelectionChangedListener() {
+        ((SelectionCapable) codeArea).addSelectionChangedListener(new SelectionChangedListener() {
             @Override
             public void selectionChanged(SelectionRange selection) {
                 updateClipboardState();
@@ -605,23 +605,23 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
     private void editationModeLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_editationModeLabelMouseClicked
         if (evt.getButton() == MouseEvent.BUTTON1) {
             EditationMode editationMode;
-            if (((EditationModeCapable) codeArea.getWorker()).getEditationMode() == EditationMode.INSERT) {
+            if (((EditationModeCapable) codeArea).getEditationMode() == EditationMode.INSERT) {
                 editationMode = EditationMode.OVERWRITE;
             } else {
                 editationMode = EditationMode.INSERT;
             }
-            ((EditationModeCapable) codeArea.getWorker()).setEditationMode(editationMode);
+            ((EditationModeCapable) codeArea).setEditationMode(editationMode);
         }
     }//GEN-LAST:event_editationModeLabelMouseClicked
 
     private void encodingLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_encodingLabelMouseClicked
         EncodingSelectionDialog dialog = new EncodingSelectionDialog(this, true);
-        dialog.setEncoding(((CharsetCapable) codeArea.getWorker()).getCharset().name());
+        dialog.setEncoding(((CharsetCapable) codeArea).getCharset().name());
         dialog.setVisible(true);
         if (dialog.getReturnStatus() == EncodingSelectionDialog.ReturnStatus.OK) {
             String encoding = dialog.getEncoding();
             if (encoding != null) {
-                ((CharsetCapable) codeArea.getWorker()).setCharset(Charset.forName(encoding));
+                ((CharsetCapable) codeArea).setCharset(Charset.forName(encoding));
                 codeArea.repaint();
                 encodingLabel.setText(encoding);
             }

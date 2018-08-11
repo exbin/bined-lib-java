@@ -19,7 +19,7 @@ package org.exbin.bined;
  * Enumeration of code characters case.
  *
  * @version 0.2.0 2017/11/17
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public enum CodeCharactersCase {
 

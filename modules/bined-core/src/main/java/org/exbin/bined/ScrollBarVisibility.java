@@ -19,7 +19,7 @@ package org.exbin.bined;
  * Enumeration of scrollbar visibility modes.
  *
  * @version 0.2.0 2017/04/02
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public enum ScrollBarVisibility {
 

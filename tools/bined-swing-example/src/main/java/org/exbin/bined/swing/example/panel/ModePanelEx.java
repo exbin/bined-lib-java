@@ -24,34 +24,31 @@ import org.exbin.bined.EditationMode;
 import org.exbin.bined.capability.CharsetCapable;
 import org.exbin.bined.capability.EditationModeCapable;
 import org.exbin.bined.capability.ViewModeCapable;
-import org.exbin.bined.swing.CodeArea;
 import org.exbin.bined.swing.extended.AntialiasingMode;
 import org.exbin.bined.swing.extended.CharacterRenderingMode;
-import org.exbin.bined.swing.extended.ExtCodeAreaWorker;
+import org.exbin.bined.swing.extended.ExtCodeArea;
 import org.exbin.bined.swing.extended.capability.AntialiasingCapable;
 
 /**
  * Hexadecimal editor example panel.
  *
  * @version 0.2.0 2018/03/22
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public class ModePanelEx extends javax.swing.JPanel {
 
-    private final CodeArea codeArea;
-    private final ExtCodeAreaWorker worker;
+    private final ExtCodeArea codeArea;
 
-    public ModePanelEx(@Nonnull CodeArea codeArea) {
+    public ModePanelEx(@Nonnull ExtCodeArea codeArea) {
         this.codeArea = codeArea;
-        worker = (ExtCodeAreaWorker) codeArea.getWorker();
 
         initComponents();
 
-        viewModeComboBox.setSelectedIndex(worker.getViewMode().ordinal());
-        codeTypeComboBox.setSelectedIndex(worker.getCodeType().ordinal());
-        charRenderingComboBox.setSelectedIndex(worker.getCharacterRenderingMode().ordinal());
-        editationAllowedComboBox.setSelectedIndex(worker.getEditationMode().ordinal());
-        charAntialiasingComboBox.setSelectedIndex(((AntialiasingCapable) worker).getAntialiasingMode().ordinal());
+        viewModeComboBox.setSelectedIndex(codeArea.getViewMode().ordinal());
+        codeTypeComboBox.setSelectedIndex(codeArea.getCodeType().ordinal());
+        charRenderingComboBox.setSelectedIndex(codeArea.getCharacterRenderingMode().ordinal());
+        editationAllowedComboBox.setSelectedIndex(codeArea.getEditationMode().ordinal());
+        charAntialiasingComboBox.setSelectedIndex(((AntialiasingCapable) codeArea).getAntialiasingMode().ordinal());
 //        showNonprintableCharactersCheckBox.setSelected(codeArea.isShowUnprintableCharacters());
     }
 
@@ -264,51 +261,51 @@ public class ModePanelEx extends javax.swing.JPanel {
     }//GEN-LAST:event_showNonprintableCharactersCheckBoxItemStateChanged
 
     private void codeTypeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_codeTypeComboBoxActionPerformed
-        worker.setCodeType(CodeType.values()[codeTypeComboBox.getSelectedIndex()]);
+        codeArea.setCodeType(CodeType.values()[codeTypeComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_codeTypeComboBoxActionPerformed
 
     private void editationAllowedComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editationAllowedComboBoxActionPerformed
-        ((EditationModeCapable) codeArea.getWorker()).setEditationMode(EditationMode.values()[editationAllowedComboBox.getSelectedIndex()]);
+        ((EditationModeCapable) codeArea).setEditationMode(EditationMode.values()[editationAllowedComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_editationAllowedComboBoxActionPerformed
 
     private void fontFamilyComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fontFamilyComboBoxActionPerformed
-        int size = codeArea.getFont().getSize();
+        int size = codeArea.getCodeFont().getSize();
         switch (fontFamilyComboBox.getSelectedIndex()) {
             case 0: {
-                codeArea.setFont(new Font(Font.DIALOG, Font.PLAIN, size));
+                codeArea.setCodeFont(new Font(Font.DIALOG, Font.PLAIN, size));
                 break;
             }
             case 1: {
-                codeArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, size));
+                codeArea.setCodeFont(new Font(Font.MONOSPACED, Font.PLAIN, size));
                 break;
             }
             case 2: {
-                codeArea.setFont(new Font(Font.SERIF, Font.PLAIN, size));
+                codeArea.setCodeFont(new Font(Font.SERIF, Font.PLAIN, size));
                 break;
             }
         }
     }//GEN-LAST:event_fontFamilyComboBoxActionPerformed
 
     private void fontSizeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fontSizeComboBoxActionPerformed
-        Font font = codeArea.getFont();
+        Font font = codeArea.getCodeFont();
         Font derivedFont = font.deriveFont(Font.PLAIN, Integer.valueOf((String) fontSizeComboBox.getSelectedItem()));
-        codeArea.setFont(derivedFont);
+        codeArea.setCodeFont(derivedFont);
     }//GEN-LAST:event_fontSizeComboBoxActionPerformed
 
     private void viewModeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewModeComboBoxActionPerformed
-        ((ViewModeCapable) codeArea.getWorker()).setViewMode(CodeAreaViewMode.values()[viewModeComboBox.getSelectedIndex()]);
+        ((ViewModeCapable) codeArea).setViewMode(CodeAreaViewMode.values()[viewModeComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_viewModeComboBoxActionPerformed
 
     private void charRenderingComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_charRenderingComboBoxActionPerformed
-        worker.setCharacterRenderingMode(CharacterRenderingMode.values()[charRenderingComboBox.getSelectedIndex()]);
+        codeArea.setCharacterRenderingMode(CharacterRenderingMode.values()[charRenderingComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_charRenderingComboBoxActionPerformed
 
     private void charAntialiasingComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_charAntialiasingComboBoxActionPerformed
-        ((AntialiasingCapable) worker).setAntialiasingMode(AntialiasingMode.values()[charAntialiasingComboBox.getSelectedIndex()]);
+        ((AntialiasingCapable) codeArea).setAntialiasingMode(AntialiasingMode.values()[charAntialiasingComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_charAntialiasingComboBoxActionPerformed
 
     private void charsetComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_charsetComboBoxActionPerformed
-        ((CharsetCapable) codeArea.getWorker()).setCharset(Charset.forName((String) charsetComboBox.getSelectedItem()));
+        ((CharsetCapable) codeArea).setCharset(Charset.forName((String) charsetComboBox.getSelectedItem()));
     }//GEN-LAST:event_charsetComboBoxActionPerformed
 
 

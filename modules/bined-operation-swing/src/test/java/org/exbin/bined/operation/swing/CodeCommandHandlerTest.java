@@ -15,8 +15,8 @@
  */
 package org.exbin.bined.operation.swing;
 
-import org.exbin.bined.swing.CodeArea;
 import org.exbin.bined.swing.CodeAreaCommandHandler;
+import org.exbin.bined.swing.basic.CodeArea;
 import org.exbin.bined.swing.basic.DefaultCodeAreaCommandHandler;
 import org.junit.Test;
 
@@ -24,7 +24,7 @@ import org.junit.Test;
  * Tests for code command handler.
  *
  * @version 0.2.0 2017/12/31
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public class CodeCommandHandlerTest {
 

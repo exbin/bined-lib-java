@@ -21,7 +21,7 @@ import javax.annotation.Nonnull;
  * Data segment pointing to memory block.
  *
  * @version 0.2.0 2018/04/27
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public class MemorySegment extends DataSegment {
 

@@ -27,7 +27,7 @@ import org.exbin.utils.binary_data.PagedData;
  * Data source for binary data stored in memory.
  *
  * @version 0.2.0 2018/04/27
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public class MemoryDataSource implements EditableBinaryData {
 

@@ -16,16 +16,16 @@
 package org.exbin.bined.swing.extended;
 
 import javax.annotation.Nonnull;
-import org.exbin.bined.swing.CodeAreaWorker;
+import org.exbin.bined.swing.CodeAreaCore;
 import org.exbin.bined.swing.basic.DefaultCodeAreaPainter;
 
 /**
  * Extended code area component default painter.
  *
  * @version 0.2.0 2017/04/23
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
-public class ExtCodeAreaPainter extends DefaultCodeAreaPainter {
+public class ExtendedCodeAreaPainter extends DefaultCodeAreaPainter {
 
     public static final int DECORATION_HEADER_LINE = 1;
     public static final int DECORATION_LINENUM_LINE = 2;
@@ -40,8 +40,8 @@ public class ExtCodeAreaPainter extends DefaultCodeAreaPainter {
 //    protected final char[] charMapping = new char[256];
 //    protected Map<Character, Character> unprintableCharactersMapping = null;
 //
-    public ExtCodeAreaPainter(@Nonnull CodeAreaWorker worker) {
-        super(worker);
+    public ExtendedCodeAreaPainter(@Nonnull CodeAreaCore codeArea) {
+        super(codeArea);
     }
 
 //    @Override

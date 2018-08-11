@@ -17,14 +17,14 @@ package org.exbin.bined.operation.swing;
 
 import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.operation.BinaryDataOperationException;
-import org.exbin.bined.swing.CodeArea;
+import org.exbin.bined.swing.CodeAreaCore;
 import org.exbin.utils.binary_data.EditableBinaryData;
 
 /**
  * Operation for editing data in delete mode.
  *
  * @version 0.2.0 2018/02/14
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public class DeleteCharEditDataOperation extends CharEditDataOperation {
 
@@ -34,7 +34,7 @@ public class DeleteCharEditDataOperation extends CharEditDataOperation {
     private long position;
     private EditableBinaryData undoData = null;
 
-    public DeleteCharEditDataOperation(CodeArea codeArea, long startPosition) {
+    public DeleteCharEditDataOperation(CodeAreaCore codeArea, long startPosition) {
         super(codeArea);
         this.position = startPosition;
     }
@@ -84,7 +84,7 @@ public class DeleteCharEditDataOperation extends CharEditDataOperation {
                 throw new IllegalStateException("Unexpected character " + value);
             }
         }
-        ((CaretCapable) codeArea.getWorker()).getCaret().setCaretPosition(position);
+        ((CaretCapable) codeArea).getCaret().setCaretPosition(position);
         codeArea.repaint();
     }
 

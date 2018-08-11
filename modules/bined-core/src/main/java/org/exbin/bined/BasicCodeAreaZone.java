@@ -19,7 +19,7 @@ package org.exbin.bined;
  * Enumeration of basic code area zones.
  *
  * @version 0.2.0 2018/04/22
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public enum BasicCodeAreaZone {
 

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.swing;
+package org.exbin.bined.swing.basic;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,7 +32,7 @@ import org.junit.Test;
  * Tests for codeArea component.
  *
  * @version 0.2.0 2017/11/14
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public class CodeAreaTest {
 
@@ -71,7 +71,7 @@ public class CodeAreaTest {
     @Test
     public void testCopyPasteInInsertMode() {
         CodeArea codeArea = new CodeArea();
-        ((EditationModeCapable) codeArea.getWorker()).setEditationMode(EditationMode.INSERT);
+        ((EditationModeCapable) codeArea).setEditationMode(EditationMode.INSERT);
         EditableBinaryData sampleData = getSampleData(SAMPLE_ALLBYTES);
         codeArea.setContentData(sampleData);
         long dataSize = sampleData.getDataSize();
@@ -92,7 +92,7 @@ public class CodeAreaTest {
         codeArea.selectAll();
         codeArea.copy();
         codeArea.clearSelection();
-        ((CaretCapable) codeArea.getWorker()).getCaret().setCaretPosition(dataSize / 2);
+        ((CaretCapable) codeArea).getCaret().setCaretPosition(dataSize / 2);
         codeArea.paste();
 
         Assert.assertTrue(codeArea.getDataSize() == (dataSize / 2 + dataSize));

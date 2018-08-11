@@ -15,63 +15,44 @@
  */
 package org.exbin.bined.javafx;
 
-import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import javafx.beans.value.ObservableValue;
 import javafx.event.Event;
 import javafx.event.EventType;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.Pane;
-import javafx.scene.text.Font;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.swing.UIManager;
 import org.exbin.bined.CodeAreaControl;
 import org.exbin.bined.DataChangedListener;
 import org.exbin.bined.capability.SelectionCapable;
-import org.exbin.bined.javafx.basic.DefaultCodeAreaCommandHandler;
-import org.exbin.bined.javafx.basic.DefaultCodeAreaWorker;
-import org.exbin.bined.javafx.capability.FontCapable;
 import org.exbin.utils.binary_data.BinaryData;
 
 /**
  * Hexadecimal viewer/editor component.
  *
- * @version 0.2.0 2018/08/01
- * @author ExBin Project (http://exbin.org)
+ * @version 0.2.0 2018/08/11
+ * @author ExBin Project (https://exbin.org)
  */
-public class CodeArea extends Pane implements CodeAreaControl {
+public abstract class CodeAreaCore extends Pane implements CodeAreaControl {
 
     @Nullable
     private BinaryData contentData;
 
-    @Nonnull
-    private CodeAreaWorker worker;
     @Nonnull
     private CodeAreaCommandHandler commandHandler;
 
     private final List<DataChangedListener> dataChangedListeners = new ArrayList<>();
 
     /**
-     * Creates new instance with default command handler and painter.
-     */
-    public CodeArea() {
-        this(null, null);
-    }
-
-    /**
-     * Creates new instance with provided command handler and worker factory
-     * methods.
+     * Creates new instance with provided command handler factory method.
      *
-     * @param workerFactory code area worker or null for default worker
      * @param commandHandlerFactory command handler or null for default handler
      */
-    public CodeArea(@Nullable CodeAreaWorker.CodeAreaWorkerFactory workerFactory, @Nullable CodeAreaCommandHandler.CodeAreaCommandHandlerFactory commandHandlerFactory) {
+    public CodeAreaCore(@Nonnull CodeAreaCommandHandler.CodeAreaCommandHandlerFactory commandHandlerFactory) {
         super();
-        this.worker = workerFactory == null ? new DefaultCodeAreaWorker(this) : workerFactory.createWorker(this);
-        this.commandHandler = commandHandlerFactory == null ? new DefaultCodeAreaCommandHandler(this) : commandHandlerFactory.createCommandHandler(this);
+        this.commandHandler = commandHandlerFactory.createCommandHandler(this);
         init();
     }
 
@@ -97,21 +78,6 @@ public class CodeArea extends Pane implements CodeAreaControl {
         focusedProperty().addListener((ObservableValue<? extends Boolean> ov, Boolean t, Boolean t1) -> {
             requestLayout();
         });
-
-        UIManager.addPropertyChangeListener((@Nonnull PropertyChangeEvent evt) -> {
-            worker.resetColors();
-        });
-    }
-
-    @Nonnull
-    public CodeAreaWorker getWorker() {
-        return worker;
-    }
-
-    public void setWorker(@Nonnull CodeAreaWorker worker) {
-        Objects.requireNonNull(worker, "Worker cannot be null");
-
-        this.worker = worker;
     }
 
     @Nonnull
@@ -126,11 +92,7 @@ public class CodeArea extends Pane implements CodeAreaControl {
     @Override
     protected void layoutChildren() {
         super.layoutChildren();
-
-        if (!worker.isInitialized()) {
-            ((FontCapable) worker).setFont(new Font("Arial", 10.0));
-        }
-        worker.paintComponent();
+        updateLayout();
     }
 
     @Override
@@ -180,10 +142,15 @@ public class CodeArea extends Pane implements CodeAreaControl {
 
     @Override
     public boolean hasSelection() {
-        return ((SelectionCapable) worker).hasSelection();
+        if (this instanceof SelectionCapable) {
+            return ((SelectionCapable) this).hasSelection();
+        }
+
+        return false;
     }
 
     @Nullable
+    @Override
     public BinaryData getContentData() {
         return contentData;
     }
@@ -194,6 +161,7 @@ public class CodeArea extends Pane implements CodeAreaControl {
         requestLayout();
     }
 
+    @Override
     public long getDataSize() {
         return contentData == null ? 0 : contentData.getDataSize();
     }
@@ -202,11 +170,11 @@ public class CodeArea extends Pane implements CodeAreaControl {
      * Notifies component, that internal data was changed.
      */
     public void notifyDataChanged() {
-        resetPainter();
-
         dataChangedListeners.forEach((listener) -> {
             listener.dataChanged();
         });
+
+        resetPainter();
     }
 
     public void addDataChangedListener(@Nonnull DataChangedListener dataChangedListener) {
@@ -217,11 +185,7 @@ public class CodeArea extends Pane implements CodeAreaControl {
         dataChangedListeners.remove(dataChangedListener);
     }
 
-    public void resetPainter() {
-        worker.reset();
-    }
+    public abstract void resetPainter();
 
-    public void updateLayout() {
-        worker.updateLayout();
-    }
+    public abstract void updateLayout();
 }

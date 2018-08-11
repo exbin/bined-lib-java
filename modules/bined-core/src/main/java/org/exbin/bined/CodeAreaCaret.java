@@ -22,7 +22,7 @@ import javax.annotation.Nullable;
  * Interface for code area caret.
  *
  * @version 0.2.0 2018/02/14
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public interface CodeAreaCaret {
 

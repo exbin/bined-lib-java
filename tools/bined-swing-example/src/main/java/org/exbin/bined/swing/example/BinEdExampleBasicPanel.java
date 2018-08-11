@@ -20,7 +20,7 @@ import java.awt.Component;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.JPanel;
-import org.exbin.bined.swing.CodeArea;
+import org.exbin.bined.swing.basic.CodeArea;
 import org.exbin.bined.swing.example.panel.CursorPanel;
 import org.exbin.bined.swing.example.panel.DecorationPanel;
 import org.exbin.bined.swing.example.panel.LayoutPanel;
@@ -32,7 +32,7 @@ import org.exbin.bined.swing.example.panel.StatePanel;
  * Basic hexadecimal component example panel.
  *
  * @version 0.2.0 2018/03/17
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public class BinEdExampleBasicPanel extends javax.swing.JPanel {
 

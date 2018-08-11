@@ -19,7 +19,7 @@ package org.exbin.bined.swing.extended.color;
  * Enumeration of unprintable color types.
  *
  * @version 0.2.0 2017/04/22
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public enum CodeAreaColorizationColorType implements CodeAreaColorType {
 

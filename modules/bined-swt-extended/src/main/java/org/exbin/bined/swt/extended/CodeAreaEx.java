@@ -68,7 +68,7 @@ import org.exbin.bined.CodeAreaControl;
  * Hexadecimal viewer/editor component.
  *
  * @version 0.2.0 2018/04/22
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public class CodeAreaEx extends Composite implements CodeAreaControl {
 

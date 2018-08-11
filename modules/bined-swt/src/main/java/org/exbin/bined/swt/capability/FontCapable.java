@@ -17,13 +17,13 @@ package org.exbin.bined.swt.capability;
 
 import javax.annotation.Nonnull;
 import org.eclipse.swt.graphics.Font;
-import org.exbin.bined.capability.WorkerCapability;
+import org.exbin.bined.capability.CodeAreaCapability;
 
 /**
  * Support for font capability.
  *
  * @version 0.2.0 2017/04/25
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public interface FontCapable {
 
@@ -32,7 +32,7 @@ public interface FontCapable {
 
     void setFont(@Nonnull Font font);
 
-    public static class FontCapability implements WorkerCapability {
+    public static class FontCapability implements CodeAreaCapability {
 
     }
 }

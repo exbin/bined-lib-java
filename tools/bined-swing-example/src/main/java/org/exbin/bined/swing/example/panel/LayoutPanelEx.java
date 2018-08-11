@@ -16,23 +16,20 @@
 package org.exbin.bined.swing.example.panel;
 
 import javax.annotation.Nonnull;
-import org.exbin.bined.swing.CodeArea;
-import org.exbin.bined.swing.extended.ExtCodeAreaWorker;
+import org.exbin.bined.swing.extended.ExtCodeArea;
 
 /**
  * Hexadecimal editor example panel.
  *
  * @version 0.2.0 2018/03/18
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public class LayoutPanelEx extends javax.swing.JPanel {
 
-    private final CodeArea codeArea;
-    private final ExtCodeAreaWorker worker;
+    private final ExtCodeArea codeArea;
 
-    public LayoutPanelEx(@Nonnull CodeArea codeArea) {
+    public LayoutPanelEx(@Nonnull ExtCodeArea codeArea) {
         this.codeArea = codeArea;
-        worker = (ExtCodeAreaWorker) codeArea.getWorker();
 
         initComponents();
 //        wrapLineModeCheckBox.setSelected(codeArea.isWrapMode());
@@ -322,8 +319,8 @@ public class LayoutPanelEx extends javax.swing.JPanel {
     private void lineLengthSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_lineLengthSpinnerStateChanged
         //        int value = (Integer) lineLengthSpinner.getValue();
         //        if (value > 0) {
-            //            codeArea.setLineLength(value);
-            //        }
+        //            codeArea.setLineLength(value);
+        //        }
     }//GEN-LAST:event_lineLengthSpinnerStateChanged
 
     private void showLineNumbersCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_showLineNumbersCheckBoxItemStateChanged

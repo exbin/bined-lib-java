@@ -26,7 +26,7 @@ import org.exbin.utils.binary_data.ByteArrayData;
  * Simulation of huge binary data source.
  *
  * @version 0.2.0 2018/04/22
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public class HugeBinaryData implements BinaryData {
 

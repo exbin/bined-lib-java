@@ -22,7 +22,7 @@ import org.eclipse.swt.events.KeyEvent;
  * Interface for code area data manipulation.
  *
  * @version 0.2.0 2018/04/24
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public interface CodeAreaCommandHandler {
 
@@ -128,6 +128,6 @@ public interface CodeAreaCommandHandler {
     interface CodeAreaCommandHandlerFactory {
 
         @Nonnull
-        CodeAreaCommandHandler createCommandHandler(@Nonnull CodeArea codeArea);
+        CodeAreaCommandHandler createCommandHandler(@Nonnull CodeAreaCore codeArea);
     }
 }

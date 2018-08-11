@@ -22,7 +22,7 @@ import javax.annotation.Nullable;
  * Interface for code area color profile.
  *
  * @version 0.2.0 2017/04/14
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public interface CodeAreaColorsGroup {
 

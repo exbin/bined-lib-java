@@ -25,20 +25,20 @@ import org.eclipse.swt.events.MouseTrackListener;
 import org.eclipse.swt.events.MouseWheelListener;
 import org.eclipse.swt.graphics.Cursor;
 import org.exbin.bined.capability.CaretCapable;
-import org.exbin.bined.swt.CodeArea;
 import org.exbin.bined.capability.ScrollingCapable;
+import org.exbin.bined.swt.CodeAreaCore;
 
 /**
  * Code Area component mouse listener.
  *
  * @version 0.2.0 2018/04/30
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public class DefaultCodeAreaMouseListener implements MouseListener, MouseMoveListener, MouseWheelListener, MouseTrackListener {
 
     public static final int MOUSE_SCROLL_LINES = 3;
 
-    private final CodeArea codeArea;
+    private final CodeAreaCore codeArea;
     private final ScrolledComposite view;
 
     private final Cursor defaultCursor = new Cursor(null, SWT.CURSOR_ARROW); // Cursor.getDefaultCursor();
@@ -46,7 +46,7 @@ public class DefaultCodeAreaMouseListener implements MouseListener, MouseMoveLis
     private Cursor currentCursor;
     private boolean mouseDown = false;
 
-    public DefaultCodeAreaMouseListener(@Nonnull CodeArea codeArea, @Nonnull ScrolledComposite view) {
+    public DefaultCodeAreaMouseListener(@Nonnull CodeAreaCore codeArea, @Nonnull ScrolledComposite view) {
         this.codeArea = codeArea;
         this.view = view;
         currentCursor = codeArea.getCursor();
@@ -74,7 +74,7 @@ public class DefaultCodeAreaMouseListener implements MouseListener, MouseMoveLis
     private void moveCaret(@Nonnull MouseEvent me) {
         boolean selecting = (me.stateMask & SWT.SHIFT) > 0;
         codeArea.getCommandHandler().moveCaret(computeRelativeX(me), computeRelativeY(me), selecting);
-        ((ScrollingCapable) codeArea.getWorker()).revealCursor();
+        ((ScrollingCapable) codeArea).revealCursor();
     }
 
     @Override
@@ -94,7 +94,7 @@ public class DefaultCodeAreaMouseListener implements MouseListener, MouseMoveLis
     }
 
     private void updateMouseCursor(@Nonnull MouseEvent me) {
-        int cursorShape = ((CaretCapable) codeArea.getWorker()).getMouseCursorShape(computeRelativeX(me), computeRelativeY(me));
+        int cursorShape = ((CaretCapable) codeArea).getMouseCursorShape(computeRelativeX(me), computeRelativeY(me));
 
         // Reuse current cursor if unchanged
         Cursor newCursor = cursorShape == 0 ? defaultCursor : textCursor;
@@ -109,7 +109,7 @@ public class DefaultCodeAreaMouseListener implements MouseListener, MouseMoveLis
         updateMouseCursor(me);
         if (codeArea.isEnabled() && mouseDown) {
             codeArea.getCommandHandler().moveCaret(computeRelativeX(me), computeRelativeY(me), true);
-            ((ScrollingCapable) codeArea.getWorker()).revealCursor();
+            ((ScrollingCapable) codeArea).revealCursor();
         }
     }
 

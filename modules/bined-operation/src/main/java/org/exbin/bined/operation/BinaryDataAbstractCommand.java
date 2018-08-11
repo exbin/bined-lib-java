@@ -22,7 +22,7 @@ import javax.annotation.Nullable;
  * Abstract code area command class.
  *
  * @version 0.2.0 2018/02/13
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public abstract class BinaryDataAbstractCommand implements BinaryDataCommand {
 

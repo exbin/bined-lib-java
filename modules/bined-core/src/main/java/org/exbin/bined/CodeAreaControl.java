@@ -18,10 +18,10 @@ package org.exbin.bined;
 /**
  * Code Area control interface.
  *
- * @version 0.2.0 2017/04/07
- * @author ExBin Project (http://exbin.org)
+ * @version 0.2.0 2018/08/11
+ * @author ExBin Project (https://exbin.org)
  */
-public interface CodeAreaControl {
+public interface CodeAreaControl extends DataProvider {
 
     /**
      * Copies selection to clipboard.

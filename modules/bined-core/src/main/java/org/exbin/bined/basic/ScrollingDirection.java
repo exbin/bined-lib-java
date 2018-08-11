@@ -19,7 +19,7 @@ package org.exbin.bined.basic;
  * Enumeration of supported scrolling directions.
  *
  * @version 0.2.0 2018/01/28
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public enum ScrollingDirection {
     UP, DOWN, LEFT, RIGHT,

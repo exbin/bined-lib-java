@@ -22,7 +22,7 @@ import javax.annotation.Nonnull;
  * Interface for code area data manipulation.
  *
  * @version 0.2.0 2018/07/30
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public interface CodeAreaCommandHandler {
 
@@ -130,6 +130,6 @@ public interface CodeAreaCommandHandler {
     public interface CodeAreaCommandHandlerFactory {
 
         @Nonnull
-        CodeAreaCommandHandler createCommandHandler(@Nonnull CodeArea codeArea);
+        CodeAreaCommandHandler createCommandHandler(@Nonnull CodeAreaCore codeArea);
     }
 }

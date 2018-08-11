@@ -23,7 +23,7 @@ import javax.annotation.concurrent.Immutable;
  * originating point and end of the selection can be before or after begin.
  *
  * @version 0.2.0 2018/04/03
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 @Immutable
 public class SelectionRange {

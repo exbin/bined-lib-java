@@ -25,7 +25,7 @@ import org.exbin.bined.capability.ScrollingCapable;
  * Code area scrolling.
  *
  * @version 0.2.0 2018/07/31
- * @author ExBin Project (http://exbin.org)
+ * @author ExBin Project (https://exbin.org)
  */
 public class BasicCodeAreaScrolling {
 
@@ -45,11 +45,11 @@ public class BasicCodeAreaScrolling {
     @Nonnull
     private final CodeAreaScrollPosition maximumScrollPosition = new CodeAreaScrollPosition();
 
-    public void updateCache(@Nonnull DataProvider worker) {
-        verticalScrollUnit = ((ScrollingCapable) worker).getVerticalScrollUnit();
-        verticalScrollBarVisibility = ((ScrollingCapable) worker).getVerticalScrollBarVisibility();
-        horizontalScrollUnit = ((ScrollingCapable) worker).getHorizontalScrollUnit();
-        horizontalScrollBarVisibility = ((ScrollingCapable) worker).getHorizontalScrollBarVisibility();
+    public void updateCache(@Nonnull DataProvider codeArea) {
+        verticalScrollUnit = ((ScrollingCapable) codeArea).getVerticalScrollUnit();
+        verticalScrollBarVisibility = ((ScrollingCapable) codeArea).getVerticalScrollBarVisibility();
+        horizontalScrollUnit = ((ScrollingCapable) codeArea).getHorizontalScrollUnit();
+        horizontalScrollBarVisibility = ((ScrollingCapable) codeArea).getHorizontalScrollBarVisibility();
     }
 
     public void updateHorizontalScrollBarValue(int scrollBarValue, int characterWidth) {

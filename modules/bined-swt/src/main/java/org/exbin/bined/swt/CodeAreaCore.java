@@ -20,50 +20,33 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.PaintEvent;
-import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.widgets.Composite;
 import org.exbin.bined.CodeAreaControl;
-import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.DataChangedListener;
 import org.exbin.bined.capability.SelectionCapable;
-import org.exbin.bined.swt.basic.DefaultCodeAreaCommandHandler;
-import org.exbin.bined.swt.basic.DefaultCodeAreaWorker;
 import org.exbin.utils.binary_data.BinaryData;
 
 /**
  * Hexadecimal viewer/editor component.
  *
- * @version 0.2.0 2018/05/01
- * @author ExBin Project (http://exbin.org)
+ * @version 0.2.0 2018/08/11
+ * @author ExBin Project (https://exbin.org)
  */
-public class CodeArea extends Composite implements CodeAreaControl {
+public abstract class CodeAreaCore extends Composite implements CodeAreaControl {
 
     @Nullable
     private BinaryData contentData;
 
     @Nonnull
-    private CodeAreaWorker worker;
-    @Nonnull
     private CodeAreaCommandHandler commandHandler;
 
     private final List<DataChangedListener> dataChangedListeners = new ArrayList<>();
-
-    /**
-     * Creates new instance with default command handler and painter.
-     *
-     * @param parent parent component
-     * @param style style
-     */
-    public CodeArea(@Nullable Composite parent, int style) {
-        this(parent, style, null, null);
-    }
 
     /**
      * Creates new instance with provided command handler and worker factory
@@ -71,13 +54,11 @@ public class CodeArea extends Composite implements CodeAreaControl {
      *
      * @param parent parent component
      * @param style style
-     * @param workerFactory code area worker or null for default worker
      * @param commandHandlerFactory command handler or null for default handler
      */
-    public CodeArea(@Nullable Composite parent, int style, @Nullable CodeAreaWorker.CodeAreaWorkerFactory workerFactory, @Nullable CodeAreaCommandHandler.CodeAreaCommandHandlerFactory commandHandlerFactory) {
+    public CodeAreaCore(@Nullable Composite parent, int style, @Nonnull CodeAreaCommandHandler.CodeAreaCommandHandlerFactory commandHandlerFactory) {
         super(parent, style);
-        this.worker = workerFactory == null ? new DefaultCodeAreaWorker(this) : workerFactory.createWorker(this);
-        this.commandHandler = commandHandlerFactory == null ? new DefaultCodeAreaCommandHandler(this) : commandHandlerFactory.createCommandHandler(this);
+        this.commandHandler = commandHandlerFactory.createCommandHandler(this);
         init();
     }
 
@@ -91,17 +72,11 @@ public class CodeArea extends Composite implements CodeAreaControl {
     }
 
     private void registerControlListeners() {
-        addDisposeListener(new DisposeListener() {
-            @Override
-            public void widgetDisposed(DisposeEvent disposeEvent) {
-                CodeArea.this.widgetDisposed(disposeEvent);
-            }
+        addDisposeListener((DisposeEvent disposeEvent) -> {
+            CodeAreaCore.this.widgetDisposed(disposeEvent);
         });
-        addPaintListener(new PaintListener() {
-            @Override
-            public void paintControl(PaintEvent paintEvent) {
-                CodeArea.this.paintControl(paintEvent);
-            }
+        addPaintListener((PaintEvent paintEvent) -> {
+            CodeAreaCore.this.paintControl(paintEvent);
         });
 
         addKeyListener(new KeyListener() {
@@ -128,19 +103,8 @@ public class CodeArea extends Composite implements CodeAreaControl {
             }
         });
 //          UIManager.addPropertyChangeListener((@Nonnull PropertyChangeEvent evt) -> {
-//            worker.rebuildColors();
+//            codeArea.rebuildColors();
 //        });
-    }
-
-    @Nonnull
-    public CodeAreaWorker getWorker() {
-        return worker;
-    }
-
-    public void setWorker(@Nonnull CodeAreaWorker worker) {
-        CodeAreaUtils.requireNonNull(worker);
-
-        this.worker = worker;
     }
 
     @Nonnull
@@ -158,14 +122,11 @@ public class CodeArea extends Composite implements CodeAreaControl {
             return;
         }
 
-        if (!worker.isInitialized()) {
-// TODO            ((FontCapable) worker).setFont(getFont());
-        }
-        worker.paintComponent(g);
+        repaint();
     }
 
     void widgetDisposed(DisposeEvent e) {
-        worker.dispose();
+        dispose();
         commandHandler.dispose();
     }
 
@@ -221,10 +182,15 @@ public class CodeArea extends Composite implements CodeAreaControl {
 
     @Override
     public boolean hasSelection() {
-        return ((SelectionCapable) worker).hasSelection();
+        if (this instanceof SelectionCapable) {
+            return ((SelectionCapable) this).hasSelection();
+        }
+
+        return false;
     }
 
     @Nullable
+    @Override
     public BinaryData getContentData() {
         return contentData;
     }
@@ -235,6 +201,7 @@ public class CodeArea extends Composite implements CodeAreaControl {
         redraw();
     }
 
+    @Override
     public long getDataSize() {
         return contentData == null ? 0 : contentData.getDataSize();
     }
@@ -243,11 +210,11 @@ public class CodeArea extends Composite implements CodeAreaControl {
      * Notifies component, that internal contentData was changed.
      */
     public void notifyDataChanged() {
-        resetPainter();
-
         dataChangedListeners.forEach((listener) -> {
             listener.dataChanged();
         });
+
+        resetPainter();
     }
 
     public void addDataChangedListener(@Nonnull DataChangedListener dataChangedListener) {
@@ -258,12 +225,7 @@ public class CodeArea extends Composite implements CodeAreaControl {
         dataChangedListeners.remove(dataChangedListener);
     }
 
-    public void resetPainter() {
-        worker.reset();
-    }
+    public abstract void resetPainter();
 
-    public void repaint() {
-        layout(true, true);
-        redraw();
-    }
+    public abstract void repaint();
 }
