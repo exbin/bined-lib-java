@@ -47,7 +47,7 @@ public class BinEdExample {
     public static void main(String[] args) {
         Display display = new Display();
         Shell shell = new Shell(display);
-        shell.setText("BinEd Library Example");
+        shell.setText("BinEd Library SWT Example");
         shell.setSize(1000, 600);
         shell.setLayout(new FillLayout());
 

@@ -22,13 +22,14 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import org.exbin.bined.javafx.basic.CodeArea;
 import org.exbin.utils.binary_data.ByteArrayEditableData;
 
 /**
  * Hexadecimal editor JavaFX examples.
  *
- * @version 0.2.0 2018/07/31
+ * @version 0.2.0 2018/08/12
  * @author ExBin Project (https://exbin.org)
  */
 public class BinEdExample extends Application {
@@ -42,11 +43,15 @@ public class BinEdExample extends Application {
             Logger.getLogger(BinEdExample.class.getName()).log(Level.SEVERE, null, ex);
         }
         codeArea.setContentData(data);
-        codeArea.resizeRelocate(100, 100, 60, 100);
-        codeArea.setPrefSize(600, 480);
 
-        stage.setScene(new Scene(codeArea, 600, 480));
-        stage.setOnCloseRequest(e -> Platform.exit());
+        stage.setTitle("BinEd Library JavaFX Example");
+        stage.setOnCloseRequest((WindowEvent e) -> {
+            Platform.exit();
+            System.exit(0);
+        });
+
+        Scene scene = new Scene(codeArea, 600, 480);
+        stage.setScene(scene);
     }
 
     @Override

@@ -31,7 +31,7 @@ import org.exbin.bined.swt.CodeAreaCore;
 /**
  * Code Area component mouse listener.
  *
- * @version 0.2.0 2018/04/30
+ * @version 0.2.0 2018/08/11
  * @author ExBin Project (https://exbin.org)
  */
 public class DefaultCodeAreaMouseListener implements MouseListener, MouseMoveListener, MouseWheelListener, MouseTrackListener {
@@ -54,13 +54,12 @@ public class DefaultCodeAreaMouseListener implements MouseListener, MouseMoveLis
 
     @Override
     public void mouseDoubleClick(@Nonnull MouseEvent me) {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public void mouseDown(@Nonnull MouseEvent me) {
         codeArea.forceFocus();
-        if (codeArea.isEnabled() && me.button == SWT.BUTTON1) {
+        if (codeArea.isEnabled() && me.button == 1) {
             moveCaret(me);
             mouseDown = true;
         }
@@ -72,8 +71,10 @@ public class DefaultCodeAreaMouseListener implements MouseListener, MouseMoveLis
     }
 
     private void moveCaret(@Nonnull MouseEvent me) {
+        int relativeX = computeRelativeX(me);
+        int relativeY = computeRelativeY(me);
         boolean selecting = (me.stateMask & SWT.SHIFT) > 0;
-        codeArea.getCommandHandler().moveCaret(computeRelativeX(me), computeRelativeY(me), selecting);
+        codeArea.getCommandHandler().moveCaret(relativeX, relativeY, selecting);
         ((ScrollingCapable) codeArea).revealCursor();
     }
 
@@ -114,12 +115,12 @@ public class DefaultCodeAreaMouseListener implements MouseListener, MouseMoveLis
     }
 
     private int computeRelativeX(@Nonnull MouseEvent me) {
-        boolean isDataView = me.getSource() != codeArea;
+        boolean isDataView = me.getSource() == view.getContent();
         return isDataView ? me.x + view.getLocation().x : me.x;
     }
 
     private int computeRelativeY(@Nonnull MouseEvent me) {
-        boolean isDataView = me.getSource() != codeArea;
+        boolean isDataView = me.getSource() == view.getContent();
         return isDataView ? me.y + view.getLocation().y : me.y;
     }
 

@@ -73,7 +73,7 @@ import org.exbin.utils.binary_data.BinaryData;
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2018/08/11
+ * @version 0.2.0 2018/08/12
  * @author ExBin Project (https://exbin.org)
  */
 public class DefaultCodeAreaPainter implements CodeAreaPainter {
@@ -690,8 +690,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         int bytesPerRow = structure.getBytesPerRow();
         CodeAreaScrollPosition scrollPosition = scrolling.getScrollPosition();
         long dataPosition = scrollPosition.getRowPosition() * bytesPerRow;
-        int rowPositionX = rowPositionAreaWidth - scrollPosition.getCharPosition() * characterWidth - scrollPosition.getCharOffset();
-        int rowPositionY = headerAreaHeight - scrollPosition.getRowOffset();
+        int rowPositionX = dataViewX - scrollPosition.getCharPosition() * characterWidth - scrollPosition.getCharOffset();
+        int rowPositionY = dataViewY - scrollPosition.getRowOffset();
         g.setColor(colors.foreground);
         for (int row = 0; row <= rowsPerRect; row++) {
             prepareRowData(dataPosition);
@@ -1536,7 +1536,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
     private void notifyScrolled() {
         resetScrollState();
-        // TODO
+        ((ScrollingCapable) codeArea).notifyScrolled();
     }
 
     private static class Colors {

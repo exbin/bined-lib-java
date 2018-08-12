@@ -434,10 +434,16 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaJ
     @Override
     public void updateLayout() {
         if (!isInitialized()) {
-            ((FontCapable) this).setFont(new Font("Arial", 10.0));
+            ((FontCapable) this).setFont(new Font("Arial", 17.0));
         }
 
         painter.updateLayout();
+    }
+
+    @Override
+    protected void layoutChildren() {
+        super.layoutChildren();
+        painter.paintComponent();
     }
 
     private void repaint() {

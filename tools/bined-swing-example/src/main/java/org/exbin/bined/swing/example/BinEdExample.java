@@ -41,7 +41,7 @@ public class BinEdExample {
      * @param args arguments
      */
     public static void main(String[] args) {
-        final JFrame frame = new JFrame("BinEd Library Example");
+        final JFrame frame = new JFrame("BinEd Library Swing Example");
         frame.setLocationByPlatform(true);
         frame.setSize(1000, 600);
         frame.setLocationRelativeTo(null);

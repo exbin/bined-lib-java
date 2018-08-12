@@ -90,12 +90,6 @@ public abstract class CodeAreaCore extends Pane implements CodeAreaControl {
     }
 
     @Override
-    protected void layoutChildren() {
-        super.layoutChildren();
-        updateLayout();
-    }
-
-    @Override
     public void copy() {
         commandHandler.copy();
     }
