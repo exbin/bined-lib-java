@@ -54,6 +54,7 @@ import org.exbin.bined.basic.BasicCodeAreaScrolling;
 import org.exbin.bined.basic.BasicCodeAreaStructure;
 import org.exbin.bined.basic.CodeAreaScrollPosition;
 import org.exbin.bined.basic.MovementDirection;
+import org.exbin.bined.basic.PositionScrollVisibility;
 import org.exbin.bined.basic.ScrollBarVerticalScale;
 import org.exbin.bined.basic.ScrollingDirection;
 import org.exbin.bined.capability.CaretCapable;
@@ -855,6 +856,26 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         }
 
         return null;
+    }
+
+    @Nullable
+    @Override
+    public PositionScrollVisibility computePositionScrollVisibility(@Nonnull CaretPosition caretPosition) {
+        int bytesPerRow = structure.getBytesPerRow();
+        int previewCharPos = structure.getPreviewCharPos();
+        int rowsPerPage = structure.getRowsPerPage();
+
+        long shiftedPosition = caretPosition.getDataPosition();
+        long rowPosition = shiftedPosition / bytesPerRow;
+        int byteOffset = (int) (shiftedPosition % bytesPerRow);
+        int charPosition;
+        if (caretPosition.getSection() == BasicCodeAreaSection.TEXT_PREVIEW.getSection()) {
+            charPosition = previewCharPos + byteOffset;
+        } else {
+            charPosition = structure.computeFirstCodeCharacterPos(byteOffset) + caretPosition.getCodeOffset();
+        }
+
+        return scrolling.computePositionScrollVisibility(rowPosition, charPosition, bytesPerRow, previewCharPos, rowsPerPage, charactersPerPage, dataViewWidth, dataViewHeight, characterWidth, rowHeight);
     }
 
     @Nullable

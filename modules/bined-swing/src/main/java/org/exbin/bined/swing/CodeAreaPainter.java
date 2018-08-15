@@ -23,6 +23,7 @@ import org.exbin.bined.CaretPosition;
 import org.exbin.bined.PositionOverflowMode;
 import org.exbin.bined.basic.CodeAreaScrollPosition;
 import org.exbin.bined.basic.MovementDirection;
+import org.exbin.bined.basic.PositionScrollVisibility;
 import org.exbin.bined.basic.ScrollingDirection;
 
 /**
@@ -114,6 +115,9 @@ public interface CodeAreaPainter {
 
     void updateScrollBars();
 
+    @Nonnull
+    PositionScrollVisibility computePositionScrollVisibility(@Nonnull CaretPosition caretPosition);
+    
     /**
      * Returns scroll position so that provided caret position is visible in
      * scrolled area.

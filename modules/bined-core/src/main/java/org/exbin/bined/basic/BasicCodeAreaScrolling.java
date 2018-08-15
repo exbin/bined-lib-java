@@ -24,7 +24,7 @@ import org.exbin.bined.capability.ScrollingCapable;
 /**
  * Code area scrolling.
  *
- * @version 0.2.0 2018/07/31
+ * @version 0.2.0 2018/08/15
  * @author ExBin Project (https://exbin.org)
  */
 public class BasicCodeAreaScrolling {
@@ -189,91 +189,175 @@ public class BasicCodeAreaScrolling {
         return targetPosition;
     }
 
+    @Nonnull
+    public PositionScrollVisibility computePositionScrollVisibility(long rowPosition, int charPosition, int bytesPerRow, int previewCharPos, int rowsPerPage, int charactersPerPage, int dataViewWidth, int dataViewHeight, int characterWidth, int rowHeight) {
+        boolean partial = false;
+
+        PositionScrollVisibility topVisibility = checkTopScrollVisibility(rowPosition);
+        if (topVisibility == PositionScrollVisibility.NOT_VISIBLE) {
+            return PositionScrollVisibility.NOT_VISIBLE;
+        }
+        partial |= topVisibility == PositionScrollVisibility.PARTIAL;
+
+        PositionScrollVisibility bottomVisibility = checkBottomScrollVisibility(rowPosition, rowsPerPage, dataViewHeight, rowHeight);
+        if (bottomVisibility == PositionScrollVisibility.NOT_VISIBLE) {
+            return PositionScrollVisibility.NOT_VISIBLE;
+        }
+        partial |= bottomVisibility == PositionScrollVisibility.PARTIAL;
+
+        PositionScrollVisibility leftVisibility = checkLeftScrollVisibility(charPosition);
+        if (leftVisibility == PositionScrollVisibility.NOT_VISIBLE) {
+            return PositionScrollVisibility.NOT_VISIBLE;
+        }
+        partial |= leftVisibility == PositionScrollVisibility.PARTIAL;
+
+        PositionScrollVisibility rightVisibility = checkRightScrollVisibility(charPosition, charactersPerPage, dataViewWidth, characterWidth);
+        if (rightVisibility == PositionScrollVisibility.NOT_VISIBLE) {
+            return PositionScrollVisibility.NOT_VISIBLE;
+        }
+        partial |= rightVisibility == PositionScrollVisibility.PARTIAL;
+
+        return partial ? PositionScrollVisibility.PARTIAL : PositionScrollVisibility.VISIBLE;
+    }
+
     @Nullable
     public CodeAreaScrollPosition computeRevealScrollPosition(long rowPosition, int charPosition, int bytesPerRow, int previewCharPos, int rowsPerPage, int charactersPerPage, int dataViewWidth, int dataViewHeight, int characterWidth, int rowHeight) {
-
         CodeAreaScrollPosition targetScrollPosition = new CodeAreaScrollPosition();
         targetScrollPosition.setScrollPosition(scrollPosition);
 
         boolean scrolled = false;
-        if (rowPosition < scrollPosition.getRowPosition()) {
-            // Scroll row up
+        if (checkBottomScrollVisibility(rowPosition, rowsPerPage, dataViewHeight, rowHeight) != PositionScrollVisibility.VISIBLE) {
+            int bottomRowOffset;
+            if (verticalScrollUnit == VerticalScrollUnit.ROW) {
+                bottomRowOffset = 0;
+            } else {
+                if (dataViewHeight < rowHeight) {
+                    bottomRowOffset = 0;
+                } else {
+                    bottomRowOffset = rowHeight - (dataViewHeight % rowHeight);
+                }
+            }
+
+            long targetRowPosition = rowPosition - rowsPerPage;
+            if (verticalScrollUnit == VerticalScrollUnit.ROW && (dataViewHeight % rowHeight) > 0) {
+                targetRowPosition++;
+            }
+            targetScrollPosition.setRowPosition(targetRowPosition);
+            targetScrollPosition.setRowOffset(bottomRowOffset);
+            scrolled = true;
+        }
+
+        if (checkTopScrollVisibility(rowPosition) != PositionScrollVisibility.VISIBLE) {
             targetScrollPosition.setRowPosition(rowPosition);
             targetScrollPosition.setRowOffset(0);
             scrolled = true;
-        } else {
-
-            if (rowPosition == scrollPosition.getRowPosition() && scrollPosition.getRowOffset() > 0) {
-                // Scroll row offset up
-                targetScrollPosition.setRowOffset(0);
-                scrolled = true;
-            } else {
-                int bottomRowOffset;
-                if (verticalScrollUnit == VerticalScrollUnit.ROW) {
-                    bottomRowOffset = 0;
-                } else {
-                    if (dataViewHeight < rowHeight) {
-                        bottomRowOffset = 0;
-                    } else {
-                        bottomRowOffset = rowHeight - (dataViewHeight % rowHeight);
-                    }
-                }
-
-                if (rowPosition >= scrollPosition.getRowPosition() + rowsPerPage) {
-                    // Scroll row down
-                    long targetRowPosition = rowPosition - rowsPerPage;
-                    if (verticalScrollUnit == VerticalScrollUnit.ROW && (dataViewHeight % rowHeight) > 0) {
-                        targetRowPosition++;
-                    }
-                    targetScrollPosition.setRowPosition(targetRowPosition);
-                    targetScrollPosition.setRowOffset(bottomRowOffset);
-                    scrolled = true;
-                } else if (rowPosition == scrollPosition.getRowPosition() + rowsPerPage && scrollPosition.getRowOffset() > bottomRowOffset) {
-                    // Scroll row offset down
-                    targetScrollPosition.setRowOffset(bottomRowOffset);
-                    scrolled = true;
-                }
-            }
         }
 
-        if (charPosition < scrollPosition.getCharPosition()) {
-            // Scroll characters left
+        if (checkRightScrollVisibility(charPosition, charactersPerPage, dataViewWidth, characterWidth) != PositionScrollVisibility.VISIBLE) {
+            int rightCharOffset;
+            if (horizontalScrollUnit == HorizontalScrollUnit.CHARACTER) {
+                rightCharOffset = 0;
+            } else {
+                if (dataViewWidth < characterWidth) {
+                    rightCharOffset = 0;
+                } else {
+                    rightCharOffset = characterWidth - (dataViewWidth % characterWidth);
+                }
+            }
+
+            // Scroll character right
+            targetScrollPosition.setCharPosition(charPosition - charactersPerPage);
+            targetScrollPosition.setCharOffset(rightCharOffset);
+            scrolled = true;
+        }
+
+        if (checkLeftScrollVisibility(charPosition) != PositionScrollVisibility.VISIBLE) {
             targetScrollPosition.setCharPosition(charPosition);
             targetScrollPosition.setCharOffset(0);
             scrolled = true;
-        } else {
-            if (charPosition == scrollPosition.getCharPosition() && scrollPosition.getCharOffset() > 0) {
-                // Scroll character offset left
-                targetScrollPosition.setCharOffset(0);
-                scrolled = true;
-            } else {
-                int rightCharOffset;
-                if (horizontalScrollUnit == HorizontalScrollUnit.CHARACTER) {
-                    rightCharOffset = 0;
-                } else {
-                    if (dataViewWidth < characterWidth) {
-                        rightCharOffset = 0;
-                    } else {
-                        rightCharOffset = characterWidth - (dataViewWidth % characterWidth);
-                    }
-                }
-
-                if (charPosition >= scrollPosition.getCharPosition() + charactersPerPage) {
-                    // Scroll character right
-                    targetScrollPosition.setCharPosition(charPosition - charactersPerPage);
-                    targetScrollPosition.setCharOffset(rightCharOffset);
-                    scrolled = true;
-                } else if (charPosition == scrollPosition.getCharPosition() + charactersPerPage && scrollPosition.getCharOffset() > rightCharOffset) {
-                    // Scroll row offset down
-                    targetScrollPosition.setCharOffset(rightCharOffset);
-                    scrolled = true;
-                }
-            }
         }
+
         return scrolled ? targetScrollPosition : null;
     }
 
     @Nonnull
+    private PositionScrollVisibility checkTopScrollVisibility(long rowPosition) {
+        if (verticalScrollUnit == VerticalScrollUnit.ROW) {
+            return rowPosition < scrollPosition.getRowPosition() ? PositionScrollVisibility.NOT_VISIBLE : PositionScrollVisibility.VISIBLE;
+        }
+
+        if (rowPosition > scrollPosition.getRowPosition() || (rowPosition == scrollPosition.getRowPosition() && scrollPosition.getRowOffset() == 0)) {
+            return PositionScrollVisibility.VISIBLE;
+        }
+        if (rowPosition == scrollPosition.getRowPosition() && scrollPosition.getRowOffset() > 0) {
+            return PositionScrollVisibility.PARTIAL;
+        }
+
+        return PositionScrollVisibility.NOT_VISIBLE;
+    }
+
+    @Nonnull
+    private PositionScrollVisibility checkBottomScrollVisibility(long rowPosition, int rowsPerPage, int dataViewHeight, int rowHeight) {
+        int rowOffset = dataViewHeight % rowHeight;
+        int sumOffset = scrollPosition.getRowOffset() + rowOffset;
+
+        long lastFullRow = scrollPosition.getRowPosition() + rowsPerPage;
+        if (rowOffset > 0) {
+            lastFullRow--;
+        }
+        if (sumOffset >= rowHeight) {
+            lastFullRow++;
+        }
+
+        if (rowPosition <= lastFullRow) {
+            return PositionScrollVisibility.VISIBLE;
+        }
+        if (sumOffset > 0 && sumOffset != rowHeight && rowPosition == lastFullRow + 1) {
+            return PositionScrollVisibility.PARTIAL;
+        }
+
+        return PositionScrollVisibility.NOT_VISIBLE;
+    }
+
+    @Nonnull
+    private PositionScrollVisibility checkLeftScrollVisibility(int charPosition) {
+        if (horizontalScrollUnit == HorizontalScrollUnit.CHARACTER) {
+            return charPosition < scrollPosition.getCharPosition() ? PositionScrollVisibility.NOT_VISIBLE : PositionScrollVisibility.VISIBLE;
+        }
+
+        if (charPosition > scrollPosition.getCharPosition() || (charPosition == scrollPosition.getCharPosition() && scrollPosition.getCharOffset() == 0)) {
+            return PositionScrollVisibility.VISIBLE;
+        }
+        if (charPosition == scrollPosition.getCharPosition() && scrollPosition.getCharOffset() > 0) {
+            return PositionScrollVisibility.PARTIAL;
+        }
+
+        return PositionScrollVisibility.NOT_VISIBLE;
+    }
+
+    @Nonnull
+    private PositionScrollVisibility checkRightScrollVisibility(int charPosition, int charactersPerPage, int dataViewWidth, int characterWidth) {
+        int charOffset = dataViewWidth % characterWidth;
+        int sumOffset = scrollPosition.getCharOffset() + charOffset;
+
+        long lastFullChar = scrollPosition.getCharPosition() + charactersPerPage;
+        if (charOffset > 0) {
+            lastFullChar--;
+        }
+        if (sumOffset >= characterWidth) {
+            lastFullChar++;
+        }
+
+        if (charPosition <= lastFullChar) {
+            return PositionScrollVisibility.VISIBLE;
+        }
+        if (sumOffset > 0 && sumOffset != characterWidth && charPosition == lastFullChar + 1) {
+            return PositionScrollVisibility.PARTIAL;
+        }
+
+        return PositionScrollVisibility.NOT_VISIBLE;
+    }
+
     public CodeAreaScrollPosition computeCenterOnScrollPosition(long rowPosition, int charPosition, int bytesPerRow, int previewCharPos, int rowsPerRect, int charactersPerRect, int dataViewWidth, int dataViewHeight, int characterWidth, int rowHeight) {
         CodeAreaScrollPosition targetScrollPosition = new CodeAreaScrollPosition();
         targetScrollPosition.setScrollPosition(scrollPosition);
