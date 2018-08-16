@@ -20,13 +20,15 @@ import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import org.exbin.bined.BasicCodeAreaSection;
+import org.exbin.bined.swing.CodeAreaCore;
 import org.exbin.bined.swing.basic.DefaultCodeAreaPainter;
-import org.exbin.bined.swing.CodeAreaWorker;
 
 /**
  * Hexadecimal component painter supporting search matches highlighting.
  *
- * @version 0.2.0 2018/05/01
+ * @version 0.2.0 2018/08/16
  * @author ExBin Project (https://exbin.org)
  */
 public class HighlightCodeAreaPainter extends DefaultCodeAreaPainter {
@@ -39,66 +41,61 @@ public class HighlightCodeAreaPainter extends DefaultCodeAreaPainter {
     private int matchIndex = 0;
     private long matchPosition = -1;
 
-    private ColorsGroup foundMatchesColors;
-    private ColorsGroup currentMatchColors;
+    private Color foundMatchesColor;
+    private Color currentMatchColor;
 
-    public HighlightCodeAreaPainter(@Nonnull CodeAreaWorker worker) {
-        super(worker);
+    public HighlightCodeAreaPainter(@Nonnull CodeAreaCore codeArea) {
+        super(codeArea);
 
-        foundMatchesColors = new ColorsGroup(getcodeArea.getMainColors());
-        foundMatchesColors.setBackgroundColor(new Color(180, 255, 180));
-        currentMatchColors = new ColorsGroup(codeArea.getMainColors());
-        currentMatchColors.setBackgroundColor(new Color(255, 210, 180));
+        foundMatchesColor = new Color(180, 255, 180);
+        currentMatchColor = new Color(255, 210, 180);
     }
 
     @Override
-    public void paintMainArea(Graphics g) {
+    public void paintMainArea(@Nonnull Graphics g) {
         matchIndex = 0;
         super.paintMainArea(g);
     }
 
+    @Nullable
     @Override
     public Color getPositionTextColor(long rowDataPosition, int byteOnRow, int charOnRow, int section) {
         return super.getPositionTextColor(rowDataPosition, byteOnRow, charOnRow, section);
     }
 
+    @Nullable
     @Override
     public Color getPositionBackgroundColor(long rowDataPosition, int byteOnRow, int charOnRow, int section) {
-        return super.getPositionBackgroundColor(rowDataPosition, byteOnRow, charOnRow, section);
-    }
-
-    @Override
-    public Color getPositionColor(int byteOnLine, int charOnLine, int section, ColorsGroup.ColorType colorType, PaintData paintData) {
-        if (!matches.isEmpty() && section == Section.TEXT_PREVIEW || charOnLine < paintData.getCharsPerLine() - 1) {
-            long dataPosition = paintData.getLineDataPosition() + byteOnLine;
+        if (!matches.isEmpty() && section == BasicCodeAreaSection.TEXT_PREVIEW.getSection() || charOnRow < getCharactersPerRow() - 1) {
+            long dataPosition = rowDataPosition + byteOnRow;
             if (currentMatchIndex >= 0) {
                 SearchMatch currentMatch = matches.get(currentMatchIndex);
                 if (dataPosition >= currentMatch.position && dataPosition < currentMatch.position + currentMatch.length
-                        && (section == Section.TEXT_PREVIEW || charOnLine != ((currentMatch.position + currentMatch.length) - paintData.getLineDataPosition()) * paintData.getCharsPerLine() - 1)) {
-                    return currentMatchColors.getColor(colorType);
+                        && (section == BasicCodeAreaSection.TEXT_PREVIEW.getSection() || charOnRow != ((currentMatch.position + currentMatch.length) - rowDataPosition) * getCharactersPerRow() - 1)) {
+                    return currentMatchColor;
                 }
             }
 
-            if (matchPosition < paintData.getLineDataPosition()) {
+            if (matchPosition < rowDataPosition) {
                 matchIndex = 0;
             }
             int lineMatchIndex = matchIndex;
             while (lineMatchIndex < matches.size()) {
                 SearchMatch match = matches.get(lineMatchIndex);
                 if (dataPosition >= match.position && dataPosition < match.position + match.length
-                        && (section == Section.TEXT_PREVIEW || charOnLine != ((match.position + match.length) - paintData.getLineDataPosition()) * paintData.getCharsPerLine() - 1)) {
-                    if (byteOnLine == 0) {
+                        && (section == BasicCodeAreaSection.TEXT_PREVIEW.getSection() || charOnRow != ((match.position + match.length) - rowDataPosition) * getCharactersPerRow() - 1)) {
+                    if (byteOnRow == 0) {
                         matchIndex = lineMatchIndex;
                         matchPosition = match.position;
                     }
-                    return foundMatchesColors.getColor(colorType);
+                    return foundMatchesColor;
                 }
 
                 if (match.position > dataPosition) {
                     break;
                 }
 
-                if (byteOnLine == 0) {
+                if (byteOnRow == 0) {
                     matchIndex = lineMatchIndex;
                     matchPosition = match.position;
                 }
@@ -106,14 +103,15 @@ public class HighlightCodeAreaPainter extends DefaultCodeAreaPainter {
             }
         }
 
-        return super.getPositionColor(byteOnLine, charOnLine, section, colorType, paintData);
+        return super.getPositionBackgroundColor(rowDataPosition, byteOnRow, charOnRow, section);
     }
 
+    @Nonnull
     public List<SearchMatch> getMatches() {
         return matches;
     }
 
-    public void setMatches(List<SearchMatch> matches) {
+    public void setMatches(@Nonnull List<SearchMatch> matches) {
         this.matches.clear();
         this.matches.addAll(matches);
         currentMatchIndex = -1;
@@ -124,6 +122,7 @@ public class HighlightCodeAreaPainter extends DefaultCodeAreaPainter {
         currentMatchIndex = -1;
     }
 
+    @Nullable
     public SearchMatch getCurrentMatch() {
         if (currentMatchIndex >= 0) {
             return matches.get(currentMatchIndex);
@@ -140,20 +139,22 @@ public class HighlightCodeAreaPainter extends DefaultCodeAreaPainter {
         this.currentMatchIndex = currentMatchIndex;
     }
 
+    @Nonnull
     public Color getFoundMatchesBackgroundColor() {
-        return foundMatchesColors.getBackgroundColor();
+        return foundMatchesColor;
     }
 
-    public void setFoundMatchesBackgroundColor(Color foundMatchesBackgroundColor) {
-        this.foundMatchesColors.setBackgroundColor(foundMatchesBackgroundColor);
+    public void setFoundMatchesBackgroundColor(@Nonnull Color foundMatchesBackgroundColor) {
+        this.foundMatchesColor = foundMatchesBackgroundColor;
     }
 
+    @Nonnull
     public Color getCurrentMatchBackgroundColor() {
-        return currentMatchColors.getBackgroundColor();
+        return currentMatchColor;
     }
 
-    public void setCurrentMatchBackgroundColor(Color currentMatchBackgroundColor) {
-        this.currentMatchColors.setBackgroundColor(currentMatchBackgroundColor);
+    public void setCurrentMatchBackgroundColor(@Nonnull Color currentMatchBackgroundColor) {
+        this.currentMatchColor = currentMatchBackgroundColor;
     }
 
     /**
@@ -190,6 +191,6 @@ public class HighlightCodeAreaPainter extends DefaultCodeAreaPainter {
     }
 
     private static class MatchColors {
-        
+
     }
 }

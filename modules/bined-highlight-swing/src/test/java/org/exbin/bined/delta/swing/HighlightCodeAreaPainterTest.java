@@ -16,7 +16,7 @@
 package org.exbin.bined.delta.swing;
 
 //import org.exbin.bined.highlight.swing.HighlightCodeAreaPainter;
-import org.exbin.bined.swing.CodeArea;
+import org.exbin.bined.swing.basic.CodeArea;
 import org.junit.Test;
 
 /**

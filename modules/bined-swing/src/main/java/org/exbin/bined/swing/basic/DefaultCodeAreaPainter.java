@@ -74,7 +74,7 @@ import org.exbin.utils.binary_data.BinaryData;
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2018/08/12
+ * @version 0.2.0 2018/08/16
  * @author ExBin Project (https://exbin.org)
  */
 public class DefaultCodeAreaPainter implements CodeAreaPainter {
@@ -1487,6 +1487,10 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     @Nonnull
     private Rectangle getMainAreaRect() {
         return new Rectangle(rowPositionAreaWidth, headerAreaHeight, componentWidth - rowPositionAreaWidth - getVerticalScrollBarSize(), componentHeight - headerAreaHeight - getHorizontalScrollBarSize());
+    }
+
+    protected int getCharactersPerRow() {
+        return structure.getCharactersPerRow();
     }
 
     private int getHorizontalScrollBarSize() {

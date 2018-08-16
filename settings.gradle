@@ -11,7 +11,7 @@ include ":modules:bined-swt"
 include ":modules:bined-javafx"
 include ":modules:bined-operation"
 include ":modules:bined-operation-swing"
-//include ":modules:bined-highlight-swing"
+include ":modules:bined-highlight-swing"
 
 include ":tools:bined-swing-example"
 include ":tools:bined-javafx-example"

@@ -16,25 +16,28 @@
 package org.exbin.bined.highlight.swing;
 
 import java.awt.Color;
-import org.exbin.bined.swing.CodeArea;
-import org.exbin.bined.swing.ColorsGroup;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import org.exbin.bined.BasicCodeAreaSection;
+import org.exbin.bined.swing.CodeAreaCore;
 
 /**
  * Experimental support for highlighting of non-ascii characters.
  *
- * @version 0.2.0 2018/04/26
+ * @version 0.2.0 2018/08/16
  * @author ExBin Project (https://exbin.org)
  */
 public class HighlightNonAsciiCodeAreaPainter extends HighlightCodeAreaPainter {
 
     private Color controlCodes;
     private Color aboveCodes;
+    private Color textColor;
     private boolean nonAsciiHighlightingEnabled = true;
 
-    public HighlightNonAsciiCodeAreaPainter(CodeArea codeArea) {
+    public HighlightNonAsciiCodeAreaPainter(@Nonnull CodeAreaCore codeArea) {
         super(codeArea);
 
-        Color textColor = codeArea.getMainColors().getTextColor();
+        textColor = codeArea.getForeground(); //MainColors().getTextColor();
         int controlCodesRed = textColor.getRed();
         int controlCodesRedDif = 0;
         if (controlCodesRed > 128) {
@@ -73,7 +76,7 @@ public class HighlightNonAsciiCodeAreaPainter extends HighlightCodeAreaPainter {
         } else {
             aboveCodesGreen += 127;
         }
-        
+
         int aboveCodesBlue = textColor.getBlue();
         int aboveCodesBlueDif = 0;
         if (aboveCodesBlue > 128) {
@@ -85,7 +88,7 @@ public class HighlightNonAsciiCodeAreaPainter extends HighlightCodeAreaPainter {
         } else {
             aboveCodesBlue += 127;
         }
-        
+
         aboveCodes = new Color(
                 downShift(textColor.getRed(), aboveCodesGreenDif + aboveCodesBlueDif),
                 aboveCodesGreen, aboveCodesBlue);
@@ -99,14 +102,15 @@ public class HighlightNonAsciiCodeAreaPainter extends HighlightCodeAreaPainter {
         return color - diff;
     }
 
+    @Nullable
     @Override
-    public Color getPositionColor(int byteOnLine, int charOnLine, Section section, ColorsGroup.ColorType colorType, PaintData paintData) {
-        Color color = super.getPositionColor(byteOnLine, charOnLine, section, colorType, paintData);
-        if (nonAsciiHighlightingEnabled && section == Section.CODE_MATRIX && colorType == ColorsGroup.ColorType.TEXT) {
-            if (color.equals(paintData.getMainColors().getTextColor())) {
-                long dataPosition = paintData.getLineDataPosition() + byteOnLine;
+    public Color getPositionTextColor(long rowDataPosition, int byteOnRow, int charOnRow, int section) {
+        Color color = super.getPositionTextColor(rowDataPosition, byteOnRow, charOnRow, section);
+        if (nonAsciiHighlightingEnabled && section == BasicCodeAreaSection.CODE_MATRIX.getSection()) {
+            if (textColor.equals(color)) {
+                long dataPosition = rowDataPosition + byteOnRow;
                 if (dataPosition < codeArea.getDataSize()) {
-                    byte value = codeArea.getData().getByte(dataPosition);
+                    byte value = codeArea.getContentData().getByte(dataPosition);
                     if (value < 0) {
                         color = aboveCodes;
                     } else if (value < 0x20) {
@@ -119,19 +123,21 @@ public class HighlightNonAsciiCodeAreaPainter extends HighlightCodeAreaPainter {
         return color;
     }
 
+    @Nonnull
     public Color getControlCodes() {
         return controlCodes;
     }
 
-    public void setControlCodes(Color controlCodes) {
+    public void setControlCodes(@Nonnull Color controlCodes) {
         this.controlCodes = controlCodes;
     }
 
+    @Nonnull
     public Color getAboveCodes() {
         return aboveCodes;
     }
 
-    public void setAboveCodes(Color aboveCodes) {
+    public void setAboveCodes(@Nonnull Color aboveCodes) {
         this.aboveCodes = aboveCodes;
     }
 
