@@ -34,7 +34,7 @@ public class LayoutPanel extends javax.swing.JPanel {
 
         initComponents();
 
-        rowWrappingModeCheckBox.setSelected(codeArea.isRowWrapping() == RowWrappingCapable.RowWrappingMode.WRAPPING);
+        rowWrappingModeCheckBox.setSelected(codeArea.getRowWrapping() == RowWrappingCapable.RowWrappingMode.WRAPPING);
 //        lineLengthSpinner.setValue(codeArea.getLineLength());
 //        headerSpaceComboBox.setSelectedIndex(codeArea.getHeaderSpaceType().ordinal());
 //        headerSpaceSpinner.setValue(codeArea.getHeaderSpaceSize());

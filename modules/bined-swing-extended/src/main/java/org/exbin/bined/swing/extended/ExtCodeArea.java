@@ -603,7 +603,7 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
 
     @Nonnull
     @Override
-    public RowWrappingMode isRowWrapping() {
+    public RowWrappingMode getRowWrapping() {
         return lineWrapping;
     }
 

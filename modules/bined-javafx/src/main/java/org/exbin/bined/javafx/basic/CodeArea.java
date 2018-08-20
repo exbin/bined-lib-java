@@ -570,7 +570,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaJ
     }
 
     @Override
-    public RowWrappingMode isRowWrapping() {
+    public RowWrappingMode getRowWrapping() {
         return rowWrapping;
     }
 

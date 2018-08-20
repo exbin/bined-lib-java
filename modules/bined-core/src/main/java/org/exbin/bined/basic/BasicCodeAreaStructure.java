@@ -69,7 +69,7 @@ public class BasicCodeAreaStructure {
         caretPosition.setPosition(((CaretCapable) codeArea).getCaret().getCaretPosition());
         selectionRange = ((SelectionCapable) codeArea).getSelection();
         dataSize = codeArea.getDataSize();
-        rowWrapping = ((RowWrappingCapable) codeArea).isRowWrapping();
+        rowWrapping = ((RowWrappingCapable) codeArea).getRowWrapping();
         maxBytesPerLine = ((RowWrappingCapable) codeArea).getMaxBytesPerRow();
         wrappingBytesGroupSize = ((RowWrappingCapable) codeArea).getWrappingBytesGroupSize();
         bytesPerRow = computeBytesPerRow(charactersPerPage);

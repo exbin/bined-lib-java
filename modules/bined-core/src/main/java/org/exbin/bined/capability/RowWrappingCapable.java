@@ -20,13 +20,13 @@ import javax.annotation.Nonnull;
 /**
  * Line wrapping capability interface.
  *
- * @version 0.2.0 2018/06/28
+ * @version 0.2.0 2018/08/18
  * @author ExBin Project (https://exbin.org)
  */
 public interface RowWrappingCapable {
 
     @Nonnull
-    RowWrappingMode isRowWrapping();
+    RowWrappingMode getRowWrapping();
 
     void setRowWrapping(@Nonnull RowWrappingMode lineWrapping);
 
