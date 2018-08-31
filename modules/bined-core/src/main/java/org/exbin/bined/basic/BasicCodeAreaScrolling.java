@@ -411,23 +411,20 @@ public class BasicCodeAreaScrolling {
     }
 
     @Nonnull
-    public void updateMaximumScrollPosition(long rowsPerDocument, int rowsPerPage, int charactersPerRow, int charactersPerPage, int dataViewWidth, int dataViewHeight, int characterWidth, int rowHeight) {
+    public void updateMaximumScrollPosition(long rowsPerDocument, int rowsPerPage, int charactersPerRow, int charactersPerPage, int lastCharOffset, int lastRowOffset) {
         maximumScrollPosition.reset();
-        if (rowHeight == 0 || characterWidth == 0) {
-            return;
-        }
         if (rowsPerDocument > rowsPerPage) {
             maximumScrollPosition.setRowPosition(rowsPerDocument - rowsPerPage);
         }
         if (verticalScrollUnit == VerticalScrollUnit.PIXEL) {
-            maximumScrollPosition.setRowOffset(dataViewHeight % rowHeight);
+            maximumScrollPosition.setRowOffset(lastRowOffset);
         }
 
         if (charactersPerRow > charactersPerPage) {
             maximumScrollPosition.setCharPosition(charactersPerRow - charactersPerPage);
         }
         if (horizontalScrollUnit == HorizontalScrollUnit.PIXEL) {
-            maximumScrollPosition.setCharOffset(dataViewWidth % characterWidth);
+            maximumScrollPosition.setCharOffset(lastCharOffset);
         }
     }
 

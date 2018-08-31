@@ -59,7 +59,7 @@ import org.exbin.bined.swing.capability.FontCapable;
 /**
  * Code area component extended code area.
  *
- * @version 0.2.0 2018/08/11
+ * @version 0.2.0 2018/08/27
  * @author ExBin Project (https://exbin.org)
  */
 public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeAreaSwingControl {

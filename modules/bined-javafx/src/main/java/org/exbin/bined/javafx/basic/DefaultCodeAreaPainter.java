@@ -67,7 +67,7 @@ import org.exbin.utils.binary_data.BinaryData;
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2018/08/12
+ * @version 0.2.0 2018/08/31
  * @author ExBin Project (https://exbin.org)
  */
 public class DefaultCodeAreaPainter implements CodeAreaPainter {
@@ -89,34 +89,19 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     private final ScrollPane scrollPanel;
 
     @Nonnull
+    private final BasicCodeAreaMetrics metrics = new BasicCodeAreaMetrics();
+    @Nonnull
     private final BasicCodeAreaStructure structure = new BasicCodeAreaStructure();
     @Nonnull
     private final BasicCodeAreaScrolling scrolling = new BasicCodeAreaScrolling();
     @Nonnull
+    private final BasicCodeAreaDimensions dimensions = new BasicCodeAreaDimensions();
+    @Nonnull
+    private final BasicCodeAreaVisibility visibility = new BasicCodeAreaVisibility();
+    @Nonnull
     private volatile ScrollingState scrollingState = ScrollingState.NO_SCROLLING;
 
     private final Colors colors = new Colors();
-
-    private double componentWidth;
-    private double componentHeight;
-    private double dataViewX;
-    private double dataViewY;
-    private final double dataViewOffsetX = 0;
-    private final double dataViewOffsetY = 0;
-    private double scrollPanelWidth;
-    private double scrollPanelHeight;
-    private double dataViewWidth;
-    private double dataViewHeight;
-
-    private int rowPositionNumberLength;
-    private int rowPositionLength;
-    private int rowPositionAreaWidth;
-    private int headerAreaHeight;
-    private int rowHeight;
-    private int rowsPerRect;
-    private int charactersPerPage;
-    private int charactersPerRect;
-    private int charactersPerCodeArea;
 
     @Nullable
     private CodeCharactersCase hexCharactersCase;
@@ -126,38 +111,23 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     private BasicBackgroundPaintMode backgroundPaintMode;
     private boolean showMirrorCursor;
 
-    private double previewRelativeX;
-    private int visibleCharStart;
-    private int visibleCharEnd;
-    private int visibleMatrixCharEnd;
-    private int visiblePreviewStart;
-    private int visiblePreviewEnd;
-    private int visibleCodeStart;
-    private int visibleCodeEnd;
-    private int visibleMatrixCodeEnd;
+    private int maxBytesPerChar;
+    private int rowPositionLength;
+    private int rowPositionNumberLength;
 
-    @Nonnull
-    private Charset charset;
     @Nullable
     private Font font;
-    private int maxBytesPerChar;
+    @Nonnull
+    private Charset charset;
 
     @Nullable
     private RowDataCache rowDataCache = null;
     @Nullable
     private CursorDataCache cursorDataCache = null;
 
-    // TODO replace with computation
-    private int subFontSpace = 3;
-
     @Nullable
     private Charset charMappingCharset = null;
     private final char[] charMapping = new char[256];
-
-    @Nullable
-    private FontMetrics fontMetrics;
-    private boolean monospaceFont;
-    private int characterWidth;
 
     public DefaultCodeAreaPainter(@Nonnull CodeAreaCore codeArea) {
         this.codeArea = codeArea;
@@ -224,6 +194,10 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
     @Override
     public void updateLayout() {
+        rowPositionLength = getRowPositionLength();
+        int verticalScrollBarSize = getVerticalScrollBarSize();
+        int horizontalScrollBarSize = getHorizontalScrollBarSize();
+        dimensions.recomputeSizes(metrics, codeArea.getWidth(), codeArea.getHeight(), rowPositionLength, verticalScrollBarSize, horizontalScrollBarSize);
         resetSizes();
 
         charactersPerPage = computeCharactersPerPage();
@@ -235,11 +209,11 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         rowPositionNumberLength = ((RowWrappingCapable) codeArea).getRowPositionNumberLength();
 
         rowsPerRect = computeRowsPerRectangle();
-        structure.setRowsPerPage(computeRowsPerPage());
+        int rowsPerPage = computeRowsPerPage();
 
         long rowsPerDocument = structure.getRowsPerDocument();
         int charactersPerRow = structure.getCharactersPerRow();
-        int rowsPerPage = structure.getRowsPerPage();
+        int rowsPerPage = dimensions.getRowsPerPage();
         scrolling.updateMaximumScrollPosition(rowsPerDocument, rowsPerPage, charactersPerRow, charactersPerPage, (int) dataViewWidth, (int) dataViewHeight, characterWidth, rowHeight);
 
         resetScrollState();

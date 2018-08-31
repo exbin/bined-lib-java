@@ -13,16 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.swt.basic;
+package org.exbin.bined.swing.extended.capability;
 
 /**
- * Border paint modes for basic painter.
+ * Support for anti-aliasing capability.
  *
- * @version 0.2.0 2018/04/22
+ * @version 0.2.0 2018/03/17
  * @author ExBin Project (https://exbin.org)
  */
-public enum BasicBackgroundPaintMode {
-    TRANSPARENT,
-    PLAIN,
-    STRIPED
+public interface RowOffsetCapable {
+
+    long getRowOffset();
+
+    void setRowOffset(long offset);
 }

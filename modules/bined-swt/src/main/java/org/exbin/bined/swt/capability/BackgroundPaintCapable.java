@@ -16,7 +16,7 @@
 package org.exbin.bined.swt.capability;
 
 import javax.annotation.Nonnull;
-import org.exbin.bined.swt.basic.BasicBackgroundPaintMode;
+import org.exbin.bined.basic.BasicBackgroundPaintMode;
 import org.exbin.bined.capability.CodeAreaCapability;
 
 /**

@@ -16,24 +16,40 @@
 package org.exbin.bined.swing.extended;
 
 import javax.annotation.Nonnull;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import org.exbin.bined.basic.BasicCodeAreaScrolling;
+import org.exbin.bined.basic.BasicCodeAreaStructure;
 import org.exbin.bined.swing.CodeAreaCore;
-import org.exbin.bined.swing.basic.DefaultCodeAreaPainter;
+import org.exbin.bined.swing.CodeAreaPainter;
 
 /**
  * Extended code area component default painter.
  *
- * @version 0.2.0 2017/04/23
+ * @version 0.2.0 2017/08/28
  * @author ExBin Project (https://exbin.org)
  */
-public class ExtendedCodeAreaPainter extends DefaultCodeAreaPainter {
+public class ExtendedCodeAreaPainter { // implements CodeAreaPainter
 
-    public static final int DECORATION_HEADER_LINE = 1;
-    public static final int DECORATION_LINENUM_LINE = 2;
-    public static final int DECORATION_PREVIEW_LINE = 4;
-    public static final int DECORATION_BOX = 8;
-    public static final int DECORATION_DEFAULT = DECORATION_PREVIEW_LINE | DECORATION_LINENUM_LINE | DECORATION_HEADER_LINE;
+    @Nonnull
+    protected final CodeAreaCore codeArea;
+    private volatile boolean initialized = false;
+    private volatile boolean adjusting = false;
+    private volatile boolean fontChanged = false;
+    private volatile boolean resetColors = true;
 
-//    protected final CodeArea codeArea;
+//    @Nonnull
+//    private final JPanel dataView;
+//    @Nonnull
+//    private final JScrollPane scrollPanel;
+//
+//    @Nonnull
+//    private final BasicCodeAreaStructure structure = new BasicCodeAreaStructure();
+//    @Nonnull
+//    private final BasicCodeAreaScrolling scrolling = new BasicCodeAreaScrolling();
+//    @Nonnull
+//    private volatile ScrollingState scrollingState = ScrollingState.NO_SCROLLING;
+//
 //    private CodeAreaColorProfile colorProfile = null;
 //
 //    private Charset charMappingCharset = null;
@@ -41,7 +57,8 @@ public class ExtendedCodeAreaPainter extends DefaultCodeAreaPainter {
 //    protected Map<Character, Character> unprintableCharactersMapping = null;
 //
     public ExtendedCodeAreaPainter(@Nonnull CodeAreaCore codeArea) {
-        super(codeArea);
+        this.codeArea = codeArea;
+
     }
 
 //    @Override
@@ -1549,109 +1566,11 @@ public class ExtendedCodeAreaPainter extends DefaultCodeAreaPainter {
 //                visiblePreviewEnd = -1;
 //            }
 //        }
-//
-//        public ViewMode getViewMode() {
-//            return viewMode;
-//        }
-//
-//        public CodeArea.BackgroundMode getBackgroundMode() {
-//            return backgroundMode;
-//        }
-//
-//        public Rectangle getCodeSectionRect() {
-//            return codeSectionRect;
-//        }
-//
-//        public CodeArea.ScrollPosition getScrollPosition() {
-//            return scrollPosition;
-//        }
-//
-//        public CodeArea.CharRenderingMode getCharRenderingMode() {
-//            return charRenderingMode;
-//        }
-//
-//        public int getCharWidth() {
-//            return charWidth;
-//        }
-//
-//        public int getBytesPerLine() {
-//            return bytesPerLine;
-//        }
-//
-//        public int getByteGroupSize() {
-//            return byteGroupSize;
-//        }
-//
-//        public int getSpaceGroupSize() {
-//            return spaceGroupSize;
-//        }
-//
-//        public int getLineHeight() {
-//            return lineHeight;
-//        }
-//
-//        public int getCodeDigits() {
-//            return codeDigits;
-//        }
-//
-//        public int getCharsPerLine() {
-//            return charsPerLine;
-//        }
-//
-//        public Charset getCharset() {
-//            return charset;
-//        }
-//
-//        public int getMaxCharLength() {
-//            return maxCharLength;
-//        }
-//
-//        public int getPreviewCharPos() {
-//            return previewCharPos;
-//        }
-//
-//        public boolean isShowUnprintableCharacters() {
-//            return showUnprintableCharacters;
-//        }
-//
-//        public ColorsGroup getMainColors() {
-//            return mainColors;
-//        }
-//
-//        public ColorsGroup getStripColors() {
-//            return alternateColors;
-//        }
-//
-//        public long getLineDataPosition() {
-//            return lineDataPosition;
-//        }
-//
-//        public long getLine() {
-//            return line;
-//        }
-//
-//        public int getVisibleCharStart() {
-//            return visibleCharStart;
-//        }
-//
-//        public int getVisibleCharEnd() {
-//            return visibleCharEnd;
-//        }
-//
-//        public int getVisibleCodeStart() {
-//            return visibleCodeStart;
-//        }
-//
-//        public int getVisibleCodeEnd() {
-//            return visibleCodeEnd;
-//        }
-//
-//        public int getVisiblePreviewStart() {
-//            return visiblePreviewStart;
-//        }
-//
-//        public int getVisiblePreviewEnd() {
-//            return visiblePreviewEnd;
-//        }
 //    }
+
+    protected enum ScrollingState {
+        NO_SCROLLING,
+        SCROLLING_BY_SCROLLBAR,
+        SCROLLING_BY_MOVEMENT
+    }
 }

@@ -13,17 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.swing.extended.capability;
+package org.exbin.bined.swing.extended;
 
 /**
- * Support for anti-aliasing capability.
+ * Extended code area component decoration definition.
  *
- * @version 0.2.0 2018/03/17
+ * @version 0.2.0 2017/08/27
  * @author ExBin Project (https://exbin.org)
  */
-public interface LineOffsetCapable {
+public class ExtendedCodeAreaDecoration {
 
-    long getLineOffset();
+    public static final int DECORATION_HEADER_LINE = 1;
+    public static final int DECORATION_LINENUM_LINE = 2;
+    public static final int DECORATION_PREVIEW_LINE = 4;
+    public static final int DECORATION_BOX = 8;
+    public static final int DECORATION_DEFAULT = DECORATION_PREVIEW_LINE | DECORATION_LINENUM_LINE | DECORATION_HEADER_LINE;
 
-    void setLineOffset(long offset);
 }

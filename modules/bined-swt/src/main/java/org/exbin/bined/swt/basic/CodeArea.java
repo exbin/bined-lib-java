@@ -41,6 +41,7 @@ import org.exbin.bined.ScrollBarVisibility;
 import org.exbin.bined.ScrollingListener;
 import org.exbin.bined.SelectionChangedListener;
 import org.exbin.bined.SelectionRange;
+import org.exbin.bined.basic.BasicBackgroundPaintMode;
 import org.exbin.bined.basic.CodeAreaScrollPosition;
 import org.exbin.bined.basic.HorizontalScrollUnit;
 import org.exbin.bined.basic.MovementDirection;

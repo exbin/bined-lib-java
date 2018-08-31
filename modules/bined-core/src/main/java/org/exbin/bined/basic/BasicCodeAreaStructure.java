@@ -34,7 +34,7 @@ import org.exbin.bined.capability.ViewModeCapable;
 /**
  * Code area data representation structure for basic variant.
  *
- * @version 0.2.0 2018/07/27
+ * @version 0.2.0 2018/08/28
  * @author ExBin Project (https://exbin.org)
  */
 public class BasicCodeAreaStructure {
@@ -57,8 +57,8 @@ public class BasicCodeAreaStructure {
 
     private long rowsPerDocument;
     private int bytesPerRow;
-    private int rowsPerPage;
     private int charactersPerRow;
+    private int charactersPerCodeSection;
 
     private int codeLastCharPos;
     private int previewCharPos;
@@ -74,6 +74,7 @@ public class BasicCodeAreaStructure {
         wrappingBytesGroupSize = ((RowWrappingCapable) codeArea).getWrappingBytesGroupSize();
         bytesPerRow = computeBytesPerRow(charactersPerPage);
         charactersPerRow = computeCharactersPerRow();
+        charactersPerCodeSection = computeFirstCodeCharacterPos(bytesPerRow);
         rowsPerDocument = computeRowsPerDocument();
 
         // Compute first and last visible character of the code area
@@ -153,7 +154,7 @@ public class BasicCodeAreaStructure {
         return computedBytesPerRow;
     }
 
-    public CaretPosition computeMovePosition(@Nonnull CaretPosition position, @Nonnull MovementDirection direction) {
+    public CaretPosition computeMovePosition(@Nonnull CaretPosition position, @Nonnull MovementDirection direction, int rowsPerPage) {
         CodeAreaCaretPosition target = new CodeAreaCaretPosition(position.getDataPosition(), position.getCodeOffset(), position.getSection());
         switch (direction) {
             case LEFT: {
@@ -327,19 +328,15 @@ public class BasicCodeAreaStructure {
         return charactersPerRow;
     }
 
+    public int getCharactersPerCodeSection() {
+        return charactersPerCodeSection;
+    }
+
     public int getCodeLastCharPos() {
         return codeLastCharPos;
     }
 
     public int getPreviewCharPos() {
         return previewCharPos;
-    }
-
-    public int getRowsPerPage() {
-        return rowsPerPage;
-    }
-
-    public void setRowsPerPage(int rowsPerPage) {
-        this.rowsPerPage = rowsPerPage;
     }
 }
