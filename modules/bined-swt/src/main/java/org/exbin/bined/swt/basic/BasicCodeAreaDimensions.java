@@ -79,11 +79,28 @@ public class BasicCodeAreaDimensions {
         lastCharOffset = metrics.isInitialized() ? dataViewWidth % metrics.getCharacterWidth() : 0;
         lastRowOffset = metrics.isInitialized() ? dataViewHeight % metrics.getRowHeight() : 0;
 
-        modifyRect(mainAreaRect, rowPositionAreaWidth, dataViewY, componentWidth - rowPositionAreaWidth - getVerticalScrollBarSize(), componentHeight - dataViewY - getHorizontalScrollBarSize());
+        boolean availableWidth = rowPositionAreaWidth + verticalScrollBarSize <= componentWidth;
+        boolean availableHeight = dataViewY + horizontalScrollBarSize <= componentHeight;
+
+        if (availableWidth && availableHeight) {
+            modifyRect(mainAreaRect, rowPositionAreaWidth, dataViewY, componentWidth - rowPositionAreaWidth - getVerticalScrollBarSize(), componentHeight - dataViewY - getHorizontalScrollBarSize());
+        } else {
+            modifyRect(mainAreaRect, 0, 0, 0, 0);
+        }
+        if (availableWidth) {
+            modifyRect(headerAreaRectangle, rowPositionAreaWidth, 0, componentWidth - rowPositionAreaWidth - getVerticalScrollBarSize(), headerAreaHeight);
+        } else {
+            modifyRect(headerAreaRectangle, 0, 0, 0, 0);
+        }
+
+        if (availableHeight) {
+            modifyRect(rowPositionAreaRectangle, 0, dataViewY, rowPositionAreaWidth, componentHeight - dataViewY - getHorizontalScrollBarSize());
+        } else {
+            modifyRect(rowPositionAreaRectangle, 0, 0, 0, 0);
+        }
+
         modifyRect(scrollPanelRectangle, dataViewX, dataViewY, scrollPanelWidth, scrollPanelHeight);
-        modifyRect(dataViewRectangle, dataViewX, dataViewY, dataViewWidth, dataViewHeight);
-        modifyRect(headerAreaRectangle, rowPositionAreaWidth, 0, componentWidth - rowPositionAreaWidth - getVerticalScrollBarSize(), headerAreaHeight);
-        modifyRect(rowPositionAreaRectangle, 0, dataViewY, rowPositionAreaWidth, componentHeight - dataViewY - getHorizontalScrollBarSize());
+        modifyRect(dataViewRectangle, dataViewX, dataViewY, dataViewWidth >= 0 ? dataViewWidth : 0, dataViewHeight >= 0 ? dataViewHeight : 0);
     }
 
     public BasicCodeAreaZone getPositionZone(int positionX, int positionY) {

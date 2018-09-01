@@ -21,7 +21,7 @@ import javax.annotation.Nullable;
 /**
  * Basic code area component dimensions.
  *
- * @version 0.2.0 2018/08/31
+ * @version 0.2.0 2018/09/01
  * @author ExBin Project (https://exbin.org)
  */
 public class BasicCodeAreaMetrics {
@@ -43,19 +43,19 @@ public class BasicCodeAreaMetrics {
             characterWidth = 0;
             fontHeight = 0;
         } else {
-            fontHeight = fontMetrics.getHeight();
+            fontHeight = (int) Math.ceil(fontMetrics.getAscent() + fontMetrics.getDescent());
 
             /**
              * Use small 'w' character to guess normal font width.
              */
-            characterWidth = (int) fontMetrics.computeStringWidth("w");
+            characterWidth = (int) Math.ceil(fontMetrics.computeStringWidth("w"));
             /**
              * Compare it to small 'i' to detect if font is monospaced.
              *
              * TODO: Is there better way?
              */
-            monospaceFont = characterWidth == fontMetrics.charWidth(' ') && characterWidth == fontMetrics.charWidth('i');
-            int fontSize = fontMetrics.getFont().getSize();
+            monospaceFont = characterWidth == (int) Math.ceil(fontMetrics.computeStringWidth(" ")) && characterWidth == (int) Math.ceil(fontMetrics.computeStringWidth("i"));
+            int fontSize = (int) fontMetrics.getFont().getSize();
             rowHeight = fontSize + subFontSpace;
         }
 
@@ -70,8 +70,8 @@ public class BasicCodeAreaMetrics {
         return fontMetrics;
     }
 
-    public int getCharWidth(char value) {
-        return fontMetrics.charWidth(value);
+    public double getCharWidth(char value) {
+        return fontMetrics.computeStringWidth(Character.toString(value));
     }
 
     public boolean isMonospaceFont() {

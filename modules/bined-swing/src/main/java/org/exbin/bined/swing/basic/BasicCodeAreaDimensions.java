@@ -22,7 +22,7 @@ import org.exbin.bined.BasicCodeAreaZone;
 /**
  * Basic code area component dimensions.
  *
- * @version 0.2.0 2017/08/27
+ * @version 0.2.0 2018/09/31
  * @author ExBin Project (https://exbin.org)
  */
 public class BasicCodeAreaDimensions {
@@ -79,11 +79,27 @@ public class BasicCodeAreaDimensions {
         lastCharOffset = metrics.isInitialized() ? dataViewWidth % metrics.getCharacterWidth() : 0;
         lastRowOffset = metrics.isInitialized() ? dataViewHeight % metrics.getRowHeight() : 0;
 
-        mainAreaRect.setBounds(rowPositionAreaWidth, dataViewY, componentWidth - rowPositionAreaWidth - getVerticalScrollBarSize(), componentHeight - dataViewY - getHorizontalScrollBarSize());
+        boolean availableWidth = rowPositionAreaWidth + verticalScrollBarSize <= componentWidth;
+        boolean availableHeight = dataViewY + horizontalScrollBarSize <= componentHeight;
+
+        if (availableWidth && availableHeight) {
+            mainAreaRect.setBounds(rowPositionAreaWidth, dataViewY, componentWidth - rowPositionAreaWidth - getVerticalScrollBarSize(), componentHeight - dataViewY - getHorizontalScrollBarSize());
+        } else {
+            mainAreaRect.setBounds(0, 0, 0, 0);
+        }
+        if (availableWidth) {
+            headerAreaRectangle.setBounds(rowPositionAreaWidth, 0, componentWidth - rowPositionAreaWidth - getVerticalScrollBarSize(), headerAreaHeight);
+        } else {
+            headerAreaRectangle.setBounds(0, 0, 0, 0);
+        }
+        if (availableHeight) {
+            rowPositionAreaRectangle.setBounds(0, dataViewY, rowPositionAreaWidth, componentHeight - dataViewY - getHorizontalScrollBarSize());
+        } else {
+            rowPositionAreaRectangle.setBounds(0, 0, 0, 0);
+        }
+
         scrollPanelRectangle.setBounds(dataViewX, dataViewY, scrollPanelWidth, scrollPanelHeight);
-        dataViewRectangle.setBounds(dataViewX, dataViewY, dataViewWidth, dataViewHeight);
-        headerAreaRectangle.setBounds(rowPositionAreaWidth, 0, componentWidth - rowPositionAreaWidth - getVerticalScrollBarSize(), headerAreaHeight);
-        rowPositionAreaRectangle.setBounds(0, dataViewY, rowPositionAreaWidth, componentHeight - dataViewY - getHorizontalScrollBarSize());
+        dataViewRectangle.setBounds(dataViewX, dataViewY, dataViewWidth >= 0 ? dataViewWidth : 0, dataViewHeight >= 0 ? dataViewHeight : 0);
     }
 
     public BasicCodeAreaZone getPositionZone(int positionX, int positionY) {

@@ -15,14 +15,14 @@
  */
 package org.exbin.bined.javafx.basic;
 
-import java.awt.Rectangle;
+import javafx.geometry.Rectangle2D;
 import javax.annotation.Nonnull;
 import org.exbin.bined.BasicCodeAreaZone;
 
 /**
  * Basic code area component dimensions.
  *
- * @version 0.2.0 2018/08/31
+ * @version 0.2.0 2018/09/01
  * @author ExBin Project (https://exbin.org)
  */
 public class BasicCodeAreaDimensions {
@@ -48,17 +48,17 @@ public class BasicCodeAreaDimensions {
     private int charactersPerRect;
 
     @Nonnull
-    private final Rectangle mainAreaRect = new Rectangle();
+    private Rectangle2D mainAreaRect = new Rectangle2D(0, 0, 0, 0);
     @Nonnull
-    private final Rectangle headerAreaRectangle = new Rectangle();
+    private Rectangle2D headerAreaRectangle = new Rectangle2D(0, 0, 0, 0);
     @Nonnull
-    private final Rectangle rowPositionAreaRectangle = new Rectangle();
+    private Rectangle2D rowPositionAreaRectangle = new Rectangle2D(0, 0, 0, 0);
     @Nonnull
-    private final Rectangle scrollPanelRectangle = new Rectangle();
+    private Rectangle2D scrollPanelRectangle = new Rectangle2D(0, 0, 0, 0);
     @Nonnull
-    private final Rectangle dataViewRectangle = new Rectangle();
+    private Rectangle2D dataViewRectangle = new Rectangle2D(0, 0, 0, 0);
 
-    public void recomputeSizes(@Nonnull BasicCodeAreaMetrics metrics, int componentWidth, int componentHeight, int rowPositionLength, int verticalScrollBarSize, int horizontalScrollBarSize) {
+    public void recomputeSizes(@Nonnull BasicCodeAreaMetrics metrics, double componentWidth, double componentHeight, int rowPositionLength, int verticalScrollBarSize, int horizontalScrollBarSize) {
         this.componentWidth = componentWidth;
         this.componentHeight = componentHeight;
         this.verticalScrollBarSize = verticalScrollBarSize;
@@ -79,11 +79,21 @@ public class BasicCodeAreaDimensions {
         lastCharOffset = metrics.isInitialized() ? (int) dataViewWidth % metrics.getCharacterWidth() : 0;
         lastRowOffset = metrics.isInitialized() ? (int) dataViewHeight % metrics.getRowHeight() : 0;
 
-        mainAreaRect.setBounds(rowPositionAreaWidth, dataViewY, componentWidth - rowPositionAreaWidth - getVerticalScrollBarSize(), componentHeight - dataViewY - getHorizontalScrollBarSize());
-        scrollPanelRectangle.setBounds(dataViewX, dataViewY, scrollPanelWidth, scrollPanelHeight);
-        dataViewRectangle.setBounds(dataViewX, dataViewY, dataViewWidth, dataViewHeight);
-        headerAreaRectangle.setBounds(rowPositionAreaWidth, 0, componentWidth - rowPositionAreaWidth - getVerticalScrollBarSize(), headerAreaHeight);
-        rowPositionAreaRectangle.setBounds(0, dataViewY, rowPositionAreaWidth, componentHeight - dataViewY - getHorizontalScrollBarSize());
+        boolean availableWidth = rowPositionAreaWidth + verticalScrollBarSize <= componentWidth;
+        boolean availableHeight = dataViewY + horizontalScrollBarSize <= componentHeight;
+
+        mainAreaRect = availableWidth && availableHeight
+                ? new Rectangle2D(rowPositionAreaWidth, dataViewY, componentWidth - rowPositionAreaWidth - verticalScrollBarSize, componentHeight - dataViewY - horizontalScrollBarSize)
+                : new Rectangle2D(0, 0, 0, 0);
+        headerAreaRectangle = availableWidth
+                ? new Rectangle2D(rowPositionAreaWidth, 0, componentWidth - rowPositionAreaWidth - verticalScrollBarSize, headerAreaHeight)
+                : new Rectangle2D(0, 0, 0, 0);
+        rowPositionAreaRectangle = availableHeight
+                ? new Rectangle2D(0, dataViewY, rowPositionAreaWidth, componentHeight - dataViewY - horizontalScrollBarSize)
+                : new Rectangle2D(0, 0, 0, 0);
+
+        scrollPanelRectangle = new Rectangle2D(dataViewX, dataViewY, scrollPanelWidth, scrollPanelHeight);
+        dataViewRectangle = new Rectangle2D(dataViewX, dataViewY, dataViewWidth >= 0 ? dataViewWidth : 0, dataViewHeight >= 0 ? dataViewHeight : 0);
     }
 
     public BasicCodeAreaZone getPositionZone(int positionX, int positionY) {
@@ -189,25 +199,25 @@ public class BasicCodeAreaDimensions {
     }
 
     @Nonnull
-    public Rectangle getMainAreaRect() {
+    public Rectangle2D getMainAreaRect() {
         return mainAreaRect;
     }
 
     @Nonnull
-    public Rectangle getScrollPanelRectangle() {
+    public Rectangle2D getScrollPanelRectangle() {
         return scrollPanelRectangle;
     }
 
     @Nonnull
-    public Rectangle getDataViewRectangle() {
+    public Rectangle2D getDataViewRectangle() {
         return dataViewRectangle;
     }
 
-    public Rectangle getHeaderAreaRectangle() {
+    public Rectangle2D getHeaderAreaRectangle() {
         return headerAreaRectangle;
     }
 
-    public Rectangle getRowPositionAreaRectangle() {
+    public Rectangle2D getRowPositionAreaRectangle() {
         return rowPositionAreaRectangle;
     }
 

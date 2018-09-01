@@ -490,7 +490,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                 if (sequenceBreak) {
                     if (renderOffset < characterOnRow) {
                         // TODO optimize
-                        char[] subArray = Arrays.copyOfRange(headerChars, renderOffset, characterOnRow - renderOffset);
+                        char[] subArray = Arrays.copyOfRange(headerChars, renderOffset, characterOnRow);
                         g.drawString(String.valueOf(subArray), headerX + renderOffset * characterWidth, headerY, true);
                     }
 
@@ -517,7 +517,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             }
 
             if (renderOffset < charactersPerCodeSection) {
-                char[] subArray = Arrays.copyOfRange(headerChars, renderOffset, charactersPerCodeSection - renderOffset);
+                char[] subArray = Arrays.copyOfRange(headerChars, renderOffset, charactersPerCodeSection);
                 g.drawString(String.valueOf(subArray), headerX + renderOffset * characterWidth, headerY, true);
             }
         }
@@ -1432,7 +1432,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
      */
     private void renderCharSequence(@Nonnull GC g, int startOffset, int endOffset, int rowPositionX, int positionY) {
         int characterWidth = metrics.getCharacterWidth();
-        char[] subArray = Arrays.copyOfRange(rowDataCache.rowCharacters, startOffset, endOffset - startOffset);
+        char[] subArray = Arrays.copyOfRange(rowDataCache.rowCharacters, startOffset, endOffset);
         g.drawString(String.valueOf(subArray), rowPositionX + startOffset * characterWidth, positionY, true);
     }
 

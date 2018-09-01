@@ -43,7 +43,7 @@ public class BasicCodeAreaMetrics {
     /**
      * GC is expected to have proper font set.
      *
-     * @param gc
+     * @param gc graphics context
      */
     public void recomputeMetrics(@Nullable GC gc) {
         this.gc = gc;
