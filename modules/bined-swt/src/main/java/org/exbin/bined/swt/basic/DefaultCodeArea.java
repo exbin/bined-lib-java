@@ -27,15 +27,16 @@ import org.exbin.bined.capability.SelectionCapable;
 import org.exbin.bined.capability.ViewModeCapable;
 import org.exbin.bined.swt.CodeAreaSwtControl;
 import org.exbin.bined.swt.capability.BackgroundPaintCapable;
+import org.exbin.bined.swt.capability.BasicColorsCapable;
 import org.exbin.bined.swt.capability.FontCapable;
 
 /**
  * Code area component default interface.
  *
- * @version 0.2.0 2018/08/11
+ * @version 0.2.0 2018/09/01
  * @author ExBin Project (https://exbin.org)
  */
 public interface DefaultCodeArea extends CodeAreaSwtControl, SelectionCapable, CaretCapable, ScrollingCapable, ViewModeCapable,
         CodeTypeCapable, EditationModeCapable, CharsetCapable, CodeCharactersCaseCapable, FontCapable,
-        BackgroundPaintCapable, RowWrappingCapable, ClipboardCapable {
+        BackgroundPaintCapable, RowWrappingCapable, ClipboardCapable, BasicColorsCapable {
 }

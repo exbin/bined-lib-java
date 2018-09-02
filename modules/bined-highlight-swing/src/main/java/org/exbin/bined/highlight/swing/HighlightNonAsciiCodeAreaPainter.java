@@ -38,6 +38,10 @@ public class HighlightNonAsciiCodeAreaPainter extends HighlightCodeAreaPainter {
         super(codeArea);
 
         textColor = codeArea.getForeground(); //MainColors().getTextColor();
+        if (textColor == null) {
+            textColor = Color.BLACK;
+        }
+
         int controlCodesRed = textColor.getRed();
         int controlCodesRedDif = 0;
         if (controlCodesRed > 128) {

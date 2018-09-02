@@ -55,7 +55,7 @@ import org.exbin.bined.swt.CodeAreaSwtControl;
 /**
  * Code area component default code area.
  *
- * @version 0.2.0 2018/08/11
+ * @version 0.2.0 2018/09/01
  * @author ExBin Project (https://exbin.org)
  */
 public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaSwtControl {
@@ -614,6 +614,17 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
     @Override
     public int getMaxBytesPerRow() {
         return maxBytesPerLine;
+    }
+
+    @Nonnull
+    @Override
+    public BasicCodeAreaColors getBasicColors() {
+        return painter.getBasicColors();
+    }
+
+    @Override
+    public void setBasicColors(@Nonnull BasicCodeAreaColors colors) {
+        painter.setBasicColors(colors);
     }
 
     @Override

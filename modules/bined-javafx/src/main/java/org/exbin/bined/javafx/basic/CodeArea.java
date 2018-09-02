@@ -123,18 +123,18 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaJ
      */
     public CodeArea(@Nullable CodeAreaCommandHandler.CodeAreaCommandHandlerFactory commandHandlerFactory) {
         super(commandHandlerFactory);
-        
+
         caret = new DefaultCodeAreaCaret(this);
         painter = new DefaultCodeAreaPainter(this);
         init();
     }
-    
+
     private void init() {
         UIManager.addPropertyChangeListener((@Nonnull PropertyChangeEvent evt) -> {
             resetColors();
         });
     }
-    
+
     @Nonnull
     public CodeAreaPainter getPainter() {
         return painter;
@@ -243,6 +243,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaJ
     @Override
     public void resetColors() {
         painter.resetColors();
+        repaint();
     }
 
     @Nonnull
@@ -599,6 +600,17 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaJ
     @Override
     public void setMaxBytesPerLine(int maxBytesPerLine) {
         this.maxBytesPerLine = maxBytesPerLine;
+    }
+
+    @Nonnull
+    @Override
+    public BasicCodeAreaColors getBasicColors() {
+        return painter.getBasicColors();
+    }
+
+    @Override
+    public void setBasicColors(@Nonnull BasicCodeAreaColors colors) {
+        painter.setBasicColors(colors);
     }
 
     public void notifySelectionChanged() {

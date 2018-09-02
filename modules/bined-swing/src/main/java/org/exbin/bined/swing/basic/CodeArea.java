@@ -55,7 +55,7 @@ import org.exbin.bined.swing.CodeAreaSwingControl;
 /**
  * Code area component default code area.
  *
- * @version 0.2.0 2018/08/11
+ * @version 0.2.0 2018/09/01
  * @author ExBin Project (https://exbin.org)
  */
 public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaSwingControl {
@@ -248,6 +248,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
     @Override
     public void resetColors() {
         painter.resetColors();
+        repaint();
     }
 
     @Nonnull
@@ -606,6 +607,17 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
     @Override
     public void setMaxBytesPerLine(int maxBytesPerLine) {
         this.maxBytesPerLine = maxBytesPerLine;
+    }
+
+    @Nonnull
+    @Override
+    public BasicCodeAreaColors getBasicColors() {
+        return painter.getBasicColors();
+    }
+
+    @Override
+    public void setBasicColors(@Nonnull BasicCodeAreaColors colors) {
+        painter.setBasicColors(colors);
     }
 
     public void notifySelectionChanged() {

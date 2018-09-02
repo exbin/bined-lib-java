@@ -51,6 +51,7 @@ import org.exbin.bined.swing.CodeAreaCommandHandler;
 import org.exbin.bined.swing.CodeAreaCore;
 import org.exbin.bined.swing.CodeAreaPainter;
 import org.exbin.bined.swing.CodeAreaSwingControl;
+import org.exbin.bined.swing.basic.BasicCodeAreaColors;
 import org.exbin.bined.swing.basic.DefaultCodeAreaCaret;
 import org.exbin.bined.swing.basic.DefaultCodeAreaCommandHandler;
 import org.exbin.bined.swing.basic.DefaultCodeAreaPainter;
@@ -59,7 +60,7 @@ import org.exbin.bined.swing.capability.FontCapable;
 /**
  * Code area component extended code area.
  *
- * @version 0.2.0 2018/08/27
+ * @version 0.2.0 2018/09/02
  * @author ExBin Project (https://exbin.org)
  */
 public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeAreaSwingControl {
@@ -135,7 +136,7 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
         super(commandHandlerFactory);
 
         caret = new DefaultCodeAreaCaret(this);
-        painter = new DefaultCodeAreaPainter(this);
+        painter = new ExtendedCodeAreaPainter(this);
         init();
     }
 
@@ -147,7 +148,7 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
             resetColors();
         });
     }
-    
+
     @Nonnull
     public CodeAreaPainter getPainter() {
         return painter;
@@ -632,6 +633,17 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
     @Override
     public void setMaxBytesPerLine(int maxBytesPerLine) {
         this.maxBytesPerLine = maxBytesPerLine;
+    }
+
+    @Nonnull
+    @Override
+    public BasicCodeAreaColors getBasicColors() {
+        return painter.getBasicColors();
+    }
+
+    @Override
+    public void setBasicColors(@Nonnull BasicCodeAreaColors colors) {
+        painter.setBasicColors(colors);
     }
 
     public void notifySelectionChanged() {

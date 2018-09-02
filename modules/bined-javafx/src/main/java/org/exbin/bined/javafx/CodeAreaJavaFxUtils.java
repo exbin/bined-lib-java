@@ -24,7 +24,7 @@ import org.exbin.bined.ScrollBarVisibility;
 /**
  * Hexadecimal editor component JavaFX utilities.
  *
- * @version 0.2.0 2018/08/01
+ * @version 0.2.0 2018/09/02
  * @author ExBin Project (https://exbin.org)
  */
 public class CodeAreaJavaFxUtils {
@@ -35,7 +35,7 @@ public class CodeAreaJavaFxUtils {
     public static final int EXCEPTION1_CODE_POINT = 0x8e;
     public static final int EXCEPTION2_CODE_POINT = 0x9e;
 
-    public static int MAX_COMPONENT_VALUE = 255;
+    public static double MAX_COMPONENT_VALUE = 1;
 
     private CodeAreaJavaFxUtils() {
     }
@@ -66,7 +66,7 @@ public class CodeAreaJavaFxUtils {
     }
 
     public static double computeOddColorComponent(double colorComponent) {
-        return colorComponent + (colorComponent > 64 ? - 16 : 16);
+        return colorComponent + (colorComponent > 0.25 ? -0.0625 : 0.0625);
     }
 
     @Nonnull

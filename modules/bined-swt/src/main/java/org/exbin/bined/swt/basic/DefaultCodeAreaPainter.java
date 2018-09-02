@@ -71,7 +71,7 @@ import org.exbin.utils.binary_data.BinaryData;
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2018/08/31
+ * @version 0.2.0 2018/09/01
  * @author ExBin Project (https://exbin.org)
  */
 public class DefaultCodeAreaPainter implements CodeAreaPainter {
@@ -101,10 +101,10 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     @Nonnull
     private volatile ScrollingState scrollingState = ScrollingState.NO_SCROLLING;
 
-    private final Colors colors = new Colors();
+    private BasicCodeAreaColors colors = new BasicCodeAreaColors();
 
     @Nullable
-    private CodeCharactersCase hexCharactersCase;
+    private CodeCharactersCase codeCharactersCase;
     @Nullable
     private EditationMode editationMode;
     @Nullable
@@ -199,7 +199,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         int charactersPerPage = dimensions.getCharactersPerPage();
 
         structure.updateCache(codeArea, charactersPerPage);
-        hexCharactersCase = ((CodeCharactersCaseCapable) codeArea).getCodeCharactersCase();
+        codeCharactersCase = ((CodeCharactersCaseCapable) codeArea).getCodeCharactersCase();
         editationMode = ((EditationModeCapable) codeArea).getEditationMode();
         backgroundPaintMode = ((BackgroundPaintCapable) codeArea).getBackgroundPaintMode();
         showMirrorCursor = ((CaretCapable) codeArea).isShowMirrorCursor();
@@ -331,35 +331,48 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             resetColors = false;
 
             Display display = Display.getCurrent();
-            colors.foreground = codeArea.getForeground();
-            if (colors.foreground == null) {
-                colors.foreground = display.getSystemColor(SWT.COLOR_BLACK);
+            Color foreground = codeArea.getForeground();
+            if (foreground == null) {
+                foreground = display.getSystemColor(SWT.COLOR_BLACK);
             }
 
-            colors.background = codeArea.getBackground();
-            if (colors.background == null) {
-                colors.background = display.getSystemColor(SWT.COLOR_WHITE);
+            Color background = codeArea.getBackground();
+            if (background == null) {
+                background = display.getSystemColor(SWT.COLOR_WHITE);
             }
-            colors.selectionForeground = display.getSystemColor(SWT.COLOR_LIST_SELECTION_TEXT);
-            if (colors.selectionForeground == null) {
-                colors.selectionForeground = display.getSystemColor(SWT.COLOR_WHITE);
+            Color selectionForeground = display.getSystemColor(SWT.COLOR_LIST_SELECTION_TEXT);
+            if (selectionForeground == null) {
+                selectionForeground = display.getSystemColor(SWT.COLOR_WHITE);
             }
-            colors.selectionBackground = display.getSystemColor(SWT.COLOR_LIST_SELECTION);
-            if (colors.selectionBackground == null) {
-                colors.selectionBackground = new Color(display, 96, 96, 255);
+            Color selectionBackground = display.getSystemColor(SWT.COLOR_LIST_SELECTION);
+            if (selectionBackground == null) {
+                selectionBackground = new Color(display, 96, 96, 255);
             }
-            colors.selectionMirrorForeground = colors.selectionForeground;
-            colors.selectionMirrorBackground = CodeAreaSwtUtils.computeGrayColor(colors.selectionBackground);
-            colors.cursor = display.getSystemColor(SWT.COLOR_LIST_FOREGROUND);
-            if (colors.cursor == null) {
-                colors.cursor = display.getSystemColor(SWT.COLOR_BLACK);
+            Color selectionMirrorForeground = selectionForeground;
+            Color selectionMirrorBackground = CodeAreaSwtUtils.computeGrayColor(selectionBackground);
+            Color cursor = display.getSystemColor(SWT.COLOR_LIST_FOREGROUND);
+            if (cursor == null) {
+                cursor = display.getSystemColor(SWT.COLOR_BLACK);
             }
-            colors.negativeCursor = CodeAreaSwtUtils.createNegativeColor(colors.cursor);
-            colors.cursorMirror = colors.cursor;
-            colors.negativeCursorMirror = colors.negativeCursor;
-            colors.decorationLine = display.getSystemColor(SWT.COLOR_GRAY);
+            Color negativeCursor = CodeAreaSwtUtils.createNegativeColor(cursor);
+            Color cursorMirror = cursor;
+            Color negativeCursorMirror = negativeCursor;
+            Color decorationLine = display.getSystemColor(SWT.COLOR_GRAY);
 
-            colors.stripes = CodeAreaSwtUtils.createOddColor(colors.background);
+            Color stripes = CodeAreaSwtUtils.createOddColor(background);
+
+            colors.setForeground(foreground);
+            colors.setBackground(background);
+            colors.setSelectionForeground(selectionForeground);
+            colors.setSelectionBackground(selectionBackground);
+            colors.setSelectionMirrorForeground(selectionMirrorForeground);
+            colors.setSelectionMirrorBackground(selectionMirrorBackground);
+            colors.setCursor(cursor);
+            colors.setCursorMirror(cursorMirror);
+            colors.setNegativeCursor(negativeCursor);
+            colors.setNegativeCursorMirror(negativeCursorMirror);
+            colors.setDecorationLine(decorationLine);
+            colors.setStripes(stripes);
         }
     }
 
@@ -376,11 +389,11 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         int rowPositionAreaWidth = dimensions.getRowPositionAreaWidth();
         int componentWidth = dimensions.getComponentWidth();
         int characterWidth = metrics.getCharacterWidth();
-        g.setBackground(colors.background);
+        g.setBackground(colors.getBackground());
         g.fillRectangle(0, 0, componentWidth, headerAreaHeight);
 
         // Decoration lines
-        g.setForeground(colors.decorationLine);
+        g.setForeground(colors.getDecorationLine());
         g.drawLine(0, headerAreaHeight - 1, rowPositionAreaWidth, headerAreaHeight - 1);
 
         {
@@ -403,12 +416,12 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         int headerAreaHeight = dimensions.getHeaderAreaHeight();
         int componentWidth = dimensions.getComponentWidth();
 
-        g.setBackground(colors.background);
+        g.setBackground(colors.getBackground());
         g.fillRectangle(headerArea.x, headerArea.y, headerArea.width, headerArea.height);
 
         // Decoration lines
         CodeAreaScrollPosition scrollPosition = scrolling.getScrollPosition();
-        g.setBackground(colors.decorationLine);
+        g.setBackground(colors.getDecorationLine());
         g.fillRectangle(0, headerAreaHeight - 1, componentWidth, 1);
         int lineX = dataViewX + visibility.getPreviewRelativeX() - scrollPosition.getCharPosition() * characterWidth - scrollPosition.getCharOffset() - characterWidth / 2;
         if (lineX >= dataViewX) {
@@ -420,7 +433,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             int headerX = dataViewX - scrollPosition.getCharPosition() * characterWidth - scrollPosition.getCharOffset();
             int headerY = 0;
 
-            g.setForeground(colors.foreground);
+            g.setForeground(colors.getForeground());
             char[] headerChars = new char[charactersPerCodeSection];
             Arrays.fill(headerChars, ' ');
 
@@ -433,7 +446,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                 if (codePos == lastPos + 2 && !interleaving) {
                     interleaving = true;
                 } else {
-                    CodeAreaUtils.longToBaseCode(headerChars, codePos, index, CodeType.HEXADECIMAL.getBase(), 2, true, hexCharactersCase);
+                    CodeAreaUtils.longToBaseCode(headerChars, codePos, index, CodeType.HEXADECIMAL.getBase(), 2, true, codeCharactersCase);
                     lastPos = codePos;
                     interleaving = false;
                 }
@@ -476,7 +489,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 //                currentCharWidth = characterWidth;
 //                }
 
-                Color color = colors.foreground;
+                Color color = colors.getForeground();
 //                getHeaderPositionColor(byteOnRow, charOnRow);
 //                if (renderColorType == null) {
 //                    renderColorType = colorType;
@@ -539,14 +552,14 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         Rectangle rowPositionsArea = dimensions.getRowPositionAreaRectangle();
         g.setClipping(clipBounds != null ? clipBounds.intersection(rowPositionsArea) : rowPositionsArea);
 
-        g.setBackground(colors.background);
+        g.setBackground(colors.getBackground());
         g.fillRectangle(rowPositionsArea.x, rowPositionsArea.y, rowPositionsArea.width, rowPositionsArea.height);
 
         CodeAreaScrollPosition scrollPosition = scrolling.getScrollPosition();
         if (backgroundPaintMode == BasicBackgroundPaintMode.STRIPED) {
             long dataPosition = scrollPosition.getRowPosition() * bytesPerRow;
             int stripePositionY = headerAreaHeight - scrollPosition.getRowOffset() + ((scrollPosition.getRowPosition() & 1) > 0 ? 0 : rowHeight);
-            g.setBackground(colors.stripes);
+            g.setBackground(colors.getStripes());
             for (int row = 0; row <= rowsPerRect / 2; row++) {
                 if (dataPosition >= dataSize) {
                     break;
@@ -560,7 +573,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
         long dataPosition = bytesPerRow * scrollPosition.getRowPosition();
         int positionY = headerAreaHeight - scrollPosition.getRowOffset();
-        g.setForeground(colors.foreground);
+        g.setForeground(colors.getForeground());
         Rectangle compRect = new Rectangle(0, 0, 0, 0);
         for (int row = 0; row <= rowsPerRect; row++) {
             if (dataPosition > dataSize) {
@@ -580,7 +593,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             dataPosition += bytesPerRow;
         }
 
-        g.setForeground(colors.decorationLine);
+        g.setForeground(colors.getDecorationLine());
         int lineX = rowPositionAreaWidth - (characterWidth / 2);
         if (lineX >= 0) {
             g.drawLine(lineX, dataViewRectangle.y, lineX, dataViewRectangle.y + dataViewRectangle.height);
@@ -616,7 +629,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         int characterWidth = metrics.getCharacterWidth();
         int previewRelativeX = visibility.getPreviewRelativeX();
         CodeAreaScrollPosition scrollPosition = scrolling.getScrollPosition();
-        g.setForeground(colors.decorationLine);
+        g.setForeground(colors.getDecorationLine());
         int lineX = previewRelativeX - scrollPosition.getCharPosition() * characterWidth - scrollPosition.getCharOffset() - characterWidth / 2;
         if (lineX >= dataViewRectangle.x) {
             g.drawLine(lineX, 0, lineX, dataViewRectangle.height);
@@ -650,7 +663,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         int dataViewHeight = dimensions.getDataViewHeight();
         int rowPositionX = 0;
         CodeAreaScrollPosition scrollPosition = scrolling.getScrollPosition();
-        g.setBackground(colors.background);
+        g.setBackground(colors.getBackground());
         if (backgroundPaintMode != BasicBackgroundPaintMode.TRANSPARENT) {
             g.fillRectangle(rowPositionX, headerAreaHeight, dataViewWidth, dataViewHeight);
         }
@@ -658,7 +671,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         if (backgroundPaintMode == BasicBackgroundPaintMode.STRIPED) {
             long dataPosition = scrollPosition.getRowPosition() * bytesPerRow;
             int stripePositionY = headerAreaHeight - scrollPosition.getRowOffset() + (int) ((scrollPosition.getRowPosition() & 1) > 0 ? 0 : rowHeight);
-            g.setBackground(colors.stripes);
+            g.setBackground(colors.getStripes());
             for (int row = 0; row <= rowsPerRect / 2; row++) {
                 if (dataPosition > dataSize - bytesPerRow) {
                     break;
@@ -682,7 +695,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         long dataPosition = scrollPosition.getRowPosition() * bytesPerRow;
         int rowPositionX = scrollPosition.getCharPosition() * characterWidth - scrollPosition.getCharOffset();
         int rowPositionY = scrollPosition.getRowOffset();
-        g.setForeground(colors.foreground);
+        g.setForeground(colors.getForeground());
         for (int row = 0; row <= rowsPerRect; row++) {
             prepareRowData(dataPosition);
             paintRowBackground(g, dataPosition, rowPositionX, rowPositionY);
@@ -727,7 +740,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             int visibleCodeEnd = visibility.getVisibleCodeEnd();
             for (int byteOnRow = Math.max(visibleCodeStart, rowStart); byteOnRow < Math.min(visibleCodeEnd, rowBytesLimit); byteOnRow++) {
                 byte dataByte = rowDataCache.rowData[byteOnRow];
-                CodeAreaUtils.byteToCharsCode(dataByte, codeType, rowDataCache.rowCharacters, structure.computeFirstCodeCharacterPos(byteOnRow), hexCharactersCase);
+                CodeAreaUtils.byteToCharsCode(dataByte, codeType, rowDataCache.rowCharacters, structure.computeFirstCodeCharacterPos(byteOnRow), codeCharactersCase);
             }
             if (bytesPerRow > rowBytesLimit) {
                 Arrays.fill(rowDataCache.rowCharacters, structure.computeFirstCodeCharacterPos(rowBytesLimit), rowDataCache.rowCharacters.length, ' ');
@@ -847,7 +860,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         }
 
         if (inSelection) {
-            return section == caretPosition.getSection() ? colors.selectionBackground : colors.selectionMirrorBackground;
+            return section == caretPosition.getSection() ? colors.getSelectionBackground() : colors.getSelectionMirrorBackground();
         }
 
         return null;
@@ -939,7 +952,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
             Color color = getPositionTextColor(rowDataPosition, byteOnRow, charOnRow, section);
             if (color == null) {
-                color = colors.foreground;
+                color = colors.getForeground();
             }
 
             boolean sequenceBreak = false;
@@ -1025,7 +1038,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         CodeAreaCaretPosition caretPosition = structure.getCaretPosition();
         boolean inSelection = selectionRange != null && selectionRange.isInSelection(rowDataPosition + byteOnRow);
         if (inSelection) {
-            return section == caretPosition.getSection() ? colors.selectionForeground : colors.selectionMirrorForeground;
+            return section == caretPosition.getSection() ? colors.getSelectionForeground() : colors.getSelectionMirrorForeground();
         }
 
         return null;
@@ -1069,7 +1082,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         if (cursorVisible) {
             g.setClipping(intersection);
             DefaultCodeAreaCaret.CursorRenderingMode renderingMode = caret.getRenderingMode();
-            g.setBackground(colors.cursor);
+            g.setBackground(colors.getCursor());
 
 //            if (renderingMode == DefaultCodeAreaCaret.CursorRenderingMode.XOR) {
 //                g.setXORMode(true); // Color.WHITE
@@ -1086,8 +1099,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         // Paint mirror cursor
         if (viewMode == CodeAreaViewMode.DUAL && showMirrorCursor) {
             Rectangle mirrorCursorRect = getMirrorCursorRect(caret.getDataPosition(), caret.getSection());
-            g.setBackground(colors.cursorMirror);
-            g.setForeground(colors.cursorMirror);
+            g.setBackground(colors.getCursorMirror());
+            g.setForeground(colors.getCursorMirror());
             if (mirrorCursorRect != null) {
                 intersection = mirrorCursorRect.intersection(mainAreaRect);
                 boolean mirrorCursorVisible = !intersection.isEmpty();
@@ -1373,6 +1386,17 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         return dimensions.getPositionZone(positionX, positionY);
     }
 
+    @Nonnull
+    @Override
+    public BasicCodeAreaColors getBasicColors() {
+        return colors;
+    }
+
+    @Override
+    public void setBasicColors(@Nonnull BasicCodeAreaColors colors) {
+        this.colors = colors;
+    }
+
     /**
      * Draws char in array centering it in precomputed space.
      *
@@ -1554,37 +1578,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     @Override
     public void dispose() {
         colors.dispose();
-    }
-
-    private static class Colors {
-
-        Color foreground;
-        Color background;
-        Color selectionForeground;
-        Color selectionBackground;
-        Color selectionMirrorForeground;
-        Color selectionMirrorBackground;
-        Color cursor;
-        Color negativeCursor;
-        Color cursorMirror;
-        Color negativeCursorMirror;
-        Color decorationLine;
-        Color stripes;
-
-        private void dispose() {
-            foreground.dispose();
-            background.dispose();
-            selectionForeground.dispose();
-            selectionBackground.dispose();
-            selectionMirrorForeground.dispose();
-            selectionMirrorBackground.dispose();
-            cursor.dispose();
-            negativeCursor.dispose();
-// TODO            cursorMirror.dispose();
-// TODO           negativeCursorMirror.dispose();
-            decorationLine.dispose();
-            stripes.dispose();
-        }
     }
 
     private static class RowDataCache {
