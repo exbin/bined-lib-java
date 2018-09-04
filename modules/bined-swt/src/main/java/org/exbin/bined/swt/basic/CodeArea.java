@@ -457,16 +457,18 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
     @Override
     public void updateLayout() {
         Display.getDefault().asyncExec(() -> {
-            layout(true, true);
+//            layout(true, true);
             painter.updateLayout();
         });
     }
 
     public void repaint() {
         Display.getDefault().asyncExec(() -> {
-            layout(true, true);
-            resetPainter();
+//            layout(true, true);
+//            resetPainter();
             painter.repaint();
+//            redraw();
+//            update();
         });
     }
 

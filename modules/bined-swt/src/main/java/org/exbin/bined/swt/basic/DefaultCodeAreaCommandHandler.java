@@ -132,7 +132,10 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         if (!codeArea.isEnabled()) {
             return;
         }
+    }
 
+    @Override
+    public void keyTyped(@Nonnull KeyEvent keyEvent) {
         switch (keyEvent.keyCode) {
             case SWT.ARROW_LEFT: {
                 move(keyEvent.stateMask, MovementDirection.LEFT);
@@ -256,10 +259,10 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                 }
             }
         }
-    }
+        
+        if (!keyEvent.doit)
+            return;
 
-    @Override
-    public void keyTyped(@Nonnull KeyEvent keyEvent) {
         char keyValue = keyEvent.character;
         // TODO Add support for high unicode codes
         if (keyValue == java.awt.event.KeyEvent.CHAR_UNDEFINED) {
