@@ -119,15 +119,15 @@ public interface CodeAreaCommandHandler {
      */
     void wheelScroll(int scrollSize, @Nonnull ScrollbarOrientation orientation);
 
-    public enum ScrollbarOrientation {
+    enum ScrollbarOrientation {
         HORIZONTAL, VERTICAL
     }
 
-    public enum SelectingMode {
+    enum SelectingMode {
         NONE, SELECTING
     }
 
-    public interface CodeAreaCommandHandlerFactory {
+    interface CodeAreaCommandHandlerFactory {
 
         @Nonnull
         CodeAreaCommandHandler createCommandHandler(@Nonnull CodeAreaCore codeArea);

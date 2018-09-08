@@ -27,13 +27,14 @@ import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Objects;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.exbin.utils.binary_data.BinaryData;
 import org.exbin.utils.binary_data.EditableBinaryData;
 
 /**
  * Hexadecimal editor component utilities.
  *
- * @version 0.2.0 2018/06/24
+ * @version 0.2.0 2018/09/07
  * @author ExBin Project (https://exbin.org)
  */
 public class CodeAreaUtils {
@@ -463,6 +464,14 @@ public class CodeAreaUtils {
         }
 
         return byteValue;
+    }
+
+    @Nonnull
+    public static <T> T requireNonNull(@Nullable T object) {
+        if (object == null) {
+            throw new NullPointerException();
+        }
+        return object;
     }
 
     public static void requireNonNull(Object... objects) {

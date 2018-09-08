@@ -21,7 +21,7 @@ import org.eclipse.swt.events.KeyEvent;
 /**
  * Interface for code area data manipulation.
  *
- * @version 0.2.0 2018/04/24
+ * @version 0.2.0 2018/09/08
  * @author ExBin Project (https://exbin.org)
  */
 public interface CodeAreaCommandHandler {
@@ -109,7 +109,7 @@ public interface CodeAreaCommandHandler {
      * @param positionY relative position Y
      * @param selecting selection selecting
      */
-    void moveCaret(int positionX, int positionY, boolean selecting);
+    void moveCaret(int positionX, int positionY, @Nonnull SelectingMode selecting);
 
     /**
      * Performs scrolling.
@@ -121,8 +121,12 @@ public interface CodeAreaCommandHandler {
 
     public void dispose();
 
-    public enum ScrollbarOrientation {
+    enum ScrollbarOrientation {
         HORIZONTAL, VERTICAL
+    }
+
+    enum SelectingMode {
+        NONE, SELECTING
     }
 
     interface CodeAreaCommandHandlerFactory {

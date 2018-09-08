@@ -232,7 +232,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         rowDataCache.rowCharacters = new char[structure.getCharactersPerRow()];
     }
 
-    public void resetFont(@Nonnull GraphicsContext gc) {
+    public void fontChanged(@Nonnull GraphicsContext gc) {
         if (font == null) {
             reset();
         }
@@ -309,7 +309,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
         GraphicsContext gc = dataView.getGraphicsContext2D();
         if (font == null) {
-            resetFont(gc);
+            fontChanged(gc);
         }
 
         gc.setFill(Color.GREEN);
@@ -586,7 +586,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             reset();
         }
         if (fontChanged) {
-            resetFont(g);
+            fontChanged(g);
             fontChanged = false;
         }
 

@@ -686,10 +686,10 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         ((SelectionCapable) codeArea).clearSelection();
     }
 
-    public void updateSelection(boolean selecting, @Nonnull CaretPosition caretPosition) {
+    public void updateSelection(@Nonnull SelectingMode selecting, @Nonnull CaretPosition caretPosition) {
         DefaultCodeAreaCaret caret = (DefaultCodeAreaCaret) ((CaretCapable) codeArea).getCaret();
         SelectionRange selection = ((SelectionCapable) codeArea).getSelection();
-        if (selecting) {
+        if (selecting == SelectingMode.SELECTING) {
             ((SelectionCapable) codeArea).setSelection(selection.getStart(), caret.getDataPosition());
         } else {
             ((SelectionCapable) codeArea).setSelection(caret.getDataPosition(), caret.getDataPosition());
@@ -701,7 +701,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     }
 
     @Override
-    public void moveCaret(int positionX, int positionY, boolean selecting) {
+    public void moveCaret(int positionX, int positionY, @Nonnull SelectingMode selecting) {
         CaretPosition caretPosition = ((CaretCapable) codeArea).mousePositionToClosestCaretPosition(positionX, positionY, PositionOverflowMode.OVERFLOW);
         if (caretPosition != null) {
             ((CaretCapable) codeArea).getCaret().setCaretPosition(caretPosition);
@@ -719,7 +719,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         CaretPosition movePosition = ((CaretCapable) codeArea).computeMovePosition(caretPosition, direction);
         if (!caretPosition.equals(movePosition)) {
             caret.setCaretPosition(movePosition);
-            updateSelection((modifiers & java.awt.event.KeyEvent.SHIFT_DOWN_MASK) > 0, movePosition);
+            updateSelection((modifiers & java.awt.event.KeyEvent.SHIFT_DOWN_MASK) > 0 ? SelectingMode.SELECTING : SelectingMode.NONE, movePosition);
             notifyCaretMoved();
         }
     }

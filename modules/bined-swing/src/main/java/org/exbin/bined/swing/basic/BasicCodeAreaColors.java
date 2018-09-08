@@ -19,6 +19,7 @@ import java.awt.Color;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import org.exbin.bined.CodeAreaUtils;
 
 /**
  * Basic code area set of colors.
@@ -58,109 +59,109 @@ public class BasicCodeAreaColors {
 
     @Nonnull
     public Color getForeground() {
-        return Objects.requireNonNull(foreground);
+        return CodeAreaUtils.requireNonNull(foreground);
     }
 
     public void setForeground(@Nonnull Color foreground) {
-        this.foreground = Objects.requireNonNull(foreground);
+        this.foreground = CodeAreaUtils.requireNonNull(foreground);
     }
 
     @Nonnull
     public Color getBackground() {
-        return Objects.requireNonNull(background);
+        return CodeAreaUtils.requireNonNull(background);
     }
 
     public void setBackground(@Nonnull Color background) {
-        this.background = Objects.requireNonNull(background);
+        this.background = CodeAreaUtils.requireNonNull(background);
     }
 
     @Nonnull
     public Color getSelectionForeground() {
-        return Objects.requireNonNull(selectionForeground);
+        return CodeAreaUtils.requireNonNull(selectionForeground);
     }
 
     public void setSelectionForeground(@Nonnull Color selectionForeground) {
-        this.selectionForeground = Objects.requireNonNull(selectionForeground);
+        this.selectionForeground = CodeAreaUtils.requireNonNull(selectionForeground);
     }
 
     @Nonnull
     public Color getSelectionBackground() {
-        return Objects.requireNonNull(selectionBackground);
+        return CodeAreaUtils.requireNonNull(selectionBackground);
     }
 
     public void setSelectionBackground(@Nonnull Color selectionBackground) {
-        this.selectionBackground = Objects.requireNonNull(selectionBackground);
+        this.selectionBackground = CodeAreaUtils.requireNonNull(selectionBackground);
     }
 
     @Nonnull
     public Color getSelectionMirrorForeground() {
-        return Objects.requireNonNull(selectionMirrorForeground);
+        return CodeAreaUtils.requireNonNull(selectionMirrorForeground);
     }
 
     public void setSelectionMirrorForeground(@Nonnull Color selectionMirrorForeground) {
-        this.selectionMirrorForeground = Objects.requireNonNull(selectionMirrorForeground);
+        this.selectionMirrorForeground = CodeAreaUtils.requireNonNull(selectionMirrorForeground);
     }
 
     @Nonnull
     public Color getSelectionMirrorBackground() {
-        return Objects.requireNonNull(selectionMirrorBackground);
+        return CodeAreaUtils.requireNonNull(selectionMirrorBackground);
     }
 
     public void setSelectionMirrorBackground(@Nonnull Color selectionMirrorBackground) {
-        this.selectionMirrorBackground = Objects.requireNonNull(selectionMirrorBackground);
+        this.selectionMirrorBackground = CodeAreaUtils.requireNonNull(selectionMirrorBackground);
     }
 
     @Nonnull
     public Color getCursor() {
-        return Objects.requireNonNull(cursor);
+        return CodeAreaUtils.requireNonNull(cursor);
     }
 
     public void setCursor(@Nonnull Color cursor) {
-        this.cursor = Objects.requireNonNull(cursor);
+        this.cursor = CodeAreaUtils.requireNonNull(cursor);
     }
 
     @Nonnull
     public Color getNegativeCursor() {
-        return Objects.requireNonNull(negativeCursor);
+        return CodeAreaUtils.requireNonNull(negativeCursor);
     }
 
     public void setNegativeCursor(@Nonnull Color negativeCursor) {
-        this.negativeCursor = Objects.requireNonNull(negativeCursor);
+        this.negativeCursor = CodeAreaUtils.requireNonNull(negativeCursor);
     }
 
     @Nonnull
     public Color getCursorMirror() {
-        return Objects.requireNonNull(cursorMirror);
+        return CodeAreaUtils.requireNonNull(cursorMirror);
     }
 
     public void setCursorMirror(@Nonnull Color cursorMirror) {
-        this.cursorMirror = Objects.requireNonNull(cursorMirror);
+        this.cursorMirror = CodeAreaUtils.requireNonNull(cursorMirror);
     }
 
     @Nonnull
     public Color getNegativeCursorMirror() {
-        return Objects.requireNonNull(negativeCursorMirror);
+        return CodeAreaUtils.requireNonNull(negativeCursorMirror);
     }
 
     public void setNegativeCursorMirror(@Nonnull Color negativeCursorMirror) {
-        this.negativeCursorMirror = Objects.requireNonNull(negativeCursorMirror);
+        this.negativeCursorMirror = CodeAreaUtils.requireNonNull(negativeCursorMirror);
     }
 
     @Nonnull
     public Color getDecorationLine() {
-        return Objects.requireNonNull(decorationLine);
+        return CodeAreaUtils.requireNonNull(decorationLine);
     }
 
     public void setDecorationLine(@Nonnull Color decorationLine) {
-        this.decorationLine = Objects.requireNonNull(decorationLine);
+        this.decorationLine = CodeAreaUtils.requireNonNull(decorationLine);
     }
 
     @Nonnull
     public Color getStripes() {
-        return Objects.requireNonNull(stripes);
+        return CodeAreaUtils.requireNonNull(stripes);
     }
 
     public void setStripes(@Nonnull Color stripes) {
-        this.stripes = Objects.requireNonNull(stripes);
+        this.stripes = CodeAreaUtils.requireNonNull(stripes);
     }
 }

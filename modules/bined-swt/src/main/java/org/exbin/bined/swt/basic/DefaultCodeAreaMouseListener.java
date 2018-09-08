@@ -26,6 +26,7 @@ import org.eclipse.swt.events.MouseWheelListener;
 import org.eclipse.swt.graphics.Cursor;
 import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.capability.ScrollingCapable;
+import org.exbin.bined.swt.CodeAreaCommandHandler.SelectingMode;
 import org.exbin.bined.swt.CodeAreaCore;
 
 /**
@@ -74,7 +75,7 @@ public class DefaultCodeAreaMouseListener implements MouseListener, MouseMoveLis
         int relativeX = computeRelativeX(me);
         int relativeY = computeRelativeY(me);
         boolean selecting = (me.stateMask & SWT.SHIFT) > 0;
-        codeArea.getCommandHandler().moveCaret(relativeX, relativeY, selecting);
+        codeArea.getCommandHandler().moveCaret(relativeX, relativeY, selecting ? SelectingMode.SELECTING : SelectingMode.NONE);
         ((ScrollingCapable) codeArea).revealCursor();
     }
 
@@ -109,7 +110,7 @@ public class DefaultCodeAreaMouseListener implements MouseListener, MouseMoveLis
     public void mouseMove(MouseEvent me) {
         updateMouseCursor(me);
         if (codeArea.isEnabled() && mouseDown) {
-            codeArea.getCommandHandler().moveCaret(computeRelativeX(me), computeRelativeY(me), true);
+            codeArea.getCommandHandler().moveCaret(computeRelativeX(me), computeRelativeY(me), SelectingMode.SELECTING);
             ((ScrollingCapable) codeArea).revealCursor();
         }
     }

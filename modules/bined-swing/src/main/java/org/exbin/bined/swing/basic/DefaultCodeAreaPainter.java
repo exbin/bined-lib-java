@@ -223,7 +223,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         rowDataCache.rowCharacters = new char[structure.getCharactersPerRow()];
     }
 
-    public void resetFont(@Nonnull Graphics g) {
+    public void fontChanged(@Nonnull Graphics g) {
         if (font == null) {
             reset();
         }
@@ -298,7 +298,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         updateCache();
         if (font == null) {
             ((FontCapable) codeArea).setCodeFont(codeArea.getFont());
-            resetFont(g);
+            fontChanged(g);
         }
         if (rowDataCache == null) {
             return;
@@ -554,7 +554,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             reset();
         }
         if (fontChanged) {
-            resetFont(g);
+            fontChanged(g);
             fontChanged = false;
         }
 
