@@ -30,16 +30,7 @@
                   <Group type="102" alignment="1" attributes="0">
                       <Group type="103" groupAlignment="1" attributes="0">
                           <Component id="lineNumbersLengthSpinner" alignment="0" max="32767" attributes="0"/>
-                          <Component id="spaceGroupSizeSpinner" alignment="0" max="32767" attributes="0"/>
-                          <Component id="byteGroupSizeSpinner" alignment="0" max="32767" attributes="0"/>
                           <Component id="lineLengthSpinner" alignment="0" max="32767" attributes="0"/>
-                          <Group type="102" alignment="0" attributes="0">
-                              <Group type="103" groupAlignment="1" attributes="0">
-                                  <Component id="byteGroupSizeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Component id="spaceGroupSizeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                          </Group>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
@@ -60,14 +51,6 @@
               <Component id="lineNumbersLengthLabel" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="lineNumbersLengthSpinner" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
-              <Component id="byteGroupSizeLabel" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
-              <Component id="byteGroupSizeSpinner" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
-              <Component id="spaceGroupSizeLabel" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
-              <Component id="spaceGroupSizeSpinner" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="32767" attributes="0"/>
           </Group>
       </Group>
@@ -87,36 +70,6 @@
       </Properties>
       <Events>
         <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="lineLengthSpinnerStateChanged"/>
-      </Events>
-    </Component>
-    <Component class="javax.swing.JLabel" name="byteGroupSizeLabel">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Byte Group Size"/>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JSpinner" name="byteGroupSizeSpinner">
-      <Properties>
-        <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
-          <SpinnerModel initial="0" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
-        </Property>
-      </Properties>
-      <Events>
-        <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="byteGroupSizeSpinnerStateChanged"/>
-      </Events>
-    </Component>
-    <Component class="javax.swing.JLabel" name="spaceGroupSizeLabel">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Space Group Size"/>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JSpinner" name="spaceGroupSizeSpinner">
-      <Properties>
-        <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
-          <SpinnerModel initial="0" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
-        </Property>
-      </Properties>
-      <Events>
-        <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="spaceGroupSizeSpinnerStateChanged"/>
       </Events>
     </Component>
     <Component class="javax.swing.JCheckBox" name="rowWrappingModeCheckBox">

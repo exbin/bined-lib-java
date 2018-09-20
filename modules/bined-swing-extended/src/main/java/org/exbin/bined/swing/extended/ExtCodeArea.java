@@ -60,7 +60,7 @@ import org.exbin.bined.swing.capability.FontCapable;
 /**
  * Code area component extended code area.
  *
- * @version 0.2.0 2018/09/02
+ * @version 0.2.0 2018/09/20
  * @author ExBin Project (https://exbin.org)
  */
 public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeAreaSwingControl {
@@ -93,6 +93,7 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
     private AntialiasingMode antialiasingMode = AntialiasingMode.AUTO;
     @Nonnull
     private CodeType codeType = CodeType.HEXADECIMAL;
+    private boolean showUnprintables;
     private int rowPositionNumberLength = 0;
     @Nonnull
     private CodeCharactersCase codeCharactersCase = CodeCharactersCase.UPPER;
@@ -644,6 +645,17 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
     @Override
     public void setBasicColors(@Nonnull BasicCodeAreaColors colors) {
         painter.setBasicColors(colors);
+    }
+
+    @Override
+    public boolean isShowUnprintables() {
+        return showUnprintables;
+    }
+
+    @Override
+    public void setShowUnprintables(boolean show) {
+        this.showUnprintables = show;
+        repaint();
     }
 
     public void notifySelectionChanged() {

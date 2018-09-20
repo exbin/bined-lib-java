@@ -22,7 +22,7 @@ import org.exbin.bined.swing.basic.CodeArea;
 /**
  * Hexadecimal editor example panel.
  *
- * @version 0.2.0 2018/07/01
+ * @version 0.2.0 2018/09/20
  * @author ExBin Project (https://exbin.org)
  */
 public class LayoutPanel extends javax.swing.JPanel {
@@ -35,15 +35,7 @@ public class LayoutPanel extends javax.swing.JPanel {
         initComponents();
 
         rowWrappingModeCheckBox.setSelected(codeArea.getRowWrapping() == RowWrappingCapable.RowWrappingMode.WRAPPING);
-//        lineLengthSpinner.setValue(codeArea.getLineLength());
-//        headerSpaceComboBox.setSelectedIndex(codeArea.getHeaderSpaceType().ordinal());
-//        headerSpaceSpinner.setValue(codeArea.getHeaderSpaceSize());
-//        lineNumbersSpaceComboBox.setSelectedIndex(codeArea.getLineNumberSpaceType().ordinal());
-//        lineNumbersSpaceSpinner.setValue(codeArea.getLineNumberSpaceSize());
-//        lineNumbersLengthComboBox.setSelectedIndex(codeArea.getLineNumberType().ordinal());
-//        lineNumbersLengthSpinner.setValue(codeArea.getLineNumberSpecifiedLength());
-//        byteGroupSizeSpinner.setValue(codeArea.getByteGroupSize());
-//        spaceGroupSizeSpinner.setValue(codeArea.getSpaceGroupSize());
+        lineNumbersLengthSpinner.setValue(codeArea.getRowPositionNumberLength());
     }
 
     /**
@@ -57,10 +49,6 @@ public class LayoutPanel extends javax.swing.JPanel {
 
         lineLengthLabel = new javax.swing.JLabel();
         lineLengthSpinner = new javax.swing.JSpinner();
-        byteGroupSizeLabel = new javax.swing.JLabel();
-        byteGroupSizeSpinner = new javax.swing.JSpinner();
-        spaceGroupSizeLabel = new javax.swing.JLabel();
-        spaceGroupSizeSpinner = new javax.swing.JSpinner();
         rowWrappingModeCheckBox = new javax.swing.JCheckBox();
         lineNumbersLengthSpinner = new javax.swing.JSpinner();
         lineNumbersLengthLabel = new javax.swing.JLabel();
@@ -71,24 +59,6 @@ public class LayoutPanel extends javax.swing.JPanel {
         lineLengthSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 lineLengthSpinnerStateChanged(evt);
-            }
-        });
-
-        byteGroupSizeLabel.setText("Byte Group Size");
-
-        byteGroupSizeSpinner.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1));
-        byteGroupSizeSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                byteGroupSizeSpinnerStateChanged(evt);
-            }
-        });
-
-        spaceGroupSizeLabel.setText("Space Group Size");
-
-        spaceGroupSizeSpinner.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1));
-        spaceGroupSizeSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                spaceGroupSizeSpinnerStateChanged(evt);
             }
         });
 
@@ -125,14 +95,7 @@ public class LayoutPanel extends javax.swing.JPanel {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(lineNumbersLengthSpinner, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(spaceGroupSizeSpinner, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(byteGroupSizeSpinner, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lineLengthSpinner, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(byteGroupSizeLabel, javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(spaceGroupSizeLabel, javax.swing.GroupLayout.Alignment.LEADING))
-                                .addGap(0, 0, Short.MAX_VALUE)))
+                            .addComponent(lineLengthSpinner, javax.swing.GroupLayout.Alignment.LEADING))
                         .addContainerGap())))
         );
         layout.setVerticalGroup(
@@ -148,14 +111,6 @@ public class LayoutPanel extends javax.swing.JPanel {
                 .addComponent(lineNumbersLengthLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lineNumbersLengthSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(byteGroupSizeLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(byteGroupSizeSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(spaceGroupSizeLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(spaceGroupSizeSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -171,28 +126,16 @@ public class LayoutPanel extends javax.swing.JPanel {
         codeArea.setRowPositionNumberLength((Integer) lineNumbersLengthSpinner.getValue());
     }//GEN-LAST:event_lineNumbersLengthSpinnerStateChanged
 
-    private void byteGroupSizeSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_byteGroupSizeSpinnerStateChanged
-        //        codeArea.setByteGroupSize((Integer) byteGroupSizeSpinner.getValue());
-    }//GEN-LAST:event_byteGroupSizeSpinnerStateChanged
-
-    private void spaceGroupSizeSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spaceGroupSizeSpinnerStateChanged
-        //        codeArea.setSpaceGroupSize((Integer) spaceGroupSizeSpinner.getValue());
-    }//GEN-LAST:event_spaceGroupSizeSpinnerStateChanged
-
     private void rowWrappingModeCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_rowWrappingModeCheckBoxItemStateChanged
         codeArea.setRowWrapping(rowWrappingModeCheckBox.isSelected() ? RowWrappingCapable.RowWrappingMode.WRAPPING : RowWrappingCapable.RowWrappingMode.NO_WRAPPING);
     }//GEN-LAST:event_rowWrappingModeCheckBoxItemStateChanged
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel byteGroupSizeLabel;
-    private javax.swing.JSpinner byteGroupSizeSpinner;
     private javax.swing.JLabel lineLengthLabel;
     private javax.swing.JSpinner lineLengthSpinner;
     private javax.swing.JLabel lineNumbersLengthLabel;
     private javax.swing.JSpinner lineNumbersLengthSpinner;
     private javax.swing.JCheckBox rowWrappingModeCheckBox;
-    private javax.swing.JLabel spaceGroupSizeLabel;
-    private javax.swing.JSpinner spaceGroupSizeSpinner;
     // End of variables declaration//GEN-END:variables
 }

@@ -24,6 +24,7 @@ import java.util.logging.Logger;
 import javax.annotation.Nonnull;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
+import org.exbin.bined.BasicCodeAreaSection;
 import org.exbin.bined.CaretPosition;
 import org.exbin.bined.SelectionRange;
 import org.exbin.bined.capability.CaretCapable;
@@ -35,7 +36,7 @@ import org.exbin.utils.binary_data.EditableBinaryData;
 /**
  * Hexadecimal editor example panel.
  *
- * @version 0.2.0 2018/03/18
+ * @version 0.2.0 2018/09/20
  * @author ExBin Project (https://exbin.org)
  */
 public class StatePanel extends javax.swing.JPanel {
@@ -277,7 +278,7 @@ public class StatePanel extends javax.swing.JPanel {
     }//GEN-LAST:event_saveDataButtonActionPerformed
 
     private void activeSectionComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_activeSectionComboBoxActionPerformed
-        //        codeArea.setActiveSection(Section.values()[activeSectionComboBox.getSelectedIndex()]);
+        codeArea.getCaret().setSection(BasicCodeAreaSection.values()[activeSectionComboBox.getSelectedIndex()].getSection());
     }//GEN-LAST:event_activeSectionComboBoxActionPerformed
 
     private void loadDataButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadDataButtonActionPerformed

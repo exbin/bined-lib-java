@@ -18,12 +18,13 @@ package org.exbin.bined.swing.extended;
 import org.exbin.bined.swing.basic.DefaultCodeArea;
 import org.exbin.bined.swing.capability.BasicColorsCapable;
 import org.exbin.bined.swing.extended.capability.AntialiasingCapable;
+import org.exbin.bined.swing.extended.capability.ShowingUnprintableCapable;
 
 /**
  * Code area component extended interface.
  *
- * @version 0.2.0 2018/09/02
+ * @version 0.2.0 2018/09/18
  * @author ExBin Project (https://exbin.org)
  */
-public interface ExtendedCodeArea extends DefaultCodeArea, AntialiasingCapable, BasicColorsCapable {
+public interface ExtendedCodeArea extends DefaultCodeArea, AntialiasingCapable, BasicColorsCapable, ShowingUnprintableCapable {
 }

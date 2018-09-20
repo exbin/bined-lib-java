@@ -20,21 +20,16 @@
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="hexCharactersModeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="positionCodeTypeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                      </Group>
+                      <Component id="hexCharactersModeLabel" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="132" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="backgroundModeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="borderTypeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="lineNumbersBackgroundCheckBox" alignment="0" max="32767" attributes="0"/>
                           <Component id="backgroundModeComboBox" alignment="0" max="32767" attributes="0"/>
                           <Component id="borderTypeComboBox" alignment="0" max="32767" attributes="0"/>
                           <Component id="hexCharactersModeComboBox" alignment="0" max="32767" attributes="0"/>
-                          <Component id="positionCodeTypeComboBox" alignment="1" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
@@ -50,8 +45,6 @@
               <EmptySpace max="-2" attributes="0"/>
               <Component id="backgroundModeComboBox" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="lineNumbersBackgroundCheckBox" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
               <Component id="borderTypeLabel" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="borderTypeComboBox" min="-2" max="-2" attributes="0"/>
@@ -59,10 +52,6 @@
               <Component id="hexCharactersModeLabel" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="hexCharactersModeComboBox" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
-              <Component id="positionCodeTypeLabel" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
-              <Component id="positionCodeTypeComboBox" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="32767" attributes="0"/>
           </Group>
       </Group>
@@ -108,37 +97,6 @@
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="backgroundModeComboBoxActionPerformed"/>
-      </Events>
-      <AuxValues>
-        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
-      </AuxValues>
-    </Component>
-    <Component class="javax.swing.JLabel" name="positionCodeTypeLabel">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Position Code Type"/>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JCheckBox" name="lineNumbersBackgroundCheckBox">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Include Line Numbers"/>
-      </Properties>
-      <Events>
-        <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="lineNumbersBackgroundCheckBoxItemStateChanged"/>
-      </Events>
-    </Component>
-    <Component class="javax.swing.JComboBox" name="positionCodeTypeComboBox">
-      <Properties>
-        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-          <StringArray count="3">
-            <StringItem index="0" value="OCTAL"/>
-            <StringItem index="1" value="DECIMAL"/>
-            <StringItem index="2" value="HEXADECIMAL"/>
-          </StringArray>
-        </Property>
-        <Property name="selectedIndex" type="int" value="2"/>
-      </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="positionCodeTypeComboBoxActionPerformed"/>
       </Events>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
