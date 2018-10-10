@@ -53,13 +53,13 @@ public class LayoutPanelEx extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        lineLengthLabel = new javax.swing.JLabel();
+        bytesPerLineLabel = new javax.swing.JLabel();
+        bytesPerLineSpinner = new javax.swing.JSpinner();
         headerPanel = new javax.swing.JPanel();
         showHeaderCheckBox = new javax.swing.JCheckBox();
         headerSpaceLabel = new javax.swing.JLabel();
         headerSpaceComboBox = new javax.swing.JComboBox<>();
         headerSpaceSpinner = new javax.swing.JSpinner();
-        lineLengthSpinner = new javax.swing.JSpinner();
         lineNumbersPanel = new javax.swing.JPanel();
         showLineNumbersCheckBox = new javax.swing.JCheckBox();
         lineNumbersLengthLabel = new javax.swing.JLabel();
@@ -74,7 +74,14 @@ public class LayoutPanelEx extends javax.swing.JPanel {
         spaceGroupSizeSpinner = new javax.swing.JSpinner();
         wrapLineModeCheckBox = new javax.swing.JCheckBox();
 
-        lineLengthLabel.setText("Bytes Per Line");
+        bytesPerLineLabel.setText("Bytes Per Line");
+
+        bytesPerLineSpinner.setModel(new javax.swing.SpinnerNumberModel(16, 1, null, 1));
+        bytesPerLineSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                bytesPerLineSpinnerStateChanged(evt);
+            }
+        });
 
         headerPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Header"));
 
@@ -132,13 +139,6 @@ public class LayoutPanelEx extends javax.swing.JPanel {
                     .addComponent(headerSpaceSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-
-        lineLengthSpinner.setModel(new javax.swing.SpinnerNumberModel(16, 1, null, 1));
-        lineLengthSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                lineLengthSpinnerStateChanged(evt);
-            }
-        });
 
         lineNumbersPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Line Numbers"));
 
@@ -262,7 +262,7 @@ public class LayoutPanelEx extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lineLengthLabel)
+                            .addComponent(bytesPerLineLabel)
                             .addComponent(wrapLineModeCheckBox))
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
@@ -270,7 +270,7 @@ public class LayoutPanelEx extends javax.swing.JPanel {
                             .addComponent(spaceGroupSizeSpinner, javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(byteGroupSizeSpinner, javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(headerPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(lineLengthSpinner, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(bytesPerLineSpinner, javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(lineNumbersPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -285,9 +285,9 @@ public class LayoutPanelEx extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(wrapLineModeCheckBox)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lineLengthLabel)
+                .addComponent(bytesPerLineLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lineLengthSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(bytesPerLineSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(headerPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -316,12 +316,12 @@ public class LayoutPanelEx extends javax.swing.JPanel {
         //        codeArea.setHeaderSpaceSize((Integer) headerSpaceSpinner.getValue());
     }//GEN-LAST:event_headerSpaceSpinnerStateChanged
 
-    private void lineLengthSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_lineLengthSpinnerStateChanged
+    private void bytesPerLineSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_bytesPerLineSpinnerStateChanged
         //        int value = (Integer) lineLengthSpinner.getValue();
         //        if (value > 0) {
         //            codeArea.setLineLength(value);
         //        }
-    }//GEN-LAST:event_lineLengthSpinnerStateChanged
+    }//GEN-LAST:event_bytesPerLineSpinnerStateChanged
 
     private void showLineNumbersCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_showLineNumbersCheckBoxItemStateChanged
         //        codeArea.setShowLineNumbers(showLineNumbersCheckBox.isSelected());
@@ -359,12 +359,12 @@ public class LayoutPanelEx extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel byteGroupSizeLabel;
     private javax.swing.JSpinner byteGroupSizeSpinner;
+    private javax.swing.JLabel bytesPerLineLabel;
+    private javax.swing.JSpinner bytesPerLineSpinner;
     private javax.swing.JPanel headerPanel;
     private javax.swing.JComboBox<String> headerSpaceComboBox;
     private javax.swing.JLabel headerSpaceLabel;
     private javax.swing.JSpinner headerSpaceSpinner;
-    private javax.swing.JLabel lineLengthLabel;
-    private javax.swing.JSpinner lineLengthSpinner;
     private javax.swing.JComboBox<String> lineNumbersLengthComboBox;
     private javax.swing.JLabel lineNumbersLengthLabel;
     private javax.swing.JSpinner lineNumbersLengthSpinner;

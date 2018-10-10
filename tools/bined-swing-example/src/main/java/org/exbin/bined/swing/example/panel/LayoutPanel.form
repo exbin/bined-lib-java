@@ -21,7 +21,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="lineLengthLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="bytesPerLineLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="rowWrappingModeCheckBox" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="lineNumbersLengthLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
@@ -30,7 +30,7 @@
                   <Group type="102" alignment="1" attributes="0">
                       <Group type="103" groupAlignment="1" attributes="0">
                           <Component id="lineNumbersLengthSpinner" alignment="0" max="32767" attributes="0"/>
-                          <Component id="lineLengthSpinner" alignment="0" max="32767" attributes="0"/>
+                          <Component id="bytesPerLineSpinner" alignment="0" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
@@ -44,9 +44,9 @@
               <EmptySpace max="-2" attributes="0"/>
               <Component id="rowWrappingModeCheckBox" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="lineLengthLabel" min="-2" max="-2" attributes="0"/>
+              <Component id="bytesPerLineLabel" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="lineLengthSpinner" min="-2" max="-2" attributes="0"/>
+              <Component id="bytesPerLineSpinner" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="lineNumbersLengthLabel" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
@@ -57,19 +57,19 @@
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Component class="javax.swing.JLabel" name="lineLengthLabel">
+    <Component class="javax.swing.JLabel" name="bytesPerLineLabel">
       <Properties>
         <Property name="text" type="java.lang.String" value="Bytes Per Line"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JSpinner" name="lineLengthSpinner">
+    <Component class="javax.swing.JSpinner" name="bytesPerLineSpinner">
       <Properties>
         <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
-          <SpinnerModel initial="16" minimum="1" numberType="java.lang.Integer" stepSize="1" type="number"/>
+          <SpinnerModel initial="16" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
         </Property>
       </Properties>
       <Events>
-        <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="lineLengthSpinnerStateChanged"/>
+        <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="bytesPerLineSpinnerStateChanged"/>
       </Events>
     </Component>
     <Component class="javax.swing.JCheckBox" name="rowWrappingModeCheckBox">

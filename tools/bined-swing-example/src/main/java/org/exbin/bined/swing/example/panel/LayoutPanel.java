@@ -16,13 +16,13 @@
 package org.exbin.bined.swing.example.panel;
 
 import javax.annotation.Nonnull;
-import org.exbin.bined.capability.RowWrappingCapable;
+import org.exbin.bined.capability.RowWrappingCapable.RowWrappingMode;
 import org.exbin.bined.swing.basic.CodeArea;
 
 /**
  * Hexadecimal editor example panel.
  *
- * @version 0.2.0 2018/09/20
+ * @version 0.2.0 2018/10/10
  * @author ExBin Project (https://exbin.org)
  */
 public class LayoutPanel extends javax.swing.JPanel {
@@ -34,7 +34,7 @@ public class LayoutPanel extends javax.swing.JPanel {
 
         initComponents();
 
-        rowWrappingModeCheckBox.setSelected(codeArea.getRowWrapping() == RowWrappingCapable.RowWrappingMode.WRAPPING);
+        rowWrappingModeCheckBox.setSelected(codeArea.getRowWrapping() == RowWrappingMode.WRAPPING);
         lineNumbersLengthSpinner.setValue(codeArea.getRowPositionNumberLength());
     }
 
@@ -47,18 +47,18 @@ public class LayoutPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        lineLengthLabel = new javax.swing.JLabel();
-        lineLengthSpinner = new javax.swing.JSpinner();
+        bytesPerLineLabel = new javax.swing.JLabel();
+        bytesPerLineSpinner = new javax.swing.JSpinner();
         rowWrappingModeCheckBox = new javax.swing.JCheckBox();
         lineNumbersLengthSpinner = new javax.swing.JSpinner();
         lineNumbersLengthLabel = new javax.swing.JLabel();
 
-        lineLengthLabel.setText("Bytes Per Line");
+        bytesPerLineLabel.setText("Bytes Per Line");
 
-        lineLengthSpinner.setModel(new javax.swing.SpinnerNumberModel(16, 1, null, 1));
-        lineLengthSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
+        bytesPerLineSpinner.setModel(new javax.swing.SpinnerNumberModel(16, 0, null, 1));
+        bytesPerLineSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                lineLengthSpinnerStateChanged(evt);
+                bytesPerLineSpinnerStateChanged(evt);
             }
         });
 
@@ -88,14 +88,14 @@ public class LayoutPanel extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lineLengthLabel)
+                            .addComponent(bytesPerLineLabel)
                             .addComponent(rowWrappingModeCheckBox)
                             .addComponent(lineNumbersLengthLabel))
                         .addGap(0, 243, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(lineNumbersLengthSpinner, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lineLengthSpinner, javax.swing.GroupLayout.Alignment.LEADING))
+                            .addComponent(bytesPerLineSpinner, javax.swing.GroupLayout.Alignment.LEADING))
                         .addContainerGap())))
         );
         layout.setVerticalGroup(
@@ -104,9 +104,9 @@ public class LayoutPanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(rowWrappingModeCheckBox)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lineLengthLabel)
+                .addComponent(bytesPerLineLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lineLengthSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(bytesPerLineSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lineNumbersLengthLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -115,25 +115,23 @@ public class LayoutPanel extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void lineLengthSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_lineLengthSpinnerStateChanged
-        int value = (Integer) lineLengthSpinner.getValue();
-        if (value >= 0) {
-            codeArea.setRowPositionNumberLength(value);
-        }
-    }//GEN-LAST:event_lineLengthSpinnerStateChanged
+    private void bytesPerLineSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_bytesPerLineSpinnerStateChanged
+        int value = (Integer) bytesPerLineSpinner.getValue();
+        codeArea.setMaxBytesPerLine(value);
+    }//GEN-LAST:event_bytesPerLineSpinnerStateChanged
 
     private void lineNumbersLengthSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_lineNumbersLengthSpinnerStateChanged
         codeArea.setRowPositionNumberLength((Integer) lineNumbersLengthSpinner.getValue());
     }//GEN-LAST:event_lineNumbersLengthSpinnerStateChanged
 
     private void rowWrappingModeCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_rowWrappingModeCheckBoxItemStateChanged
-        codeArea.setRowWrapping(rowWrappingModeCheckBox.isSelected() ? RowWrappingCapable.RowWrappingMode.WRAPPING : RowWrappingCapable.RowWrappingMode.NO_WRAPPING);
+        codeArea.setRowWrapping(rowWrappingModeCheckBox.isSelected() ? RowWrappingMode.WRAPPING : RowWrappingMode.NO_WRAPPING);
     }//GEN-LAST:event_rowWrappingModeCheckBoxItemStateChanged
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel lineLengthLabel;
-    private javax.swing.JSpinner lineLengthSpinner;
+    private javax.swing.JLabel bytesPerLineLabel;
+    private javax.swing.JSpinner bytesPerLineSpinner;
     private javax.swing.JLabel lineNumbersLengthLabel;
     private javax.swing.JSpinner lineNumbersLengthSpinner;
     private javax.swing.JCheckBox rowWrappingModeCheckBox;

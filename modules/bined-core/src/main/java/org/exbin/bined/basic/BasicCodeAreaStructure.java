@@ -34,7 +34,7 @@ import org.exbin.bined.capability.ViewModeCapable;
 /**
  * Code area data representation structure for basic variant.
  *
- * @version 0.2.0 2018/08/28
+ * @version 0.2.0 2018/10/10
  * @author ExBin Project (https://exbin.org)
  */
 public class BasicCodeAreaStructure {
@@ -126,14 +126,14 @@ public class BasicCodeAreaStructure {
         if (rowWrapping == RowWrappingMode.WRAPPING) {
             int charactersPerByte = 0;
             if (viewMode != CodeAreaViewMode.TEXT_PREVIEW) {
-                charactersPerByte += codeType.getMaxDigitsForByte();
+                charactersPerByte += codeType.getMaxDigitsForByte() + 1;
             }
             if (viewMode != CodeAreaViewMode.CODE_MATRIX) {
                 charactersPerByte++;
             }
-            computedBytesPerRow = (charactersPerPage - (viewMode == CodeAreaViewMode.DUAL ? 1 : 0)) / charactersPerByte;
+            computedBytesPerRow = charactersPerPage / charactersPerByte;
 
-            if (computedBytesPerRow > maxBytesPerLine) {
+            if (maxBytesPerLine > 0 && computedBytesPerRow > maxBytesPerLine) {
                 computedBytesPerRow = maxBytesPerLine;
             }
 
