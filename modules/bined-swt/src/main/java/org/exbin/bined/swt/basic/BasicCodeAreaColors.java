@@ -15,7 +15,6 @@
  */
 package org.exbin.bined.swt.basic;
 
-import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.eclipse.swt.graphics.Color;
@@ -30,9 +29,9 @@ import org.exbin.bined.CodeAreaUtils;
 public class BasicCodeAreaColors {
 
     @Nullable
-    private Color foreground;
+    private Color textForeground;
     @Nullable
-    private Color background;
+    private Color textBackground;
     @Nullable
     private Color selectionForeground;
     @Nullable
@@ -58,21 +57,21 @@ public class BasicCodeAreaColors {
     }
 
     @Nonnull
-    public Color getForeground() {
-        return CodeAreaUtils.requireNonNull(foreground);
+    public Color getTextForeground() {
+        return CodeAreaUtils.requireNonNull(textForeground);
     }
 
-    public void setForeground(@Nonnull Color foreground) {
-        this.foreground = CodeAreaUtils.requireNonNull(foreground);
+    public void setTextForeground(@Nonnull Color textForeground) {
+        this.textForeground = CodeAreaUtils.requireNonNull(textForeground);
     }
 
     @Nonnull
-    public Color getBackground() {
-        return CodeAreaUtils.requireNonNull(background);
+    public Color getTextBackground() {
+        return CodeAreaUtils.requireNonNull(textBackground);
     }
 
-    public void setBackground(@Nonnull Color background) {
-        this.background = CodeAreaUtils.requireNonNull(background);
+    public void setTextBackground(@Nonnull Color textBackground) {
+        this.textBackground = CodeAreaUtils.requireNonNull(textBackground);
     }
 
     @Nonnull
@@ -167,8 +166,8 @@ public class BasicCodeAreaColors {
 
     public void dispose() {
         // TODO fix colors resource handling
-        foreground.dispose();
-        background.dispose();
+        textForeground.dispose();
+        textBackground.dispose();
         selectionForeground.dispose();
         selectionBackground.dispose();
         selectionMirrorForeground.dispose();

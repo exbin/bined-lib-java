@@ -15,7 +15,6 @@
  */
 package org.exbin.bined.javafx.basic;
 
-import java.util.Objects;
 import javafx.scene.paint.Color;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -30,9 +29,9 @@ import org.exbin.bined.CodeAreaUtils;
 public class BasicCodeAreaColors {
 
     @Nullable
-    private Color foreground;
+    private Color textForeground;
     @Nullable
-    private Color background;
+    private Color textBackground;
     @Nullable
     private Color selectionForeground;
     @Nullable
@@ -58,21 +57,21 @@ public class BasicCodeAreaColors {
     }
 
     @Nonnull
-    public Color getForeground() {
-        return CodeAreaUtils.requireNonNull(foreground);
+    public Color getTextForeground() {
+        return CodeAreaUtils.requireNonNull(textForeground);
     }
 
-    public void setForeground(@Nonnull Color foreground) {
-        this.foreground = CodeAreaUtils.requireNonNull(foreground);
+    public void setTextForeground(@Nonnull Color textForeground) {
+        this.textForeground = CodeAreaUtils.requireNonNull(textForeground);
     }
 
     @Nonnull
-    public Color getBackground() {
-        return CodeAreaUtils.requireNonNull(background);
+    public Color getTextBackground() {
+        return CodeAreaUtils.requireNonNull(textBackground);
     }
 
-    public void setBackground(@Nonnull Color background) {
-        this.background = CodeAreaUtils.requireNonNull(background);
+    public void setTextBackground(@Nonnull Color textBackground) {
+        this.textBackground = CodeAreaUtils.requireNonNull(textBackground);
     }
 
     @Nonnull

@@ -328,14 +328,14 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             resetColors = false;
 
             //dataView.getStyleClass().contains("-fx-")
-            Color foreground = null; //codeArea.getForeground();
-            if (foreground == null) {
-                foreground = Color.BLACK;
+            Color textForeground = null; //codeArea.getForeground();
+            if (textForeground == null) {
+                textForeground = Color.BLACK;
             }
 
-            Color background = null; //codeArea.getBackground();
-            if (background == null) {
-                background = Color.WHITE;
+            Color textBackground = null; //codeArea.getBackground();
+            if (textBackground == null) {
+                textBackground = Color.WHITE;
             }
             Color selectionForeground = null; // UIManager.getColor("TextArea.selectionForeground");
             if (selectionForeground == null) {
@@ -354,10 +354,10 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             Color negativeCursor = CodeAreaJavaFxUtils.createNegativeColor(cursor);
             Color decorationLine = Color.GRAY;
 
-            Color stripes = CodeAreaJavaFxUtils.createOddColor(background);
+            Color stripes = CodeAreaJavaFxUtils.createOddColor(textBackground);
 
-            colors.setForeground(foreground);
-            colors.setBackground(background);
+            colors.setTextForeground(textForeground);
+            colors.setTextBackground(textBackground);
             colors.setSelectionForeground(selectionForeground);
             colors.setSelectionBackground(selectionBackground);
             colors.setSelectionMirrorForeground(selectionMirrorForeground);
@@ -660,11 +660,11 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         long dataPosition = scrollPosition.getRowPosition() * bytesPerRow;
         double rowPositionX = dataViewX - scrollPosition.getCharPosition() * characterWidth - scrollPosition.getCharOffset();
         double rowPositionY = dataViewY - scrollPosition.getRowOffset();
-        g.setFill(colors.getForeground());
+        g.setFill(colors.getTextForeground());
         for (int row = 0; row <= rowsPerRect; row++) {
             prepareRowData(dataPosition);
             paintRowBackground(g, dataPosition, rowPositionX, rowPositionY);
-            g.setFill(colors.getForeground());
+            g.setFill(colors.getTextForeground());
             paintRowText(g, dataPosition, rowPositionX, rowPositionY);
 
             rowPositionY += rowHeight;
@@ -914,7 +914,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
             Color color = getPositionTextColor(rowDataPosition, byteOnRow, charOnRow, section);
             if (color == null) {
-                color = colors.getForeground();
+                color = colors.getTextForeground();
             }
 
             boolean sequenceBreak = false;

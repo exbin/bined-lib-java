@@ -15,7 +15,6 @@
  */
 package org.exbin.bined.swing.basic;
 
-import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.beans.PropertyChangeEvent;
@@ -132,9 +131,6 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
     }
 
     private void init() {
-        // TODO: Use swing color instead
-        setBackground(Color.WHITE);
-
         UIManager.addPropertyChangeListener((@Nonnull PropertyChangeEvent evt) -> {
             resetColors();
         });

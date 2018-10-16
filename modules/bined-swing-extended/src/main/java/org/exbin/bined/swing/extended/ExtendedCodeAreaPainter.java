@@ -356,8 +356,8 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter
 
             Color stripes = CodeAreaSwingUtils.createOddColor(background);
 
-            colors.setForeground(foreground);
-            colors.setBackground(background);
+            colors.setTextForeground(foreground);
+            colors.setTextBackground(background);
             colors.setSelectionForeground(selectionForeground);
             colors.setSelectionBackground(selectionBackground);
             colors.setSelectionMirrorForeground(selectionMirrorForeground);
@@ -375,7 +375,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter
         int rowPositionAreaWidth = dimensions.getRowPositionAreaWidth();
         int componentWidth = dimensions.getComponentWidth();
         int characterWidth = metrics.getCharacterWidth();
-        g.setColor(colors.getBackground());
+        g.setColor(colors.getTextBackground());
         g.fillRect(0, 0, componentWidth, headerAreaHeight);
 
         // Decoration lines
@@ -401,7 +401,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter
         int componentWidth = dimensions.getComponentWidth();
 
         g.setFont(font);
-        g.setColor(colors.getBackground());
+        g.setColor(colors.getTextBackground());
         g.fillRect(headerArea.x, headerArea.y, headerArea.width, headerArea.height);
 
         // Decoration lines
@@ -418,7 +418,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter
             int headerX = dataViewX - scrollPosition.getCharPosition() * characterWidth - scrollPosition.getCharOffset();
             int headerY = rowHeight - metrics.getSubFontSpace();
 
-            g.setColor(colors.getForeground());
+            g.setColor(colors.getTextForeground());
             char[] headerChars = new char[charactersPerCodeSection];
             Arrays.fill(headerChars, ' ');
 
@@ -463,7 +463,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter
                     nativeWidth = currentCharWidth == characterWidth;
                 }
 
-                Color color = colors.getForeground();
+                Color color = colors.getTextForeground();
 
                 if (!nativeWidth || !CodeAreaSwingUtils.areSameColors(color, renderColor)) { // || !colorType.equals(renderColorType)
                     sequenceBreak = true;
@@ -511,7 +511,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter
         g.setClip(clipBounds != null ? clipBounds.intersection(rowPositionsArea) : rowPositionsArea);
 
         g.setFont(font);
-        g.setColor(colors.getBackground());
+        g.setColor(colors.getTextBackground());
         g.fillRect(rowPositionsArea.x, rowPositionsArea.y, rowPositionsArea.width, rowPositionsArea.height);
 
         CodeAreaScrollPosition scrollPosition = scrolling.getScrollPosition();
@@ -532,7 +532,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter
 
         long dataPosition = bytesPerRow * scrollPosition.getRowPosition();
         int positionY = headerAreaHeight + rowHeight - subFontSpace - scrollPosition.getRowOffset();
-        g.setColor(colors.getForeground());
+        g.setColor(colors.getTextForeground());
         Rectangle compRect = new Rectangle();
         for (int row = 0; row <= rowsPerRect; row++) {
             if (dataPosition > dataSize) {
@@ -613,7 +613,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter
         int dataViewHeight = dimensions.getDataViewHeight();
         int rowPositionX = rowPositionAreaWidth;
         CodeAreaScrollPosition scrollPosition = scrolling.getScrollPosition();
-        g.setColor(colors.getBackground());
+        g.setColor(colors.getTextBackground());
         if (backgroundPaintMode != BasicBackgroundPaintMode.TRANSPARENT) {
             g.fillRect(rowPositionX, headerAreaHeight, dataViewWidth, dataViewHeight);
         }
@@ -645,7 +645,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter
         long dataPosition = scrollPosition.getRowPosition() * bytesPerRow;
         int rowPositionX = dataViewX - scrollPosition.getCharPosition() * characterWidth - scrollPosition.getCharOffset();
         int rowPositionY = dataViewY - scrollPosition.getRowOffset();
-        g.setColor(colors.getForeground());
+        g.setColor(colors.getTextForeground());
         for (int row = 0; row <= rowsPerRect; row++) {
             prepareRowData(dataPosition);
             paintRowBackground(g, dataPosition, rowPositionX, rowPositionY);
@@ -928,7 +928,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter
 
             Color color = getPositionTextColor(rowDataPosition, byteOnRow, charOnRow, section);
             if (color == null) {
-                color = colors.getForeground();
+                color = colors.getTextForeground();
             }
 
             boolean sequenceBreak = false;
@@ -1091,7 +1091,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter
                 break;
             }
             case XOR: {
-                g.setXORMode(colors.getBackground());
+                g.setXORMode(colors.getTextBackground());
                 g.fillRect(cursorX, cursorY, width, height);
                 g.setPaintMode();
                 break;
