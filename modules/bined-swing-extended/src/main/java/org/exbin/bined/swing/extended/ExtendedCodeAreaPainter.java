@@ -30,6 +30,7 @@ import java.awt.event.AdjustmentListener;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -2300,16 +2301,6 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter
 //    }
 //
 //    @Override
-//    public void buildColors() {
-//        throw new UnsupportedOperationException("Not supported yet.");
-//    }
-//
-//    @Override
-//    public void rebuildColors() {
-//        throw new UnsupportedOperationException("Not supported yet.");
-//    }
-//
-//    @Override
 //    public void paintCursor() {
 //        int bytesPerLine = codeArea.getBytesPerLine();
 //        if (bytesPerLine > 0) {
@@ -2786,156 +2777,24 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter
 //            notifyScrolled();
 //        }
 //    }
-//
-//    private void buildUnprintableCharactersMapping() {
-//        unprintableCharactersMapping = new HashMap<>();
-//        // Unicode control characters, might not be supported by font
-//        for (int i = 0; i < 32; i++) {
-//            unprintableCharactersMapping.put((char) i, Character.toChars(9216 + i)[0]);
-//        }
-//        // Space -> Middle Dot
-//        unprintableCharactersMapping.put(' ', Character.toChars(183)[0]);
-//        // Tab -> Right-Pointing Double Angle Quotation Mark
-//        unprintableCharactersMapping.put('\t', Character.toChars(187)[0]);
-//        // Line Feed -> Currency Sign
-//        unprintableCharactersMapping.put('\r', Character.toChars(164)[0]);
-//        // Carriage Return -> Pilcrow Sign
-//        unprintableCharactersMapping.put('\n', Character.toChars(182)[0]);
-//        // Ideographic Space -> Degree Sign
-//        unprintableCharactersMapping.put(Character.toChars(127)[0], Character.toChars(176)[0]);
-//    }
-//
-//    /**
-//     * Paint cache data structure for single paint operation.
-//     *
-//     * Data copied from CodeArea for faster access + array space for line data.
-//     */
-//    protected static class PaintData {
-//
-//        protected ViewMode viewMode;
-//        protected CodeArea.BackgroundMode backgroundMode;
-//        protected Rectangle codeSectionRect;
-//        protected CodeAreaScrollPosition scrollPosition;
-//        protected int charWidth;
-//        protected int bytesPerLine;
-//        protected int lineHeight;
-//        protected int codeDigits;
-//        protected int byteGroupSize;
-//        protected int spaceGroupSize;
-//        protected int charsPerLine;
-//        protected Charset charset;
-//        protected int maxCharLength;
-//        protected boolean showUnprintableCharacters;
-//        protected CodeArea.CharRenderingMode charRenderingMode;
-//        protected FontMetrics fontMetrics;
-//        protected boolean monospaceFont;
-//        protected int charsPerCodeArea;
-//        protected int previewCharPos;
-//        protected int visibleCharStart;
-//        protected int visibleCharEnd;
-//        protected int visibleCodeStart;
-//        protected int visibleCodeEnd;
-//        protected int visiblePreviewStart;
-//        protected int visiblePreviewEnd;
-//
-//        protected ColorsGroup mainColors;
-//        protected ColorsGroup alternateColors;
-//
-//        // Line related fields
-//        protected int lineStart;
-//        protected long lineDataPosition;
-//        protected long line;
-//
-//        protected char[] lineChars;
-//
-//        /**
-//         * Line data cache.
-//         */
-//        protected byte[] lineData;
-//
-//        /**
-//         * Single line of unprintable characters.
-//         */
-//        protected char[] unprintableChars;
-//
-//        public PaintData(CodeArea codeArea) {
-//            viewMode = codeArea.getViewMode();
-//            backgroundMode = codeArea.getBackgroundMode();
-//            codeSectionRect = codeArea.getCodeSectionRectangle();
-//            scrollPosition = codeArea.getScrollPosition();
-//            charWidth = codeArea.getCharWidth();
-//            bytesPerLine = codeArea.getBytesPerLine();
-//            lineHeight = codeArea.getLineHeight();
-//            codeDigits = codeArea.getCodeType().getMaxDigits();
-//            charset = codeArea.getCharset();
-//            mainColors = codeArea.getMainColors();
-//            alternateColors = codeArea.getAlternateColors();
-//            charRenderingMode = codeArea.getCharRenderingMode();
-//            fontMetrics = codeArea.getFontMetrics();
-//            monospaceFont = codeArea.isMonospaceFontDetected();
-//            byteGroupSize = codeArea.getByteGroupSize();
-//            spaceGroupSize = codeArea.getSpaceGroupSize();
-//
-//            CharsetEncoder encoder = charset.newEncoder();
-//            maxCharLength = (int) encoder.maxBytesPerChar();
-//            lineData = new byte[bytesPerLine + maxCharLength - 1];
-//            charsPerLine = codeArea.getCharsPerLine();
-//
-//            lineChars = new char[charsPerLine];
-//            Arrays.fill(lineChars, ' ');
-//
-//            showUnprintableCharacters = codeArea.isShowUnprintableCharacters();
-//            if (showUnprintableCharacters) {
-//                unprintableChars = new char[charsPerLine];
-//            }
-//
-//            charsPerCodeArea = codeArea.computeByteCharPos(bytesPerLine, false);
-//            // Compute first and last visible character of the code area
-//            if (viewMode == ViewMode.DUAL) {
-//                previewCharPos = charsPerCodeArea + 1;
-//            } else {
-//                previewCharPos = 0;
-//            }
-//
-//            if (viewMode == ViewMode.DUAL || viewMode == ViewMode.CODE_MATRIX) {
-//                visibleCharStart = (scrollPosition.getScrollCharPosition() * charWidth + scrollPosition.getScrollCharOffset()) / charWidth;
-//                if (visibleCharStart < 0) {
-//                    visibleCharStart = 0;
-//                }
-//                visibleCharEnd = (codeSectionRect.width + (scrollPosition.getScrollCharPosition() + charsPerLine) * charWidth + scrollPosition.getScrollCharOffset()) / charWidth;
-//                if (visibleCharEnd > charsPerCodeArea) {
-//                    visibleCharEnd = charsPerCodeArea;
-//                }
-//                visibleCodeStart = codeArea.computeByteOffsetPerCodeCharOffset(visibleCharStart);
-//                visibleCodeEnd = codeArea.computeByteOffsetPerCodeCharOffset(visibleCharEnd - 1) + 1;
-//            } else {
-//                visibleCharStart = 0;
-//                visibleCharEnd = -1;
-//                visibleCodeStart = 0;
-//                visibleCodeEnd = -1;
-//            }
-//
-//            if (viewMode == ViewMode.DUAL || viewMode == ViewMode.TEXT_PREVIEW) {
-//                visiblePreviewStart = (scrollPosition.getScrollCharPosition() * charWidth + scrollPosition.getScrollCharOffset()) / charWidth - previewCharPos;
-//                if (visiblePreviewStart < 0) {
-//                    visiblePreviewStart = 0;
-//                }
-//                if (visibleCodeEnd < 0) {
-//                    visibleCharStart = visiblePreviewStart + previewCharPos;
-//                }
-//                visiblePreviewEnd = (codeSectionRect.width + (scrollPosition.getScrollCharPosition() + 1) * charWidth + scrollPosition.getScrollCharOffset()) / charWidth - previewCharPos;
-//                if (visiblePreviewEnd > bytesPerLine) {
-//                    visiblePreviewEnd = bytesPerLine;
-//                }
-//                if (visiblePreviewEnd >= 0) {
-//                    visibleCharEnd = visiblePreviewEnd + previewCharPos;
-//                }
-//            } else {
-//                visiblePreviewStart = 0;
-//                visiblePreviewEnd = -1;
-//            }
-//        }
-//    }
+
+    private void buildUnprintableCharactersMapping() {
+        unprintableCharactersMapping = new HashMap<>();
+        // Unicode control characters, might not be supported by font
+        for (int i = 0; i < 32; i++) {
+            unprintableCharactersMapping.put((char) i, Character.toChars(9216 + i)[0]);
+        }
+        // Space -> Middle Dot
+        unprintableCharactersMapping.put(' ', Character.toChars(183)[0]);
+        // Tab -> Right-Pointing Double Angle Quotation Mark
+        unprintableCharactersMapping.put('\t', Character.toChars(187)[0]);
+        // Line Feed -> Currency Sign
+        unprintableCharactersMapping.put('\r', Character.toChars(164)[0]);
+        // Carriage Return -> Pilcrow Sign
+        unprintableCharactersMapping.put('\n', Character.toChars(182)[0]);
+        // Ideographic Space -> Degree Sign
+        unprintableCharactersMapping.put(Character.toChars(127)[0], Character.toChars(176)[0]);
+    }
 
     @Override
     public void updateScrollBars() {
