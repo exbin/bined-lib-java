@@ -63,7 +63,7 @@ import org.exbin.utils.binary_data.BinaryData;
 /**
  * Command handler for undo/redo aware hexadecimal editor editing.
  *
- * @version 0.2.0 2018/08/11
+ * @version 0.2.0 2018/10/20
  * @author ExBin Project (https://exbin.org)
  */
 public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
@@ -90,7 +90,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
     private final BinaryDataUndoHandler undoHandler;
     private EditDataCommand editCommand = null;
 
-    public CodeAreaOperationCommandHandler(CodeAreaCore codeArea, BinaryDataUndoHandler undoHandler) {
+    public CodeAreaOperationCommandHandler(@Nonnull CodeAreaCore codeArea, @Nonnull BinaryDataUndoHandler undoHandler) {
         this.codeArea = codeArea;
         this.undoHandler = undoHandler;
 
@@ -150,7 +150,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
     }
 
     @Override
-    public void keyPressed(KeyEvent keyEvent) {
+    public void keyPressed(@Nonnull KeyEvent keyEvent) {
         if (!codeArea.isEnabled()) {
             return;
         }
@@ -281,7 +281,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
     }
 
     @Override
-    public void keyTyped(KeyEvent keyEvent) {
+    public void keyTyped(@Nonnull KeyEvent keyEvent) {
         char keyValue = keyEvent.getKeyChar();
         if (keyValue == KeyEvent.CHAR_UNDEFINED) {
             return;
@@ -928,7 +928,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
     }
 
     @Override
-    public void wheelScroll(int scrollSize, ScrollbarOrientation orientation) {
+    public void wheelScroll(int scrollSize, @Nonnull ScrollbarOrientation orientation) {
         if (scrollSize < 0) {
             for (int i = 0; i < -scrollSize; i++) {
                 scroll(ScrollingDirection.UP);

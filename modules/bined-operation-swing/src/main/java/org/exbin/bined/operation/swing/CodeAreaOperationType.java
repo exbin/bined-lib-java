@@ -15,10 +15,12 @@
  */
 package org.exbin.bined.operation.swing;
 
+import javax.annotation.Nullable;
+
 /**
  * Operation type enumeration.
  *
- * @version 0.1.0 2016/04/30
+ * @version 0.2.0 2018/10/20
  * @author ExBin Project (https://exbin.org)
  */
 public enum CodeAreaOperationType {
@@ -44,12 +46,14 @@ public enum CodeAreaOperationType {
      */
     EDIT_DATA("Edit data");
 
+    @Nullable
     private final String caption;
 
-    private CodeAreaOperationType(String caption) {
+    private CodeAreaOperationType(@Nullable String caption) {
         this.caption = caption;
     }
 
+    @Nullable
     public String getCaption() {
         return caption;
     }

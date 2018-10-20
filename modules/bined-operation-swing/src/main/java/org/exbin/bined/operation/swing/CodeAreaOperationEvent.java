@@ -16,17 +16,19 @@
  */
 package org.exbin.bined.operation.swing;
 
+import javax.annotation.Nonnull;
+
 /**
  * Operation execution event.
  *
- * @version 0.1.0 2016/05/25
+ * @version 0.2.0 2018/10/20
  * @author ExBin Project (https://exbin.org)
  */
 public class CodeAreaOperationEvent {
 
     private CodeAreaOperation operation;
 
-    public CodeAreaOperationEvent(CodeAreaOperation operation) {
+    public CodeAreaOperationEvent(@Nonnull CodeAreaOperation operation) {
         this.operation = operation;
     }
 

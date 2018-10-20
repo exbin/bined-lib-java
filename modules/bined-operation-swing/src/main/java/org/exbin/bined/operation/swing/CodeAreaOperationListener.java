@@ -16,6 +16,8 @@
  */
 package org.exbin.bined.operation.swing;
 
+import javax.annotation.Nonnull;
+
 /**
  * Operation execution listener.
  *
@@ -29,5 +31,5 @@ public interface CodeAreaOperationListener {
      *
      * @param event change event
      */
-    void notifyChange(CodeAreaOperationEvent event);
+    void notifyChange(@Nonnull CodeAreaOperationEvent event);
 }

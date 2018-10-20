@@ -17,7 +17,7 @@
 package org.exbin.bined.operation.swing.command;
 
 import org.exbin.bined.operation.swing.ModifyDataOperation;
-import org.exbin.bined.swing.basic.CodeArea;
+import org.exbin.bined.swing.CodeAreaCore;
 import org.exbin.utils.binary_data.BinaryData;
 
 /**
@@ -28,7 +28,7 @@ import org.exbin.utils.binary_data.BinaryData;
  */
 public class ModifyDataCommand extends OpCodeAreaCommand {
 
-    public ModifyDataCommand(CodeArea codeArea, long position, BinaryData data) {
+    public ModifyDataCommand(CodeAreaCore codeArea, long position, BinaryData data) {
         super(codeArea);
         super.setOperation(new ModifyDataOperation(codeArea, position, data));
     }
