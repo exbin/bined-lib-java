@@ -32,7 +32,7 @@ import org.exbin.bined.swing.extended.capability.AntialiasingCapable;
 /**
  * Hexadecimal editor example panel.
  *
- * @version 0.2.0 2018/03/22
+ * @version 0.2.0 2018/10/21
  * @author ExBin Project (https://exbin.org)
  */
 public class ModePanelEx extends javax.swing.JPanel {
@@ -49,7 +49,7 @@ public class ModePanelEx extends javax.swing.JPanel {
         charRenderingComboBox.setSelectedIndex(codeArea.getCharacterRenderingMode().ordinal());
         editationAllowedComboBox.setSelectedIndex(codeArea.getEditationMode().ordinal());
         charAntialiasingComboBox.setSelectedIndex(((AntialiasingCapable) codeArea).getAntialiasingMode().ordinal());
-//        showNonprintableCharactersCheckBox.setSelected(codeArea.isShowUnprintableCharacters());
+        showNonprintableCharactersCheckBox.setSelected(codeArea.isShowUnprintables());
     }
 
     /**
@@ -257,7 +257,7 @@ public class ModePanelEx extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void showNonprintableCharactersCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_showNonprintableCharactersCheckBoxItemStateChanged
-        //        codeArea.setShowUnprintableCharacters(showNonprintableCharactersCheckBox.isSelected());
+        codeArea.setShowUnprintables(showNonprintableCharactersCheckBox.isSelected());
     }//GEN-LAST:event_showNonprintableCharactersCheckBoxItemStateChanged
 
     private void codeTypeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_codeTypeComboBoxActionPerformed
