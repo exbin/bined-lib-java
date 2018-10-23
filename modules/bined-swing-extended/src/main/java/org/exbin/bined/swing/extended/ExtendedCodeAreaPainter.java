@@ -688,13 +688,40 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter {
             rowBytesLimit = 0;
         }
 
+        if (showUnprintables) {
+            Arrays.fill(rowDataCache.rowUnprintables, ' ');
+
+            if (unprintableCharactersMapping == null) {
+                buildUnprintableCharactersMapping();
+            }
+        }
+
         // Fill codes
         if (viewMode != CodeAreaViewMode.TEXT_PREVIEW) {
             int visibleCodeStart = visibility.getVisibleCodeStart();
             int visibleCodeEnd = visibility.getVisibleCodeEnd();
+            Character replacement = null;
             for (int byteOnRow = Math.max(visibleCodeStart, rowStart); byteOnRow < Math.min(visibleCodeEnd, rowBytesLimit); byteOnRow++) {
                 byte dataByte = rowDataCache.rowData[byteOnRow];
-                CodeAreaUtils.byteToCharsCode(dataByte, codeType, rowDataCache.rowCharacters, structure.computeFirstCodeCharacterPos(byteOnRow), codeCharactersCase);
+                if (showUnprintables) {
+                    int charDataLength = maxBytesPerChar;
+                    if (byteOnRow + charDataLength > rowDataCache.rowData.length) {
+                        charDataLength = rowDataCache.rowData.length - byteOnRow;
+                    }
+                    String displayString = new String(rowDataCache.rowData, byteOnRow, charDataLength, charset);
+                    if (!displayString.isEmpty()) {
+                        char targetChar = displayString.charAt(0);
+                        replacement = unprintableCharactersMapping.get(targetChar);
+                        if (replacement != null) {
+                            CodeAreaUtils.byteToCharsCode(dataByte, codeType, rowDataCache.rowUnprintables, structure.computeFirstCodeCharacterPos(byteOnRow), codeCharactersCase);
+                        }
+                    }
+                } else {
+                    replacement = null;
+                }
+                if (replacement == null) {
+                    CodeAreaUtils.byteToCharsCode(dataByte, codeType, rowDataCache.rowCharacters, structure.computeFirstCodeCharacterPos(byteOnRow), codeCharactersCase);
+                }
             }
             if (bytesPerRow > rowBytesLimit) {
                 Arrays.fill(rowDataCache.rowCharacters, structure.computeFirstCodeCharacterPos(rowBytesLimit), rowDataCache.rowCharacters.length, ' ');
@@ -721,9 +748,6 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter {
                     if (!displayString.isEmpty()) {
                         char targetChar = displayString.charAt(0);
                         if (showUnprintables) { // || charRenderingMode == CodeArea.CharRenderingMode.LINE_AT_ONCE) {
-                            if (unprintableCharactersMapping == null) {
-                                buildUnprintableCharactersMapping();
-                            }
                             Character replacement = unprintableCharactersMapping.get(targetChar);
                             if (replacement != null) {
                                 rowDataCache.rowUnprintables[previewCharPos + byteOnRow] = replacement;
@@ -748,7 +772,6 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter {
                         Character replacement = unprintableCharactersMapping.get(targetChar);
                         if (replacement != null) {
                             rowDataCache.rowUnprintables[previewCharPos + byteOnRow] = replacement;
-                            rowDataCache.rowCharacters[previewCharPos + byteOnRow] = ' ';
                         } else {
                             rowDataCache.rowCharacters[previewCharPos + byteOnRow] = targetChar;
                         }
@@ -779,6 +802,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter {
         int visibleCharEnd = visibility.getVisibleCharEnd();
         int renderOffset = visibleCharStart;
         Color renderColor = null;
+        boolean unprintable;
         for (int charOnRow = visibleCharStart; charOnRow < visibleCharEnd; charOnRow++) {
             int section;
             int byteOnRow;
@@ -791,7 +815,8 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter {
             }
             boolean sequenceBreak = false;
 
-            Color color = getPositionBackgroundColor(rowDataPosition, byteOnRow, charOnRow, section);
+            unprintable = showUnprintables && rowDataCache.rowUnprintables[charOnRow] != ' ';
+            Color color = getPositionBackgroundColor(rowDataPosition, byteOnRow, charOnRow, section, unprintable);
             if (!CodeAreaSwingUtils.areSameColors(color, renderColor)) {
                 sequenceBreak = true;
             }
@@ -830,7 +855,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter {
      * @return color or null for default color
      */
     @Nullable
-    public Color getPositionBackgroundColor(long rowDataPosition, int byteOnRow, int charOnRow, int section) {
+    public Color getPositionBackgroundColor(long rowDataPosition, int byteOnRow, int charOnRow, int section, boolean unprintable) {
         SelectionRange selectionRange = structure.getSelectionRange();
         int codeLastCharPos = structure.getCodeLastCharPos();
         CodeAreaCaretPosition caretPosition = structure.getCaretPosition();
@@ -845,10 +870,8 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter {
             return section == caretPosition.getSection() ? colors.getSelectionBackground() : colors.getSelectionMirrorBackground();
         }
 
-        if (showUnprintables) {
-            if (rowDataCache.rowUnprintables[charOnRow] != ' ') {
-//                return colors.getColorType.UNPRINTABLES_BACKGROUND;
-            }
+        if (showUnprintables && unprintable) {
+//            return colors.getColorType.UNPRINTABLES_BACKGROUND;
         }
 
         return null;
@@ -950,6 +973,8 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter {
         Color lastColor = null;
         Color renderColor = null;
 
+        boolean unprintables = false;
+        boolean unprintableByte = false;
         int visibleCharStart = visibility.getVisibleCharStart();
         int visibleCharEnd = visibility.getVisibleCharEnd();
         int renderOffset = visibleCharStart;
@@ -964,7 +989,19 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter {
                 section = BasicCodeAreaSection.CODE_MATRIX.getSection();
             }
 
-            Color color = getPositionTextColor(rowDataPosition, byteOnRow, charOnRow, section);
+            boolean currentUnprintables = false;
+            char currentChar;
+            if (showUnprintables) {
+                currentChar = rowDataCache.rowUnprintables[charOnRow];
+                currentUnprintables = currentChar != ' ';
+                if (!currentUnprintables) {
+                    currentChar = rowDataCache.rowCharacters[charOnRow];
+                }
+            } else {
+                currentChar = rowDataCache.rowCharacters[charOnRow];
+            }
+
+            Color color = getPositionTextColor(rowDataPosition, byteOnRow, charOnRow, section, currentUnprintables);
             if (color == null) {
                 color = colors.getTextForeground();
             }
@@ -979,7 +1016,6 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter {
             }
 
             int currentCharWidth = 0;
-            char currentChar = rowDataCache.rowCharacters[charOnRow];
             if (currentChar == ' ' && renderOffset == charOnRow) {
                 renderOffset++;
                 continue;
@@ -998,7 +1034,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter {
                 nativeWidth = currentCharWidth == characterWidth;
             }
 
-            if (!nativeWidth) {
+            if (!nativeWidth || unprintables != currentUnprintables) {
                 sequenceBreak = true;
             }
 
@@ -1009,7 +1045,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter {
                 }
 
                 if (charOnRow > renderOffset) {
-                    renderCharSequence(g, renderOffset, charOnRow, rowPositionX, positionY);
+                    renderCharSequence(g, renderOffset, charOnRow, rowPositionX, positionY, unprintables);
                 }
 
                 renderColor = color;
@@ -1021,10 +1057,12 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter {
                 if (!nativeWidth) {
                     renderOffset = charOnRow + 1;
                     int positionX = rowPositionX + charOnRow * characterWidth + ((characterWidth + 1 - currentCharWidth) >> 1);
-                    drawShiftedChar(g, rowDataCache.rowCharacters, charOnRow, characterWidth, positionX, positionY);
+                    drawShiftedChar(g, currentUnprintables ? rowDataCache.rowUnprintables : rowDataCache.rowCharacters, charOnRow, characterWidth, positionX, positionY);
                 } else {
                     renderOffset = charOnRow;
                 }
+
+                unprintables = currentUnprintables;
             }
         }
 
@@ -1033,7 +1071,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter {
                 g.setColor(renderColor);
             }
 
-            renderCharSequence(g, renderOffset, charactersPerRow, rowPositionX, positionY);
+            renderCharSequence(g, renderOffset, charactersPerRow, rowPositionX, positionY, unprintables);
         }
     }
 
@@ -1047,16 +1085,14 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter {
      * @return color or null for default color
      */
     @Nullable
-    public Color getPositionTextColor(long rowDataPosition, int byteOnRow, int charOnRow, int section) {
+    public Color getPositionTextColor(long rowDataPosition, int byteOnRow, int charOnRow, int section, boolean unprintable) {
         SelectionRange selectionRange = structure.getSelectionRange();
         CodeAreaCaretPosition caretPosition = structure.getCaretPosition();
         boolean inSelection = selectionRange != null && selectionRange.isInSelection(rowDataPosition + byteOnRow);
 
-        if (showUnprintables) {
-            if (rowDataCache.rowUnprintables[charOnRow] != ' ') {
-                return Color.BLUE;
-//                return colors.getColorType.UNPRINTABLES_BACKGROUND;
-            }
+        if (unprintable) {
+            return Color.BLUE;
+//            return colors.getColorType.UNPRINTABLES_BACKGROUND;
         }
 
         if (inSelection) {
@@ -1460,9 +1496,9 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter {
      *
      * Doesn't include character at offset end.
      */
-    private void renderCharSequence(@Nonnull Graphics g, int startOffset, int endOffset, int rowPositionX, int positionY) {
+    private void renderCharSequence(@Nonnull Graphics g, int startOffset, int endOffset, int rowPositionX, int positionY, boolean unprintables) {
         int characterWidth = metrics.getCharacterWidth();
-        g.drawChars(rowDataCache.rowCharacters, startOffset, endOffset - startOffset, rowPositionX + startOffset * characterWidth, positionY);
+        g.drawChars(unprintables ? rowDataCache.rowUnprintables : rowDataCache.rowCharacters, startOffset, endOffset - startOffset, rowPositionX + startOffset * characterWidth, positionY);
     }
 
     /**

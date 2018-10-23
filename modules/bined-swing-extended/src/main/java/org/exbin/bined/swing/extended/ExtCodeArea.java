@@ -124,7 +124,7 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
         super(DefaultCodeAreaCommandHandler.createDefaultCodeAreaCommandHandlerFactory());
 
         caret = new DefaultCodeAreaCaret(this);
-        painter = new DefaultCodeAreaPainter(this);
+        painter = new ExtendedCodeAreaPainter(this);
         init();
     }
 
