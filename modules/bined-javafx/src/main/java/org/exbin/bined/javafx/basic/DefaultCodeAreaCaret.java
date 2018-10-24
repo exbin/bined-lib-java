@@ -21,16 +21,18 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.swing.Timer;
+import org.exbin.bined.BasicCodeAreaSection;
 import org.exbin.bined.CaretPosition;
 import org.exbin.bined.CodeAreaCaret;
 import org.exbin.bined.CodeAreaCaretPosition;
+import org.exbin.bined.CodeAreaSection;
 import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.javafx.CodeAreaCore;
 
 /**
  * Default implementation of code area caret.
  *
- * @version 0.2.0 2018/06/23
+ * @version 0.2.0 2018/10/24
  * @author ExBin Project (https://exbin.org)
  */
 public class DefaultCodeAreaCaret implements CodeAreaCaret {
@@ -109,7 +111,7 @@ public class DefaultCodeAreaCaret implements CodeAreaCaret {
         resetBlink();
     }
 
-    public void setCaretPosition(long dataPosition, int codeOffset, int section) {
+    public void setCaretPosition(long dataPosition, int codeOffset, @Nonnull CodeAreaSection section) {
         caretPosition.setDataPosition(dataPosition);
         caretPosition.setCodeOffset(codeOffset);
         caretPosition.setSection(section);
@@ -134,11 +136,13 @@ public class DefaultCodeAreaCaret implements CodeAreaCaret {
         resetBlink();
     }
 
-    public int getSection() {
-        return caretPosition.getSection();
+    @Nonnull
+    public CodeAreaSection getSection() {
+        CodeAreaSection section = caretPosition.getSection();
+        return section == null ? BasicCodeAreaSection.CODE_MATRIX : section;
     }
 
-    public void setSection(int section) {
+    public void setSection(@Nonnull CodeAreaSection section) {
         caretPosition.setSection(section);
         resetBlink();
     }

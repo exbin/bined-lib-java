@@ -259,9 +259,10 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                 }
             }
         }
-        
-        if (!keyEvent.doit)
+
+        if (!keyEvent.doit) {
             return;
+        }
 
         char keyValue = keyEvent.character;
         // TODO Add support for high unicode codes
@@ -274,7 +275,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
         DefaultCodeAreaCaret caret = (DefaultCodeAreaCaret) ((CaretCapable) codeArea).getCaret();
         CaretPosition caretPosition = caret.getCaretPosition();
-        if (caretPosition.getSection() == BasicCodeAreaSection.CODE_MATRIX.getSection()) {
+        if (caretPosition.getSection() == BasicCodeAreaSection.CODE_MATRIX) {
             long dataPosition = caretPosition.getDataPosition();
             int codeOffset = caretPosition.getCodeOffset();
             CodeType codeType = getCodeType();

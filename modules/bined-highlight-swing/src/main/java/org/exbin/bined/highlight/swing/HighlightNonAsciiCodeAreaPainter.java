@@ -19,6 +19,7 @@ import java.awt.Color;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.exbin.bined.BasicCodeAreaSection;
+import org.exbin.bined.CodeAreaSection;
 import org.exbin.bined.swing.CodeAreaCore;
 
 /**
@@ -108,9 +109,9 @@ public class HighlightNonAsciiCodeAreaPainter extends HighlightCodeAreaPainter {
 
     @Nullable
     @Override
-    public Color getPositionTextColor(long rowDataPosition, int byteOnRow, int charOnRow, int section) {
+    public Color getPositionTextColor(long rowDataPosition, int byteOnRow, int charOnRow, @Nonnull CodeAreaSection section) {
         Color color = super.getPositionTextColor(rowDataPosition, byteOnRow, charOnRow, section);
-        if (nonAsciiHighlightingEnabled && section == BasicCodeAreaSection.CODE_MATRIX.getSection()) {
+        if (nonAsciiHighlightingEnabled && section == BasicCodeAreaSection.CODE_MATRIX) {
             if (textColor.equals(color)) {
                 long dataPosition = rowDataPosition + byteOnRow;
                 if (dataPosition < codeArea.getDataSize()) {

@@ -24,6 +24,7 @@ import java.util.logging.Logger;
 import javax.annotation.Nonnull;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
+import org.exbin.bined.BasicCodeAreaSection;
 import org.exbin.bined.CaretPosition;
 import org.exbin.bined.SelectionRange;
 import org.exbin.bined.capability.CaretCapable;
@@ -47,13 +48,13 @@ public class StatePanelEx extends javax.swing.JPanel {
 
         initComponents();
 
-        activeSectionComboBox.setSelectedIndex(((CaretCapable) codeArea).getCaret().getCaretPosition().getSection());
+        activeSectionComboBox.setSelectedIndex(((BasicCodeAreaSection) ((CaretCapable) codeArea).getCaret().getCaretPosition().getSection()).ordinal());
         dataSizeTextField.setText(String.valueOf(codeArea.getDataSize()));
 
         codeArea.addCaretMovedListener((CaretPosition caretPosition) -> {
             positionTextField.setText(String.valueOf(caretPosition.getDataPosition()));
             codeOffsetTextField.setText(String.valueOf(caretPosition.getCodeOffset()));
-            activeSectionComboBox.setSelectedIndex(caretPosition.getSection());
+            activeSectionComboBox.setSelectedIndex(((BasicCodeAreaSection) caretPosition.getSection()).ordinal());
         });
         ((SelectionCapable) codeArea).addSelectionChangedListener((SelectionRange selection) -> {
             if (selection != null) {

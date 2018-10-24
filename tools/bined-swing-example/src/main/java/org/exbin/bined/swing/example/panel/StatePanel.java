@@ -48,13 +48,13 @@ public class StatePanel extends javax.swing.JPanel {
 
         initComponents();
 
-        activeSectionComboBox.setSelectedIndex(((CaretCapable) codeArea).getCaret().getCaretPosition().getSection());
+        activeSectionComboBox.setSelectedIndex(((BasicCodeAreaSection) ((CaretCapable) codeArea).getCaret().getCaretPosition().getSection()).ordinal());
         dataSizeTextField.setText(String.valueOf(codeArea.getDataSize()));
 
         codeArea.addCaretMovedListener((CaretPosition caretPosition) -> {
             positionTextField.setText(String.valueOf(caretPosition.getDataPosition()));
             codeOffsetTextField.setText(String.valueOf(caretPosition.getCodeOffset()));
-            activeSectionComboBox.setSelectedIndex(caretPosition.getSection());
+            activeSectionComboBox.setSelectedIndex(((BasicCodeAreaSection) caretPosition.getSection()).ordinal());
         });
         ((SelectionCapable) codeArea).addSelectionChangedListener((SelectionRange selection) -> {
             if (selection != null) {
@@ -278,7 +278,7 @@ public class StatePanel extends javax.swing.JPanel {
     }//GEN-LAST:event_saveDataButtonActionPerformed
 
     private void activeSectionComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_activeSectionComboBoxActionPerformed
-        codeArea.getCaret().setSection(BasicCodeAreaSection.values()[activeSectionComboBox.getSelectedIndex()].getSection());
+        codeArea.getCaret().setSection(BasicCodeAreaSection.values()[activeSectionComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_activeSectionComboBoxActionPerformed
 
     private void loadDataButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadDataButtonActionPerformed

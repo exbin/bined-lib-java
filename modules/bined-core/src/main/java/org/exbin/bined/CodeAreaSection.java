@@ -15,37 +15,11 @@
  */
 package org.exbin.bined;
 
-import javax.annotation.Nonnull;
-
 /**
- * Specifies caret position as combination of data position, section and code
- * offset of code representation.
+ * Code area section interface.
  *
  * @version 0.2.0 2018/10/24
  * @author ExBin Project (https://exbin.org)
  */
-public interface CaretPosition {
-
-    /**
-     * Returns position of byte in document.
-     *
-     * @return data position
-     */
-    long getDataPosition();
-
-    /**
-     * Returns offset position of current code on current position and code
-     * type.
-     *
-     * @return code offset
-     */
-    int getCodeOffset();
-
-    /**
-     * Returns active code area section.
-     *
-     * @return section
-     */
-    @Nonnull
-    CodeAreaSection getSection();
+public interface CodeAreaSection {
 }

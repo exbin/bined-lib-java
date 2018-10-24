@@ -22,13 +22,14 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.exbin.bined.BasicCodeAreaSection;
+import org.exbin.bined.CodeAreaSection;
 import org.exbin.bined.swing.CodeAreaCore;
 import org.exbin.bined.swing.basic.DefaultCodeAreaPainter;
 
 /**
  * Hexadecimal component painter supporting search matches highlighting.
  *
- * @version 0.2.0 2018/08/16
+ * @version 0.2.0 2018/10/24
  * @author ExBin Project (https://exbin.org)
  */
 public class HighlightCodeAreaPainter extends DefaultCodeAreaPainter {
@@ -59,19 +60,19 @@ public class HighlightCodeAreaPainter extends DefaultCodeAreaPainter {
 
     @Nullable
     @Override
-    public Color getPositionTextColor(long rowDataPosition, int byteOnRow, int charOnRow, int section) {
+    public Color getPositionTextColor(long rowDataPosition, int byteOnRow, int charOnRow, @Nonnull CodeAreaSection section) {
         return super.getPositionTextColor(rowDataPosition, byteOnRow, charOnRow, section);
     }
 
     @Nullable
     @Override
-    public Color getPositionBackgroundColor(long rowDataPosition, int byteOnRow, int charOnRow, int section) {
-        if (!matches.isEmpty() && section == BasicCodeAreaSection.TEXT_PREVIEW.getSection() || charOnRow < getCharactersPerRow() - 1) {
+    public Color getPositionBackgroundColor(long rowDataPosition, int byteOnRow, int charOnRow, @Nonnull CodeAreaSection section) {
+        if (!matches.isEmpty() && section == BasicCodeAreaSection.TEXT_PREVIEW || charOnRow < getCharactersPerRow() - 1) {
             long dataPosition = rowDataPosition + byteOnRow;
             if (currentMatchIndex >= 0) {
                 SearchMatch currentMatch = matches.get(currentMatchIndex);
                 if (dataPosition >= currentMatch.position && dataPosition < currentMatch.position + currentMatch.length
-                        && (section == BasicCodeAreaSection.TEXT_PREVIEW.getSection() || charOnRow != ((currentMatch.position + currentMatch.length) - rowDataPosition) * getCharactersPerRow() - 1)) {
+                        && (section == BasicCodeAreaSection.TEXT_PREVIEW || charOnRow != ((currentMatch.position + currentMatch.length) - rowDataPosition) * getCharactersPerRow() - 1)) {
                     return currentMatchColor;
                 }
             }
@@ -83,7 +84,7 @@ public class HighlightCodeAreaPainter extends DefaultCodeAreaPainter {
             while (lineMatchIndex < matches.size()) {
                 SearchMatch match = matches.get(lineMatchIndex);
                 if (dataPosition >= match.position && dataPosition < match.position + match.length
-                        && (section == BasicCodeAreaSection.TEXT_PREVIEW.getSection() || charOnRow != ((match.position + match.length) - rowDataPosition) * getCharactersPerRow() - 1)) {
+                        && (section == BasicCodeAreaSection.TEXT_PREVIEW || charOnRow != ((match.position + match.length) - rowDataPosition) * getCharactersPerRow() - 1)) {
                     if (byteOnRow == 0) {
                         matchIndex = lineMatchIndex;
                         matchPosition = match.position;

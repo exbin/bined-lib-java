@@ -18,27 +18,17 @@ package org.exbin.bined;
 /**
  * Enumeration of basic cursor position section.
  *
- * @version 0.2.0 2017/04/17
+ * @version 0.2.0 2018/10/24
  * @author ExBin Project (https://exbin.org)
  */
-public enum BasicCodeAreaSection {
+public enum BasicCodeAreaSection implements CodeAreaSection {
 
     /**
      * Section of code area with codes for binary data representation.
      */
-    CODE_MATRIX(0),
+    CODE_MATRIX,
     /**
      * Section of code area with textual preview characters.
      */
-    TEXT_PREVIEW(1);
-
-    private final int section;
-
-    private BasicCodeAreaSection(int section) {
-        this.section = section;
-    }
-
-    public int getSection() {
-        return section;
-    }
+    TEXT_PREVIEW;
 }

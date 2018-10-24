@@ -39,6 +39,7 @@ import org.exbin.bined.BasicCodeAreaSection;
 import org.exbin.bined.BasicCodeAreaZone;
 import org.exbin.bined.CaretPosition;
 import org.exbin.bined.CodeAreaCaretPosition;
+import org.exbin.bined.CodeAreaSection;
 import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.CodeAreaViewMode;
 import org.exbin.bined.CodeCharactersCase;
@@ -812,14 +813,14 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         int renderOffset = visibleCharStart;
         Color renderColor = null;
         for (int charOnRow = visibleCharStart; charOnRow < visibleCharEnd; charOnRow++) {
-            int section;
+            CodeAreaSection section;
             int byteOnRow;
             if (charOnRow >= previewCharPos && viewMode != CodeAreaViewMode.CODE_MATRIX) {
                 byteOnRow = charOnRow - previewCharPos;
-                section = BasicCodeAreaSection.TEXT_PREVIEW.getSection();
+                section = BasicCodeAreaSection.TEXT_PREVIEW;
             } else {
                 byteOnRow = structure.computePositionByte(charOnRow);
-                section = BasicCodeAreaSection.CODE_MATRIX.getSection();
+                section = BasicCodeAreaSection.CODE_MATRIX;
             }
             boolean sequenceBreak = false;
 
@@ -862,12 +863,12 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
      * @return color or null for default color
      */
     @Nullable
-    public Color getPositionBackgroundColor(long rowDataPosition, int byteOnRow, int charOnRow, int section) {
+    public Color getPositionBackgroundColor(long rowDataPosition, int byteOnRow, int charOnRow, @Nonnull CodeAreaSection section) {
         SelectionRange selectionRange = structure.getSelectionRange();
         int codeLastCharPos = structure.getCodeLastCharPos();
         CodeAreaCaretPosition caretPosition = structure.getCaretPosition();
         boolean inSelection = selectionRange != null && selectionRange.isInSelection(rowDataPosition + byteOnRow);
-        if (inSelection && (section == BasicCodeAreaSection.CODE_MATRIX.getSection())) {
+        if (inSelection && (section == BasicCodeAreaSection.CODE_MATRIX)) {
             if (charOnRow == codeLastCharPos) {
                 inSelection = false;
             }
@@ -896,7 +897,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         long rowPosition = shiftedPosition / bytesPerRow;
         int byteOffset = (int) (shiftedPosition % bytesPerRow);
         int charPosition;
-        if (caretPosition.getSection() == BasicCodeAreaSection.TEXT_PREVIEW.getSection()) {
+        if (caretPosition.getSection() == BasicCodeAreaSection.TEXT_PREVIEW) {
             charPosition = previewCharPos + byteOffset;
         } else {
             charPosition = structure.computeFirstCodeCharacterPos(byteOffset) + caretPosition.getCodeOffset();
@@ -920,7 +921,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         long rowPosition = shiftedPosition / bytesPerRow;
         int byteOffset = (int) (shiftedPosition % bytesPerRow);
         int charPosition;
-        if (caretPosition.getSection() == BasicCodeAreaSection.TEXT_PREVIEW.getSection()) {
+        if (caretPosition.getSection() == BasicCodeAreaSection.TEXT_PREVIEW) {
             charPosition = previewCharPos + byteOffset;
         } else {
             charPosition = structure.computeFirstCodeCharacterPos(byteOffset) + caretPosition.getCodeOffset();
@@ -954,14 +955,14 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         int visibleCharEnd = visibility.getVisibleCharEnd();
         int renderOffset = visibleCharStart;
         for (int charOnRow = visibleCharStart; charOnRow < visibleCharEnd; charOnRow++) {
-            int section;
+            CodeAreaSection section;
             int byteOnRow;
             if (charOnRow >= previewCharPos) {
                 byteOnRow = charOnRow - previewCharPos;
-                section = BasicCodeAreaSection.TEXT_PREVIEW.getSection();
+                section = BasicCodeAreaSection.TEXT_PREVIEW;
             } else {
                 byteOnRow = structure.computePositionByte(charOnRow);
-                section = BasicCodeAreaSection.CODE_MATRIX.getSection();
+                section = BasicCodeAreaSection.CODE_MATRIX;
             }
 
             Color color = getPositionTextColor(rowDataPosition, byteOnRow, charOnRow, section);
@@ -1047,7 +1048,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
      * @return color or null for default color
      */
     @Nullable
-    public Color getPositionTextColor(long rowDataPosition, int byteOnRow, int charOnRow, int section) {
+    public Color getPositionTextColor(long rowDataPosition, int byteOnRow, int charOnRow, @Nonnull CodeAreaSection section) {
         SelectionRange selectionRange = structure.getSelectionRange();
         CodeAreaCaretPosition caretPosition = structure.getCaretPosition();
         boolean inSelection = selectionRange != null && selectionRange.isInSelection(rowDataPosition + byteOnRow);
@@ -1278,7 +1279,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         int codeOffset = 0;
         int byteOnRow;
         if ((viewMode == CodeAreaViewMode.DUAL && cursorCharX < previewCharPos) || viewMode == CodeAreaViewMode.CODE_MATRIX) {
-            caret.setSection(BasicCodeAreaSection.CODE_MATRIX.getSection());
+            caret.setSection(BasicCodeAreaSection.CODE_MATRIX);
             byteOnRow = structure.computePositionByte(cursorCharX);
             if (byteOnRow >= bytesPerRow) {
                 codeOffset = 0;
@@ -1289,7 +1290,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                 }
             }
         } else {
-            caret.setSection(BasicCodeAreaSection.TEXT_PREVIEW.getSection());
+            caret.setSection(BasicCodeAreaSection.TEXT_PREVIEW);
             byteOnRow = cursorCharX;
             if (viewMode == CodeAreaViewMode.DUAL) {
                 byteOnRow -= previewCharPos;
@@ -1339,7 +1340,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
      * @return cursor position or null
      */
     @Nullable
-    public Point getPositionPoint(long dataPosition, int codeOffset, int section) {
+    public Point getPositionPoint(long dataPosition, int codeOffset, @Nonnull CodeAreaSection section) {
         int bytesPerRow = structure.getBytesPerRow();
         int rowsPerRect = dimensions.getRowsPerRect();
         int characterWidth = metrics.getCharacterWidth();
@@ -1358,7 +1359,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         dataViewRect.y = 0;
         int caretY = (int) (dataViewRect.y + row * rowHeight) - scrollPosition.getRowOffset();
         int caretX;
-        if (section == BasicCodeAreaSection.TEXT_PREVIEW.getSection()) {
+        if (section == BasicCodeAreaSection.TEXT_PREVIEW) {
             caretX = dataViewRect.x + visibility.getPreviewRelativeX() + characterWidth * byteOffset;
         } else {
             caretX = dataViewRect.x + characterWidth * (structure.computeFirstCodeCharacterPos(byteOffset) + codeOffset);
@@ -1369,15 +1370,15 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     }
 
     @Nullable
-    private Rectangle getMirrorCursorRect(long dataPosition, int section) {
+    private Rectangle getMirrorCursorRect(long dataPosition, @Nonnull CodeAreaSection section) {
         CodeType codeType = structure.getCodeType();
-        Point mirrorCursorPoint = getPositionPoint(dataPosition, 0, section == BasicCodeAreaSection.CODE_MATRIX.getSection() ? BasicCodeAreaSection.TEXT_PREVIEW.getSection() : BasicCodeAreaSection.CODE_MATRIX.getSection());
+        Point mirrorCursorPoint = getPositionPoint(dataPosition, 0, section == BasicCodeAreaSection.CODE_MATRIX ? BasicCodeAreaSection.TEXT_PREVIEW : BasicCodeAreaSection.CODE_MATRIX);
         if (mirrorCursorPoint == null) {
             return null;
         }
 
         // TODO Cache
-        Rectangle mirrorCursorRect = new Rectangle(mirrorCursorPoint.x, mirrorCursorPoint.y, metrics.getCharacterWidth() * (section == BasicCodeAreaSection.TEXT_PREVIEW.getSection() ? codeType.getMaxDigitsForByte() : 1), metrics.getRowHeight());
+        Rectangle mirrorCursorRect = new Rectangle(mirrorCursorPoint.x, mirrorCursorPoint.y, metrics.getCharacterWidth() * (section == BasicCodeAreaSection.TEXT_PREVIEW ? codeType.getMaxDigitsForByte() : 1), metrics.getRowHeight());
         return mirrorCursorRect;
     }
 
@@ -1460,7 +1461,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
      * @return cursor rectangle or null
      */
     @Nullable
-    public Rectangle getPositionRect(long dataPosition, int codeOffset, int section) {
+    public Rectangle getPositionRect(long dataPosition, int codeOffset, @Nonnull CodeAreaSection section) {
         int characterWidth = metrics.getCharacterWidth();
         int rowHeight = metrics.getRowHeight();
         Point cursorPoint = getPositionPoint(dataPosition, codeOffset, section);

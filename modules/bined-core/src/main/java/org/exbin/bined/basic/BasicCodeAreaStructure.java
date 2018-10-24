@@ -20,6 +20,7 @@ import javax.annotation.Nullable;
 import org.exbin.bined.BasicCodeAreaSection;
 import org.exbin.bined.CaretPosition;
 import org.exbin.bined.CodeAreaCaretPosition;
+import org.exbin.bined.CodeAreaSection;
 import org.exbin.bined.CodeAreaViewMode;
 import org.exbin.bined.CodeType;
 import org.exbin.bined.DataProvider;
@@ -158,7 +159,7 @@ public class BasicCodeAreaStructure {
         CodeAreaCaretPosition target = new CodeAreaCaretPosition(position.getDataPosition(), position.getCodeOffset(), position.getSection());
         switch (direction) {
             case LEFT: {
-                if (position.getSection() == BasicCodeAreaSection.CODE_MATRIX.getSection()) {
+                if (position.getSection() == BasicCodeAreaSection.CODE_MATRIX) {
                     int codeOffset = position.getCodeOffset();
                     if (codeOffset > 0) {
                         target.setCodeOffset(codeOffset - 1);
@@ -172,7 +173,7 @@ public class BasicCodeAreaStructure {
                 break;
             }
             case RIGHT: {
-                if (position.getSection() == BasicCodeAreaSection.CODE_MATRIX.getSection()) {
+                if (position.getSection() == BasicCodeAreaSection.CODE_MATRIX) {
                     int codeOffset = position.getCodeOffset();
                     if (position.getDataPosition() < dataSize && codeOffset < codeType.getMaxDigitsForByte() - 1) {
                         target.setCodeOffset(codeOffset + 1);
@@ -212,7 +213,7 @@ public class BasicCodeAreaStructure {
                 } else {
                     target.setDataPosition(dataPosition + increment);
                 }
-                if (position.getSection() == BasicCodeAreaSection.CODE_MATRIX.getSection()) {
+                if (position.getSection() == BasicCodeAreaSection.CODE_MATRIX) {
                     if (target.getDataPosition() == dataSize) {
                         target.setCodeOffset(0);
                     } else {
@@ -264,8 +265,8 @@ public class BasicCodeAreaStructure {
                 break;
             }
             case SWITCH_SECTION: {
-                int activeSection = caretPosition.getSection() == BasicCodeAreaSection.CODE_MATRIX.getSection() ? BasicCodeAreaSection.TEXT_PREVIEW.getSection() : BasicCodeAreaSection.CODE_MATRIX.getSection();
-                if (activeSection == BasicCodeAreaSection.TEXT_PREVIEW.getSection()) {
+                CodeAreaSection activeSection = caretPosition.getSection() == BasicCodeAreaSection.CODE_MATRIX ? BasicCodeAreaSection.TEXT_PREVIEW : BasicCodeAreaSection.CODE_MATRIX;
+                if (activeSection == BasicCodeAreaSection.TEXT_PREVIEW) {
                     target.setCodeOffset(0);
                 }
                 target.setSection(activeSection);

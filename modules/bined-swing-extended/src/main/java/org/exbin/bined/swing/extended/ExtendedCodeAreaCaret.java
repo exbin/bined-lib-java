@@ -20,9 +20,11 @@ import java.awt.event.ActionListener;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.swing.Timer;
+import org.exbin.bined.BasicCodeAreaSection;
 import org.exbin.bined.CaretPosition;
 import org.exbin.bined.CodeAreaCaret;
 import org.exbin.bined.CodeAreaCaretPosition;
+import org.exbin.bined.CodeAreaSection;
 import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.swing.basic.CodeArea;
@@ -123,7 +125,7 @@ public class ExtendedCodeAreaCaret implements CodeAreaCaret {
         resetBlink();
     }
 
-    public void setCaretPosition(long dataPosition, int codeOffset, int section) {
+    public void setCaretPosition(long dataPosition, int codeOffset, @Nonnull CodeAreaSection section) {
         caretPosition.setDataPosition(dataPosition);
         caretPosition.setCodeOffset(codeOffset);
         caretPosition.setSection(section);
@@ -148,11 +150,13 @@ public class ExtendedCodeAreaCaret implements CodeAreaCaret {
         resetBlink();
     }
 
-    public int getSection() {
-        return caretPosition.getSection();
+    @Nonnull
+    public CodeAreaSection getSection() {
+        CodeAreaSection section = caretPosition.getSection();
+        return section == null ? BasicCodeAreaSection.CODE_MATRIX : section;
     }
 
-    public void setSection(int section) {
+    public void setSection(@Nonnull CodeAreaSection section) {
         caretPosition.setSection(section);
         resetBlink();
     }

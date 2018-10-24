@@ -29,6 +29,7 @@ import org.exbin.bined.BasicCodeAreaZone;
 import org.exbin.bined.CaretMovedListener;
 import org.exbin.bined.CaretPosition;
 import org.exbin.bined.CodeAreaCaretPosition;
+import org.exbin.bined.CodeAreaSection;
 import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.CodeAreaViewMode;
 import org.exbin.bined.CodeCharactersCase;
@@ -194,7 +195,8 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
         return caret.getCodeOffset();
     }
 
-    public int getActiveSection() {
+    @Nonnull
+    public CodeAreaSection getActiveSection() {
         return caret.getSection();
     }
 
@@ -259,12 +261,12 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
             this.viewMode = viewMode;
             switch (viewMode) {
                 case CODE_MATRIX:
-                    getCaret().setSection(BasicCodeAreaSection.CODE_MATRIX.getSection());
+                    getCaret().setSection(BasicCodeAreaSection.CODE_MATRIX);
                     reset();
                     notifyCaretMoved();
                     break;
                 case TEXT_PREVIEW:
-                    getCaret().setSection(BasicCodeAreaSection.TEXT_PREVIEW.getSection());
+                    getCaret().setSection(BasicCodeAreaSection.TEXT_PREVIEW);
                     reset();
                     notifyCaretMoved();
                     break;
@@ -310,7 +312,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
         }
     }
 
-    public void revealPosition(long dataPosition, int dataOffset, int section) {
+    public void revealPosition(long dataPosition, int dataOffset, @Nonnull CodeAreaSection section) {
         revealPosition(new CodeAreaCaretPosition(dataPosition, dataOffset, section));
     }
 
@@ -335,7 +337,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
         }
     }
 
-    public void centerOnPosition(long dataPosition, int dataOffset, int section) {
+    public void centerOnPosition(long dataPosition, int dataOffset, @Nonnull CodeAreaSection section) {
         centerOnPosition(new CodeAreaCaretPosition(dataPosition, dataOffset, section));
     }
 

@@ -292,7 +292,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
 
         DefaultCodeAreaCaret caret = (DefaultCodeAreaCaret) ((CaretCapable) codeArea).getCaret();
         CaretPosition caretPosition = caret.getCaretPosition();
-        if (caretPosition.getSection() == BasicCodeAreaSection.CODE_MATRIX.getSection()) {
+        if (caretPosition.getSection() == BasicCodeAreaSection.CODE_MATRIX) {
             long dataPosition = caretPosition.getDataPosition();
             int startCodeOffset = caretPosition.getCodeOffset();
             CodeType codeType = getCodeType();
