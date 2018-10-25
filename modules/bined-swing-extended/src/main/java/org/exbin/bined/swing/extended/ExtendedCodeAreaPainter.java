@@ -83,7 +83,7 @@ import org.exbin.utils.binary_data.BinaryData;
 /**
  * Extended code area component default painter.
  *
- * @version 0.2.0 2018/10/21
+ * @version 0.2.0 2018/10/25
  * @author ExBin Project (https://exbin.org)
  */
 public class ExtendedCodeAreaPainter implements CodeAreaPainter {
@@ -236,7 +236,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter {
         rowDataCache.rowData = new byte[structure.getBytesPerRow() + maxBytesPerChar - 1];
         rowDataCache.rowPositionCode = new char[rowPositionLength];
         rowDataCache.rowCharacters = new char[structure.getCharactersPerRow()];
-        rowDataCache.rowUnprintables = new char[structure.getCharactersPerRow()];
+        rowDataCache.unprintables = new byte[(structure.getBytesPerRow() + 7) >> 3];
     }
 
     public void resetFont(@Nonnull Graphics g) {
@@ -690,7 +690,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter {
         }
 
         if (showUnprintables) {
-            Arrays.fill(rowDataCache.rowUnprintables, ' ');
+            Arrays.fill(rowDataCache.unprintables, (byte) 0);
 
             if (unprintableCharactersMapping == null) {
                 buildUnprintableCharactersMapping();
@@ -701,6 +701,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter {
         if (viewMode != CodeAreaViewMode.TEXT_PREVIEW) {
             int visibleCodeStart = visibility.getVisibleCodeStart();
             int visibleCodeEnd = visibility.getVisibleCodeEnd();
+            char targetChar;
             Character replacement = null;
             for (int byteOnRow = Math.max(visibleCodeStart, rowStart); byteOnRow < Math.min(visibleCodeEnd, rowBytesLimit); byteOnRow++) {
                 byte dataByte = rowDataCache.rowData[byteOnRow];
@@ -711,18 +712,14 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter {
                     }
                     String displayString = new String(rowDataCache.rowData, byteOnRow, charDataLength, charset);
                     if (!displayString.isEmpty()) {
-                        char targetChar = displayString.charAt(0);
+                        targetChar = displayString.charAt(0);
                         replacement = unprintableCharactersMapping.get(targetChar);
                         if (replacement != null) {
-                            CodeAreaUtils.byteToCharsCode(dataByte, codeType, rowDataCache.rowUnprintables, structure.computeFirstCodeCharacterPos(byteOnRow), codeCharactersCase);
+                            rowDataCache.unprintables[byteOnRow >> 3] |= 1 << (byteOnRow & 7);
                         }
                     }
-                } else {
-                    replacement = null;
                 }
-                if (replacement == null) {
-                    CodeAreaUtils.byteToCharsCode(dataByte, codeType, rowDataCache.rowCharacters, structure.computeFirstCodeCharacterPos(byteOnRow), codeCharactersCase);
-                }
+                CodeAreaUtils.byteToCharsCode(dataByte, codeType, rowDataCache.rowCharacters, structure.computeFirstCodeCharacterPos(byteOnRow), codeCharactersCase);
             }
             if (bytesPerRow > rowBytesLimit) {
                 Arrays.fill(rowDataCache.rowCharacters, structure.computeFirstCodeCharacterPos(rowBytesLimit), rowDataCache.rowCharacters.length, ' ');
@@ -733,6 +730,8 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter {
         if (viewMode != CodeAreaViewMode.CODE_MATRIX) {
             int visiblePreviewStart = visibility.getVisiblePreviewStart();
             int visiblePreviewEnd = visibility.getVisiblePreviewEnd();
+            Character replacement;
+            char targetChar;
             for (int byteOnRow = visiblePreviewStart; byteOnRow < Math.min(visiblePreviewEnd, rowBytesLimit); byteOnRow++) {
                 byte dataByte = rowDataCache.rowData[byteOnRow];
 
@@ -747,15 +746,15 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter {
                     }
                     String displayString = new String(rowDataCache.rowData, byteOnRow, charDataLength, charset);
                     if (!displayString.isEmpty()) {
-                        char targetChar = displayString.charAt(0);
+                        targetChar = displayString.charAt(0);
                         if (showUnprintables) { // || charRenderingMode == CodeArea.CharRenderingMode.LINE_AT_ONCE) {
-                            Character replacement = unprintableCharactersMapping.get(targetChar);
+                            replacement = unprintableCharactersMapping.get(targetChar);
                             if (replacement != null) {
-                                rowDataCache.rowUnprintables[previewCharPos + byteOnRow] = replacement;
-                                rowDataCache.rowCharacters[previewCharPos + byteOnRow] = ' ';
-                            } else {
-                                rowDataCache.rowCharacters[previewCharPos + byteOnRow] = targetChar;
+                                rowDataCache.unprintables[byteOnRow >> 3] |= 1 << (byteOnRow & 7);
+                                targetChar = replacement;
                             }
+
+                            rowDataCache.rowCharacters[previewCharPos + byteOnRow] = targetChar;
                         } else {
                             rowDataCache.rowCharacters[previewCharPos + byteOnRow] = targetChar;
                         }
@@ -765,17 +764,18 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter {
                         buildCharMapping(charset);
                     }
 
-                    char targetChar = charMapping[dataByte & 0xFF];
+                    targetChar = charMapping[dataByte & 0xFF];
                     if (showUnprintables) { // || charRenderingMode == CodeArea.CharRenderingMode.LINE_AT_ONCE) {
                         if (unprintableCharactersMapping == null) {
                             buildUnprintableCharactersMapping();
                         }
-                        Character replacement = unprintableCharactersMapping.get(targetChar);
+                        replacement = unprintableCharactersMapping.get(targetChar);
                         if (replacement != null) {
-                            rowDataCache.rowUnprintables[previewCharPos + byteOnRow] = replacement;
-                        } else {
-                            rowDataCache.rowCharacters[previewCharPos + byteOnRow] = targetChar;
+                            rowDataCache.unprintables[byteOnRow >> 3] |= 1 << (byteOnRow & 7);
+                            targetChar = replacement;
                         }
+
+                        rowDataCache.rowCharacters[previewCharPos + byteOnRow] = targetChar;
                     } else {
                         rowDataCache.rowCharacters[previewCharPos + byteOnRow] = targetChar;
                     }
@@ -816,7 +816,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter {
             }
             boolean sequenceBreak = false;
 
-            unprintable = showUnprintables && rowDataCache.rowUnprintables[charOnRow] != ' ';
+            unprintable = showUnprintables && (rowDataCache.unprintables[byteOnRow >> 3] & (1 << (byteOnRow & 7))) != 0;
             Color color = getPositionBackgroundColor(rowDataPosition, byteOnRow, charOnRow, section, unprintable);
             if (!CodeAreaSwingUtils.areSameColors(color, renderColor)) {
                 sequenceBreak = true;
@@ -975,7 +975,6 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter {
         Color renderColor = null;
 
         boolean unprintables = false;
-        boolean unprintableByte = false;
         int visibleCharStart = visibility.getVisibleCharStart();
         int visibleCharEnd = visibility.getVisibleCharEnd();
         int renderOffset = visibleCharStart;
@@ -991,16 +990,11 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter {
             }
 
             boolean currentUnprintables = false;
-            char currentChar;
             if (showUnprintables) {
-                currentChar = rowDataCache.rowUnprintables[charOnRow];
-                currentUnprintables = currentChar != ' ';
-                if (!currentUnprintables) {
-                    currentChar = rowDataCache.rowCharacters[charOnRow];
-                }
-            } else {
-                currentChar = rowDataCache.rowCharacters[charOnRow];
+                currentUnprintables = (rowDataCache.unprintables[byteOnRow >> 3] & (1 << (byteOnRow & 7))) != 0;
             }
+
+            char currentChar = rowDataCache.rowCharacters[charOnRow];
 
             Color color = getPositionTextColor(rowDataPosition, byteOnRow, charOnRow, section, currentUnprintables);
             if (color == null) {
@@ -1046,7 +1040,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter {
                 }
 
                 if (charOnRow > renderOffset) {
-                    renderCharSequence(g, renderOffset, charOnRow, rowPositionX, positionY, unprintables);
+                    renderCharSequence(g, renderOffset, charOnRow, rowPositionX, positionY);
                 }
 
                 renderColor = color;
@@ -1058,7 +1052,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter {
                 if (!nativeWidth) {
                     renderOffset = charOnRow + 1;
                     int positionX = rowPositionX + charOnRow * characterWidth + ((characterWidth + 1 - currentCharWidth) >> 1);
-                    drawShiftedChar(g, currentUnprintables ? rowDataCache.rowUnprintables : rowDataCache.rowCharacters, charOnRow, characterWidth, positionX, positionY);
+                    drawShiftedChar(g, rowDataCache.rowCharacters, charOnRow, characterWidth, positionX, positionY);
                 } else {
                     renderOffset = charOnRow;
                 }
@@ -1072,7 +1066,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter {
                 g.setColor(renderColor);
             }
 
-            renderCharSequence(g, renderOffset, charactersPerRow, rowPositionX, positionY, unprintables);
+            renderCharSequence(g, renderOffset, charactersPerRow, rowPositionX, positionY);
         }
     }
 
@@ -1497,9 +1491,9 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter {
      *
      * Doesn't include character at offset end.
      */
-    private void renderCharSequence(@Nonnull Graphics g, int startOffset, int endOffset, int rowPositionX, int positionY, boolean unprintables) {
+    private void renderCharSequence(@Nonnull Graphics g, int startOffset, int endOffset, int rowPositionX, int positionY) {
         int characterWidth = metrics.getCharacterWidth();
-        g.drawChars(unprintables ? rowDataCache.rowUnprintables : rowDataCache.rowCharacters, startOffset, endOffset - startOffset, rowPositionX + startOffset * characterWidth, positionY);
+        g.drawChars(rowDataCache.rowCharacters, startOffset, endOffset - startOffset, rowPositionX + startOffset * characterWidth, positionY);
     }
 
     /**
@@ -2977,7 +2971,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter {
         private byte[] rowData;
         private char[] rowPositionCode;
         private char[] rowCharacters;
-        private char[] rowUnprintables;
+        private byte[] unprintables;
     }
 
     private static class CursorDataCache {

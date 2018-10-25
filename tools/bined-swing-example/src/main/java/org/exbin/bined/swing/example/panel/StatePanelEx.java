@@ -27,7 +27,6 @@ import javax.swing.filechooser.FileFilter;
 import org.exbin.bined.BasicCodeAreaSection;
 import org.exbin.bined.CaretPosition;
 import org.exbin.bined.SelectionRange;
-import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.capability.SelectionCapable;
 import org.exbin.bined.swing.example.BinEdExampleBasicPanel;
 import org.exbin.bined.swing.extended.ExtCodeArea;
@@ -48,7 +47,6 @@ public class StatePanelEx extends javax.swing.JPanel {
 
         initComponents();
 
-        activeSectionComboBox.setSelectedIndex(((BasicCodeAreaSection) ((CaretCapable) codeArea).getCaret().getCaretPosition().getSection()).ordinal());
         dataSizeTextField.setText(String.valueOf(codeArea.getDataSize()));
 
         codeArea.addCaretMovedListener((CaretPosition caretPosition) -> {
