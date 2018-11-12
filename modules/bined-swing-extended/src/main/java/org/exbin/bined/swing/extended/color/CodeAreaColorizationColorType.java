@@ -15,6 +15,8 @@
  */
 package org.exbin.bined.swing.extended.color;
 
+import org.exbin.bined.CodeAreaColorType;
+
 /**
  * Enumeration of unprintable color types.
  *

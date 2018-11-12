@@ -139,6 +139,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         dataView.setVisible(false);
         dataView.setLayout(null);
         dataView.setOpaque(false);
+        dataView.setInheritsPopupMenu(true);
         // Fill whole area, no more suitable method found so far
         dataView.setPreferredSize(new Dimension(0, 0));
         scrollPanel = new JScrollPane();
@@ -153,6 +154,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         codeArea.add(scrollPanel);
         scrollPanel.setOpaque(false);
         scrollPanel.setViewportView(dataView);
+        scrollPanel.setInheritsPopupMenu(true);
         scrollPanel.setViewportBorder(null);
         scrollPanel.getViewport().setOpaque(false);
 

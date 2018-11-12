@@ -29,7 +29,7 @@ import org.exbin.utils.binary_data.EditableBinaryData;
 /**
  * Delta document defined as a sequence of segments.
  *
- * @version 0.2.0 2018/04/27
+ * @version 0.2.0 2018/10/29
  * @author ExBin Project (https://exbin.org)
  */
 public class DeltaDocument implements EditableBinaryData {
@@ -41,6 +41,8 @@ public class DeltaDocument implements EditableBinaryData {
     private long dataLength = 0;
     private final DeltaDocumentWindow pointerWindow;
     private final List<DeltaDocumentChangedListener> changeListeners = new ArrayList<>();
+
+    private static final int BUFFER_SIZE = 4096;
 
     public DeltaDocument(@Nonnull SegmentsRepository repository, @Nonnull FileDataSource fileSource) throws IOException {
         this.repository = repository;
@@ -141,8 +143,23 @@ public class DeltaDocument implements EditableBinaryData {
     }
 
     @Override
-    public long insert(long startFrom, InputStream in, long maxDataLength) throws IOException {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public long insert(long startFrom, @Nonnull InputStream inputStream, long maxDataLength) throws IOException {
+        // TODO optimization later
+        long processed = 0;
+        byte[] buffer = new byte[BUFFER_SIZE];
+        while (maxDataLength > 0 && inputStream.available() > 0) {
+            int toRead = maxDataLength > BUFFER_SIZE ? BUFFER_SIZE : (int) maxDataLength;
+            int read = inputStream.read(buffer, 0, toRead);
+            if (read == -1) {
+                break;
+            }
+            pointerWindow.insert(startFrom, buffer, 0, read);
+            maxDataLength -= read;
+            startFrom += read;
+            processed += read;
+        }
+
+        return processed;
     }
 
     @Override
@@ -182,7 +199,7 @@ public class DeltaDocument implements EditableBinaryData {
 
     @Override
     public void fillData(long startFrom, long length) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        fillData(startFrom, length, (byte) 0);
     }
 
     @Override
@@ -214,6 +231,8 @@ public class DeltaDocument implements EditableBinaryData {
 
     @Override
     public void saveToStream(@Nonnull OutputStream out) throws IOException {
+        byte[] buffer = new byte[BUFFER_SIZE];
+        
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

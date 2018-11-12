@@ -853,6 +853,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter {
      * @param byteOnRow byte on current row
      * @param charOnRow character on current row
      * @param section current section
+     * @param unprintable flag for unprintable characters
      * @return color or null for default color
      */
     @Nullable
@@ -1077,6 +1078,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter {
      * @param byteOnRow byte on current row
      * @param charOnRow character on current row
      * @param section current section
+     * @param unprintable flag for unprintable characters
      * @return color or null for default color
      */
     @Nullable

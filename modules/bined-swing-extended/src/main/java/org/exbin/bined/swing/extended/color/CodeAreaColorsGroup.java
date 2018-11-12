@@ -15,6 +15,7 @@
  */
 package org.exbin.bined.swing.extended.color;
 
+import org.exbin.bined.CodeAreaColorType;
 import java.awt.Color;
 import javax.annotation.Nullable;
 

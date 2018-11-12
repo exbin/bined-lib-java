@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.swing.extended.color;
+package org.exbin.bined;
 
 import javax.annotation.Nonnull;
 
@@ -26,9 +26,7 @@ import javax.annotation.Nonnull;
 public interface CodeAreaColorType {
 
     /**
-     * Returns preferences identifier.
-     *
-     * Unique string ID should be returned.
+     * Returns unique string identifier.
      *
      * Custom implementations should start with full package name to avoid
      * collisions.
