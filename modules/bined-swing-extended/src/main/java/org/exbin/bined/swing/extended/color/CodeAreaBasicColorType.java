@@ -15,30 +15,43 @@
  */
 package org.exbin.bined.swing.extended.color;
 
-import org.exbin.bined.CodeAreaColorType;
+import org.exbin.bined.color.CodeAreaColorType;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import org.exbin.bined.basic.BasicCodeAreaColorGroup;
+import org.exbin.bined.color.CodeAreaColorGroup;
 
 /**
  * Enumeration of basic color types.
  *
- * @version 0.2.0 2018/04/12
+ * @version 0.2.0 2018/11/13
  * @author ExBin Project (https://exbin.org)
  */
 public enum CodeAreaBasicColorType implements CodeAreaColorType {
-    COLOR("basic.color"),
-    BACKGROUND("basic.background"),
-    SELECTION("basic.selection"),
-    MIRROR_SELECTION("basic.mirror_selection");
 
-    private final String preferencesId;
+    COLOR("basic.color", BasicCodeAreaColorGroup.MAIN),
+    BACKGROUND("basic.background", BasicCodeAreaColorGroup.MAIN),
+    SELECTION("basic.selection", BasicCodeAreaColorGroup.SELECTION),
+    MIRROR_SELECTION("basic.mirror_selection", null);
 
-    private CodeAreaBasicColorType(@Nonnull String preferencesId) {
-        this.preferencesId = preferencesId;
+    @Nonnull
+    private final String typeId;
+    private final CodeAreaColorGroup group;
+
+    private CodeAreaBasicColorType(@Nonnull String typeId, @Nullable CodeAreaColorGroup group) {
+        this.typeId = typeId;
+        this.group = group;
     }
 
     @Nonnull
     @Override
-    public String getPreferencesId() {
-        return preferencesId;
+    public String getId() {
+        return typeId;
+    }
+
+    @Nullable
+    @Override
+    public CodeAreaColorGroup getGroup() {
+        return group;
     }
 }

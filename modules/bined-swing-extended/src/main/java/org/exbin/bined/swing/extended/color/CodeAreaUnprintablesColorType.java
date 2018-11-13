@@ -15,8 +15,10 @@
  */
 package org.exbin.bined.swing.extended.color;
 
-import org.exbin.bined.CodeAreaColorType;
+import org.exbin.bined.color.CodeAreaColorType;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import org.exbin.bined.color.CodeAreaColorGroup;
 
 /**
  * Enumeration of unprintable color types.
@@ -26,17 +28,27 @@ import javax.annotation.Nonnull;
  */
 public enum CodeAreaUnprintablesColorType implements CodeAreaColorType {
 
-    UNPRINTABLE("unprintable.color");
+    UNPRINTABLE("unprintable.color", null);
 
-    private final String preferencesId;
+    @Nonnull
+    private final String typeId;
+    @Nullable
+    private final CodeAreaColorGroup group;
 
-    private CodeAreaUnprintablesColorType(@Nonnull String preferencesId) {
-        this.preferencesId = preferencesId;
+    private CodeAreaUnprintablesColorType(@Nonnull String typeId, @Nullable CodeAreaColorGroup group) {
+        this.typeId = typeId;
+        this.group = group;
     }
 
     @Nonnull
     @Override
-    public String getPreferencesId() {
-        return preferencesId;
+    public String getId() {
+        return typeId;
+    }
+
+    @Nullable
+    @Override
+    public CodeAreaColorGroup getGroup() {
+        return group;
     }
 }

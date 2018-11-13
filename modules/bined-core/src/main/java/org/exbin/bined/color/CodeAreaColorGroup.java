@@ -13,26 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.swing.extended.color;
+package org.exbin.bined.color;
 
-import org.exbin.bined.color.CodeAreaColorType;
-import java.awt.Color;
-import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
 
 /**
- * Interface for code area color profile.
+ * Interface for code area color group.
  *
- * @version 0.2.0 2017/04/14
+ * @version 0.2.0 2018/11/13
  * @author ExBin Project (https://exbin.org)
  */
-public interface CodeAreaColorsGroup {
+public interface CodeAreaColorGroup {
 
     /**
-     * Returns color for given color type.
+     * Returns unique string identifier.
      *
-     * @param colorType color type
-     * @return color
+     * Custom implementations should start with full package name to avoid
+     * collisions.
+     *
+     * @return unique identification ID key
      */
-    @Nullable
-    Color getColor(CodeAreaColorType colorType);
+    @Nonnull
+    String getId();
 }

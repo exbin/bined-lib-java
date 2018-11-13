@@ -13,14 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined;
+package org.exbin.bined.color;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
- * Interface for code area color profile.
+ * Interface for code area color type.
  *
- * @version 0.2.0 2017/04/17
+ * @version 0.2.0 2018/11/13
  * @author ExBin Project (https://exbin.org)
  */
 public interface CodeAreaColorType {
@@ -31,8 +32,16 @@ public interface CodeAreaColorType {
      * Custom implementations should start with full package name to avoid
      * collisions.
      *
-     * @return preferences ID key
+     * @return unique identification ID key
      */
     @Nonnull
-    String getPreferencesId();
+    String getId();
+
+    /**
+     * Returns group which this color belongs to or null.
+     *
+     * @return group
+     */
+    @Nullable
+    CodeAreaColorGroup getGroup();
 }
