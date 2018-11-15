@@ -83,7 +83,7 @@ import org.exbin.utils.binary_data.BinaryData;
 /**
  * Extended code area component default painter.
  *
- * @version 0.2.0 2018/10/25
+ * @version 0.2.0 2018/11/15
  * @author ExBin Project (https://exbin.org)
  */
 public class ExtendedCodeAreaPainter implements CodeAreaPainter {
@@ -152,6 +152,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter {
         dataView.setVisible(false);
         dataView.setLayout(null);
         dataView.setOpaque(false);
+        dataView.setInheritsPopupMenu(true);
         // Fill whole area, no more suitable method found so far
         dataView.setPreferredSize(new Dimension(0, 0));
         scrollPanel = new JScrollPane();
@@ -166,6 +167,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter {
         codeArea.add(scrollPanel);
         scrollPanel.setOpaque(false);
         scrollPanel.setViewportView(dataView);
+        scrollPanel.setInheritsPopupMenu(true);
         scrollPanel.setViewportBorder(null);
         scrollPanel.getViewport().setOpaque(false);
 
