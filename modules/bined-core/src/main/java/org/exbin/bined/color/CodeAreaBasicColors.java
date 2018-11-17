@@ -21,13 +21,15 @@ import javax.annotation.Nullable;
 /**
  * Enumeration of color types for main group.
  *
- * @version 0.2.0 2018/11/14
+ * @version 0.2.0 2018/11/17
  * @author ExBin Project (https://exbin.org)
  */
 public enum CodeAreaBasicColors implements CodeAreaColorType {
 
     TEXT_COLOR("textColor"),
     TEXT_BACKGROUND("textBackground"),
+    ALTERNATE_COLOR("alternateColor"),
+    ALTERNATE_BACKGROUND("alternateBackground"),
     SELECTION_COLOR("selectionColor"),
     SELECTION_BACKGROUND("selectionBackground"),
     MIRROR_SELECTION_COLOR("mirrorSelectionColor"),
@@ -36,7 +38,7 @@ public enum CodeAreaBasicColors implements CodeAreaColorType {
     @Nonnull
     private final String typeId;
 
-    private CodeAreaBasicColors(String typeId) {
+    private CodeAreaBasicColors(@Nonnull String typeId) {
         this.typeId = typeId;
     }
 

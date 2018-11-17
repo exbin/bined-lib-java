@@ -17,60 +17,34 @@ package org.exbin.bined.swing.extended.color;
 
 import java.awt.Color;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import org.exbin.bined.color.CodeAreaBasicColors;
+import org.exbin.bined.color.CodeAreaColorType;
 
 /**
- * Interface for code area color profile.
+ * Color profile.
  *
- * @version 0.2.0 2017/04/17
+ * @version 0.2.0 2018/11/17
  * @author ExBin Project (https://exbin.org)
  */
 public interface CodeAreaColorProfile {
 
     /**
-     * Returns colors group for default colors.
+     * Returns color of the specified type.
      *
-     * @return colors group
-     */
-    @Nonnull
-    CodeAreaColorsGroup getDefaultColors();
-
-    /**
-     * Returns colors group for main colors.
-     *
-     * @return colors group
-     */
-    @Nonnull
-    CodeAreaColorsGroup getMainColors();
-
-    /**
-     * Returns colors group for selection.
-     *
-     * @return colors group
-     */
-    @Nonnull
-    CodeAreaColorsGroup getSelectionColors();
-
-    /**
-     * Returns colors group for selection in nonactive section.
-     *
-     * @return colors group
-     */
-    @Nonnull
-    CodeAreaColorsGroup getMirrorSelectionColors();
-
-    /**
-     * Returns primary color.
-     *
+     * @param colorType color type
      * @return color
      */
-    @Nonnull
-    Color getPrimaryColor();
+    @Nullable
+    Color getColor(@Nonnull CodeAreaColorType colorType);
 
     /**
-     * Returns primary background.
+     * Returns color of the specified type.
      *
+     * @param colorType color type
+     * @param basicAltColor basic color type used as fallback
      * @return color
      */
-    @Nonnull
-    Color getPrimaryBackgroundColor();
+    @Nullable
+    Color getColor(@Nonnull CodeAreaColorType colorType, @Nonnull CodeAreaBasicColors basicAltColor);
 }

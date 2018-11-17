@@ -16,20 +16,30 @@
 package org.exbin.bined.swing.extended.color;
 
 import javax.annotation.Nonnull;
+import org.exbin.bined.color.CodeAreaColorGroup;
 
 /**
- * Interface for extended code area color profile.
+ * Enumeration of color groups for extended code area.
  *
- * @version 0.2.0 2017/04/17
+ * @version 0.2.0 2018/11/17
  * @author ExBin Project (https://exbin.org)
  */
-public interface CodeAreaColorProfileEx {
+public enum ExtendedCodeAreaColorsGroup implements CodeAreaColorGroup {
 
-    /**
-     * Returns colors group for alternate areas.
-     *
-     * @return colors group
-     */
+    UNPRINTABLE("unprintable"),
+    CONTROL_CODES("control_codes"),
+    UPPER_CODES("upper_codes");
+
     @Nonnull
-    CodeAreaColorsGroup getAlternateColors();
+    private final String groupId;
+
+    private ExtendedCodeAreaColorsGroup(@Nonnull String groupId) {
+        this.groupId = groupId;
+    }
+
+    @Nonnull
+    @Override
+    public String getId() {
+        return groupId;
+    }
 }
