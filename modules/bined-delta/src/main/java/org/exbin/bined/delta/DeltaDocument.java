@@ -231,9 +231,18 @@ public class DeltaDocument implements EditableBinaryData {
 
     @Override
     public void saveToStream(@Nonnull OutputStream out) throws IOException {
+        DeltaDocumentWindow documentWindow = new DeltaDocumentWindow(this);
         byte[] buffer = new byte[BUFFER_SIZE];
-        
-        throw new UnsupportedOperationException("Not supported yet.");
+
+        long position = 0;
+        long dataSize = getDataSize();
+        while (position < dataSize) {
+            long remains = dataSize - position;
+            int toProcess = remains < BUFFER_SIZE ? (int) remains : BUFFER_SIZE;
+            documentWindow.copyToArray(position, buffer, 0, toProcess);
+            out.write(buffer, 0, toProcess);
+            position += toProcess;
+        }
     }
 
     @Nonnull

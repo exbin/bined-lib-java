@@ -151,7 +151,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
     }
 
     private void updateCanPaste() {
-        canPaste = CodeAreaUtils.canPaste(clipboard, binaryDataFlavor);
+        canPaste = CodeAreaUtils.canPaste(clipboard, binedDataFlavor) || CodeAreaUtils.canPaste(clipboard, DataFlavor.stringFlavor);
     }
 
     @Override
@@ -505,7 +505,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
 
             BinaryData copy = codeArea.getContentData().copy(first, last - first + 1);
 
-            CodeAreaUtils.BinaryDataClipboardData binaryData = new CodeAreaUtils.BinaryDataClipboardData(copy, binaryDataFlavor);
+            CodeAreaUtils.BinaryDataClipboardData binaryData = new CodeAreaUtils.BinaryDataClipboardData(copy, binedDataFlavor);
             setClipboardContent(binaryData);
         }
     }
@@ -521,7 +521,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
 
             CodeType codeType = ((CodeTypeCapable) codeArea).getCodeType();
             CodeCharactersCase charactersCase = ((CodeCharactersCaseCapable) codeArea).getCodeCharactersCase();
-            CodeAreaUtils.CodeDataClipboardData binaryData = new CodeAreaUtils.CodeDataClipboardData(copy, binaryDataFlavor, codeType, charactersCase);
+            CodeAreaUtils.CodeDataClipboardData binaryData = new CodeAreaUtils.CodeDataClipboardData(copy, binedDataFlavor, codeType, charactersCase);
             setClipboardContent(binaryData);
         }
     }

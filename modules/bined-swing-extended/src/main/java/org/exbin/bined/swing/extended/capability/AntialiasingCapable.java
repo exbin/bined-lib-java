@@ -16,9 +16,9 @@
 package org.exbin.bined.swing.extended.capability;
 
 import javax.annotation.Nonnull;
+import org.exbin.bined.capability.CodeAreaCapability;
 import org.exbin.bined.swing.extended.AntialiasingMode;
 import org.exbin.bined.swing.extended.CharacterRenderingMode;
-import org.exbin.bined.capability.CodeAreaCapability;
 
 /**
  * Support for anti-aliasing capability.

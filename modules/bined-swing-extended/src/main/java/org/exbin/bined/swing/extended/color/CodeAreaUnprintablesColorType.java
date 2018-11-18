@@ -15,20 +15,21 @@
  */
 package org.exbin.bined.swing.extended.color;
 
-import org.exbin.bined.color.CodeAreaColorType;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import org.exbin.bined.color.CodeAreaBasicColors;
 import org.exbin.bined.color.CodeAreaColorGroup;
+import org.exbin.bined.color.CodeAreaColorType;
 
 /**
  * Enumeration of unprintable color types.
  *
- * @version 0.2.0 2018/04/12
+ * @version 0.2.0 2018/11/18
  * @author ExBin Project (https://exbin.org)
  */
 public enum CodeAreaUnprintablesColorType implements CodeAreaColorType {
 
-    UNPRINTABLE("unprintable.color", null);
+    UNPRINTABLE_COLOR(CodeAreaBasicColors.TEXT_COLOR.getId(), ExtendedCodeAreaColorsGroup.UNPRINTABLE);
 
     @Nonnull
     private final String typeId;

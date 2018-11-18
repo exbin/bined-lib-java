@@ -16,18 +16,26 @@
 package org.exbin.bined.swing.extended.color;
 
 import java.awt.Color;
+import java.util.HashMap;
+import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.exbin.bined.color.CodeAreaBasicColors;
+import org.exbin.bined.color.CodeAreaColorProfile;
 import org.exbin.bined.color.CodeAreaColorType;
 
 /**
  * Color profile for extended code area.
  *
- * @version 0.2.0 2018/11/17
+ * @version 0.2.0 2018/11/18
  * @author ExBin Project (https://exbin.org)
  */
 public class ExtendedCodeAreaColorProfile implements CodeAreaColorProfile {
+
+    private final Map<CodeAreaColorType, Color> colors = new HashMap<>();
+
+    public ExtendedCodeAreaColorProfile() {
+    }
 
     /**
      * Returns color of the specified type.
@@ -38,7 +46,7 @@ public class ExtendedCodeAreaColorProfile implements CodeAreaColorProfile {
     @Nullable
     @Override
     public Color getColor(@Nonnull CodeAreaColorType colorType) {
-        return null;
+        return colors.get(colorType);
     }
 
     /**
@@ -50,6 +58,17 @@ public class ExtendedCodeAreaColorProfile implements CodeAreaColorProfile {
     @Nullable
     @Override
     public Color getColor(@Nonnull CodeAreaColorType colorType, @Nonnull CodeAreaBasicColors basicAltColor) {
-        return null;
+        Color color = colors.get(colorType);
+        return color == null ? colors.get(basicAltColor) : color;
+    }
+
+    /**
+     * Add new color or or replace existing color.
+     *
+     * @param colorType color type
+     * @param color color value
+     */
+    public void addColor(@Nonnull CodeAreaColorType colorType, @Nonnull Color color) {
+        colors.put(colorType, color);
     }
 }

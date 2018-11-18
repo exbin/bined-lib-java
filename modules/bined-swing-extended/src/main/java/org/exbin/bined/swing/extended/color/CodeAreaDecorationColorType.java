@@ -15,10 +15,10 @@
  */
 package org.exbin.bined.swing.extended.color;
 
-import org.exbin.bined.color.CodeAreaColorType;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.exbin.bined.color.CodeAreaColorGroup;
+import org.exbin.bined.color.CodeAreaColorType;
 
 /**
  * Enumeration of unprintable color types.

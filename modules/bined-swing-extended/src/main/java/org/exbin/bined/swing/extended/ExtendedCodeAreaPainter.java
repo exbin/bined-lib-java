@@ -65,6 +65,7 @@ import org.exbin.bined.capability.CodeCharactersCaseCapable;
 import org.exbin.bined.capability.EditationModeCapable;
 import org.exbin.bined.capability.RowWrappingCapable;
 import org.exbin.bined.capability.ScrollingCapable;
+import org.exbin.bined.color.CodeAreaColorProfile;
 import org.exbin.bined.swing.CodeAreaCore;
 import org.exbin.bined.swing.CodeAreaPainter;
 import org.exbin.bined.swing.CodeAreaSwingUtils;
@@ -77,7 +78,6 @@ import org.exbin.bined.swing.basic.DefaultCodeAreaMouseListener;
 import org.exbin.bined.swing.capability.BackgroundPaintCapable;
 import org.exbin.bined.swing.capability.FontCapable;
 import org.exbin.bined.swing.extended.capability.ShowingUnprintableCapable;
-import org.exbin.bined.swing.extended.color.CodeAreaColorProfile;
 import org.exbin.utils.binary_data.BinaryData;
 
 /**
