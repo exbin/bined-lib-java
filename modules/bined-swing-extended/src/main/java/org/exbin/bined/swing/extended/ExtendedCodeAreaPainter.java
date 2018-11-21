@@ -77,13 +77,14 @@ import org.exbin.bined.swing.basic.DefaultCodeAreaCaret;
 import org.exbin.bined.swing.basic.DefaultCodeAreaMouseListener;
 import org.exbin.bined.swing.capability.BackgroundPaintCapable;
 import org.exbin.bined.swing.capability.FontCapable;
+import org.exbin.bined.swing.extended.capability.CodeAreaDecorationProfile;
 import org.exbin.bined.swing.extended.capability.ShowingUnprintableCapable;
 import org.exbin.utils.binary_data.BinaryData;
 
 /**
  * Extended code area component default painter.
  *
- * @version 0.2.0 2018/11/15
+ * @version 0.2.0 2018/11/21
  * @author ExBin Project (https://exbin.org)
  */
 public class ExtendedCodeAreaPainter implements CodeAreaPainter {
@@ -114,6 +115,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter {
     private volatile ScrollingState scrollingState = ScrollingState.NO_SCROLLING;
 
     private CodeAreaColorProfile colorProfile = null;
+    private CodeAreaDecorationProfile decoradionProfile = new CodeAreaDecorationProfile();
     private BasicCodeAreaColors colors = new BasicCodeAreaColors();
 
     @Nullable
@@ -241,7 +243,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter {
         rowDataCache.unprintables = new byte[(structure.getBytesPerRow() + 7) >> 3];
     }
 
-    public void resetFont(@Nonnull Graphics g) {
+    public void fontChanged(@Nonnull Graphics g) {
         if (font == null) {
             reset();
         }
@@ -316,7 +318,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter {
         updateCache();
         if (font == null) {
             ((FontCapable) codeArea).setCodeFont(codeArea.getFont());
-            resetFont(g);
+            fontChanged(g);
         }
         if (rowDataCache == null) {
             return;
@@ -387,11 +389,19 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter {
 
         // Decoration lines
         g.setColor(colors.getDecorationLine());
-        g.drawLine(0, headerAreaHeight - 1, rowPositionAreaWidth, headerAreaHeight - 1);
+        if (decoradionProfile.showHeaderLine()) {
+            g.drawLine(0, headerAreaHeight - 1, rowPositionAreaWidth, headerAreaHeight - 1);
+        }
 
-        int lineX = rowPositionAreaWidth - (characterWidth / 2);
-        if (lineX >= 0) {
-            g.drawLine(lineX, 0, lineX, headerAreaHeight);
+        if (decoradionProfile.showRowNumberLine()) {
+            int lineX = rowPositionAreaWidth - (characterWidth / 2);
+            if (lineX >= 0) {
+                g.drawLine(lineX, 0, lineX, headerAreaHeight);
+            }
+        }
+
+        if (decoradionProfile.showBoxLine()) {
+            g.drawLine(rowPositionAreaWidth - 1, headerAreaHeight - 1, rowPositionAreaWidth - rowPositionAreaWidth, headerAreaHeight - 1);
         }
     }
 
@@ -414,10 +424,13 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter {
         // Decoration lines
         CodeAreaScrollPosition scrollPosition = scrolling.getScrollPosition();
         g.setColor(colors.getDecorationLine());
-        g.fillRect(0, headerAreaHeight - 1, componentWidth, 1);
-        int lineX = dataViewX + visibility.getPreviewRelativeX() - scrollPosition.getCharPosition() * characterWidth - scrollPosition.getCharOffset() - characterWidth / 2;
-        if (lineX >= dataViewX) {
-            g.drawLine(lineX, 0, lineX, headerAreaHeight);
+
+        if (decoradionProfile.showRowNumberLine()) {
+            g.fillRect(0, headerAreaHeight - 1, componentWidth, 1);
+            int lineX = dataViewX + visibility.getPreviewRelativeX() - scrollPosition.getCharPosition() * characterWidth - scrollPosition.getCharOffset() - characterWidth / 2;
+            if (lineX >= dataViewX) {
+                g.drawLine(lineX, 0, lineX, headerAreaHeight);
+            }
         }
 
         CodeAreaViewMode viewMode = structure.getViewMode();
@@ -556,11 +569,13 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter {
         }
 
         g.setColor(colors.getDecorationLine());
-        int lineX = rowPositionAreaWidth - (characterWidth / 2);
-        if (lineX >= 0) {
-            g.drawLine(lineX, dataViewRectangle.y, lineX, dataViewRectangle.y + dataViewRectangle.height);
+        if (decoradionProfile.showRowNumberLine()) {
+            int lineX = rowPositionAreaWidth - (characterWidth / 2);
+            if (lineX >= 0) {
+                g.drawLine(lineX, dataViewRectangle.y, lineX, dataViewRectangle.y + dataViewRectangle.height);
+            }
+            g.drawLine(dataViewRectangle.x, dataViewRectangle.y - 1, dataViewRectangle.x + dataViewRectangle.width, dataViewRectangle.y - 1);
         }
-        g.drawLine(dataViewRectangle.x, dataViewRectangle.y - 1, dataViewRectangle.x + dataViewRectangle.width, dataViewRectangle.y - 1);
 
         g.setClip(clipBounds);
     }
@@ -571,7 +586,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter {
             reset();
         }
         if (fontChanged) {
-            resetFont(g);
+            fontChanged(g);
             fontChanged = false;
         }
 
