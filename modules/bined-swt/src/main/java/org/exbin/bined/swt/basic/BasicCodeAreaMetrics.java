@@ -22,7 +22,7 @@ import org.eclipse.swt.graphics.GC;
 /**
  * Basic code area component dimensions.
  *
- * @version 0.2.0 2017/08/31
+ * @version 0.2.0 2018/11/22
  * @author ExBin Project (https://exbin.org)
  */
 public class BasicCodeAreaMetrics {
@@ -31,7 +31,6 @@ public class BasicCodeAreaMetrics {
     private FontMetrics fontMetrics;
     @Nullable
     private GC gc;
-    private boolean monospaceFont;
 
     private int rowHeight;
     private int characterWidth;
@@ -59,12 +58,6 @@ public class BasicCodeAreaMetrics {
              * Use small 'w' character to guess normal font width.
              */
             characterWidth = gc.textExtent("w").x;
-            /**
-             * Compare it to small 'i' to detect if font is monospaced.
-             *
-             * TODO: Is there better way?
-             */
-            monospaceFont = false; // TODO characterWidth == g.textExtent(" ").x && characterWidth == g.textExtent("i").x;
             int fontSize = fontMetrics.getHeight();
             rowHeight = fontSize + subFontSpace;
         }
@@ -82,10 +75,6 @@ public class BasicCodeAreaMetrics {
 
     public int getCharWidth(char value) {
         return gc.textExtent(String.valueOf(value)).x;
-    }
-
-    public boolean isMonospaceFont() {
-        return monospaceFont;
     }
 
     public int getRowHeight() {

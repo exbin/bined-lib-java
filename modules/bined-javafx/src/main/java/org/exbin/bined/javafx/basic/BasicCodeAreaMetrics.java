@@ -28,7 +28,6 @@ public class BasicCodeAreaMetrics {
 
     @Nullable
     private FontMetrics fontMetrics;
-    private boolean monospaceFont;
 
     private int rowHeight;
     private int characterWidth;
@@ -49,12 +48,6 @@ public class BasicCodeAreaMetrics {
              * Use small 'w' character to guess normal font width.
              */
             characterWidth = (int) Math.ceil(fontMetrics.computeStringWidth("w"));
-            /**
-             * Compare it to small 'i' to detect if font is monospaced.
-             *
-             * TODO: Is there better way?
-             */
-            monospaceFont = characterWidth == (int) Math.ceil(fontMetrics.computeStringWidth(" ")) && characterWidth == (int) Math.ceil(fontMetrics.computeStringWidth("i"));
             int fontSize = (int) fontMetrics.getFont().getSize();
             rowHeight = fontSize + subFontSpace;
         }
@@ -72,10 +65,6 @@ public class BasicCodeAreaMetrics {
 
     public double getCharWidth(char value) {
         return fontMetrics.computeStringWidth(Character.toString(value));
-    }
-
-    public boolean isMonospaceFont() {
-        return monospaceFont;
     }
 
     public int getRowHeight() {

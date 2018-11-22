@@ -438,23 +438,14 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                 boolean sequenceBreak = false;
                 boolean nativeWidth = true;
 
-                int currentCharWidth = 0;
                 char currentChar = headerChars[characterOnRow];
                 if (currentChar == ' ' && renderOffset == characterOnRow) {
                     renderOffset++;
                     continue;
                 }
-                if (metrics.isMonospaceFont()) { // characterRenderingMode == CharacterRenderingMode.AUTO && 
-                    // Detect if character is in unicode range covered by monospace fonts
-                    if (CodeAreaSwingUtils.isMonospaceFullWidthCharater(currentChar)) {
-                        currentCharWidth = characterWidth;
-                    }
-                }
 
-                if (currentCharWidth == 0) {
-                    currentCharWidth = metrics.getCharWidth(currentChar);
-                    nativeWidth = currentCharWidth == characterWidth;
-                }
+                int currentCharWidth = metrics.getCharWidth(currentChar);
+                nativeWidth = currentCharWidth == characterWidth;
 
                 Color color = colors.getTextForeground();
 
@@ -897,7 +888,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         int rowHeight = metrics.getRowHeight();
         int characterWidth = metrics.getCharacterWidth();
         int subFontSpace = metrics.getSubFontSpace();
-        boolean monospaceFont = metrics.isMonospaceFont();
 
         g.setFont(font);
         int positionY = rowPositionY + rowHeight - subFontSpace;
@@ -933,25 +923,14 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                 sequenceBreak = true;
             }
 
-            int currentCharWidth = 0;
             char currentChar = rowDataCache.rowCharacters[charOnRow];
             if (currentChar == ' ' && renderOffset == charOnRow) {
                 renderOffset++;
                 continue;
             }
 
-            if (monospaceFont) {
-                // Detect if character is in unicode range covered by monospace fonts
-                if (CodeAreaSwingUtils.isMonospaceFullWidthCharater(currentChar)) {
-                    currentCharWidth = characterWidth;
-                }
-            }
-
-            boolean nativeWidth = true;
-            if (currentCharWidth == 0) {
-                currentCharWidth = metrics.getCharWidth(currentChar);
-                nativeWidth = currentCharWidth == characterWidth;
-            }
+            int currentCharWidth = metrics.getCharWidth(currentChar);
+            boolean nativeWidth = currentCharWidth == characterWidth;
 
             if (!nativeWidth) {
                 sequenceBreak = true;

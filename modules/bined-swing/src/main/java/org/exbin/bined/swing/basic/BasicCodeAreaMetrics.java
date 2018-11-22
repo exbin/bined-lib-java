@@ -21,14 +21,13 @@ import javax.annotation.Nullable;
 /**
  * Basic code area component dimensions.
  *
- * @version 0.2.0 2017/08/29
+ * @version 0.2.0 2018/11/22
  * @author ExBin Project (https://exbin.org)
  */
 public class BasicCodeAreaMetrics {
 
     @Nullable
     private FontMetrics fontMetrics;
-    private boolean monospaceFont;
 
     private int rowHeight;
     private int characterWidth;
@@ -49,12 +48,6 @@ public class BasicCodeAreaMetrics {
              * Use small 'w' character to guess normal font width.
              */
             characterWidth = fontMetrics.charWidth('w');
-            /**
-             * Compare it to small 'i' to detect if font is monospaced.
-             *
-             * TODO: Is there better way?
-             */
-            monospaceFont = characterWidth == fontMetrics.charWidth(' ') && characterWidth == fontMetrics.charWidth('i');
             int fontSize = fontMetrics.getFont().getSize();
             rowHeight = fontSize + subFontSpace;
         }
@@ -72,10 +65,6 @@ public class BasicCodeAreaMetrics {
 
     public int getCharWidth(char value) {
         return fontMetrics.charWidth(value);
-    }
-
-    public boolean isMonospaceFont() {
-        return monospaceFont;
     }
 
     public int getRowHeight() {

@@ -891,7 +891,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         int rowHeight = metrics.getRowHeight();
         int characterWidth = metrics.getCharacterWidth();
         int subFontSpace = metrics.getSubFontSpace();
-        boolean monospaceFont = metrics.isMonospaceFont();
 
         g.setFont(font);
         double positionY = rowPositionY + rowHeight - subFontSpace;
@@ -927,25 +926,14 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                 sequenceBreak = true;
             }
 
-            double currentCharWidth = 0;
             char currentChar = rowDataCache.rowCharacters[charOnRow];
             if (currentChar == ' ' && renderOffset == charOnRow) {
                 renderOffset++;
                 continue;
             }
 
-            if (monospaceFont) {
-                // Detect if character is in unicode range covered by monospace fonts
-                if (CodeAreaJavaFxUtils.isMonospaceFullWidthCharater(currentChar)) {
-                    currentCharWidth = characterWidth;
-                }
-            }
-
-            boolean nativeWidth = true;
-            if (currentCharWidth == 0) {
-                currentCharWidth = metrics.getCharWidth(currentChar);
-                nativeWidth = currentCharWidth == characterWidth;
-            }
+            double currentCharWidth = metrics.getCharWidth(currentChar);
+            boolean nativeWidth = currentCharWidth == characterWidth;
 
             if (!nativeWidth) {
                 sequenceBreak = true;

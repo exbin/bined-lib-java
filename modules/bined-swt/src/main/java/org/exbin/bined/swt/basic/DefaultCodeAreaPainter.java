@@ -73,7 +73,7 @@ import org.exbin.utils.binary_data.BinaryData;
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2018/09/04
+ * @version 0.2.0 2018/11/22
  * @author ExBin Project (https://exbin.org)
  */
 public class DefaultCodeAreaPainter implements CodeAreaPainter {
@@ -476,9 +476,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                 int byteOnRow;
                 byteOnRow = structure.computePositionByte(characterOnRow);
                 boolean sequenceBreak = false;
-                boolean nativeWidth = true;
 
-                int currentCharWidth = 0;
 //                ColorsGroup.ColorType colorType = ColorsGroup.ColorType.TEXT;
 //                if (characterRenderingMode != CharacterRenderingMode.LINE_AT_ONCE) {
                 char currentChar = ' ';
@@ -489,17 +487,9 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                     renderOffset++;
                     continue;
                 }
-                if (metrics.isMonospaceFont()) { // characterRenderingMode == CharacterRenderingMode.AUTO && 
-                    // Detect if character is in unicode range covered by monospace fonts
-                    if (CodeAreaSwtUtils.isMonospaceFullWidthCharater(currentChar)) {
-                        currentCharWidth = characterWidth;
-                    }
-                }
 
-                if (currentCharWidth == 0) {
-                    currentCharWidth = g.textExtent(String.valueOf(currentChar)).x;
-                    nativeWidth = currentCharWidth == characterWidth;
-                }
+                int currentCharWidth = g.textExtent(String.valueOf(currentChar)).x;
+                boolean nativeWidth = currentCharWidth == characterWidth;
 //                } else {
 //                currentCharWidth = characterWidth;
 //                }
@@ -944,7 +934,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         int rowHeight = metrics.getRowHeight();
         int characterWidth = metrics.getCharacterWidth();
         int subFontSpace = metrics.getSubFontSpace();
-        boolean monospaceFont = metrics.isMonospaceFont();
 
         int positionY = rowPositionY;
 
@@ -979,25 +968,14 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                 sequenceBreak = true;
             }
 
-            int currentCharWidth = 0;
             char currentChar = rowDataCache.rowCharacters[charOnRow];
             if (currentChar == ' ' && renderOffset == charOnRow) {
                 renderOffset++;
                 continue;
             }
 
-            if (monospaceFont) {
-                // Detect if character is in unicode range covered by monospace fonts
-                if (CodeAreaSwtUtils.isMonospaceFullWidthCharater(currentChar)) {
-                    currentCharWidth = characterWidth;
-                }
-            }
-
-            boolean nativeWidth = true;
-            if (currentCharWidth == 0) {
-                currentCharWidth = g.textExtent(String.valueOf(currentChar)).x;
-                nativeWidth = currentCharWidth == characterWidth;
-            }
+            int currentCharWidth = g.textExtent(String.valueOf(currentChar)).x;
+            boolean nativeWidth = currentCharWidth == characterWidth;
 
             if (!nativeWidth) {
                 sequenceBreak = true;

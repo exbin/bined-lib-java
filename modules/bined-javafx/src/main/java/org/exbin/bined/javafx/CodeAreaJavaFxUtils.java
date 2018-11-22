@@ -40,19 +40,6 @@ public class CodeAreaJavaFxUtils {
     private CodeAreaJavaFxUtils() {
     }
 
-    /**
-     * Detect if character is in unicode range covered by monospace fonts width
-     * exactly full width.
-     *
-     * @param character input character
-     * @return true if character is suppose to have exactly full width
-     */
-    public static boolean isMonospaceFullWidthCharater(char character) {
-        return (character > MIN_MONOSPACE_CODE_POINT && (int) character < MAX_MONOSPACE_CODE_POINT
-                && character != INV_SPACE_CODE_POINT
-                && character != EXCEPTION1_CODE_POINT && character != EXCEPTION2_CODE_POINT);
-    }
-
     public static boolean areSameColors(@Nullable Color color, @Nullable Color comparedColor) {
         return (color == null && comparedColor == null) || (color != null && color.equals(comparedColor));
     }
