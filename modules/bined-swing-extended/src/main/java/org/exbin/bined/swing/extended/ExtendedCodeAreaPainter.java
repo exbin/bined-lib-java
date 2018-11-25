@@ -24,6 +24,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.Stroke;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
@@ -65,7 +66,6 @@ import org.exbin.bined.capability.CodeCharactersCaseCapable;
 import org.exbin.bined.capability.EditationModeCapable;
 import org.exbin.bined.capability.RowWrappingCapable;
 import org.exbin.bined.capability.ScrollingCapable;
-import org.exbin.bined.color.CodeAreaColorProfile;
 import org.exbin.bined.swing.CodeAreaCore;
 import org.exbin.bined.swing.CodeAreaPainter;
 import org.exbin.bined.swing.CodeAreaSwingUtils;
@@ -77,14 +77,17 @@ import org.exbin.bined.swing.basic.DefaultCodeAreaCaret;
 import org.exbin.bined.swing.basic.DefaultCodeAreaMouseListener;
 import org.exbin.bined.swing.capability.BackgroundPaintCapable;
 import org.exbin.bined.swing.capability.FontCapable;
-import org.exbin.bined.swing.extended.capability.CodeAreaDecorationProfile;
+import org.exbin.bined.swing.extended.capability.CodeAreaDecorationsProfile;
 import org.exbin.bined.swing.extended.capability.ShowingUnprintableCapable;
 import org.exbin.utils.binary_data.BinaryData;
+import org.exbin.bined.color.CodeAreaColorsProfile;
+import org.exbin.bined.swing.extended.capability.AntialiasingCapable;
+import org.exbin.bined.swing.extended.capability.CodeAreaCaretsProfile;
 
 /**
  * Extended code area component default painter.
  *
- * @version 0.2.0 2018/11/21
+ * @version 0.2.0 2018/11/25
  * @author ExBin Project (https://exbin.org)
  */
 public class ExtendedCodeAreaPainter implements CodeAreaPainter {
@@ -114,9 +117,10 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter {
     @Nonnull
     private volatile ScrollingState scrollingState = ScrollingState.NO_SCROLLING;
 
-    private CodeAreaColorProfile colorProfile = null;
-    private CodeAreaDecorationProfile decoradionProfile = new CodeAreaDecorationProfile();
+    private CodeAreaColorsProfile colorsProfile = null;
+    private CodeAreaDecorationsProfile decorationsProfile = new CodeAreaDecorationsProfile();
     private BasicCodeAreaColors colors = new BasicCodeAreaColors();
+    private CodeAreaCaretsProfile caretsProfile = new CodeAreaCaretsProfile();
 
     @Nullable
     private CodeCharactersCase codeCharactersCase;
@@ -126,6 +130,8 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter {
     private BasicBackgroundPaintMode backgroundPaintMode;
     private boolean showMirrorCursor;
     private boolean showUnprintables;
+    @Nonnull
+    private AntialiasingMode antialiasingMode = AntialiasingMode.AUTO;
 
     private int maxBytesPerChar;
     private int rowPositionLength;
@@ -215,6 +221,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter {
         showMirrorCursor = ((CaretCapable) codeArea).isShowMirrorCursor();
         showUnprintables = ((ShowingUnprintableCapable) codeArea).isShowUnprintables();
         rowPositionNumberLength = ((RowWrappingCapable) codeArea).getRowPositionNumberLength();
+        antialiasingMode = ((AntialiasingCapable) codeArea).getAntialiasingMode();
 
         int rowsPerPage = dimensions.getRowsPerPage();
         long rowsPerDocument = structure.getRowsPerDocument();
@@ -327,6 +334,13 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter {
             return;
         }
 
+        if (antialiasingMode != AntialiasingMode.OFF && g instanceof Graphics2D) {
+            Object antialiasingHint = antialiasingMode.getAntialiasingHint((Graphics2D) g);
+            ((Graphics2D) g).setRenderingHint(
+                    RenderingHints.KEY_TEXT_ANTIALIASING,
+                    antialiasingHint);
+        }
+
         paintOutsiteArea(g);
         paintHeader(g);
         paintRowPosition(g);
@@ -389,18 +403,18 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter {
 
         // Decoration lines
         g.setColor(colors.getDecorationLine());
-        if (decoradionProfile.showHeaderLine()) {
+        if (decorationsProfile.showHeaderLine()) {
             g.drawLine(0, headerAreaHeight - 1, rowPositionAreaWidth, headerAreaHeight - 1);
         }
 
-        if (decoradionProfile.showRowNumberLine()) {
+        if (decorationsProfile.showRowNumberLine()) {
             int lineX = rowPositionAreaWidth - (characterWidth / 2);
             if (lineX >= 0) {
                 g.drawLine(lineX, 0, lineX, headerAreaHeight);
             }
         }
 
-        if (decoradionProfile.showBoxLine()) {
+        if (decorationsProfile.showBoxLine()) {
             g.drawLine(rowPositionAreaWidth - 1, headerAreaHeight - 1, rowPositionAreaWidth - rowPositionAreaWidth, headerAreaHeight - 1);
         }
     }
@@ -425,7 +439,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter {
         CodeAreaScrollPosition scrollPosition = scrolling.getScrollPosition();
         g.setColor(colors.getDecorationLine());
 
-        if (decoradionProfile.showRowNumberLine()) {
+        if (decorationsProfile.showRowNumberLine()) {
             g.fillRect(0, headerAreaHeight - 1, componentWidth, 1);
             int lineX = dataViewX + visibility.getPreviewRelativeX() - scrollPosition.getCharPosition() * characterWidth - scrollPosition.getCharOffset() - characterWidth / 2;
             if (lineX >= dataViewX) {
@@ -470,17 +484,14 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter {
                     continue;
                 }
 
-                int currentCharWidth = metrics.getCharWidth(currentChar);
-                boolean nativeWidth = currentCharWidth == characterWidth;
-
                 Color color = colors.getTextForeground();
 
-                if (!nativeWidth || !CodeAreaSwingUtils.areSameColors(color, renderColor)) { // || !colorType.equals(renderColorType)
+                if (!CodeAreaSwingUtils.areSameColors(color, renderColor)) { // || !colorType.equals(renderColorType)
                     sequenceBreak = true;
                 }
                 if (sequenceBreak) {
                     if (renderOffset < characterOnRow) {
-                        g.drawChars(headerChars, renderOffset, characterOnRow - renderOffset, headerX + renderOffset * characterWidth, headerY);
+                        drawCenteredChars(g, headerChars, renderOffset, characterOnRow - renderOffset, characterWidth, headerX + renderOffset * characterWidth, headerY);
                     }
 
                     if (!CodeAreaSwingUtils.areSameColors(color, renderColor)) {
@@ -488,18 +499,12 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter {
                         g.setColor(color);
                     }
 
-                    if (!nativeWidth) {
-                        renderOffset = characterOnRow + 1;
-                        int positionX = headerX + characterOnRow * characterWidth + ((characterWidth + 1 - currentCharWidth) >> 1);
-                        drawShiftedChar(g, headerChars, characterOnRow, characterWidth, positionX, headerY);
-                    } else {
-                        renderOffset = characterOnRow;
-                    }
+                    renderOffset = characterOnRow;
                 }
             }
 
             if (renderOffset < charactersPerCodeSection) {
-                g.drawChars(headerChars, renderOffset, charactersPerCodeSection - renderOffset, headerX + renderOffset * characterWidth, headerY);
+                drawCenteredChars(g, headerChars, renderOffset, charactersPerCodeSection - renderOffset, characterWidth, headerX + renderOffset * characterWidth, headerY);
             }
         }
 
@@ -550,16 +555,14 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter {
             }
 
             CodeAreaUtils.longToBaseCode(rowDataCache.rowPositionCode, 0, dataPosition < 0 ? 0 : dataPosition, structure.getCodeType().getBase(), rowPositionLength, true, CodeCharactersCase.UPPER);
-            for (int digitIndex = 0; digitIndex < rowPositionLength; digitIndex++) {
-                drawCenteredChar(g, rowDataCache.rowPositionCode, digitIndex, characterWidth, compRect.x + characterWidth * digitIndex, positionY);
-            }
+            drawCenteredChars(g, rowDataCache.rowPositionCode, 0, rowPositionLength, characterWidth, compRect.x, positionY);
 
             positionY += rowHeight;
             dataPosition += bytesPerRow;
         }
 
         g.setColor(colors.getDecorationLine());
-        if (decoradionProfile.showRowNumberLine()) {
+        if (decorationsProfile.showRowNumberLine()) {
             int lineX = rowPositionAreaWidth - (characterWidth / 2);
             if (lineX >= 0) {
                 g.drawLine(lineX, dataViewRectangle.y, lineX, dataViewRectangle.y + dataViewRectangle.height);
@@ -1022,10 +1025,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter {
                 continue;
             }
 
-            int currentCharWidth = metrics.getCharWidth(currentChar);
-            boolean nativeWidth = currentCharWidth == characterWidth;
-
-            if (!nativeWidth || unprintables != currentUnprintables) {
+            if (unprintables != currentUnprintables) {
                 sequenceBreak = true;
             }
 
@@ -1036,7 +1036,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter {
                 }
 
                 if (charOnRow > renderOffset) {
-                    renderCharSequence(g, renderOffset, charOnRow, rowPositionX, positionY);
+                    drawCenteredChars(g, rowDataCache.rowCharacters, renderOffset, charOnRow - renderOffset, characterWidth, rowPositionX, positionY);
                 }
 
                 renderColor = color;
@@ -1045,14 +1045,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter {
                     lastColor = renderColor;
                 }
 
-                if (!nativeWidth) {
-                    renderOffset = charOnRow + 1;
-                    int positionX = rowPositionX + charOnRow * characterWidth + ((characterWidth + 1 - currentCharWidth) >> 1);
-                    drawShiftedChar(g, rowDataCache.rowCharacters, charOnRow, characterWidth, positionX, positionY);
-                } else {
-                    renderOffset = charOnRow;
-                }
-
+                renderOffset = charOnRow;
                 unprintables = currentUnprintables;
             }
         }
@@ -1062,7 +1055,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter {
                 g.setColor(renderColor);
             }
 
-            renderCharSequence(g, renderOffset, charactersPerRow, rowPositionX, positionY);
+            drawCenteredChars(g, rowDataCache.rowCharacters, renderOffset, charactersPerRow - renderOffset, characterWidth, rowPositionX, positionY);
         }
     }
 
@@ -1224,7 +1217,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter {
                         }
                     }
                     int posX = previewRelativeX + charPos * characterWidth - scrollPosition.getCharPosition() * characterWidth - scrollPosition.getCharOffset();
-                    drawCenteredChar(g, previewChars, 0, characterWidth, posX, posY);
+                    drawCenteredChars(g, previewChars, 0, 1, characterWidth, posX, posY);
                 } else {
                     int charPos = (scrolledX - dataViewX) / characterWidth;
                     int byteOffset = structure.computePositionByte(charPos);
@@ -1238,7 +1231,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter {
                     }
                     int posX = dataViewX + codeCharPos * characterWidth - scrollPosition.getCharPosition() * characterWidth - scrollPosition.getCharOffset();
                     int charsOffset = charPos - codeCharPos;
-                    drawCenteredChar(g, cursorDataCache.cursorChars, charsOffset, characterWidth, posX + (charsOffset * characterWidth), posY);
+                    drawCenteredChars(g, cursorDataCache.cursorChars, charsOffset, 1, characterWidth, posX + (charsOffset * characterWidth), posY);
                 }
                 break;
             }
@@ -1422,24 +1415,46 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter {
     }
 
     /**
-     * Draws char in array centering it in precomputed space.
+     * Draws characters centering it to cells of the same width.
      *
      * @param g graphics
      * @param drawnChars array of chars
      * @param charOffset index of target character in array
-     * @param charWidthSpace default character width
+     * @param length number of charaters to draw
+     * @param cellWidth width of cell to center into
      * @param positionX X position of drawing area start
      * @param positionY Y position of drawing area start
      */
-    protected void drawCenteredChar(@Nonnull Graphics g, char[] drawnChars, int charOffset, int charWidthSpace, int positionX, int positionY) {
-        int charWidth = metrics.getCharWidth(drawnChars[charOffset]);
-        drawShiftedChar(g, drawnChars, charOffset, charWidthSpace, positionX + ((charWidthSpace + 1 - charWidth) >> 1), positionY);
+    protected void drawCenteredChars(@Nonnull Graphics g, char[] drawnChars, int charOffset, int length, int cellWidth, int positionX, int positionY) {
+        int pos = 0;
+        int group = 0;
+        while (pos < length) {
+            int charWidth = metrics.getCharWidth(drawnChars[charOffset + pos]);
+            if (charWidth == cellWidth) {
+                group++;
+            } else {
+                if (group > 0) {
+                    drawShiftedChars(g, drawnChars, charOffset + pos - group, group, positionX + (pos - group) * cellWidth, positionY);
+                    group = 0;
+                }
+                drawShiftedChars(g, drawnChars, charOffset + pos, 1, positionX + pos * cellWidth + ((cellWidth - charWidth) >> 1), positionY);
+            }
+            pos++;
+        }
+        if (group > 0) {
+            drawShiftedChars(g, drawnChars, charOffset + pos - group, group, positionX + (pos - group) * cellWidth, positionY);
+        }
     }
 
-    protected void drawShiftedChar(@Nonnull Graphics g, char[] drawnChars, int charOffset, int charWidthSpace, int positionX, int positionY) {
-        g.drawChars(drawnChars, charOffset, 1, positionX, positionY);
+    protected void drawShiftedChars(@Nonnull Graphics g, char[] drawnChars, int charOffset, int length, int positionX, int positionY) {
+        g.drawChars(drawnChars, charOffset, length, positionX, positionY);
     }
 
+    /**
+     * Precomputes widths for basic ascii characters.
+     *
+     * @param charset
+     */
     private void buildCharMapping(@Nonnull Charset charset) {
         for (int i = 0; i < 256; i++) {
             charMapping[i] = new String(new byte[]{(byte) i}, charset).charAt(0);
@@ -1481,16 +1496,6 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter {
         DefaultCodeAreaCaret.CursorShape cursorShape = editationMode == EditationMode.INSERT ? DefaultCodeAreaCaret.CursorShape.INSERT : DefaultCodeAreaCaret.CursorShape.OVERWRITE;
         int cursorThickness = DefaultCodeAreaCaret.getCursorThickness(cursorShape, characterWidth, rowHeight);
         return new Rectangle(cursorPoint.x, cursorPoint.y, cursorThickness, rowHeight);
-    }
-
-    /**
-     * Render sequence of characters.
-     *
-     * Doesn't include character at offset end.
-     */
-    private void renderCharSequence(@Nonnull Graphics g, int startOffset, int endOffset, int rowPositionX, int positionY) {
-        int characterWidth = metrics.getCharacterWidth();
-        g.drawChars(rowDataCache.rowCharacters, startOffset, endOffset - startOffset, rowPositionX + startOffset * characterWidth, positionY);
     }
 
     /**

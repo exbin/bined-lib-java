@@ -15,9 +15,7 @@
  */
 package org.exbin.bined.swing.extended.capability;
 
-import javax.annotation.Nonnull;
 import org.exbin.bined.capability.CodeAreaCapability;
-import org.exbin.bined.swing.extended.CharacterRenderingMode;
 
 /**
  * Support for showing unprintable characters.
@@ -30,8 +28,6 @@ public interface ShowingUnprintableCapable {
     boolean isShowUnprintables();
 
     void setShowUnprintables(boolean show);
-
-    void setCharacterRenderingMode(@Nonnull CharacterRenderingMode characterRenderingMode);
 
     public static class ShowingUnprintableCapability implements CodeAreaCapability {
 

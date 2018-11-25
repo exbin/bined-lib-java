@@ -74,7 +74,7 @@ import org.exbin.utils.binary_data.BinaryData;
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2018/10/24
+ * @version 0.2.0 2018/11/25
  * @author ExBin Project (https://exbin.org)
  */
 public class DefaultCodeAreaPainter implements CodeAreaPainter {
@@ -436,7 +436,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             Color renderColor = null;
             for (int characterOnRow = visibleCharStart; characterOnRow < visibleMatrixCharEnd; characterOnRow++) {
                 boolean sequenceBreak = false;
-                boolean nativeWidth = true;
 
                 char currentChar = headerChars[characterOnRow];
                 if (currentChar == ' ' && renderOffset == characterOnRow) {
@@ -444,17 +443,14 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                     continue;
                 }
 
-                int currentCharWidth = metrics.getCharWidth(currentChar);
-                nativeWidth = currentCharWidth == characterWidth;
-
                 Color color = colors.getTextForeground();
 
-                if (!nativeWidth || !CodeAreaSwingUtils.areSameColors(color, renderColor)) { // || !colorType.equals(renderColorType)
+                if (!CodeAreaSwingUtils.areSameColors(color, renderColor)) { // || !colorType.equals(renderColorType)
                     sequenceBreak = true;
                 }
                 if (sequenceBreak) {
                     if (renderOffset < characterOnRow) {
-                        g.drawChars(headerChars, renderOffset, characterOnRow - renderOffset, headerX + renderOffset * characterWidth, headerY);
+                        drawCenteredChars(g, headerChars, renderOffset, characterOnRow - renderOffset, characterWidth, headerX + renderOffset * characterWidth, headerY);
                     }
 
                     if (!CodeAreaSwingUtils.areSameColors(color, renderColor)) {
@@ -462,18 +458,12 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                         g.setColor(color);
                     }
 
-                    if (!nativeWidth) {
-                        renderOffset = characterOnRow + 1;
-                        int positionX = headerX + characterOnRow * characterWidth + ((characterWidth + 1 - currentCharWidth) >> 1);
-                        drawShiftedChar(g, headerChars, characterOnRow, characterWidth, positionX, headerY);
-                    } else {
-                        renderOffset = characterOnRow;
-                    }
+                    renderOffset = characterOnRow;
                 }
             }
 
             if (renderOffset < charactersPerCodeSection) {
-                g.drawChars(headerChars, renderOffset, charactersPerCodeSection - renderOffset, headerX + renderOffset * characterWidth, headerY);
+                drawCenteredChars(g, headerChars, renderOffset, charactersPerCodeSection - renderOffset, characterWidth, headerX + renderOffset * characterWidth, headerY);
             }
         }
 
@@ -524,9 +514,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             }
 
             CodeAreaUtils.longToBaseCode(rowDataCache.rowPositionCode, 0, dataPosition < 0 ? 0 : dataPosition, CodeType.HEXADECIMAL.getBase(), rowPositionLength, true, codeCharactersCase);
-            for (int digitIndex = 0; digitIndex < rowPositionLength; digitIndex++) {
-                drawCenteredChar(g, rowDataCache.rowPositionCode, digitIndex, characterWidth, compRect.x + characterWidth * digitIndex, positionY);
-            }
+            drawCenteredChars(g, rowDataCache.rowPositionCode, 0, rowPositionLength, characterWidth, compRect.x, positionY);
 
             positionY += rowHeight;
             dataPosition += bytesPerRow;
@@ -929,13 +917,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                 continue;
             }
 
-            int currentCharWidth = metrics.getCharWidth(currentChar);
-            boolean nativeWidth = currentCharWidth == characterWidth;
-
-            if (!nativeWidth) {
-                sequenceBreak = true;
-            }
-
             if (sequenceBreak) {
                 if (!CodeAreaSwingUtils.areSameColors(lastColor, renderColor)) {
                     g.setColor(renderColor);
@@ -943,7 +924,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                 }
 
                 if (charOnRow > renderOffset) {
-                    renderCharSequence(g, renderOffset, charOnRow, rowPositionX, positionY);
+                    drawCenteredChars(g, rowDataCache.rowCharacters, renderOffset, charOnRow - renderOffset, characterWidth, rowPositionX, positionY);
                 }
 
                 renderColor = color;
@@ -952,13 +933,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                     lastColor = renderColor;
                 }
 
-                if (!nativeWidth) {
-                    renderOffset = charOnRow + 1;
-                    int positionX = rowPositionX + charOnRow * characterWidth + ((characterWidth + 1 - currentCharWidth) >> 1);
-                    drawShiftedChar(g, rowDataCache.rowCharacters, charOnRow, characterWidth, positionX, positionY);
-                } else {
-                    renderOffset = charOnRow;
-                }
+                renderOffset = charOnRow;
             }
         }
 
@@ -967,7 +942,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                 g.setColor(renderColor);
             }
 
-            renderCharSequence(g, renderOffset, charactersPerRow, rowPositionX, positionY);
+            drawCenteredChars(g, rowDataCache.rowCharacters, renderOffset, charactersPerRow - renderOffset, characterWidth, rowPositionX, positionY);
         }
     }
 
@@ -1122,7 +1097,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                         }
                     }
                     int posX = previewRelativeX + charPos * characterWidth - scrollPosition.getCharPosition() * characterWidth - scrollPosition.getCharOffset();
-                    drawCenteredChar(g, previewChars, 0, characterWidth, posX, posY);
+                    drawCenteredChars(g, previewChars, 0, 1, characterWidth, posX, posY);
                 } else {
                     int charPos = (scrolledX - dataViewX) / characterWidth;
                     int byteOffset = structure.computePositionByte(charPos);
@@ -1136,7 +1111,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                     }
                     int posX = dataViewX + codeCharPos * characterWidth - scrollPosition.getCharPosition() * characterWidth - scrollPosition.getCharOffset();
                     int charsOffset = charPos - codeCharPos;
-                    drawCenteredChar(g, cursorDataCache.cursorChars, charsOffset, characterWidth, posX + (charsOffset * characterWidth), posY);
+                    drawCenteredChars(g, cursorDataCache.cursorChars, charsOffset, 1, characterWidth, posX + (charsOffset * characterWidth), posY);
                 }
                 break;
             }
@@ -1320,24 +1295,46 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     }
 
     /**
-     * Draws char in array centering it in precomputed space.
+     * Draws characters centering it to cells of the same width.
      *
      * @param g graphics
      * @param drawnChars array of chars
      * @param charOffset index of target character in array
-     * @param charWidthSpace default character width
+     * @param length number of charaters to draw
+     * @param cellWidth width of cell to center into
      * @param positionX X position of drawing area start
      * @param positionY Y position of drawing area start
      */
-    protected void drawCenteredChar(@Nonnull Graphics g, char[] drawnChars, int charOffset, int charWidthSpace, int positionX, int positionY) {
-        int charWidth = metrics.getCharWidth(drawnChars[charOffset]);
-        drawShiftedChar(g, drawnChars, charOffset, charWidthSpace, positionX + ((charWidthSpace + 1 - charWidth) >> 1), positionY);
+    protected void drawCenteredChars(@Nonnull Graphics g, char[] drawnChars, int charOffset, int length, int cellWidth, int positionX, int positionY) {
+        int pos = 0;
+        int group = 0;
+        while (pos < length) {
+            int charWidth = metrics.getCharWidth(drawnChars[charOffset + pos]);
+            if (charWidth == cellWidth) {
+                group++;
+            } else {
+                if (group > 0) {
+                    drawShiftedChars(g, drawnChars, charOffset + pos - group, group, positionX + (pos - group) * cellWidth, positionY);
+                    group = 0;
+                }
+                drawShiftedChars(g, drawnChars, charOffset + pos, 1, positionX + pos * cellWidth + ((cellWidth - charWidth) >> 1), positionY);
+            }
+            pos++;
+        }
+        if (group > 0) {
+            drawShiftedChars(g, drawnChars, charOffset + pos - group, group, positionX + (pos - group) * cellWidth, positionY);
+        }
     }
 
-    protected void drawShiftedChar(@Nonnull Graphics g, char[] drawnChars, int charOffset, int charWidthSpace, int positionX, int positionY) {
-        g.drawChars(drawnChars, charOffset, 1, positionX, positionY);
+    protected void drawShiftedChars(@Nonnull Graphics g, char[] drawnChars, int charOffset, int length, int positionX, int positionY) {
+        g.drawChars(drawnChars, charOffset, length, positionX, positionY);
     }
 
+    /**
+     * Precomputes widths for basic ascii characters.
+     *
+     * @param charset
+     */
     private void buildCharMapping(@Nonnull Charset charset) {
         for (int i = 0; i < 256; i++) {
             charMapping[i] = new String(new byte[]{(byte) i}, charset).charAt(0);
@@ -1379,16 +1376,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         DefaultCodeAreaCaret.CursorShape cursorShape = editationMode == EditationMode.INSERT ? DefaultCodeAreaCaret.CursorShape.INSERT : DefaultCodeAreaCaret.CursorShape.OVERWRITE;
         int cursorThickness = DefaultCodeAreaCaret.getCursorThickness(cursorShape, characterWidth, rowHeight);
         return new Rectangle(cursorPoint.x, cursorPoint.y, cursorThickness, rowHeight);
-    }
-
-    /**
-     * Render sequence of characters.
-     *
-     * Doesn't include character at offset end.
-     */
-    private void renderCharSequence(@Nonnull Graphics g, int startOffset, int endOffset, int rowPositionX, int positionY) {
-        int characterWidth = metrics.getCharacterWidth();
-        g.drawChars(rowDataCache.rowCharacters, startOffset, endOffset - startOffset, rowPositionX + startOffset * characterWidth, positionY);
     }
 
     /**

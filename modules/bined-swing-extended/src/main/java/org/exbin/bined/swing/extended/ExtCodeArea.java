@@ -60,7 +60,7 @@ import org.exbin.bined.swing.capability.FontCapable;
 /**
  * Code area component extended code area.
  *
- * @version 0.2.0 2018/09/20
+ * @version 0.2.0 2018/11/25
  * @author ExBin Project (https://exbin.org)
  */
 public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeAreaSwingControl {
@@ -87,8 +87,6 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
     private Font font;
     @Nonnull
     private BasicBackgroundPaintMode borderPaintMode = BasicBackgroundPaintMode.STRIPED;
-    @Nonnull
-    private CharacterRenderingMode characterRenderingMode = CharacterRenderingMode.AUTO;
     @Nonnull
     private AntialiasingMode antialiasingMode = AntialiasingMode.AUTO;
     @Nonnull
@@ -468,19 +466,6 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
 
     @Override
     public void notifyCaretChanged() {
-        repaint();
-    }
-
-    @Nonnull
-    @Override
-    public CharacterRenderingMode getCharacterRenderingMode() {
-        return characterRenderingMode;
-    }
-
-    @Override
-    public void setCharacterRenderingMode(@Nonnull CharacterRenderingMode characterRenderingMode) {
-        this.characterRenderingMode = characterRenderingMode;
-        painter.reset();
         repaint();
     }
 

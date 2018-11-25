@@ -15,10 +15,15 @@
  */
 package org.exbin.bined.swing.extended;
 
+import java.awt.Graphics2D;
+import java.awt.GraphicsDevice;
+import java.awt.RenderingHints;
+import javax.annotation.Nonnull;
+
 /**
  * Anti-aliasing mode.
  *
- * @version 0.2.0 2017/03/18
+ * @version 0.2.0 2018/11/25
  * @author ExBin Project (https://exbin.org)
  */
 public enum AntialiasingMode {
@@ -31,5 +36,53 @@ public enum AntialiasingMode {
     LCD_HRGB,
     LCD_HBGR,
     LCD_VRGB,
-    LCD_VBGR
+    LCD_VBGR;
+
+    public Object getAntialiasingHint(@Nonnull Graphics2D g) {
+        Object antialiasingHint;
+        switch (this) {
+            case AUTO: {
+                // TODO detect if display is LCD?
+                if (g.getDeviceConfiguration().getDevice().getType() == GraphicsDevice.TYPE_RASTER_SCREEN) {
+                    antialiasingHint = RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB;
+                } else {
+                    antialiasingHint = RenderingHints.VALUE_TEXT_ANTIALIAS_GASP;
+                }
+                break;
+            }
+            case BASIC: {
+                antialiasingHint = RenderingHints.VALUE_TEXT_ANTIALIAS_ON;
+                break;
+            }
+            case GASP: {
+                antialiasingHint = RenderingHints.VALUE_TEXT_ANTIALIAS_GASP;
+                break;
+            }
+            case DEFAULT: {
+                antialiasingHint = RenderingHints.VALUE_TEXT_ANTIALIAS_DEFAULT;
+                break;
+            }
+            case LCD_HRGB: {
+                antialiasingHint = RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB;
+                break;
+            }
+            case LCD_HBGR: {
+                antialiasingHint = RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HBGR;
+                break;
+            }
+            case LCD_VRGB: {
+                antialiasingHint = RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_VRGB;
+                break;
+            }
+            case LCD_VBGR: {
+                antialiasingHint = RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_VBGR;
+                break;
+            }
+            default: {
+                throw new IllegalStateException("Unexpected antialiasing type " + name());
+            }
+        }
+
+        return antialiasingHint;
+    }
 }

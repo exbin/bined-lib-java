@@ -1409,6 +1409,11 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         g.drawString(String.valueOf(drawnChars[charOffset]), positionX, positionY, true);
     }
 
+    /**
+     * Precomputes widths for basic ascii characters.
+     *
+     * @param charset
+     */
     private void buildCharMapping(@Nonnull Charset charset) {
         for (int i = 0; i < 256; i++) {
             charMapping[i] = new String(new byte[]{(byte) i}, charset).charAt(0);

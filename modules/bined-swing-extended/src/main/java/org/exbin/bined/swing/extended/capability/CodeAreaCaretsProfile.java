@@ -16,19 +16,17 @@
 package org.exbin.bined.swing.extended.capability;
 
 /**
- * Support for anti-aliasing capability.
+ * Support for cursor carets shapes.
  *
- * TODO
- *
- * @version 0.2.0 2018/11/21
+ * @version 0.2.0 2018/11/25
  * @author ExBin Project (https://exbin.org)
  */
-public class CodeAreaDecorationProfile {
+public class CodeAreaCaretsProfile {
 
-    public enum DecorationType {
-        ROW_NUMBER_LINE,
-        HEADER_LINE,
-        BOX_LINE
+    public enum CaretType {
+        INSERT,
+        OVERWRITE,
+        SHADDOW
     }
 
     public boolean showRowNumberLine() {

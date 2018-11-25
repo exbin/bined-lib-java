@@ -15,24 +15,31 @@
  */
 package org.exbin.bined.swing.extended.capability;
 
-import javax.annotation.Nonnull;
-import org.exbin.bined.capability.CodeAreaCapability;
-import org.exbin.bined.swing.extended.AntialiasingMode;
-
 /**
  * Support for anti-aliasing capability.
  *
- * @version 0.2.0 2017/11/25
+ * TODO
+ *
+ * @version 0.2.0 2018/11/21
  * @author ExBin Project (https://exbin.org)
  */
-public interface AntialiasingCapable {
+public class CodeAreaDecorationsProfile {
 
-    @Nonnull
-    AntialiasingMode getAntialiasingMode();
+    public enum DecorationType {
+        ROW_NUMBER_LINE,
+        HEADER_LINE,
+        BOX_LINE
+    }
 
-    void setAntialiasingMode(@Nonnull AntialiasingMode antialisingMode);
+    public boolean showRowNumberLine() {
+        return true;
+    }
 
-    public static class AntialiasingCapability implements CodeAreaCapability {
+    public boolean showHeaderLine() {
+        return true;
+    }
 
+    public boolean showBoxLine() {
+        return true;
     }
 }

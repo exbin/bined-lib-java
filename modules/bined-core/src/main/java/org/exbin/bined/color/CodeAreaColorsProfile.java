@@ -25,7 +25,7 @@ import javax.annotation.Nullable;
  * @version 0.2.0 2018/11/17
  * @author ExBin Project (https://exbin.org)
  */
-public interface CodeAreaColorProfile {
+public interface CodeAreaColorsProfile {
 
     /**
      * Returns color of the specified type.

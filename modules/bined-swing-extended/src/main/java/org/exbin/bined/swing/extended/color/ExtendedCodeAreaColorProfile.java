@@ -21,8 +21,8 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.exbin.bined.color.CodeAreaBasicColors;
-import org.exbin.bined.color.CodeAreaColorProfile;
 import org.exbin.bined.color.CodeAreaColorType;
+import org.exbin.bined.color.CodeAreaColorsProfile;
 
 /**
  * Color profile for extended code area.
@@ -30,7 +30,7 @@ import org.exbin.bined.color.CodeAreaColorType;
  * @version 0.2.0 2018/11/18
  * @author ExBin Project (https://exbin.org)
  */
-public class ExtendedCodeAreaColorProfile implements CodeAreaColorProfile {
+public class ExtendedCodeAreaColorProfile implements CodeAreaColorsProfile {
 
     private final Map<CodeAreaColorType, Color> colors = new HashMap<>();
 
