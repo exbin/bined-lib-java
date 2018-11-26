@@ -15,6 +15,7 @@
  */
 package org.exbin.bined.swing.extended;
 
+import org.exbin.bined.swing.basic.AntialiasingMode;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -24,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.swing.JComponent;
 import javax.swing.UIManager;
 import org.exbin.bined.BasicCodeAreaSection;
 import org.exbin.bined.BasicCodeAreaZone;
@@ -60,7 +62,7 @@ import org.exbin.bined.swing.capability.FontCapable;
 /**
  * Code area component extended code area.
  *
- * @version 0.2.0 2018/11/25
+ * @version 0.2.0 2018/11/26
  * @author ExBin Project (https://exbin.org)
  */
 public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeAreaSwingControl {
@@ -140,12 +142,10 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
     }
 
     private void init() {
-        // TODO: Use swing color instead
-        setBackground(Color.WHITE);
-
         UIManager.addPropertyChangeListener((@Nonnull PropertyChangeEvent evt) -> {
             resetColors();
         });
+        caret.setSection(BasicCodeAreaSection.CODE_MATRIX);
     }
 
     @Nonnull
@@ -260,6 +260,7 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
     @Override
     public void resetColors() {
         painter.resetColors();
+        repaint();
     }
 
     @Nonnull
@@ -641,7 +642,7 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
     @Override
     public void setShowUnprintables(boolean show) {
         this.showUnprintables = show;
-        repaint();
+        updateLayout();
     }
 
     public void notifySelectionChanged() {

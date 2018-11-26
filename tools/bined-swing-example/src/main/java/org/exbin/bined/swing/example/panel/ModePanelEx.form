@@ -22,7 +22,7 @@
                   <Component id="viewModeComboBox" alignment="0" max="32767" attributes="0"/>
                   <Component id="showNonprintableCharactersCheckBox" alignment="0" max="32767" attributes="0"/>
                   <Component id="codeTypeComboBox" alignment="0" max="32767" attributes="0"/>
-                  <Component id="charAntialiasingComboBox" alignment="0" max="32767" attributes="0"/>
+                  <Component id="antialiasingComboBox" alignment="0" max="32767" attributes="0"/>
                   <Component id="editationAllowedComboBox" alignment="0" max="32767" attributes="0"/>
                   <Component id="fontPanel" alignment="0" max="32767" attributes="0"/>
                   <Component id="charsetComboBox" alignment="0" max="32767" attributes="0"/>
@@ -30,7 +30,7 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="viewModeScrollModeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="codeTypeScrollModeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="charAntialiasingScrollModeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="antialiasingScrollModeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="editationAllowedLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="charsetLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
@@ -55,9 +55,9 @@
               <EmptySpace max="-2" attributes="0"/>
               <Component id="codeTypeComboBox" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="charAntialiasingScrollModeLabel" min="-2" max="-2" attributes="0"/>
+              <Component id="antialiasingScrollModeLabel" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="charAntialiasingComboBox" min="-2" max="-2" attributes="0"/>
+              <Component id="antialiasingComboBox" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="editationAllowedLabel" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
@@ -243,7 +243,7 @@
         <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
       </AuxValues>
     </Component>
-    <Component class="javax.swing.JLabel" name="charAntialiasingScrollModeLabel">
+    <Component class="javax.swing.JLabel" name="antialiasingScrollModeLabel">
       <Properties>
         <Property name="text" type="java.lang.String" value="Character Antialiasing"/>
       </Properties>
@@ -253,7 +253,7 @@
         <Property name="text" type="java.lang.String" value="Charset"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JComboBox" name="charAntialiasingComboBox">
+    <Component class="javax.swing.JComboBox" name="antialiasingComboBox">
       <Properties>
         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
           <StringArray count="9">
@@ -270,7 +270,7 @@
         </Property>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="charAntialiasingComboBoxActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="antialiasingComboBoxActionPerformed"/>
       </Events>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>

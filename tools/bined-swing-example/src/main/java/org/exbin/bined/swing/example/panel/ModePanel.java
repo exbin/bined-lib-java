@@ -24,12 +24,14 @@ import org.exbin.bined.EditationMode;
 import org.exbin.bined.capability.CharsetCapable;
 import org.exbin.bined.capability.EditationModeCapable;
 import org.exbin.bined.capability.ViewModeCapable;
+import org.exbin.bined.swing.basic.AntialiasingMode;
 import org.exbin.bined.swing.basic.CodeArea;
+import org.exbin.bined.swing.capability.AntialiasingCapable;
 
 /**
  * Hexadecimal editor example panel.
  *
- * @version 0.2.0 2018/07/01
+ * @version 0.2.0 2018/11/26
  * @author ExBin Project (https://exbin.org)
  */
 public class ModePanel extends javax.swing.JPanel {
@@ -44,6 +46,7 @@ public class ModePanel extends javax.swing.JPanel {
         viewModeComboBox.setSelectedIndex(codeArea.getViewMode().ordinal());
         codeTypeComboBox.setSelectedIndex(codeArea.getCodeType().ordinal());
         editationAllowedComboBox.setSelectedIndex(codeArea.getEditationMode().ordinal());
+        antialiasingComboBox.setSelectedIndex(((AntialiasingCapable) codeArea).getAntialiasingMode().ordinal());
     }
 
     /**
@@ -68,6 +71,8 @@ public class ModePanel extends javax.swing.JPanel {
         charsetLabel = new javax.swing.JLabel();
         charsetComboBox = new javax.swing.JComboBox<>();
         codeTypeScrollModeLabel = new javax.swing.JLabel();
+        antialiasingScrollModeLabel = new javax.swing.JLabel();
+        antialiasingComboBox = new javax.swing.JComboBox<>();
 
         codeTypeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "BINARY", "OCTAL", "DECIMAL", "HEXADECIMAL" }));
         codeTypeComboBox.setSelectedIndex(3);
@@ -157,6 +162,15 @@ public class ModePanel extends javax.swing.JPanel {
 
         codeTypeScrollModeLabel.setText("Code Type");
 
+        antialiasingScrollModeLabel.setText("Character Antialiasing");
+
+        antialiasingComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "OFF", "AUTO", "DEFAULT", "BASIC", "GASP", "LCD_HRGB", "LCD_HBGR", "LCD_VRGB", "LCD_VBGR" }));
+        antialiasingComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                antialiasingComboBoxActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -164,8 +178,9 @@ public class ModePanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(viewModeComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(viewModeComboBox, 0, 294, Short.MAX_VALUE)
                     .addComponent(codeTypeComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(antialiasingComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(editationAllowedComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(fontPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(charsetComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -173,6 +188,7 @@ public class ModePanel extends javax.swing.JPanel {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(viewModeScrollModeLabel)
                             .addComponent(codeTypeScrollModeLabel)
+                            .addComponent(antialiasingScrollModeLabel)
                             .addComponent(editationAllowedLabel)
                             .addComponent(charsetLabel))
                         .addGap(0, 0, Short.MAX_VALUE)))
@@ -189,6 +205,10 @@ public class ModePanel extends javax.swing.JPanel {
                 .addComponent(codeTypeScrollModeLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(codeTypeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(antialiasingScrollModeLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(antialiasingComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(editationAllowedLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -243,8 +263,14 @@ public class ModePanel extends javax.swing.JPanel {
         ((CharsetCapable) codeArea).setCharset(Charset.forName((String) charsetComboBox.getSelectedItem()));
     }//GEN-LAST:event_charsetComboBoxActionPerformed
 
+    private void antialiasingComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_antialiasingComboBoxActionPerformed
+        ((AntialiasingCapable) codeArea).setAntialiasingMode(AntialiasingMode.values()[antialiasingComboBox.getSelectedIndex()]);
+    }//GEN-LAST:event_antialiasingComboBoxActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox<String> antialiasingComboBox;
+    private javax.swing.JLabel antialiasingScrollModeLabel;
     private javax.swing.JComboBox<String> charsetComboBox;
     private javax.swing.JLabel charsetLabel;
     private javax.swing.JComboBox<String> codeTypeComboBox;

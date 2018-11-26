@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.swing.extended;
+package org.exbin.bined.swing.basic;
 
 import java.awt.Graphics2D;
 import java.awt.GraphicsDevice;
@@ -21,9 +21,9 @@ import java.awt.RenderingHints;
 import javax.annotation.Nonnull;
 
 /**
- * Anti-aliasing mode.
+ * Enumeration of supported anti-aliasing modes.
  *
- * @version 0.2.0 2018/11/25
+ * @version 0.2.0 2018/11/26
  * @author ExBin Project (https://exbin.org)
  */
 public enum AntialiasingMode {
@@ -38,6 +38,7 @@ public enum AntialiasingMode {
     LCD_VRGB,
     LCD_VBGR;
 
+    @Nonnull
     public Object getAntialiasingHint(@Nonnull Graphics2D g) {
         Object antialiasingHint;
         switch (this) {

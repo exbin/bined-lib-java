@@ -15,6 +15,7 @@
  */
 package org.exbin.bined.swing.extended;
 
+import org.exbin.bined.swing.basic.AntialiasingMode;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Cursor;
@@ -81,13 +82,13 @@ import org.exbin.bined.swing.extended.capability.CodeAreaDecorationsProfile;
 import org.exbin.bined.swing.extended.capability.ShowingUnprintableCapable;
 import org.exbin.utils.binary_data.BinaryData;
 import org.exbin.bined.color.CodeAreaColorsProfile;
-import org.exbin.bined.swing.extended.capability.AntialiasingCapable;
+import org.exbin.bined.swing.capability.AntialiasingCapable;
 import org.exbin.bined.swing.extended.capability.CodeAreaCaretsProfile;
 
 /**
  * Extended code area component default painter.
  *
- * @version 0.2.0 2018/11/25
+ * @version 0.2.0 2018/11/26
  * @author ExBin Project (https://exbin.org)
  */
 public class ExtendedCodeAreaPainter implements CodeAreaPainter {
@@ -351,12 +352,12 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter {
         if (resetColors) {
             resetColors = false;
 
-            Color foreground = codeArea.getForeground();
+            Color foreground = UIManager.getColor("TextArea.foreground");
             if (foreground == null) {
                 foreground = Color.BLACK;
             }
 
-            Color background = codeArea.getBackground();
+            Color background = UIManager.getColor("TextArea.background");
             if (background == null) {
                 background = Color.WHITE;
             }
@@ -386,6 +387,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter {
             colors.setSelectionMirrorForeground(selectionMirrorForeground);
             colors.setSelectionMirrorBackground(selectionMirrorBackground);
             colors.setCursor(cursor);
+            colors.setCursorMirror(cursor);
             colors.setNegativeCursor(negativeCursor);
             colors.setNegativeCursorMirror(negativeCursor);
             colors.setDecorationLine(decorationLine);
@@ -712,7 +714,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter {
             int visibleCodeStart = visibility.getVisibleCodeStart();
             int visibleCodeEnd = visibility.getVisibleCodeEnd();
             char targetChar;
-            Character replacement = null;
+            Character replacement;
             for (int byteOnRow = Math.max(visibleCodeStart, rowStart); byteOnRow < Math.min(visibleCodeEnd, rowBytesLimit); byteOnRow++) {
                 byte dataByte = rowDataCache.rowData[byteOnRow];
                 if (showUnprintables) {
@@ -729,11 +731,20 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter {
                         }
                     }
                 }
-                CodeAreaUtils.byteToCharsCode(dataByte, codeType, rowDataCache.rowCharacters, structure.computeFirstCodeCharacterPos(byteOnRow), codeCharactersCase);
+
+                int byteRowPos = structure.computeFirstCodeCharacterPos(byteOnRow);
+                if (byteRowPos > 0) {
+                    rowDataCache.rowCharacters[byteRowPos - 1] = ' ';
+                }
+                CodeAreaUtils.byteToCharsCode(dataByte, codeType, rowDataCache.rowCharacters, byteRowPos, codeCharactersCase);
             }
             if (bytesPerRow > rowBytesLimit) {
                 Arrays.fill(rowDataCache.rowCharacters, structure.computeFirstCodeCharacterPos(rowBytesLimit), rowDataCache.rowCharacters.length, ' ');
             }
+        }
+
+        if (previewCharPos > 0) {
+            rowDataCache.rowCharacters[previewCharPos - 1] = ' ';
         }
 
         // Fill preview characters
@@ -764,10 +775,9 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter {
                                 targetChar = replacement;
                             }
 
-                            rowDataCache.rowCharacters[previewCharPos + byteOnRow] = targetChar;
-                        } else {
-                            rowDataCache.rowCharacters[previewCharPos + byteOnRow] = targetChar;
                         }
+
+                        rowDataCache.rowCharacters[previewCharPos + byteOnRow] = targetChar;
                     }
                 } else {
                     if (charMappingCharset == null || charMappingCharset != charset) {
@@ -1005,6 +1015,10 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter {
             }
 
             char currentChar = rowDataCache.rowCharacters[charOnRow];
+            if (currentChar == ' ' && renderOffset == charOnRow) {
+                renderOffset++;
+                continue;
+            }
 
             Color color = getPositionTextColor(rowDataPosition, byteOnRow, charOnRow, section, currentUnprintables);
             if (color == null) {
@@ -1020,11 +1034,6 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter {
                 sequenceBreak = true;
             }
 
-            if (currentChar == ' ' && renderOffset == charOnRow) {
-                renderOffset++;
-                continue;
-            }
-
             if (unprintables != currentUnprintables) {
                 sequenceBreak = true;
             }
@@ -1036,7 +1045,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter {
                 }
 
                 if (charOnRow > renderOffset) {
-                    drawCenteredChars(g, rowDataCache.rowCharacters, renderOffset, charOnRow - renderOffset, characterWidth, rowPositionX, positionY);
+                    drawCenteredChars(g, rowDataCache.rowCharacters, renderOffset, charOnRow - renderOffset, characterWidth, rowPositionX + renderOffset * characterWidth, positionY);
                 }
 
                 renderColor = color;
@@ -1055,7 +1064,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter {
                 g.setColor(renderColor);
             }
 
-            drawCenteredChars(g, rowDataCache.rowCharacters, renderOffset, charactersPerRow - renderOffset, characterWidth, rowPositionX, positionY);
+            drawCenteredChars(g, rowDataCache.rowCharacters, renderOffset, charactersPerRow - renderOffset, characterWidth, rowPositionX + renderOffset * characterWidth, positionY);
         }
     }
 

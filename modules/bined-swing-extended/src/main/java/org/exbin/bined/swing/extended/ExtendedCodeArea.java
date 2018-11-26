@@ -17,7 +17,7 @@ package org.exbin.bined.swing.extended;
 
 import org.exbin.bined.swing.basic.DefaultCodeArea;
 import org.exbin.bined.swing.capability.BasicColorsCapable;
-import org.exbin.bined.swing.extended.capability.AntialiasingCapable;
+import org.exbin.bined.swing.capability.AntialiasingCapable;
 import org.exbin.bined.swing.extended.capability.ShowingUnprintableCapable;
 
 /**

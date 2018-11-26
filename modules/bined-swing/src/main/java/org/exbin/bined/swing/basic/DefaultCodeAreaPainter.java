@@ -24,6 +24,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.Stroke;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
@@ -67,6 +68,7 @@ import org.exbin.bined.swing.CodeAreaCore;
 import org.exbin.bined.swing.CodeAreaPainter;
 import org.exbin.bined.swing.CodeAreaSwingUtils;
 import org.exbin.bined.swing.basic.DefaultCodeAreaCaret.CursorRenderingMode;
+import org.exbin.bined.swing.capability.AntialiasingCapable;
 import org.exbin.bined.swing.capability.BackgroundPaintCapable;
 import org.exbin.bined.swing.capability.FontCapable;
 import org.exbin.utils.binary_data.BinaryData;
@@ -74,7 +76,7 @@ import org.exbin.utils.binary_data.BinaryData;
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2018/11/25
+ * @version 0.2.0 2018/11/26
  * @author ExBin Project (https://exbin.org)
  */
 public class DefaultCodeAreaPainter implements CodeAreaPainter {
@@ -113,6 +115,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     @Nullable
     private BasicBackgroundPaintMode backgroundPaintMode;
     private boolean showMirrorCursor;
+    @Nonnull
+    private AntialiasingMode antialiasingMode = AntialiasingMode.AUTO;
 
     private int maxBytesPerChar;
     private int rowPositionLength;
@@ -199,6 +203,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         backgroundPaintMode = ((BackgroundPaintCapable) codeArea).getBackgroundPaintMode();
         showMirrorCursor = ((CaretCapable) codeArea).isShowMirrorCursor();
         rowPositionNumberLength = ((RowWrappingCapable) codeArea).getRowPositionNumberLength();
+        antialiasingMode = ((AntialiasingCapable) codeArea).getAntialiasingMode();
 
         int rowsPerPage = dimensions.getRowsPerPage();
         long rowsPerDocument = structure.getRowsPerDocument();
@@ -310,6 +315,13 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             return;
         }
 
+        if (antialiasingMode != AntialiasingMode.OFF && g instanceof Graphics2D) {
+            Object antialiasingHint = antialiasingMode.getAntialiasingHint((Graphics2D) g);
+            ((Graphics2D) g).setRenderingHint(
+                    RenderingHints.KEY_TEXT_ANTIALIASING,
+                    antialiasingHint);
+        }
+
         paintOutsiteArea(g);
         paintHeader(g);
         paintRowPosition(g);
@@ -412,7 +424,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             int headerY = rowHeight - metrics.getSubFontSpace();
 
             g.setColor(colors.getTextForeground());
-            char[] headerChars = new char[charactersPerCodeSection];
+            char[] headerChars = new char[charactersPerCodeSection]; // TODO cache
             Arrays.fill(headerChars, ' ');
 
             boolean interleaving = false;
@@ -662,11 +674,21 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             int visibleCodeEnd = visibility.getVisibleCodeEnd();
             for (int byteOnRow = Math.max(visibleCodeStart, rowStart); byteOnRow < Math.min(visibleCodeEnd, rowBytesLimit); byteOnRow++) {
                 byte dataByte = rowDataCache.rowData[byteOnRow];
-                CodeAreaUtils.byteToCharsCode(dataByte, codeType, rowDataCache.rowCharacters, structure.computeFirstCodeCharacterPos(byteOnRow), codeCharactersCase);
+
+                int byteRowPos = structure.computeFirstCodeCharacterPos(byteOnRow);
+                if (byteRowPos > 0) {
+                    rowDataCache.rowCharacters[byteRowPos - 1] = ' ';
+                }
+                CodeAreaUtils.byteToCharsCode(dataByte, codeType, rowDataCache.rowCharacters, byteRowPos, codeCharactersCase);
             }
+
             if (bytesPerRow > rowBytesLimit) {
                 Arrays.fill(rowDataCache.rowCharacters, structure.computeFirstCodeCharacterPos(rowBytesLimit), rowDataCache.rowCharacters.length, ' ');
             }
+        }
+
+        if (previewCharPos > 0) {
+            rowDataCache.rowCharacters[previewCharPos - 1] = ' ';
         }
 
         // Fill preview characters
@@ -897,6 +919,12 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                 section = BasicCodeAreaSection.CODE_MATRIX;
             }
 
+            char currentChar = rowDataCache.rowCharacters[charOnRow];
+            if (currentChar == ' ' && renderOffset == charOnRow) {
+                renderOffset++;
+                continue;
+            }
+
             Color color = getPositionTextColor(rowDataPosition, byteOnRow, charOnRow, section);
             if (color == null) {
                 color = colors.getTextForeground();
@@ -911,12 +939,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                 sequenceBreak = true;
             }
 
-            char currentChar = rowDataCache.rowCharacters[charOnRow];
-            if (currentChar == ' ' && renderOffset == charOnRow) {
-                renderOffset++;
-                continue;
-            }
-
             if (sequenceBreak) {
                 if (!CodeAreaSwingUtils.areSameColors(lastColor, renderColor)) {
                     g.setColor(renderColor);
@@ -924,7 +946,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                 }
 
                 if (charOnRow > renderOffset) {
-                    drawCenteredChars(g, rowDataCache.rowCharacters, renderOffset, charOnRow - renderOffset, characterWidth, rowPositionX, positionY);
+                    drawCenteredChars(g, rowDataCache.rowCharacters, renderOffset, charOnRow - renderOffset, characterWidth, rowPositionX + renderOffset * characterWidth, positionY);
                 }
 
                 renderColor = color;
@@ -942,7 +964,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                 g.setColor(renderColor);
             }
 
-            drawCenteredChars(g, rowDataCache.rowCharacters, renderOffset, charactersPerRow - renderOffset, characterWidth, rowPositionX, positionY);
+            drawCenteredChars(g, rowDataCache.rowCharacters, renderOffset, charactersPerRow - renderOffset, characterWidth, rowPositionX + renderOffset * characterWidth, positionY);
         }
     }
 

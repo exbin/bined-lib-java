@@ -55,7 +55,7 @@ import org.exbin.bined.swing.CodeAreaSwingControl;
 /**
  * Code area component default code area.
  *
- * @version 0.2.0 2018/09/01
+ * @version 0.2.0 2018/11/26
  * @author ExBin Project (https://exbin.org)
  */
 public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaSwingControl {
@@ -82,6 +82,8 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
     private Font font;
     @Nonnull
     private BasicBackgroundPaintMode borderPaintMode = BasicBackgroundPaintMode.STRIPED;
+    @Nonnull
+    private AntialiasingMode antialiasingMode = AntialiasingMode.AUTO;
     @Nonnull
     private CodeType codeType = CodeType.HEXADECIMAL;
     private int rowPositionNumberLength = 0;
@@ -135,6 +137,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
         UIManager.addPropertyChangeListener((@Nonnull PropertyChangeEvent evt) -> {
             resetColors();
         });
+        caret.setSection(BasicCodeAreaSection.CODE_MATRIX);
     }
 
     @Nonnull
@@ -463,6 +466,18 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
 
     @Override
     public void notifyCaretChanged() {
+        repaint();
+    }
+
+    @Override
+    public AntialiasingMode getAntialiasingMode() {
+        return antialiasingMode;
+    }
+
+    @Override
+    public void setAntialiasingMode(AntialiasingMode antialiasingMode) {
+        this.antialiasingMode = antialiasingMode;
+        reset();
         repaint();
     }
 
