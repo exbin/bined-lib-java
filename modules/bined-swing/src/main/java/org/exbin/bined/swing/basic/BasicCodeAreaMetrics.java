@@ -47,7 +47,7 @@ public class BasicCodeAreaMetrics {
             /**
              * Use small 'w' character to guess normal font width.
              */
-            characterWidth = fontMetrics.charWidth('w');
+            characterWidth = fontMetrics.charWidth('m');
             int fontSize = fontMetrics.getFont().getSize();
             rowHeight = fontSize + subFontSpace;
         }
@@ -65,6 +65,14 @@ public class BasicCodeAreaMetrics {
 
     public int getCharWidth(char value) {
         return fontMetrics.charWidth(value);
+    }
+
+    public int getCharsWidth(char[] data, int offset, int length) {
+        return fontMetrics.charsWidth(data, offset, length);
+    }
+
+    public boolean hasUniformLineMetrics() {
+        return fontMetrics.hasUniformLineMetrics();
     }
 
     public int getRowHeight() {

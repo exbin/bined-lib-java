@@ -88,7 +88,7 @@ import org.exbin.bined.swing.extended.capability.CodeAreaCaretsProfile;
 /**
  * Extended code area component default painter.
  *
- * @version 0.2.0 2018/11/26
+ * @version 0.2.0 2018/11/27
  * @author ExBin Project (https://exbin.org)
  */
 public class ExtendedCodeAreaPainter implements CodeAreaPainter {
@@ -1439,7 +1439,17 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter {
         int group = 0;
         while (pos < length) {
             int charWidth = metrics.getCharWidth(drawnChars[charOffset + pos]);
-            if (charWidth == cellWidth) {
+
+            boolean groupable;
+            if (metrics.hasUniformLineMetrics()) {
+                groupable = charWidth == cellWidth;
+            } else {
+                int charsWidth = metrics.getCharsWidth(drawnChars, charOffset + pos - group, group + 1);
+                groupable = charsWidth == cellWidth * (group + 1);
+            }
+
+            if (groupable) {
+                group++;
                 group++;
             } else {
                 if (group > 0) {

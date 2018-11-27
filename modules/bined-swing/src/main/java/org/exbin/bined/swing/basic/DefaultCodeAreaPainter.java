@@ -1332,7 +1332,16 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         int group = 0;
         while (pos < length) {
             int charWidth = metrics.getCharWidth(drawnChars[charOffset + pos]);
-            if (charWidth == cellWidth) {
+
+            boolean groupable;
+            if (metrics.hasUniformLineMetrics()) {
+                groupable = charWidth == cellWidth;
+            } else {
+                int charsWidth = metrics.getCharsWidth(drawnChars, charOffset + pos - group, group + 1);
+                groupable = charsWidth == cellWidth * (group + 1);
+            }
+
+            if (groupable) {
                 group++;
             } else {
                 if (group > 0) {
