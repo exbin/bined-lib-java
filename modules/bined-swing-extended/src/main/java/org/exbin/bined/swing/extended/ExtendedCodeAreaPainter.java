@@ -1450,7 +1450,6 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter {
 
             if (groupable) {
                 group++;
-                group++;
             } else {
                 if (group > 0) {
                     drawShiftedChars(g, drawnChars, charOffset + pos - group, group, positionX + (pos - group) * cellWidth, positionY);
