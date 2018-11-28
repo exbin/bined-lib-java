@@ -20,14 +20,17 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.swing.UIManager;
 import org.exbin.bined.color.CodeAreaBasicColors;
 import org.exbin.bined.color.CodeAreaColorType;
 import org.exbin.bined.color.CodeAreaColorsProfile;
+import org.exbin.bined.swing.CodeAreaSwingUtils;
+import org.exbin.bined.swing.basic.color.BasicCodeAreaDecorationColorType;
 
 /**
  * Color profile for extended code area.
  *
- * @version 0.2.0 2018/11/18
+ * @version 0.2.0 2018/11/28
  * @author ExBin Project (https://exbin.org)
  */
 public class ExtendedCodeAreaColorProfile implements CodeAreaColorsProfile {
@@ -70,5 +73,60 @@ public class ExtendedCodeAreaColorProfile implements CodeAreaColorsProfile {
      */
     public void addColor(@Nonnull CodeAreaColorType colorType, @Nonnull Color color) {
         colors.put(colorType, color);
+    }
+
+    public void removeColor(@Nonnull CodeAreaColorType colorType) {
+        colors.remove(colorType);
+    }
+
+    @Override
+    public void reinitialize() {
+        Color textColor = UIManager.getColor("TextArea.foreground");
+        if (textColor == null) {
+            textColor = Color.BLACK;
+        }
+        addColor(CodeAreaBasicColors.TEXT_COLOR, textColor);
+
+        Color textBackground = UIManager.getColor("TextArea.background");
+        if (textBackground == null) {
+            textBackground = Color.WHITE;
+        }
+        addColor(CodeAreaBasicColors.TEXT_BACKGROUND, textBackground);
+
+        Color selectionColor = UIManager.getColor("TextArea.selectionForeground");
+        if (selectionColor == null) {
+            selectionColor = Color.WHITE;
+        }
+        addColor(CodeAreaBasicColors.SELECTION_COLOR, selectionColor);
+
+        Color selectionBackground = UIManager.getColor("TextArea.selectionBackground");
+        if (selectionBackground == null) {
+            selectionBackground = new Color(96, 96, 255);
+        }
+        addColor(CodeAreaBasicColors.SELECTION_BACKGROUND, selectionBackground);
+
+        Color selectionMirrorColor = selectionColor;
+        addColor(CodeAreaBasicColors.SELECTION_MIRROR_COLOR, selectionMirrorColor);
+
+        Color selectionMirrorBackground = CodeAreaSwingUtils.computeGrayColor(selectionBackground);
+        addColor(CodeAreaBasicColors.SELECTION_MIRROR_BACKGROUND, selectionMirrorBackground);
+
+        Color cursorColor = UIManager.getColor("TextArea.caretForeground");
+        if (cursorColor == null) {
+            cursorColor = Color.BLACK;
+        }
+        addColor(CodeAreaBasicColors.CURSOR_COLOR, cursorColor);
+
+        Color cursorNegativeColor = CodeAreaSwingUtils.createNegativeColor(cursorColor);
+        addColor(CodeAreaBasicColors.CURSOR_NEGATIVE_COLOR, cursorNegativeColor);
+
+        Color decorationLine = Color.GRAY;
+        addColor(BasicCodeAreaDecorationColorType.LINE, decorationLine);
+
+        Color alternateColor = textColor;
+        addColor(CodeAreaBasicColors.ALTERNATE_COLOR, alternateColor);
+
+        Color alternateBackground = CodeAreaSwingUtils.createOddColor(textBackground);
+        addColor(CodeAreaBasicColors.ALTERNATE_BACKGROUND, alternateBackground);
     }
 }

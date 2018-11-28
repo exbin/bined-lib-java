@@ -25,12 +25,11 @@ import org.exbin.bined.basic.CodeAreaScrollPosition;
 import org.exbin.bined.basic.MovementDirection;
 import org.exbin.bined.basic.PositionScrollVisibility;
 import org.exbin.bined.basic.ScrollingDirection;
-import org.exbin.bined.swing.basic.BasicCodeAreaColors;
 
 /**
  * Hexadecimal editor painter interface.
  *
- * @version 0.2.0 2018/09/01
+ * @version 0.2.0 2018/11/28
  * @author ExBin Project (https://exbin.org)
  */
 public interface CodeAreaPainter {
@@ -118,7 +117,7 @@ public interface CodeAreaPainter {
 
     @Nonnull
     PositionScrollVisibility computePositionScrollVisibility(@Nonnull CaretPosition caretPosition);
-    
+
     /**
      * Returns scroll position so that provided caret position is visible in
      * scrolled area.
@@ -166,9 +165,4 @@ public interface CodeAreaPainter {
      */
     @Nonnull
     CodeAreaScrollPosition computeScrolling(@Nonnull CodeAreaScrollPosition startPosition, @Nonnull ScrollingDirection direction);
-
-    @Nonnull
-    BasicCodeAreaColors getBasicColors();
-
-    void setBasicColors(@Nonnull BasicCodeAreaColors colors);
 }

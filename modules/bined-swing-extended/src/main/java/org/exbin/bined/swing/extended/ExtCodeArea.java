@@ -16,7 +16,6 @@
 package org.exbin.bined.swing.extended;
 
 import org.exbin.bined.swing.basic.AntialiasingMode;
-import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.beans.PropertyChangeEvent;
@@ -25,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.swing.JComponent;
 import javax.swing.UIManager;
 import org.exbin.bined.BasicCodeAreaSection;
 import org.exbin.bined.BasicCodeAreaZone;
@@ -50,19 +48,20 @@ import org.exbin.bined.basic.HorizontalScrollUnit;
 import org.exbin.bined.basic.MovementDirection;
 import org.exbin.bined.basic.ScrollingDirection;
 import org.exbin.bined.basic.VerticalScrollUnit;
+import org.exbin.bined.color.CodeAreaColorsProfile;
 import org.exbin.bined.swing.CodeAreaCommandHandler;
 import org.exbin.bined.swing.CodeAreaCore;
 import org.exbin.bined.swing.CodeAreaPainter;
 import org.exbin.bined.swing.CodeAreaSwingControl;
-import org.exbin.bined.swing.basic.BasicCodeAreaColors;
 import org.exbin.bined.swing.basic.DefaultCodeAreaCaret;
 import org.exbin.bined.swing.basic.DefaultCodeAreaCommandHandler;
 import org.exbin.bined.swing.capability.FontCapable;
+import org.exbin.bined.swing.extended.color.ColorsProfileCapableCodeAreaPainter;
 
 /**
  * Code area component extended code area.
  *
- * @version 0.2.0 2018/11/26
+ * @version 0.2.0 2018/11/28
  * @author ExBin Project (https://exbin.org)
  */
 public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeAreaSwingControl {
@@ -623,15 +622,21 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
         this.maxBytesPerLine = maxBytesPerLine;
     }
 
-    @Nonnull
+    @Nullable
     @Override
-    public BasicCodeAreaColors getBasicColors() {
-        return painter.getBasicColors();
+    public CodeAreaColorsProfile getColorsProfile() {
+        if (painter instanceof ColorsProfileCapableCodeAreaPainter) {
+            return ((ColorsProfileCapableCodeAreaPainter) painter).getColorsProfile();
+        }
+
+        return null;
     }
 
     @Override
-    public void setBasicColors(@Nonnull BasicCodeAreaColors colors) {
-        painter.setBasicColors(colors);
+    public void setColorsProfile(@Nonnull CodeAreaColorsProfile colorsProfile) {
+        if (painter instanceof ColorsProfileCapableCodeAreaPainter) {
+            ((ColorsProfileCapableCodeAreaPainter) painter).setColorsProfile(colorsProfile);
+        }
     }
 
     @Override

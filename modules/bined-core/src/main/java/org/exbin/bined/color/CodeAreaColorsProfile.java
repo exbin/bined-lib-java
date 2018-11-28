@@ -22,7 +22,7 @@ import javax.annotation.Nullable;
 /**
  * Color profile.
  *
- * @version 0.2.0 2018/11/17
+ * @version 0.2.0 2018/11/28
  * @author ExBin Project (https://exbin.org)
  */
 public interface CodeAreaColorsProfile {
@@ -31,7 +31,7 @@ public interface CodeAreaColorsProfile {
      * Returns color of the specified type.
      *
      * @param colorType color type
-     * @return color
+     * @return color or null if not defined
      */
     @Nullable
     Color getColor(@Nonnull CodeAreaColorType colorType);
@@ -41,8 +41,13 @@ public interface CodeAreaColorsProfile {
      *
      * @param colorType color type
      * @param basicAltColor basic color type used as fallback
-     * @return color
+     * @return color or null if not defined
      */
     @Nullable
     Color getColor(@Nonnull CodeAreaColorType colorType, @Nonnull CodeAreaBasicColors basicAltColor);
+
+    /**
+     * Reinitialize colors.
+     */
+    void reinitialize();
 }

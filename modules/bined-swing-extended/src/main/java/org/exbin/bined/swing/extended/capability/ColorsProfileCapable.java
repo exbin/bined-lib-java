@@ -15,21 +15,25 @@
  */
 package org.exbin.bined.swing.extended.capability;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.exbin.bined.capability.CodeAreaCapability;
+import org.exbin.bined.color.CodeAreaColorsProfile;
 
 /**
- * Support for showing unprintable characters.
+ * Support for colors profiling.
  *
- * @version 0.2.0 2018/09/02
+ * @version 0.2.0 2018/11/28
  * @author ExBin Project (https://exbin.org)
  */
-public interface ShowingUnprintableCapable {
+public interface ColorsProfileCapable {
 
-    boolean isShowUnprintables();
+    @Nullable
+    CodeAreaColorsProfile getColorsProfile();
 
-    void setShowUnprintables(boolean show);
+    void setColorsProfile(@Nonnull CodeAreaColorsProfile colorsProfile);
 
-    public static class ShowingUnprintableCapability implements CodeAreaCapability {
+    public static class ColorsProfileCapability implements CodeAreaCapability {
 
     }
 }

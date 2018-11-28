@@ -15,6 +15,7 @@
  */
 package org.exbin.bined.swing.basic;
 
+import org.exbin.bined.swing.basic.color.BasicCodeAreaColorsProfile;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.beans.PropertyChangeEvent;
@@ -51,6 +52,7 @@ import org.exbin.bined.swing.CodeAreaCommandHandler;
 import org.exbin.bined.swing.CodeAreaCore;
 import org.exbin.bined.swing.CodeAreaPainter;
 import org.exbin.bined.swing.CodeAreaSwingControl;
+import org.exbin.bined.swing.basic.color.BasicColorsCapableCodeAreaPainter;
 
 /**
  * Code area component default code area.
@@ -622,15 +624,20 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
         this.maxBytesPerLine = maxBytesPerLine;
     }
 
-    @Nonnull
+    @Nullable
     @Override
-    public BasicCodeAreaColors getBasicColors() {
-        return painter.getBasicColors();
+    public BasicCodeAreaColorsProfile getBasicColors() {
+        if (painter instanceof BasicColorsCapableCodeAreaPainter) {
+            return ((BasicColorsCapableCodeAreaPainter) painter).getBasicColors();
+        }
+        return null;
     }
 
     @Override
-    public void setBasicColors(@Nonnull BasicCodeAreaColors colors) {
-        painter.setBasicColors(colors);
+    public void setBasicColors(@Nonnull BasicCodeAreaColorsProfile colors) {
+        if (painter instanceof BasicColorsCapableCodeAreaPainter) {
+            ((BasicColorsCapableCodeAreaPainter) painter).setBasicColors(colors);
+        }
     }
 
     public void notifySelectionChanged() {

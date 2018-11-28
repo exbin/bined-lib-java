@@ -13,27 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.swing.capability;
+package org.exbin.bined.swing.extended.capability;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import org.exbin.bined.capability.CodeAreaCapability;
-import org.exbin.bined.swing.basic.color.BasicCodeAreaColorsProfile;
 
 /**
- * Support for basic set of colors.
+ * Support for showing unprintable characters.
  *
- * @version 0.2.0 2018/11/28
+ * @version 0.2.0 2018/09/02
  * @author ExBin Project (https://exbin.org)
  */
-public interface BasicColorsCapable {
+public interface ShowUnprintablesCapable {
 
-    @Nullable
-    BasicCodeAreaColorsProfile getBasicColors();
+    boolean isShowUnprintables();
 
-    void setBasicColors(@Nonnull BasicCodeAreaColorsProfile colors);
+    void setShowUnprintables(boolean show);
 
-    public static class BasicColorsCapability implements CodeAreaCapability {
+    public static class ShowUnprintablesCapability implements CodeAreaCapability {
 
     }
 }

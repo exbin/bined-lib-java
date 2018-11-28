@@ -21,25 +21,30 @@ import javax.annotation.Nullable;
 /**
  * Enumeration of color types for main group.
  *
- * @version 0.2.0 2018/11/17
+ * @version 0.2.0 2018/11/28
  * @author ExBin Project (https://exbin.org)
  */
 public enum CodeAreaBasicColors implements CodeAreaColorType {
 
-    TEXT_COLOR("textColor"),
-    TEXT_BACKGROUND("textBackground"),
-    ALTERNATE_COLOR("alternateColor"),
-    ALTERNATE_BACKGROUND("alternateBackground"),
-    SELECTION_COLOR("selectionColor"),
-    SELECTION_BACKGROUND("selectionBackground"),
-    MIRROR_SELECTION_COLOR("mirrorSelectionColor"),
-    MIRROR_SELECTION_BACKGROUND("mirrorSelectionBackground");
+    TEXT_COLOR("textColor", BasicCodeAreaColorGroup.MAIN),
+    TEXT_BACKGROUND("textBackground", BasicCodeAreaColorGroup.MAIN),
+    SELECTION_COLOR("selectionColor", BasicCodeAreaColorGroup.SELECTION),
+    SELECTION_BACKGROUND("selectionBackground", BasicCodeAreaColorGroup.SELECTION),
+    SELECTION_MIRROR_COLOR("selectionMirrorColor", BasicCodeAreaColorGroup.SELECTION),
+    SELECTION_MIRROR_BACKGROUND("selectionMirrorBackground", BasicCodeAreaColorGroup.SELECTION),
+    ALTERNATE_COLOR("alternateColor", BasicCodeAreaColorGroup.MAIN),
+    ALTERNATE_BACKGROUND("alternateBackground", BasicCodeAreaColorGroup.MAIN),
+    CURSOR_COLOR("cursorColor", null),
+    CURSOR_NEGATIVE_COLOR("cursorNegativeColor", null);
 
     @Nonnull
     private final String typeId;
+    @Nullable
+    private final BasicCodeAreaColorGroup group;
 
-    private CodeAreaBasicColors(@Nonnull String typeId) {
+    private CodeAreaBasicColors(@Nonnull String typeId, @Nullable BasicCodeAreaColorGroup group) {
         this.typeId = typeId;
+        this.group = group;
     }
 
     @Nonnull
@@ -51,6 +56,6 @@ public enum CodeAreaBasicColors implements CodeAreaColorType {
     @Nullable
     @Override
     public CodeAreaColorGroup getGroup() {
-        return null;
+        return group;
     }
 }
