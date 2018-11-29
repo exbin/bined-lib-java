@@ -86,11 +86,12 @@ import org.exbin.bined.swing.extended.capability.CodeAreaCaretsProfile;
 import org.exbin.bined.swing.extended.color.ColorsProfileCapableCodeAreaPainter;
 import org.exbin.bined.swing.extended.color.ExtendedCodeAreaColorProfile;
 import org.exbin.bined.swing.extended.capability.ShowUnprintablesCapable;
+import org.exbin.bined.swing.extended.color.CodeAreaUnprintablesColorType;
 
 /**
  * Extended code area component default painter.
  *
- * @version 0.2.0 2018/11/28
+ * @version 0.2.0 2018/11/29
  * @author ExBin Project (https://exbin.org)
  */
 public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCapableCodeAreaPainter {
@@ -246,6 +247,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
             rowDataCache = new RowDataCache();
         }
 
+        rowDataCache.headerChars = new char[structure.getCharactersPerCodeSection()];
         rowDataCache.rowData = new byte[structure.getBytesPerRow() + maxBytesPerChar - 1];
         rowDataCache.rowPositionCode = new char[rowPositionLength];
         rowDataCache.rowCharacters = new char[structure.getCharactersPerRow()];
@@ -417,8 +419,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
             int headerY = rowHeight - metrics.getSubFontSpace();
 
             g.setColor(colorsProfile.getColor(CodeAreaBasicColors.TEXT_COLOR));
-            char[] headerChars = new char[charactersPerCodeSection];
-            Arrays.fill(headerChars, ' ');
+            Arrays.fill(rowDataCache.headerChars, ' ');
 
             boolean interleaving = false;
             int lastPos = 0;
@@ -429,7 +430,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
                 if (codePos == lastPos + 2 && !interleaving) {
                     interleaving = true;
                 } else {
-                    CodeAreaUtils.longToBaseCode(headerChars, codePos, index, CodeType.HEXADECIMAL.getBase(), 2, true, codeCharactersCase);
+                    CodeAreaUtils.longToBaseCode(rowDataCache.headerChars, codePos, index, CodeType.HEXADECIMAL.getBase(), 2, true, codeCharactersCase);
                     lastPos = codePos;
                     interleaving = false;
                 }
@@ -442,7 +443,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
             for (int characterOnRow = visibleCharStart; characterOnRow < visibleMatrixCharEnd; characterOnRow++) {
                 boolean sequenceBreak = false;
 
-                char currentChar = headerChars[characterOnRow];
+                char currentChar = rowDataCache.headerChars[characterOnRow];
                 if (currentChar == ' ' && renderOffset == characterOnRow) {
                     renderOffset++;
                     continue;
@@ -454,7 +455,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
                 }
                 if (sequenceBreak) {
                     if (renderOffset < characterOnRow) {
-                        drawCenteredChars(g, headerChars, renderOffset, characterOnRow - renderOffset, characterWidth, headerX + renderOffset * characterWidth, headerY);
+                        drawCenteredChars(g, rowDataCache.headerChars, renderOffset, characterOnRow - renderOffset, characterWidth, headerX + renderOffset * characterWidth, headerY);
                     }
 
                     if (!CodeAreaSwingUtils.areSameColors(color, renderColor)) {
@@ -467,7 +468,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
             }
 
             if (renderOffset < charactersPerCodeSection) {
-                drawCenteredChars(g, headerChars, renderOffset, charactersPerCodeSection - renderOffset, characterWidth, headerX + renderOffset * characterWidth, headerY);
+                drawCenteredChars(g, rowDataCache.headerChars, renderOffset, charactersPerCodeSection - renderOffset, characterWidth, headerX + renderOffset * characterWidth, headerY);
             }
         }
 
@@ -1045,9 +1046,8 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         CodeAreaCaretPosition caretPosition = structure.getCaretPosition();
         boolean inSelection = selectionRange != null && selectionRange.isInSelection(rowDataPosition + byteOnRow);
 
-        if (unprintable) {
-            return Color.BLUE;
-//            return colors.getColorType.UNPRINTABLES_BACKGROUND;
+        if (unprintable && section == BasicCodeAreaSection.TEXT_PREVIEW) {
+            return colorsProfile.getColor(CodeAreaUnprintablesColorType.UNPRINTABLES_COLOR, CodeAreaBasicColors.TEXT_COLOR);
         }
 
         if (inSelection) {
@@ -2949,6 +2949,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
 
     private static class RowDataCache {
 
+        private char[] headerChars;
         private byte[] rowData;
         private char[] rowPositionCode;
         private char[] rowCharacters;

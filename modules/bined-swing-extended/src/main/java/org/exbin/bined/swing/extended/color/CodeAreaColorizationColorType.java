@@ -29,8 +29,8 @@ import org.exbin.bined.color.CodeAreaColorType;
  */
 public enum CodeAreaColorizationColorType implements CodeAreaColorType {
 
-    CONTROL_CODES(CodeAreaBasicColors.TEXT_COLOR.getId(), ExtendedCodeAreaColorsGroup.CONTROL_CODES),
-    UPPER_CODES(CodeAreaBasicColors.TEXT_COLOR.getId(), ExtendedCodeAreaColorsGroup.UPPER_CODES);
+    CONTROL_CODES_COLOR(CodeAreaBasicColors.TEXT_COLOR.getId(), ExtendedCodeAreaColorsGroup.CONTROL_CODES),
+    UPPER_CODES_BACKGROUND(CodeAreaBasicColors.TEXT_BACKGROUND.getId(), ExtendedCodeAreaColorsGroup.UPPER_CODES);
 
     @Nonnull
     private final String typeId;

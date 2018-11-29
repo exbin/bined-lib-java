@@ -30,7 +30,7 @@ import org.exbin.bined.swing.basic.color.BasicCodeAreaDecorationColorType;
 /**
  * Color profile for extended code area.
  *
- * @version 0.2.0 2018/11/28
+ * @version 0.2.0 2018/11/29
  * @author ExBin Project (https://exbin.org)
  */
 public class ExtendedCodeAreaColorProfile implements CodeAreaColorsProfile {
@@ -128,5 +128,8 @@ public class ExtendedCodeAreaColorProfile implements CodeAreaColorsProfile {
 
         Color alternateBackground = CodeAreaSwingUtils.createOddColor(textBackground);
         addColor(CodeAreaBasicColors.ALTERNATE_BACKGROUND, alternateBackground);
+
+        Color unprintablesColor = new Color(textColor.getRed(), (textColor.getGreen() + 128) % 256, textColor.getBlue());
+        addColor(CodeAreaUnprintablesColorType.UNPRINTABLES_COLOR, unprintablesColor);
     }
 }

@@ -24,12 +24,13 @@ import org.exbin.bined.color.CodeAreaColorType;
 /**
  * Enumeration of unprintable color types.
  *
- * @version 0.2.0 2018/11/18
+ * @version 0.2.0 2018/11/29
  * @author ExBin Project (https://exbin.org)
  */
 public enum CodeAreaUnprintablesColorType implements CodeAreaColorType {
 
-    UNPRINTABLE_COLOR(CodeAreaBasicColors.TEXT_COLOR.getId(), ExtendedCodeAreaColorsGroup.UNPRINTABLE);
+    UNPRINTABLES_COLOR(CodeAreaBasicColors.TEXT_COLOR.getId(), ExtendedCodeAreaColorsGroup.UNPRINTABLES),
+    UNPRINTABLES_BACKGROUND(CodeAreaBasicColors.TEXT_BACKGROUND.getId(), ExtendedCodeAreaColorsGroup.UNPRINTABLES);
 
     @Nonnull
     private final String typeId;

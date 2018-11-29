@@ -77,7 +77,7 @@ import org.exbin.utils.binary_data.BinaryData;
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2018/11/28
+ * @version 0.2.0 2018/11/29
  * @author ExBin Project (https://exbin.org)
  */
 public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapableCodeAreaPainter {
@@ -227,6 +227,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
             rowDataCache = new RowDataCache();
         }
 
+        rowDataCache.headerChars = new char[structure.getCharactersPerCodeSection()];
         rowDataCache.rowData = new byte[structure.getBytesPerRow() + maxBytesPerChar - 1];
         rowDataCache.rowPositionCode = new char[rowPositionLength];
         rowDataCache.rowCharacters = new char[structure.getCharactersPerRow()];
@@ -385,8 +386,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
             int headerY = rowHeight - metrics.getSubFontSpace();
 
             g.setColor(colorsProfile.getTextColor());
-            char[] headerChars = new char[charactersPerCodeSection]; // TODO cache
-            Arrays.fill(headerChars, ' ');
+            Arrays.fill(rowDataCache.headerChars, ' ');
 
             boolean interleaving = false;
             int lastPos = 0;
@@ -397,7 +397,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
                 if (codePos == lastPos + 2 && !interleaving) {
                     interleaving = true;
                 } else {
-                    CodeAreaUtils.longToBaseCode(headerChars, codePos, index, CodeType.HEXADECIMAL.getBase(), 2, true, codeCharactersCase);
+                    CodeAreaUtils.longToBaseCode(rowDataCache.headerChars, codePos, index, CodeType.HEXADECIMAL.getBase(), 2, true, codeCharactersCase);
                     lastPos = codePos;
                     interleaving = false;
                 }
@@ -410,7 +410,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
             for (int characterOnRow = visibleCharStart; characterOnRow < visibleMatrixCharEnd; characterOnRow++) {
                 boolean sequenceBreak = false;
 
-                char currentChar = headerChars[characterOnRow];
+                char currentChar = rowDataCache.headerChars[characterOnRow];
                 if (currentChar == ' ' && renderOffset == characterOnRow) {
                     renderOffset++;
                     continue;
@@ -423,7 +423,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
                 }
                 if (sequenceBreak) {
                     if (renderOffset < characterOnRow) {
-                        drawCenteredChars(g, headerChars, renderOffset, characterOnRow - renderOffset, characterWidth, headerX + renderOffset * characterWidth, headerY);
+                        drawCenteredChars(g, rowDataCache.headerChars, renderOffset, characterOnRow - renderOffset, characterWidth, headerX + renderOffset * characterWidth, headerY);
                     }
 
                     if (!CodeAreaSwingUtils.areSameColors(color, renderColor)) {
@@ -436,7 +436,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
             }
 
             if (renderOffset < charactersPerCodeSection) {
-                drawCenteredChars(g, headerChars, renderOffset, charactersPerCodeSection - renderOffset, characterWidth, headerX + renderOffset * characterWidth, headerY);
+                drawCenteredChars(g, rowDataCache.headerChars, renderOffset, charactersPerCodeSection - renderOffset, characterWidth, headerX + renderOffset * characterWidth, headerY);
             }
         }
 
@@ -1479,6 +1479,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
 
     private static class RowDataCache {
 
+        private char[] headerChars;
         private byte[] rowData;
         private char[] rowPositionCode;
         private char[] rowCharacters;

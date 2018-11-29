@@ -26,7 +26,7 @@ import org.exbin.bined.color.CodeAreaColorGroup;
  */
 public enum ExtendedCodeAreaColorsGroup implements CodeAreaColorGroup {
 
-    UNPRINTABLE("unprintable"),
+    UNPRINTABLES("unprintables"),
     CONTROL_CODES("control_codes"),
     UPPER_CODES("upper_codes");
 
