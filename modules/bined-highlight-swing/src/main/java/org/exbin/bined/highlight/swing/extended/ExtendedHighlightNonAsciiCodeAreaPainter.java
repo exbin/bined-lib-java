@@ -20,18 +20,19 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.exbin.bined.BasicCodeAreaSection;
 import org.exbin.bined.CodeAreaSection;
+import org.exbin.bined.highlight.swing.color.CodeAreaColorizationColorType;
 import org.exbin.bined.swing.CodeAreaCore;
 
 /**
  * Experimental support for highlighting of non-ascii characters.
  *
- * @version 0.2.0 2018/11/26
+ * @version 0.2.0 2018/11/30
  * @author ExBin Project (https://exbin.org)
  */
 public class ExtendedHighlightNonAsciiCodeAreaPainter extends ExtendedHighlightCodeAreaPainter {
 
     private Color controlCodes;
-    private Color aboveCodes;
+    private Color upperCodes;
     private Color textColor;
     private boolean nonAsciiHighlightingEnabled = true;
 
@@ -94,7 +95,7 @@ public class ExtendedHighlightNonAsciiCodeAreaPainter extends ExtendedHighlightC
             aboveCodesBlue += 127;
         }
 
-        aboveCodes = new Color(
+        upperCodes = new Color(
                 downShift(textColor.getRed(), aboveCodesGreenDiff + aboveCodesBlueDiff),
                 aboveCodesGreen, aboveCodesBlue);
     }
@@ -117,9 +118,38 @@ public class ExtendedHighlightNonAsciiCodeAreaPainter extends ExtendedHighlightC
                 if (dataPosition < codeArea.getDataSize()) {
                     byte value = codeArea.getContentData().getByte(dataPosition);
                     if (value < 0) {
-                        color = aboveCodes;
+                        Color upperCodesColor = getColorsProfile().getColor(CodeAreaColorizationColorType.UPPER_CODES_COLOR);
+                        color = upperCodesColor != null ? upperCodesColor : upperCodes;
                     } else if (value < 0x20) {
-                        color = controlCodes;
+                        Color controlCodesColor = getColorsProfile().getColor(CodeAreaColorizationColorType.CONTROL_CODES_COLOR);
+                        color = controlCodesColor != null ? controlCodesColor : controlCodes;
+                    }
+                }
+            }
+        }
+
+        return color;
+    }
+
+    @Nullable
+    @Override
+    public Color getPositionBackgroundColor(long rowDataPosition, int byteOnRow, int charOnRow, @Nonnull CodeAreaSection section, boolean unprintables) {
+        Color color = super.getPositionBackgroundColor(rowDataPosition, byteOnRow, charOnRow, section, unprintables);
+        if (nonAsciiHighlightingEnabled && section == BasicCodeAreaSection.CODE_MATRIX) {
+            if (color == null || textColor.equals(color)) {
+                long dataPosition = rowDataPosition + byteOnRow;
+                if (dataPosition < codeArea.getDataSize()) {
+                    byte value = codeArea.getContentData().getByte(dataPosition);
+                    if (value < 0) {
+                        Color upperCodesBackground = getColorsProfile().getColor(CodeAreaColorizationColorType.UPPER_CODES_BACKGROUND);
+                        if (upperCodesBackground != null) {
+                            color = upperCodesBackground;
+                        }
+                    } else if (value < 0x20) {
+                        Color controlCodesBackground = getColorsProfile().getColor(CodeAreaColorizationColorType.CONTROL_CODES_BACKGROUND);
+                        if (controlCodesBackground != null) {
+                            color = controlCodesBackground;
+                        }
                     }
                 }
             }
@@ -138,12 +168,12 @@ public class ExtendedHighlightNonAsciiCodeAreaPainter extends ExtendedHighlightC
     }
 
     @Nonnull
-    public Color getAboveCodes() {
-        return aboveCodes;
+    public Color getUpperCodes() {
+        return upperCodes;
     }
 
-    public void setAboveCodes(@Nonnull Color aboveCodes) {
-        this.aboveCodes = aboveCodes;
+    public void setUpperCodes(@Nonnull Color upperCodes) {
+        this.upperCodes = upperCodes;
     }
 
     public boolean isNonAsciiHighlightingEnabled() {

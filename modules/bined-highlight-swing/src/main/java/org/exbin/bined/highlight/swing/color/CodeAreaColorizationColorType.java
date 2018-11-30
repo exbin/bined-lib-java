@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.swing.extended.color;
+package org.exbin.bined.highlight.swing.color;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -24,13 +24,15 @@ import org.exbin.bined.color.CodeAreaColorType;
 /**
  * Enumeration of unprintable color types.
  *
- * @version 0.2.0 2018/11/18
+ * @version 0.2.0 2018/11/30
  * @author ExBin Project (https://exbin.org)
  */
 public enum CodeAreaColorizationColorType implements CodeAreaColorType {
 
-    CONTROL_CODES_COLOR(CodeAreaBasicColors.TEXT_COLOR.getId(), ExtendedCodeAreaColorsGroup.CONTROL_CODES),
-    UPPER_CODES_BACKGROUND(CodeAreaBasicColors.TEXT_BACKGROUND.getId(), ExtendedCodeAreaColorsGroup.UPPER_CODES);
+    CONTROL_CODES_COLOR(CodeAreaBasicColors.TEXT_COLOR.getId(), ColorizationCodeAreaColorsGroup.COLORIZATION),
+    CONTROL_CODES_BACKGROUND(CodeAreaBasicColors.TEXT_BACKGROUND.getId(), ColorizationCodeAreaColorsGroup.COLORIZATION),
+    UPPER_CODES_COLOR(CodeAreaBasicColors.TEXT_COLOR.getId(), ColorizationCodeAreaColorsGroup.COLORIZATION),
+    UPPER_CODES_BACKGROUND(CodeAreaBasicColors.TEXT_BACKGROUND.getId(), ColorizationCodeAreaColorsGroup.COLORIZATION);
 
     @Nonnull
     private final String typeId;

@@ -67,7 +67,7 @@ public class HighlightCodeAreaPainter extends DefaultCodeAreaPainter {
     @Nullable
     @Override
     public Color getPositionBackgroundColor(long rowDataPosition, int byteOnRow, int charOnRow, @Nonnull CodeAreaSection section) {
-        if (!matches.isEmpty() && section == BasicCodeAreaSection.TEXT_PREVIEW || charOnRow < getCharactersPerRow() - 1) {
+        if (!matches.isEmpty() && charOnRow < getCharactersPerRow() - 1) {
             long dataPosition = rowDataPosition + byteOnRow;
             if (currentMatchIndex >= 0) {
                 SearchMatch currentMatch = matches.get(currentMatchIndex);
