@@ -203,7 +203,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         editationMode = ((EditationModeCapable) codeArea).getEditationMode();
         backgroundPaintMode = ((BackgroundPaintCapable) codeArea).getBackgroundPaintMode();
         showMirrorCursor = ((CaretCapable) codeArea).isShowMirrorCursor();
-        rowPositionNumberLength = ((RowWrappingCapable) codeArea).getRowPositionNumberLength();
+        rowPositionNumberLength = ((RowWrappingCapable) codeArea).getRowPositionLength();
         antialiasingMode = ((AntialiasingCapable) codeArea).getAntialiasingMode();
 
         int rowsPerPage = dimensions.getRowsPerPage();

@@ -32,7 +32,7 @@
                           <Component id="byteGroupSizeSpinner" alignment="0" max="32767" attributes="0"/>
                           <Component id="headerPanel" alignment="0" max="32767" attributes="0"/>
                           <Component id="bytesPerLineSpinner" alignment="0" max="32767" attributes="0"/>
-                          <Component id="lineNumbersPanel" alignment="0" max="32767" attributes="0"/>
+                          <Component id="rowPositionPanel" alignment="0" max="32767" attributes="0"/>
                           <Group type="102" alignment="0" attributes="0">
                               <Group type="103" groupAlignment="1" attributes="0">
                                   <Component id="byteGroupSizeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
@@ -59,7 +59,7 @@
               <EmptySpace max="-2" attributes="0"/>
               <Component id="headerPanel" min="-2" pref="104" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="lineNumbersPanel" min="-2" pref="156" max="-2" attributes="0"/>
+              <Component id="rowPositionPanel" min="-2" pref="156" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="byteGroupSizeLabel" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
@@ -110,12 +110,10 @@
                           <Component id="headerSpaceSpinner" pref="220" max="32767" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="showHeaderCheckBox" alignment="0" min="-2" max="-2" attributes="0"/>
-                              <Component id="headerSpaceLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                          <Component id="headerSpaceLabel" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace min="0" pref="267" max="32767" attributes="0"/>
                       </Group>
+                      <Component id="showHeaderCheckBox" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -185,41 +183,41 @@
         </Component>
       </SubComponents>
     </Container>
-    <Container class="javax.swing.JPanel" name="lineNumbersPanel">
+    <Container class="javax.swing.JPanel" name="rowPositionPanel">
       <Properties>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-            <TitledBorder title="Line Numbers"/>
+            <TitledBorder title="Row Positions"/>
           </Border>
         </Property>
       </Properties>
+      <AccessibilityProperties>
+        <Property name="AccessibleContext.accessibleName" type="java.lang.String" value="Row Position"/>
+      </AccessibilityProperties>
 
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
-                  <Component id="showLineNumbersCheckBox" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-              </Group>
-              <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
+                      <Component id="showRowPositionCheckBox" max="32767" attributes="0"/>
                       <Group type="102" alignment="0" attributes="0">
-                          <Component id="lineNumbersLengthComboBox" min="-2" pref="140" max="-2" attributes="0"/>
+                          <Component id="rowPositionLengthComboBox" min="-2" pref="140" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="lineNumbersLengthSpinner" max="32767" attributes="0"/>
+                          <Component id="rowPositionLengthSpinner" pref="220" max="32767" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
+                          <Component id="rowPositionSpaceComboBox" min="-2" pref="140" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="rowPositionSpaceSpinner" max="32767" attributes="0"/>
+                      </Group>
+                      <Group type="102" attributes="0">
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="lineNumbersLengthLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                              <Component id="lineNumbersSpaceLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="rowPositionLengthLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="rowPositionSpaceLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                      </Group>
-                      <Group type="102" alignment="0" attributes="0">
-                          <Component id="lineNumbersSpaceComboBox" min="-2" pref="140" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="lineNumbersSpaceSpinner" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
@@ -229,20 +227,20 @@
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
-                  <Component id="showLineNumbersCheckBox" min="-2" max="-2" attributes="0"/>
+                  <Component id="showRowPositionCheckBox" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="lineNumbersLengthLabel" min="-2" max="-2" attributes="0"/>
+                  <Component id="rowPositionLengthLabel" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="lineNumbersLengthComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="lineNumbersLengthSpinner" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="rowPositionLengthComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="rowPositionLengthSpinner" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="lineNumbersSpaceLabel" min="-2" max="-2" attributes="0"/>
+                  <Component id="rowPositionSpaceLabel" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="lineNumbersSpaceComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="lineNumbersSpaceSpinner" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="rowPositionSpaceComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="rowPositionSpaceSpinner" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
@@ -250,20 +248,20 @@
         </DimensionLayout>
       </Layout>
       <SubComponents>
-        <Component class="javax.swing.JCheckBox" name="showLineNumbersCheckBox">
+        <Component class="javax.swing.JCheckBox" name="showRowPositionCheckBox">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Show Line Numbers"/>
+            <Property name="text" type="java.lang.String" value="Show Row Position"/>
           </Properties>
           <Events>
-            <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="showLineNumbersCheckBoxItemStateChanged"/>
+            <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="showRowPositionCheckBoxItemStateChanged"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JLabel" name="lineNumbersLengthLabel">
+        <Component class="javax.swing.JLabel" name="rowPositionLengthLabel">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Line Numbers Length"/>
+            <Property name="text" type="java.lang.String" value="Row Position Length"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JComboBox" name="lineNumbersLengthComboBox">
+        <Component class="javax.swing.JComboBox" name="rowPositionLengthComboBox">
           <Properties>
             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
               <StringArray count="2">
@@ -274,13 +272,13 @@
             <Property name="selectedIndex" type="int" value="1"/>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="lineNumbersLengthComboBoxActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="rowPositionLengthComboBoxActionPerformed"/>
           </Events>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
           </AuxValues>
         </Component>
-        <Component class="javax.swing.JSpinner" name="lineNumbersLengthSpinner">
+        <Component class="javax.swing.JSpinner" name="rowPositionLengthSpinner">
           <Properties>
             <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
               <SpinnerModel initial="0" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
@@ -290,15 +288,15 @@
             </Property>
           </Properties>
           <Events>
-            <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="lineNumbersLengthSpinnerStateChanged"/>
+            <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="rowPositionLengthSpinnerStateChanged"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JLabel" name="lineNumbersSpaceLabel">
+        <Component class="javax.swing.JLabel" name="rowPositionSpaceLabel">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Line Numbers Space"/>
+            <Property name="text" type="java.lang.String" value="Row Position Space"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JComboBox" name="lineNumbersSpaceComboBox">
+        <Component class="javax.swing.JComboBox" name="rowPositionSpaceComboBox">
           <Properties>
             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
               <StringArray count="7">
@@ -314,20 +312,20 @@
             <Property name="selectedIndex" type="int" value="4"/>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="lineNumbersSpaceComboBoxActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="rowPositionSpaceComboBoxActionPerformed"/>
           </Events>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
           </AuxValues>
         </Component>
-        <Component class="javax.swing.JSpinner" name="lineNumbersSpaceSpinner">
+        <Component class="javax.swing.JSpinner" name="rowPositionSpaceSpinner">
           <Properties>
             <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
               <SpinnerModel initial="0" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
             </Property>
           </Properties>
           <Events>
-            <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="lineNumbersSpaceSpinnerStateChanged"/>
+            <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="rowPositionSpaceSpinnerStateChanged"/>
           </Events>
         </Component>
       </SubComponents>

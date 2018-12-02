@@ -38,9 +38,9 @@ public interface RowWrappingCapable {
 
     void setWrappingBytesGroupSize(int groupSize);
 
-    int getRowPositionNumberLength();
+    int getRowPositionLength();
 
-    void setRowPositionNumberLength(int rowPositionNumberLength);
+    void setRowPositionLength(int rowPositionNumberLength);
 
     public static class LineWrappingCapability implements CodeAreaCapability {
 

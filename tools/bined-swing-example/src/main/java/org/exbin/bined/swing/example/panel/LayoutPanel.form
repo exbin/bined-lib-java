@@ -23,13 +23,13 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="bytesPerLineLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="rowWrappingModeCheckBox" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="lineNumbersLengthLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="rowPositionLengthLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace min="0" pref="243" max="32767" attributes="0"/>
+                      <EmptySpace min="0" pref="248" max="32767" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="1" attributes="0">
                       <Group type="103" groupAlignment="1" attributes="0">
-                          <Component id="lineNumbersLengthSpinner" alignment="0" max="32767" attributes="0"/>
+                          <Component id="rowPositionLengthSpinner" alignment="0" max="32767" attributes="0"/>
                           <Component id="bytesPerLineSpinner" alignment="0" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
@@ -48,15 +48,23 @@
               <EmptySpace max="-2" attributes="0"/>
               <Component id="bytesPerLineSpinner" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="lineNumbersLengthLabel" min="-2" max="-2" attributes="0"/>
+              <Component id="rowPositionLengthLabel" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="lineNumbersLengthSpinner" min="-2" max="-2" attributes="0"/>
+              <Component id="rowPositionLengthSpinner" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
   </Layout>
   <SubComponents>
+    <Component class="javax.swing.JCheckBox" name="rowWrappingModeCheckBox">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Wrap Line Mode"/>
+      </Properties>
+      <Events>
+        <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="rowWrappingModeCheckBoxItemStateChanged"/>
+      </Events>
+    </Component>
     <Component class="javax.swing.JLabel" name="bytesPerLineLabel">
       <Properties>
         <Property name="text" type="java.lang.String" value="Bytes Per Line"/>
@@ -72,15 +80,12 @@
         <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="bytesPerLineSpinnerStateChanged"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JCheckBox" name="rowWrappingModeCheckBox">
+    <Component class="javax.swing.JLabel" name="rowPositionLengthLabel">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Wrap Line Mode"/>
+        <Property name="text" type="java.lang.String" value="Row Position Length"/>
       </Properties>
-      <Events>
-        <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="rowWrappingModeCheckBoxItemStateChanged"/>
-      </Events>
     </Component>
-    <Component class="javax.swing.JSpinner" name="lineNumbersLengthSpinner">
+    <Component class="javax.swing.JSpinner" name="rowPositionLengthSpinner">
       <Properties>
         <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
           <SpinnerModel initial="0" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
@@ -90,13 +95,8 @@
         </Property>
       </Properties>
       <Events>
-        <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="lineNumbersLengthSpinnerStateChanged"/>
+        <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="rowPositionLengthSpinnerStateChanged"/>
       </Events>
-    </Component>
-    <Component class="javax.swing.JLabel" name="lineNumbersLengthLabel">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Line Numbers Length"/>
-      </Properties>
     </Component>
   </SubComponents>
 </Form>

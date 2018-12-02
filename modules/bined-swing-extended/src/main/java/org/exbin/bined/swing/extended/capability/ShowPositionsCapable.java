@@ -15,23 +15,25 @@
  */
 package org.exbin.bined.swing.extended.capability;
 
-import javax.annotation.Nonnull;
+import org.exbin.bined.capability.CodeAreaCapability;
 
 /**
- * Support for cursor carets shapes.
+ * Support for showing positions.
  *
  * @version 0.2.0 2018/12/01
  * @author ExBin Project (https://exbin.org)
  */
-public class CodeAreaCaretsProfile {
+public interface ShowPositionsCapable {
 
-    public enum CaretType {
-        INSERT,
-        OVERWRITE,
-        SHADDOW
-    }
+    boolean isShowHeader();
 
-    public void paintCaret(@Nonnull CaretType caretType) {
-        
+    void setShowHeader(boolean showHeader);
+
+    boolean isShowRowPosition();
+
+    void setShowRowPosition(boolean showRowPosition);
+
+    public static class ShowPositionsCapability implements CodeAreaCapability {
+
     }
 }
