@@ -40,7 +40,7 @@ public interface RowWrappingCapable {
 
     int getRowPositionLength();
 
-    void setRowPositionLength(int rowPositionNumberLength);
+    void setRowPositionLength(int rowPositionLength);
 
     public static class LineWrappingCapability implements CodeAreaCapability {
 

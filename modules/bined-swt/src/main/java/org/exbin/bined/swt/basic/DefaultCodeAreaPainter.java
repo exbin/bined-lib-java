@@ -60,7 +60,6 @@ import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.capability.CharsetCapable;
 import org.exbin.bined.capability.CodeCharactersCaseCapable;
 import org.exbin.bined.capability.EditationModeCapable;
-import org.exbin.bined.capability.RowWrappingCapable;
 import org.exbin.bined.capability.ScrollingCapable;
 import org.exbin.bined.swt.CodeAreaCore;
 import org.exbin.bined.swt.CodeAreaPainter;
@@ -115,7 +114,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
 
     private int maxBytesPerChar;
     private int rowPositionLength;
-    private int rowPositionNumberLength;
 
     @Nullable
     private Font font;
@@ -208,7 +206,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         editationMode = ((EditationModeCapable) codeArea).getEditationMode();
         backgroundPaintMode = ((BackgroundPaintCapable) codeArea).getBackgroundPaintMode();
         showMirrorCursor = ((CaretCapable) codeArea).isShowMirrorCursor();
-        rowPositionNumberLength = ((RowWrappingCapable) codeArea).getRowPositionNumberLength();
 
         int rowsPerPage = dimensions.getRowsPerPage();
         long rowsPerDocument = structure.getRowsPerDocument();
@@ -1422,7 +1419,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     }
 
     private int getRowPositionLength() {
-        if (rowPositionNumberLength <= 0) {
+        if (rowPositionLength <= 0) {
             long dataSize = structure.getDataSize();
             if (dataSize == 0) {
                 return 1;
@@ -1432,7 +1429,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             int numberLength = (int) Math.ceil(natLog / PositionCodeType.HEXADECIMAL.getBaseLog());
             return numberLength == 0 ? 1 : numberLength;
         }
-        return rowPositionNumberLength;
+        return rowPositionLength;
     }
 
     /**

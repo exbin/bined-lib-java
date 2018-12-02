@@ -121,7 +121,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
 
     private int maxBytesPerChar;
     private int rowPositionLength;
-    private int rowPositionNumberLength;
 
     @Nullable
     private Font font;
@@ -203,7 +202,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         editationMode = ((EditationModeCapable) codeArea).getEditationMode();
         backgroundPaintMode = ((BackgroundPaintCapable) codeArea).getBackgroundPaintMode();
         showMirrorCursor = ((CaretCapable) codeArea).isShowMirrorCursor();
-        rowPositionNumberLength = ((RowWrappingCapable) codeArea).getRowPositionLength();
         antialiasingMode = ((AntialiasingCapable) codeArea).getAntialiasingMode();
 
         int rowsPerPage = dimensions.getRowsPerPage();
@@ -1335,7 +1333,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
     }
 
     private int getRowPositionLength() {
-        if (rowPositionNumberLength <= 0) {
+        if (rowPositionLength <= 0) {
             long dataSize = structure.getDataSize();
             if (dataSize == 0) {
                 return 1;
@@ -1345,7 +1343,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
             int numberLength = (int) Math.ceil(natLog / PositionCodeType.HEXADECIMAL.getBaseLog());
             return numberLength == 0 ? 1 : numberLength;
         }
-        return rowPositionNumberLength;
+        return rowPositionLength;
     }
 
     /**
