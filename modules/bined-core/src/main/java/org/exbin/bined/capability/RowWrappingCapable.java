@@ -20,7 +20,7 @@ import javax.annotation.Nonnull;
 /**
  * Line wrapping capability interface.
  *
- * @version 0.2.0 2018/08/18
+ * @version 0.2.0 2018/12/03
  * @author ExBin Project (https://exbin.org)
  */
 public interface RowWrappingCapable {
@@ -38,9 +38,9 @@ public interface RowWrappingCapable {
 
     void setWrappingBytesGroupSize(int groupSize);
 
-    int getRowPositionLength();
+    int getMinRowPositionLength();
 
-    void setRowPositionLength(int rowPositionLength);
+    void setMinRowPositionLength(int minRowPositionLength);
 
     public static class LineWrappingCapability implements CodeAreaCapability {
 

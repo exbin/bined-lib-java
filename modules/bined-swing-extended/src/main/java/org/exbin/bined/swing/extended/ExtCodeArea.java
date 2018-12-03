@@ -37,6 +37,7 @@ import org.exbin.bined.CodeCharactersCase;
 import org.exbin.bined.CodeType;
 import org.exbin.bined.EditationMode;
 import org.exbin.bined.EditationModeChangedListener;
+import org.exbin.bined.PositionCodeType;
 import org.exbin.bined.PositionOverflowMode;
 import org.exbin.bined.ScrollBarVisibility;
 import org.exbin.bined.ScrollingListener;
@@ -61,7 +62,7 @@ import org.exbin.bined.swing.extended.color.ColorsProfileCapableCodeAreaPainter;
 /**
  * Code area component extended code area.
  *
- * @version 0.2.0 2018/12/01
+ * @version 0.2.0 2018/12/03
  * @author ExBin Project (https://exbin.org)
  */
 public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeAreaSwingControl {
@@ -99,6 +100,8 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
     @Nonnull
     private CodeCharactersCase codeCharactersCase = CodeCharactersCase.UPPER;
     private boolean showMirrorCursor = true;
+    @Nonnull
+    private PositionCodeType positionCodeType = PositionCodeType.HEXADECIMAL;
     @Nonnull
     private RowWrappingMode lineWrapping = RowWrappingMode.NO_WRAPPING;
     private int wrappingBytesGroupSize = 0;
@@ -212,12 +215,12 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
     }
 
     @Override
-    public int getRowPositionLength() {
+    public int getMinRowPositionLength() {
         return rowPositionLength;
     }
 
     @Override
-    public void setRowPositionLength(int rowPositionLength) {
+    public void setMinRowPositionLength(int rowPositionLength) {
         this.rowPositionLength = rowPositionLength;
         reset();
         repaint();
@@ -595,6 +598,18 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
     @Override
     public void setCodeFont(@Nonnull Font font) {
         this.font = font;
+        painter.reset();
+        repaint();
+    }
+
+    @Override
+    public PositionCodeType getPositionCodeType() {
+        return positionCodeType;
+    }
+
+    @Override
+    public void setPositionCodeType(PositionCodeType positionCodeType) {
+        this.positionCodeType = positionCodeType;
         painter.reset();
         repaint();
     }

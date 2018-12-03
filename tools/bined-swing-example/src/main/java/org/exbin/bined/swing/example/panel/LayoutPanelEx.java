@@ -34,7 +34,7 @@ public class LayoutPanelEx extends javax.swing.JPanel {
 
         initComponents();
         wrapLineModeCheckBox.setSelected(codeArea.getRowWrapping() == RowWrappingCapable.RowWrappingMode.WRAPPING);
-        rowPositionLengthSpinner.setValue(codeArea.getRowPositionLength());
+        minRowPositionLengthSpinner.setValue(codeArea.getMinRowPositionLength());
         showHeaderCheckBox.setSelected(codeArea.isShowHeader());
 //        headerSpaceComboBox.setSelectedIndex(codeArea.getHeaderSpaceType().ordinal());
 //        headerSpaceSpinner.setValue(codeArea.getHeaderSpaceSize());
@@ -56,8 +56,8 @@ public class LayoutPanelEx extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        bytesPerLineLabel = new javax.swing.JLabel();
-        bytesPerLineSpinner = new javax.swing.JSpinner();
+        maxBytesPerLineLabel = new javax.swing.JLabel();
+        maxBytesPerLineSpinner = new javax.swing.JSpinner();
         headerPanel = new javax.swing.JPanel();
         showHeaderCheckBox = new javax.swing.JCheckBox();
         headerSpaceLabel = new javax.swing.JLabel();
@@ -65,9 +65,9 @@ public class LayoutPanelEx extends javax.swing.JPanel {
         headerSpaceSpinner = new javax.swing.JSpinner();
         rowPositionPanel = new javax.swing.JPanel();
         showRowPositionCheckBox = new javax.swing.JCheckBox();
-        rowPositionLengthLabel = new javax.swing.JLabel();
-        rowPositionLengthComboBox = new javax.swing.JComboBox<>();
-        rowPositionLengthSpinner = new javax.swing.JSpinner();
+        minRowPositionLengthLabel = new javax.swing.JLabel();
+        minRowPositionLengthComboBox = new javax.swing.JComboBox<>();
+        minRowPositionLengthSpinner = new javax.swing.JSpinner();
         rowPositionSpaceLabel = new javax.swing.JLabel();
         rowPositionSpaceComboBox = new javax.swing.JComboBox<>();
         rowPositionSpaceSpinner = new javax.swing.JSpinner();
@@ -77,12 +77,12 @@ public class LayoutPanelEx extends javax.swing.JPanel {
         spaceGroupSizeSpinner = new javax.swing.JSpinner();
         wrapLineModeCheckBox = new javax.swing.JCheckBox();
 
-        bytesPerLineLabel.setText("Bytes Per Line");
+        maxBytesPerLineLabel.setText("Bytes Per Line");
 
-        bytesPerLineSpinner.setModel(new javax.swing.SpinnerNumberModel(16, 1, null, 1));
-        bytesPerLineSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
+        maxBytesPerLineSpinner.setModel(new javax.swing.SpinnerNumberModel(16, 1, null, 1));
+        maxBytesPerLineSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                bytesPerLineSpinnerStateChanged(evt);
+                maxBytesPerLineSpinnerStateChanged(evt);
             }
         });
 
@@ -151,21 +151,21 @@ public class LayoutPanelEx extends javax.swing.JPanel {
             }
         });
 
-        rowPositionLengthLabel.setText("Row Position Length");
+        minRowPositionLengthLabel.setText("Row Position Length");
 
-        rowPositionLengthComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "AUTO", "SPECIFIED" }));
-        rowPositionLengthComboBox.setSelectedIndex(1);
-        rowPositionLengthComboBox.addActionListener(new java.awt.event.ActionListener() {
+        minRowPositionLengthComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "AUTO", "SPECIFIED" }));
+        minRowPositionLengthComboBox.setSelectedIndex(1);
+        minRowPositionLengthComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rowPositionLengthComboBoxActionPerformed(evt);
+                minRowPositionLengthComboBoxActionPerformed(evt);
             }
         });
 
-        rowPositionLengthSpinner.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1));
-        rowPositionLengthSpinner.setValue(8);
-        rowPositionLengthSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
+        minRowPositionLengthSpinner.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1));
+        minRowPositionLengthSpinner.setValue(8);
+        minRowPositionLengthSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                rowPositionLengthSpinnerStateChanged(evt);
+                minRowPositionLengthSpinnerStateChanged(evt);
             }
         });
 
@@ -195,16 +195,16 @@ public class LayoutPanelEx extends javax.swing.JPanel {
                 .addGroup(rowPositionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(showRowPositionCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(rowPositionPanelLayout.createSequentialGroup()
-                        .addComponent(rowPositionLengthComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(minRowPositionLengthComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(rowPositionLengthSpinner, javax.swing.GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE))
+                        .addComponent(minRowPositionLengthSpinner, javax.swing.GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE))
                     .addGroup(rowPositionPanelLayout.createSequentialGroup()
                         .addComponent(rowPositionSpaceComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(rowPositionSpaceSpinner))
                     .addGroup(rowPositionPanelLayout.createSequentialGroup()
                         .addGroup(rowPositionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(rowPositionLengthLabel)
+                            .addComponent(minRowPositionLengthLabel)
                             .addComponent(rowPositionSpaceLabel))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
@@ -214,11 +214,11 @@ public class LayoutPanelEx extends javax.swing.JPanel {
             .addGroup(rowPositionPanelLayout.createSequentialGroup()
                 .addComponent(showRowPositionCheckBox)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(rowPositionLengthLabel)
+                .addComponent(minRowPositionLengthLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(rowPositionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(rowPositionLengthComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(rowPositionLengthSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(minRowPositionLengthComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(minRowPositionLengthSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(rowPositionSpaceLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -262,7 +262,7 @@ public class LayoutPanelEx extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(bytesPerLineLabel)
+                            .addComponent(maxBytesPerLineLabel)
                             .addComponent(wrapLineModeCheckBox))
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
@@ -270,7 +270,7 @@ public class LayoutPanelEx extends javax.swing.JPanel {
                             .addComponent(spaceGroupSizeSpinner, javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(byteGroupSizeSpinner, javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(headerPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(bytesPerLineSpinner, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(maxBytesPerLineSpinner, javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(rowPositionPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -285,9 +285,9 @@ public class LayoutPanelEx extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(wrapLineModeCheckBox)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(bytesPerLineLabel)
+                .addComponent(maxBytesPerLineLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(bytesPerLineSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(maxBytesPerLineSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(headerPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -318,24 +318,24 @@ public class LayoutPanelEx extends javax.swing.JPanel {
         //        codeArea.setHeaderSpaceSize((Integer) headerSpaceSpinner.getValue());
     }//GEN-LAST:event_headerSpaceSpinnerStateChanged
 
-    private void bytesPerLineSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_bytesPerLineSpinnerStateChanged
+    private void maxBytesPerLineSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_maxBytesPerLineSpinnerStateChanged
         //        int value = (Integer) lineLengthSpinner.getValue();
         //        if (value > 0) {
         //            codeArea.setLineLength(value);
         //        }
-    }//GEN-LAST:event_bytesPerLineSpinnerStateChanged
+    }//GEN-LAST:event_maxBytesPerLineSpinnerStateChanged
 
     private void showRowPositionCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_showRowPositionCheckBoxItemStateChanged
         codeArea.setShowRowPosition(showRowPositionCheckBox.isSelected());
     }//GEN-LAST:event_showRowPositionCheckBoxItemStateChanged
 
-    private void rowPositionLengthComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rowPositionLengthComboBoxActionPerformed
+    private void minRowPositionLengthComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_minRowPositionLengthComboBoxActionPerformed
         //        codeArea.setLineNumberType(CodeAreaLineNumberLength.LineNumberType.values()[lineNumbersLengthComboBox.getSelectedIndex()]);
-    }//GEN-LAST:event_rowPositionLengthComboBoxActionPerformed
+    }//GEN-LAST:event_minRowPositionLengthComboBoxActionPerformed
 
-    private void rowPositionLengthSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_rowPositionLengthSpinnerStateChanged
+    private void minRowPositionLengthSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_minRowPositionLengthSpinnerStateChanged
         //        codeArea.setLineNumberSpecifiedLength((Integer) lineNumbersLengthSpinner.getValue());
-    }//GEN-LAST:event_rowPositionLengthSpinnerStateChanged
+    }//GEN-LAST:event_minRowPositionLengthSpinnerStateChanged
 
     private void rowPositionSpaceComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rowPositionSpaceComboBoxActionPerformed
         //        codeArea.setLineNumberSpaceType(SpaceType.values()[lineNumbersSpaceComboBox.getSelectedIndex()]);
@@ -361,15 +361,15 @@ public class LayoutPanelEx extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel byteGroupSizeLabel;
     private javax.swing.JSpinner byteGroupSizeSpinner;
-    private javax.swing.JLabel bytesPerLineLabel;
-    private javax.swing.JSpinner bytesPerLineSpinner;
     private javax.swing.JPanel headerPanel;
     private javax.swing.JComboBox<String> headerSpaceComboBox;
     private javax.swing.JLabel headerSpaceLabel;
     private javax.swing.JSpinner headerSpaceSpinner;
-    private javax.swing.JComboBox<String> rowPositionLengthComboBox;
-    private javax.swing.JLabel rowPositionLengthLabel;
-    private javax.swing.JSpinner rowPositionLengthSpinner;
+    private javax.swing.JLabel maxBytesPerLineLabel;
+    private javax.swing.JSpinner maxBytesPerLineSpinner;
+    private javax.swing.JComboBox<String> minRowPositionLengthComboBox;
+    private javax.swing.JLabel minRowPositionLengthLabel;
+    private javax.swing.JSpinner minRowPositionLengthSpinner;
     private javax.swing.JPanel rowPositionPanel;
     private javax.swing.JComboBox<String> rowPositionSpaceComboBox;
     private javax.swing.JLabel rowPositionSpaceLabel;

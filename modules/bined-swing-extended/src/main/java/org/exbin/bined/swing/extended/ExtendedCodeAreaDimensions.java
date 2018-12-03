@@ -19,11 +19,12 @@ import java.awt.Rectangle;
 import javax.annotation.Nonnull;
 import org.exbin.bined.BasicCodeAreaZone;
 import org.exbin.bined.swing.basic.BasicCodeAreaMetrics;
+import org.exbin.bined.swing.extended.layout.ExtendedCodeAreaLayoutProfile;
 
 /**
  * Basic code area component dimensions.
  *
- * @version 0.2.0 2018/12/01
+ * @version 0.2.0 2018/12/03
  * @author ExBin Project (https://exbin.org)
  */
 public class ExtendedCodeAreaDimensions {
@@ -41,8 +42,6 @@ public class ExtendedCodeAreaDimensions {
     private int lastCharOffset;
     private int lastRowOffset;
 
-    private boolean showHeader;
-    private boolean showRowPosition;
     private int headerAreaHeight;
     private int rowPositionAreaWidth;
     private int rowsPerRect;
@@ -61,13 +60,13 @@ public class ExtendedCodeAreaDimensions {
     @Nonnull
     private final Rectangle dataViewRectangle = new Rectangle();
 
-    public void recomputeSizes(@Nonnull BasicCodeAreaMetrics metrics, int componentWidth, int componentHeight, int rowPositionLength, int verticalScrollBarSize, int horizontalScrollBarSize, boolean showHeader, boolean showRowPosition) {
+    public void recomputeSizes(@Nonnull BasicCodeAreaMetrics metrics, int componentWidth, int componentHeight, int rowPositionLength, int verticalScrollBarSize, int horizontalScrollBarSize, @Nonnull ExtendedCodeAreaLayoutProfile layoutProfile) {
         this.componentWidth = componentWidth;
         this.componentHeight = componentHeight;
         this.verticalScrollBarSize = verticalScrollBarSize;
         this.horizontalScrollBarSize = horizontalScrollBarSize;
-        rowPositionAreaWidth = showRowPosition ? metrics.getCharacterWidth() * (rowPositionLength + 1) : 0;
-        headerAreaHeight = showHeader ? metrics.getFontHeight() + metrics.getFontHeight() / 4 : 0;
+        rowPositionAreaWidth = layoutProfile.isShowRowPosition() ? metrics.getCharacterWidth() * (rowPositionLength + 1) : 0;
+        headerAreaHeight = layoutProfile.isShowHeader() ? metrics.getFontHeight() + metrics.getFontHeight() / 4 : 0;
 
         dataViewX = rowPositionAreaWidth;
         dataViewY = headerAreaHeight;
@@ -173,14 +172,6 @@ public class ExtendedCodeAreaDimensions {
 
     public int getDataViewHeight() {
         return dataViewHeight;
-    }
-
-    public boolean isShowHeader() {
-        return showHeader;
-    }
-
-    public boolean isShowRowPosition() {
-        return showRowPosition;
     }
 
     public int getHeaderAreaHeight() {

@@ -49,12 +49,10 @@ import org.exbin.bined.CodeAreaViewMode;
 import org.exbin.bined.CodeCharactersCase;
 import org.exbin.bined.CodeType;
 import org.exbin.bined.EditationMode;
-import org.exbin.bined.PositionCodeType;
 import org.exbin.bined.PositionOverflowMode;
 import org.exbin.bined.SelectionRange;
 import org.exbin.bined.basic.BasicBackgroundPaintMode;
 import org.exbin.bined.basic.BasicCodeAreaScrolling;
-import org.exbin.bined.basic.BasicCodeAreaStructure;
 import org.exbin.bined.basic.CodeAreaScrollPosition;
 import org.exbin.bined.basic.MovementDirection;
 import org.exbin.bined.basic.PositionScrollVisibility;
@@ -81,16 +79,16 @@ import org.exbin.bined.color.CodeAreaColorsProfile;
 import org.exbin.bined.swing.basic.color.BasicCodeAreaDecorationColorType;
 import org.exbin.bined.swing.capability.AntialiasingCapable;
 import org.exbin.bined.swing.extended.capability.CodeAreaCaretsProfile;
-import org.exbin.bined.swing.extended.capability.ShowPositionsCapable;
 import org.exbin.bined.swing.extended.color.ColorsProfileCapableCodeAreaPainter;
 import org.exbin.bined.swing.extended.color.ExtendedCodeAreaColorProfile;
 import org.exbin.bined.swing.extended.capability.ShowUnprintablesCapable;
 import org.exbin.bined.swing.extended.color.CodeAreaUnprintablesColorType;
+import org.exbin.bined.swing.extended.layout.ExtendedCodeAreaLayoutProfile;
 
 /**
  * Extended code area component default painter.
  *
- * @version 0.2.0 2018/12/01
+ * @version 0.2.0 2018/12/03
  * @author ExBin Project (https://exbin.org)
  */
 public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCapableCodeAreaPainter {
@@ -110,7 +108,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
     @Nonnull
     private final BasicCodeAreaMetrics metrics = new BasicCodeAreaMetrics();
     @Nonnull
-    private final BasicCodeAreaStructure structure = new BasicCodeAreaStructure();
+    private final ExtendedCodeAreaStructure structure = new ExtendedCodeAreaStructure();
     @Nonnull
     private final BasicCodeAreaScrolling scrolling = new BasicCodeAreaScrolling();
     @Nonnull
@@ -120,8 +118,13 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
     @Nonnull
     private volatile ScrollingState scrollingState = ScrollingState.NO_SCROLLING;
 
+    @Nonnull
+    private ExtendedCodeAreaLayoutProfile layoutProfile = new ExtendedCodeAreaLayoutProfile();
+    @Nonnull
     private CodeAreaColorsProfile colorsProfile = new ExtendedCodeAreaColorProfile();
+    @Nonnull
     private CodeAreaDecorationsProfile decorationsProfile = new CodeAreaDecorationsProfile();
+    @Nonnull
     private CodeAreaCaretsProfile caretsProfile = new CodeAreaCaretsProfile();
 
     @Nullable
@@ -130,8 +133,6 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
     private EditationMode editationMode;
     @Nullable
     private BasicBackgroundPaintMode backgroundPaintMode;
-    private boolean showHeader;
-    private boolean showRowPosition;
     private boolean showMirrorCursor;
     private boolean showUnprintables;
     @Nonnull
@@ -139,7 +140,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
 
     private int maxBytesPerChar;
     private int rowPositionLength;
-    private int rowPositionNumberLength;
+    private int minRowPositionLength;
 
     @Nullable
     private Font font;
@@ -215,18 +216,16 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         rowPositionLength = getRowPositionLength();
         int verticalScrollBarSize = getVerticalScrollBarSize();
         int horizontalScrollBarSize = getHorizontalScrollBarSize();
-        dimensions.recomputeSizes(metrics, codeArea.getWidth(), codeArea.getHeight(), rowPositionLength, verticalScrollBarSize, horizontalScrollBarSize, showHeader, showRowPosition);
+        dimensions.recomputeSizes(metrics, codeArea.getWidth(), codeArea.getHeight(), rowPositionLength, verticalScrollBarSize, horizontalScrollBarSize, layoutProfile);
         int charactersPerPage = dimensions.getCharactersPerPage();
 
         structure.updateCache(codeArea, charactersPerPage);
         codeCharactersCase = ((CodeCharactersCaseCapable) codeArea).getCodeCharactersCase();
         editationMode = ((EditationModeCapable) codeArea).getEditationMode();
         backgroundPaintMode = ((BackgroundPaintCapable) codeArea).getBackgroundPaintMode();
-        showHeader = ((ShowPositionsCapable) codeArea).isShowHeader();
-        showRowPosition = ((ShowPositionsCapable) codeArea).isShowRowPosition();
         showMirrorCursor = ((CaretCapable) codeArea).isShowMirrorCursor();
         showUnprintables = ((ShowUnprintablesCapable) codeArea).isShowUnprintables();
-        rowPositionNumberLength = ((RowWrappingCapable) codeArea).getRowPositionLength();
+        minRowPositionLength = ((RowWrappingCapable) codeArea).getMinRowPositionLength();
         antialiasingMode = ((AntialiasingCapable) codeArea).getAntialiasingMode();
 
         int rowsPerPage = dimensions.getRowsPerPage();
@@ -271,7 +270,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
 
         int verticalScrollBarSize = getVerticalScrollBarSize();
         int horizontalScrollBarSize = getHorizontalScrollBarSize();
-        dimensions.recomputeSizes(metrics, codeArea.getWidth(), codeArea.getHeight(), rowPositionLength, verticalScrollBarSize, horizontalScrollBarSize, showHeader, showRowPosition);
+        dimensions.recomputeSizes(metrics, codeArea.getWidth(), codeArea.getHeight(), rowPositionLength, verticalScrollBarSize, horizontalScrollBarSize, layoutProfile);
         resetCharPositions();
         initialized = true;
     }
@@ -389,7 +388,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
     }
 
     public void paintHeader(@Nonnull Graphics g) {
-        if (!showHeader) {
+        if (!layoutProfile.isShowHeader()) {
             return;
         }
 
@@ -437,7 +436,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
                 if (codePos == lastPos + 2 && !interleaving) {
                     interleaving = true;
                 } else {
-                    CodeAreaUtils.longToBaseCode(rowDataCache.headerChars, codePos, index, CodeType.HEXADECIMAL.getBase(), 2, true, codeCharactersCase);
+                    CodeAreaUtils.longToBaseCode(rowDataCache.headerChars, codePos, index, structure.getPositionCodeType().getBase(), 2, true, codeCharactersCase);
                     lastPos = codePos;
                     interleaving = false;
                 }
@@ -483,7 +482,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
     }
 
     public void paintRowPosition(@Nonnull Graphics g) {
-        if (!showRowPosition) {
+        if (!layoutProfile.isShowRowPosition()) {
             return;
         }
 
@@ -529,7 +528,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
                 break;
             }
 
-            CodeAreaUtils.longToBaseCode(rowDataCache.rowPositionCode, 0, dataPosition < 0 ? 0 : dataPosition, structure.getCodeType().getBase(), rowPositionLength, true, CodeCharactersCase.UPPER);
+            CodeAreaUtils.longToBaseCode(rowDataCache.rowPositionCode, 0, dataPosition < 0 ? 0 : dataPosition, structure.getPositionCodeType().getBase(), rowPositionLength, true, CodeCharactersCase.UPPER);
             drawCenteredChars(g, rowDataCache.rowPositionCode, 0, rowPositionLength, characterWidth, compRect.x, positionY);
 
             positionY += rowHeight;
@@ -1453,17 +1452,17 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
     }
 
     private int getRowPositionLength() {
-        if (rowPositionNumberLength <= 0) {
+        if (minRowPositionLength <= 0) {
             long dataSize = structure.getDataSize();
             if (dataSize == 0) {
                 return 1;
             }
 
             double natLog = Math.log(dataSize == Long.MAX_VALUE ? dataSize : dataSize + 1);
-            int numberLength = (int) Math.ceil(natLog / PositionCodeType.HEXADECIMAL.getBaseLog());
-            return numberLength == 0 ? 1 : numberLength;
+            int positionLength = (int) Math.ceil(natLog / structure.getPositionCodeType().getBaseLog());
+            return positionLength == 0 ? 1 : positionLength;
         }
-        return rowPositionNumberLength;
+        return minRowPositionLength;
     }
 
     /**

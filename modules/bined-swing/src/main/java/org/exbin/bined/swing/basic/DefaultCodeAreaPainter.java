@@ -77,7 +77,7 @@ import org.exbin.utils.binary_data.BinaryData;
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2018/11/29
+ * @version 0.2.0 2018/12/03
  * @author ExBin Project (https://exbin.org)
  */
 public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapableCodeAreaPainter {
@@ -120,6 +120,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
     private AntialiasingMode antialiasingMode = AntialiasingMode.AUTO;
 
     private int maxBytesPerChar;
+    private int minRowPositionLength;
     private int rowPositionLength;
 
     @Nullable
@@ -203,6 +204,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         backgroundPaintMode = ((BackgroundPaintCapable) codeArea).getBackgroundPaintMode();
         showMirrorCursor = ((CaretCapable) codeArea).isShowMirrorCursor();
         antialiasingMode = ((AntialiasingCapable) codeArea).getAntialiasingMode();
+        minRowPositionLength = ((RowWrappingCapable) codeArea).getMinRowPositionLength();
 
         int rowsPerPage = dimensions.getRowsPerPage();
         long rowsPerDocument = structure.getRowsPerDocument();
@@ -1333,7 +1335,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
     }
 
     private int getRowPositionLength() {
-        if (rowPositionLength <= 0) {
+        if (minRowPositionLength <= 0) {
             long dataSize = structure.getDataSize();
             if (dataSize == 0) {
                 return 1;
@@ -1343,7 +1345,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
             int numberLength = (int) Math.ceil(natLog / PositionCodeType.HEXADECIMAL.getBaseLog());
             return numberLength == 0 ? 1 : numberLength;
         }
-        return rowPositionLength;
+        return minRowPositionLength;
     }
 
     /**

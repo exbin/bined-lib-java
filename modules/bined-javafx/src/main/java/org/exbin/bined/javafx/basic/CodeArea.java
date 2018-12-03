@@ -84,11 +84,11 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaJ
     private BasicBackgroundPaintMode borderPaintMode = BasicBackgroundPaintMode.STRIPED;
     @Nonnull
     private CodeType codeType = CodeType.HEXADECIMAL;
-    private int rowPositionLength = 0;
     @Nonnull
     private CodeCharactersCase codeCharactersCase = CodeCharactersCase.UPPER;
     private boolean showMirrorCursor = true;
     private RowWrappingMode rowWrapping = RowWrappingMode.NO_WRAPPING;
+    private int minRowPositionLength = 0;
     private int wrappingBytesGroupSize = 0;
     private int maxBytesPerLine = 16;
 
@@ -176,13 +176,13 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaJ
     }
 
     @Override
-    public int getRowPositionLength() {
-        return rowPositionLength;
+    public int getMinRowPositionLength() {
+        return minRowPositionLength;
     }
 
     @Override
-    public void setRowPositionLength(int rowPositionLength) {
-        this.rowPositionLength = rowPositionLength;
+    public void setMinRowPositionLength(int minRowPositionLength) {
+        this.minRowPositionLength = minRowPositionLength;
         reset();
         repaint();
     }

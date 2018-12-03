@@ -29,7 +29,7 @@
                   </Group>
                   <Group type="102" alignment="1" attributes="0">
                       <Group type="103" groupAlignment="1" attributes="0">
-                          <Component id="rowPositionLengthSpinner" alignment="0" max="32767" attributes="0"/>
+                          <Component id="minRowPositionLengthSpinner" alignment="0" max="32767" attributes="0"/>
                           <Component id="bytesPerLineSpinner" alignment="0" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
@@ -50,7 +50,7 @@
               <EmptySpace max="-2" attributes="0"/>
               <Component id="rowPositionLengthLabel" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="rowPositionLengthSpinner" min="-2" max="-2" attributes="0"/>
+              <Component id="minRowPositionLengthSpinner" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="32767" attributes="0"/>
           </Group>
       </Group>
@@ -85,7 +85,7 @@
         <Property name="text" type="java.lang.String" value="Row Position Length"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JSpinner" name="rowPositionLengthSpinner">
+    <Component class="javax.swing.JSpinner" name="minRowPositionLengthSpinner">
       <Properties>
         <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
           <SpinnerModel initial="0" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
@@ -95,7 +95,7 @@
         </Property>
       </Properties>
       <Events>
-        <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="rowPositionLengthSpinnerStateChanged"/>
+        <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="minRowPositionLengthSpinnerStateChanged"/>
       </Events>
     </Component>
   </SubComponents>

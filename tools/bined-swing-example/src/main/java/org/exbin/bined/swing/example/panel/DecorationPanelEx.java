@@ -23,6 +23,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.plaf.basic.BasicBorders;
+import org.exbin.bined.PositionCodeType;
 import org.exbin.bined.basic.BasicBackgroundPaintMode;
 import org.exbin.bined.swing.capability.BackgroundPaintCapable;
 import org.exbin.bined.swing.extended.ExtCodeArea;
@@ -43,7 +44,7 @@ public class DecorationPanelEx extends javax.swing.JPanel {
         initComponents();
 
         backgroundModeComboBox.setSelectedIndex(((BackgroundPaintCapable) codeArea).getBackgroundPaintMode().ordinal());
-//        positionCodeTypeComboBox.setSelectedIndex(codeArea.getPositionCodeType().ordinal());
+        positionCodeTypeComboBox.setSelectedIndex(codeArea.getPositionCodeType().ordinal());
 //        lineNumbersBackgroundCheckBox.setSelected(codeArea.isLineNumberBackground());
 //        showLineNumbersCheckBox.setSelected(codeArea.isShowLineNumbers());
 
@@ -242,7 +243,7 @@ public class DecorationPanelEx extends javax.swing.JPanel {
     }//GEN-LAST:event_lineNumbersBackgroundCheckBoxItemStateChanged
 
     private void positionCodeTypeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_positionCodeTypeComboBoxActionPerformed
-        //        codeArea.setPositionCodeType(PositionCodeType.values()[positionCodeTypeComboBox.getSelectedIndex()]);
+        codeArea.setPositionCodeType(PositionCodeType.values()[positionCodeTypeComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_positionCodeTypeComboBoxActionPerformed
 
     private void decoratorLineNumLineCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_decoratorLineNumLineCheckBoxItemStateChanged

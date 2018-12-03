@@ -17,7 +17,6 @@ package org.exbin.bined.swing.extended;
 
 import javax.annotation.Nonnull;
 import org.exbin.bined.CodeAreaViewMode;
-import org.exbin.bined.basic.BasicCodeAreaStructure;
 import org.exbin.bined.basic.CodeAreaScrollPosition;
 import org.exbin.bined.swing.basic.BasicCodeAreaMetrics;
 
@@ -39,7 +38,7 @@ public class ExtendedCodeAreaVisibility {
     private int visibleCodeEnd;
     private int visibleMatrixCodeEnd;
 
-    public void recomputeCharPositions(@Nonnull BasicCodeAreaMetrics metrics, @Nonnull BasicCodeAreaStructure structure, @Nonnull ExtendedCodeAreaDimensions dimensions, @Nonnull CodeAreaScrollPosition scrollPosition) {
+    public void recomputeCharPositions(@Nonnull BasicCodeAreaMetrics metrics, @Nonnull ExtendedCodeAreaStructure structure, @Nonnull ExtendedCodeAreaDimensions dimensions, @Nonnull CodeAreaScrollPosition scrollPosition) {
         int dataViewWidth = dimensions.getDataViewWidth();
         int previewCharPos = structure.getPreviewCharPos();
         int characterWidth = metrics.getCharacterWidth();
