@@ -1371,7 +1371,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
     }
 
     /**
-     * Render sequence of background rectangles.
+     * Renders sequence of background rectangles.
      *
      * Doesn't include character at offset end.
      */

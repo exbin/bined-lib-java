@@ -13,27 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.swing.extended.capability;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import org.exbin.bined.capability.CodeAreaCapability;
-import org.exbin.bined.swing.extended.layout.ExtendedCodeAreaLayoutProfile;
+package org.exbin.bined.swing.extended;
 
 /**
- * Support for layout profiling.
+ * Border paint modes for basic painter.
  *
- * @version 0.2.0 2018/12/03
+ * @version 0.2.0 2017/11/04
  * @author ExBin Project (https://exbin.org)
  */
-public interface LayoutProfileCapable {
-
-    @Nullable
-    ExtendedCodeAreaLayoutProfile getLayoutProfile();
-
-    void setLayoutProfile(@Nonnull ExtendedCodeAreaLayoutProfile layoutProfile);
-
-    public static class LayoutProfileCapability implements CodeAreaCapability {
-
-    }
+public enum ExtendedBackgroundPaintMode {
+    TRANSPARENT,
+    PLAIN,
+    STRIPED,
+    GRIDDED,
+    CHESSBOARD
 }

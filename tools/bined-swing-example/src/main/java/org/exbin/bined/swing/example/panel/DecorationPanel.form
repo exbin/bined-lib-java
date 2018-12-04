@@ -90,7 +90,7 @@
           <StringArray count="3">
             <StringItem index="0" value="NONE"/>
             <StringItem index="1" value="PLAIN"/>
-            <StringItem index="2" value="STRIPPED"/>
+            <StringItem index="2" value="STRIPED"/>
           </StringArray>
         </Property>
         <Property name="selectedIndex" type="int" value="2"/>

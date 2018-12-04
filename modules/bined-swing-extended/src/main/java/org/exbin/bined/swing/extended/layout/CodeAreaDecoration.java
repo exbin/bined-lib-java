@@ -13,27 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.swing.extended.capability;
+package org.exbin.bined.swing.extended.layout;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import org.exbin.bined.capability.CodeAreaCapability;
-import org.exbin.bined.swing.extended.layout.ExtendedCodeAreaLayoutProfile;
 
 /**
- * Support for layout profiling.
+ * Code are decoration type.
  *
- * @version 0.2.0 2018/12/03
+ * @version 0.2.0 2018/12/04
  * @author ExBin Project (https://exbin.org)
  */
-public interface LayoutProfileCapable {
+public interface CodeAreaDecoration {
 
-    @Nullable
-    ExtendedCodeAreaLayoutProfile getLayoutProfile();
-
-    void setLayoutProfile(@Nonnull ExtendedCodeAreaLayoutProfile layoutProfile);
-
-    public static class LayoutProfileCapability implements CodeAreaCapability {
-
-    }
+    /**
+     * Returns unique string identifier.
+     *
+     * Custom implementations should start with full package name to avoid
+     * collisions.
+     *
+     * @return unique identification ID key
+     */
+    @Nonnull
+    String getId();
 }

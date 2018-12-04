@@ -129,7 +129,7 @@ public class ExtendedCodeAreaColorProfile implements CodeAreaColorsProfile {
         Color alternateBackground = CodeAreaSwingUtils.createOddColor(textBackground);
         addColor(CodeAreaBasicColors.ALTERNATE_BACKGROUND, alternateBackground);
 
-        Color unprintablesColor = new Color(textColor.getRed(), (textColor.getGreen() + 128) % 256, textColor.getBlue());
+        Color unprintablesColor = new Color(textColor.getRed(), textColor.getGreen(), (textColor.getBlue() + 196) % 256);
         addColor(CodeAreaUnprintablesColorType.UNPRINTABLES_COLOR, unprintablesColor);
     }
 }

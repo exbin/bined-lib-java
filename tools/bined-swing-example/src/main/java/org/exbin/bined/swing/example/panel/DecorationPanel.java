@@ -75,7 +75,7 @@ public class DecorationPanel extends javax.swing.JPanel {
             }
         });
 
-        backgroundModeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "NONE", "PLAIN", "STRIPPED" }));
+        backgroundModeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "NONE", "PLAIN", "STRIPED" }));
         backgroundModeComboBox.setSelectedIndex(2);
         backgroundModeComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

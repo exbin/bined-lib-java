@@ -101,10 +101,12 @@
     <Component class="javax.swing.JComboBox" name="backgroundModeComboBox">
       <Properties>
         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-          <StringArray count="3">
+          <StringArray count="5">
             <StringItem index="0" value="NONE"/>
             <StringItem index="1" value="PLAIN"/>
-            <StringItem index="2" value="STRIPPED"/>
+            <StringItem index="2" value="STRIPED"/>
+            <StringItem index="3" value="GRIDDED"/>
+            <StringItem index="4" value="CHESSBOARD"/>
           </StringArray>
         </Property>
         <Property name="selectedIndex" type="int" value="2"/>
@@ -123,7 +125,8 @@
     </Component>
     <Component class="javax.swing.JCheckBox" name="lineNumbersBackgroundCheckBox">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Include Line Numbers"/>
+        <Property name="text" type="java.lang.String" value="Paint Line Numbers Background"/>
+        <Property name="enabled" type="boolean" value="false"/>
       </Properties>
       <Events>
         <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="lineNumbersBackgroundCheckBoxItemStateChanged"/>
@@ -162,7 +165,7 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="decoratorLineNumLineCheckBox" alignment="0" max="32767" attributes="0"/>
+                      <Component id="decoratorRowPosLineCheckBox" alignment="0" max="32767" attributes="0"/>
                       <Component id="decoratorSplitLineCheckBox" alignment="0" max="32767" attributes="0"/>
                       <Component id="decoratorBoxCheckBox" alignment="0" max="32767" attributes="0"/>
                       <Component id="decoratorHeaderLineCheckBox" alignment="0" max="32767" attributes="0"/>
@@ -176,7 +179,7 @@
               <Group type="102" alignment="0" attributes="0">
                   <Component id="decoratorHeaderLineCheckBox" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="decoratorLineNumLineCheckBox" min="-2" max="-2" attributes="0"/>
+                  <Component id="decoratorRowPosLineCheckBox" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="decoratorSplitLineCheckBox" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
@@ -186,12 +189,12 @@
         </DimensionLayout>
       </Layout>
       <SubComponents>
-        <Component class="javax.swing.JCheckBox" name="decoratorLineNumLineCheckBox">
+        <Component class="javax.swing.JCheckBox" name="decoratorRowPosLineCheckBox">
           <Properties>
             <Property name="text" type="java.lang.String" value="LineNum Line"/>
           </Properties>
           <Events>
-            <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="decoratorLineNumLineCheckBoxItemStateChanged"/>
+            <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="decoratorRowPosLineCheckBoxItemStateChanged"/>
           </Events>
         </Component>
         <Component class="javax.swing.JCheckBox" name="decoratorSplitLineCheckBox">

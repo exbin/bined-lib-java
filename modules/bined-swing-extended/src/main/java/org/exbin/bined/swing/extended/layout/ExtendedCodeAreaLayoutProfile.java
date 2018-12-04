@@ -15,10 +15,14 @@
  */
 package org.exbin.bined.swing.extended.layout;
 
+import java.util.HashSet;
+import java.util.Set;
+import javax.annotation.Nonnull;
+
 /**
  * Layout profile for extended code area.
  *
- * @version 0.2.0 2018/12/03
+ * @version 0.2.0 2018/12/04
  * @author ExBin Project (https://exbin.org)
  */
 public class ExtendedCodeAreaLayoutProfile {
@@ -34,6 +38,14 @@ public class ExtendedCodeAreaLayoutProfile {
     private int halfSpaceGroupSize = 0;
     private int spaceGroupSize = 1;
     private int doubleSpaceGroupSize = 0;
+
+    private Set<CodeAreaDecoration> decorations = new HashSet<>();
+
+    public ExtendedCodeAreaLayoutProfile() {
+        decorations.add(ExtendedCodeAreaDecorations.HEADER_LINE);
+        decorations.add(ExtendedCodeAreaDecorations.ROW_POSITION_LINE);
+        decorations.add(ExtendedCodeAreaDecorations.SPLIT_LINE);
+    }
 
     public boolean isShowHeader() {
         return showHeader;
@@ -107,4 +119,15 @@ public class ExtendedCodeAreaLayoutProfile {
         this.doubleSpaceGroupSize = doubleSpaceGroupSize;
     }
 
+    public boolean hasDecoration(@Nonnull CodeAreaDecoration decoration) {
+        return decorations.contains(decoration);
+    }
+
+    public void setDecoration(@Nonnull CodeAreaDecoration decoration, boolean value) {
+        if (!value && hasDecoration(decoration)) {
+            decorations.remove(decoration);
+        } else if (value && !hasDecoration(decoration)) {
+            decorations.add(decoration);
+        }
+    }
 }

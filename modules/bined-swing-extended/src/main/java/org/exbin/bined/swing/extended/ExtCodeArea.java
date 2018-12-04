@@ -43,7 +43,6 @@ import org.exbin.bined.ScrollBarVisibility;
 import org.exbin.bined.ScrollingListener;
 import org.exbin.bined.SelectionChangedListener;
 import org.exbin.bined.SelectionRange;
-import org.exbin.bined.basic.BasicBackgroundPaintMode;
 import org.exbin.bined.basic.CodeAreaScrollPosition;
 import org.exbin.bined.basic.HorizontalScrollUnit;
 import org.exbin.bined.basic.MovementDirection;
@@ -58,11 +57,13 @@ import org.exbin.bined.swing.basic.DefaultCodeAreaCaret;
 import org.exbin.bined.swing.basic.DefaultCodeAreaCommandHandler;
 import org.exbin.bined.swing.capability.FontCapable;
 import org.exbin.bined.swing.extended.color.ColorsProfileCapableCodeAreaPainter;
+import org.exbin.bined.swing.extended.layout.ExtendedCodeAreaLayoutProfile;
+import org.exbin.bined.swing.extended.layout.LayoutProfileCapableCodeAreaPainter;
 
 /**
  * Code area component extended code area.
  *
- * @version 0.2.0 2018/12/03
+ * @version 0.2.0 2018/12/04
  * @author ExBin Project (https://exbin.org)
  */
 public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeAreaSwingControl {
@@ -88,7 +89,7 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
     @Nullable
     private Font font;
     @Nonnull
-    private BasicBackgroundPaintMode borderPaintMode = BasicBackgroundPaintMode.STRIPED;
+    private ExtendedBackgroundPaintMode borderPaintMode = ExtendedBackgroundPaintMode.STRIPED;
     @Nonnull
     private AntialiasingMode antialiasingMode = AntialiasingMode.AUTO;
     @Nonnull
@@ -616,12 +617,12 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
 
     @Nonnull
     @Override
-    public BasicBackgroundPaintMode getBackgroundPaintMode() {
+    public ExtendedBackgroundPaintMode getBackgroundPaintMode() {
         return borderPaintMode;
     }
 
     @Override
-    public void setBackgroundPaintMode(@Nonnull BasicBackgroundPaintMode borderPaintMode) {
+    public void setBackgroundPaintMode(@Nonnull ExtendedBackgroundPaintMode borderPaintMode) {
         this.borderPaintMode = borderPaintMode;
         repaint();
     }
@@ -673,6 +674,23 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
     public void setColorsProfile(@Nonnull CodeAreaColorsProfile colorsProfile) {
         if (painter instanceof ColorsProfileCapableCodeAreaPainter) {
             ((ColorsProfileCapableCodeAreaPainter) painter).setColorsProfile(colorsProfile);
+        }
+    }
+
+    @Nullable
+    @Override
+    public ExtendedCodeAreaLayoutProfile getLayoutProfile() {
+        if (painter instanceof LayoutProfileCapableCodeAreaPainter) {
+            return ((LayoutProfileCapableCodeAreaPainter) painter).getLayoutProfile();
+        }
+
+        return null;
+    }
+
+    @Override
+    public void setLayoutProfile(@Nonnull ExtendedCodeAreaLayoutProfile layoutProfile) {
+        if (painter instanceof LayoutProfileCapableCodeAreaPainter) {
+            ((LayoutProfileCapableCodeAreaPainter) painter).setLayoutProfile(layoutProfile);
         }
     }
 

@@ -1458,7 +1458,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     }
 
     /**
-     * Render sequence of characters.
+     * Renders sequence of characters.
      *
      * Doesn't include character at offset end.
      */
@@ -1469,7 +1469,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     }
 
     /**
-     * Render sequence of background rectangles.
+     * Renders sequence of background rectangles.
      *
      * Doesn't include character at offset end.
      */

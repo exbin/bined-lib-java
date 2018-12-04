@@ -71,27 +71,28 @@ import org.exbin.bined.swing.CodeAreaSwingUtils;
 import org.exbin.bined.swing.basic.BasicCodeAreaMetrics;
 import org.exbin.bined.swing.basic.DefaultCodeAreaCaret;
 import org.exbin.bined.swing.basic.DefaultCodeAreaMouseListener;
-import org.exbin.bined.swing.capability.BackgroundPaintCapable;
 import org.exbin.bined.swing.capability.FontCapable;
-import org.exbin.bined.swing.extended.capability.CodeAreaDecorationsProfile;
+import org.exbin.bined.swing.extended.layout.ExtendedCodeAreaDecorationsProfile;
 import org.exbin.utils.binary_data.BinaryData;
 import org.exbin.bined.color.CodeAreaColorsProfile;
 import org.exbin.bined.swing.basic.color.BasicCodeAreaDecorationColorType;
 import org.exbin.bined.swing.capability.AntialiasingCapable;
 import org.exbin.bined.swing.extended.capability.CodeAreaCaretsProfile;
+import org.exbin.bined.swing.extended.capability.ExtBackgroundPaintCapable;
 import org.exbin.bined.swing.extended.color.ColorsProfileCapableCodeAreaPainter;
 import org.exbin.bined.swing.extended.color.ExtendedCodeAreaColorProfile;
 import org.exbin.bined.swing.extended.capability.ShowUnprintablesCapable;
 import org.exbin.bined.swing.extended.color.CodeAreaUnprintablesColorType;
 import org.exbin.bined.swing.extended.layout.ExtendedCodeAreaLayoutProfile;
+import org.exbin.bined.swing.extended.layout.LayoutProfileCapableCodeAreaPainter;
 
 /**
  * Extended code area component default painter.
  *
- * @version 0.2.0 2018/12/03
+ * @version 0.2.0 2018/12/04
  * @author ExBin Project (https://exbin.org)
  */
-public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCapableCodeAreaPainter {
+public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCapableCodeAreaPainter, LayoutProfileCapableCodeAreaPainter {
 
     @Nonnull
     protected final CodeAreaCore codeArea;
@@ -123,7 +124,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
     @Nonnull
     private CodeAreaColorsProfile colorsProfile = new ExtendedCodeAreaColorProfile();
     @Nonnull
-    private CodeAreaDecorationsProfile decorationsProfile = new CodeAreaDecorationsProfile();
+    private ExtendedCodeAreaDecorationsProfile decorationsProfile = new ExtendedCodeAreaDecorationsProfile();
     @Nonnull
     private CodeAreaCaretsProfile caretsProfile = new CodeAreaCaretsProfile();
 
@@ -132,7 +133,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
     @Nullable
     private EditationMode editationMode;
     @Nullable
-    private BasicBackgroundPaintMode backgroundPaintMode;
+    private ExtendedBackgroundPaintMode backgroundPaintMode;
     private boolean showMirrorCursor;
     private boolean showUnprintables;
     @Nonnull
@@ -222,7 +223,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         structure.updateCache(codeArea, charactersPerPage);
         codeCharactersCase = ((CodeCharactersCaseCapable) codeArea).getCodeCharactersCase();
         editationMode = ((EditationModeCapable) codeArea).getEditationMode();
-        backgroundPaintMode = ((BackgroundPaintCapable) codeArea).getBackgroundPaintMode();
+        backgroundPaintMode = ((ExtBackgroundPaintCapable) codeArea).getBackgroundPaintMode();
         showMirrorCursor = ((CaretCapable) codeArea).isShowMirrorCursor();
         showUnprintables = ((ShowUnprintablesCapable) codeArea).isShowUnprintables();
         minRowPositionLength = ((RowWrappingCapable) codeArea).getMinRowPositionLength();
@@ -504,7 +505,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         g.fillRect(rowPositionsArea.x, rowPositionsArea.y, rowPositionsArea.width, rowPositionsArea.height);
 
         CodeAreaScrollPosition scrollPosition = scrolling.getScrollPosition();
-        if (backgroundPaintMode == BasicBackgroundPaintMode.STRIPED) {
+        if (backgroundPaintMode == ExtendedBackgroundPaintMode.STRIPED) {
             long dataPosition = scrollPosition.getRowPosition() * bytesPerRow;
             int stripePositionY = headerAreaHeight - scrollPosition.getRowOffset() + ((scrollPosition.getRowPosition() & 1) > 0 ? 0 : rowHeight);
             g.setColor(colorsProfile.getColor(CodeAreaBasicColors.ALTERNATE_BACKGROUND));
@@ -603,11 +604,11 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         int rowPositionX = rowPositionAreaWidth;
         CodeAreaScrollPosition scrollPosition = scrolling.getScrollPosition();
         g.setColor(colorsProfile.getColor(CodeAreaBasicColors.TEXT_BACKGROUND));
-        if (backgroundPaintMode != BasicBackgroundPaintMode.TRANSPARENT) {
+        if (backgroundPaintMode != ExtendedBackgroundPaintMode.TRANSPARENT) {
             g.fillRect(rowPositionX, headerAreaHeight, dataViewWidth, dataViewHeight);
         }
 
-        if (backgroundPaintMode == BasicBackgroundPaintMode.STRIPED) {
+        if (backgroundPaintMode == ExtendedBackgroundPaintMode.STRIPED) {
             long dataPosition = scrollPosition.getRowPosition() * bytesPerRow;
             int stripePositionY = headerAreaHeight - scrollPosition.getRowOffset() + (int) ((scrollPosition.getRowPosition() & 1) > 0 ? 0 : rowHeight);
             g.setColor(colorsProfile.getColor(CodeAreaBasicColors.ALTERNATE_BACKGROUND));
@@ -1394,6 +1395,17 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         this.colorsProfile = colorsProfile;
     }
 
+    @Nonnull
+    @Override
+    public ExtendedCodeAreaLayoutProfile getLayoutProfile() {
+        return layoutProfile;
+    }
+
+    @Override
+    public void setLayoutProfile(@Nonnull ExtendedCodeAreaLayoutProfile layoutProfile) {
+        this.layoutProfile = layoutProfile;
+    }
+
     /**
      * Draws characters centering it to cells of the same width.
      *
@@ -1488,7 +1500,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
     }
 
     /**
-     * Render sequence of background rectangles.
+     * Renders sequence of background rectangles.
      *
      * Doesn't include character at offset end.
      */

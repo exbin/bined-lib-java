@@ -15,31 +15,24 @@
  */
 package org.exbin.bined.swing.extended.capability;
 
+import javax.annotation.Nonnull;
+import org.exbin.bined.capability.CodeAreaCapability;
+import org.exbin.bined.swing.extended.ExtendedBackgroundPaintMode;
+
 /**
- * Support for anti-aliasing capability.
+ * Support for background paint mode capability.
  *
- * TODO
- *
- * @version 0.2.0 2018/11/21
+ * @version 0.2.0 2018/12/04
  * @author ExBin Project (https://exbin.org)
  */
-public class CodeAreaDecorationsProfile {
+public interface ExtBackgroundPaintCapable {
 
-    public enum DecorationType {
-        ROW_NUMBER_LINE,
-        HEADER_LINE,
-        BOX_LINE
-    }
+    @Nonnull
+    ExtendedBackgroundPaintMode getBackgroundPaintMode();
 
-    public boolean showRowNumberLine() {
-        return true;
-    }
+    void setBackgroundPaintMode(@Nonnull ExtendedBackgroundPaintMode borderPaintMode);
 
-    public boolean showHeaderLine() {
-        return true;
-    }
+    public static class ExtBackgroundPaintCapability implements CodeAreaCapability {
 
-    public boolean showBoxLine() {
-        return true;
     }
 }
