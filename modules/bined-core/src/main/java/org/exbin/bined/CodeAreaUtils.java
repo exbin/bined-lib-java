@@ -28,15 +28,17 @@ import java.util.Arrays;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.utils.binary_data.BinaryData;
 import org.exbin.utils.binary_data.EditableBinaryData;
 
 /**
  * Hexadecimal editor component utilities.
  *
- * @version 0.2.0 2018/09/07
+ * @version 0.2.0 2018/12/08
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public class CodeAreaUtils {
 
     public static final char[] UPPER_HEX_CODES = "0123456789ABCDEF".toCharArray();
@@ -68,7 +70,7 @@ public class CodeAreaUtils {
      * @param target target char array (output parameter)
      * @param value byte value
      */
-    public static void byteToHexChars(@Nonnull char[] target, byte value) {
+    public static void byteToHexChars(char[] target, byte value) {
         target[0] = UPPER_HEX_CODES[(value >> 4) & 0xf];
         target[1] = UPPER_HEX_CODES[value & 0xf];
     }
@@ -96,7 +98,7 @@ public class CodeAreaUtils {
      * @param value long value
      * @param length length of the target sequence
      */
-    public static void longToHexChars(@Nonnull char[] target, long value, int length) {
+    public static void longToHexChars(char[] target, long value, int length) {
         for (int i = length - 1; i >= 0; i--) {
             target[i] = UPPER_HEX_CODES[(int) (value & 0xf)];
             value = value >> 4;
@@ -112,7 +114,7 @@ public class CodeAreaUtils {
      * @param targetPosition target position in array of characters
      * @param charCase case type for alphabetical characters
      */
-    public static void byteToCharsCode(byte dataByte, @Nonnull CodeType codeType, char[] targetData, int targetPosition, @Nonnull CodeCharactersCase charCase) {
+    public static void byteToCharsCode(byte dataByte, CodeType codeType, char[] targetData, int targetPosition, CodeCharactersCase charCase) {
         char[] hexCharacters = charCase == CodeCharactersCase.UPPER ? CodeAreaUtils.UPPER_HEX_CODES : CodeAreaUtils.LOWER_HEX_CODES;
         switch (codeType) {
             case BINARY: {
@@ -164,7 +166,7 @@ public class CodeAreaUtils {
      * @return byte value
      * @throws IllegalArgumentException if code is invalid
      */
-    public static byte stringCodeToByte(@Nonnull String code, @Nonnull CodeType codeType) {
+    public static byte stringCodeToByte(String code, CodeType codeType) {
         if (code.length() > codeType.getMaxDigitsForByte()) {
             throw new IllegalArgumentException("String code is too long");
         }
@@ -265,7 +267,7 @@ public class CodeAreaUtils {
      * @param characterCase upper case for values greater than 9
      * @return offset of characters position
      */
-    public static int longToBaseCode(@Nonnull char[] target, int targetOffset, long value, int base, int lengthLimit, boolean fillZeros, @Nonnull CodeCharactersCase characterCase) {
+    public static int longToBaseCode(char[] target, int targetOffset, long value, int base, int lengthLimit, boolean fillZeros, CodeCharactersCase characterCase) {
         char[] codes = characterCase == CodeCharactersCase.UPPER ? UPPER_HEX_CODES : LOWER_HEX_CODES;
         for (int i = lengthLimit - 1; i >= 0; i--) {
             target[targetOffset + i] = codes[(int) (value % base)];
@@ -285,7 +287,7 @@ public class CodeAreaUtils {
      * @param charset charset
      * @return byte array
      */
-    public static byte[] characterToBytes(char value, @Nonnull Charset charset) {
+    public static byte[] characterToBytes(char value, Charset charset) {
         ByteBuffer buffer = charset.encode(Character.toString(value));
         byte[] bytes = new byte[buffer.remaining()];
         buffer.get(bytes, 0, bytes.length);
@@ -299,7 +301,7 @@ public class CodeAreaUtils {
      * @param data data output (output parameter)
      * @param codeType type of code to use
      */
-    public static void insertHexStringIntoData(@Nonnull String insertedString, @Nonnull EditableBinaryData data, @Nonnull CodeType codeType) {
+    public static void insertHexStringIntoData(String insertedString, EditableBinaryData data, CodeType codeType) {
         int maxDigits = codeType.getMaxDigitsForByte();
         byte[] buffer = new byte[CODE_BUFFER_LENGTH];
         int bufferUsage = 0;
@@ -356,7 +358,7 @@ public class CodeAreaUtils {
      * @param codeType current code type
      * @return true if key value value is valid
      */
-    public static boolean isValidCodeKeyValue(@Nonnull char keyValue, int codeOffset, @Nonnull CodeType codeType) {
+    public static boolean isValidCodeKeyValue(char keyValue, int codeOffset, CodeType codeType) {
         boolean validKey = false;
         switch (codeType) {
             case BINARY: {
@@ -395,7 +397,7 @@ public class CodeAreaUtils {
      * @param codeType code type
      * @return modified byte value
      */
-    public static byte setCodeValue(byte byteValue, int value, int codeOffset, @Nonnull CodeType codeType) {
+    public static byte setCodeValue(byte byteValue, int value, int codeOffset, CodeType codeType) {
         switch (codeType) {
             case BINARY: {
                 int bitMask = 0x80 >> codeOffset;
@@ -480,7 +482,7 @@ public class CodeAreaUtils {
         }
     }
 
-    public static boolean canPaste(@Nonnull Clipboard clipboard, @Nonnull DataFlavor binaryDataFlavor) {
+    public static boolean canPaste(Clipboard clipboard, DataFlavor binaryDataFlavor) {
         try {
             return clipboard.isDataFlavorAvailable(binaryDataFlavor) || clipboard.isDataFlavorAvailable(DataFlavor.stringFlavor);
         } catch (IllegalStateException ex) {
@@ -488,12 +490,13 @@ public class CodeAreaUtils {
         }
     }
 
+    @ParametersAreNonnullByDefault
     public static class BinaryDataClipboardData implements ClipboardData {
 
         private final BinaryData data;
         private final DataFlavor binaryDataFlavor;
 
-        public BinaryDataClipboardData(@Nonnull BinaryData data, @Nonnull DataFlavor binaryDataFlavor) {
+        public BinaryDataClipboardData(BinaryData data, DataFlavor binaryDataFlavor) {
             this.data = data;
             this.binaryDataFlavor = binaryDataFlavor;
         }
@@ -505,13 +508,13 @@ public class CodeAreaUtils {
         }
 
         @Override
-        public boolean isDataFlavorSupported(@Nonnull DataFlavor flavor) {
+        public boolean isDataFlavorSupported(DataFlavor flavor) {
             return flavor.equals(binaryDataFlavor) || flavor.equals(DataFlavor.stringFlavor);
         }
 
         @Nonnull
         @Override
-        public Object getTransferData(@Nonnull DataFlavor flavor) throws UnsupportedFlavorException, IOException {
+        public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
             if (flavor.equals(binaryDataFlavor)) {
                 return data;
             } else {
@@ -522,7 +525,7 @@ public class CodeAreaUtils {
         }
 
         @Override
-        public void lostOwnership(@Nonnull Clipboard clipboard, @Nonnull Transferable contents) {
+        public void lostOwnership(Clipboard clipboard, Transferable contents) {
             // do nothing
         }
 
@@ -532,6 +535,7 @@ public class CodeAreaUtils {
         }
     }
 
+    @ParametersAreNonnullByDefault
     public static class CodeDataClipboardData implements ClipboardData {
 
         private final BinaryData data;
@@ -539,7 +543,7 @@ public class CodeAreaUtils {
         private final CodeType codeType;
         private final CodeCharactersCase charactersCase;
 
-        public CodeDataClipboardData(@Nonnull BinaryData data, @Nonnull DataFlavor binaryDataFlavor, @Nonnull CodeType codeType, @Nonnull CodeCharactersCase charactersCase) {
+        public CodeDataClipboardData(BinaryData data, DataFlavor binaryDataFlavor, CodeType codeType, CodeCharactersCase charactersCase) {
             this.data = data;
             this.binaryDataFlavor = binaryDataFlavor;
             this.codeType = codeType;
@@ -553,13 +557,13 @@ public class CodeAreaUtils {
         }
 
         @Override
-        public boolean isDataFlavorSupported(@Nonnull DataFlavor flavor) {
+        public boolean isDataFlavorSupported(DataFlavor flavor) {
             return flavor.equals(binaryDataFlavor) || flavor.equals(DataFlavor.stringFlavor);
         }
 
         @Nonnull
         @Override
-        public Object getTransferData(@Nonnull DataFlavor flavor) throws UnsupportedFlavorException, IOException {
+        public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
             if (flavor.equals(binaryDataFlavor)) {
                 return data;
             } else {
@@ -580,7 +584,7 @@ public class CodeAreaUtils {
         }
 
         @Override
-        public void lostOwnership(@Nonnull Clipboard clipboard, @Nonnull Transferable contents) {
+        public void lostOwnership(Clipboard clipboard, Transferable contents) {
             // do nothing
         }
 

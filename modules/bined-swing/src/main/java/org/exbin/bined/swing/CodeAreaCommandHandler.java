@@ -17,6 +17,7 @@ package org.exbin.bined.swing;
 
 import java.awt.event.KeyEvent;
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * Interface for code area data manipulation.
@@ -24,6 +25,7 @@ import javax.annotation.Nonnull;
  * @version 0.2.0 2018/01/01
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public interface CodeAreaCommandHandler {
 
     /**
@@ -36,14 +38,14 @@ public interface CodeAreaCommandHandler {
      *
      * @param keyEvent key event
      */
-    void keyPressed(@Nonnull KeyEvent keyEvent);
+    void keyPressed(KeyEvent keyEvent);
 
     /**
      * Keyboard key was typed.
      *
      * @param keyEvent key event
      */
-    void keyTyped(@Nonnull KeyEvent keyEvent);
+    void keyTyped(KeyEvent keyEvent);
 
     /**
      * Backspace key was pressed.
@@ -109,7 +111,7 @@ public interface CodeAreaCommandHandler {
      * @param positionY relative position Y
      * @param selecting selection selecting
      */
-    void moveCaret(int positionX, int positionY, @Nonnull SelectingMode selecting);
+    void moveCaret(int positionX, int positionY, SelectingMode selecting);
 
     /**
      * Performs scrolling.
@@ -117,7 +119,7 @@ public interface CodeAreaCommandHandler {
      * @param scrollSize number of scroll units (positive or negative)
      * @param orientation scrollbar orientation
      */
-    void wheelScroll(int scrollSize, @Nonnull ScrollbarOrientation orientation);
+    void wheelScroll(int scrollSize, ScrollbarOrientation orientation);
 
     enum ScrollbarOrientation {
         HORIZONTAL, VERTICAL
@@ -127,9 +129,10 @@ public interface CodeAreaCommandHandler {
         NONE, SELECTING
     }
 
+    @ParametersAreNonnullByDefault
     interface CodeAreaCommandHandlerFactory {
 
         @Nonnull
-        CodeAreaCommandHandler createCommandHandler(@Nonnull CodeAreaCore codeArea);
+        CodeAreaCommandHandler createCommandHandler(CodeAreaCore codeArea);
     }
 }

@@ -16,16 +16,17 @@
 package org.exbin.bined;
 
 import java.util.Objects;
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * Specifies caret position as combination of data position, section and code
  * offset of code representation.
  *
- * @version 0.2.0 2018/10/24
+ * @version 0.2.0 2018/12/08
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public class CodeAreaCaretPosition implements CaretPosition {
 
     private long dataPosition = 0;
@@ -36,7 +37,7 @@ public class CodeAreaCaretPosition implements CaretPosition {
     public CodeAreaCaretPosition() {
     }
 
-    public CodeAreaCaretPosition(long dataPosition, int codeOffset, @Nonnull CodeAreaSection section) {
+    public CodeAreaCaretPosition(long dataPosition, int codeOffset, CodeAreaSection section) {
         this.dataPosition = dataPosition;
         this.codeOffset = codeOffset;
         this.section = section;
@@ -75,7 +76,7 @@ public class CodeAreaCaretPosition implements CaretPosition {
      *
      * @param position source position
      */
-    public void setPosition(@Nonnull CaretPosition position) {
+    public void setPosition(CaretPosition position) {
         dataPosition = position.getDataPosition();
         codeOffset = position.getCodeOffset();
         section = position.getSection();

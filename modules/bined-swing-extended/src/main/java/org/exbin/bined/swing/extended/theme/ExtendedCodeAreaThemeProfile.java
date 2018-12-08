@@ -13,27 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.swing.extended.capability;
-
-import org.exbin.bined.capability.CodeAreaCapability;
+package org.exbin.bined.swing.extended.theme;
 
 /**
- * Support for showing positions.
+ * Layout profile for extended code area.
  *
- * @version 0.2.0 2018/12/01
+ * @version 0.2.0 2018/12/04
  * @author ExBin Project (https://exbin.org)
  */
-public interface ShowPositionsCapable {
+public class ExtendedCodeAreaThemeProfile {
 
-    boolean isShowHeader();
-
-    void setShowHeader(boolean showHeader);
-
-    boolean isShowRowPosition();
-
-    void setShowRowPosition(boolean showRowPosition);
-
-    public static class ShowPositionsCapability implements CodeAreaCapability {
-
-    }
 }

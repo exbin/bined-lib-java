@@ -17,6 +17,7 @@ package org.exbin.bined.basic;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.DataProvider;
 import org.exbin.bined.ScrollBarVisibility;
 import org.exbin.bined.capability.ScrollingCapable;
@@ -24,9 +25,10 @@ import org.exbin.bined.capability.ScrollingCapable;
 /**
  * Code area scrolling.
  *
- * @version 0.2.0 2018/08/15
+ * @version 0.2.0 2018/12/08
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public class BasicCodeAreaScrolling {
 
     @Nonnull
@@ -45,7 +47,7 @@ public class BasicCodeAreaScrolling {
     @Nonnull
     private final CodeAreaScrollPosition maximumScrollPosition = new CodeAreaScrollPosition();
 
-    public void updateCache(@Nonnull DataProvider codeArea) {
+    public void updateCache(DataProvider codeArea) {
         verticalScrollUnit = ((ScrollingCapable) codeArea).getVerticalScrollUnit();
         verticalScrollBarVisibility = ((ScrollingCapable) codeArea).getVerticalScrollBarVisibility();
         horizontalScrollUnit = ((ScrollingCapable) codeArea).getHorizontalScrollUnit();
@@ -130,7 +132,7 @@ public class BasicCodeAreaScrolling {
     }
 
     @Nonnull
-    public CodeAreaScrollPosition computeScrolling(@Nonnull CodeAreaScrollPosition startPosition, @Nonnull ScrollingDirection direction, int rowsPerPage, long rowsPerDocument) {
+    public CodeAreaScrollPosition computeScrolling(CodeAreaScrollPosition startPosition, ScrollingDirection direction, int rowsPerPage, long rowsPerDocument) {
         CodeAreaScrollPosition targetPosition = new CodeAreaScrollPosition();
         targetPosition.setScrollPosition(startPosition);
 
@@ -433,7 +435,7 @@ public class BasicCodeAreaScrolling {
         return scrollPosition;
     }
 
-    public void setScrollPosition(@Nonnull CodeAreaScrollPosition scrollPosition) {
+    public void setScrollPosition(CodeAreaScrollPosition scrollPosition) {
         this.scrollPosition.setScrollPosition(scrollPosition);
     }
 

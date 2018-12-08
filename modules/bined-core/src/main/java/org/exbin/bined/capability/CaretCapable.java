@@ -17,6 +17,7 @@ package org.exbin.bined.capability;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.BasicCodeAreaZone;
 import org.exbin.bined.CaretMovedListener;
 import org.exbin.bined.CaretPosition;
@@ -27,9 +28,10 @@ import org.exbin.bined.basic.MovementDirection;
 /**
  * Support for caret / cursor capability.
  *
- * @version 0.2.0 2018/08/11
+ * @version 0.2.0 2018/12/08
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public interface CaretCapable {
 
     /**
@@ -48,7 +50,7 @@ public interface CaretCapable {
      * @return target position
      */
     @Nonnull
-    CaretPosition computeMovePosition(@Nonnull CaretPosition position, @Nonnull MovementDirection direction);
+    CaretPosition computeMovePosition(CaretPosition position, MovementDirection direction);
 
     /**
      * Computes closest caret position for given relative component position.
@@ -59,7 +61,7 @@ public interface CaretCapable {
      * @return mouse position
      */
     @Nullable
-    CaretPosition mousePositionToClosestCaretPosition(int positionX, int positionY, @Nonnull PositionOverflowMode overflowMode);
+    CaretPosition mousePositionToClosestCaretPosition(int positionX, int positionY, PositionOverflowMode overflowMode);
 
     /**
      * Returns if cursor should be visible in other sections.

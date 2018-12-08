@@ -17,6 +17,7 @@ package org.exbin.bined.basic;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.BasicCodeAreaSection;
 import org.exbin.bined.CaretPosition;
 import org.exbin.bined.CodeAreaCaretPosition;
@@ -35,9 +36,10 @@ import org.exbin.bined.capability.ViewModeCapable;
 /**
  * Code area data representation structure for basic variant.
  *
- * @version 0.2.0 2018/10/10
+ * @version 0.2.0 2018/12/08
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public class BasicCodeAreaStructure {
 
     @Nonnull
@@ -64,7 +66,7 @@ public class BasicCodeAreaStructure {
     private int codeLastCharPos;
     private int previewCharPos;
 
-    public void updateCache(@Nonnull DataProvider codeArea, int charactersPerPage) {
+    public void updateCache(DataProvider codeArea, int charactersPerPage) {
         viewMode = ((ViewModeCapable) codeArea).getViewMode();
         codeType = ((CodeTypeCapable) codeArea).getCodeType();
         caretPosition.setPosition(((CaretCapable) codeArea).getCaret().getCaretPosition());
@@ -155,7 +157,7 @@ public class BasicCodeAreaStructure {
         return computedBytesPerRow;
     }
 
-    public CaretPosition computeMovePosition(@Nonnull CaretPosition position, @Nonnull MovementDirection direction, int rowsPerPage) {
+    public CaretPosition computeMovePosition(CaretPosition position, MovementDirection direction, int rowsPerPage) {
         CodeAreaCaretPosition target = new CodeAreaCaretPosition(position.getDataPosition(), position.getCodeOffset(), position.getSection());
         switch (direction) {
             case LEFT: {

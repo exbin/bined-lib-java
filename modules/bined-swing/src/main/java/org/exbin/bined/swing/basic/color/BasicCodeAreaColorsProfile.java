@@ -18,6 +18,7 @@ package org.exbin.bined.swing.basic.color;
 import java.awt.Color;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import javax.swing.UIManager;
 import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.color.CodeAreaBasicColors;
@@ -31,6 +32,7 @@ import org.exbin.bined.swing.CodeAreaSwingUtils;
  * @version 0.2.0 2018/11/28
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public class BasicCodeAreaColorsProfile implements CodeAreaColorsProfile {
 
     @Nullable
@@ -116,7 +118,7 @@ public class BasicCodeAreaColorsProfile implements CodeAreaColorsProfile {
 
     @Nullable
     @Override
-    public Color getColor(@Nonnull CodeAreaColorType colorType) {
+    public Color getColor(CodeAreaColorType colorType) {
         if (colorType == CodeAreaBasicColors.TEXT_COLOR) {
             return textColor;
         }
@@ -156,7 +158,7 @@ public class BasicCodeAreaColorsProfile implements CodeAreaColorsProfile {
 
     @Nullable
     @Override
-    public Color getColor(@Nonnull CodeAreaColorType colorType, @Nonnull CodeAreaBasicColors basicAltColor) {
+    public Color getColor(CodeAreaColorType colorType, CodeAreaBasicColors basicAltColor) {
         Color color = getColor(colorType);
         return (color == null) ? getColor(basicAltColor) : color;
     }

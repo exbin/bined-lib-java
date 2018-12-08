@@ -18,11 +18,20 @@ package org.exbin.bined;
 /**
  * Enumeration of caret position overflow modes.
  *
- * @version 0.2.0 2018/07/25
+ * @version 0.2.0 2018/12/08
  * @author ExBin Project (https://exbin.org)
  */
 public enum PositionOverflowMode {
+    /**
+     * Cursor must be fully visible in visible area.
+     */
     NO_OVERFLOW,
+    /**
+     * 
+     */
     VISIBLE_AREA,
+    /**
+     * Cursor can be partially visible in visible area.
+     */
     OVERFLOW
 }

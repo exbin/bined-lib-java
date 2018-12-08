@@ -18,11 +18,12 @@ package org.exbin.bined.swing.example.panel;
 import javax.annotation.Nonnull;
 import org.exbin.bined.capability.RowWrappingCapable;
 import org.exbin.bined.swing.extended.ExtCodeArea;
+import org.exbin.bined.swing.extended.layout.ExtendedCodeAreaLayoutProfile;
 
 /**
  * Hexadecimal editor example panel.
  *
- * @version 0.2.0 2018/12/02
+ * @version 0.2.0 2018/12/06
  * @author ExBin Project (https://exbin.org)
  */
 public class LayoutPanelEx extends javax.swing.JPanel {
@@ -35,10 +36,10 @@ public class LayoutPanelEx extends javax.swing.JPanel {
         initComponents();
         wrapLineModeCheckBox.setSelected(codeArea.getRowWrapping() == RowWrappingCapable.RowWrappingMode.WRAPPING);
         minRowPositionLengthSpinner.setValue(codeArea.getMinRowPositionLength());
-        showHeaderCheckBox.setSelected(codeArea.isShowHeader());
+        showHeaderCheckBox.setSelected(codeArea.getLayoutProfile().isShowHeader());
 //        headerSpaceComboBox.setSelectedIndex(codeArea.getHeaderSpaceType().ordinal());
 //        headerSpaceSpinner.setValue(codeArea.getHeaderSpaceSize());
-        showRowPositionCheckBox.setSelected(codeArea.isShowRowPosition());
+        showRowPositionCheckBox.setSelected(codeArea.getLayoutProfile().isShowRowPosition());
 //        rowPositionSpaceComboBox.setSelectedIndex(codeArea.getLineNumberSpaceType().ordinal());
 //        rowPositionSpaceSpinner.setValue(codeArea.getLineNumberSpaceSize());
 //        rowPositionLengthComboBox.setSelectedIndex(codeArea.getLineNumberType().ordinal());
@@ -307,7 +308,9 @@ public class LayoutPanelEx extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void showHeaderCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_showHeaderCheckBoxItemStateChanged
-        codeArea.setShowHeader(showHeaderCheckBox.isSelected());
+        ExtendedCodeAreaLayoutProfile layoutProfile = codeArea.getLayoutProfile();
+        layoutProfile.setShowHeader(showHeaderCheckBox.isSelected());
+        codeArea.setLayoutProfile(layoutProfile);
     }//GEN-LAST:event_showHeaderCheckBoxItemStateChanged
 
     private void headerSpaceComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_headerSpaceComboBoxActionPerformed
@@ -326,7 +329,9 @@ public class LayoutPanelEx extends javax.swing.JPanel {
     }//GEN-LAST:event_maxBytesPerLineSpinnerStateChanged
 
     private void showRowPositionCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_showRowPositionCheckBoxItemStateChanged
-        codeArea.setShowRowPosition(showRowPositionCheckBox.isSelected());
+        ExtendedCodeAreaLayoutProfile layoutProfile = codeArea.getLayoutProfile();
+        layoutProfile.setShowRowPosition(showRowPositionCheckBox.isSelected());
+        codeArea.setLayoutProfile(layoutProfile);
     }//GEN-LAST:event_showRowPositionCheckBoxItemStateChanged
 
     private void minRowPositionLengthComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_minRowPositionLengthComboBoxActionPerformed

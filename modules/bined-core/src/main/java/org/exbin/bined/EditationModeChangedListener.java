@@ -15,14 +15,15 @@
  */
 package org.exbin.bined;
 
-import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * Interface for editation mode change listener.
  *
- * @version 0.2.0 2017/05/07
+ * @version 0.2.0 2018/12/08
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public interface EditationModeChangedListener {
 
     /**
@@ -30,5 +31,5 @@ public interface EditationModeChangedListener {
      *
      * @param editationMode new editation mode
      */
-    void editationModeChanged(@Nonnull EditationMode editationMode);
+    void editationModeChanged(EditationMode editationMode);
 }

@@ -27,14 +27,16 @@ import java.nio.charset.CodingErrorAction;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * Input stream translation class which converts from input charset to target
  * charset.
  *
- * @version 0.2.0 2017/11/05
+ * @version 0.2.0 2018/12/08
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public class CharsetStreamTranslator extends InputStream {
 
     public static final int BYTE_BUFFER_SIZE = 16;
@@ -57,7 +59,7 @@ public class CharsetStreamTranslator extends InputStream {
     private int maxInputCharSize;
     private int maxOutputCharSize;
 
-    public CharsetStreamTranslator(@Nonnull Charset inputCharset, @Nonnull Charset outputCharset, @Nonnull InputStream source, int bufferSize) {
+    public CharsetStreamTranslator(Charset inputCharset, Charset outputCharset, InputStream source, int bufferSize) {
         this.source = source;
         decoder = inputCharset.newDecoder();
         decoder.onUnmappableCharacter(CodingErrorAction.REPLACE);
@@ -81,7 +83,7 @@ public class CharsetStreamTranslator extends InputStream {
         outputBuffer.limit(0);
     }
 
-    public CharsetStreamTranslator(@Nonnull Charset inputCharset, @Nonnull Charset outputCharset, @Nonnull InputStream source) {
+    public CharsetStreamTranslator(Charset inputCharset, Charset outputCharset, InputStream source) {
         this(inputCharset, outputCharset, source, BYTE_BUFFER_SIZE);
     }
 
@@ -104,7 +106,7 @@ public class CharsetStreamTranslator extends InputStream {
     }
 
     @Override
-    public int read(@Nonnull byte[] buffer, int offset, int length) throws IOException {
+    public int read(byte[] buffer, int offset, int length) throws IOException {
         int processed = 0;
 
         while (processed < length) {

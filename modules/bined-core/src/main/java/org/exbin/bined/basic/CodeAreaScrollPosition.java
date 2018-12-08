@@ -16,15 +16,16 @@
 package org.exbin.bined.basic;
 
 import java.util.Objects;
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * Code area scrolling position.
  *
- * @version 0.2.0 2018/07/03
+ * @version 0.2.0 2018/12/08
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public class CodeAreaScrollPosition {
 
     /**
@@ -110,7 +111,7 @@ public class CodeAreaScrollPosition {
         if (this == obj) {
             return true;
         }
-            if (obj == null) {
+        if (obj == null) {
             return false;
         }
         if (getClass() != obj.getClass()) {
@@ -129,11 +130,11 @@ public class CodeAreaScrollPosition {
         return this.charOffset != other.charOffset;
     }
 
-    public boolean isCharPositionGreaterThan(@Nonnull CodeAreaScrollPosition compPosition) {
+    public boolean isCharPositionGreaterThan(CodeAreaScrollPosition compPosition) {
         return charPosition > compPosition.charPosition || (charPosition == compPosition.charPosition && charOffset > compPosition.charOffset);
     }
 
-    public boolean isRowPositionGreaterThan(@Nonnull CodeAreaScrollPosition compPosition) {
+    public boolean isRowPositionGreaterThan(CodeAreaScrollPosition compPosition) {
         return rowPosition > compPosition.rowPosition || (rowPosition == compPosition.rowPosition && rowOffset > compPosition.rowOffset);
     }
 }

@@ -17,6 +17,7 @@ package org.exbin.bined.capability;
 
 import java.nio.charset.Charset;
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * Support for charset capability.
@@ -24,6 +25,7 @@ import javax.annotation.Nonnull;
  * @version 0.2.0 2017/11/12
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public interface CharsetCapable {
 
     /**
@@ -39,7 +41,7 @@ public interface CharsetCapable {
      *
      * @param charset charset
      */
-    void setCharset(@Nonnull Charset charset);
+    void setCharset(Charset charset);
 
     public static class CharsetCapability implements CodeAreaCapability {
 

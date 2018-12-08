@@ -15,7 +15,6 @@
  */
 package org.exbin.bined.swing.basic;
 
-import org.exbin.bined.swing.basic.color.BasicCodeAreaColorsProfile;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.beans.PropertyChangeEvent;
@@ -24,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import javax.swing.UIManager;
 import org.exbin.bined.BasicCodeAreaSection;
 import org.exbin.bined.BasicCodeAreaZone;
@@ -52,14 +52,16 @@ import org.exbin.bined.swing.CodeAreaCommandHandler;
 import org.exbin.bined.swing.CodeAreaCore;
 import org.exbin.bined.swing.CodeAreaPainter;
 import org.exbin.bined.swing.CodeAreaSwingControl;
+import org.exbin.bined.swing.basic.color.BasicCodeAreaColorsProfile;
 import org.exbin.bined.swing.basic.color.BasicColorsCapableCodeAreaPainter;
 
 /**
- * Code area component default code area.
+ * Code area component.
  *
- * @version 0.2.0 2018/11/26
+ * @version 0.2.0 2018/12/08
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaSwingControl {
 
     @Nonnull
@@ -147,7 +149,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
         return painter;
     }
 
-    public void setPainter(@Nonnull CodeAreaPainter painter) {
+    public void setPainter(CodeAreaPainter painter) {
         CodeAreaUtils.requireNonNull(painter);
 
         this.painter = painter;
@@ -155,7 +157,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
     }
 
     @Override
-    public void paintComponent(@Nonnull Graphics g) {
+    public void paintComponent(Graphics g) {
         painter.paintComponent(g);
     }
 
@@ -210,7 +212,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
         return caret.getCaretPosition();
     }
 
-    public void setCaretPosition(@Nonnull CaretPosition caretPosition) {
+    public void setCaretPosition(CaretPosition caretPosition) {
         caret.setCaretPosition(caretPosition);
         notifyCaretMoved();
     }
@@ -242,7 +244,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
     }
 
     @Override
-    public void setCodeCharactersCase(@Nonnull CodeCharactersCase codeCharactersCase) {
+    public void setCodeCharactersCase(CodeCharactersCase codeCharactersCase) {
         this.codeCharactersCase = codeCharactersCase;
         updateLayout();
         repaint();
@@ -261,7 +263,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
     }
 
     @Override
-    public void setViewMode(@Nonnull CodeAreaViewMode viewMode) {
+    public void setViewMode(CodeAreaViewMode viewMode) {
         if (viewMode != this.viewMode) {
             this.viewMode = viewMode;
             switch (viewMode) {
@@ -290,7 +292,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
     }
 
     @Override
-    public void setCodeType(@Nonnull CodeType codeType) {
+    public void setCodeType(CodeType codeType) {
         this.codeType = codeType;
         reset();
         repaint();
@@ -302,7 +304,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
     }
 
     @Override
-    public void revealPosition(@Nonnull CaretPosition caretPosition) {
+    public void revealPosition(CaretPosition caretPosition) {
         if (!isInitialized()) {
             // Silently ignore if painter is not yet initialized
             return;
@@ -317,7 +319,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
         }
     }
 
-    public void revealPosition(long dataPosition, int dataOffset, @Nonnull CodeAreaSection section) {
+    public void revealPosition(long dataPosition, int dataOffset, CodeAreaSection section) {
         revealPosition(new CodeAreaCaretPosition(dataPosition, dataOffset, section));
     }
 
@@ -327,7 +329,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
     }
 
     @Override
-    public void centerOnPosition(@Nonnull CaretPosition caretPosition) {
+    public void centerOnPosition(CaretPosition caretPosition) {
         if (!isInitialized()) {
             // Silently ignore if painter is not yet initialized
             return;
@@ -342,25 +344,25 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
         }
     }
 
-    public void centerOnPosition(long dataPosition, int dataOffset, @Nonnull CodeAreaSection section) {
+    public void centerOnPosition(long dataPosition, int dataOffset, CodeAreaSection section) {
         centerOnPosition(new CodeAreaCaretPosition(dataPosition, dataOffset, section));
     }
 
     @Nullable
     @Override
-    public CaretPosition mousePositionToClosestCaretPosition(int positionX, int positionY, @Nonnull PositionOverflowMode overflowMode) {
+    public CaretPosition mousePositionToClosestCaretPosition(int positionX, int positionY, PositionOverflowMode overflowMode) {
         return painter.mousePositionToClosestCaretPosition(positionX, positionY, overflowMode);
     }
 
     @Nonnull
     @Override
-    public CaretPosition computeMovePosition(@Nonnull CaretPosition position, @Nonnull MovementDirection direction) {
+    public CaretPosition computeMovePosition(CaretPosition position, MovementDirection direction) {
         return painter.computeMovePosition(position, direction);
     }
 
     @Nonnull
     @Override
-    public CodeAreaScrollPosition computeScrolling(@Nonnull CodeAreaScrollPosition startPosition, @Nonnull ScrollingDirection scrollingShift) {
+    public CodeAreaScrollPosition computeScrolling(CodeAreaScrollPosition startPosition, ScrollingDirection scrollingShift) {
         return painter.computeScrolling(startPosition, scrollingShift);
     }
 
@@ -377,7 +379,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
     }
 
     @Override
-    public void setScrollPosition(@Nonnull CodeAreaScrollPosition scrollPosition) {
+    public void setScrollPosition(CodeAreaScrollPosition scrollPosition) {
         this.scrollPosition.setScrollPosition(scrollPosition);
     }
 
@@ -401,7 +403,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
     }
 
     @Override
-    public void setVerticalScrollUnit(@Nonnull VerticalScrollUnit verticalScrollUnit) {
+    public void setVerticalScrollUnit(VerticalScrollUnit verticalScrollUnit) {
         this.verticalScrollUnit = verticalScrollUnit;
         long linePosition = scrollPosition.getRowPosition();
         if (verticalScrollUnit == VerticalScrollUnit.ROW) {
@@ -420,7 +422,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
     }
 
     @Override
-    public void setHorizontalScrollBarVisibility(@Nonnull ScrollBarVisibility horizontalScrollBarVisibility) {
+    public void setHorizontalScrollBarVisibility(ScrollBarVisibility horizontalScrollBarVisibility) {
         this.horizontalScrollBarVisibility = horizontalScrollBarVisibility;
         resetPainter();
         updateScrollBars();
@@ -433,7 +435,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
     }
 
     @Override
-    public void setHorizontalScrollUnit(@Nonnull HorizontalScrollUnit horizontalScrollUnit) {
+    public void setHorizontalScrollUnit(HorizontalScrollUnit horizontalScrollUnit) {
         this.horizontalScrollUnit = horizontalScrollUnit;
         int bytePosition = scrollPosition.getCharPosition();
         if (horizontalScrollUnit == HorizontalScrollUnit.CHARACTER) {
@@ -490,7 +492,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
     }
 
     @Override
-    public void setSelection(@Nonnull SelectionRange selection) {
+    public void setSelection(SelectionRange selection) {
         CodeAreaUtils.requireNonNull(selection);
 
         this.selection.setSelection(selection);
@@ -524,7 +526,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
     }
 
     @Override
-    public void setCharset(@Nonnull Charset charset) {
+    public void setCharset(Charset charset) {
         CodeAreaUtils.requireNonNull(charset);
 
         this.charset = charset;
@@ -544,7 +546,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
     }
 
     @Override
-    public void setEditationMode(@Nonnull EditationMode editationMode) {
+    public void setEditationMode(EditationMode editationMode) {
         boolean changed = editationMode != this.editationMode;
         this.editationMode = editationMode;
         if (changed) {
@@ -573,7 +575,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
     }
 
     @Override
-    public void setCodeFont(@Nonnull Font font) {
+    public void setCodeFont(Font font) {
         this.font = font;
         reset();
         repaint();
@@ -586,7 +588,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
     }
 
     @Override
-    public void setBackgroundPaintMode(@Nonnull BasicBackgroundPaintMode borderPaintMode) {
+    public void setBackgroundPaintMode(BasicBackgroundPaintMode borderPaintMode) {
         this.borderPaintMode = borderPaintMode;
         repaint();
     }
@@ -598,7 +600,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
     }
 
     @Override
-    public void setRowWrapping(@Nonnull RowWrappingMode rowWrapping) {
+    public void setRowWrapping(RowWrappingMode rowWrapping) {
         this.rowWrapping = rowWrapping;
         updateLayout();
     }
@@ -634,7 +636,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
     }
 
     @Override
-    public void setBasicColors(@Nonnull BasicCodeAreaColorsProfile colors) {
+    public void setBasicColors(BasicCodeAreaColorsProfile colors) {
         if (painter instanceof BasicColorsCapableCodeAreaPainter) {
             ((BasicColorsCapableCodeAreaPainter) painter).setBasicColors(colors);
         }

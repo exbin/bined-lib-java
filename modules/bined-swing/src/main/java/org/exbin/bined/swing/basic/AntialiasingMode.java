@@ -19,6 +19,7 @@ import java.awt.Graphics2D;
 import java.awt.GraphicsDevice;
 import java.awt.RenderingHints;
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * Enumeration of supported anti-aliasing modes.
@@ -26,6 +27,7 @@ import javax.annotation.Nonnull;
  * @version 0.2.0 2018/11/26
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public enum AntialiasingMode {
 
     OFF,
@@ -39,7 +41,7 @@ public enum AntialiasingMode {
     LCD_VBGR;
 
     @Nonnull
-    public Object getAntialiasingHint(@Nonnull Graphics2D g) {
+    public Object getAntialiasingHint(Graphics2D g) {
         Object antialiasingHint;
         switch (this) {
             case AUTO: {

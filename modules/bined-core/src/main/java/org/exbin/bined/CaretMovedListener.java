@@ -15,14 +15,15 @@
  */
 package org.exbin.bined;
 
-import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * Interface for caret moved listener.
  *
- * @version 0.2.0 2017/04/02
+ * @version 0.2.0 2018/12/08
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public interface CaretMovedListener {
 
     /**
@@ -30,5 +31,5 @@ public interface CaretMovedListener {
      *
      * @param caretPosition caret position
      */
-    void caretMoved(@Nonnull CaretPosition caretPosition);
+    void caretMoved(CaretPosition caretPosition);
 }

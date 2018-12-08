@@ -16,6 +16,7 @@
 package org.exbin.bined.color;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * Enumeration of basic color groups.
@@ -23,6 +24,7 @@ import javax.annotation.Nonnull;
  * @version 0.2.0 2018/11/13
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public enum BasicCodeAreaColorGroup implements CodeAreaColorGroup {
 
     MAIN("main"),
@@ -31,7 +33,7 @@ public enum BasicCodeAreaColorGroup implements CodeAreaColorGroup {
     @Nonnull
     private final String groupId;
 
-    private BasicCodeAreaColorGroup(@Nonnull String groupId) {
+    private BasicCodeAreaColorGroup(String groupId) {
         this.groupId = groupId;
     }
 

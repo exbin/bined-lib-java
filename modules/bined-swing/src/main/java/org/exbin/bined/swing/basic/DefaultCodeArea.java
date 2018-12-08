@@ -31,7 +31,7 @@ import org.exbin.bined.swing.capability.BasicColorsCapable;
 import org.exbin.bined.swing.capability.FontCapable;
 
 /**
- * Code area component default interface.
+ * Code area default component interface.
  *
  * @version 0.2.0 2018/09/01
  * @author ExBin Project (https://exbin.org)

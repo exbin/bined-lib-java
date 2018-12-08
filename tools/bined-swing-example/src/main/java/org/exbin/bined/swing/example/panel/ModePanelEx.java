@@ -25,8 +25,8 @@ import org.exbin.bined.capability.CharsetCapable;
 import org.exbin.bined.capability.EditationModeCapable;
 import org.exbin.bined.capability.ViewModeCapable;
 import org.exbin.bined.swing.basic.AntialiasingMode;
-import org.exbin.bined.swing.extended.ExtCodeArea;
 import org.exbin.bined.swing.capability.AntialiasingCapable;
+import org.exbin.bined.swing.extended.ExtCodeArea;
 
 /**
  * Hexadecimal editor example panel.

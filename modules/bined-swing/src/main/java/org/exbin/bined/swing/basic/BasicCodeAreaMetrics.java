@@ -17,6 +17,7 @@ package org.exbin.bined.swing.basic;
 
 import java.awt.FontMetrics;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * Basic code area component dimensions.
@@ -24,6 +25,7 @@ import javax.annotation.Nullable;
  * @version 0.2.0 2018/11/22
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public class BasicCodeAreaMetrics {
 
     @Nullable

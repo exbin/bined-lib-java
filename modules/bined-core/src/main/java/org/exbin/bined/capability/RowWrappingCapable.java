@@ -16,6 +16,7 @@
 package org.exbin.bined.capability;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * Line wrapping capability interface.
@@ -23,12 +24,13 @@ import javax.annotation.Nonnull;
  * @version 0.2.0 2018/12/03
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public interface RowWrappingCapable {
 
     @Nonnull
     RowWrappingMode getRowWrapping();
 
-    void setRowWrapping(@Nonnull RowWrappingMode lineWrapping);
+    void setRowWrapping(RowWrappingMode lineWrapping);
 
     int getMaxBytesPerRow();
 

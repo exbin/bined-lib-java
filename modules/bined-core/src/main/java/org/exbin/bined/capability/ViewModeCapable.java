@@ -16,6 +16,7 @@
 package org.exbin.bined.capability;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.CodeAreaViewMode;
 
 /**
@@ -24,12 +25,13 @@ import org.exbin.bined.CodeAreaViewMode;
  * @version 0.2.0 2017/11/05
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public interface ViewModeCapable {
 
     @Nonnull
     CodeAreaViewMode getViewMode();
 
-    void setViewMode(@Nonnull CodeAreaViewMode viewMode);
+    void setViewMode(CodeAreaViewMode viewMode);
 
     public static class ViewModeCapability implements CodeAreaCapability {
 

@@ -17,6 +17,7 @@ package org.exbin.bined.color;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * Enumeration of color types for main group.
@@ -24,6 +25,7 @@ import javax.annotation.Nullable;
  * @version 0.2.0 2018/11/28
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public enum CodeAreaBasicColors implements CodeAreaColorType {
 
     TEXT_COLOR("textColor", BasicCodeAreaColorGroup.MAIN),
@@ -42,7 +44,7 @@ public enum CodeAreaBasicColors implements CodeAreaColorType {
     @Nullable
     private final BasicCodeAreaColorGroup group;
 
-    private CodeAreaBasicColors(@Nonnull String typeId, @Nullable BasicCodeAreaColorGroup group) {
+    private CodeAreaBasicColors(String typeId, @Nullable BasicCodeAreaColorGroup group) {
         this.typeId = typeId;
         this.group = group;
     }

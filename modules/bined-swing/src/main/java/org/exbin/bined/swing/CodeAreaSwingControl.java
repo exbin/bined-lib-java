@@ -16,7 +16,7 @@
 package org.exbin.bined.swing;
 
 import java.awt.Graphics;
-import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * Code area swing control.
@@ -24,6 +24,7 @@ import javax.annotation.Nonnull;
  * @version 0.2.0 2018/08/11
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public interface CodeAreaSwingControl {
 
     /**
@@ -31,7 +32,7 @@ public interface CodeAreaSwingControl {
      *
      * @param g graphics
      */
-    void paintComponent(@Nonnull Graphics g);
+    void paintComponent(Graphics g);
 
     /**
      * Rebuilds colors after UIManager change.

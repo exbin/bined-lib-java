@@ -22,7 +22,17 @@ package org.exbin.bined.basic;
  * @author ExBin Project (https://exbin.org)
  */
 public enum BasicBackgroundPaintMode {
+    /**
+     * Border is not painted.
+     */
     TRANSPARENT,
+    /**
+     * Border is painted with single solid color.
+     */
     PLAIN,
+    /**
+     * Rows are alternately painted with background and alternate background
+     * color.
+     */
     STRIPED
 }

@@ -31,17 +31,16 @@ import org.exbin.bined.swing.extended.capability.ColorsProfileCapable;
 import org.exbin.bined.swing.extended.capability.ExtBackgroundPaintCapable;
 import org.exbin.bined.swing.extended.capability.LayoutProfileCapable;
 import org.exbin.bined.swing.extended.capability.PositionCodeTypeCapable;
-import org.exbin.bined.swing.extended.capability.ShowPositionsCapable;
 import org.exbin.bined.swing.extended.capability.ShowUnprintablesCapable;
 
 /**
  * Code area component extended interface.
  *
- * @version 0.2.0 2018/12/04
+ * @version 0.2.0 2018/12/06
  * @author ExBin Project (https://exbin.org)
  */
 public interface ExtendedCodeArea extends SelectionCapable, CaretCapable, ScrollingCapable, ViewModeCapable,
         CodeTypeCapable, EditationModeCapable, CharsetCapable, CodeCharactersCaseCapable, FontCapable,
         ExtBackgroundPaintCapable, RowWrappingCapable, ClipboardCapable, AntialiasingCapable,
-        ColorsProfileCapable, ShowPositionsCapable, ShowUnprintablesCapable, PositionCodeTypeCapable, LayoutProfileCapable {
+        ColorsProfileCapable, ShowUnprintablesCapable, PositionCodeTypeCapable, LayoutProfileCapable {
 }

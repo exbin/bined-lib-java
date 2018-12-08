@@ -17,6 +17,7 @@ package org.exbin.bined.swing.capability;
 
 import java.awt.Font;
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.capability.CodeAreaCapability;
 
 /**
@@ -25,12 +26,13 @@ import org.exbin.bined.capability.CodeAreaCapability;
  * @version 0.2.0 2018/08/11
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public interface FontCapable {
 
     @Nonnull
     Font getCodeFont();
 
-    void setCodeFont(@Nonnull Font font);
+    void setCodeFont(Font font);
 
     public static class FontCapability implements CodeAreaCapability {
 

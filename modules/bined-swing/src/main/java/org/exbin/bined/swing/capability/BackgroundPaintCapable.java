@@ -16,6 +16,7 @@
 package org.exbin.bined.swing.capability;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.basic.BasicBackgroundPaintMode;
 import org.exbin.bined.capability.CodeAreaCapability;
 
@@ -25,12 +26,13 @@ import org.exbin.bined.capability.CodeAreaCapability;
  * @version 0.2.0 2018/03/18
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public interface BackgroundPaintCapable {
 
     @Nonnull
     BasicBackgroundPaintMode getBackgroundPaintMode();
 
-    void setBackgroundPaintMode(@Nonnull BasicBackgroundPaintMode borderPaintMode);
+    void setBackgroundPaintMode(BasicBackgroundPaintMode borderPaintMode);
 
     public static class BackgroundPaintCapability implements CodeAreaCapability {
 

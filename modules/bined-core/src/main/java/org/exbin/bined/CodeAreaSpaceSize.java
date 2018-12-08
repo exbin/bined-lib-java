@@ -16,13 +16,15 @@
 package org.exbin.bined;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * Empty space size definition.
  *
- * @version 0.2.0 2017/04/09
+ * @version 0.2.0 2018/12/08
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public class CodeAreaSpaceSize {
 
     @Nonnull
@@ -43,7 +45,7 @@ public class CodeAreaSpaceSize {
         return spaceType;
     }
 
-    public void setSpaceType(@Nonnull SpaceSizeType spaceType) {
+    public void setSpaceType(SpaceSizeType spaceType) {
         CodeAreaUtils.requireNonNull(spaceType);
 
         this.spaceType = spaceType;

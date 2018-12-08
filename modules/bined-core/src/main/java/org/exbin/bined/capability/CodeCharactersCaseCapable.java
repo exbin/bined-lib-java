@@ -16,6 +16,7 @@
 package org.exbin.bined.capability;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.CodeCharactersCase;
 
 /**
@@ -24,12 +25,13 @@ import org.exbin.bined.CodeCharactersCase;
  * @version 0.2.0 2017/11/17
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public interface CodeCharactersCaseCapable {
 
     @Nonnull
     CodeCharactersCase getCodeCharactersCase();
 
-    void setCodeCharactersCase(@Nonnull CodeCharactersCase codeCharactersCase);
+    void setCodeCharactersCase(CodeCharactersCase codeCharactersCase);
 
     public static class CodeCharactersCaseCapability implements CodeAreaCapability {
 

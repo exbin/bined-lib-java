@@ -16,6 +16,7 @@
 package org.exbin.bined.swing.basic.color;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * Capability of painter to handle basic colors setting.
@@ -23,10 +24,11 @@ import javax.annotation.Nonnull;
  * @version 0.2.0 2018/11/28
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public interface BasicColorsCapableCodeAreaPainter {
 
     @Nonnull
     BasicCodeAreaColorsProfile getBasicColors();
 
-    void setBasicColors(@Nonnull BasicCodeAreaColorsProfile colors);
+    void setBasicColors(BasicCodeAreaColorsProfile colors);
 }

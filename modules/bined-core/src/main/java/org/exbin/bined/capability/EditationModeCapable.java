@@ -17,6 +17,7 @@ package org.exbin.bined.capability;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.EditationMode;
 import org.exbin.bined.EditationModeChangedListener;
 
@@ -26,6 +27,7 @@ import org.exbin.bined.EditationModeChangedListener;
  * @version 0.2.0 2017/12/15
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public interface EditationModeCapable {
 
     @Nonnull
@@ -33,7 +35,7 @@ public interface EditationModeCapable {
 
     boolean isEditable();
 
-    void setEditationMode(@Nonnull EditationMode editationMode);
+    void setEditationMode(EditationMode editationMode);
 
     void addEditationModeChangedListener(@Nullable EditationModeChangedListener editationModeChangedListener);
 

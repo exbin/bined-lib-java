@@ -16,8 +16,8 @@
 package org.exbin.bined.color;
 
 import java.awt.Color;
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * Color profile.
@@ -25,6 +25,7 @@ import javax.annotation.Nullable;
  * @version 0.2.0 2018/11/28
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public interface CodeAreaColorsProfile {
 
     /**
@@ -34,7 +35,7 @@ public interface CodeAreaColorsProfile {
      * @return color or null if not defined
      */
     @Nullable
-    Color getColor(@Nonnull CodeAreaColorType colorType);
+    Color getColor(CodeAreaColorType colorType);
 
     /**
      * Returns color of the specified type.
@@ -44,7 +45,7 @@ public interface CodeAreaColorsProfile {
      * @return color or null if not defined
      */
     @Nullable
-    Color getColor(@Nonnull CodeAreaColorType colorType, @Nonnull CodeAreaBasicColors basicAltColor);
+    Color getColor(CodeAreaColorType colorType, CodeAreaBasicColors basicAltColor);
 
     /**
      * Reinitialize colors.

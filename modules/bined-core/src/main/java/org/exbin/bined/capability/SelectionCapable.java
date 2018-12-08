@@ -17,6 +17,7 @@ package org.exbin.bined.capability;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.SelectionChangedListener;
 import org.exbin.bined.SelectionRange;
 
@@ -26,12 +27,13 @@ import org.exbin.bined.SelectionRange;
  * @version 0.2.0 2018/03/04
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public interface SelectionCapable {
 
     @Nonnull
     SelectionRange getSelection();
 
-    void setSelection(@Nonnull SelectionRange selection);
+    void setSelection(SelectionRange selection);
 
     void setSelection(long start, long end);
 

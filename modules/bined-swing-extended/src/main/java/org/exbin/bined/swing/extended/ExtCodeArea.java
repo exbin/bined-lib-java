@@ -15,7 +15,6 @@
  */
 package org.exbin.bined.swing.extended;
 
-import org.exbin.bined.swing.basic.AntialiasingMode;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.beans.PropertyChangeEvent;
@@ -53,6 +52,7 @@ import org.exbin.bined.swing.CodeAreaCommandHandler;
 import org.exbin.bined.swing.CodeAreaCore;
 import org.exbin.bined.swing.CodeAreaPainter;
 import org.exbin.bined.swing.CodeAreaSwingControl;
+import org.exbin.bined.swing.basic.AntialiasingMode;
 import org.exbin.bined.swing.basic.DefaultCodeAreaCaret;
 import org.exbin.bined.swing.basic.DefaultCodeAreaCommandHandler;
 import org.exbin.bined.swing.capability.FontCapable;
@@ -94,8 +94,6 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
     private AntialiasingMode antialiasingMode = AntialiasingMode.AUTO;
     @Nonnull
     private CodeType codeType = CodeType.HEXADECIMAL;
-    private boolean showHeader = true;
-    private boolean showRowPosition = true;
     private boolean showUnprintables;
     private int rowPositionLength = 0;
     @Nonnull
@@ -182,26 +180,6 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
     @Override
     public DefaultCodeAreaCaret getCaret() {
         return caret;
-    }
-
-    @Override
-    public boolean isShowHeader() {
-        return showHeader;
-    }
-
-    @Override
-    public void setShowHeader(boolean showHeader) {
-        this.showHeader = showHeader;
-    }
-
-    @Override
-    public boolean isShowRowPosition() {
-        return showRowPosition;
-    }
-
-    @Override
-    public void setShowRowPosition(boolean showRowPosition) {
-        this.showRowPosition = showRowPosition;
     }
 
     @Override

@@ -16,6 +16,7 @@
 package org.exbin.bined.swing.capability;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.capability.CodeAreaCapability;
 import org.exbin.bined.swing.basic.AntialiasingMode;
 
@@ -25,12 +26,13 @@ import org.exbin.bined.swing.basic.AntialiasingMode;
  * @version 0.2.0 2017/11/25
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public interface AntialiasingCapable {
 
     @Nonnull
     AntialiasingMode getAntialiasingMode();
 
-    void setAntialiasingMode(@Nonnull AntialiasingMode antialisingMode);
+    void setAntialiasingMode(AntialiasingMode antialisingMode);
 
     public static class AntialiasingCapability implements CodeAreaCapability {
 

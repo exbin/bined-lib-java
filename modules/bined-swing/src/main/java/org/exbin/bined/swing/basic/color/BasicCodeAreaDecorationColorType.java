@@ -17,6 +17,7 @@ package org.exbin.bined.swing.basic.color;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.color.CodeAreaColorGroup;
 import org.exbin.bined.color.CodeAreaColorType;
 
@@ -26,6 +27,7 @@ import org.exbin.bined.color.CodeAreaColorType;
  * @version 0.2.0 2018/04/12
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public enum BasicCodeAreaDecorationColorType implements CodeAreaColorType {
 
     LINE("decoration.line", null);
@@ -35,7 +37,7 @@ public enum BasicCodeAreaDecorationColorType implements CodeAreaColorType {
     @Nullable
     private final CodeAreaColorGroup group;
 
-    private BasicCodeAreaDecorationColorType(@Nonnull String typeId, @Nullable CodeAreaColorGroup group) {
+    private BasicCodeAreaDecorationColorType(String typeId, @Nullable CodeAreaColorGroup group) {
         this.typeId = typeId;
         this.group = group;
     }

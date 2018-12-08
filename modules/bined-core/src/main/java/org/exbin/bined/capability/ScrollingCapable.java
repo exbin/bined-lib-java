@@ -16,6 +16,7 @@
 package org.exbin.bined.capability;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.CaretPosition;
 import org.exbin.bined.ScrollBarVisibility;
 import org.exbin.bined.ScrollingListener;
@@ -30,41 +31,42 @@ import org.exbin.bined.basic.VerticalScrollUnit;
  * @version 0.2.0 2018/01/29
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public interface ScrollingCapable {
 
     @Nonnull
     CodeAreaScrollPosition getScrollPosition();
 
-    void setScrollPosition(@Nonnull CodeAreaScrollPosition scrollPosition);
+    void setScrollPosition(CodeAreaScrollPosition scrollPosition);
 
     @Nonnull
     ScrollBarVisibility getVerticalScrollBarVisibility();
 
-    void setVerticalScrollBarVisibility(@Nonnull ScrollBarVisibility verticalScrollBarVisibility);
+    void setVerticalScrollBarVisibility(ScrollBarVisibility verticalScrollBarVisibility);
 
     @Nonnull
     VerticalScrollUnit getVerticalScrollUnit();
 
-    void setVerticalScrollUnit(@Nonnull VerticalScrollUnit verticalScrollUnit);
+    void setVerticalScrollUnit(VerticalScrollUnit verticalScrollUnit);
 
     @Nonnull
     ScrollBarVisibility getHorizontalScrollBarVisibility();
 
-    void setHorizontalScrollBarVisibility(@Nonnull ScrollBarVisibility horizontalScrollBarVisibility);
+    void setHorizontalScrollBarVisibility(ScrollBarVisibility horizontalScrollBarVisibility);
 
     @Nonnull
     HorizontalScrollUnit getHorizontalScrollUnit();
 
-    void setHorizontalScrollUnit(@Nonnull HorizontalScrollUnit horizontalScrollUnit);
+    void setHorizontalScrollUnit(HorizontalScrollUnit horizontalScrollUnit);
 
     void notifyScrolled();
 
-    void addScrollingListener(@Nonnull ScrollingListener scrollingListener);
+    void addScrollingListener(ScrollingListener scrollingListener);
 
-    void removeScrollingListener(@Nonnull ScrollingListener scrollingListener);
+    void removeScrollingListener(ScrollingListener scrollingListener);
 
     @Nonnull
-    CodeAreaScrollPosition computeScrolling(@Nonnull CodeAreaScrollPosition startPosition, @Nonnull ScrollingDirection direction);
+    CodeAreaScrollPosition computeScrolling(CodeAreaScrollPosition startPosition, ScrollingDirection direction);
 
     void updateScrollBars();
 
@@ -78,7 +80,7 @@ public interface ScrollingCapable {
      *
      * @param caretPosition caret position
      */
-    void revealPosition(@Nonnull CaretPosition caretPosition);
+    void revealPosition(CaretPosition caretPosition);
 
     /**
      * Scrolls scrolling area as centered as possible for current cursor
@@ -91,7 +93,7 @@ public interface ScrollingCapable {
      *
      * @param caretPosition caret position
      */
-    void centerOnPosition(@Nonnull CaretPosition caretPosition);
+    void centerOnPosition(CaretPosition caretPosition);
 
     public static class ScrollingCapability implements CodeAreaCapability {
 

@@ -17,6 +17,7 @@ package org.exbin.bined.swing.basic;
 
 import java.awt.Rectangle;
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.BasicCodeAreaZone;
 
 /**
@@ -25,6 +26,7 @@ import org.exbin.bined.BasicCodeAreaZone;
  * @version 0.2.0 2018/09/31
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public class BasicCodeAreaDimensions {
 
     private int componentWidth;
@@ -58,7 +60,7 @@ public class BasicCodeAreaDimensions {
     @Nonnull
     private final Rectangle dataViewRectangle = new Rectangle();
 
-    public void recomputeSizes(@Nonnull BasicCodeAreaMetrics metrics, int componentWidth, int componentHeight, int rowPositionLength, int verticalScrollBarSize, int horizontalScrollBarSize) {
+    public void recomputeSizes(BasicCodeAreaMetrics metrics, int componentWidth, int componentHeight, int rowPositionLength, int verticalScrollBarSize, int horizontalScrollBarSize) {
         this.componentWidth = componentWidth;
         this.componentHeight = componentHeight;
         this.verticalScrollBarSize = verticalScrollBarSize;
@@ -227,22 +229,22 @@ public class BasicCodeAreaDimensions {
         return rowPositionAreaRectangle;
     }
 
-    private int computeCharactersPerRectangle(@Nonnull BasicCodeAreaMetrics metrics) {
+    private int computeCharactersPerRectangle(BasicCodeAreaMetrics metrics) {
         int characterWidth = metrics.getCharacterWidth();
         return characterWidth == 0 ? 0 : (dataViewWidth + characterWidth - 1) / characterWidth;
     }
 
-    private int computeCharactersPerPage(@Nonnull BasicCodeAreaMetrics metrics) {
+    private int computeCharactersPerPage(BasicCodeAreaMetrics metrics) {
         int characterWidth = metrics.getCharacterWidth();
         return characterWidth == 0 ? 0 : dataViewWidth / characterWidth;
     }
 
-    private int computeRowsPerRectangle(@Nonnull BasicCodeAreaMetrics metrics) {
+    private int computeRowsPerRectangle(BasicCodeAreaMetrics metrics) {
         int rowHeight = metrics.getRowHeight();
         return rowHeight == 0 ? 0 : (dataViewHeight + rowHeight - 1) / rowHeight;
     }
 
-    private int computeRowsPerPage(@Nonnull BasicCodeAreaMetrics metrics) {
+    private int computeRowsPerPage(BasicCodeAreaMetrics metrics) {
         int rowHeight = metrics.getRowHeight();
         return rowHeight == 0 ? 0 : dataViewHeight / rowHeight;
     }
