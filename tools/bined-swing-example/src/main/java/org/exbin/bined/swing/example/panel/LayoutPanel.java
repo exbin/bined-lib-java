@@ -60,7 +60,7 @@ public class LayoutPanel extends javax.swing.JPanel {
             }
         });
 
-        bytesPerLineLabel.setText("Bytes Per Line");
+        bytesPerLineLabel.setText("Maximum Bytes Per Line");
 
         bytesPerLineSpinner.setModel(new javax.swing.SpinnerNumberModel(16, 0, null, 1));
         bytesPerLineSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
@@ -91,7 +91,7 @@ public class LayoutPanel extends javax.swing.JPanel {
                             .addComponent(bytesPerLineLabel)
                             .addComponent(rowWrappingModeCheckBox)
                             .addComponent(rowPositionLengthLabel))
-                        .addGap(0, 248, Short.MAX_VALUE))
+                        .addGap(0, 223, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(minRowPositionLengthSpinner, javax.swing.GroupLayout.Alignment.LEADING)

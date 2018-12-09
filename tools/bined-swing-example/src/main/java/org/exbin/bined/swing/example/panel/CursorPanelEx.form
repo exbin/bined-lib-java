@@ -30,7 +30,7 @@
                       </Group>
                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                   </Group>
-                  <Component id="showShadowCursorCheckBox" alignment="0" max="32767" attributes="0"/>
+                  <Component id="showMirrorCursorCheckBox" alignment="0" max="32767" attributes="0"/>
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="cursorBlinkingRateLabel" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="63" max="-2" attributes="0"/>
@@ -61,19 +61,19 @@
               <EmptySpace max="-2" attributes="0"/>
               <Component id="cursorOverwriteShapeComboBox" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="showShadowCursorCheckBox" min="-2" max="-2" attributes="0"/>
+              <Component id="showMirrorCursorCheckBox" min="-2" max="-2" attributes="0"/>
               <EmptySpace pref="143" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Component class="javax.swing.JCheckBox" name="showShadowCursorCheckBox">
+    <Component class="javax.swing.JCheckBox" name="showMirrorCursorCheckBox">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Show Shadow Cursor"/>
+        <Property name="text" type="java.lang.String" value="Show Mirror Cursor"/>
       </Properties>
       <Events>
-        <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="showShadowCursorCheckBoxItemStateChanged"/>
+        <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="showMirrorCursorCheckBoxItemStateChanged"/>
       </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="cursorRenderingModeLabel">

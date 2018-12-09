@@ -15,9 +15,16 @@
  */
 package org.exbin.bined.swing.example.panel;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.nio.charset.Charset;
 import javax.annotation.Nonnull;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.EtchedBorder;
+import javax.swing.border.LineBorder;
+import javax.swing.plaf.basic.BasicBorders;
 import org.exbin.bined.CodeAreaViewMode;
 import org.exbin.bined.CodeType;
 import org.exbin.bined.EditationMode;
@@ -73,6 +80,8 @@ public class ModePanel extends javax.swing.JPanel {
         codeTypeScrollModeLabel = new javax.swing.JLabel();
         antialiasingScrollModeLabel = new javax.swing.JLabel();
         antialiasingComboBox = new javax.swing.JComboBox<>();
+        borderTypeLabel = new javax.swing.JLabel();
+        borderTypeComboBox = new javax.swing.JComboBox<>();
 
         codeTypeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "BINARY", "OCTAL", "DECIMAL", "HEXADECIMAL" }));
         codeTypeComboBox.setSelectedIndex(3);
@@ -171,6 +180,15 @@ public class ModePanel extends javax.swing.JPanel {
             }
         });
 
+        borderTypeLabel.setText("Border Type");
+
+        borderTypeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "NONE", "EMPTY BORDER", "MARGIN BORDER", "BEVEL BORDER - RAISED", "BEVEL BORDER - LOWERED", "ETCHED BORDER - RAISED", "ETCHED BORDER - LOWERED", "LINE BORDER" }));
+        borderTypeComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                borderTypeComboBoxActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -191,7 +209,11 @@ public class ModePanel extends javax.swing.JPanel {
                             .addComponent(antialiasingScrollModeLabel)
                             .addComponent(editationAllowedLabel)
                             .addComponent(charsetLabel))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(borderTypeLabel)
+                        .addGap(136, 136, 136))
+                    .addComponent(borderTypeComboBox, javax.swing.GroupLayout.Alignment.TRAILING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -219,7 +241,11 @@ public class ModePanel extends javax.swing.JPanel {
                 .addComponent(charsetLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(charsetComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(borderTypeLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(borderTypeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(143, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -267,10 +293,16 @@ public class ModePanel extends javax.swing.JPanel {
         ((AntialiasingCapable) codeArea).setAntialiasingMode(AntialiasingMode.values()[antialiasingComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_antialiasingComboBoxActionPerformed
 
+    private void borderTypeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_borderTypeComboBoxActionPerformed
+        codeArea.setBorder(getBorderByType(borderTypeComboBox.getSelectedIndex()));
+    }//GEN-LAST:event_borderTypeComboBoxActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<String> antialiasingComboBox;
     private javax.swing.JLabel antialiasingScrollModeLabel;
+    private javax.swing.JComboBox<String> borderTypeComboBox;
+    private javax.swing.JLabel borderTypeLabel;
     private javax.swing.JComboBox<String> charsetComboBox;
     private javax.swing.JLabel charsetLabel;
     private javax.swing.JComboBox<String> codeTypeComboBox;
@@ -285,4 +317,35 @@ public class ModePanel extends javax.swing.JPanel {
     private javax.swing.JComboBox<String> viewModeComboBox;
     private javax.swing.JLabel viewModeScrollModeLabel;
     // End of variables declaration//GEN-END:variables
+
+    private Border getBorderByType(int borderTypeIndex) {
+        switch (borderTypeIndex) {
+            case 0: {
+                return null;
+            }
+            case 1: {
+                return new EmptyBorder(5, 5, 5, 5);
+            }
+            case 2: {
+                return new BasicBorders.MarginBorder();
+            }
+            case 3: {
+                return new BevelBorder(BevelBorder.RAISED);
+            }
+            case 4: {
+                return new BevelBorder(BevelBorder.LOWERED);
+            }
+            case 5: {
+                return new EtchedBorder(EtchedBorder.RAISED);
+            }
+            case 6: {
+                return new EtchedBorder(EtchedBorder.LOWERED);
+            }
+            case 7: {
+                return new LineBorder(Color.BLACK);
+            }
+        }
+
+        return null;
+    }
 }

@@ -70,11 +70,11 @@
 
               <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
             </Container>
-            <Container class="javax.swing.JPanel" name="decorationTab">
+            <Container class="javax.swing.JPanel" name="themeTab">
               <Constraints>
                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
-                  <JTabbedPaneConstraints tabName="Decoration">
-                    <Property name="tabTitle" type="java.lang.String" value="Decoration"/>
+                  <JTabbedPaneConstraints tabName="Theme">
+                    <Property name="tabTitle" type="java.lang.String" value="Theme"/>
                   </JTabbedPaneConstraints>
                 </Constraint>
               </Constraints>

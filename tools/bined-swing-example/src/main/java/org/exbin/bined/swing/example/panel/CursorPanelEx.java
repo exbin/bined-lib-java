@@ -36,7 +36,7 @@ public class CursorPanelEx extends javax.swing.JPanel {
         initComponents();
 
         cursorRenderingModeComboBox.setSelectedIndex(codeArea.getCaret().getRenderingMode().ordinal());
-        showShadowCursorCheckBox.setSelected(codeArea.isShowMirrorCursor());
+        showMirrorCursorCheckBox.setSelected(codeArea.isShowMirrorCursor());
 
 //        cursorInsertShapeComboBox.setSelectedIndex(((CaretCapable) codeArea).getCaret().getInsertCursorShape().ordinal());
 //        cursorOverwriteShapeComboBox.setSelectedIndex(((CaretCapable) codeArea).getCaret().getOverwriteCursorShape().ordinal());
@@ -52,7 +52,7 @@ public class CursorPanelEx extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        showShadowCursorCheckBox = new javax.swing.JCheckBox();
+        showMirrorCursorCheckBox = new javax.swing.JCheckBox();
         cursorRenderingModeLabel = new javax.swing.JLabel();
         cursorRenderingModeComboBox = new javax.swing.JComboBox<>();
         cursorInsertShapeModeLabel = new javax.swing.JLabel();
@@ -62,10 +62,10 @@ public class CursorPanelEx extends javax.swing.JPanel {
         cursorBlinkingRateLabel = new javax.swing.JLabel();
         cursorBlinkingRateSpinner = new javax.swing.JSpinner();
 
-        showShadowCursorCheckBox.setText("Show Shadow Cursor");
-        showShadowCursorCheckBox.addItemListener(new java.awt.event.ItemListener() {
+        showMirrorCursorCheckBox.setText("Show Mirror Cursor");
+        showMirrorCursorCheckBox.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                showShadowCursorCheckBoxItemStateChanged(evt);
+                showMirrorCursorCheckBoxItemStateChanged(evt);
             }
         });
 
@@ -123,7 +123,7 @@ public class CursorPanelEx extends javax.swing.JPanel {
                             .addComponent(cursorInsertShapeModeLabel)
                             .addComponent(cursorOverwriteShapeModeLabel))
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(showShadowCursorCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(showMirrorCursorCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(cursorBlinkingRateLabel)
                         .addGap(63, 63, 63))
@@ -150,14 +150,14 @@ public class CursorPanelEx extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(cursorOverwriteShapeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(showShadowCursorCheckBox)
+                .addComponent(showMirrorCursorCheckBox)
                 .addContainerGap(143, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void showShadowCursorCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_showShadowCursorCheckBoxItemStateChanged
-        ((CaretCapable) codeArea).setShowMirrorCursor(showShadowCursorCheckBox.isSelected());
-    }//GEN-LAST:event_showShadowCursorCheckBoxItemStateChanged
+    private void showMirrorCursorCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_showMirrorCursorCheckBoxItemStateChanged
+        ((CaretCapable) codeArea).setShowMirrorCursor(showMirrorCursorCheckBox.isSelected());
+    }//GEN-LAST:event_showMirrorCursorCheckBoxItemStateChanged
 
     private void cursorRenderingModeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cursorRenderingModeComboBoxActionPerformed
         ((DefaultCodeAreaCaret) ((CaretCapable) codeArea).getCaret()).setRenderingMode(DefaultCodeAreaCaret.CursorRenderingMode.values()[cursorRenderingModeComboBox.getSelectedIndex()]);
@@ -185,6 +185,6 @@ public class CursorPanelEx extends javax.swing.JPanel {
     private javax.swing.JLabel cursorOverwriteShapeModeLabel;
     private javax.swing.JComboBox<String> cursorRenderingModeComboBox;
     private javax.swing.JLabel cursorRenderingModeLabel;
-    private javax.swing.JCheckBox showShadowCursorCheckBox;
+    private javax.swing.JCheckBox showMirrorCursorCheckBox;
     // End of variables declaration//GEN-END:variables
 }

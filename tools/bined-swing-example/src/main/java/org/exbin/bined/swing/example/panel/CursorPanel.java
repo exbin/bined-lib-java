@@ -36,7 +36,7 @@ public class CursorPanel extends javax.swing.JPanel {
         initComponents();
 
         cursorRenderingModeComboBox.setSelectedIndex(codeArea.getCaret().getRenderingMode().ordinal());
-        showShadowCursorCheckBox.setSelected(codeArea.isShowMirrorCursor());
+        showMirrorCursorCheckBox.setSelected(codeArea.isShowMirrorCursor());
         cursorBlinkingRateSpinner.setValue(((DefaultCodeAreaCaret) ((CaretCapable) codeArea).getCaret()).getBlinkRate());
     }
 
@@ -49,16 +49,16 @@ public class CursorPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        showShadowCursorCheckBox = new javax.swing.JCheckBox();
+        showMirrorCursorCheckBox = new javax.swing.JCheckBox();
         cursorRenderingModeLabel = new javax.swing.JLabel();
         cursorRenderingModeComboBox = new javax.swing.JComboBox<>();
         cursorBlinkingRateLabel = new javax.swing.JLabel();
         cursorBlinkingRateSpinner = new javax.swing.JSpinner();
 
-        showShadowCursorCheckBox.setText("Show Shadow Cursor");
-        showShadowCursorCheckBox.addItemListener(new java.awt.event.ItemListener() {
+        showMirrorCursorCheckBox.setText("Show Mirror Cursor");
+        showMirrorCursorCheckBox.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                showShadowCursorCheckBoxItemStateChanged(evt);
+                showMirrorCursorCheckBoxItemStateChanged(evt);
             }
         });
 
@@ -96,7 +96,7 @@ public class CursorPanel extends javax.swing.JPanel {
                                 .addComponent(cursorRenderingModeLabel)
                                 .addGap(0, 0, Short.MAX_VALUE))
                             .addComponent(cursorRenderingModeComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(showShadowCursorCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(showMirrorCursorCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(cursorBlinkingRateSpinner, javax.swing.GroupLayout.Alignment.TRAILING))
                         .addContainerGap())))
         );
@@ -112,14 +112,14 @@ public class CursorPanel extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(cursorRenderingModeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(showShadowCursorCheckBox)
+                .addComponent(showMirrorCursorCheckBox)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void showShadowCursorCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_showShadowCursorCheckBoxItemStateChanged
-        ((CaretCapable) codeArea).setShowMirrorCursor(showShadowCursorCheckBox.isSelected());
-    }//GEN-LAST:event_showShadowCursorCheckBoxItemStateChanged
+    private void showMirrorCursorCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_showMirrorCursorCheckBoxItemStateChanged
+        ((CaretCapable) codeArea).setShowMirrorCursor(showMirrorCursorCheckBox.isSelected());
+    }//GEN-LAST:event_showMirrorCursorCheckBoxItemStateChanged
 
     private void cursorRenderingModeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cursorRenderingModeComboBoxActionPerformed
         ((DefaultCodeAreaCaret) ((CaretCapable) codeArea).getCaret()).setRenderingMode(DefaultCodeAreaCaret.CursorRenderingMode.values()[cursorRenderingModeComboBox.getSelectedIndex()]);
@@ -135,6 +135,6 @@ public class CursorPanel extends javax.swing.JPanel {
     private javax.swing.JSpinner cursorBlinkingRateSpinner;
     private javax.swing.JComboBox<String> cursorRenderingModeComboBox;
     private javax.swing.JLabel cursorRenderingModeLabel;
-    private javax.swing.JCheckBox showShadowCursorCheckBox;
+    private javax.swing.JCheckBox showMirrorCursorCheckBox;
     // End of variables declaration//GEN-END:variables
 }

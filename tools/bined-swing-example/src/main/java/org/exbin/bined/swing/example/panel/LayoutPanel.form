@@ -25,7 +25,7 @@
                           <Component id="rowWrappingModeCheckBox" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="rowPositionLengthLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace min="0" pref="248" max="32767" attributes="0"/>
+                      <EmptySpace min="0" pref="223" max="32767" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="1" attributes="0">
                       <Group type="103" groupAlignment="1" attributes="0">
@@ -67,7 +67,7 @@
     </Component>
     <Component class="javax.swing.JLabel" name="bytesPerLineLabel">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Bytes Per Line"/>
+        <Property name="text" type="java.lang.String" value="Maximum Bytes Per Line"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JSpinner" name="bytesPerLineSpinner">

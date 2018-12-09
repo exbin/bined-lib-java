@@ -22,7 +22,7 @@ import java.util.Map;
 import javax.swing.JPanel;
 import org.exbin.bined.swing.basic.CodeArea;
 import org.exbin.bined.swing.example.panel.CursorPanel;
-import org.exbin.bined.swing.example.panel.DecorationPanel;
+import org.exbin.bined.swing.example.panel.ThemePanel;
 import org.exbin.bined.swing.example.panel.LayoutPanel;
 import org.exbin.bined.swing.example.panel.ModePanel;
 import org.exbin.bined.swing.example.panel.ScrollingPanel;
@@ -31,7 +31,7 @@ import org.exbin.bined.swing.example.panel.StatePanel;
 /**
  * Basic hexadecimal component example panel.
  *
- * @version 0.2.0 2018/03/17
+ * @version 0.2.0 2018/12/09
  * @author ExBin Project (https://exbin.org)
  */
 public class BinEdExampleBasicPanel extends javax.swing.JPanel {
@@ -49,14 +49,14 @@ public class BinEdExampleBasicPanel extends javax.swing.JPanel {
         ModePanel modePanel = new ModePanel(codeArea);
         StatePanel statePanel = new StatePanel(codeArea);
         LayoutPanel layoutPanel = new LayoutPanel(codeArea);
-        DecorationPanel decorationPanel = new DecorationPanel(codeArea);
+        ThemePanel themePanel = new ThemePanel(codeArea);
         ScrollingPanel scrollingPanel = new ScrollingPanel(codeArea);
         CursorPanel cursorPanel = new CursorPanel(codeArea);
 
         tabMap.put(modeTab, modePanel);
         tabMap.put(stateTab, statePanel);
         tabMap.put(layoutTab, layoutPanel);
-        tabMap.put(decorationTab, decorationPanel);
+        tabMap.put(themeTab, themePanel);
         tabMap.put(scrollingTab, scrollingPanel);
         tabMap.put(cursorTab, cursorPanel);
 
@@ -78,7 +78,7 @@ public class BinEdExampleBasicPanel extends javax.swing.JPanel {
         modeTab = new javax.swing.JPanel();
         stateTab = new javax.swing.JPanel();
         layoutTab = new javax.swing.JPanel();
-        decorationTab = new javax.swing.JPanel();
+        themeTab = new javax.swing.JPanel();
         scrollingTab = new javax.swing.JPanel();
         cursorTab = new javax.swing.JPanel();
 
@@ -99,8 +99,8 @@ public class BinEdExampleBasicPanel extends javax.swing.JPanel {
         layoutTab.setLayout(new java.awt.BorderLayout());
         tabbedPane.addTab("Layout", layoutTab);
 
-        decorationTab.setLayout(new java.awt.BorderLayout());
-        tabbedPane.addTab("Decoration", decorationTab);
+        themeTab.setLayout(new java.awt.BorderLayout());
+        tabbedPane.addTab("Theme", themeTab);
 
         scrollingTab.setLayout(new java.awt.BorderLayout());
         tabbedPane.addTab("Scrolling", scrollingTab);
@@ -127,12 +127,12 @@ public class BinEdExampleBasicPanel extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel cursorTab;
-    private javax.swing.JPanel decorationTab;
     private javax.swing.JPanel layoutTab;
     private javax.swing.JPanel modeTab;
     private javax.swing.JPanel scrollingTab;
     private javax.swing.JSplitPane splitPane;
     private javax.swing.JPanel stateTab;
     private javax.swing.JTabbedPane tabbedPane;
+    private javax.swing.JPanel themeTab;
     // End of variables declaration//GEN-END:variables
 }

@@ -16,19 +16,12 @@
 package org.exbin.bined.swing.example;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.JPanel;
-import javax.swing.border.BevelBorder;
-import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.EtchedBorder;
-import javax.swing.border.LineBorder;
-import javax.swing.plaf.basic.BasicBorders;
 import org.exbin.bined.swing.example.panel.CursorPanelEx;
-import org.exbin.bined.swing.example.panel.DecorationPanelEx;
+import org.exbin.bined.swing.example.panel.ThemePanelEx;
 import org.exbin.bined.swing.example.panel.LayoutPanelEx;
 import org.exbin.bined.swing.example.panel.ModePanelEx;
 import org.exbin.bined.swing.example.panel.ScrollingPanelEx;
@@ -38,7 +31,7 @@ import org.exbin.bined.swing.extended.ExtCodeArea;
 /**
  * Hexadecimal editor example panel.
  *
- * @version 0.2.0 2018/03/18
+ * @version 0.2.0 2018/12/09
  * @author ExBin Project (https://exbin.org)
  */
 public class BinEdExampleExPanel extends javax.swing.JPanel {
@@ -58,14 +51,14 @@ public class BinEdExampleExPanel extends javax.swing.JPanel {
         ModePanelEx modePanel = new ModePanelEx(codeArea);
         StatePanelEx statePanel = new StatePanelEx(codeArea);
         LayoutPanelEx layoutPanel = new LayoutPanelEx(codeArea);
-        DecorationPanelEx decorationPanel = new DecorationPanelEx(codeArea);
+        ThemePanelEx themePanel = new ThemePanelEx(codeArea);
         ScrollingPanelEx scrollingPanel = new ScrollingPanelEx(codeArea);
         CursorPanelEx cursorPanel = new CursorPanelEx(codeArea);
 
         tabMap.put(modeTab, modePanel);
         tabMap.put(stateTab, statePanel);
         tabMap.put(layoutTab, layoutPanel);
-        tabMap.put(decorationTab, decorationPanel);
+        tabMap.put(themeTab, themePanel);
         tabMap.put(scrollingTab, scrollingPanel);
         tabMap.put(cursorTab, cursorPanel);
 
@@ -87,7 +80,7 @@ public class BinEdExampleExPanel extends javax.swing.JPanel {
         modeTab = new javax.swing.JPanel();
         stateTab = new javax.swing.JPanel();
         layoutTab = new javax.swing.JPanel();
-        decorationTab = new javax.swing.JPanel();
+        themeTab = new javax.swing.JPanel();
         scrollingTab = new javax.swing.JPanel();
         cursorTab = new javax.swing.JPanel();
 
@@ -108,8 +101,8 @@ public class BinEdExampleExPanel extends javax.swing.JPanel {
         layoutTab.setLayout(new java.awt.BorderLayout());
         tabbedPane.addTab("Layout", layoutTab);
 
-        decorationTab.setLayout(new java.awt.BorderLayout());
-        tabbedPane.addTab("Decoration", decorationTab);
+        themeTab.setLayout(new java.awt.BorderLayout());
+        tabbedPane.addTab("Theme", themeTab);
 
         scrollingTab.setLayout(new java.awt.BorderLayout());
         tabbedPane.addTab("Scrolling", scrollingTab);
@@ -136,43 +129,12 @@ public class BinEdExampleExPanel extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel cursorTab;
-    private javax.swing.JPanel decorationTab;
     private javax.swing.JPanel layoutTab;
     private javax.swing.JPanel modeTab;
     private javax.swing.JPanel scrollingTab;
     private javax.swing.JSplitPane splitPane;
     private javax.swing.JPanel stateTab;
     private javax.swing.JTabbedPane tabbedPane;
+    private javax.swing.JPanel themeTab;
     // End of variables declaration//GEN-END:variables
-
-    private Border getBorderByType(int borderTypeIndex) {
-        switch (borderTypeIndex) {
-            case 0: {
-                return null;
-            }
-            case 1: {
-                return new EmptyBorder(5, 5, 5, 5);
-            }
-            case 2: {
-                return new BasicBorders.MarginBorder();
-            }
-            case 3: {
-                return new BevelBorder(BevelBorder.RAISED);
-            }
-            case 4: {
-                return new BevelBorder(BevelBorder.LOWERED);
-            }
-            case 5: {
-                return new EtchedBorder(EtchedBorder.RAISED);
-            }
-            case 6: {
-                return new EtchedBorder(EtchedBorder.LOWERED);
-            }
-            case 7: {
-                return new LineBorder(Color.BLACK);
-            }
-        }
-
-        return null;
-    }
 }

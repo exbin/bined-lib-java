@@ -78,7 +78,7 @@ public class LayoutPanelEx extends javax.swing.JPanel {
         spaceGroupSizeSpinner = new javax.swing.JSpinner();
         wrapLineModeCheckBox = new javax.swing.JCheckBox();
 
-        maxBytesPerLineLabel.setText("Bytes Per Line");
+        maxBytesPerLineLabel.setText("Maximum Bytes Per Line");
 
         maxBytesPerLineSpinner.setModel(new javax.swing.SpinnerNumberModel(16, 1, null, 1));
         maxBytesPerLineSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
