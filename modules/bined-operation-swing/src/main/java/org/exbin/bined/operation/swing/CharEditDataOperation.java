@@ -15,7 +15,7 @@
  */
 package org.exbin.bined.operation.swing;
 
-import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.swing.CodeAreaCore;
 
 /**
@@ -24,9 +24,10 @@ import org.exbin.bined.swing.CodeAreaCore;
  * @version 0.2.0 2018/10/20
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public abstract class CharEditDataOperation extends CodeAreaOperation {
 
-    public CharEditDataOperation(@Nonnull CodeAreaCore codeArea) {
+    public CharEditDataOperation(CodeAreaCore codeArea) {
         super(codeArea);
     }
 

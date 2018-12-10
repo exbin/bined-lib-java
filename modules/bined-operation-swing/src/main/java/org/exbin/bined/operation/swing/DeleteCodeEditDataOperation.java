@@ -15,6 +15,8 @@
  */
 package org.exbin.bined.operation.swing;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.CodeType;
 import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.operation.BinaryDataOperationException;
@@ -27,6 +29,7 @@ import org.exbin.utils.binary_data.EditableBinaryData;
  * @version 0.1.2 2017/01/02
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public class DeleteCodeEditDataOperation extends CodeEditDataOperation {
 
     private static final char BACKSPACE_CHAR = '\b';
@@ -40,6 +43,7 @@ public class DeleteCodeEditDataOperation extends CodeEditDataOperation {
         this.position = startPosition;
     }
 
+    @Nonnull
     @Override
     public CodeAreaOperationType getType() {
         return CodeAreaOperationType.EDIT_DATA;

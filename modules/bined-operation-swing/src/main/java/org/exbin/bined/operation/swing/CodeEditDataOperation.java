@@ -15,6 +15,8 @@
  */
 package org.exbin.bined.operation.swing;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.CodeType;
 import org.exbin.bined.swing.CodeAreaCore;
 
@@ -24,6 +26,7 @@ import org.exbin.bined.swing.CodeAreaCore;
  * @version 0.1.0 2015/05/17
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public abstract class CodeEditDataOperation extends CodeAreaOperation {
 
     public CodeEditDataOperation(CodeAreaCore coreArea) {
@@ -35,6 +38,7 @@ public abstract class CodeEditDataOperation extends CodeAreaOperation {
      *
      * @return code type
      */
+    @Nonnull
     public abstract CodeType getCodeType();
 
     /**

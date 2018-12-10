@@ -17,6 +17,7 @@ package org.exbin.bined.swing.extended.color;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.color.CodeAreaBasicColors;
 import org.exbin.bined.color.CodeAreaColorGroup;
 import org.exbin.bined.color.CodeAreaColorType;
@@ -27,6 +28,7 @@ import org.exbin.bined.color.CodeAreaColorType;
  * @version 0.2.0 2018/11/29
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public enum CodeAreaUnprintablesColorType implements CodeAreaColorType {
 
     UNPRINTABLES_COLOR(CodeAreaBasicColors.TEXT_COLOR.getId(), ExtendedCodeAreaColorsGroup.UNPRINTABLES),
@@ -37,7 +39,7 @@ public enum CodeAreaUnprintablesColorType implements CodeAreaColorType {
     @Nullable
     private final CodeAreaColorGroup group;
 
-    private CodeAreaUnprintablesColorType(@Nonnull String typeId, @Nullable CodeAreaColorGroup group) {
+    private CodeAreaUnprintablesColorType(String typeId, @Nullable CodeAreaColorGroup group) {
         this.typeId = typeId;
         this.group = group;
     }

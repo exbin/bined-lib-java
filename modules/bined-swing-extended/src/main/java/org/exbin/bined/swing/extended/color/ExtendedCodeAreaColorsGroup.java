@@ -16,6 +16,7 @@
 package org.exbin.bined.swing.extended.color;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.color.CodeAreaColorGroup;
 
 /**
@@ -24,6 +25,7 @@ import org.exbin.bined.color.CodeAreaColorGroup;
  * @version 0.2.0 2018/11/17
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public enum ExtendedCodeAreaColorsGroup implements CodeAreaColorGroup {
 
     UNPRINTABLES("unprintables"),
@@ -33,7 +35,7 @@ public enum ExtendedCodeAreaColorsGroup implements CodeAreaColorGroup {
     @Nonnull
     private final String groupId;
 
-    private ExtendedCodeAreaColorsGroup(@Nonnull String groupId) {
+    private ExtendedCodeAreaColorsGroup(String groupId) {
         this.groupId = groupId;
     }
 

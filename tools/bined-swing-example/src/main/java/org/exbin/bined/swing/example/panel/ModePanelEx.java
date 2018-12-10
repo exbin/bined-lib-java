@@ -19,6 +19,8 @@ import java.awt.Color;
 import java.awt.Font;
 import java.nio.charset.Charset;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
@@ -44,11 +46,12 @@ import org.exbin.bined.swing.extended.ExtCodeArea;
  * @version 0.2.0 2018/12/09
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public class ModePanelEx extends javax.swing.JPanel {
 
     private final ExtCodeArea codeArea;
 
-    public ModePanelEx(@Nonnull ExtCodeArea codeArea) {
+    public ModePanelEx(ExtCodeArea codeArea) {
         this.codeArea = codeArea;
 
         initComponents();
@@ -390,6 +393,7 @@ public class ModePanelEx extends javax.swing.JPanel {
     private javax.swing.JLabel viewModeScrollModeLabel;
     // End of variables declaration//GEN-END:variables
 
+    @Nullable
     private Border getBorderByType(int borderTypeIndex) {
         switch (borderTypeIndex) {
             case 0: {

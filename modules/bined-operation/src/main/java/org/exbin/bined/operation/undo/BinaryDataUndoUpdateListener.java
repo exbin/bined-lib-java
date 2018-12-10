@@ -16,7 +16,7 @@
  */
 package org.exbin.bined.operation.undo;
 
-import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.operation.BinaryDataCommand;
 
 /**
@@ -25,6 +25,7 @@ import org.exbin.bined.operation.BinaryDataCommand;
  * @version 0.2.0 2018/02/13
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public interface BinaryDataUndoUpdateListener {
 
     /**
@@ -37,5 +38,5 @@ public interface BinaryDataUndoUpdateListener {
      *
      * @param command added command
      */
-    void undoCommandAdded(@Nonnull BinaryDataCommand command);
+    void undoCommandAdded(BinaryDataCommand command);
 }

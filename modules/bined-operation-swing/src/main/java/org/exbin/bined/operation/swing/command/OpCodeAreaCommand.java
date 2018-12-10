@@ -17,6 +17,8 @@ package org.exbin.bined.operation.swing.command;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.operation.BinaryDataOperationException;
 import org.exbin.bined.operation.BinaryDataOperationListener;
 import org.exbin.bined.operation.swing.CodeAreaOperation;
@@ -24,15 +26,16 @@ import org.exbin.bined.operation.swing.CodeAreaOperationEvent;
 import org.exbin.bined.operation.swing.CodeAreaOperationListener;
 import org.exbin.bined.swing.CodeAreaCore;
 
-
 /**
  * Abstract class for operation on hexadecimal document.
  *
- * @version 0.1.2 2016/12/20
+ * @version 0.2.0 2018/12/10
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public abstract class OpCodeAreaCommand extends CodeAreaCommand {
 
+    @Nullable
     protected CodeAreaOperation operation;
     protected boolean operationPerformed = false;
 
@@ -40,6 +43,7 @@ public abstract class OpCodeAreaCommand extends CodeAreaCommand {
         super(codeArea);
     }
 
+    @Nullable
     public CodeAreaOperation getOperation() {
         return operation;
     }

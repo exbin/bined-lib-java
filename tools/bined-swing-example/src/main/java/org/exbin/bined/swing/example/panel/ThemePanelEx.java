@@ -15,36 +15,35 @@
  */
 package org.exbin.bined.swing.example.panel;
 
-import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.swing.extended.ExtCodeArea;
-import org.exbin.bined.swing.extended.ExtendedBackgroundPaintMode;
-import org.exbin.bined.swing.extended.capability.ExtBackgroundPaintCapable;
+import org.exbin.bined.swing.extended.theme.ExtendedBackgroundPaintMode;
 import org.exbin.bined.swing.extended.layout.ExtendedCodeAreaDecorations;
-import org.exbin.bined.swing.extended.layout.ExtendedCodeAreaLayoutProfile;
+import org.exbin.bined.swing.extended.theme.ExtendedCodeAreaThemeProfile;
 
 /**
  * Hexadecimal editor example panel.
  *
- * @version 0.2.0 2018/12/09
+ * @version 0.2.0 2018/12/10
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public class ThemePanelEx extends javax.swing.JPanel {
 
     private final ExtCodeArea codeArea;
 
-    public ThemePanelEx(@Nonnull ExtCodeArea codeArea) {
+    public ThemePanelEx(ExtCodeArea codeArea) {
         this.codeArea = codeArea;
 
         initComponents();
 
-        backgroundModeComboBox.setSelectedIndex(((ExtBackgroundPaintCapable) codeArea).getBackgroundPaintMode().ordinal());
-//        paintRowPosBackgroundCheckBox.setSelected(codeArea.isPaintRowPosBackground());
-
-        ExtendedCodeAreaLayoutProfile layoutProfile = codeArea.getLayoutProfile();
-        decoratorHeaderLineCheckBox.setSelected(layoutProfile.hasDecoration(ExtendedCodeAreaDecorations.HEADER_LINE));
-        decoratorRowPosLineCheckBox.setSelected(layoutProfile.hasDecoration(ExtendedCodeAreaDecorations.ROW_POSITION_LINE));
-        decoratorSplitLineCheckBox.setSelected(layoutProfile.hasDecoration(ExtendedCodeAreaDecorations.SPLIT_LINE));
-        decoratorBoxCheckBox.setSelected(layoutProfile.hasDecoration(ExtendedCodeAreaDecorations.BOX_LINES));
+        ExtendedCodeAreaThemeProfile themeProfile = codeArea.getThemeProfile();
+        backgroundModeComboBox.setSelectedIndex(themeProfile.getBackgroundPaintMode().ordinal());
+        paintRowPosBackgroundCheckBox.setSelected(themeProfile.isPaintRowPosBackground());
+        decoratorHeaderLineCheckBox.setSelected(themeProfile.hasDecoration(ExtendedCodeAreaDecorations.HEADER_LINE));
+        decoratorRowPosLineCheckBox.setSelected(themeProfile.hasDecoration(ExtendedCodeAreaDecorations.ROW_POSITION_LINE));
+        decoratorSplitLineCheckBox.setSelected(themeProfile.hasDecoration(ExtendedCodeAreaDecorations.SPLIT_LINE));
+        decoratorBoxCheckBox.setSelected(themeProfile.hasDecoration(ExtendedCodeAreaDecorations.BOX_LINES));
     }
 
     /**
@@ -167,43 +166,57 @@ public class ThemePanelEx extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void backgroundModeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backgroundModeComboBoxActionPerformed
-        ((ExtBackgroundPaintCapable) codeArea).setBackgroundPaintMode(ExtendedBackgroundPaintMode.values()[backgroundModeComboBox.getSelectedIndex()]);
+        ExtendedBackgroundPaintMode backgroundPaintMode = ExtendedBackgroundPaintMode.values()[backgroundModeComboBox.getSelectedIndex()];
+        ExtendedCodeAreaThemeProfile themeProfile = codeArea.getThemeProfile();
+        if (themeProfile != null) {
+            themeProfile.setBackgroundPaintMode(backgroundPaintMode);
+        }
+        codeArea.setThemeProfile(themeProfile);
     }//GEN-LAST:event_backgroundModeComboBoxActionPerformed
 
     private void paintRowPosBackgroundCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_paintRowPosBackgroundCheckBoxItemStateChanged
-        //        codeArea.setPaintRowPosBackground(paintRowPosBackgroundCheckBox.isSelected());
+        boolean selected = paintRowPosBackgroundCheckBox.isSelected();
+        ExtendedCodeAreaThemeProfile themeProfile = codeArea.getThemeProfile();
+        if (themeProfile != null) {
+            themeProfile.setPaintRowPosBackground(selected);
+        }
+        codeArea.setThemeProfile(themeProfile);
     }//GEN-LAST:event_paintRowPosBackgroundCheckBoxItemStateChanged
 
     private void decoratorRowPosLineCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_decoratorRowPosLineCheckBoxItemStateChanged
         boolean selected = decoratorRowPosLineCheckBox.isSelected();
-        ExtendedCodeAreaLayoutProfile layoutProfile = codeArea.getLayoutProfile();
-        if (layoutProfile != null) {
-            layoutProfile.setDecoration(ExtendedCodeAreaDecorations.ROW_POSITION_LINE, selected);
+        ExtendedCodeAreaThemeProfile themeProfile = codeArea.getThemeProfile();
+        if (themeProfile != null) {
+            themeProfile.setDecoration(ExtendedCodeAreaDecorations.ROW_POSITION_LINE, selected);
         }
+        codeArea.setThemeProfile(themeProfile);
     }//GEN-LAST:event_decoratorRowPosLineCheckBoxItemStateChanged
 
     private void decoratorSplitLineCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_decoratorSplitLineCheckBoxItemStateChanged
         boolean selected = decoratorSplitLineCheckBox.isSelected();
-        ExtendedCodeAreaLayoutProfile layoutProfile = codeArea.getLayoutProfile();
-        if (layoutProfile != null) {
-            layoutProfile.setDecoration(ExtendedCodeAreaDecorations.SPLIT_LINE, selected);
+        ExtendedCodeAreaThemeProfile themeProfile = codeArea.getThemeProfile();
+        if (themeProfile != null) {
+            themeProfile.setDecoration(ExtendedCodeAreaDecorations.SPLIT_LINE, selected);
         }
+        codeArea.setThemeProfile(themeProfile);
     }//GEN-LAST:event_decoratorSplitLineCheckBoxItemStateChanged
 
     private void decoratorBoxCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_decoratorBoxCheckBoxItemStateChanged
         boolean selected = decoratorBoxCheckBox.isSelected();
-        ExtendedCodeAreaLayoutProfile layoutProfile = codeArea.getLayoutProfile();
-        if (layoutProfile != null) {
-            layoutProfile.setDecoration(ExtendedCodeAreaDecorations.BOX_LINES, selected);
+        ExtendedCodeAreaThemeProfile themeProfile = codeArea.getThemeProfile();
+        if (themeProfile != null) {
+            themeProfile.setDecoration(ExtendedCodeAreaDecorations.BOX_LINES, selected);
         }
+        codeArea.setThemeProfile(themeProfile);
     }//GEN-LAST:event_decoratorBoxCheckBoxItemStateChanged
 
     private void decoratorHeaderLineCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_decoratorHeaderLineCheckBoxItemStateChanged
         boolean selected = decoratorHeaderLineCheckBox.isSelected();
-        ExtendedCodeAreaLayoutProfile layoutProfile = codeArea.getLayoutProfile();
-        if (layoutProfile != null) {
-            layoutProfile.setDecoration(ExtendedCodeAreaDecorations.HEADER_LINE, selected);
+        ExtendedCodeAreaThemeProfile themeProfile = codeArea.getThemeProfile();
+        if (themeProfile != null) {
+            themeProfile.setDecoration(ExtendedCodeAreaDecorations.HEADER_LINE, selected);
         }
+        codeArea.setThemeProfile(themeProfile);
     }//GEN-LAST:event_decoratorHeaderLineCheckBoxItemStateChanged
 
 

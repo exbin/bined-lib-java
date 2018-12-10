@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import javax.swing.UIManager;
 import org.exbin.bined.BasicCodeAreaSection;
 import org.exbin.bined.BasicCodeAreaZone;
@@ -59,6 +60,8 @@ import org.exbin.bined.swing.capability.FontCapable;
 import org.exbin.bined.swing.extended.color.ColorsProfileCapableCodeAreaPainter;
 import org.exbin.bined.swing.extended.layout.ExtendedCodeAreaLayoutProfile;
 import org.exbin.bined.swing.extended.layout.LayoutProfileCapableCodeAreaPainter;
+import org.exbin.bined.swing.extended.theme.ExtendedCodeAreaThemeProfile;
+import org.exbin.bined.swing.extended.theme.ThemeProfileCapableCodeAreaPainter;
 
 /**
  * Code area component extended code area.
@@ -66,6 +69,7 @@ import org.exbin.bined.swing.extended.layout.LayoutProfileCapableCodeAreaPainter
  * @version 0.2.0 2018/12/04
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeAreaSwingControl {
 
     @Nonnull
@@ -88,8 +92,6 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
     private CodeAreaViewMode viewMode = CodeAreaViewMode.DUAL;
     @Nullable
     private Font font;
-    @Nonnull
-    private ExtendedBackgroundPaintMode borderPaintMode = ExtendedBackgroundPaintMode.STRIPED;
     @Nonnull
     private AntialiasingMode antialiasingMode = AntialiasingMode.AUTO;
     @Nonnull
@@ -156,7 +158,7 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
         return painter;
     }
 
-    public void setPainter(@Nonnull CodeAreaPainter painter) {
+    public void setPainter(CodeAreaPainter painter) {
         CodeAreaUtils.requireNonNull(painter);
 
         this.painter = painter;
@@ -168,7 +170,7 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
     }
 
     @Override
-    public void paintComponent(@Nonnull Graphics g) {
+    public void paintComponent(Graphics g) {
         if (!isInitialized()) {
             ((FontCapable) this).setCodeFont(getCodeFont());
         }
@@ -223,7 +225,7 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
         return caret.getCaretPosition();
     }
 
-    public void setCaretPosition(@Nonnull CaretPosition caretPosition) {
+    public void setCaretPosition(CaretPosition caretPosition) {
         caret.setCaretPosition(caretPosition);
         notifyCaretMoved();
     }
@@ -255,7 +257,7 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
     }
 
     @Override
-    public void setCodeCharactersCase(@Nonnull CodeCharactersCase codeCharactersCase) {
+    public void setCodeCharactersCase(CodeCharactersCase codeCharactersCase) {
         this.codeCharactersCase = codeCharactersCase;
         repaint();
     }
@@ -273,7 +275,7 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
     }
 
     @Override
-    public void setViewMode(@Nonnull CodeAreaViewMode viewMode) {
+    public void setViewMode(CodeAreaViewMode viewMode) {
         this.viewMode = viewMode;
         if (viewMode == CodeAreaViewMode.CODE_MATRIX) {
             getCaret().setSection(BasicCodeAreaSection.CODE_MATRIX);
@@ -292,7 +294,7 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
     }
 
     @Override
-    public void setCodeType(@Nonnull CodeType codeType) {
+    public void setCodeType(CodeType codeType) {
         this.codeType = codeType;
         painter.reset();
         repaint();
@@ -304,7 +306,7 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
     }
 
     @Override
-    public void revealPosition(@Nonnull CaretPosition caretPosition) {
+    public void revealPosition(CaretPosition caretPosition) {
         if (!isInitialized()) {
             // Silently ignore if painter is not yet initialized
             return;
@@ -319,7 +321,7 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
         }
     }
 
-    public void revealPosition(long dataPosition, int dataOffset, @Nonnull CodeAreaSection section) {
+    public void revealPosition(long dataPosition, int dataOffset, CodeAreaSection section) {
         revealPosition(new CodeAreaCaretPosition(dataPosition, dataOffset, section));
     }
 
@@ -329,7 +331,7 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
     }
 
     @Override
-    public void centerOnPosition(@Nonnull CaretPosition caretPosition) {
+    public void centerOnPosition(CaretPosition caretPosition) {
         if (!isInitialized()) {
             // Silently ignore if painter is not yet initialized
             return;
@@ -344,25 +346,25 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
         }
     }
 
-    public void centerOnPosition(long dataPosition, int dataOffset, @Nonnull CodeAreaSection section) {
+    public void centerOnPosition(long dataPosition, int dataOffset, CodeAreaSection section) {
         centerOnPosition(new CodeAreaCaretPosition(dataPosition, dataOffset, section));
     }
 
     @Nullable
     @Override
-    public CaretPosition mousePositionToClosestCaretPosition(int positionX, int positionY, @Nonnull PositionOverflowMode overflowMode) {
+    public CaretPosition mousePositionToClosestCaretPosition(int positionX, int positionY, PositionOverflowMode overflowMode) {
         return painter.mousePositionToClosestCaretPosition(positionX, positionY, overflowMode);
     }
 
     @Nonnull
     @Override
-    public CaretPosition computeMovePosition(@Nonnull CaretPosition position, @Nonnull MovementDirection direction) {
+    public CaretPosition computeMovePosition(CaretPosition position, MovementDirection direction) {
         return painter.computeMovePosition(position, direction);
     }
 
     @Nonnull
     @Override
-    public CodeAreaScrollPosition computeScrolling(@Nonnull CodeAreaScrollPosition startPosition, @Nonnull ScrollingDirection scrollingShift) {
+    public CodeAreaScrollPosition computeScrolling(CodeAreaScrollPosition startPosition, ScrollingDirection scrollingShift) {
         return painter.computeScrolling(startPosition, scrollingShift);
     }
 
@@ -379,7 +381,7 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
     }
 
     @Override
-    public void setScrollPosition(@Nonnull CodeAreaScrollPosition scrollPosition) {
+    public void setScrollPosition(CodeAreaScrollPosition scrollPosition) {
         this.scrollPosition.setScrollPosition(scrollPosition);
     }
 
@@ -403,7 +405,7 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
     }
 
     @Override
-    public void setVerticalScrollUnit(@Nonnull VerticalScrollUnit verticalScrollUnit) {
+    public void setVerticalScrollUnit(VerticalScrollUnit verticalScrollUnit) {
         this.verticalScrollUnit = verticalScrollUnit;
         long linePosition = scrollPosition.getRowPosition();
         if (verticalScrollUnit == VerticalScrollUnit.ROW) {
@@ -422,7 +424,7 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
     }
 
     @Override
-    public void setHorizontalScrollBarVisibility(@Nonnull ScrollBarVisibility horizontalScrollBarVisibility) {
+    public void setHorizontalScrollBarVisibility(ScrollBarVisibility horizontalScrollBarVisibility) {
         this.horizontalScrollBarVisibility = horizontalScrollBarVisibility;
         resetPainter();
         updateScrollBars();
@@ -435,7 +437,7 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
     }
 
     @Override
-    public void setHorizontalScrollUnit(@Nonnull HorizontalScrollUnit horizontalScrollUnit) {
+    public void setHorizontalScrollUnit(HorizontalScrollUnit horizontalScrollUnit) {
         this.horizontalScrollUnit = horizontalScrollUnit;
         int bytePosition = scrollPosition.getCharPosition();
         if (horizontalScrollUnit == HorizontalScrollUnit.CHARACTER) {
@@ -492,7 +494,7 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
     }
 
     @Override
-    public void setSelection(@Nonnull SelectionRange selection) {
+    public void setSelection(SelectionRange selection) {
         CodeAreaUtils.requireNonNull(selection);
 
         this.selection.setSelection(selection);
@@ -526,7 +528,7 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
     }
 
     @Override
-    public void setCharset(@Nonnull Charset charset) {
+    public void setCharset(Charset charset) {
         CodeAreaUtils.requireNonNull(charset);
 
         this.charset = charset;
@@ -546,7 +548,7 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
     }
 
     @Override
-    public void setEditationMode(@Nonnull EditationMode editationMode) {
+    public void setEditationMode(EditationMode editationMode) {
         boolean changed = editationMode != this.editationMode;
         this.editationMode = editationMode;
         if (changed) {
@@ -575,7 +577,7 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
     }
 
     @Override
-    public void setCodeFont(@Nonnull Font font) {
+    public void setCodeFont(Font font) {
         this.font = font;
         painter.reset();
         repaint();
@@ -595,24 +597,12 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
 
     @Nonnull
     @Override
-    public ExtendedBackgroundPaintMode getBackgroundPaintMode() {
-        return borderPaintMode;
-    }
-
-    @Override
-    public void setBackgroundPaintMode(@Nonnull ExtendedBackgroundPaintMode borderPaintMode) {
-        this.borderPaintMode = borderPaintMode;
-        repaint();
-    }
-
-    @Nonnull
-    @Override
     public RowWrappingMode getRowWrapping() {
         return lineWrapping;
     }
 
     @Override
-    public void setRowWrapping(@Nonnull RowWrappingMode lineWrapping) {
+    public void setRowWrapping(RowWrappingMode lineWrapping) {
         this.lineWrapping = lineWrapping;
         updateLayout();
     }
@@ -649,7 +639,7 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
     }
 
     @Override
-    public void setColorsProfile(@Nonnull CodeAreaColorsProfile colorsProfile) {
+    public void setColorsProfile(CodeAreaColorsProfile colorsProfile) {
         if (painter instanceof ColorsProfileCapableCodeAreaPainter) {
             ((ColorsProfileCapableCodeAreaPainter) painter).setColorsProfile(colorsProfile);
         }
@@ -666,9 +656,25 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
     }
 
     @Override
-    public void setLayoutProfile(@Nonnull ExtendedCodeAreaLayoutProfile layoutProfile) {
+    public void setLayoutProfile(ExtendedCodeAreaLayoutProfile layoutProfile) {
         if (painter instanceof LayoutProfileCapableCodeAreaPainter) {
             ((LayoutProfileCapableCodeAreaPainter) painter).setLayoutProfile(layoutProfile);
+        }
+    }
+
+    @Override
+    public ExtendedCodeAreaThemeProfile getThemeProfile() {
+        if (painter instanceof ThemeProfileCapableCodeAreaPainter) {
+            return ((ThemeProfileCapableCodeAreaPainter) painter).getThemeProfile();
+        }
+
+        return null;
+    }
+
+    @Override
+    public void setThemeProfile(ExtendedCodeAreaThemeProfile themeProfile) {
+        if (painter instanceof ThemeProfileCapableCodeAreaPainter) {
+            ((ThemeProfileCapableCodeAreaPainter) painter).setThemeProfile(themeProfile);
         }
     }
 

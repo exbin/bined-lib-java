@@ -16,6 +16,7 @@
 package org.exbin.bined.operation;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * Operation execution event.
@@ -23,12 +24,13 @@ import javax.annotation.Nonnull;
  * @version 0.2.0 2018/02/13
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public class BinaryDataOperationEvent {
 
     @Nonnull
     private BinaryDataOperation operation;
 
-    public BinaryDataOperationEvent(@Nonnull BinaryDataOperation operation) {
+    public BinaryDataOperationEvent(BinaryDataOperation operation) {
         this.operation = operation;
     }
 

@@ -18,6 +18,7 @@ package org.exbin.bined.operation;
 import java.util.Collection;
 import java.util.List;
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * Interface for compound command.
@@ -25,6 +26,7 @@ import javax.annotation.Nonnull;
  * @version 0.2.0 2018/02/13
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public interface BinaryDataCompoundCommand extends BinaryDataCommand {
 
     /**
@@ -32,14 +34,14 @@ public interface BinaryDataCompoundCommand extends BinaryDataCommand {
      *
      * @param command appended command
      */
-    public void appendCommand(@Nonnull BinaryDataCommand command);
+    public void appendCommand(BinaryDataCommand command);
 
     /**
      * Append list of commands to the list of commands.
      *
      * @param commands appended commands
      */
-    public void appendCommands(@Nonnull Collection<BinaryDataCommand> commands);
+    public void appendCommands(Collection<BinaryDataCommand> commands);
 
     /**
      * Returns list of commands.

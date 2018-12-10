@@ -16,6 +16,8 @@
 package org.exbin.bined.operation.swing;
 
 import java.nio.charset.Charset;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.capability.CharsetCapable;
@@ -29,6 +31,7 @@ import org.exbin.utils.binary_data.EditableBinaryData;
  * @version 0.1.2 2016/12/20
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public class InsertCharEditDataOperation extends CharEditDataOperation {
 
     private final long startPosition;
@@ -39,6 +42,7 @@ public class InsertCharEditDataOperation extends CharEditDataOperation {
         this.startPosition = startPosition;
     }
 
+    @Nonnull
     @Override
     public CodeAreaOperationType getType() {
         return CodeAreaOperationType.EDIT_DATA;

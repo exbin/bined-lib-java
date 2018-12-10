@@ -13,23 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.swing.extended.color;
+package org.exbin.bined.swing.extended.theme;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import org.exbin.bined.color.CodeAreaColorsProfile;
 
 /**
- * Capability of painter to handle colors profiling.
+ * Capability of painter to handle theme profiling.
  *
- * @version 0.2.0 2018/11/28
+ * @version 0.2.0 2018/12/10
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public interface ColorsProfileCapableCodeAreaPainter {
+public interface ThemeProfileCapableCodeAreaPainter {
 
     @Nonnull
-    CodeAreaColorsProfile getColorsProfile();
+    ExtendedCodeAreaThemeProfile getThemeProfile();
 
-    void setColorsProfile(CodeAreaColorsProfile colors);
+    void setThemeProfile(ExtendedCodeAreaThemeProfile themeProfile);
 }

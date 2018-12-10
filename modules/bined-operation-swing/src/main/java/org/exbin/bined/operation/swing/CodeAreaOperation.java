@@ -17,6 +17,7 @@ package org.exbin.bined.operation.swing;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.CaretPosition;
 import org.exbin.bined.CodeAreaCaretPosition;
 import org.exbin.bined.operation.BinaryDataOperation;
@@ -29,6 +30,7 @@ import org.exbin.bined.swing.CodeAreaCore;
  * @version 0.2.0 2018/08/11
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public abstract class CodeAreaOperation implements BinaryDataOperation {
 
     @Nonnull
@@ -36,11 +38,11 @@ public abstract class CodeAreaOperation implements BinaryDataOperation {
     @Nonnull
     protected final CodeAreaCaretPosition backPosition = new CodeAreaCaretPosition();
 
-    public CodeAreaOperation(@Nonnull CodeAreaCore codeArea) {
+    public CodeAreaOperation(CodeAreaCore codeArea) {
         this(codeArea, null);
     }
 
-    public CodeAreaOperation(@Nonnull CodeAreaCore codeArea, @Nullable CaretPosition backPosition) {
+    public CodeAreaOperation(CodeAreaCore codeArea, @Nullable CaretPosition backPosition) {
         this.codeArea = codeArea;
         if (backPosition != null) {
             this.backPosition.setPosition(backPosition);
@@ -76,7 +78,7 @@ public abstract class CodeAreaOperation implements BinaryDataOperation {
         return backPosition;
     }
 
-    public void setBackPosition(@Nonnull CaretPosition backPosition) {
+    public void setBackPosition(CaretPosition backPosition) {
         this.backPosition.setPosition(backPosition);
     }
 
@@ -109,7 +111,7 @@ public abstract class CodeAreaOperation implements BinaryDataOperation {
      * @return undo operation or null if not available
      */
     @Nullable
-    protected CodeAreaOperation execute(@Nonnull ExecutionType executionType) {
+    protected CodeAreaOperation execute(ExecutionType executionType) {
         return null;
     }
 

@@ -23,15 +23,15 @@ import org.exbin.bined.swing.extended.theme.ExtendedCodeAreaThemeProfile;
 /**
  * Support for theme profiling.
  *
- * @version 0.2.0 2018/12/09
+ * @version 0.2.0 2018/12/10
  * @author ExBin Project (https://exbin.org)
  */
 public interface ThemeProfileCapable {
 
     @Nullable
-    ExtendedCodeAreaThemeProfile getLayoutProfile();
+    ExtendedCodeAreaThemeProfile getThemeProfile();
 
-    void setLayoutProfile(@Nonnull ExtendedCodeAreaThemeProfile themeProfile);
+    void setThemeProfile(@Nonnull ExtendedCodeAreaThemeProfile themeProfile);
 
     public static class ThemeProfileCapability implements CodeAreaCapability {
 

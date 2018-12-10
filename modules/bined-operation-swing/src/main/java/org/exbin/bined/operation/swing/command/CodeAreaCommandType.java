@@ -16,6 +16,7 @@
 package org.exbin.bined.operation.swing.command;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * Operation type enumeration.
@@ -23,6 +24,7 @@ import javax.annotation.Nonnull;
  * @version 0.2.0 2018/02/14
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public enum CodeAreaCommandType {
 
     /**

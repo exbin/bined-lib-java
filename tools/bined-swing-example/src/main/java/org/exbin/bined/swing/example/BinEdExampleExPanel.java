@@ -19,6 +19,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.util.HashMap;
 import java.util.Map;
+import javax.annotation.ParametersAreNonnullByDefault;
 import javax.swing.JPanel;
 import org.exbin.bined.swing.example.panel.CursorPanelEx;
 import org.exbin.bined.swing.example.panel.ThemePanelEx;
@@ -34,6 +35,7 @@ import org.exbin.bined.swing.extended.ExtCodeArea;
  * @version 0.2.0 2018/12/09
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public class BinEdExampleExPanel extends javax.swing.JPanel {
 
     private ExtCodeArea codeArea;

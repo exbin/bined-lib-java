@@ -16,15 +16,18 @@
  */
 package org.exbin.bined.operation.swing.command;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.operation.swing.RemoveDataOperation;
 import org.exbin.bined.swing.CodeAreaCore;
 
 /**
  * Command for deleting data.
  *
- * @version 0.1.0 2016/06/13
+ * @version 0.2.0 2018/12/10
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public class RemoveDataCommand extends OpCodeAreaCommand {
 
     public RemoveDataCommand(CodeAreaCore codeArea, long position, int codeOffset, long size) {
@@ -32,6 +35,7 @@ public class RemoveDataCommand extends OpCodeAreaCommand {
         super.setOperation(new RemoveDataOperation(codeArea, position, codeOffset, size));
     }
 
+    @Nonnull
     @Override
     public CodeAreaCommandType getType() {
         return CodeAreaCommandType.DATA_REMOVED;

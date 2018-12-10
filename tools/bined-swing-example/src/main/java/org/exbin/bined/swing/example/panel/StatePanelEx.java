@@ -21,7 +21,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 import org.exbin.bined.BasicCodeAreaSection;
@@ -38,11 +38,12 @@ import org.exbin.utils.binary_data.EditableBinaryData;
  * @version 0.2.0 2018/08/11
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public class StatePanelEx extends javax.swing.JPanel {
 
     private final ExtCodeArea codeArea;
 
-    public StatePanelEx(@Nonnull final ExtCodeArea codeArea) {
+    public StatePanelEx(final ExtCodeArea codeArea) {
         this.codeArea = codeArea;
 
         initComponents();

@@ -17,6 +17,7 @@ package org.exbin.bined.swing.extended;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.BasicCodeAreaSection;
 import org.exbin.bined.CaretPosition;
 import org.exbin.bined.CodeAreaCaretPosition;
@@ -41,6 +42,7 @@ import org.exbin.bined.swing.extended.capability.PositionCodeTypeCapable;
  * @version 0.2.0 2018/12/03
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public class ExtendedCodeAreaStructure {
 
     @Nonnull
@@ -69,7 +71,7 @@ public class ExtendedCodeAreaStructure {
     private int codeLastCharPos;
     private int previewCharPos;
 
-    public void updateCache(@Nonnull DataProvider codeArea, int charactersPerPage) {
+    public void updateCache(DataProvider codeArea, int charactersPerPage) {
         viewMode = ((ViewModeCapable) codeArea).getViewMode();
         codeType = ((CodeTypeCapable) codeArea).getCodeType();
         positionCodeType = ((PositionCodeTypeCapable) codeArea).getPositionCodeType();
@@ -161,7 +163,7 @@ public class ExtendedCodeAreaStructure {
         return computedBytesPerRow;
     }
 
-    public CaretPosition computeMovePosition(@Nonnull CaretPosition position, @Nonnull MovementDirection direction, int rowsPerPage) {
+    public CaretPosition computeMovePosition(CaretPosition position, MovementDirection direction, int rowsPerPage) {
         CodeAreaCaretPosition target = new CodeAreaCaretPosition(position.getDataPosition(), position.getCodeOffset(), position.getSection());
         switch (direction) {
             case LEFT: {

@@ -16,6 +16,8 @@
  */
 package org.exbin.bined.operation.swing.command;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.swing.CodeAreaCore;
 
 /**
@@ -24,12 +26,14 @@ import org.exbin.bined.swing.CodeAreaCore;
  * @version 0.1.0 2016/05/17
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public abstract class EditDataCommand extends CodeAreaCommand {
 
     public EditDataCommand(CodeAreaCore codeArea) {
         super(codeArea);
     }
 
+    @Nonnull
     @Override
     public CodeAreaCommandType getType() {
         return CodeAreaCommandType.DATA_EDITED;
@@ -40,6 +44,7 @@ public abstract class EditDataCommand extends CodeAreaCommand {
         return true;
     }
 
+    @Nonnull
     public abstract EditCommandType getCommandType();
 
     /**

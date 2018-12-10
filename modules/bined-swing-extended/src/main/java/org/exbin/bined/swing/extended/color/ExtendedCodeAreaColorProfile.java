@@ -18,8 +18,8 @@ package org.exbin.bined.swing.extended.color;
 import java.awt.Color;
 import java.util.HashMap;
 import java.util.Map;
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import javax.swing.UIManager;
 import org.exbin.bined.color.CodeAreaBasicColors;
 import org.exbin.bined.color.CodeAreaColorType;
@@ -33,6 +33,7 @@ import org.exbin.bined.swing.basic.color.BasicCodeAreaDecorationColorType;
  * @version 0.2.0 2018/11/29
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public class ExtendedCodeAreaColorProfile implements CodeAreaColorsProfile {
 
     private final Map<CodeAreaColorType, Color> colors = new HashMap<>();
@@ -48,7 +49,7 @@ public class ExtendedCodeAreaColorProfile implements CodeAreaColorsProfile {
      */
     @Nullable
     @Override
-    public Color getColor(@Nonnull CodeAreaColorType colorType) {
+    public Color getColor(CodeAreaColorType colorType) {
         return colors.get(colorType);
     }
 
@@ -60,7 +61,7 @@ public class ExtendedCodeAreaColorProfile implements CodeAreaColorsProfile {
      */
     @Nullable
     @Override
-    public Color getColor(@Nonnull CodeAreaColorType colorType, @Nonnull CodeAreaBasicColors basicAltColor) {
+    public Color getColor(CodeAreaColorType colorType, CodeAreaBasicColors basicAltColor) {
         Color color = colors.get(colorType);
         return color == null ? colors.get(basicAltColor) : color;
     }
@@ -71,11 +72,11 @@ public class ExtendedCodeAreaColorProfile implements CodeAreaColorsProfile {
      * @param colorType color type
      * @param color color value
      */
-    public void addColor(@Nonnull CodeAreaColorType colorType, @Nonnull Color color) {
+    public void addColor(CodeAreaColorType colorType, Color color) {
         colors.put(colorType, color);
     }
 
-    public void removeColor(@Nonnull CodeAreaColorType colorType) {
+    public void removeColor(CodeAreaColorType colorType) {
         colors.remove(colorType);
     }
 

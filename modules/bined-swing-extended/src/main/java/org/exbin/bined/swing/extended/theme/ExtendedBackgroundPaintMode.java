@@ -13,34 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.swing.extended.layout;
+package org.exbin.bined.swing.extended.theme;
 
 /**
- * Support for anti-aliasing capability.
+ * Border paint modes for basic painter.
  *
- * TODO
- *
- * @version 0.2.0 2018/11/21
+ * @version 0.2.0 2017/11/04
  * @author ExBin Project (https://exbin.org)
  */
-public class ExtendedCodeAreaDecorationsProfile {
-
-    public enum DecorationType {
-        ROW_NUMBER_LINE,
-        HEADER_LINE,
-        SPLIT_LINE,
-        BOX_LINE
-    }
-
-    public boolean showRowNumberLine() {
-        return true;
-    }
-
-    public boolean showHeaderLine() {
-        return true;
-    }
-
-    public boolean showBoxLine() {
-        return true;
-    }
+public enum ExtendedBackgroundPaintMode {
+    TRANSPARENT,
+    PLAIN,
+    STRIPED,
+    GRIDDED,
+    CHESSBOARD
 }

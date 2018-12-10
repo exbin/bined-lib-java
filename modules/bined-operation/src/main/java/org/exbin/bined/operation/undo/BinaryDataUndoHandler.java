@@ -17,6 +17,7 @@ package org.exbin.bined.operation.undo;
 
 import java.util.List;
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.operation.BinaryDataCommand;
 import org.exbin.bined.operation.BinaryDataOperationException;
 
@@ -26,6 +27,7 @@ import org.exbin.bined.operation.BinaryDataOperationException;
  * @version 0.2.0 2018/02/13
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public interface BinaryDataUndoHandler {
 
     boolean canRedo();
@@ -47,14 +49,14 @@ public interface BinaryDataUndoHandler {
      * @param command command
      * @throws BinaryDataOperationException for operation handling issues
      */
-    void execute(@Nonnull BinaryDataCommand command) throws BinaryDataOperationException;
+    void execute(BinaryDataCommand command) throws BinaryDataOperationException;
 
     /**
      * Adds new step into command list without executing it.
      *
      * @param command command
      */
-    void addCommand(@Nonnull BinaryDataCommand command);
+    void addCommand(BinaryDataCommand command);
 
     @Nonnull
     List<BinaryDataCommand> getCommandList();
@@ -111,7 +113,7 @@ public interface BinaryDataUndoHandler {
 
     void setSyncPoint();
 
-    void addUndoUpdateListener(@Nonnull BinaryDataUndoUpdateListener listener);
+    void addUndoUpdateListener(BinaryDataUndoUpdateListener listener);
 
-    void removeUndoUpdateListener(@Nonnull BinaryDataUndoUpdateListener listener);
+    void removeUndoUpdateListener(BinaryDataUndoUpdateListener listener);
 }

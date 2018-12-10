@@ -16,6 +16,7 @@
 package org.exbin.bined.operation.swing.command;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.operation.BinaryDataAbstractCommand;
 import org.exbin.bined.swing.CodeAreaCore;
 
@@ -25,12 +26,13 @@ import org.exbin.bined.swing.CodeAreaCore;
  * @version 0.2.0 2018/02/14
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public abstract class CodeAreaCommand extends BinaryDataAbstractCommand {
 
     @Nonnull
     protected final CodeAreaCore codeArea;
 
-    public CodeAreaCommand(@Nonnull CodeAreaCore codeArea) {
+    public CodeAreaCommand(CodeAreaCore codeArea) {
         this.codeArea = codeArea;
     }
 

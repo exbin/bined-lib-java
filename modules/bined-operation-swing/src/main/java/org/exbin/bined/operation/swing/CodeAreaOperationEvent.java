@@ -16,7 +16,7 @@
  */
 package org.exbin.bined.operation.swing;
 
-import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * Operation execution event.
@@ -24,11 +24,12 @@ import javax.annotation.Nonnull;
  * @version 0.2.0 2018/10/20
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public class CodeAreaOperationEvent {
 
     private CodeAreaOperation operation;
 
-    public CodeAreaOperationEvent(@Nonnull CodeAreaOperation operation) {
+    public CodeAreaOperationEvent(CodeAreaOperation operation) {
         this.operation = operation;
     }
 

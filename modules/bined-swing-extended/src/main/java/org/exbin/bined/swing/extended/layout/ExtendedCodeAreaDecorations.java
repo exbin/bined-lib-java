@@ -16,6 +16,8 @@
 package org.exbin.bined.swing.extended.layout;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+import org.exbin.bined.swing.extended.theme.CodeAreaDecorationType;
 
 /**
  * Enumeration of supported decorations of extended code area.
@@ -23,7 +25,8 @@ import javax.annotation.Nonnull;
  * @version 0.2.0 2018/12/04
  * @author ExBin Project (https://exbin.org)
  */
-public enum ExtendedCodeAreaDecorations implements CodeAreaDecoration {
+@ParametersAreNonnullByDefault
+public enum ExtendedCodeAreaDecorations implements CodeAreaDecorationType {
 
     ROW_POSITION_LINE("rowNumberLine"),
     HEADER_LINE("headerLine"),
@@ -33,7 +36,7 @@ public enum ExtendedCodeAreaDecorations implements CodeAreaDecoration {
     @Nonnull
     private final String id;
 
-    private ExtendedCodeAreaDecorations(@Nonnull String id) {
+    private ExtendedCodeAreaDecorations(String id) {
         this.id = id;
     }
 

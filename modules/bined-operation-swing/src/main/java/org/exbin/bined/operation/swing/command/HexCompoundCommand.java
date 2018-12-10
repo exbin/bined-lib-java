@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.operation.BinaryDataCommand;
 import org.exbin.bined.operation.BinaryDataCompoundCommand;
 import org.exbin.bined.operation.BinaryDataOperationException;
@@ -30,6 +31,7 @@ import org.exbin.bined.swing.CodeAreaCore;
  * @version 0.1.2 2016/12/20
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public class HexCompoundCommand extends CodeAreaCommand implements BinaryDataCompoundCommand {
 
     private final List<BinaryDataCommand> commands = new ArrayList<>();
@@ -38,7 +40,7 @@ public class HexCompoundCommand extends CodeAreaCommand implements BinaryDataCom
         super(codeArea);
     }
 
-    public static CodeAreaCommand buildCompoundCommand(@Nonnull CodeAreaCore codeArea, CodeAreaCommand... commands) {
+    public static CodeAreaCommand buildCompoundCommand(CodeAreaCore codeArea, CodeAreaCommand... commands) {
         CodeAreaCommand resultCommand = null;
         for (CodeAreaCommand command : commands) {
             if (command != null) {
@@ -58,6 +60,7 @@ public class HexCompoundCommand extends CodeAreaCommand implements BinaryDataCom
         return resultCommand;
     }
 
+    @Nonnull
     @Override
     public CodeAreaCommandType getType() {
         return CodeAreaCommandType.COMPOUND;

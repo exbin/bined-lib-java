@@ -16,17 +16,19 @@
 package org.exbin.bined.swing.extended.layout;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * Capability of painter to handle colors profiling.
+ * Capability of painter to handle layout profiling.
  *
  * @version 0.2.0 2018/12/04
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public interface LayoutProfileCapableCodeAreaPainter {
 
     @Nonnull
     ExtendedCodeAreaLayoutProfile getLayoutProfile();
 
-    void setLayoutProfile(@Nonnull ExtendedCodeAreaLayoutProfile layoutProfile);
+    void setLayoutProfile(ExtendedCodeAreaLayoutProfile layoutProfile);
 }

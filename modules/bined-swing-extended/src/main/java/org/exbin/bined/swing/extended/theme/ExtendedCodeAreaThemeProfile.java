@@ -15,12 +15,102 @@
  */
 package org.exbin.bined.swing.extended.theme;
 
+import java.util.HashSet;
+import java.util.Set;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+import org.exbin.bined.swing.extended.layout.ExtendedCodeAreaDecorations;
+
 /**
  * Layout profile for extended code area.
  *
- * @version 0.2.0 2018/12/04
+ * @version 0.2.0 2018/12/10
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public class ExtendedCodeAreaThemeProfile {
 
+    @Nonnull
+    private ExtendedBackgroundPaintMode borderPaintMode = ExtendedBackgroundPaintMode.STRIPED;
+    private boolean paintRowPosBackground;
+    private int verticalLineByteGroupSize = 0;
+
+    private final Set<CodeAreaDecorationType> decorations = new HashSet<>();
+
+    public ExtendedCodeAreaThemeProfile() {
+        decorations.add(ExtendedCodeAreaDecorations.HEADER_LINE);
+        decorations.add(ExtendedCodeAreaDecorations.ROW_POSITION_LINE);
+        decorations.add(ExtendedCodeAreaDecorations.SPLIT_LINE);
+    }
+
+    /**
+     * Copy constructor.
+     *
+     * @param profile source profile
+     * @return copy of the profile
+     */
+    @Nonnull
+    public static ExtendedCodeAreaThemeProfile createCopy(ExtendedCodeAreaThemeProfile profile) {
+        ExtendedCodeAreaThemeProfile copy = new ExtendedCodeAreaThemeProfile();
+        copy.borderPaintMode = profile.borderPaintMode;
+        copy.paintRowPosBackground = profile.paintRowPosBackground;
+        copy.verticalLineByteGroupSize = profile.verticalLineByteGroupSize;
+        copy.decorations.clear();
+        copy.decorations.addAll(profile.decorations);
+
+        return copy;
+    }
+
+    @Nonnull
+    public ExtendedBackgroundPaintMode getBackgroundPaintMode() {
+        return borderPaintMode;
+    }
+
+    public void setBackgroundPaintMode(ExtendedBackgroundPaintMode borderPaintMode) {
+        this.borderPaintMode = borderPaintMode;
+    }
+
+    public boolean isPaintRowPosBackground() {
+        return paintRowPosBackground;
+    }
+
+    public void setPaintRowPosBackground(boolean paintRowPosBackground) {
+        this.paintRowPosBackground = paintRowPosBackground;
+    }
+
+    public int getVerticalLineByteGroupSize() {
+        return verticalLineByteGroupSize;
+    }
+
+    public void setVerticalLineByteGroupSize(int verticalLineByteGroupSize) {
+        this.verticalLineByteGroupSize = verticalLineByteGroupSize;
+    }
+
+    public boolean hasDecoration(CodeAreaDecorationType decoration) {
+        return decorations.contains(decoration);
+    }
+
+    public void setDecoration(CodeAreaDecorationType decoration, boolean value) {
+        if (!value && hasDecoration(decoration)) {
+            decorations.remove(decoration);
+        } else if (value && !hasDecoration(decoration)) {
+            decorations.add(decoration);
+        }
+    }
+
+    public boolean showRowPositionLine() {
+        return decorations.contains(ExtendedCodeAreaDecorations.ROW_POSITION_LINE);
+    }
+
+    public boolean showHeaderLine() {
+        return decorations.contains(ExtendedCodeAreaDecorations.HEADER_LINE);
+    }
+
+    public boolean showSplitLine() {
+        return decorations.contains(ExtendedCodeAreaDecorations.SPLIT_LINE);
+    }
+
+    public boolean showBoxLine() {
+        return decorations.contains(ExtendedCodeAreaDecorations.BOX_LINES);
+    }
 }

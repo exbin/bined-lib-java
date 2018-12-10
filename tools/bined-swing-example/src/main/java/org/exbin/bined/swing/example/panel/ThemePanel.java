@@ -15,7 +15,7 @@
  */
 package org.exbin.bined.swing.example.panel;
 
-import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.basic.BasicBackgroundPaintMode;
 import org.exbin.bined.swing.basic.CodeArea;
 import org.exbin.bined.swing.capability.BackgroundPaintCapable;
@@ -26,11 +26,12 @@ import org.exbin.bined.swing.capability.BackgroundPaintCapable;
  * @version 0.2.0 2018/09/20
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public class ThemePanel extends javax.swing.JPanel {
 
     private final CodeArea codeArea;
 
-    public ThemePanel(@Nonnull CodeArea codeArea) {
+    public ThemePanel(CodeArea codeArea) {
         this.codeArea = codeArea;
 
         initComponents();

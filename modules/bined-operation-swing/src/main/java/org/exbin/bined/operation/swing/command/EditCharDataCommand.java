@@ -17,6 +17,7 @@
 package org.exbin.bined.operation.swing.command;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.operation.BinaryDataOperationException;
 import org.exbin.bined.operation.BinaryDataOperationListener;
 import org.exbin.bined.operation.swing.CharEditDataOperation;
@@ -34,13 +35,14 @@ import org.exbin.bined.swing.CodeAreaCore;
  * @version 0.2.0 2018/08/11
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public class EditCharDataCommand extends EditDataCommand {
 
     private final EditCommandType commandType;
     protected boolean operationPerformed = false;
     private CodeAreaOperation[] operations = null;
 
-    public EditCharDataCommand(@Nonnull CodeAreaCore codeArea, @Nonnull EditCommandType commandType, long position) {
+    public EditCharDataCommand(CodeAreaCore codeArea, EditCommandType commandType, long position) {
         super(codeArea);
         this.commandType = commandType;
         CodeAreaOperation operation;
@@ -108,6 +110,7 @@ public class EditCharDataCommand extends EditDataCommand {
         }
     }
 
+    @Nonnull
     @Override
     public CodeAreaCommandType getType() {
         return CodeAreaCommandType.DATA_EDITED;
@@ -126,6 +129,7 @@ public class EditCharDataCommand extends EditDataCommand {
         }
     }
 
+    @Nonnull
     @Override
     public EditCommandType getCommandType() {
         return commandType;

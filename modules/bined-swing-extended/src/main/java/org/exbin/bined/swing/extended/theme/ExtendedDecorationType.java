@@ -13,26 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.swing.extended.capability;
+package org.exbin.bined.swing.extended.theme;
 
 import javax.annotation.Nonnull;
-import org.exbin.bined.capability.CodeAreaCapability;
-import org.exbin.bined.swing.extended.ExtendedBackgroundPaintMode;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * Support for background paint mode capability.
+ * Enumeration of decoration types for extended code area.
  *
- * @version 0.2.0 2018/12/04
+ * @version 0.2.0 2018/12/10
  * @author ExBin Project (https://exbin.org)
  */
-public interface ExtBackgroundPaintCapable {
+@ParametersAreNonnullByDefault
+public enum ExtendedDecorationType implements CodeAreaDecorationType {
+
+    ROW_POSITION_LINE("rowPositionLine"),
+    HEADER_LINE("headerLine"),
+    SPLIT_LINE("sectionSplitLine"),
+    BOX_LINE("dataBoxLine");
+
+    private ExtendedDecorationType(String id) {
+        this.id = id;
+    }
 
     @Nonnull
-    ExtendedBackgroundPaintMode getBackgroundPaintMode();
+    private final String id;
 
-    void setBackgroundPaintMode(@Nonnull ExtendedBackgroundPaintMode borderPaintMode);
-
-    public static class ExtBackgroundPaintCapability implements CodeAreaCapability {
-
+    @Override
+    public String getId() {
+        return id;
     }
 }

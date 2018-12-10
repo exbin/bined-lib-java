@@ -15,7 +15,7 @@
  */
 package org.exbin.bined.swing.example.panel;
 
-import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.ScrollBarVisibility;
 import org.exbin.bined.basic.CodeAreaScrollPosition;
 import org.exbin.bined.basic.HorizontalScrollUnit;
@@ -29,11 +29,12 @@ import org.exbin.bined.swing.basic.CodeArea;
  * @version 0.2.0 2018/09/20
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public class ScrollingPanel extends javax.swing.JPanel {
 
     private final CodeArea codeArea;
 
-    public ScrollingPanel(@Nonnull final CodeArea codeArea) {
+    public ScrollingPanel(final CodeArea codeArea) {
         this.codeArea = codeArea;
 
         initComponents();

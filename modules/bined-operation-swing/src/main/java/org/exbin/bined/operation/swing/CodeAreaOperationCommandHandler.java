@@ -27,6 +27,7 @@ import java.nio.charset.Charset;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.BasicCodeAreaSection;
 import org.exbin.bined.CaretPosition;
 import org.exbin.bined.CharsetStreamTranslator;
@@ -76,6 +77,7 @@ import org.exbin.utils.binary_data.PagedData;
  * @version 0.2.0 2018/11/15
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
 
     public static final String BINED_CLIPBOARD_MIME = "application/x-bined";
@@ -100,7 +102,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
     private final BinaryDataUndoHandler undoHandler;
     private EditDataCommand editCommand = null;
 
-    public CodeAreaOperationCommandHandler(@Nonnull CodeAreaCore codeArea, @Nonnull BinaryDataUndoHandler undoHandler) {
+    public CodeAreaOperationCommandHandler(CodeAreaCore codeArea, BinaryDataUndoHandler undoHandler) {
         this.codeArea = codeArea;
         this.undoHandler = undoHandler;
 
@@ -160,7 +162,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
     }
 
     @Override
-    public void keyPressed(@Nonnull KeyEvent keyEvent) {
+    public void keyPressed(KeyEvent keyEvent) {
         if (!codeArea.isEnabled()) {
             return;
         }
@@ -291,7 +293,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
     }
 
     @Override
-    public void keyTyped(@Nonnull KeyEvent keyEvent) {
+    public void keyTyped(KeyEvent keyEvent) {
         char keyValue = keyEvent.getKeyChar();
         if (keyValue == KeyEvent.CHAR_UNDEFINED) {
             return;
@@ -526,7 +528,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
         }
     }
 
-    private void setClipboardContent(@Nonnull CodeAreaUtils.ClipboardData content) {
+    private void setClipboardContent(CodeAreaUtils.ClipboardData content) {
         clearClipboardData();
         try {
             currentClipboardData = content;
@@ -896,7 +898,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
         ((SelectionCapable) codeArea).setSelection(selection.getStart(), selection.getStart());
     }
 
-    public void updateSelection(@Nonnull SelectingMode selecting, @Nonnull CaretPosition caretPosition) {
+    public void updateSelection(SelectingMode selecting, CaretPosition caretPosition) {
         DefaultCodeAreaCaret caret = (DefaultCodeAreaCaret) ((CaretCapable) codeArea).getCaret();
         SelectionRange selection = ((SelectionCapable) codeArea).getSelection();
         if (selecting == SelectingMode.SELECTING) {
@@ -907,7 +909,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
     }
 
     @Override
-    public void moveCaret(int positionX, int positionY, @Nonnull SelectingMode selecting) {
+    public void moveCaret(int positionX, int positionY, SelectingMode selecting) {
         CaretPosition caretPosition = ((CaretCapable) codeArea).mousePositionToClosestCaretPosition(positionX, positionY, PositionOverflowMode.OVERFLOW);
         if (caretPosition != null) {
             ((CaretCapable) codeArea).getCaret().setCaretPosition(caretPosition);
@@ -919,7 +921,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
         }
     }
 
-    public void move(int modifiers, @Nonnull MovementDirection direction) {
+    public void move(int modifiers, MovementDirection direction) {
         DefaultCodeAreaCaret caret = (DefaultCodeAreaCaret) ((CaretCapable) codeArea).getCaret();
         CaretPosition caretPosition = caret.getCaretPosition();
         CaretPosition movePosition = ((CaretCapable) codeArea).computeMovePosition(caretPosition, direction);
@@ -930,7 +932,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
         }
     }
 
-    public void scroll(@Nonnull ScrollingDirection direction) {
+    public void scroll(ScrollingDirection direction) {
         CodeAreaScrollPosition sourcePosition = ((ScrollingCapable) codeArea).getScrollPosition();
         CodeAreaScrollPosition scrollPosition = ((ScrollingCapable) codeArea).computeScrolling(sourcePosition, direction);
         if (!sourcePosition.equals(scrollPosition)) {
@@ -942,7 +944,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
     }
 
     @Override
-    public void wheelScroll(int scrollSize, @Nonnull ScrollbarOrientation orientation) {
+    public void wheelScroll(int scrollSize, ScrollbarOrientation orientation) {
         if (scrollSize < 0) {
             for (int i = 0; i < -scrollSize; i++) {
                 scroll(ScrollingDirection.UP);

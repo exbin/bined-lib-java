@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 import org.exbin.bined.BasicCodeAreaSection;
@@ -38,11 +39,12 @@ import org.exbin.utils.binary_data.EditableBinaryData;
  * @version 0.2.0 2018/10/25
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public class StatePanel extends javax.swing.JPanel {
 
     private final CodeArea codeArea;
 
-    public StatePanel(@Nonnull CodeArea codeArea) {
+    public StatePanel(CodeArea codeArea) {
         this.codeArea = codeArea;
 
         initComponents();

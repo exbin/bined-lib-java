@@ -16,6 +16,7 @@
 package org.exbin.bined.swing.extended.capability;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.PositionCodeType;
 import org.exbin.bined.capability.CodeAreaCapability;
 
@@ -25,12 +26,13 @@ import org.exbin.bined.capability.CodeAreaCapability;
  * @version 0.2.0 2018/12/03
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public interface PositionCodeTypeCapable {
 
     @Nonnull
     PositionCodeType getPositionCodeType();
 
-    void setPositionCodeType(@Nonnull PositionCodeType positionCodeType);
+    void setPositionCodeType(PositionCodeType positionCodeType);
 
     public static class PositionCodeTypeCapability implements CodeAreaCapability {
 

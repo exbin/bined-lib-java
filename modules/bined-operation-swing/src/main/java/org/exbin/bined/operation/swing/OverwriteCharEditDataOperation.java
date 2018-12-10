@@ -17,6 +17,7 @@ package org.exbin.bined.operation.swing;
 
 import java.nio.charset.Charset;
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.capability.CharsetCapable;
@@ -27,20 +28,22 @@ import org.exbin.utils.binary_data.EditableBinaryData;
 /**
  * Operation for editing data using overwrite mode.
  *
- * @version 0.1.2 2017/01/07
+ * @version 0.2.0 2018/12/10
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public class OverwriteCharEditDataOperation extends CharEditDataOperation {
 
     private final long startPosition;
     private long length = 0;
     private EditableBinaryData undoData = null;
 
-    public OverwriteCharEditDataOperation(@Nonnull CodeAreaCore coreArea, long startPosition) {
+    public OverwriteCharEditDataOperation(CodeAreaCore coreArea, long startPosition) {
         super(coreArea);
         this.startPosition = startPosition;
     }
 
+    @Nonnull
     @Override
     public CodeAreaOperationType getType() {
         return CodeAreaOperationType.EDIT_DATA;

@@ -15,7 +15,7 @@
  */
 package org.exbin.bined.swing.example.panel;
 
-import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.capability.RowWrappingCapable.RowWrappingMode;
 import org.exbin.bined.swing.basic.CodeArea;
 
@@ -25,11 +25,12 @@ import org.exbin.bined.swing.basic.CodeArea;
  * @version 0.2.0 2018/10/10
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public class LayoutPanel extends javax.swing.JPanel {
 
     private final CodeArea codeArea;
 
-    public LayoutPanel(@Nonnull CodeArea codeArea) {
+    public LayoutPanel(CodeArea codeArea) {
         this.codeArea = codeArea;
 
         initComponents();

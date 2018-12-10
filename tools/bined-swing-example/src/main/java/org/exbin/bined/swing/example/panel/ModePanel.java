@@ -18,7 +18,8 @@ package org.exbin.bined.swing.example.panel;
 import java.awt.Color;
 import java.awt.Font;
 import java.nio.charset.Charset;
-import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
@@ -41,11 +42,12 @@ import org.exbin.bined.swing.capability.AntialiasingCapable;
  * @version 0.2.0 2018/11/26
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public class ModePanel extends javax.swing.JPanel {
 
     private final CodeArea codeArea;
 
-    public ModePanel(@Nonnull CodeArea codeArea) {
+    public ModePanel(CodeArea codeArea) {
         this.codeArea = codeArea;
 
         initComponents();
@@ -318,6 +320,7 @@ public class ModePanel extends javax.swing.JPanel {
     private javax.swing.JLabel viewModeScrollModeLabel;
     // End of variables declaration//GEN-END:variables
 
+    @Nullable
     private Border getBorderByType(int borderTypeIndex) {
         switch (borderTypeIndex) {
             case 0: {

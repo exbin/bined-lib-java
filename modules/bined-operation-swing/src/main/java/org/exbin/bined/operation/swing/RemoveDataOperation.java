@@ -15,6 +15,8 @@
  */
 package org.exbin.bined.operation.swing;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.operation.BinaryDataOperationException;
 import org.exbin.bined.swing.CodeAreaCore;
@@ -26,6 +28,7 @@ import org.exbin.utils.binary_data.EditableBinaryData;
  * @version 0.2.0 2018/02/14
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public class RemoveDataOperation extends CodeAreaOperation {
 
     private final long position;
@@ -39,6 +42,7 @@ public class RemoveDataOperation extends CodeAreaOperation {
         this.length = length;
     }
 
+    @Nonnull
     @Override
     public CodeAreaOperationType getType() {
         return CodeAreaOperationType.REMOVE_DATA;

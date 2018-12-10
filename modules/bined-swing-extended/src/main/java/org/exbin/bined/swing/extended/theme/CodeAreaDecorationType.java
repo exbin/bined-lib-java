@@ -13,18 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.swing.extended;
+package org.exbin.bined.swing.extended.theme;
+
+import javax.annotation.Nonnull;
 
 /**
- * Border paint modes for basic painter.
+ * Code are decoration type.
  *
- * @version 0.2.0 2017/11/04
+ * @version 0.2.0 2018/12/04
  * @author ExBin Project (https://exbin.org)
  */
-public enum ExtendedBackgroundPaintMode {
-    TRANSPARENT,
-    PLAIN,
-    STRIPED,
-    GRIDDED,
-    CHESSBOARD
+public interface CodeAreaDecorationType {
+
+    /**
+     * Returns unique string identifier.
+     *
+     * Custom implementations should start with full package name to avoid
+     * collisions.
+     *
+     * @return unique identification ID key
+     */
+    @Nonnull
+    String getId();
 }

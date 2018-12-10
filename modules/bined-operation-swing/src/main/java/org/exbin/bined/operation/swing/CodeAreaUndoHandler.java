@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.operation.BinaryDataCommand;
 import org.exbin.bined.operation.BinaryDataOperationException;
@@ -33,6 +34,7 @@ import org.exbin.bined.swing.CodeAreaCore;
  * @version 0.2.0 2018/08/11
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public class CodeAreaUndoHandler implements BinaryDataUndoHandler {
 
     private long undoMaximumCount;
@@ -49,7 +51,7 @@ public class CodeAreaUndoHandler implements BinaryDataUndoHandler {
      *
      * @param codeArea hexadecimal component
      */
-    public CodeAreaUndoHandler(@Nonnull CodeAreaCore codeArea) {
+    public CodeAreaUndoHandler(CodeAreaCore codeArea) {
         this.codeArea = codeArea;
         undoMaximumCount = 1024;
         undoMaximumSize = 65535;
@@ -69,18 +71,18 @@ public class CodeAreaUndoHandler implements BinaryDataUndoHandler {
      * @throws BinaryDataOperationException if commands throws it
      */
     @Override
-    public void execute(@Nonnull BinaryDataCommand command) throws BinaryDataOperationException {
+    public void execute(BinaryDataCommand command) throws BinaryDataOperationException {
         command.execute();
         commandAdded(command);
     }
 
     @Override
-    public void addCommand(@Nonnull BinaryDataCommand command) {
+    public void addCommand(BinaryDataCommand command) {
         command.use();
         commandAdded(command);
     }
 
-    private void commandAdded(@Nonnull BinaryDataCommand addedCommand) {
+    private void commandAdded(BinaryDataCommand addedCommand) {
         // TODO: Check for undoOperationsMaximumCount & size
         while (commands.size() > commandPosition) {
             BinaryDataCommand command = commands.get((int) commandPosition);
@@ -277,12 +279,12 @@ public class CodeAreaUndoHandler implements BinaryDataUndoHandler {
     }
 
     @Override
-    public void addUndoUpdateListener(@Nonnull BinaryDataUndoUpdateListener listener) {
+    public void addUndoUpdateListener(BinaryDataUndoUpdateListener listener) {
         listeners.add(listener);
     }
 
     @Override
-    public void removeUndoUpdateListener(@Nonnull BinaryDataUndoUpdateListener listener) {
+    public void removeUndoUpdateListener(BinaryDataUndoUpdateListener listener) {
         listeners.remove(listener);
     }
 }

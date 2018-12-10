@@ -15,6 +15,8 @@
  */
 package org.exbin.bined.operation.swing;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.CodeType;
 import org.exbin.bined.capability.CodeTypeCapable;
 import org.exbin.bined.operation.BinaryDataOperationException;
@@ -27,6 +29,7 @@ import org.exbin.utils.binary_data.EditableBinaryData;
  * @version 0.2.0 2018/02/14
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public class InsertCodeEditDataOperation extends CodeEditDataOperation {
 
     private final long startPosition;
@@ -49,6 +52,7 @@ public class InsertCodeEditDataOperation extends CodeEditDataOperation {
         }
     }
 
+    @Nonnull
     @Override
     public CodeAreaOperationType getType() {
         return CodeAreaOperationType.EDIT_DATA;

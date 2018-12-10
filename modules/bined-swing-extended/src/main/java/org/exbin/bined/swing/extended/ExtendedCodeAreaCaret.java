@@ -19,6 +19,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import javax.swing.Timer;
 import org.exbin.bined.BasicCodeAreaSection;
 import org.exbin.bined.CaretPosition;
@@ -35,6 +36,7 @@ import org.exbin.bined.swing.basic.CodeArea;
  * @version 0.2.0 2018/08/11
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public class ExtendedCodeAreaCaret implements CodeAreaCaret {
 
     private static final int LINE_CURSOR_WIDTH = 1;
@@ -56,14 +58,14 @@ public class ExtendedCodeAreaCaret implements CodeAreaCaret {
     @Nonnull
     private CursorRenderingMode renderingMode = CursorRenderingMode.PAINT; //NEGATIVE;
 
-    public ExtendedCodeAreaCaret(@Nonnull CodeArea codeArea) {
+    public ExtendedCodeAreaCaret(CodeArea codeArea) {
         CodeAreaUtils.requireNonNull(codeArea);
 
         this.codeArea = codeArea;
         privateSetBlinkRate(DEFAULT_BLINK_RATE);
     }
 
-    public int getCursorThickness(@Nonnull CursorShape cursorShape, int characterWidth, int lineHeight) {
+    public int getCursorThickness(CursorShape cursorShape, int characterWidth, int lineHeight) {
         switch (cursorShape.getWidth()) {
             case LINE:
                 return LINE_CURSOR_WIDTH;
@@ -125,7 +127,7 @@ public class ExtendedCodeAreaCaret implements CodeAreaCaret {
         resetBlink();
     }
 
-    public void setCaretPosition(long dataPosition, int codeOffset, @Nonnull CodeAreaSection section) {
+    public void setCaretPosition(long dataPosition, int codeOffset, CodeAreaSection section) {
         caretPosition.setDataPosition(dataPosition);
         caretPosition.setCodeOffset(codeOffset);
         caretPosition.setSection(section);
@@ -156,7 +158,7 @@ public class ExtendedCodeAreaCaret implements CodeAreaCaret {
         return section == null ? BasicCodeAreaSection.CODE_MATRIX : section;
     }
 
-    public void setSection(@Nonnull CodeAreaSection section) {
+    public void setSection(CodeAreaSection section) {
         caretPosition.setSection(section);
         resetBlink();
     }
@@ -174,7 +176,7 @@ public class ExtendedCodeAreaCaret implements CodeAreaCaret {
         return insertCursorShape;
     }
 
-    public void setInsertCursorShape(@Nonnull CursorShape insertCursorShape) {
+    public void setInsertCursorShape(CursorShape insertCursorShape) {
         CodeAreaUtils.requireNonNull(insertCursorShape);
 
         this.insertCursorShape = insertCursorShape;
@@ -186,7 +188,7 @@ public class ExtendedCodeAreaCaret implements CodeAreaCaret {
         return overwriteCursorShape;
     }
 
-    public void setOverwriteCursorShape(@Nonnull CursorShape overwriteCursorShape) {
+    public void setOverwriteCursorShape(CursorShape overwriteCursorShape) {
         CodeAreaUtils.requireNonNull(overwriteCursorShape);
 
         this.overwriteCursorShape = overwriteCursorShape;
@@ -202,7 +204,7 @@ public class ExtendedCodeAreaCaret implements CodeAreaCaret {
         return renderingMode;
     }
 
-    public void setRenderingMode(@Nonnull CursorRenderingMode renderingMode) {
+    public void setRenderingMode(CursorRenderingMode renderingMode) {
         CodeAreaUtils.requireNonNull(renderingMode);
 
         this.renderingMode = renderingMode;
@@ -232,6 +234,7 @@ public class ExtendedCodeAreaCaret implements CodeAreaCaret {
         }
     }
 
+    @ParametersAreNonnullByDefault
     private class Blink implements ActionListener {
 
         @Override
@@ -244,6 +247,7 @@ public class ExtendedCodeAreaCaret implements CodeAreaCaret {
     /**
      * Enumeration of supported cursor shapes.
      */
+    @ParametersAreNonnullByDefault
     public static enum CursorShape {
         /*
          * Single line cursor shapes.
@@ -284,7 +288,7 @@ public class ExtendedCodeAreaCaret implements CodeAreaCaret {
 
         private final CursorShapeWidth width;
 
-        private CursorShape(@Nonnull CursorShapeWidth width) {
+        private CursorShape(CursorShapeWidth width) {
             this.width = width;
         }
 

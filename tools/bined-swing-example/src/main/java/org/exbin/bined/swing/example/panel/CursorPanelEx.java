@@ -15,7 +15,7 @@
  */
 package org.exbin.bined.swing.example.panel;
 
-import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.swing.basic.DefaultCodeAreaCaret;
 import org.exbin.bined.swing.extended.ExtCodeArea;
@@ -26,11 +26,12 @@ import org.exbin.bined.swing.extended.ExtCodeArea;
  * @version 0.2.0 2018/03/18
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public class CursorPanelEx extends javax.swing.JPanel {
 
     private final ExtCodeArea codeArea;
 
-    public CursorPanelEx(@Nonnull ExtCodeArea codeArea) {
+    public CursorPanelEx(ExtCodeArea codeArea) {
         this.codeArea = codeArea;
 
         initComponents();
