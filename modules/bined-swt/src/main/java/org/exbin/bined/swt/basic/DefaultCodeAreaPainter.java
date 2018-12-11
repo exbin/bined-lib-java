@@ -45,6 +45,7 @@ import org.exbin.bined.CodeAreaViewMode;
 import org.exbin.bined.CodeCharactersCase;
 import org.exbin.bined.CodeType;
 import org.exbin.bined.EditationMode;
+import org.exbin.bined.EditationOperation;
 import org.exbin.bined.PositionCodeType;
 import org.exbin.bined.PositionOverflowMode;
 import org.exbin.bined.ScrollBarVisibility;
@@ -109,6 +110,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
     private CodeCharactersCase codeCharactersCase;
     @Nullable
     private EditationMode editationMode;
+    @Nullable
+    private EditationOperation editationOperation;
     @Nullable
     private BasicBackgroundPaintMode backgroundPaintMode;
     private boolean showMirrorCursor;
@@ -1452,7 +1455,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             return null;
         }
 
-        DefaultCodeAreaCaret.CursorShape cursorShape = editationMode == EditationMode.INSERT ? DefaultCodeAreaCaret.CursorShape.INSERT : DefaultCodeAreaCaret.CursorShape.OVERWRITE;
+        DefaultCodeAreaCaret.CursorShape cursorShape = editationOperation == EditationOperation.INSERT ? DefaultCodeAreaCaret.CursorShape.INSERT : DefaultCodeAreaCaret.CursorShape.OVERWRITE;
         int cursorThickness = DefaultCodeAreaCaret.getCursorThickness(cursorShape, characterWidth, rowHeight);
         return new Rectangle(cursorPoint.x, cursorPoint.y, cursorThickness, rowHeight);
     }

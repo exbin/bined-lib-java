@@ -26,6 +26,8 @@ import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 import org.exbin.bined.BasicCodeAreaSection;
 import org.exbin.bined.CaretPosition;
+import org.exbin.bined.CodeAreaSection;
+import org.exbin.bined.EditationOperation;
 import org.exbin.bined.SelectionRange;
 import org.exbin.bined.capability.SelectionCapable;
 import org.exbin.bined.swing.example.BinEdExampleBasicPanel;
@@ -35,7 +37,7 @@ import org.exbin.utils.binary_data.EditableBinaryData;
 /**
  * Hexadecimal editor example panel.
  *
- * @version 0.2.0 2018/08/11
+ * @version 0.2.0 2018/11/12
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -69,6 +71,9 @@ public class StatePanelEx extends javax.swing.JPanel {
         codeArea.addDataChangedListener(() -> {
             dataSizeTextField.setText(String.valueOf(codeArea.getDataSize()));
         });
+        codeArea.addEditationModeChangedListener((editationMode, editationOperation) -> {
+            activeOperationComboBox.setSelectedIndex(editationOperation.ordinal());
+        });
     }
 
     /**
@@ -96,6 +101,8 @@ public class StatePanelEx extends javax.swing.JPanel {
         selectionEndTextField = new javax.swing.JTextField();
         dataSizeTextField = new javax.swing.JTextField();
         loadDataButton = new javax.swing.JButton();
+        activeOperationLabel = new javax.swing.JLabel();
+        activeOperationComboBox = new javax.swing.JComboBox<>();
 
         saveDataButton.setText("Save...");
         saveDataButton.addActionListener(new java.awt.event.ActionListener() {
@@ -211,23 +218,35 @@ public class StatePanelEx extends javax.swing.JPanel {
             }
         });
 
+        activeOperationLabel.setText("Active Editation Operation");
+
+        activeOperationComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "INSERT", "OVERWRITE" }));
+        activeOperationComboBox.setSelectedIndex(1);
+        activeOperationComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                activeOperationComboBoxActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(selectionPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(positionPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(dataSizeTextField, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(selectionPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(positionPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(dataSizeTextField)
+                    .addComponent(activeOperationComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(dataSizeLabel)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(loadDataButton)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(saveDataButton)))
+                                .addComponent(saveDataButton))
+                            .addComponent(activeOperationLabel))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -242,6 +261,10 @@ public class StatePanelEx extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(loadDataButton)
                     .addComponent(saveDataButton))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(activeOperationLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(activeOperationComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(positionPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -277,7 +300,7 @@ public class StatePanelEx extends javax.swing.JPanel {
     }//GEN-LAST:event_saveDataButtonActionPerformed
 
     private void activeSectionComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_activeSectionComboBoxActionPerformed
-        //        codeArea.setActiveSection(Section.values()[activeSectionComboBox.getSelectedIndex()]);
+        codeArea.getCaret().setSection(BasicCodeAreaSection.values()[activeSectionComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_activeSectionComboBoxActionPerformed
 
     private void loadDataButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadDataButtonActionPerformed
@@ -308,8 +331,14 @@ public class StatePanelEx extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_loadDataButtonActionPerformed
 
+    private void activeOperationComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_activeOperationComboBoxActionPerformed
+        codeArea.setEditationOperation(EditationOperation.values()[activeOperationComboBox.getSelectedIndex()]);
+    }//GEN-LAST:event_activeOperationComboBoxActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox<String> activeOperationComboBox;
+    private javax.swing.JLabel activeOperationLabel;
     private javax.swing.JComboBox<String> activeSectionComboBox;
     private javax.swing.JLabel activeSectionLabel;
     private javax.swing.JLabel codeOffsetLabel;

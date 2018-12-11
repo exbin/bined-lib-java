@@ -27,7 +27,7 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="hexCharactersModeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="antialiasingScrollModeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="editationAllowedLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="editationModeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="charsetLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="borderTypeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
@@ -38,7 +38,7 @@
                           <Component id="borderTypeComboBox" alignment="0" max="32767" attributes="0"/>
                           <Component id="charsetComboBox" alignment="0" max="32767" attributes="0"/>
                           <Component id="fontPanel" alignment="0" max="32767" attributes="0"/>
-                          <Component id="editationAllowedComboBox" alignment="0" max="32767" attributes="0"/>
+                          <Component id="editationModeComboBox" alignment="0" max="32767" attributes="0"/>
                           <Component id="antialiasingComboBox" alignment="0" max="32767" attributes="0"/>
                           <Component id="hexCharactersModeComboBox" alignment="0" max="32767" attributes="0"/>
                           <Component id="viewModeComboBox" alignment="0" max="32767" attributes="0"/>
@@ -85,9 +85,9 @@
               <EmptySpace max="-2" attributes="0"/>
               <Component id="antialiasingComboBox" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="editationAllowedLabel" min="-2" max="-2" attributes="0"/>
+              <Component id="editationModeLabel" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="editationAllowedComboBox" min="-2" max="-2" attributes="0"/>
+              <Component id="editationModeComboBox" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="fontPanel" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
@@ -131,24 +131,24 @@
         <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
       </AuxValues>
     </Component>
-    <Component class="javax.swing.JLabel" name="editationAllowedLabel">
+    <Component class="javax.swing.JLabel" name="editationModeLabel">
       <Properties>
         <Property name="text" type="java.lang.String" value="Editation"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JComboBox" name="editationAllowedComboBox">
+    <Component class="javax.swing.JComboBox" name="editationModeComboBox">
       <Properties>
         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
           <StringArray count="4">
             <StringItem index="0" value="READ_ONLY"/>
-            <StringItem index="1" value="INSERT"/>
-            <StringItem index="2" value="OVERWRITE"/>
+            <StringItem index="1" value="EXPANDING"/>
+            <StringItem index="2" value="CAPPED"/>
             <StringItem index="3" value="INPLACE"/>
           </StringArray>
         </Property>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="editationAllowedComboBoxActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="editationModeComboBoxActionPerformed"/>
       </Events>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>

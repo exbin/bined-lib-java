@@ -41,6 +41,7 @@ import org.exbin.bined.CaretMovedListener;
 import org.exbin.bined.CaretPosition;
 import org.exbin.bined.EditationMode;
 import org.exbin.bined.EditationModeChangedListener;
+import org.exbin.bined.EditationOperation;
 import org.exbin.bined.SelectionChangedListener;
 import org.exbin.bined.SelectionRange;
 import org.exbin.bined.capability.CaretCapable;
@@ -59,7 +60,7 @@ import org.exbin.utils.binary_data.EditableBinaryData;
 /**
  * Basic single jar swing version of BinEd Hexadecimal editor.
  *
- * @version 0.2.0 2018/08/11
+ * @version 0.2.0 2018/12/11
  * @author ExBin Project (https://exbin.org)
  */
 public class BinEdEditorBasic extends javax.swing.JFrame {
@@ -269,8 +270,8 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
         });
         ((EditationModeCapable) codeArea).addEditationModeChangedListener(new EditationModeChangedListener() {
             @Override
-            public void editationModeChanged(EditationMode editationMode) {
-                switch (editationMode) {
+            public void editationModeChanged(EditationMode editationMode, EditationOperation editationOperation) {
+                switch (editationOperation) {
                     case INSERT: {
                         editationModeLabel.setText("INS");
                         break;
@@ -280,7 +281,7 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
                         break;
                     }
                     default: {
-                        throw new IllegalStateException("Unexpected editation mode " + editationMode.name());
+                        throw new IllegalStateException("Unexpected editation mode " + editationOperation.name());
                     }
                 }
             }
@@ -604,13 +605,13 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
 
     private void editationModeLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_editationModeLabelMouseClicked
         if (evt.getButton() == MouseEvent.BUTTON1) {
-            EditationMode editationMode;
-            if (((EditationModeCapable) codeArea).getEditationMode() == EditationMode.INSERT) {
-                editationMode = EditationMode.OVERWRITE;
+            EditationOperation editationOperation;
+            if (((EditationModeCapable) codeArea).getEditationOperation() == EditationOperation.INSERT) {
+                editationOperation = EditationOperation.OVERWRITE;
             } else {
-                editationMode = EditationMode.INSERT;
+                editationOperation = EditationOperation.INSERT;
             }
-            ((EditationModeCapable) codeArea).setEditationMode(editationMode);
+            ((EditationModeCapable) codeArea).setEditationOperation(editationOperation);
         }
     }//GEN-LAST:event_editationModeLabelMouseClicked
 

@@ -37,6 +37,7 @@ import org.exbin.bined.CodeCharactersCase;
 import org.exbin.bined.CodeType;
 import org.exbin.bined.EditationMode;
 import org.exbin.bined.EditationModeChangedListener;
+import org.exbin.bined.EditationOperation;
 import org.exbin.bined.PositionOverflowMode;
 import org.exbin.bined.ScrollBarVisibility;
 import org.exbin.bined.ScrollingListener;
@@ -58,7 +59,7 @@ import org.exbin.bined.swing.basic.color.BasicColorsCapableCodeAreaPainter;
 /**
  * Code area component.
  *
- * @version 0.2.0 2018/12/08
+ * @version 0.2.0 2018/12/11
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -79,7 +80,9 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
     private boolean handleClipboard = true;
 
     @Nonnull
-    private EditationMode editationMode = EditationMode.OVERWRITE;
+    private EditationMode editationMode = EditationMode.EXPANDING;
+    @Nonnull
+    private EditationOperation editationOperation = EditationOperation.OVERWRITE;
     @Nonnull
     private CodeAreaViewMode viewMode = CodeAreaViewMode.DUAL;
     @Nullable
@@ -534,15 +537,15 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
         repaint();
     }
 
+    @Override
+    public boolean isEditable() {
+        return editationMode != EditationMode.READ_ONLY;
+    }
+
     @Nonnull
     @Override
     public EditationMode getEditationMode() {
         return editationMode;
-    }
-
-    @Override
-    public boolean isEditable() {
-        return editationMode != EditationMode.READ_ONLY;
     }
 
     @Override
@@ -551,7 +554,42 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
         this.editationMode = editationMode;
         if (changed) {
             editationModeChangedListeners.forEach((listener) -> {
-                listener.editationModeChanged(editationMode);
+                listener.editationModeChanged(editationMode, getActiveOperation());
+            });
+            caret.resetBlink();
+            repaint();
+        }
+    }
+
+    @Override
+    public EditationOperation getActiveOperation() {
+        switch (editationMode) {
+            case READ_ONLY:
+                return EditationOperation.INSERT;
+            case INPLACE:
+                return EditationOperation.OVERWRITE;
+            case CAPPED:
+            case EXPANDING:
+                return editationOperation;
+            default:
+                throw new IllegalStateException("Unexpected code type: " + editationMode.name());
+        }
+    }
+
+    @Override
+    public EditationOperation getEditationOperation() {
+        return editationOperation;
+    }
+
+    @Override
+    public void setEditationOperation(EditationOperation editationOperation) {
+        EditationOperation previousOperation = getActiveOperation();
+        this.editationOperation = editationOperation;
+        EditationOperation currentOperation = getActiveOperation();
+        boolean changed = previousOperation != currentOperation;
+        if (changed) {
+            editationModeChangedListeners.forEach((listener) -> {
+                listener.editationModeChanged(editationMode, currentOperation);
             });
             caret.resetBlink();
             repaint();

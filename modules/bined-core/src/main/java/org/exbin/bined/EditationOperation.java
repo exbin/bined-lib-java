@@ -18,30 +18,25 @@ package org.exbin.bined;
 /**
  * Enumeration of editation modes.
  *
- * @version 0.2.0 2018/12/11
+ * @version 0.2.0 2017/04/02
  * @author ExBin Project (https://exbin.org)
  */
-public enum EditationMode {
+public enum EditationOperation {
 
     /**
-     * Document cannot be changed.
-     */
-    READ_ONLY,
-    /**
-     * Default mode expanding data when necessary.
+     * Data are inserted at cursor position.
      *
-     * Document is extended by size of the inserted data or when replacing data
-     * overflows end of the file.
+     * Document is extended by size of the inserted data, data at cursor
+     * position moved forward to provide space and then inserted data are stored
+     * in this new space.
      */
-    EXPANDING,
+    INSERT,
     /**
-     * Data are inserted and replaced, but size file of the file remains the
-     * same cutting out excessive data.
+     * Data are replaced at cursor position.
+     *
+     * If size of data is greater than size of the document and editation is not
+     * in "overwrite only" mode, document is extended so that inserted data will
+     * fit in.
      */
-    CAPPED,
-    /**
-     * Only overwrite editation mode is allowed and size of document cannot be
-     * changed.
-     */
-    INPLACE;
+    OVERWRITE;
 }

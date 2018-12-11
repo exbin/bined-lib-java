@@ -20,7 +20,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 /**
  * Interface for editation mode change listener.
  *
- * @version 0.2.0 2018/12/08
+ * @version 0.2.0 2018/12/11
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -30,6 +30,7 @@ public interface EditationModeChangedListener {
      * Fires notification each time editation mode is changed.
      *
      * @param editationMode new editation mode
+     * @param editationOperation new active editation operation type
      */
-    void editationModeChanged(EditationMode editationMode);
+    void editationModeChanged(EditationMode editationMode, EditationOperation editationOperation);
 }

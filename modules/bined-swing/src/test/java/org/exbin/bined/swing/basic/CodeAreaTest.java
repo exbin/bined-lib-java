@@ -20,7 +20,7 @@ import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Nonnull;
-import org.exbin.bined.EditationMode;
+import org.exbin.bined.EditationOperation;
 import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.capability.EditationModeCapable;
 import org.exbin.utils.binary_data.ByteArrayEditableData;
@@ -71,7 +71,7 @@ public class CodeAreaTest {
     @Test
     public void testCopyPasteInInsertMode() {
         CodeArea codeArea = new CodeArea();
-        ((EditationModeCapable) codeArea).setEditationMode(EditationMode.INSERT);
+        ((EditationModeCapable) codeArea).setEditationOperation(EditationOperation.INSERT);
         EditableBinaryData sampleData = getSampleData(SAMPLE_ALLBYTES);
         codeArea.setContentData(sampleData);
         long dataSize = sampleData.getDataSize();

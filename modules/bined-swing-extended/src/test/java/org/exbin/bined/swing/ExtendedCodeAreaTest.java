@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.exbin.bined.EditationMode;
+import org.exbin.bined.EditationOperation;
 import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.capability.EditationModeCapable;
 import org.exbin.bined.swing.basic.CodeArea;
@@ -31,7 +31,7 @@ import org.junit.Test;
 /**
  * Tests for codeArea component.
  *
- * @version 0.2.0 2017/12/31
+ * @version 0.2.0 2018/12/11
  * @author ExBin Project (https://exbin.org)
  */
 public class ExtendedCodeAreaTest {
@@ -69,7 +69,7 @@ public class ExtendedCodeAreaTest {
     @Test
     public void testCopyPasteInInsertMode() {
         CodeArea codeArea = new CodeArea();
-        ((EditationModeCapable) codeArea).setEditationMode(EditationMode.INSERT);
+        ((EditationModeCapable) codeArea).setEditationOperation(EditationOperation.INSERT);
         EditableBinaryData sampleData = getSampleData(SAMPLE_ALLBYTES);
         codeArea.setContentData(sampleData);
         long dataSize = sampleData.getDataSize();

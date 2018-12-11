@@ -20,22 +20,31 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.EditationMode;
 import org.exbin.bined.EditationModeChangedListener;
+import org.exbin.bined.EditationOperation;
 
 /**
  * Support for editation mode capability.
  *
- * @version 0.2.0 2017/12/15
+ * @version 0.2.0 2018/12/11
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public interface EditationModeCapable {
 
+    boolean isEditable();
+
     @Nonnull
     EditationMode getEditationMode();
 
-    boolean isEditable();
-
     void setEditationMode(EditationMode editationMode);
+
+    @Nonnull
+    EditationOperation getActiveOperation();
+
+    @Nonnull
+    EditationOperation getEditationOperation();
+
+    void setEditationOperation(EditationOperation editationOperation);
 
     void addEditationModeChangedListener(@Nullable EditationModeChangedListener editationModeChangedListener);
 

@@ -44,6 +44,9 @@ public class ExtendedCodeAreaLayoutProfile {
 
     /**
      * Copy constructor.
+     *
+     * @param profile source profile
+     * @return copy of profile
      */
     @Nonnull
     public static ExtendedCodeAreaLayoutProfile createCopy(ExtendedCodeAreaLayoutProfile profile) {
