@@ -25,7 +25,7 @@ import org.exbin.bined.EditationOperation;
 /**
  * Support for editation mode capability.
  *
- * @version 0.2.0 2018/12/11
+ * @version 0.2.0 2018/12/13
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -38,6 +38,12 @@ public interface EditationModeCapable {
 
     void setEditationMode(EditationMode editationMode);
 
+    /**
+     * Returns currently active operation as set or enforced by current
+     * editation mode.
+     *
+     * @return active editation operation
+     */
     @Nonnull
     EditationOperation getActiveOperation();
 

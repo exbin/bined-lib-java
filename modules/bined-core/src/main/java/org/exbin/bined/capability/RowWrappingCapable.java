@@ -21,7 +21,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 /**
  * Line wrapping capability interface.
  *
- * @version 0.2.0 2018/12/03
+ * @version 0.2.0 2018/12/13
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -43,6 +43,10 @@ public interface RowWrappingCapable {
     int getMinRowPositionLength();
 
     void setMinRowPositionLength(int minRowPositionLength);
+
+    int getMaxRowPositionLength();
+
+    void setMaxRowPositionLength(int maxRowPositionLength);
 
     public static class LineWrappingCapability implements CodeAreaCapability {
 

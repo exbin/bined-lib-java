@@ -92,6 +92,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaJ
     private boolean showMirrorCursor = true;
     private RowWrappingMode rowWrapping = RowWrappingMode.NO_WRAPPING;
     private int minRowPositionLength = 0;
+    private int maxRowPositionLength = 0;
     private int wrappingBytesGroupSize = 0;
     private int maxBytesPerLine = 16;
 
@@ -186,6 +187,18 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaJ
     @Override
     public void setMinRowPositionLength(int minRowPositionLength) {
         this.minRowPositionLength = minRowPositionLength;
+        reset();
+        repaint();
+    }
+
+    @Override
+    public int getMaxRowPositionLength() {
+        return maxRowPositionLength;
+    }
+
+    @Override
+    public void setMaxRowPositionLength(int maxRowPositionLength) {
+        this.maxRowPositionLength = maxRowPositionLength;
         reset();
         repaint();
     }

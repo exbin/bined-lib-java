@@ -16,15 +16,24 @@
 package org.exbin.bined.basic;
 
 /**
- * Enumeration of possible visibility states of carted position relative to
+ * Enumeration of possible visibility states of caret position relative to
  * scrolling area.
  *
- * @version 0.2.0 2018/08/13
+ * @version 0.2.0 2018/12/13
  * @author ExBin Project (https://exbin.org)
  */
 public enum PositionScrollVisibility {
 
+    /**
+     * Given position is fully visible in current scroll window.
+     */
     VISIBLE,
+    /**
+     * Given position is partially visible in current scroll window.
+     */
     PARTIAL,
+    /**
+     * Given position is not visible in current scroll window.
+     */
     NOT_VISIBLE
 }

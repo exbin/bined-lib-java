@@ -49,7 +49,7 @@ import org.exbin.bined.basic.HorizontalScrollUnit;
 import org.exbin.bined.basic.MovementDirection;
 import org.exbin.bined.basic.ScrollingDirection;
 import org.exbin.bined.basic.VerticalScrollUnit;
-import org.exbin.bined.color.CodeAreaColorsProfile;
+import org.exbin.bined.swing.basic.color.CodeAreaColorsProfile;
 import org.exbin.bined.swing.CodeAreaCommandHandler;
 import org.exbin.bined.swing.CodeAreaCore;
 import org.exbin.bined.swing.CodeAreaPainter;
@@ -100,7 +100,8 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
     @Nonnull
     private CodeType codeType = CodeType.HEXADECIMAL;
     private boolean showUnprintables;
-    private int rowPositionLength = 0;
+    private int minRowPositionLength = 0;
+    private int maxRowPositionLength = 0;
     @Nonnull
     private CodeCharactersCase codeCharactersCase = CodeCharactersCase.UPPER;
     private boolean showMirrorCursor = true;
@@ -200,12 +201,24 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
 
     @Override
     public int getMinRowPositionLength() {
-        return rowPositionLength;
+        return minRowPositionLength;
     }
 
     @Override
-    public void setMinRowPositionLength(int rowPositionLength) {
-        this.rowPositionLength = rowPositionLength;
+    public void setMinRowPositionLength(int minRowPositionLength) {
+        this.minRowPositionLength = minRowPositionLength;
+        reset();
+        repaint();
+    }
+
+    @Override
+    public int getMaxRowPositionLength() {
+        return maxRowPositionLength;
+    }
+
+    @Override
+    public void setMaxRowPositionLength(int maxRowPositionLength) {
+        this.maxRowPositionLength = maxRowPositionLength;
         reset();
         repaint();
     }

@@ -65,7 +65,7 @@ import org.exbin.bined.capability.RowWrappingCapable;
 import org.exbin.bined.capability.ScrollingCapable;
 import org.exbin.bined.color.BasicCodeAreaDecorationColorType;
 import org.exbin.bined.color.CodeAreaBasicColors;
-import org.exbin.bined.color.CodeAreaColorsProfile;
+import org.exbin.bined.swing.basic.color.CodeAreaColorsProfile;
 import org.exbin.bined.extended.capability.CodeAreaCaretsProfile;
 import org.exbin.bined.extended.capability.ShowUnprintablesCapable;
 import org.exbin.bined.extended.color.CodeAreaUnprintablesColorType;
@@ -142,6 +142,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
     private int maxBytesPerChar;
     private int rowPositionLength;
     private int minRowPositionLength;
+    private int maxRowPositionLength;
 
     @Nullable
     private Font font;
@@ -226,6 +227,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         showMirrorCursor = ((CaretCapable) codeArea).isShowMirrorCursor();
         showUnprintables = ((ShowUnprintablesCapable) codeArea).isShowUnprintables();
         minRowPositionLength = ((RowWrappingCapable) codeArea).getMinRowPositionLength();
+        maxRowPositionLength = ((RowWrappingCapable) codeArea).getMaxRowPositionLength();
         antialiasingMode = ((AntialiasingCapable) codeArea).getAntialiasingMode();
 
         int rowsPerPage = dimensions.getRowsPerPage();
@@ -383,7 +385,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         }
 
         if (themeProfile.showBoxLine()) {
-            g.drawLine(rowPositionAreaWidth - 1, headerAreaHeight - 1, rowPositionAreaWidth - rowPositionAreaWidth, headerAreaHeight - 1);
+            g.drawLine(rowPositionAreaWidth - 1, headerAreaHeight - 1, rowPositionAreaWidth, headerAreaHeight - 1);
         }
     }
 
@@ -411,8 +413,10 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         CodeAreaScrollPosition scrollPosition = scrolling.getScrollPosition();
         g.setColor(colorsProfile.getColor(BasicCodeAreaDecorationColorType.LINE));
 
-        if (themeProfile.showRowPositionLine()) {
-            g.fillRect(0, headerAreaHeight - 1, componentWidth, 1);
+        if (themeProfile.showHeaderLine() || themeProfile.showBoxLine()) {
+            g.drawLine(0, headerAreaHeight - 1, componentWidth, headerAreaHeight - 1);
+        }
+        if (themeProfile.showSplitLine()) {
             int lineX = dataViewX + visibility.getPreviewRelativeX() - scrollPosition.getCharPosition() * characterWidth - scrollPosition.getCharOffset() - characterWidth / 2;
             if (lineX >= dataViewX) {
                 g.drawLine(lineX, 0, lineX, headerAreaHeight);
@@ -543,6 +547,11 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
             }
             g.drawLine(dataViewRectangle.x, dataViewRectangle.y - 1, dataViewRectangle.x + dataViewRectangle.width, dataViewRectangle.y - 1);
         }
+        if (themeProfile.showBoxLine()) {
+            if (rowPositionAreaWidth >= 0) {
+                g.drawLine(rowPositionAreaWidth - 1, dataViewRectangle.y, rowPositionAreaWidth - 1, dataViewRectangle.y + dataViewRectangle.height);
+            }
+        }
 
         g.setClip(clipBounds);
     }
@@ -568,7 +577,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         CodeAreaScrollPosition scrollPosition = scrolling.getScrollPosition();
         g.setColor(colorsProfile.getColor(BasicCodeAreaDecorationColorType.LINE));
         int lineX = dataViewRectangle.x + previewRelativeX - scrollPosition.getCharPosition() * characterWidth - scrollPosition.getCharOffset() - characterWidth / 2;
-        if (lineX >= dataViewRectangle.x) {
+        if (themeProfile.showSplitLine() && lineX >= dataViewRectangle.x) {
             g.drawLine(lineX, dataViewRectangle.y, lineX, dataViewRectangle.y + dataViewRectangle.height);
         }
 
@@ -1476,17 +1485,26 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
     }
 
     private int getRowPositionLength() {
-        if (minRowPositionLength <= 0) {
-            long dataSize = structure.getDataSize();
-            if (dataSize == 0) {
-                return 1;
-            }
-
-            double natLog = Math.log(dataSize == Long.MAX_VALUE ? dataSize : dataSize + 1);
-            int positionLength = (int) Math.ceil(natLog / structure.getPositionCodeType().getBaseLog());
-            return positionLength == 0 ? 1 : positionLength;
+        if (minRowPositionLength > 0 && minRowPositionLength == maxRowPositionLength) {
+            return minRowPositionLength;
         }
-        return minRowPositionLength;
+        
+        
+        long dataSize = structure.getDataSize();
+        if (dataSize == 0) {
+            return 1;
+        }
+
+        double natLog = Math.log(dataSize == Long.MAX_VALUE ? dataSize : dataSize + 1);
+        int positionLength = (int) Math.ceil(natLog / structure.getPositionCodeType().getBaseLog());
+        if (minRowPositionLength > 0 && positionLength < minRowPositionLength) {
+            positionLength = minRowPositionLength;
+        }
+        if (maxRowPositionLength > 0 && positionLength > maxRowPositionLength) {
+            positionLength = maxRowPositionLength;
+        }
+
+        return positionLength == 0 ? 1 : positionLength;
     }
 
     /**

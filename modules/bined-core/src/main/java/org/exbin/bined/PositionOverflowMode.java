@@ -27,10 +27,6 @@ public enum PositionOverflowMode {
      */
     NO_OVERFLOW,
     /**
-     * 
-     */
-    VISIBLE_AREA,
-    /**
      * Cursor can be partially visible in visible area.
      */
     OVERFLOW

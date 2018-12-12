@@ -17,7 +17,7 @@ package org.exbin.bined.swing.extended.color;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import org.exbin.bined.color.CodeAreaColorsProfile;
+import org.exbin.bined.swing.basic.color.CodeAreaColorsProfile;
 
 /**
  * Capability of painter to handle colors profiling.

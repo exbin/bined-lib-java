@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.color;
+package org.exbin.bined.swing.basic.color;
 
 import java.awt.Color;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import org.exbin.bined.color.CodeAreaBasicColors;
+import org.exbin.bined.color.CodeAreaColorType;
 
 /**
  * Color profile.

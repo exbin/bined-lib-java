@@ -22,7 +22,7 @@ import org.exbin.bined.swing.basic.CodeArea;
 /**
  * Hexadecimal editor example panel.
  *
- * @version 0.2.0 2018/10/10
+ * @version 0.2.0 2018/12/13
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -38,6 +38,7 @@ public class LayoutPanel extends javax.swing.JPanel {
         rowWrappingModeCheckBox.setSelected(codeArea.getRowWrapping() == RowWrappingMode.WRAPPING);
         maxBytesPerRowSpinner.setValue(codeArea.getMaxBytesPerRow());
         minRowPositionLengthSpinner.setValue(codeArea.getMinRowPositionLength());
+        maxRowPositionLengthSpinner.setValue(codeArea.getMaxRowPositionLength());
     }
 
     /**
@@ -54,6 +55,8 @@ public class LayoutPanel extends javax.swing.JPanel {
         maxBytesPerRowSpinner = new javax.swing.JSpinner();
         minRowPositionLengthLabel = new javax.swing.JLabel();
         minRowPositionLengthSpinner = new javax.swing.JSpinner();
+        maxRowPositionLengthLabel = new javax.swing.JLabel();
+        maxRowPositionLengthSpinner = new javax.swing.JSpinner();
 
         rowWrappingModeCheckBox.setText("Wrap Line Mode");
         rowWrappingModeCheckBox.addItemListener(new java.awt.event.ItemListener() {
@@ -81,6 +84,16 @@ public class LayoutPanel extends javax.swing.JPanel {
             }
         });
 
+        maxRowPositionLengthLabel.setText("Maximal Row Position Length");
+
+        maxRowPositionLengthSpinner.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1));
+        maxRowPositionLengthSpinner.setValue(8);
+        maxRowPositionLengthSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                maxRowPositionLengthSpinnerStateChanged(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -94,8 +107,12 @@ public class LayoutPanel extends javax.swing.JPanel {
                             .addComponent(rowWrappingModeCheckBox)
                             .addComponent(minRowPositionLengthLabel))
                         .addGap(0, 190, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(maxRowPositionLengthLabel)
+                        .addGap(184, 184, 184))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(maxRowPositionLengthSpinner, javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(minRowPositionLengthSpinner, javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(maxBytesPerRowSpinner, javax.swing.GroupLayout.Alignment.LEADING))
                         .addContainerGap())))
@@ -113,7 +130,11 @@ public class LayoutPanel extends javax.swing.JPanel {
                 .addComponent(minRowPositionLengthLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(minRowPositionLengthSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(maxRowPositionLengthLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(maxRowPositionLengthSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(104, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -130,10 +151,16 @@ public class LayoutPanel extends javax.swing.JPanel {
         codeArea.setRowWrapping(rowWrappingModeCheckBox.isSelected() ? RowWrappingMode.WRAPPING : RowWrappingMode.NO_WRAPPING);
     }//GEN-LAST:event_rowWrappingModeCheckBoxItemStateChanged
 
+    private void maxRowPositionLengthSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_maxRowPositionLengthSpinnerStateChanged
+        codeArea.setMaxRowPositionLength((Integer) maxRowPositionLengthSpinner.getValue());
+    }//GEN-LAST:event_maxRowPositionLengthSpinnerStateChanged
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel maxBytesPerRowLabel;
     private javax.swing.JSpinner maxBytesPerRowSpinner;
+    private javax.swing.JLabel maxRowPositionLengthLabel;
+    private javax.swing.JSpinner maxRowPositionLengthSpinner;
     private javax.swing.JLabel minRowPositionLengthLabel;
     private javax.swing.JSpinner minRowPositionLengthSpinner;
     private javax.swing.JCheckBox rowWrappingModeCheckBox;

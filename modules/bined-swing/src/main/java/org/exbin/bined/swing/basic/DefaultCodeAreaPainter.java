@@ -78,7 +78,7 @@ import org.exbin.utils.binary_data.BinaryData;
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2018/12/08
+ * @version 0.2.0 2018/12/13
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -123,6 +123,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
 
     private int maxBytesPerChar;
     private int minRowPositionLength;
+    private int maxRowPositionLength;
     private int rowPositionLength;
 
     @Nullable
@@ -207,6 +208,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         showMirrorCursor = ((CaretCapable) codeArea).isShowMirrorCursor();
         antialiasingMode = ((AntialiasingCapable) codeArea).getAntialiasingMode();
         minRowPositionLength = ((RowWrappingCapable) codeArea).getMinRowPositionLength();
+        maxRowPositionLength = ((RowWrappingCapable) codeArea).getMaxRowPositionLength();
 
         int rowsPerPage = dimensions.getRowsPerPage();
         long rowsPerDocument = structure.getRowsPerDocument();
@@ -1337,17 +1339,25 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
     }
 
     private int getRowPositionLength() {
-        if (minRowPositionLength <= 0) {
-            long dataSize = structure.getDataSize();
-            if (dataSize == 0) {
-                return 1;
-            }
-
-            double natLog = Math.log(dataSize == Long.MAX_VALUE ? dataSize : dataSize + 1);
-            int numberLength = (int) Math.ceil(natLog / PositionCodeType.HEXADECIMAL.getBaseLog());
-            return numberLength == 0 ? 1 : numberLength;
+        if (minRowPositionLength > 0 && minRowPositionLength == maxRowPositionLength) {
+            return minRowPositionLength;
         }
-        return minRowPositionLength;
+
+        long dataSize = structure.getDataSize();
+        if (dataSize == 0) {
+            return 1;
+        }
+
+        double natLog = Math.log(dataSize == Long.MAX_VALUE ? dataSize : dataSize + 1);
+        int positionLength = (int) Math.ceil(natLog / PositionCodeType.HEXADECIMAL.getBaseLog());
+        if (minRowPositionLength > 0 && positionLength < minRowPositionLength) {
+            positionLength = minRowPositionLength;
+        }
+        if (maxRowPositionLength > 0 && positionLength > maxRowPositionLength) {
+            positionLength = maxRowPositionLength;
+        }
+
+        return positionLength == 0 ? 1 : positionLength;
     }
 
     /**

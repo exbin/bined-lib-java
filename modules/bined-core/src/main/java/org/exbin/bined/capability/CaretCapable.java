@@ -77,8 +77,14 @@ public interface CaretCapable {
      */
     void setShowMirrorCursor(boolean showMirrorCursor);
 
+    /**
+     * Notifies component, that caret position has changed.
+     */
     void notifyCaretMoved();
 
+    /**
+     * Notifies component, that caret state has changed.
+     */
     void notifyCaretChanged();
 
     /**

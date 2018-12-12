@@ -27,8 +27,13 @@
                       </Group>
                       <EmptySpace min="0" pref="190" max="32767" attributes="0"/>
                   </Group>
+                  <Group type="102" alignment="0" attributes="0">
+                      <Component id="maxRowPositionLengthLabel" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="184" max="-2" attributes="0"/>
+                  </Group>
                   <Group type="102" alignment="1" attributes="0">
                       <Group type="103" groupAlignment="1" attributes="0">
+                          <Component id="maxRowPositionLengthSpinner" alignment="0" max="32767" attributes="0"/>
                           <Component id="minRowPositionLengthSpinner" alignment="0" max="32767" attributes="0"/>
                           <Component id="maxBytesPerRowSpinner" alignment="0" max="32767" attributes="0"/>
                       </Group>
@@ -51,7 +56,11 @@
               <Component id="minRowPositionLengthLabel" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="minRowPositionLengthSpinner" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="32767" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="maxRowPositionLengthLabel" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="maxRowPositionLengthSpinner" min="-2" max="-2" attributes="0"/>
+              <EmptySpace pref="104" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -96,6 +105,24 @@
       </Properties>
       <Events>
         <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="minRowPositionLengthSpinnerStateChanged"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JLabel" name="maxRowPositionLengthLabel">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Maximal Row Position Length"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JSpinner" name="maxRowPositionLengthSpinner">
+      <Properties>
+        <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
+          <SpinnerModel initial="0" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
+        </Property>
+        <Property name="value" type="java.lang.Object" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+          <Connection code="8" type="code"/>
+        </Property>
+      </Properties>
+      <Events>
+        <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="maxRowPositionLengthSpinnerStateChanged"/>
       </Events>
     </Component>
   </SubComponents>
