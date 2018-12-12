@@ -36,6 +36,7 @@ public class LayoutPanel extends javax.swing.JPanel {
         initComponents();
 
         rowWrappingModeCheckBox.setSelected(codeArea.getRowWrapping() == RowWrappingMode.WRAPPING);
+        maxBytesPerRowSpinner.setValue(codeArea.getMaxBytesPerRow());
         minRowPositionLengthSpinner.setValue(codeArea.getMinRowPositionLength());
     }
 
@@ -49,9 +50,9 @@ public class LayoutPanel extends javax.swing.JPanel {
     private void initComponents() {
 
         rowWrappingModeCheckBox = new javax.swing.JCheckBox();
-        bytesPerLineLabel = new javax.swing.JLabel();
-        bytesPerLineSpinner = new javax.swing.JSpinner();
-        rowPositionLengthLabel = new javax.swing.JLabel();
+        maxBytesPerRowLabel = new javax.swing.JLabel();
+        maxBytesPerRowSpinner = new javax.swing.JSpinner();
+        minRowPositionLengthLabel = new javax.swing.JLabel();
         minRowPositionLengthSpinner = new javax.swing.JSpinner();
 
         rowWrappingModeCheckBox.setText("Wrap Line Mode");
@@ -61,16 +62,16 @@ public class LayoutPanel extends javax.swing.JPanel {
             }
         });
 
-        bytesPerLineLabel.setText("Maximum Bytes Per Line");
+        maxBytesPerRowLabel.setText("Maximum Bytes Per Row");
 
-        bytesPerLineSpinner.setModel(new javax.swing.SpinnerNumberModel(16, 0, null, 1));
-        bytesPerLineSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
+        maxBytesPerRowSpinner.setModel(new javax.swing.SpinnerNumberModel(16, 0, null, 1));
+        maxBytesPerRowSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                bytesPerLineSpinnerStateChanged(evt);
+                maxBytesPerRowSpinnerStateChanged(evt);
             }
         });
 
-        rowPositionLengthLabel.setText("Row Position Length");
+        minRowPositionLengthLabel.setText("Minimal Row Position Length");
 
         minRowPositionLengthSpinner.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1));
         minRowPositionLengthSpinner.setValue(8);
@@ -89,14 +90,14 @@ public class LayoutPanel extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(bytesPerLineLabel)
+                            .addComponent(maxBytesPerRowLabel)
                             .addComponent(rowWrappingModeCheckBox)
-                            .addComponent(rowPositionLengthLabel))
-                        .addGap(0, 223, Short.MAX_VALUE))
+                            .addComponent(minRowPositionLengthLabel))
+                        .addGap(0, 190, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(minRowPositionLengthSpinner, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(bytesPerLineSpinner, javax.swing.GroupLayout.Alignment.LEADING))
+                            .addComponent(maxBytesPerRowSpinner, javax.swing.GroupLayout.Alignment.LEADING))
                         .addContainerGap())))
         );
         layout.setVerticalGroup(
@@ -105,21 +106,21 @@ public class LayoutPanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(rowWrappingModeCheckBox)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(bytesPerLineLabel)
+                .addComponent(maxBytesPerRowLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(bytesPerLineSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(maxBytesPerRowSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(rowPositionLengthLabel)
+                .addComponent(minRowPositionLengthLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(minRowPositionLengthSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void bytesPerLineSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_bytesPerLineSpinnerStateChanged
-        int value = (Integer) bytesPerLineSpinner.getValue();
+    private void maxBytesPerRowSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_maxBytesPerRowSpinnerStateChanged
+        int value = (Integer) maxBytesPerRowSpinner.getValue();
         codeArea.setMaxBytesPerLine(value);
-    }//GEN-LAST:event_bytesPerLineSpinnerStateChanged
+    }//GEN-LAST:event_maxBytesPerRowSpinnerStateChanged
 
     private void minRowPositionLengthSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_minRowPositionLengthSpinnerStateChanged
         codeArea.setMinRowPositionLength((Integer) minRowPositionLengthSpinner.getValue());
@@ -131,10 +132,10 @@ public class LayoutPanel extends javax.swing.JPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel bytesPerLineLabel;
-    private javax.swing.JSpinner bytesPerLineSpinner;
+    private javax.swing.JLabel maxBytesPerRowLabel;
+    private javax.swing.JSpinner maxBytesPerRowSpinner;
+    private javax.swing.JLabel minRowPositionLengthLabel;
     private javax.swing.JSpinner minRowPositionLengthSpinner;
-    private javax.swing.JLabel rowPositionLengthLabel;
     private javax.swing.JCheckBox rowWrappingModeCheckBox;
     // End of variables declaration//GEN-END:variables
 }

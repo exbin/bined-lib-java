@@ -17,7 +17,7 @@ package org.exbin.bined.swing.extended.layout;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import org.exbin.bined.swing.extended.theme.CodeAreaDecorationType;
+import org.exbin.bined.extended.theme.CodeAreaDecorationType;
 
 /**
  * Enumeration of supported decorations of extended code area.

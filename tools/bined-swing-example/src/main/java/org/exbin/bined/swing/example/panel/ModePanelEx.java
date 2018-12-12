@@ -18,7 +18,6 @@ package org.exbin.bined.swing.example.panel;
 import java.awt.Color;
 import java.awt.Font;
 import java.nio.charset.Charset;
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.swing.border.BevelBorder;

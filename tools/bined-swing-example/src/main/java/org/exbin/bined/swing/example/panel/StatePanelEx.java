@@ -26,7 +26,6 @@ import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 import org.exbin.bined.BasicCodeAreaSection;
 import org.exbin.bined.CaretPosition;
-import org.exbin.bined.CodeAreaSection;
 import org.exbin.bined.EditationOperation;
 import org.exbin.bined.SelectionRange;
 import org.exbin.bined.capability.SelectionCapable;

@@ -21,7 +21,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="maxBytesPerLineLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="maxBytesPerRowLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="wrapLineModeCheckBox" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
@@ -31,7 +31,7 @@
                           <Component id="spaceGroupSizeSpinner" alignment="0" max="32767" attributes="0"/>
                           <Component id="byteGroupSizeSpinner" alignment="0" max="32767" attributes="0"/>
                           <Component id="headerPanel" alignment="0" max="32767" attributes="0"/>
-                          <Component id="maxBytesPerLineSpinner" alignment="0" max="32767" attributes="0"/>
+                          <Component id="maxBytesPerRowSpinner" alignment="0" max="32767" attributes="0"/>
                           <Component id="rowPositionPanel" alignment="0" max="32767" attributes="0"/>
                           <Group type="102" alignment="0" attributes="0">
                               <Group type="103" groupAlignment="1" attributes="0">
@@ -53,9 +53,9 @@
               <EmptySpace max="-2" attributes="0"/>
               <Component id="wrapLineModeCheckBox" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="maxBytesPerLineLabel" min="-2" max="-2" attributes="0"/>
+              <Component id="maxBytesPerRowLabel" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="maxBytesPerLineSpinner" min="-2" max="-2" attributes="0"/>
+              <Component id="maxBytesPerRowSpinner" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="headerPanel" min="-2" pref="104" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
@@ -74,19 +74,19 @@
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Component class="javax.swing.JLabel" name="maxBytesPerLineLabel">
+    <Component class="javax.swing.JLabel" name="maxBytesPerRowLabel">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Maximum Bytes Per Line"/>
+        <Property name="text" type="java.lang.String" value="Maximum Bytes Per Row"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JSpinner" name="maxBytesPerLineSpinner">
+    <Component class="javax.swing.JSpinner" name="maxBytesPerRowSpinner">
       <Properties>
         <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
           <SpinnerModel initial="16" minimum="1" numberType="java.lang.Integer" stepSize="1" type="number"/>
         </Property>
       </Properties>
       <Events>
-        <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="maxBytesPerLineSpinnerStateChanged"/>
+        <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="maxBytesPerRowSpinnerStateChanged"/>
       </Events>
     </Component>
     <Container class="javax.swing.JPanel" name="headerPanel">
@@ -198,26 +198,22 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" alignment="0" attributes="0">
+              <Group type="102" alignment="1" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="showRowPositionCheckBox" max="32767" attributes="0"/>
-                      <Group type="102" alignment="0" attributes="0">
-                          <Component id="minRowPositionLengthComboBox" min="-2" pref="140" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="minRowPositionLengthSpinner" pref="220" max="32767" attributes="0"/>
-                      </Group>
+                  <Group type="103" groupAlignment="1" attributes="0">
+                      <Component id="minRowPositionLengthSpinner" max="32767" attributes="0"/>
+                      <Component id="showRowPositionCheckBox" alignment="0" max="32767" attributes="0"/>
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="rowPositionSpaceComboBox" min="-2" pref="140" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="rowPositionSpaceSpinner" max="32767" attributes="0"/>
                       </Group>
-                      <Group type="102" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Component id="minRowPositionLengthLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                               <Component id="rowPositionSpaceLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                          <EmptySpace min="0" pref="162" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
@@ -231,10 +227,7 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="minRowPositionLengthLabel" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="minRowPositionLengthComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="minRowPositionLengthSpinner" alignment="3" min="-2" max="-2" attributes="0"/>
-                  </Group>
+                  <Component id="minRowPositionLengthSpinner" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="rowPositionSpaceLabel" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
@@ -258,25 +251,8 @@
         </Component>
         <Component class="javax.swing.JLabel" name="minRowPositionLengthLabel">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Row Position Length"/>
+            <Property name="text" type="java.lang.String" value="Minimal Row Position Length"/>
           </Properties>
-        </Component>
-        <Component class="javax.swing.JComboBox" name="minRowPositionLengthComboBox">
-          <Properties>
-            <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-              <StringArray count="2">
-                <StringItem index="0" value="AUTO"/>
-                <StringItem index="1" value="SPECIFIED"/>
-              </StringArray>
-            </Property>
-            <Property name="selectedIndex" type="int" value="1"/>
-          </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="minRowPositionLengthComboBoxActionPerformed"/>
-          </Events>
-          <AuxValues>
-            <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
-          </AuxValues>
         </Component>
         <Component class="javax.swing.JSpinner" name="minRowPositionLengthSpinner">
           <Properties>

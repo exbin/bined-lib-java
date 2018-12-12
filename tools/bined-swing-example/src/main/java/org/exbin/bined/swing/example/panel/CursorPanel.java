@@ -15,7 +15,6 @@
  */
 package org.exbin.bined.swing.example.panel;
 
-import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.swing.basic.CodeArea;

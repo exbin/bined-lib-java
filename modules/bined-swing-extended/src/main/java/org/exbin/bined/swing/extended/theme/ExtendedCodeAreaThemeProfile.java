@@ -19,6 +19,8 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import org.exbin.bined.extended.theme.CodeAreaDecorationType;
+import org.exbin.bined.extended.theme.ExtendedBackgroundPaintMode;
 import org.exbin.bined.swing.extended.layout.ExtendedCodeAreaDecorations;
 
 /**

@@ -21,6 +21,7 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.swing.UIManager;
 import org.exbin.bined.CodeAreaUtils;
+import org.exbin.bined.color.BasicCodeAreaDecorationColorType;
 import org.exbin.bined.color.CodeAreaBasicColors;
 import org.exbin.bined.color.CodeAreaColorType;
 import org.exbin.bined.color.CodeAreaColorsProfile;

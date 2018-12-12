@@ -13,35 +13,42 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.swing.extended.color;
+package org.exbin.bined.color;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import org.exbin.bined.color.CodeAreaColorGroup;
 
 /**
- * Enumeration of color groups for extended code area.
+ * Enumeration of unprintable color types.
  *
- * @version 0.2.0 2018/11/17
+ * @version 0.2.0 2018/04/12
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public enum ExtendedCodeAreaColorsGroup implements CodeAreaColorGroup {
+public enum BasicCodeAreaDecorationColorType implements CodeAreaColorType {
 
-    UNPRINTABLES("unprintables"),
-    CONTROL_CODES("control_codes"),
-    UPPER_CODES("upper_codes");
+    LINE("decoration.line", null);
 
     @Nonnull
-    private final String groupId;
+    private final String typeId;
+    @Nullable
+    private final CodeAreaColorGroup group;
 
-    private ExtendedCodeAreaColorsGroup(String groupId) {
-        this.groupId = groupId;
+    private BasicCodeAreaDecorationColorType(String typeId, @Nullable CodeAreaColorGroup group) {
+        this.typeId = typeId;
+        this.group = group;
     }
 
     @Nonnull
     @Override
     public String getId() {
-        return groupId;
+        return typeId;
+    }
+
+    @Nullable
+    @Override
+    public CodeAreaColorGroup getGroup() {
+        return group;
     }
 }

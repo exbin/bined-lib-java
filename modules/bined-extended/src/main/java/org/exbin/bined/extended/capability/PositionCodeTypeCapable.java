@@ -13,44 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.swing.basic.color;
+package org.exbin.bined.extended.capability;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import org.exbin.bined.color.CodeAreaColorGroup;
-import org.exbin.bined.color.CodeAreaColorType;
+import org.exbin.bined.PositionCodeType;
+import org.exbin.bined.capability.CodeAreaCapability;
 
 /**
- * Enumeration of unprintable color types.
+ * Support for position code type.
  *
- * @version 0.2.0 2018/04/12
+ * @version 0.2.0 2018/12/03
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public enum BasicCodeAreaDecorationColorType implements CodeAreaColorType {
-
-    LINE("decoration.line", null);
+public interface PositionCodeTypeCapable {
 
     @Nonnull
-    private final String typeId;
-    @Nullable
-    private final CodeAreaColorGroup group;
+    PositionCodeType getPositionCodeType();
 
-    private BasicCodeAreaDecorationColorType(String typeId, @Nullable CodeAreaColorGroup group) {
-        this.typeId = typeId;
-        this.group = group;
-    }
+    void setPositionCodeType(PositionCodeType positionCodeType);
 
-    @Nonnull
-    @Override
-    public String getId() {
-        return typeId;
-    }
+    public static class PositionCodeTypeCapability implements CodeAreaCapability {
 
-    @Nullable
-    @Override
-    public CodeAreaColorGroup getGroup() {
-        return group;
     }
 }

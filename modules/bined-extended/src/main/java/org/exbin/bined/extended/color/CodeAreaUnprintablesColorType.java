@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.swing.extended.color;
+package org.exbin.bined.extended.color;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

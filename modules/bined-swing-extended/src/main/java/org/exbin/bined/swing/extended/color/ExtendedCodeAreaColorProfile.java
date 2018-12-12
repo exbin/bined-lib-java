@@ -21,11 +21,12 @@ import java.util.Map;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.swing.UIManager;
+import org.exbin.bined.color.BasicCodeAreaDecorationColorType;
 import org.exbin.bined.color.CodeAreaBasicColors;
 import org.exbin.bined.color.CodeAreaColorType;
 import org.exbin.bined.color.CodeAreaColorsProfile;
+import org.exbin.bined.extended.color.CodeAreaUnprintablesColorType;
 import org.exbin.bined.swing.CodeAreaSwingUtils;
-import org.exbin.bined.swing.basic.color.BasicCodeAreaDecorationColorType;
 
 /**
  * Color profile for extended code area.

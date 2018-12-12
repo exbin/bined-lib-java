@@ -13,17 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.swing.extended.capability;
+package org.exbin.bined.extended.theme;
+
+import javax.annotation.Nonnull;
 
 /**
- * Support for anti-aliasing capability.
+ * Code are decoration type.
  *
- * @version 0.2.0 2018/03/17
+ * @version 0.2.0 2018/12/04
  * @author ExBin Project (https://exbin.org)
  */
-public interface RowOffsetCapable {
+public interface CodeAreaDecorationType {
 
-    long getRowOffset();
-
-    void setRowOffset(long offset);
+    /**
+     * Returns unique string identifier.
+     *
+     * Custom implementations should start with full package name to avoid
+     * collisions.
+     *
+     * @return unique identification ID key
+     */
+    @Nonnull
+    String getId();
 }

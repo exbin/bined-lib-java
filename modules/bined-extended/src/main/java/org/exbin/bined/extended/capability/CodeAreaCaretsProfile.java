@@ -13,26 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.swing.extended.theme;
+package org.exbin.bined.extended.capability;
 
 import javax.annotation.Nonnull;
 
 /**
- * Code are decoration type.
+ * Support for cursor carets shapes.
  *
- * @version 0.2.0 2018/12/04
+ * @version 0.2.0 2018/12/01
  * @author ExBin Project (https://exbin.org)
  */
-public interface CodeAreaDecorationType {
+public class CodeAreaCaretsProfile {
 
-    /**
-     * Returns unique string identifier.
-     *
-     * Custom implementations should start with full package name to avoid
-     * collisions.
-     *
-     * @return unique identification ID key
-     */
-    @Nonnull
-    String getId();
+    public enum CaretType {
+        INSERT,
+        OVERWRITE,
+        SHADDOW
+    }
+
+    public void paintCaret(@Nonnull CaretType caretType) {
+        
+    }
 }

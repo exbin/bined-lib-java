@@ -22,11 +22,11 @@ import java.util.Map;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.swing.JPanel;
 import org.exbin.bined.swing.example.panel.CursorPanelEx;
-import org.exbin.bined.swing.example.panel.ThemePanelEx;
 import org.exbin.bined.swing.example.panel.LayoutPanelEx;
 import org.exbin.bined.swing.example.panel.ModePanelEx;
 import org.exbin.bined.swing.example.panel.ScrollingPanelEx;
 import org.exbin.bined.swing.example.panel.StatePanelEx;
+import org.exbin.bined.swing.example.panel.ThemePanelEx;
 import org.exbin.bined.swing.extended.ExtCodeArea;
 
 /**

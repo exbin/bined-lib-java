@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.swing.extended.theme;
+package org.exbin.bined.extended.theme;
 
 /**
  * Border paint modes for basic painter.

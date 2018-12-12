@@ -34,7 +34,7 @@ import org.exbin.bined.capability.RowWrappingCapable;
 import org.exbin.bined.capability.RowWrappingCapable.RowWrappingMode;
 import org.exbin.bined.capability.SelectionCapable;
 import org.exbin.bined.capability.ViewModeCapable;
-import org.exbin.bined.swing.extended.capability.PositionCodeTypeCapable;
+import org.exbin.bined.extended.capability.PositionCodeTypeCapable;
 
 /**
  * Code area data representation structure for extended variant.

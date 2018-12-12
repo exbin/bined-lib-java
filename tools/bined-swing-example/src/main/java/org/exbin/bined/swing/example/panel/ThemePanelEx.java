@@ -16,8 +16,8 @@
 package org.exbin.bined.swing.example.panel;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import org.exbin.bined.extended.theme.ExtendedBackgroundPaintMode;
 import org.exbin.bined.swing.extended.ExtCodeArea;
-import org.exbin.bined.swing.extended.theme.ExtendedBackgroundPaintMode;
 import org.exbin.bined.swing.extended.layout.ExtendedCodeAreaDecorations;
 import org.exbin.bined.swing.extended.theme.ExtendedCodeAreaThemeProfile;
 

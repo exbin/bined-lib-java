@@ -23,11 +23,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import javax.swing.JPanel;
 import org.exbin.bined.swing.basic.CodeArea;
 import org.exbin.bined.swing.example.panel.CursorPanel;
-import org.exbin.bined.swing.example.panel.ThemePanel;
 import org.exbin.bined.swing.example.panel.LayoutPanel;
 import org.exbin.bined.swing.example.panel.ModePanel;
 import org.exbin.bined.swing.example.panel.ScrollingPanel;
 import org.exbin.bined.swing.example.panel.StatePanel;
+import org.exbin.bined.swing.example.panel.ThemePanel;
 
 /**
  * Basic hexadecimal component example panel.

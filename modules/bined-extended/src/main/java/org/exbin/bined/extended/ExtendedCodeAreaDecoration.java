@@ -13,25 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.swing.extended.capability;
-
-import javax.annotation.Nonnull;
+package org.exbin.bined.extended;
 
 /**
- * Support for cursor carets shapes.
+ * Extended code area component decoration definition.
  *
- * @version 0.2.0 2018/12/01
+ * @version 0.2.0 2017/08/27
  * @author ExBin Project (https://exbin.org)
  */
-public class CodeAreaCaretsProfile {
+public class ExtendedCodeAreaDecoration {
 
-    public enum CaretType {
-        INSERT,
-        OVERWRITE,
-        SHADDOW
-    }
+    public static final int DECORATION_HEADER_LINE = 1;
+    public static final int DECORATION_LINENUM_LINE = 2;
+    public static final int DECORATION_PREVIEW_LINE = 4;
+    public static final int DECORATION_BOX = 8;
+    public static final int DECORATION_DEFAULT = DECORATION_PREVIEW_LINE | DECORATION_LINENUM_LINE | DECORATION_HEADER_LINE;
 
-    public void paintCaret(@Nonnull CaretType caretType) {
-        
-    }
 }

@@ -13,23 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.swing.extended.capability;
-
-import org.exbin.bined.capability.CodeAreaCapability;
+package org.exbin.bined.extended.capability;
 
 /**
- * Support for showing unprintable characters.
+ * Support for anti-aliasing capability.
  *
- * @version 0.2.0 2018/09/02
+ * @version 0.2.0 2018/03/17
  * @author ExBin Project (https://exbin.org)
  */
-public interface ShowUnprintablesCapable {
+public interface RowOffsetCapable {
 
-    boolean isShowUnprintables();
+    long getRowOffset();
 
-    void setShowUnprintables(boolean show);
-
-    public static class ShowUnprintablesCapability implements CodeAreaCapability {
-
-    }
+    void setRowOffset(long offset);
 }

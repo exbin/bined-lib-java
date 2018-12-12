@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.swing.capability;
+package org.exbin.bined.capability;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.basic.BasicBackgroundPaintMode;
-import org.exbin.bined.capability.CodeAreaCapability;
 
 /**
  * Support for background paint mode capability.

@@ -25,12 +25,12 @@ import org.exbin.bined.capability.RowWrappingCapable;
 import org.exbin.bined.capability.ScrollingCapable;
 import org.exbin.bined.capability.SelectionCapable;
 import org.exbin.bined.capability.ViewModeCapable;
+import org.exbin.bined.extended.capability.PositionCodeTypeCapable;
+import org.exbin.bined.extended.capability.ShowUnprintablesCapable;
 import org.exbin.bined.swing.capability.AntialiasingCapable;
 import org.exbin.bined.swing.capability.FontCapable;
 import org.exbin.bined.swing.extended.capability.ColorsProfileCapable;
 import org.exbin.bined.swing.extended.capability.LayoutProfileCapable;
-import org.exbin.bined.swing.extended.capability.PositionCodeTypeCapable;
-import org.exbin.bined.swing.extended.capability.ShowUnprintablesCapable;
 import org.exbin.bined.swing.extended.capability.ThemeProfileCapable;
 
 /**

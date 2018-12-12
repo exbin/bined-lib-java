@@ -58,6 +58,7 @@ import org.exbin.bined.basic.MovementDirection;
 import org.exbin.bined.basic.PositionScrollVisibility;
 import org.exbin.bined.basic.ScrollBarVerticalScale;
 import org.exbin.bined.basic.ScrollingDirection;
+import org.exbin.bined.capability.BackgroundPaintCapable;
 import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.capability.CharsetCapable;
 import org.exbin.bined.capability.CodeCharactersCaseCapable;
@@ -71,7 +72,6 @@ import org.exbin.bined.swing.basic.DefaultCodeAreaCaret.CursorRenderingMode;
 import org.exbin.bined.swing.basic.color.BasicCodeAreaColorsProfile;
 import org.exbin.bined.swing.basic.color.BasicColorsCapableCodeAreaPainter;
 import org.exbin.bined.swing.capability.AntialiasingCapable;
-import org.exbin.bined.swing.capability.BackgroundPaintCapable;
 import org.exbin.bined.swing.capability.FontCapable;
 import org.exbin.utils.binary_data.BinaryData;
 

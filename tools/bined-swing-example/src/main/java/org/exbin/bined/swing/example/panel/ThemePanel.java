@@ -17,8 +17,8 @@ package org.exbin.bined.swing.example.panel;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.basic.BasicBackgroundPaintMode;
+import org.exbin.bined.capability.BackgroundPaintCapable;
 import org.exbin.bined.swing.basic.CodeArea;
-import org.exbin.bined.swing.capability.BackgroundPaintCapable;
 
 /**
  * Hexadecimal editor example panel.
@@ -79,7 +79,7 @@ public class ThemePanel extends javax.swing.JPanel {
                 .addComponent(backgroundModeLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(backgroundModeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(110, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 

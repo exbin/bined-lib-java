@@ -13,20 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.swing.extended;
+package org.exbin.bined.extended.capability;
+
+import org.exbin.bined.capability.CodeAreaCapability;
 
 /**
- * Extended code area component decoration definition.
+ * Support for showing unprintable characters.
  *
- * @version 0.2.0 2017/08/27
+ * @version 0.2.0 2018/09/02
  * @author ExBin Project (https://exbin.org)
  */
-public class ExtendedCodeAreaDecoration {
+public interface ShowUnprintablesCapable {
 
-    public static final int DECORATION_HEADER_LINE = 1;
-    public static final int DECORATION_LINENUM_LINE = 2;
-    public static final int DECORATION_PREVIEW_LINE = 4;
-    public static final int DECORATION_BOX = 8;
-    public static final int DECORATION_DEFAULT = DECORATION_PREVIEW_LINE | DECORATION_LINENUM_LINE | DECORATION_HEADER_LINE;
+    boolean isShowUnprintables();
 
+    void setShowUnprintables(boolean show);
+
+    public static class ShowUnprintablesCapability implements CodeAreaCapability {
+
+    }
 }

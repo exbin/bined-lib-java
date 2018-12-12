@@ -13,28 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.swing.extended.capability;
+package org.exbin.bined.extended.color;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import org.exbin.bined.PositionCodeType;
-import org.exbin.bined.capability.CodeAreaCapability;
+import org.exbin.bined.color.CodeAreaColorGroup;
 
 /**
- * Support for position code type.
+ * Enumeration of color groups for extended code area.
  *
- * @version 0.2.0 2018/12/03
+ * @version 0.2.0 2018/11/17
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public interface PositionCodeTypeCapable {
+public enum ExtendedCodeAreaColorsGroup implements CodeAreaColorGroup {
+
+    UNPRINTABLES("unprintables"),
+    CONTROL_CODES("control_codes"),
+    UPPER_CODES("upper_codes");
 
     @Nonnull
-    PositionCodeType getPositionCodeType();
+    private final String groupId;
 
-    void setPositionCodeType(PositionCodeType positionCodeType);
+    private ExtendedCodeAreaColorsGroup(String groupId) {
+        this.groupId = groupId;
+    }
 
-    public static class PositionCodeTypeCapability implements CodeAreaCapability {
-
+    @Nonnull
+    @Override
+    public String getId() {
+        return groupId;
     }
 }

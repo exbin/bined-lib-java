@@ -15,6 +15,7 @@
  */
 package org.exbin.bined.swing.basic;
 
+import org.exbin.bined.capability.BackgroundPaintCapable;
 import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.capability.CharsetCapable;
 import org.exbin.bined.capability.ClipboardCapable;
@@ -26,7 +27,6 @@ import org.exbin.bined.capability.ScrollingCapable;
 import org.exbin.bined.capability.SelectionCapable;
 import org.exbin.bined.capability.ViewModeCapable;
 import org.exbin.bined.swing.capability.AntialiasingCapable;
-import org.exbin.bined.swing.capability.BackgroundPaintCapable;
 import org.exbin.bined.swing.capability.BasicColorsCapable;
 import org.exbin.bined.swing.capability.FontCapable;
 

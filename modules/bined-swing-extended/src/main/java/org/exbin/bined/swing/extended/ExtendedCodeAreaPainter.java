@@ -15,7 +15,6 @@
  */
 package org.exbin.bined.swing.extended;
 
-import org.exbin.bined.swing.extended.theme.ExtendedBackgroundPaintMode;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Cursor;
@@ -64,8 +63,13 @@ import org.exbin.bined.capability.CodeCharactersCaseCapable;
 import org.exbin.bined.capability.EditationModeCapable;
 import org.exbin.bined.capability.RowWrappingCapable;
 import org.exbin.bined.capability.ScrollingCapable;
+import org.exbin.bined.color.BasicCodeAreaDecorationColorType;
 import org.exbin.bined.color.CodeAreaBasicColors;
 import org.exbin.bined.color.CodeAreaColorsProfile;
+import org.exbin.bined.extended.capability.CodeAreaCaretsProfile;
+import org.exbin.bined.extended.capability.ShowUnprintablesCapable;
+import org.exbin.bined.extended.color.CodeAreaUnprintablesColorType;
+import org.exbin.bined.extended.theme.ExtendedBackgroundPaintMode;
 import org.exbin.bined.swing.CodeAreaCore;
 import org.exbin.bined.swing.CodeAreaPainter;
 import org.exbin.bined.swing.CodeAreaSwingUtils;
@@ -73,12 +77,8 @@ import org.exbin.bined.swing.basic.AntialiasingMode;
 import org.exbin.bined.swing.basic.BasicCodeAreaMetrics;
 import org.exbin.bined.swing.basic.DefaultCodeAreaCaret;
 import org.exbin.bined.swing.basic.DefaultCodeAreaMouseListener;
-import org.exbin.bined.swing.basic.color.BasicCodeAreaDecorationColorType;
 import org.exbin.bined.swing.capability.AntialiasingCapable;
 import org.exbin.bined.swing.capability.FontCapable;
-import org.exbin.bined.swing.extended.capability.CodeAreaCaretsProfile;
-import org.exbin.bined.swing.extended.capability.ShowUnprintablesCapable;
-import org.exbin.bined.swing.extended.color.CodeAreaUnprintablesColorType;
 import org.exbin.bined.swing.extended.color.ColorsProfileCapableCodeAreaPainter;
 import org.exbin.bined.swing.extended.color.ExtendedCodeAreaColorProfile;
 import org.exbin.bined.swing.extended.layout.ExtendedCodeAreaLayoutProfile;
