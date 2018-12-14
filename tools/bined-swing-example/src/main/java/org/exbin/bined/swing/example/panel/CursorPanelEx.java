@@ -115,9 +115,9 @@ public class CursorPanelEx extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(cursorRenderingModeComboBox, 0, 253, Short.MAX_VALUE)
-                    .addComponent(cursorInsertShapeComboBox, 0, 253, Short.MAX_VALUE)
-                    .addComponent(cursorOverwriteShapeComboBox, 0, 253, Short.MAX_VALUE)
+                    .addComponent(cursorRenderingModeComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(cursorInsertShapeComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(cursorOverwriteShapeComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(cursorRenderingModeLabel)
@@ -127,7 +127,7 @@ public class CursorPanelEx extends javax.swing.JPanel {
                     .addComponent(showMirrorCursorCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(cursorBlinkingRateLabel)
-                        .addGap(63, 63, 63))
+                        .addGap(0, 0, 0))
                     .addComponent(cursorBlinkingRateSpinner, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addContainerGap())
         );
@@ -152,7 +152,7 @@ public class CursorPanelEx extends javax.swing.JPanel {
                 .addComponent(cursorOverwriteShapeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(showMirrorCursorCheckBox)
-                .addContainerGap(143, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 

@@ -15,12 +15,12 @@
  */
 package org.exbin.bined.swing.example;
 
-import java.awt.BorderLayout;
 import java.awt.Component;
 import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import org.exbin.bined.swing.basic.CodeArea;
 import org.exbin.bined.swing.example.panel.CursorPanel;
 import org.exbin.bined.swing.example.panel.LayoutPanel;
@@ -32,14 +32,14 @@ import org.exbin.bined.swing.example.panel.ThemePanel;
 /**
  * Basic hexadecimal component example panel.
  *
- * @version 0.2.0 2018/12/09
+ * @version 0.2.0 2018/12/14
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class BinEdExampleBasicPanel extends javax.swing.JPanel {
 
-    private final Map<JPanel, JPanel> tabMap = new HashMap<>();
-    private JPanel activeTab;
+    private final Map<JScrollPane, JPanel> tabMap = new HashMap<>();
+    private JScrollPane activeTab;
 
     public BinEdExampleBasicPanel() {
         initComponents();
@@ -49,21 +49,23 @@ public class BinEdExampleBasicPanel extends javax.swing.JPanel {
         splitPane.setRightComponent(codeArea);
 
         ModePanel modePanel = new ModePanel(codeArea);
+        modePanel.setPreferredSize(null);
         StatePanel statePanel = new StatePanel(codeArea);
         LayoutPanel layoutPanel = new LayoutPanel(codeArea);
         ThemePanel themePanel = new ThemePanel(codeArea);
         ScrollingPanel scrollingPanel = new ScrollingPanel(codeArea);
         CursorPanel cursorPanel = new CursorPanel(codeArea);
 
-        tabMap.put(modeTab, modePanel);
-        tabMap.put(stateTab, statePanel);
-        tabMap.put(layoutTab, layoutPanel);
-        tabMap.put(themeTab, themePanel);
-        tabMap.put(scrollingTab, scrollingPanel);
-        tabMap.put(cursorTab, cursorPanel);
+        tabMap.put(modeScrollPane, modePanel);
+        tabMap.put(stateScrollPane, statePanel);
+        tabMap.put(layoutScrollPane, layoutPanel);
+        tabMap.put(themeScrollPane, themePanel);
+        tabMap.put(scrollingScrollPane, scrollingPanel);
+        tabMap.put(cursorScrollPane, cursorPanel);
 
-        activeTab = modeTab;
-        modeTab.add(modePanel, BorderLayout.CENTER);
+        activeTab = modeScrollPane;
+        modeScrollPane.setViewportView(modePanel);
+        splitPane.setDividerLocation(330);
     }
 
     /**
@@ -77,12 +79,12 @@ public class BinEdExampleBasicPanel extends javax.swing.JPanel {
 
         splitPane = new javax.swing.JSplitPane();
         tabbedPane = new javax.swing.JTabbedPane();
-        modeTab = new javax.swing.JPanel();
-        stateTab = new javax.swing.JPanel();
-        layoutTab = new javax.swing.JPanel();
-        themeTab = new javax.swing.JPanel();
-        scrollingTab = new javax.swing.JPanel();
-        cursorTab = new javax.swing.JPanel();
+        modeScrollPane = new javax.swing.JScrollPane();
+        stateScrollPane = new javax.swing.JScrollPane();
+        layoutScrollPane = new javax.swing.JScrollPane();
+        themeScrollPane = new javax.swing.JScrollPane();
+        scrollingScrollPane = new javax.swing.JScrollPane();
+        cursorScrollPane = new javax.swing.JScrollPane();
 
         setLayout(new java.awt.BorderLayout());
 
@@ -91,24 +93,12 @@ public class BinEdExampleBasicPanel extends javax.swing.JPanel {
                 tabbedPaneStateChanged(evt);
             }
         });
-
-        modeTab.setLayout(new java.awt.BorderLayout());
-        tabbedPane.addTab("Mode", modeTab);
-
-        stateTab.setLayout(new java.awt.BorderLayout());
-        tabbedPane.addTab("State", stateTab);
-
-        layoutTab.setLayout(new java.awt.BorderLayout());
-        tabbedPane.addTab("Layout", layoutTab);
-
-        themeTab.setLayout(new java.awt.BorderLayout());
-        tabbedPane.addTab("Theme", themeTab);
-
-        scrollingTab.setLayout(new java.awt.BorderLayout());
-        tabbedPane.addTab("Scrolling", scrollingTab);
-
-        cursorTab.setLayout(new java.awt.BorderLayout());
-        tabbedPane.addTab("Cursor", cursorTab);
+        tabbedPane.addTab("Mode", modeScrollPane);
+        tabbedPane.addTab("State", stateScrollPane);
+        tabbedPane.addTab("Layout", layoutScrollPane);
+        tabbedPane.addTab("Theme", themeScrollPane);
+        tabbedPane.addTab("Scrolling", scrollingScrollPane);
+        tabbedPane.addTab("Cursor", cursorScrollPane);
 
         splitPane.setLeftComponent(tabbedPane);
 
@@ -119,22 +109,23 @@ public class BinEdExampleBasicPanel extends javax.swing.JPanel {
         Component tab = tabbedPane.getSelectedComponent();
         if (tab != null && tab != activeTab && !tabMap.isEmpty()) {
             if (activeTab != null) {
-                ((JPanel) activeTab).remove(tabMap.get(activeTab));
+                ((JScrollPane) activeTab).setViewportView(null);
             }
 
-            ((JPanel) tab).add(tabMap.get((JPanel) tab), BorderLayout.CENTER);
-            activeTab = (JPanel) tab;
+            JPanel tabPanel = tabMap.get((JScrollPane) tab);
+            ((JScrollPane) tab).setViewportView(tabPanel);
+            activeTab = (JScrollPane) tab;
         }
     }//GEN-LAST:event_tabbedPaneStateChanged
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel cursorTab;
-    private javax.swing.JPanel layoutTab;
-    private javax.swing.JPanel modeTab;
-    private javax.swing.JPanel scrollingTab;
+    private javax.swing.JScrollPane cursorScrollPane;
+    private javax.swing.JScrollPane layoutScrollPane;
+    private javax.swing.JScrollPane modeScrollPane;
+    private javax.swing.JScrollPane scrollingScrollPane;
     private javax.swing.JSplitPane splitPane;
-    private javax.swing.JPanel stateTab;
+    private javax.swing.JScrollPane stateScrollPane;
     private javax.swing.JTabbedPane tabbedPane;
-    private javax.swing.JPanel themeTab;
+    private javax.swing.JScrollPane themeScrollPane;
     // End of variables declaration//GEN-END:variables
 }

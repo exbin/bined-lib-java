@@ -117,7 +117,7 @@ public class ScrollingPanel extends javax.swing.JPanel {
                             .addComponent(horizontalScrollBarVisibilityLabel)
                             .addComponent(horizontalScrollModeLabel)
                             .addComponent(horizontalPositionLabel))
-                        .addGap(0, 187, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(horizontalPositionTextField))
                 .addContainerGap())
         );
@@ -180,7 +180,7 @@ public class ScrollingPanel extends javax.swing.JPanel {
                             .addComponent(verticalScrollBarVisibilityModeLabel)
                             .addComponent(verticalScrollModeLabel)
                             .addComponent(verticalPositionLabel))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(0, 20, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         verticalPanelLayout.setVerticalGroup(

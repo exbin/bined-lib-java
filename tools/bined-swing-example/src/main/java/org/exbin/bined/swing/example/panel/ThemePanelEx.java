@@ -75,7 +75,6 @@ public class ThemePanelEx extends javax.swing.JPanel {
         });
 
         paintRowPosBackgroundCheckBox.setText("Paint Row Positions Background");
-        paintRowPosBackgroundCheckBox.setEnabled(false);
         paintRowPosBackgroundCheckBox.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 paintRowPosBackgroundCheckBoxItemStateChanged(evt);
@@ -145,7 +144,7 @@ public class ThemePanelEx extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(backgroundModeLabel)
-                    .addComponent(paintRowPosBackgroundCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, 272, Short.MAX_VALUE)
+                    .addComponent(paintRowPosBackgroundCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(backgroundModeComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(linesPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
@@ -161,7 +160,7 @@ public class ThemePanelEx extends javax.swing.JPanel {
                 .addComponent(paintRowPosBackgroundCheckBox)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(linesPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(265, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 

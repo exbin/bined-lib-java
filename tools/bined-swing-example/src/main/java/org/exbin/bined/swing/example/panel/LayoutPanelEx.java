@@ -127,10 +127,10 @@ public class LayoutPanelEx extends javax.swing.JPanel {
                     .addGroup(headerPanelLayout.createSequentialGroup()
                         .addComponent(headerSpaceComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(headerSpaceSpinner, javax.swing.GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE))
+                        .addComponent(headerSpaceSpinner))
                     .addGroup(headerPanelLayout.createSequentialGroup()
                         .addComponent(headerSpaceLabel)
-                        .addGap(0, 267, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(showHeaderCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );

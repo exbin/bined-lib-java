@@ -19,20 +19,6 @@
           <Group type="102" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
-                      <Component id="positionCodeTypeLabel" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="164" max="-2" attributes="0"/>
-                  </Group>
-                  <Group type="102" alignment="0" attributes="0">
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="hexCharactersModeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="antialiasingScrollModeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="editationModeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="charsetLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="borderTypeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                  </Group>
                   <Group type="102" alignment="1" attributes="0">
                       <Group type="103" groupAlignment="1" attributes="0">
                           <Component id="borderTypeComboBox" alignment="0" max="32767" attributes="0"/>
@@ -43,17 +29,28 @@
                           <Component id="hexCharactersModeComboBox" alignment="0" max="32767" attributes="0"/>
                           <Component id="viewModeComboBox" alignment="0" max="32767" attributes="0"/>
                           <Component id="showNonprintableCharactersCheckBox" alignment="0" max="32767" attributes="0"/>
-                          <Component id="codeTypeComboBox" alignment="0" max="32767" attributes="0"/>
                           <Component id="positionCodeTypeComboBox" alignment="0" max="32767" attributes="0"/>
                           <Group type="102" alignment="0" attributes="0">
-                              <Group type="103" groupAlignment="0" attributes="0">
+                              <Group type="103" groupAlignment="1" attributes="0">
                                   <Component id="viewModeScrollModeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                                   <Component id="codeTypeScrollModeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                           </Group>
+                          <Component id="codeTypeComboBox" alignment="0" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
+                  </Group>
+                  <Group type="102" attributes="0">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="hexCharactersModeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="antialiasingScrollModeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="editationModeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="charsetLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="borderTypeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="positionCodeTypeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                   </Group>
               </Group>
           </Group>
@@ -98,7 +95,7 @@
               <Component id="borderTypeLabel" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="borderTypeComboBox" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="17" max="32767" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>

@@ -101,21 +101,19 @@ public class LayoutPanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(maxBytesPerRowLabel)
-                            .addComponent(rowWrappingModeCheckBox)
-                            .addComponent(minRowPositionLengthLabel))
-                        .addGap(0, 190, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(maxRowPositionLengthLabel)
-                        .addGap(184, 184, 184))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(maxRowPositionLengthSpinner, javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(minRowPositionLengthSpinner, javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(maxBytesPerRowSpinner, javax.swing.GroupLayout.Alignment.LEADING))
-                        .addContainerGap())))
+                        .addContainerGap())
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(maxBytesPerRowLabel)
+                            .addComponent(rowWrappingModeCheckBox)
+                            .addComponent(minRowPositionLengthLabel)
+                            .addComponent(maxRowPositionLengthLabel))
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -134,7 +132,7 @@ public class LayoutPanel extends javax.swing.JPanel {
                 .addComponent(maxRowPositionLengthLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(maxRowPositionLengthSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(104, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 

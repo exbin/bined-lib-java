@@ -69,7 +69,7 @@ public class ThemePanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(backgroundModeLabel)
-                    .addComponent(backgroundModeComboBox, 0, 277, Short.MAX_VALUE))
+                    .addComponent(backgroundModeComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(

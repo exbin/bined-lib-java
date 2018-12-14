@@ -20,7 +20,7 @@
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="backgroundModeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                  <Component id="backgroundModeComboBox" alignment="0" pref="277" max="32767" attributes="0"/>
+                  <Component id="backgroundModeComboBox" alignment="0" max="32767" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>

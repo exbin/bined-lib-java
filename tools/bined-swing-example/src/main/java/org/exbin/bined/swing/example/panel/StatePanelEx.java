@@ -143,7 +143,7 @@ public class StatePanelEx extends javax.swing.JPanel {
                             .addComponent(positionLabel)
                             .addComponent(codeOffsetLabel)
                             .addComponent(activeSectionLabel))
-                        .addGap(0, 105, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(activeSectionComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );

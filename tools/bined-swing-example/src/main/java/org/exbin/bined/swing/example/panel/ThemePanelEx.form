@@ -20,7 +20,7 @@
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="backgroundModeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                  <Component id="paintRowPosBackgroundCheckBox" alignment="0" pref="272" max="32767" attributes="0"/>
+                  <Component id="paintRowPosBackgroundCheckBox" alignment="0" max="32767" attributes="0"/>
                   <Component id="backgroundModeComboBox" alignment="0" max="32767" attributes="0"/>
                   <Component id="linesPanel" alignment="0" max="32767" attributes="0"/>
               </Group>
@@ -39,7 +39,7 @@
               <Component id="paintRowPosBackgroundCheckBox" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="linesPanel" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="265" max="32767" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -73,7 +73,6 @@
     <Component class="javax.swing.JCheckBox" name="paintRowPosBackgroundCheckBox">
       <Properties>
         <Property name="text" type="java.lang.String" value="Paint Row Positions Background"/>
-        <Property name="enabled" type="boolean" value="false"/>
       </Properties>
       <Events>
         <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="paintRowPosBackgroundCheckBoxItemStateChanged"/>
