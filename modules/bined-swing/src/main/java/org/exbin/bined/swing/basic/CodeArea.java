@@ -475,7 +475,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
 
     @Override
     public void repaint() {
-        resetPainter();
+        resetPainter(); // TODO drop
         super.repaint();
     }
 

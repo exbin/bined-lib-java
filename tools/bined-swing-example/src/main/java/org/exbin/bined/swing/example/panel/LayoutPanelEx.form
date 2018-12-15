@@ -16,32 +16,32 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" alignment="0" attributes="0">
+          <Group type="102" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="maxBytesPerRowLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="wrapLineModeCheckBox" alignment="0" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                  </Group>
+                  <Component id="halfSpaceGroupSizeSpinner" alignment="0" max="32767" attributes="0"/>
                   <Group type="102" alignment="1" attributes="0">
-                      <Group type="103" groupAlignment="1" attributes="0">
-                          <Component id="spaceGroupSizeSpinner" alignment="0" max="32767" attributes="0"/>
-                          <Component id="byteGroupSizeSpinner" alignment="0" max="32767" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="headerPanel" alignment="0" max="32767" attributes="0"/>
                           <Component id="maxBytesPerRowSpinner" alignment="0" max="32767" attributes="0"/>
                           <Component id="rowPositionPanel" alignment="0" max="32767" attributes="0"/>
+                          <Component id="spaceGroupSizeSpinner" alignment="0" max="32767" attributes="0"/>
                           <Group type="102" alignment="0" attributes="0">
-                              <Group type="103" groupAlignment="1" attributes="0">
-                                  <Component id="byteGroupSizeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Component id="spaceGroupSizeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                              </Group>
+                              <Component id="spaceGroupSizeLabel" min="-2" max="-2" attributes="0"/>
                               <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
+                  </Group>
+                  <Component id="doubleSpaceGroupSizeSpinner" alignment="0" max="32767" attributes="0"/>
+                  <Group type="102" attributes="0">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="maxBytesPerRowLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="wrapLineModeCheckBox" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="halfSpaceGroupSizeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="doubleSpaceGroupSizeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                   </Group>
               </Group>
           </Group>
@@ -57,23 +57,35 @@
               <EmptySpace max="-2" attributes="0"/>
               <Component id="maxBytesPerRowSpinner" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="headerPanel" min="-2" pref="104" max="-2" attributes="0"/>
+              <Component id="headerPanel" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="rowPositionPanel" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
-              <Component id="byteGroupSizeLabel" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
-              <Component id="byteGroupSizeSpinner" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="spaceGroupSizeLabel" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="spaceGroupSizeSpinner" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="halfSpaceGroupSizeLabel" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="halfSpaceGroupSizeSpinner" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="doubleSpaceGroupSizeLabel" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="doubleSpaceGroupSizeSpinner" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
   </Layout>
   <SubComponents>
+    <Component class="javax.swing.JCheckBox" name="wrapLineModeCheckBox">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Wrap Line Mode"/>
+      </Properties>
+      <Events>
+        <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="wrapLineModeCheckBoxItemStateChanged"/>
+      </Events>
+    </Component>
     <Component class="javax.swing.JLabel" name="maxBytesPerRowLabel">
       <Properties>
         <Property name="text" type="java.lang.String" value="Maximum Bytes Per Row"/>
@@ -101,19 +113,19 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" alignment="0" attributes="0">
+              <Group type="102" alignment="1" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="103" groupAlignment="1" attributes="0">
+                      <Component id="headerBottomSpaceSpinner" max="32767" attributes="0"/>
+                      <Component id="showHeaderCheckBox" alignment="0" max="32767" attributes="0"/>
                       <Group type="102" alignment="0" attributes="0">
-                          <Component id="headerSpaceComboBox" min="-2" pref="140" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="headerSpaceSpinner" max="32767" attributes="0"/>
-                      </Group>
-                      <Group type="102" alignment="0" attributes="0">
-                          <Component id="headerSpaceLabel" min="-2" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="headerTopSpaceLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="headerBottomSpaceLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                          </Group>
                           <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                       </Group>
-                      <Component id="showHeaderCheckBox" max="32767" attributes="0"/>
+                      <Component id="headerTopSpaceSpinner" alignment="0" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -124,12 +136,13 @@
               <Group type="102" alignment="0" attributes="0">
                   <Component id="showHeaderCheckBox" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="headerSpaceLabel" min="-2" max="-2" attributes="0"/>
+                  <Component id="headerTopSpaceLabel" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="headerSpaceComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="headerSpaceSpinner" alignment="3" min="-2" max="-2" attributes="0"/>
-                  </Group>
+                  <Component id="headerTopSpaceSpinner" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="headerBottomSpaceLabel" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="headerBottomSpaceSpinner" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
@@ -144,41 +157,34 @@
             <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="showHeaderCheckBoxItemStateChanged"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JLabel" name="headerSpaceLabel">
+        <Component class="javax.swing.JLabel" name="headerTopSpaceLabel">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Header Space"/>
+            <Property name="text" type="java.lang.String" value="Header Top Space"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JComboBox" name="headerSpaceComboBox">
-          <Properties>
-            <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-              <StringArray count="7">
-                <StringItem index="0" value="NONE"/>
-                <StringItem index="1" value="SPECIFIED"/>
-                <StringItem index="2" value="QUARTER_UNIT"/>
-                <StringItem index="3" value="HALF_UNIT"/>
-                <StringItem index="4" value="ONE_UNIT"/>
-                <StringItem index="5" value="ONE_AND_HALF_UNIT"/>
-                <StringItem index="6" value="DOUBLE_UNIT"/>
-              </StringArray>
-            </Property>
-            <Property name="selectedIndex" type="int" value="2"/>
-          </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="headerSpaceComboBoxActionPerformed"/>
-          </Events>
-          <AuxValues>
-            <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
-          </AuxValues>
-        </Component>
-        <Component class="javax.swing.JSpinner" name="headerSpaceSpinner">
+        <Component class="javax.swing.JSpinner" name="headerTopSpaceSpinner">
           <Properties>
             <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
               <SpinnerModel initial="0" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
             </Property>
           </Properties>
           <Events>
-            <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="headerSpaceSpinnerStateChanged"/>
+            <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="headerTopSpaceSpinnerStateChanged"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JLabel" name="headerBottomSpaceLabel">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Header Bottom Space"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JSpinner" name="headerBottomSpaceSpinner">
+          <Properties>
+            <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
+              <SpinnerModel initial="0" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
+            </Property>
+          </Properties>
+          <Events>
+            <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="headerBottomSpaceSpinnerStateChanged"/>
           </Events>
         </Component>
       </SubComponents>
@@ -201,19 +207,17 @@
               <Group type="102" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
+                      <Component id="rowPositionLeftSpaceSpinner" alignment="1" max="32767" attributes="0"/>
                       <Component id="minRowPositionLengthSpinner" alignment="1" max="32767" attributes="0"/>
                       <Component id="showRowPositionCheckBox" alignment="0" max="32767" attributes="0"/>
                       <Component id="maxRowPositionLengthSpinner" alignment="1" max="32767" attributes="0"/>
-                      <Group type="102" alignment="0" attributes="0">
-                          <Component id="rowPositionSpaceComboBox" min="-2" pref="140" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="rowPositionSpaceSpinner" max="32767" attributes="0"/>
-                      </Group>
+                      <Component id="rowPositionRightSpaceSpinner" alignment="1" max="32767" attributes="0"/>
                       <Group type="102" attributes="0">
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Component id="minRowPositionLengthLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                               <Component id="maxRowPositionLengthLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                              <Component id="rowPositionSpaceLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="rowPositionLeftSpaceLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="rowPositionRightSpaceLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                       </Group>
@@ -235,12 +239,13 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="maxRowPositionLengthSpinner" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="rowPositionSpaceLabel" min="-2" max="-2" attributes="0"/>
+                  <Component id="rowPositionLeftSpaceLabel" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="rowPositionSpaceComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="rowPositionSpaceSpinner" alignment="3" min="-2" max="-2" attributes="0"/>
-                  </Group>
+                  <Component id="rowPositionLeftSpaceSpinner" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="rowPositionRightSpaceLabel" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="rowPositionRightSpaceSpinner" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
@@ -291,58 +296,51 @@
             <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="maxRowPositionLengthSpinnerStateChanged"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JLabel" name="rowPositionSpaceLabel">
+        <Component class="javax.swing.JLabel" name="rowPositionLeftSpaceLabel">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Row Position Space"/>
+            <Property name="text" type="java.lang.String" value="Row Position Left Space"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JComboBox" name="rowPositionSpaceComboBox">
-          <Properties>
-            <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-              <StringArray count="7">
-                <StringItem index="0" value="NONE"/>
-                <StringItem index="1" value="SPECIFIED"/>
-                <StringItem index="2" value="QUARTER_UNIT"/>
-                <StringItem index="3" value="HALF_UNIT"/>
-                <StringItem index="4" value="ONE_UNIT"/>
-                <StringItem index="5" value="ONE_AND_HALF_UNIT"/>
-                <StringItem index="6" value="DOUBLE_UNIT"/>
-              </StringArray>
-            </Property>
-            <Property name="selectedIndex" type="int" value="4"/>
-          </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="rowPositionSpaceComboBoxActionPerformed"/>
-          </Events>
-          <AuxValues>
-            <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
-          </AuxValues>
-        </Component>
-        <Component class="javax.swing.JSpinner" name="rowPositionSpaceSpinner">
+        <Component class="javax.swing.JSpinner" name="rowPositionLeftSpaceSpinner">
           <Properties>
             <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
               <SpinnerModel initial="0" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
             </Property>
           </Properties>
           <Events>
-            <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="rowPositionSpaceSpinnerStateChanged"/>
+            <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="rowPositionLeftSpaceSpinnerStateChanged"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JLabel" name="rowPositionRightSpaceLabel">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Row Position Right Space"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JSpinner" name="rowPositionRightSpaceSpinner">
+          <Properties>
+            <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
+              <SpinnerModel initial="0" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
+            </Property>
+          </Properties>
+          <Events>
+            <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="rowPositionRightSpaceSpinnerStateChanged"/>
           </Events>
         </Component>
       </SubComponents>
     </Container>
-    <Component class="javax.swing.JLabel" name="byteGroupSizeLabel">
+    <Component class="javax.swing.JLabel" name="halfSpaceGroupSizeLabel">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Byte Group Size"/>
+        <Property name="text" type="java.lang.String" value="Half Space Group Size"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JSpinner" name="byteGroupSizeSpinner">
+    <Component class="javax.swing.JSpinner" name="halfSpaceGroupSizeSpinner">
       <Properties>
         <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
           <SpinnerModel initial="0" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
         </Property>
       </Properties>
       <Events>
-        <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="byteGroupSizeSpinnerStateChanged"/>
+        <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="halfSpaceGroupSizeSpinnerStateChanged"/>
       </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="spaceGroupSizeLabel">
@@ -360,12 +358,19 @@
         <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="spaceGroupSizeSpinnerStateChanged"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JCheckBox" name="wrapLineModeCheckBox">
+    <Component class="javax.swing.JLabel" name="doubleSpaceGroupSizeLabel">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Wrap Line Mode"/>
+        <Property name="text" type="java.lang.String" value="Double Space Group Size"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JSpinner" name="doubleSpaceGroupSizeSpinner">
+      <Properties>
+        <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
+          <SpinnerModel initial="0" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
+        </Property>
       </Properties>
       <Events>
-        <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="wrapLineModeCheckBoxItemStateChanged"/>
+        <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="doubleSpaceGroupSizeSpinnerStateChanged"/>
       </Events>
     </Component>
   </SubComponents>
