@@ -23,7 +23,7 @@ import org.exbin.bined.BasicCodeAreaZone;
 /**
  * Basic code area component dimensions.
  *
- * @version 0.2.0 2018/12/15
+ * @version 0.2.0 2018/12/16
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -89,12 +89,12 @@ public class BasicCodeAreaDimensions {
         boolean availableHeight = dataViewY + horizontalScrollBarSize <= componentHeight;
 
         if (availableWidth && availableHeight) {
-            mainAreaRect.setBounds(rowPositionAreaWidth, dataViewY, componentWidth - rowPositionAreaWidth - getVerticalScrollBarSize(), componentHeight - dataViewY - getHorizontalScrollBarSize());
+            mainAreaRect.setBounds(componentX + rowPositionAreaWidth, dataViewY, componentWidth - rowPositionAreaWidth - getVerticalScrollBarSize(), componentHeight - dataViewY - getHorizontalScrollBarSize());
         } else {
             mainAreaRect.setBounds(0, 0, 0, 0);
         }
         if (availableWidth) {
-            headerAreaRectangle.setBounds(rowPositionAreaWidth, componentY, componentWidth - rowPositionAreaWidth - getVerticalScrollBarSize(), headerAreaHeight);
+            headerAreaRectangle.setBounds(componentX + rowPositionAreaWidth, componentY, componentWidth - rowPositionAreaWidth - getVerticalScrollBarSize(), headerAreaHeight);
         } else {
             headerAreaRectangle.setBounds(0, 0, 0, 0);
         }

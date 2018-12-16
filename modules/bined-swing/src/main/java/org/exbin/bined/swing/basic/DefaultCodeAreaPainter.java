@@ -255,6 +255,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
 
         int verticalScrollBarSize = getVerticalScrollBarSize();
         int horizontalScrollBarSize = getHorizontalScrollBarSize();
+        // TODO single dimensions recompute
         Insets insets = codeArea.getInsets();
         int componentWidth = codeArea.getWidth() - insets.left - insets.right;
         int componentHeight = codeArea.getHeight() - insets.top - insets.bottom;
@@ -363,7 +364,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         g.drawLine(componentX, componentY + headerAreaHeight - 1, componentX + rowPositionAreaWidth, componentY + headerAreaHeight - 1);
 
         int lineX = componentX + rowPositionAreaWidth - (characterWidth / 2);
-        if (lineX >= 0) {
+        if (lineX >= componentX) {
             g.drawLine(lineX, componentY, lineX, componentY + headerAreaHeight);
         }
     }
@@ -388,7 +389,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         g.drawLine(headerArea.x, headerArea.y + headerArea.height - 1, headerArea.x + headerArea.width, headerArea.y + headerArea.height - 1);
         int lineX = dataViewX + visibility.getPreviewRelativeX() - scrollPosition.getCharPosition() * characterWidth - scrollPosition.getCharOffset() - characterWidth / 2;
         if (lineX >= dataViewX) {
-            g.drawLine(lineX, headerArea.y, lineX, headerArea.height);
+            g.drawLine(lineX, headerArea.y, lineX, headerArea.y + headerArea.height);
         }
 
         CodeAreaViewMode viewMode = structure.getViewMode();
@@ -493,15 +494,13 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         long dataPosition = bytesPerRow * scrollPosition.getRowPosition();
         int positionY = componentY + headerAreaHeight + rowHeight - subFontSpace - scrollPosition.getRowOffset();
         g.setColor(colorsProfile.getTextColor());
-        Rectangle compRect = new Rectangle();
-        compRect.x = componentX;
         for (int row = 0; row <= rowsPerRect; row++) {
             if (dataPosition > dataSize) {
                 break;
             }
 
             CodeAreaUtils.longToBaseCode(rowDataCache.rowPositionCode, 0, dataPosition < 0 ? 0 : dataPosition, CodeType.HEXADECIMAL.getBase(), rowPositionLength, true, codeCharactersCase);
-            drawCenteredChars(g, rowDataCache.rowPositionCode, 0, rowPositionLength, characterWidth, compRect.x, positionY);
+            drawCenteredChars(g, rowDataCache.rowPositionCode, 0, rowPositionLength, characterWidth, componentX, positionY);
 
             positionY += rowHeight;
             dataPosition += bytesPerRow;
@@ -509,7 +508,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
 
         g.setColor(colorsProfile.getDecorationLine());
         int lineX = componentX + rowPositionAreaWidth - (characterWidth / 2);
-        if (lineX >= 0) {
+        if (lineX >= componentX) {
             g.drawLine(lineX, dataViewRectangle.y, lineX, dataViewRectangle.y + dataViewRectangle.height);
         }
         g.drawLine(dataViewRectangle.x, dataViewRectangle.y - 1, dataViewRectangle.x + dataViewRectangle.width, dataViewRectangle.y - 1);
