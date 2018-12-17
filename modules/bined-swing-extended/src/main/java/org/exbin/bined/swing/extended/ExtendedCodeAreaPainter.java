@@ -91,7 +91,7 @@ import org.exbin.utils.binary_data.BinaryData;
 /**
  * Extended code area component default painter.
  *
- * @version 0.2.0 2018/12/10
+ * @version 0.2.0 2018/12/17
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -374,23 +374,21 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
     public void paintOutsiteArea(Graphics g) {
         int headerAreaHeight = dimensions.getHeaderAreaHeight();
         int rowPositionAreaWidth = dimensions.getRowPositionAreaWidth();
-        int componentX = dimensions.getComponentX();
-        int componentY = dimensions.getComponentY();
-        int componentWidth = dimensions.getComponentWidth();
+        Rectangle componentRect = dimensions.getComponentRect();
         int characterWidth = metrics.getCharacterWidth();
         g.setColor(colorsProfile.getColor(CodeAreaBasicColors.TEXT_BACKGROUND));
-        g.fillRect(componentX, componentY, componentWidth, headerAreaHeight);
+        g.fillRect(componentRect.x, componentRect.y, componentRect.width, headerAreaHeight);
 
         // Decoration lines
         g.setColor(colorsProfile.getColor(BasicCodeAreaDecorationColorType.LINE));
         if (themeProfile.showHeaderLine()) {
-            g.drawLine(componentX, componentY + headerAreaHeight - 1, componentX + rowPositionAreaWidth, componentY + headerAreaHeight - 1);
+            g.drawLine(componentRect.x, componentRect.y + headerAreaHeight - 1, componentRect.x + rowPositionAreaWidth, componentRect.y + headerAreaHeight - 1);
         }
 
         if (themeProfile.showRowPositionLine()) {
-            int lineX = componentX + rowPositionAreaWidth - (characterWidth / 2);
-            if (lineX >= componentX) {
-                g.drawLine(lineX, componentY, lineX, componentY + headerAreaHeight);
+            int lineX = componentRect.x + rowPositionAreaWidth - (characterWidth / 2);
+            if (lineX >= componentRect.x) {
+                g.drawLine(lineX, componentRect.y, lineX, componentRect.y + headerAreaHeight);
             }
         }
 
@@ -400,7 +398,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
     }
 
     public void paintHeader(Graphics g) {
-        if (!layoutProfile.isShowHeader()) {
+        if (!dimensions.getLayoutProfile().isShowHeader()) {
             return;
         }
 
@@ -434,7 +432,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         CodeAreaViewMode viewMode = structure.getViewMode();
         if (viewMode == CodeAreaViewMode.DUAL || viewMode == CodeAreaViewMode.CODE_MATRIX) {
             int headerX = dataViewX - scrollPosition.getCharPosition() * characterWidth - scrollPosition.getCharOffset();
-            int headerY = headerArea.y + rowHeight - metrics.getSubFontSpace();
+            int headerY = headerArea.y + dimensions.getLayoutProfile().getTopHeaderSpace() + rowHeight - metrics.getSubFontSpace();
 
             g.setColor(colorsProfile.getColor(CodeAreaBasicColors.TEXT_COLOR));
             Arrays.fill(rowDataCache.headerChars, ' ');
@@ -494,7 +492,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
     }
 
     public void paintRowPosition(Graphics g) {
-        if (!layoutProfile.isShowRowPosition()) {
+        if (!dimensions.getLayoutProfile().isShowRowPosition()) {
             return;
         }
 
@@ -504,10 +502,8 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         int characterWidth = metrics.getCharacterWidth();
         int subFontSpace = metrics.getSubFontSpace();
         int rowsPerRect = dimensions.getRowsPerRect();
-        int componentX = dimensions.getComponentX();
-        int componentY = dimensions.getComponentY();
-        int headerAreaHeight = dimensions.getHeaderAreaHeight();
-        int rowPositionAreaWidth = dimensions.getRowPositionAreaWidth();
+        Rectangle rowPosRectangle = dimensions.getRowPositionAreaRectangle();
+        Rectangle componentRect = dimensions.getComponentRect();
         Rectangle dataViewRectangle = dimensions.getDataViewRectangle();
         Rectangle clipBounds = g.getClipBounds();
         Rectangle rowPositionsArea = dimensions.getRowPositionAreaRectangle();
@@ -520,21 +516,21 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         CodeAreaScrollPosition scrollPosition = scrolling.getScrollPosition();
         if (themeProfile.getBackgroundPaintMode() == ExtendedBackgroundPaintMode.STRIPED) {
             long dataPosition = scrollPosition.getRowPosition() * bytesPerRow;
-            int stripePositionY = headerAreaHeight - scrollPosition.getRowOffset() + ((scrollPosition.getRowPosition() & 1) > 0 ? 0 : rowHeight);
+            int stripePositionY = rowPosRectangle.y - scrollPosition.getRowOffset() + ((scrollPosition.getRowPosition() & 1) > 0 ? 0 : rowHeight);
             g.setColor(colorsProfile.getColor(CodeAreaBasicColors.ALTERNATE_BACKGROUND));
             for (int row = 0; row <= rowsPerRect / 2; row++) {
                 if (dataPosition > dataSize - bytesPerRow) {
                     break;
                 }
 
-                g.fillRect(componentX, componentY + stripePositionY, rowPositionAreaWidth, rowHeight);
+                g.fillRect(componentRect.x, stripePositionY, rowPosRectangle.width, rowHeight);
                 stripePositionY += rowHeight * 2;
                 dataPosition += bytesPerRow * 2;
             }
         }
 
         long dataPosition = bytesPerRow * scrollPosition.getRowPosition();
-        int positionY = componentY + headerAreaHeight + rowHeight - subFontSpace - scrollPosition.getRowOffset();
+        int positionY = rowPosRectangle.y + rowHeight - subFontSpace - scrollPosition.getRowOffset();
         g.setColor(colorsProfile.getColor(CodeAreaBasicColors.TEXT_COLOR));
         for (int row = 0; row <= rowsPerRect; row++) {
             if (dataPosition > dataSize) {
@@ -542,7 +538,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
             }
 
             CodeAreaUtils.longToBaseCode(rowDataCache.rowPositionCode, 0, dataPosition < 0 ? 0 : dataPosition, structure.getPositionCodeType().getBase(), rowPositionLength, true, CodeCharactersCase.UPPER);
-            drawCenteredChars(g, rowDataCache.rowPositionCode, 0, rowPositionLength, characterWidth, componentX, positionY);
+            drawCenteredChars(g, rowDataCache.rowPositionCode, 0, rowPositionLength, characterWidth, componentRect.x + dimensions.getLayoutProfile().getLeftRowPositionSpace(), positionY);
 
             positionY += rowHeight;
             dataPosition += bytesPerRow;
@@ -550,15 +546,15 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
 
         g.setColor(colorsProfile.getColor(BasicCodeAreaDecorationColorType.LINE));
         if (themeProfile.showRowPositionLine()) {
-            int lineX = componentX + rowPositionAreaWidth - (characterWidth / 2);
-            if (lineX >= componentX) {
+            int lineX = componentRect.x + rowPosRectangle.width - (characterWidth / 2);
+            if (lineX >= componentRect.x) {
                 g.drawLine(lineX, dataViewRectangle.y, lineX, dataViewRectangle.y + dataViewRectangle.height);
             }
             g.drawLine(dataViewRectangle.x, dataViewRectangle.y - 1, dataViewRectangle.x + dataViewRectangle.width, dataViewRectangle.y - 1);
         }
         if (themeProfile.showBoxLine()) {
-            if (rowPositionAreaWidth >= 0) {
-                g.drawLine(rowPositionAreaWidth - 1, dataViewRectangle.y, rowPositionAreaWidth - 1, dataViewRectangle.y + dataViewRectangle.height);
+            if (rowPosRectangle.width >= 0) {
+                g.drawLine(rowPosRectangle.width - 1, dataViewRectangle.y, rowPosRectangle.width - 1, dataViewRectangle.y + dataViewRectangle.height);
             }
         }
 

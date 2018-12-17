@@ -17,24 +17,22 @@ package org.exbin.bined.swing.extended;
 
 import java.awt.Rectangle;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.BasicCodeAreaZone;
+import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.swing.basic.BasicCodeAreaMetrics;
 import org.exbin.bined.swing.extended.layout.ExtendedCodeAreaLayoutProfile;
 
 /**
  * Basic code area component dimensions.
  *
- * @version 0.2.0 2018/12/16
+ * @version 0.2.0 2018/12/17
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class ExtendedCodeAreaDimensions {
 
-    private int componentX;
-    private int componentY;
-    private int componentWidth;
-    private int componentHeight;
     private int dataViewX;
     private int dataViewY;
     private int verticalScrollBarSize;
@@ -53,6 +51,10 @@ public class ExtendedCodeAreaDimensions {
     private int charactersPerPage;
     private int charactersPerRect;
 
+    @Nullable
+    private ExtendedCodeAreaLayoutProfile layoutProfile;
+    @Nonnull
+    private final Rectangle componentRect = new Rectangle();
     @Nonnull
     private final Rectangle mainAreaRect = new Rectangle();
     @Nonnull
@@ -65,14 +67,12 @@ public class ExtendedCodeAreaDimensions {
     private final Rectangle dataViewRectangle = new Rectangle();
 
     public void recomputeSizes(BasicCodeAreaMetrics metrics, int componentX, int componentY, int componentWidth, int componentHeight, int rowPositionLength, int verticalScrollBarSize, int horizontalScrollBarSize, ExtendedCodeAreaLayoutProfile layoutProfile) {
-        this.componentX = componentX;
-        this.componentY = componentY;
-        this.componentWidth = componentWidth;
-        this.componentHeight = componentHeight;
+        componentRect.setBounds(componentX, componentY, componentWidth, componentHeight);
+        this.layoutProfile = layoutProfile;
         this.verticalScrollBarSize = verticalScrollBarSize;
         this.horizontalScrollBarSize = horizontalScrollBarSize;
-        rowPositionAreaWidth = layoutProfile.isShowRowPosition() ? metrics.getCharacterWidth() * (rowPositionLength + 1) : 0;
-        headerAreaHeight = layoutProfile.isShowHeader() ? metrics.getFontHeight() + metrics.getFontHeight() / 4 : 0;
+        headerAreaHeight = layoutProfile.isShowHeader() ? metrics.getFontHeight() + metrics.getFontHeight() / 4 + layoutProfile.getTopHeaderSpace() + layoutProfile.getBottomHeaderSpace() : 0;
+        rowPositionAreaWidth = layoutProfile.isShowRowPosition() ? metrics.getCharacterWidth() * (rowPositionLength + 1) + layoutProfile.getLeftRowPositionSpace() + layoutProfile.getRightRowPositionSpace() : 0;
 
         dataViewX = componentX + rowPositionAreaWidth;
         dataViewY = componentX + headerAreaHeight;
@@ -110,6 +110,7 @@ public class ExtendedCodeAreaDimensions {
         dataViewRectangle.setBounds(dataViewX, dataViewY, dataViewWidth >= 0 ? dataViewWidth : 0, dataViewHeight >= 0 ? dataViewHeight : 0);
     }
 
+    @Nonnull
     public BasicCodeAreaZone getPositionZone(int positionX, int positionY) {
         if (positionY <= dataViewY) {
             if (positionX < rowPositionAreaWidth) {
@@ -138,22 +139,6 @@ public class ExtendedCodeAreaDimensions {
         }
 
         return BasicCodeAreaZone.CODE_AREA;
-    }
-
-    public int getComponentX() {
-        return componentX;
-    }
-
-    public int getComponentY() {
-        return componentY;
-    }
-
-    public int getComponentWidth() {
-        return componentWidth;
-    }
-
-    public int getComponentHeight() {
-        return componentHeight;
     }
 
     public int getDataViewX() {
@@ -218,6 +203,17 @@ public class ExtendedCodeAreaDimensions {
 
     public int getLastRowOffset() {
         return lastRowOffset;
+    }
+
+    @Nonnull
+    public ExtendedCodeAreaLayoutProfile getLayoutProfile() {
+        CodeAreaUtils.requireNonNull(layoutProfile);
+        return layoutProfile;
+    }
+
+    @Nonnull
+    public Rectangle getComponentRect() {
+        return componentRect;
     }
 
     @Nonnull

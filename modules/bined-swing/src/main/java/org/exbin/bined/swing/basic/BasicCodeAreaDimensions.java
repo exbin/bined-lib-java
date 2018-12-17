@@ -23,16 +23,12 @@ import org.exbin.bined.BasicCodeAreaZone;
 /**
  * Basic code area component dimensions.
  *
- * @version 0.2.0 2018/12/16
+ * @version 0.2.0 2018/12/17
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class BasicCodeAreaDimensions {
 
-    private int componentX;
-    private int componentY;
-    private int componentWidth;
-    private int componentHeight;
     private int dataViewX;
     private int dataViewY;
     private int verticalScrollBarSize;
@@ -52,6 +48,8 @@ public class BasicCodeAreaDimensions {
     private int charactersPerRect;
 
     @Nonnull
+    private final Rectangle componentRect = new Rectangle();
+    @Nonnull
     private final Rectangle mainAreaRect = new Rectangle();
     @Nonnull
     private final Rectangle headerAreaRectangle = new Rectangle();
@@ -63,10 +61,7 @@ public class BasicCodeAreaDimensions {
     private final Rectangle dataViewRectangle = new Rectangle();
 
     public void recomputeSizes(BasicCodeAreaMetrics metrics, int componentX, int componentY, int componentWidth, int componentHeight, int rowPositionLength, int verticalScrollBarSize, int horizontalScrollBarSize) {
-        this.componentX = componentX;
-        this.componentY = componentY;
-        this.componentWidth = componentWidth;
-        this.componentHeight = componentHeight;
+        componentRect.setBounds(componentX, componentY, componentWidth, componentHeight);
         this.verticalScrollBarSize = verticalScrollBarSize;
         this.horizontalScrollBarSize = horizontalScrollBarSize;
         rowPositionAreaWidth = metrics.getCharacterWidth() * (rowPositionLength + 1);
@@ -138,22 +133,6 @@ public class BasicCodeAreaDimensions {
         return BasicCodeAreaZone.CODE_AREA;
     }
 
-    public int getComponentX() {
-        return componentX;
-    }
-
-    public int getComponentY() {
-        return componentY;
-    }
-
-    public int getComponentWidth() {
-        return componentWidth;
-    }
-
-    public int getComponentHeight() {
-        return componentHeight;
-    }
-
     public int getDataViewX() {
         return dataViewX;
     }
@@ -219,6 +198,11 @@ public class BasicCodeAreaDimensions {
     }
 
     @Nonnull
+    public Rectangle getComponentRect() {
+        return componentRect;
+    }
+
+    @Nonnull
     public Rectangle getMainAreaRect() {
         return mainAreaRect;
     }
@@ -233,10 +217,12 @@ public class BasicCodeAreaDimensions {
         return dataViewRectangle;
     }
 
+    @Nonnull
     public Rectangle getHeaderAreaRectangle() {
         return headerAreaRectangle;
     }
 
+    @Nonnull
     public Rectangle getRowPositionAreaRectangle() {
         return rowPositionAreaRectangle;
     }
