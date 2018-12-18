@@ -26,7 +26,7 @@ import org.exbin.bined.swing.extended.layout.ExtendedCodeAreaDecorations;
 /**
  * Layout profile for extended code area.
  *
- * @version 0.2.0 2018/12/10
+ * @version 0.2.0 2018/12/18
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -34,7 +34,7 @@ public class ExtendedCodeAreaThemeProfile {
 
     @Nonnull
     private ExtendedBackgroundPaintMode borderPaintMode = ExtendedBackgroundPaintMode.STRIPED;
-    private boolean paintRowPosBackground;
+    private boolean paintRowPosBackground = true;
     private int verticalLineByteGroupSize = 0;
 
     private final Set<CodeAreaDecorationType> decorations = new HashSet<>();
@@ -114,5 +114,9 @@ public class ExtendedCodeAreaThemeProfile {
 
     public boolean showBoxLine() {
         return decorations.contains(ExtendedCodeAreaDecorations.BOX_LINES);
+    }
+
+    public boolean showGroupLines() {
+        return decorations.contains(ExtendedCodeAreaDecorations.GROUP_LINES);
     }
 }

@@ -23,7 +23,7 @@ import org.exbin.bined.swing.extended.layout.ExtendedCodeAreaLayoutProfile;
 /**
  * Hexadecimal editor example panel.
  *
- * @version 0.2.0 2018/12/17
+ * @version 0.2.0 2018/12/18
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -95,7 +95,7 @@ public class LayoutPanelEx extends javax.swing.JPanel {
 
         maxBytesPerRowLabel.setText("Maximum Bytes Per Row");
 
-        maxBytesPerRowSpinner.setModel(new javax.swing.SpinnerNumberModel(16, 1, null, 1));
+        maxBytesPerRowSpinner.setModel(new javax.swing.SpinnerNumberModel(16, 0, null, 1));
         maxBytesPerRowSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 maxBytesPerRowSpinnerStateChanged(evt);
@@ -382,7 +382,7 @@ public class LayoutPanelEx extends javax.swing.JPanel {
     }//GEN-LAST:event_spaceGroupSizeSpinnerStateChanged
 
     private void wrapLineModeCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_wrapLineModeCheckBoxItemStateChanged
-        codeArea.setRowWrapping(wrapLineModeCheckBox.isSelected() ? RowWrappingCapable.RowWrappingMode.NO_WRAPPING : RowWrappingCapable.RowWrappingMode.NO_WRAPPING);
+        codeArea.setRowWrapping(wrapLineModeCheckBox.isSelected() ? RowWrappingCapable.RowWrappingMode.WRAPPING : RowWrappingCapable.RowWrappingMode.NO_WRAPPING);
     }//GEN-LAST:event_wrapLineModeCheckBoxItemStateChanged
 
     private void maxRowPositionLengthSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_maxRowPositionLengthSpinnerStateChanged

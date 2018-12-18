@@ -22,7 +22,7 @@ import org.exbin.bined.extended.theme.CodeAreaDecorationType;
 /**
  * Enumeration of supported decorations of extended code area.
  *
- * @version 0.2.0 2018/12/04
+ * @version 0.2.0 2018/12/18
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -31,7 +31,8 @@ public enum ExtendedCodeAreaDecorations implements CodeAreaDecorationType {
     ROW_POSITION_LINE("rowNumberLine"),
     HEADER_LINE("headerLine"),
     SPLIT_LINE("splitLine"),
-    BOX_LINES("boxLines");
+    BOX_LINES("boxLines"),
+    GROUP_LINES("groupLines");
 
     @Nonnull
     private final String id;
