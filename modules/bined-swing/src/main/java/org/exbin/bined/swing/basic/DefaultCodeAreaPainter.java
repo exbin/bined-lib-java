@@ -79,7 +79,7 @@ import org.exbin.utils.binary_data.BinaryData;
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2018/12/17
+ * @version 0.2.0 2018/12/19
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -461,15 +461,13 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         int subFontSpace = metrics.getSubFontSpace();
         int rowsPerRect = dimensions.getRowsPerRect();
         Rectangle rowPosRectangle = dimensions.getRowPositionAreaRectangle();
-        Rectangle componentRect = dimensions.getComponentRect();
         Rectangle dataViewRectangle = dimensions.getDataViewRectangle();
         Rectangle clipBounds = g.getClipBounds();
-        Rectangle rowPositionsArea = dimensions.getRowPositionAreaRectangle();
-        g.setClip(clipBounds != null ? clipBounds.intersection(rowPositionsArea) : rowPositionsArea);
+        g.setClip(clipBounds != null ? clipBounds.intersection(rowPosRectangle) : rowPosRectangle);
 
         g.setFont(font);
         g.setColor(colorsProfile.getTextBackground());
-        g.fillRect(rowPositionsArea.x, rowPositionsArea.y, rowPositionsArea.width, rowPositionsArea.height);
+        g.fillRect(rowPosRectangle.x, rowPosRectangle.y, rowPosRectangle.width, rowPosRectangle.height);
 
         CodeAreaScrollPosition scrollPosition = scrolling.getScrollPosition();
         if (backgroundPaintMode == BasicBackgroundPaintMode.STRIPED) {
@@ -481,7 +479,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
                     break;
                 }
 
-                g.fillRect(componentRect.x, stripePositionY, rowPosRectangle.width, rowHeight);
+                g.fillRect(rowPosRectangle.x, stripePositionY, rowPosRectangle.width, rowHeight);
                 stripePositionY += rowHeight * 2;
                 dataPosition += bytesPerRow * 2;
             }
@@ -496,15 +494,15 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
             }
 
             CodeAreaUtils.longToBaseCode(rowDataCache.rowPositionCode, 0, dataPosition < 0 ? 0 : dataPosition, CodeType.HEXADECIMAL.getBase(), rowPositionLength, true, codeCharactersCase);
-            drawCenteredChars(g, rowDataCache.rowPositionCode, 0, rowPositionLength, characterWidth, componentRect.x, positionY);
+            drawCenteredChars(g, rowDataCache.rowPositionCode, 0, rowPositionLength, characterWidth, rowPosRectangle.x, positionY);
 
             positionY += rowHeight;
             dataPosition += bytesPerRow;
         }
 
         g.setColor(colorsProfile.getDecorationLine());
-        int lineX = componentRect.x + rowPosRectangle.width - (characterWidth / 2);
-        if (lineX >= componentRect.x) {
+        int lineX = rowPosRectangle.x + rowPosRectangle.width - (characterWidth / 2);
+        if (lineX >= rowPosRectangle.x) {
             g.drawLine(lineX, dataViewRectangle.y, lineX, dataViewRectangle.y + dataViewRectangle.height);
         }
         g.drawLine(dataViewRectangle.x, dataViewRectangle.y - 1, dataViewRectangle.x + dataViewRectangle.width, dataViewRectangle.y - 1);
