@@ -23,7 +23,7 @@ import org.exbin.bined.basic.CodeAreaScrollPosition;
 /**
  * Basic code area component characters visibility in scroll window.
  *
- * @version 0.2.0 2017/08/28
+ * @version 0.2.0 2018/12/20
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -63,12 +63,20 @@ public class BasicCodeAreaVisibility {
             }
             visibleCodeStart = structure.computePositionByte(visibleCharStart);
             visibleCodeEnd = structure.computePositionByte(visibleCharEnd - 1) + 1;
+            if (visibleCodeEnd > bytesPerRow) {
+                visibleCodeEnd = bytesPerRow;
+            }
+
             visibleMatrixCodeEnd = structure.computePositionByte(visibleMatrixCharEnd - 1) + 1;
+            if (visibleMatrixCodeEnd > bytesPerRow) {
+                visibleMatrixCodeEnd = bytesPerRow;
+            }
         } else {
             visibleCharStart = 0;
             visibleCharEnd = -1;
             visibleCodeStart = 0;
             visibleCodeEnd = -1;
+            visibleMatrixCodeEnd = -1;
         }
 
         if (viewMode == CodeAreaViewMode.DUAL || viewMode == CodeAreaViewMode.TEXT_PREVIEW) {

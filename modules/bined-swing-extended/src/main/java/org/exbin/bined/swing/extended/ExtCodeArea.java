@@ -57,7 +57,6 @@ import org.exbin.bined.swing.CodeAreaSwingControl;
 import org.exbin.bined.swing.basic.AntialiasingMode;
 import org.exbin.bined.swing.basic.DefaultCodeAreaCaret;
 import org.exbin.bined.swing.basic.DefaultCodeAreaCommandHandler;
-import org.exbin.bined.swing.capability.FontCapable;
 import org.exbin.bined.swing.extended.color.ColorsProfileCapableCodeAreaPainter;
 import org.exbin.bined.swing.extended.layout.ExtendedCodeAreaLayoutProfile;
 import org.exbin.bined.swing.extended.layout.LayoutProfileCapableCodeAreaPainter;
@@ -67,7 +66,7 @@ import org.exbin.bined.swing.extended.theme.ThemeProfileCapableCodeAreaPainter;
 /**
  * Code area component extended code area.
  *
- * @version 0.2.0 2018/12/11
+ * @version 0.2.0 2018/12/20
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -166,6 +165,7 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
         CodeAreaUtils.requireNonNull(painter);
 
         this.painter = painter;
+        reset();
         repaint();
     }
 
@@ -175,10 +175,6 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
 
     @Override
     public void paintComponent(Graphics g) {
-        if (!isInitialized()) {
-            ((FontCapable) this).setCodeFont(getCodeFont());
-        }
-
         painter.paintComponent(g);
     }
 
@@ -207,8 +203,7 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
     @Override
     public void setMinRowPositionLength(int minRowPositionLength) {
         this.minRowPositionLength = minRowPositionLength;
-        reset();
-        repaint();
+        updateLayout();
     }
 
     @Override
@@ -219,8 +214,7 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
     @Override
     public void setMaxRowPositionLength(int maxRowPositionLength) {
         this.maxRowPositionLength = maxRowPositionLength;
-        reset();
-        repaint();
+        updateLayout();
     }
 
     public long getDataPosition() {
@@ -275,7 +269,7 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
     @Override
     public void setCodeCharactersCase(CodeCharactersCase codeCharactersCase) {
         this.codeCharactersCase = codeCharactersCase;
-        repaint();
+        updateLayout();
     }
 
     @Override
@@ -300,7 +294,7 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
             getCaret().setSection(BasicCodeAreaSection.TEXT_PREVIEW);
             notifyCaretMoved();
         }
-        repaint();
+        updateLayout();
     }
 
     @Override
@@ -312,8 +306,7 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
     @Override
     public void setCodeType(CodeType codeType) {
         this.codeType = codeType;
-        painter.reset();
-        repaint();
+        updateLayout();
     }
 
     @Override
@@ -399,6 +392,7 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
     @Override
     public void setScrollPosition(CodeAreaScrollPosition scrollPosition) {
         this.scrollPosition.setScrollPosition(scrollPosition);
+        notifyScrolled();
     }
 
     @Nonnull
@@ -472,12 +466,12 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
 
     @Override
     public void updateLayout() {
-        painter.updateLayout();
+        painter.resetLayout();
+        repaint();
     }
 
     @Override
     public void repaint() {
-        resetPainter();
         super.repaint();
     }
 
@@ -488,7 +482,14 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
 
     @Override
     public void notifyCaretChanged() {
+        painter.resetCaret();
         repaint();
+    }
+
+    @Override
+    public void notifyDataChanged() {
+        super.notifyDataChanged();
+        updateLayout();
     }
 
     @Override
@@ -548,7 +549,7 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
         CodeAreaUtils.requireNonNull(charset);
 
         this.charset = charset;
-        painter.reset();
+        reset();
         repaint();
     }
 
@@ -631,7 +632,7 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
     @Override
     public void setCodeFont(Font font) {
         this.font = font;
-        painter.reset();
+        painter.resetFont();
         repaint();
     }
 
@@ -643,8 +644,7 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
     @Override
     public void setPositionCodeType(PositionCodeType positionCodeType) {
         this.positionCodeType = positionCodeType;
-        painter.reset();
-        repaint();
+        updateLayout();
     }
 
     @Nonnull
@@ -678,6 +678,7 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
     @Override
     public void setMaxBytesPerLine(int maxBytesPerLine) {
         this.maxBytesPerLine = maxBytesPerLine;
+        updateLayout();
     }
 
     @Nullable

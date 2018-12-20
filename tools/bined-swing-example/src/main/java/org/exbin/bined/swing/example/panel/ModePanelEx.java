@@ -42,7 +42,7 @@ import org.exbin.bined.swing.extended.ExtCodeArea;
 /**
  * Hexadecimal editor example panel.
  *
- * @version 0.2.0 2018/12/09
+ * @version 0.2.0 2018/12/20
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -56,11 +56,12 @@ public class ModePanelEx extends javax.swing.JPanel {
         initComponents();
 
         viewModeComboBox.setSelectedIndex(codeArea.getViewMode().ordinal());
-        codeTypeComboBox.setSelectedIndex(codeArea.getCodeType().ordinal());
-        editationModeComboBox.setSelectedIndex(codeArea.getEditationMode().ordinal());
-        antialiasingComboBox.setSelectedIndex(((AntialiasingCapable) codeArea).getAntialiasingMode().ordinal());
         showNonprintableCharactersCheckBox.setSelected(codeArea.isShowUnprintables());
+        codeTypeComboBox.setSelectedIndex(codeArea.getCodeType().ordinal());
         positionCodeTypeComboBox.setSelectedIndex(codeArea.getPositionCodeType().ordinal());
+        hexCharactersModeComboBox.setSelectedIndex(((CodeCharactersCaseCapable) codeArea).getCodeCharactersCase().ordinal());
+        antialiasingComboBox.setSelectedIndex(((AntialiasingCapable) codeArea).getAntialiasingMode().ordinal());
+        editationModeComboBox.setSelectedIndex(codeArea.getEditationMode().ordinal());
     }
 
     /**

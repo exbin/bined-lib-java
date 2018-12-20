@@ -59,7 +59,7 @@ import org.exbin.bined.swing.basic.color.BasicColorsCapableCodeAreaPainter;
 /**
  * Code area component.
  *
- * @version 0.2.0 2018/12/11
+ * @version 0.2.0 2018/12/20
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -157,6 +157,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
         CodeAreaUtils.requireNonNull(painter);
 
         this.painter = painter;
+        reset();
         repaint();
     }
 
@@ -190,8 +191,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
     @Override
     public void setMinRowPositionLength(int minRowPositionLength) {
         this.minRowPositionLength = minRowPositionLength;
-        reset();
-        repaint();
+        updateLayout();
     }
 
     @Override
@@ -202,8 +202,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
     @Override
     public void setMaxRowPositionLength(int maxRowPositionLength) {
         this.maxRowPositionLength = maxRowPositionLength;
-        reset();
-        repaint();
+        updateLayout();
     }
 
     public boolean isInitialized() {
@@ -263,7 +262,6 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
     public void setCodeCharactersCase(CodeCharactersCase codeCharactersCase) {
         this.codeCharactersCase = codeCharactersCase;
         updateLayout();
-        repaint();
     }
 
     @Override
@@ -297,7 +295,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
                     reset();
                     break;
             }
-            repaint();
+            updateLayout();
         }
     }
 
@@ -310,8 +308,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
     @Override
     public void setCodeType(CodeType codeType) {
         this.codeType = codeType;
-        reset();
-        repaint();
+        updateLayout();
     }
 
     @Override
@@ -397,6 +394,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
     @Override
     public void setScrollPosition(CodeAreaScrollPosition scrollPosition) {
         this.scrollPosition.setScrollPosition(scrollPosition);
+        notifyScrolled();
     }
 
     @Nonnull
@@ -470,12 +468,12 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
 
     @Override
     public void updateLayout() {
-        painter.updateLayout();
+        painter.resetLayout();
+        repaint();
     }
 
     @Override
     public void repaint() {
-        resetPainter(); // TODO drop
         super.repaint();
     }
 
@@ -486,7 +484,14 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
 
     @Override
     public void notifyCaretChanged() {
+        painter.resetCaret();
         repaint();
+    }
+
+    @Override
+    public void notifyDataChanged() {
+        super.notifyDataChanged();
+        updateLayout();
     }
 
     @Override
@@ -628,7 +633,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
     @Override
     public void setCodeFont(Font font) {
         this.font = font;
-        reset();
+        painter.resetFont();
         repaint();
     }
 
@@ -641,7 +646,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
     @Override
     public void setBackgroundPaintMode(BasicBackgroundPaintMode borderPaintMode) {
         this.borderPaintMode = borderPaintMode;
-        repaint();
+        updateLayout();
     }
 
     @Nonnull
@@ -675,6 +680,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
     @Override
     public void setMaxBytesPerLine(int maxBytesPerLine) {
         this.maxBytesPerLine = maxBytesPerLine;
+        updateLayout();
     }
 
     @Nullable

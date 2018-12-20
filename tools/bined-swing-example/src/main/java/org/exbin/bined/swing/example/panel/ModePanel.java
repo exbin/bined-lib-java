@@ -54,8 +54,8 @@ public class ModePanel extends javax.swing.JPanel {
 
         viewModeComboBox.setSelectedIndex(codeArea.getViewMode().ordinal());
         codeTypeComboBox.setSelectedIndex(codeArea.getCodeType().ordinal());
-        editationModeComboBox.setSelectedIndex(codeArea.getEditationMode().ordinal());
         antialiasingComboBox.setSelectedIndex(((AntialiasingCapable) codeArea).getAntialiasingMode().ordinal());
+        editationModeComboBox.setSelectedIndex(codeArea.getEditationMode().ordinal());
     }
 
     /**

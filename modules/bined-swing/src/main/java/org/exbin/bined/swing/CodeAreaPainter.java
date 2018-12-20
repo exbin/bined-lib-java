@@ -30,7 +30,7 @@ import org.exbin.bined.basic.ScrollingDirection;
 /**
  * Hexadecimal editor painter interface.
  *
- * @version 0.2.0 2018/11/28
+ * @version 0.2.0 2018/12/20
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -82,7 +82,12 @@ public interface CodeAreaPainter {
     /**
      * Updates painter layout state for new painting.
      */
-    void updateLayout();
+    void resetLayout();
+
+    /**
+     * Resets caret state.
+     */
+    void resetCaret();
 
     /**
      * Returns type of cursor for given painter relative position.
