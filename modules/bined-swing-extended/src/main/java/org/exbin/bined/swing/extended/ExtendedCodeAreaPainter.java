@@ -30,7 +30,6 @@ import java.awt.Stroke;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
 import java.nio.charset.Charset;
-import java.nio.charset.CharsetEncoder;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -145,7 +144,6 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
     @Nonnull
     private AntialiasingMode antialiasingMode = AntialiasingMode.AUTO;
 
-    private int maxBytesPerChar;
     private int rowPositionLength;
     private int minRowPositionLength;
     private int maxRowPositionLength;
@@ -167,8 +165,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
     protected Map<Character, Character> unprintableCharactersMapping = null;
 
     // Debuging counter
-    private long paintCounter = 0;
-
+//    private long paintCounter = 0;
     public ExtendedCodeAreaPainter(CodeAreaCore codeArea) {
         this.codeArea = codeArea;
         dataView = new JPanel();
@@ -284,7 +281,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         }
 
         rowDataCache.headerChars = new char[structure.getCharactersPerCodeSection()];
-        rowDataCache.rowData = new byte[structure.getBytesPerRow() + maxBytesPerChar - 1];
+        rowDataCache.rowData = new byte[structure.getBytesPerRow() + metrics.getMaxBytesPerChar() - 1];
         rowDataCache.rowPositionCode = new char[rowPositionLength];
         rowDataCache.rowCharacters = new char[structure.getCharactersPerRow()];
         rowDataCache.unprintables = new byte[(structure.getBytesPerRow() + 7) >> 3];
@@ -296,11 +293,8 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         }
 
         charset = ((CharsetCapable) codeArea).getCharset();
-        CharsetEncoder encoder = charset.newEncoder();
-        maxBytesPerChar = (int) encoder.maxBytesPerChar();
-
         font = ((FontCapable) codeArea).getCodeFont();
-        metrics.recomputeMetrics(g.getFontMetrics(font));
+        metrics.recomputeMetrics(g.getFontMetrics(font), charset);
 
         recomputeDimensions();
         recomputeCharPositions();
@@ -628,19 +622,19 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         g.setClip(clipBounds);
         paintCursor(g);
 
-        {
-            // Display debugging data
-            int rowHeight = metrics.getRowHeight();
-            int x = mainAreaRect.x + mainAreaRect.width - 220;
-            int y = mainAreaRect.y + mainAreaRect.height - 20;
-            g.setColor(Color.YELLOW);
-            g.fillRect(x, y, 200, 16);
-            g.setColor(Color.BLACK);
-            char[] headerCode = (String.valueOf(scrollPosition.getCharPosition()) + "+" + String.valueOf(scrollPosition.getCharOffset()) + " : " + String.valueOf(scrollPosition.getRowPosition()) + "+" + String.valueOf(scrollPosition.getRowOffset()) + " P: " + String.valueOf(paintCounter)).toCharArray();
-            g.drawChars(headerCode, 0, headerCode.length, x, y + rowHeight);
-        }
-
-        paintCounter++;
+//        {
+//            // Display debugging data
+//            int rowHeight = metrics.getRowHeight();
+//            int x = mainAreaRect.x + mainAreaRect.width - 220;
+//            int y = mainAreaRect.y + mainAreaRect.height - 20;
+//            g.setColor(Color.YELLOW);
+//            g.fillRect(x, y, 200, 16);
+//            g.setColor(Color.BLACK);
+//            char[] headerCode = (String.valueOf(scrollPosition.getCharPosition()) + "+" + String.valueOf(scrollPosition.getCharOffset()) + " : " + String.valueOf(scrollPosition.getRowPosition()) + "+" + String.valueOf(scrollPosition.getRowOffset()) + " P: " + String.valueOf(paintCounter)).toCharArray();
+//            g.drawChars(headerCode, 0, headerCode.length, x, y + rowHeight);
+//        }
+//
+//        paintCounter++;
     }
 
     /**
@@ -669,13 +663,14 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
             g.setColor(colorsProfile.getColor(CodeAreaBasicColors.ALTERNATE_BACKGROUND));
             long dataPosition = scrollPosition.getRowPosition() * bytesPerRow;
             int rowAlternatingOffset = (int) (scrollPosition.getRowPosition() & 1);
-            int stripePositionY = dataViewRect.y - scrollPosition.getRowOffset() + (int) ((scrollPosition.getRowPosition() & 1) > 0 ? 0 : rowHeight);
+            int stripePositionY = dataViewRect.y - scrollPosition.getRowOffset();
             for (int row = 0; row <= rowsPerRect; row++) {
-                if (dataPosition > dataSize - bytesPerRow) {
+                if (dataPosition > dataSize) {
                     break;
                 }
 
-                if ((row & 1) == rowAlternatingOffset
+                boolean oddRow = (row & 1) != rowAlternatingOffset;
+                if (oddRow
                         && (themeProfile.getBackgroundPaintMode() == ExtendedBackgroundPaintMode.STRIPED
                         || themeProfile.getBackgroundPaintMode() == ExtendedBackgroundPaintMode.GRIDDED)) {
                     g.fillRect(dataViewRect.x, stripePositionY, dataViewRect.width, rowHeight);
@@ -686,8 +681,8 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
                     int codePos = visibility.getVisibleCodeStart();
                     int codeEnd = visibility.getVisibleCodeEnd();
                     while (codePos < codeEnd) {
-                        if ((themeProfile.getBackgroundPaintMode() == ExtendedBackgroundPaintMode.GRIDDED && (codePos & 1) != 0 && (row & 1) != rowAlternatingOffset)
-                                || themeProfile.getBackgroundPaintMode() == ExtendedBackgroundPaintMode.CHESSBOARD && (codePos & 1) != (row & 1)) {
+                        if ((themeProfile.getBackgroundPaintMode() == ExtendedBackgroundPaintMode.GRIDDED && (codePos & 1) != 0 && !oddRow)
+                                || themeProfile.getBackgroundPaintMode() == ExtendedBackgroundPaintMode.CHESSBOARD && (codePos & 1) != ((row + rowAlternatingOffset) & 1)) {
                             int charPos = structure.computeFirstCodeCharacterPos(codePos);
                             int positionX = dataViewRect.x - scrollPosition.getCharOffset() - scrollPosition.getCharPosition() * characterWidth + charPos * characterWidth;
                             g.fillRect(positionX, stripePositionY, byteCodeWidth, rowHeight);
@@ -726,6 +721,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
     }
 
     private void prepareRowData(long dataPosition) {
+        int maxBytesPerChar = metrics.getMaxBytesPerChar();
         CodeAreaViewMode viewMode = structure.getViewMode();
         int bytesPerRow = structure.getBytesPerRow();
         long dataSize = structure.getDataSize();
@@ -1159,6 +1155,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
             updateCaret();
         }
 
+        int maxBytesPerChar = metrics.getMaxBytesPerChar();
         Rectangle mainAreaRect = dimensions.getMainAreaRect();
         CodeType codeType = structure.getCodeType();
         CodeAreaViewMode viewMode = structure.getViewMode();
@@ -1229,6 +1226,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
             case NEGATIVE: {
                 int characterWidth = metrics.getCharacterWidth();
                 int rowHeight = metrics.getRowHeight();
+                int maxBytesPerChar = metrics.getMaxBytesPerChar();
                 int subFontSpace = metrics.getSubFontSpace();
                 int dataViewX = dimensions.getDataViewX();
                 int dataViewY = dimensions.getDataViewY();
@@ -2670,6 +2668,8 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         int characterWidth = metrics.getCharacterWidth();
         int rowHeight = metrics.getRowHeight();
         long rowsPerDocument = structure.getRowsPerDocument();
+        recomputeScrollState();
+
         adjusting = true;
         JScrollBar verticalScrollBar = scrollPanel.getVerticalScrollBar();
         scrollPanel.setVerticalScrollBarPolicy(CodeAreaSwingUtils.getVerticalScrollBarPolicy(scrolling.getVerticalScrollBarVisibility()));

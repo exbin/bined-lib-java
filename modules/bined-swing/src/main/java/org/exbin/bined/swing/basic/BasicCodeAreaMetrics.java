@@ -16,6 +16,8 @@
 package org.exbin.bined.swing.basic;
 
 import java.awt.FontMetrics;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetEncoder;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -34,11 +36,12 @@ public class BasicCodeAreaMetrics {
     private int rowHeight;
     private int characterWidth;
     private int fontHeight;
+    private int maxBytesPerChar;
 
     // TODO replace with computation
     private final int subFontSpace = 3;
 
-    public void recomputeMetrics(@Nullable FontMetrics fontMetrics) {
+    public void recomputeMetrics(@Nullable FontMetrics fontMetrics, Charset charset) {
         this.fontMetrics = fontMetrics;
         if (fontMetrics == null) {
             characterWidth = 0;
@@ -54,6 +57,8 @@ public class BasicCodeAreaMetrics {
             rowHeight = fontSize + subFontSpace;
         }
 
+        CharsetEncoder encoder = charset.newEncoder();
+        maxBytesPerChar = (int) encoder.maxBytesPerChar();
     }
 
     public boolean isInitialized() {
@@ -91,5 +96,9 @@ public class BasicCodeAreaMetrics {
 
     public int getSubFontSpace() {
         return subFontSpace;
+    }
+
+    public int getMaxBytesPerChar() {
+        return maxBytesPerChar;
     }
 }
