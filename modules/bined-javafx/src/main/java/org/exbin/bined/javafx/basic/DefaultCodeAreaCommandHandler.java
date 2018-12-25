@@ -48,6 +48,7 @@ import org.exbin.bined.capability.SelectionCapable;
 import org.exbin.bined.capability.ViewModeCapable;
 import org.exbin.bined.javafx.CodeAreaCommandHandler;
 import org.exbin.bined.javafx.CodeAreaCore;
+import org.exbin.bined.javafx.CodeAreaJavaFxUtils;
 import org.exbin.utils.binary_data.BinaryData;
 import org.exbin.utils.binary_data.ByteArrayEditableData;
 import org.exbin.utils.binary_data.EditableBinaryData;
@@ -55,7 +56,7 @@ import org.exbin.utils.binary_data.EditableBinaryData;
 /**
  * Default hexadecimal editor command handler.
  *
- * @version 0.2.0 2018/08/11
+ * @version 0.2.0 2018/12/24
  * @author ExBin Project (https://exbin.org)
  */
 public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
@@ -74,7 +75,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     private Clipboard clipboard;
     private boolean canPaste = false;
     private DataFlavor binaryDataFlavor;
-    private CodeAreaUtils.ClipboardData currentClipboardData = null;
+    private CodeAreaJavaFxUtils.ClipboardData currentClipboardData = null;
 
     public DefaultCodeAreaCommandHandler(@Nonnull CodeAreaCore codeArea) {
         this.codeArea = codeArea;
@@ -468,7 +469,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
             BinaryData copy = data.copy(first, last - first + 1);
 
-            CodeAreaUtils.BinaryDataClipboardData binaryData = new CodeAreaUtils.BinaryDataClipboardData(copy, binaryDataFlavor);
+            CodeAreaJavaFxUtils.BinaryDataClipboardData binaryData = new CodeAreaJavaFxUtils.BinaryDataClipboardData(copy, binaryDataFlavor);
             setClipboardContent(binaryData);
         }
     }
@@ -489,12 +490,12 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
             CodeType codeType = ((CodeTypeCapable) codeArea).getCodeType();
             CodeCharactersCase charactersCase = ((CodeCharactersCaseCapable) codeArea).getCodeCharactersCase();
-            CodeAreaUtils.CodeDataClipboardData binaryData = new CodeAreaUtils.CodeDataClipboardData(copy, binaryDataFlavor, codeType, charactersCase);
+            CodeAreaJavaFxUtils.CodeDataClipboardData binaryData = new CodeAreaJavaFxUtils.CodeDataClipboardData(copy, binaryDataFlavor, codeType, charactersCase);
             setClipboardContent(binaryData);
         }
     }
 
-    private void setClipboardContent(@Nonnull CodeAreaUtils.ClipboardData content) {
+    private void setClipboardContent(@Nonnull CodeAreaJavaFxUtils.ClipboardData content) {
         clearClipboardData();
         try {
             currentClipboardData = content;
@@ -581,7 +582,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                         DefaultCodeAreaCaret caret = (DefaultCodeAreaCaret) ((CaretCapable) codeArea).getCaret();
                         long dataPosition = caret.getDataPosition();
 
-                        byte[] bytes = ((String) insertedData).getBytes(Charset.forName(CodeAreaUtils.DEFAULT_ENCODING));
+                        byte[] bytes = ((String) insertedData).getBytes(Charset.forName(CodeAreaJavaFxUtils.DEFAULT_ENCODING));
                         int length = bytes.length;
                         if ((editationMode == EditationMode.EXPANDING && editationOperation == EditationOperation.OVERWRITE) || editationMode == EditationMode.INPLACE) {
                             long toRemove = length;
@@ -699,7 +700,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     }
 
     private void updateCanPaste() {
-        canPaste = CodeAreaUtils.canPaste(clipboard, binaryDataFlavor);
+        canPaste = CodeAreaJavaFxUtils.canPaste(clipboard, binaryDataFlavor);
     }
 
     @Override

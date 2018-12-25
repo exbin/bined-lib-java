@@ -15,7 +15,7 @@
  */
 package org.exbin.bined.swt;
 
-import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.eclipse.swt.graphics.GC;
 import org.exbin.bined.DataProvider;
 
@@ -25,6 +25,7 @@ import org.exbin.bined.DataProvider;
  * @version 0.2.0 2018/08/11
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public interface CodeAreaSwtControl extends DataProvider {
 
     /**
@@ -32,7 +33,7 @@ public interface CodeAreaSwtControl extends DataProvider {
      *
      * @param g graphics
      */
-    void paintComponent(@Nonnull GC g);
+    void paintComponent(GC g);
 
     /**
      * Rebuilds colors after UIManager change.

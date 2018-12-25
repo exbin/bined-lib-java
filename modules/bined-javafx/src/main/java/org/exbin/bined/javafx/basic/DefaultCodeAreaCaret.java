@@ -20,6 +20,7 @@ import java.awt.event.ActionListener;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import javax.swing.Timer;
 import org.exbin.bined.BasicCodeAreaSection;
 import org.exbin.bined.CaretPosition;
@@ -32,9 +33,10 @@ import org.exbin.bined.javafx.CodeAreaCore;
 /**
  * Default implementation of code area caret.
  *
- * @version 0.2.0 2018/10/24
+ * @version 0.2.0 2018/12/25
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public class DefaultCodeAreaCaret implements CodeAreaCaret {
 
     private static final int DOUBLE_CURSOR_WIDTH = 2;
@@ -51,14 +53,14 @@ public class DefaultCodeAreaCaret implements CodeAreaCaret {
     @Nonnull
     private CursorRenderingMode renderingMode = CursorRenderingMode.NEGATIVE;
 
-    public DefaultCodeAreaCaret(@Nonnull CodeAreaCore codeArea) {
+    public DefaultCodeAreaCaret(CodeAreaCore codeArea) {
         Objects.requireNonNull(codeArea, "Code area cannot be null");
 
         this.codeArea = codeArea;
         privateSetBlinkRate(DEFAULT_BLINK_RATE);
     }
 
-    public static int getCursorThickness(@Nonnull CursorShape cursorShape, int characterWidth, int lineHeight) {
+    public static int getCursorThickness(CursorShape cursorShape, int characterWidth, int lineHeight) {
         switch (cursorShape) {
             case INSERT:
                 return DOUBLE_CURSOR_WIDTH;
@@ -111,7 +113,7 @@ public class DefaultCodeAreaCaret implements CodeAreaCaret {
         resetBlink();
     }
 
-    public void setCaretPosition(long dataPosition, int codeOffset, @Nonnull CodeAreaSection section) {
+    public void setCaretPosition(long dataPosition, int codeOffset, CodeAreaSection section) {
         caretPosition.setDataPosition(dataPosition);
         caretPosition.setCodeOffset(codeOffset);
         caretPosition.setSection(section);
@@ -142,7 +144,7 @@ public class DefaultCodeAreaCaret implements CodeAreaCaret {
         return section == null ? BasicCodeAreaSection.CODE_MATRIX : section;
     }
 
-    public void setSection(@Nonnull CodeAreaSection section) {
+    public void setSection(CodeAreaSection section) {
         caretPosition.setSection(section);
         resetBlink();
     }
@@ -164,7 +166,7 @@ public class DefaultCodeAreaCaret implements CodeAreaCaret {
         return renderingMode;
     }
 
-    public void setRenderingMode(@Nonnull CursorRenderingMode renderingMode) {
+    public void setRenderingMode(CursorRenderingMode renderingMode) {
         Objects.requireNonNull(renderingMode, "Cursor rendering mode cannot be null");
 
         this.renderingMode = renderingMode;

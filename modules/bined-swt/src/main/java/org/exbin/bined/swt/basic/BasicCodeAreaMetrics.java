@@ -15,16 +15,20 @@
  */
 package org.exbin.bined.swt.basic;
 
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetEncoder;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.eclipse.swt.graphics.FontMetrics;
 import org.eclipse.swt.graphics.GC;
 
 /**
  * Basic code area component dimensions.
  *
- * @version 0.2.0 2018/11/22
+ * @version 0.2.0 2018/12/25
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public class BasicCodeAreaMetrics {
 
     @Nullable
@@ -35,16 +39,18 @@ public class BasicCodeAreaMetrics {
     private int rowHeight;
     private int characterWidth;
     private int fontHeight;
+    private int maxBytesPerChar;
 
     // TODO replace with computation
-    private final int subFontSpace = 3;
+    private final int subFontSpace = 1;
 
     /**
      * GC is expected to have proper font set.
      *
      * @param gc graphics context
+     * @param charset charset
      */
-    public void recomputeMetrics(@Nullable GC gc) {
+    public void recomputeMetrics(@Nullable GC gc, Charset charset) {
         this.gc = gc;
         if (gc == null) {
             fontMetrics = null;
@@ -54,14 +60,15 @@ public class BasicCodeAreaMetrics {
             fontMetrics = gc.getFontMetrics();
             fontHeight = fontMetrics.getHeight();
 
-            /**
+            /*
              * Use small 'w' character to guess normal font width.
              */
             characterWidth = gc.textExtent("w").x;
             int fontSize = fontMetrics.getHeight();
             rowHeight = fontSize + subFontSpace;
+            CharsetEncoder encoder = charset.newEncoder();
+            maxBytesPerChar = (int) encoder.maxBytesPerChar();
         }
-
     }
 
     public boolean isInitialized() {
@@ -73,8 +80,16 @@ public class BasicCodeAreaMetrics {
         return fontMetrics;
     }
 
-    public int getCharWidth(char value) {
+    public int getCharWidth(GC gc, char value) {
         return gc.textExtent(String.valueOf(value)).x;
+    }
+
+    public int getCharsWidth(GC gc, char[] data, int offset, int length) {
+        return gc.textExtent(String.valueOf(data, offset, length)).x;
+    }
+
+    public boolean hasUniformLineMetrics() {
+        return false; // TODO fontMetrics.hasUniformLineMetrics();
     }
 
     public int getRowHeight() {
@@ -91,5 +106,9 @@ public class BasicCodeAreaMetrics {
 
     public int getSubFontSpace() {
         return subFontSpace;
+    }
+
+    public int getMaxBytesPerChar() {
+        return maxBytesPerChar;
     }
 }

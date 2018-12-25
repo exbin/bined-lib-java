@@ -52,6 +52,7 @@ import org.exbin.bined.capability.SelectionCapable;
 import org.exbin.bined.capability.ViewModeCapable;
 import org.exbin.bined.swing.CodeAreaCommandHandler;
 import org.exbin.bined.swing.CodeAreaCore;
+import org.exbin.bined.swing.CodeAreaSwingUtils;
 import org.exbin.utils.binary_data.BinaryData;
 import org.exbin.utils.binary_data.ByteArrayEditableData;
 import org.exbin.utils.binary_data.EditableBinaryData;
@@ -79,7 +80,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     private Clipboard clipboard;
     private boolean canPaste = false;
     private DataFlavor binaryDataFlavor;
-    private CodeAreaUtils.ClipboardData currentClipboardData = null;
+    private CodeAreaSwingUtils.ClipboardData currentClipboardData = null;
 
     public DefaultCodeAreaCommandHandler(CodeAreaCore codeArea) {
         this.codeArea = codeArea;
@@ -496,7 +497,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
             BinaryData copy = data.copy(first, last - first + 1);
 
-            CodeAreaUtils.BinaryDataClipboardData binaryData = new CodeAreaUtils.BinaryDataClipboardData(copy, binaryDataFlavor);
+            CodeAreaSwingUtils.BinaryDataClipboardData binaryData = new CodeAreaSwingUtils.BinaryDataClipboardData(copy, binaryDataFlavor);
             setClipboardContent(binaryData);
         }
     }
@@ -517,12 +518,12 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
             CodeType codeType = ((CodeTypeCapable) codeArea).getCodeType();
             CodeCharactersCase charactersCase = ((CodeCharactersCaseCapable) codeArea).getCodeCharactersCase();
-            CodeAreaUtils.CodeDataClipboardData binaryData = new CodeAreaUtils.CodeDataClipboardData(copy, binaryDataFlavor, codeType, charactersCase);
+            CodeAreaSwingUtils.CodeDataClipboardData binaryData = new CodeAreaSwingUtils.CodeDataClipboardData(copy, binaryDataFlavor, codeType, charactersCase);
             setClipboardContent(binaryData);
         }
     }
 
-    private void setClipboardContent(CodeAreaUtils.ClipboardData content) {
+    private void setClipboardContent(CodeAreaSwingUtils.ClipboardData content) {
         clearClipboardData();
         try {
             currentClipboardData = content;
@@ -622,7 +623,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                         DefaultCodeAreaCaret caret = (DefaultCodeAreaCaret) ((CaretCapable) codeArea).getCaret();
                         long dataPosition = caret.getDataPosition();
 
-                        byte[] bytes = ((String) insertedData).getBytes(Charset.forName(CodeAreaUtils.DEFAULT_ENCODING));
+                        byte[] bytes = ((String) insertedData).getBytes(Charset.forName(CodeAreaSwingUtils.DEFAULT_ENCODING));
                         int length = bytes.length;
                         long toRemove = length;
                         if ((editationMode == EditationMode.EXPANDING && editationOperation == EditationOperation.OVERWRITE) || editationMode == EditationMode.INPLACE) {
@@ -756,7 +757,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     }
 
     private void updateCanPaste() {
-        canPaste = CodeAreaUtils.canPaste(clipboard, binaryDataFlavor);
+        canPaste = CodeAreaSwingUtils.canPaste(clipboard, binaryDataFlavor);
     }
 
     @Override

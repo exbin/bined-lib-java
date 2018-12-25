@@ -65,6 +65,7 @@ import org.exbin.bined.operation.swing.command.RemoveDataCommand;
 import org.exbin.bined.operation.undo.BinaryDataUndoHandler;
 import org.exbin.bined.swing.CodeAreaCommandHandler;
 import org.exbin.bined.swing.CodeAreaCore;
+import org.exbin.bined.swing.CodeAreaSwingUtils;
 import org.exbin.bined.swing.basic.DefaultCodeAreaCaret;
 import org.exbin.bined.swing.basic.DefaultCodeAreaCommandHandler;
 import org.exbin.utils.binary_data.BinaryData;
@@ -97,7 +98,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
     private Clipboard clipboard;
     private boolean canPaste = false;
     private DataFlavor binedDataFlavor;
-    private CodeAreaUtils.ClipboardData currentClipboardData = null;
+    private CodeAreaSwingUtils.ClipboardData currentClipboardData = null;
     private DataFlavor binaryDataFlavor;
 
     private final BinaryDataUndoHandler undoHandler;
@@ -154,7 +155,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
     }
 
     private void updateCanPaste() {
-        canPaste = CodeAreaUtils.canPaste(clipboard, binedDataFlavor) || CodeAreaUtils.canPaste(clipboard, DataFlavor.stringFlavor);
+        canPaste = CodeAreaSwingUtils.canPaste(clipboard, binedDataFlavor) || CodeAreaSwingUtils.canPaste(clipboard, DataFlavor.stringFlavor);
     }
 
     @Override
@@ -513,7 +514,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
 
             BinaryData copy = codeArea.getContentData().copy(first, last - first + 1);
 
-            CodeAreaUtils.BinaryDataClipboardData binaryData = new CodeAreaUtils.BinaryDataClipboardData(copy, binedDataFlavor);
+            CodeAreaSwingUtils.BinaryDataClipboardData binaryData = new CodeAreaSwingUtils.BinaryDataClipboardData(copy, binedDataFlavor);
             setClipboardContent(binaryData);
         }
     }
@@ -529,12 +530,12 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
 
             CodeType codeType = ((CodeTypeCapable) codeArea).getCodeType();
             CodeCharactersCase charactersCase = ((CodeCharactersCaseCapable) codeArea).getCodeCharactersCase();
-            CodeAreaUtils.CodeDataClipboardData binaryData = new CodeAreaUtils.CodeDataClipboardData(copy, binedDataFlavor, codeType, charactersCase);
+            CodeAreaSwingUtils.CodeDataClipboardData binaryData = new CodeAreaSwingUtils.CodeDataClipboardData(copy, binedDataFlavor, codeType, charactersCase);
             setClipboardContent(binaryData);
         }
     }
 
-    private void setClipboardContent(CodeAreaUtils.ClipboardData content) {
+    private void setClipboardContent(CodeAreaSwingUtils.ClipboardData content) {
         clearClipboardData();
         try {
             currentClipboardData = content;

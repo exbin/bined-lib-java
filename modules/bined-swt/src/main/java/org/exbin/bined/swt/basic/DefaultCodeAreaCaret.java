@@ -19,6 +19,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import javax.swing.Timer;
 import org.exbin.bined.BasicCodeAreaSection;
 import org.exbin.bined.CaretPosition;
@@ -34,6 +35,7 @@ import org.exbin.bined.capability.CaretCapable;
  * @version 0.2.0 2018/08/11
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public class DefaultCodeAreaCaret implements CodeAreaCaret {
 
     private static final int DOUBLE_CURSOR_WIDTH = 2;
@@ -50,14 +52,14 @@ public class DefaultCodeAreaCaret implements CodeAreaCaret {
     @Nonnull
     private CursorRenderingMode renderingMode = CursorRenderingMode.PAINT; // NEGATIVE;
 
-    public DefaultCodeAreaCaret(@Nonnull CodeArea codeArea) {
+    public DefaultCodeAreaCaret(CodeArea codeArea) {
         CodeAreaUtils.requireNonNull(codeArea);
 
         this.codeArea = codeArea;
         privateSetBlinkRate(DEFAULT_BLINK_RATE);
     }
 
-    public static int getCursorThickness(@Nonnull CursorShape cursorShape, int characterWidth, int lineHeight) {
+    public static int getCursorThickness(CursorShape cursorShape, int characterWidth, int lineHeight) {
         switch (cursorShape) {
             case INSERT:
                 return DOUBLE_CURSOR_WIDTH;
@@ -111,7 +113,7 @@ public class DefaultCodeAreaCaret implements CodeAreaCaret {
         resetBlink();
     }
 
-    public void setCaretPosition(long dataPosition, int codeOffset, @Nonnull CodeAreaSection section) {
+    public void setCaretPosition(long dataPosition, int codeOffset, CodeAreaSection section) {
         caretPosition.setDataPosition(dataPosition);
         caretPosition.setCodeOffset(codeOffset);
         caretPosition.setSection(section);
@@ -142,7 +144,7 @@ public class DefaultCodeAreaCaret implements CodeAreaCaret {
         return section == null ? BasicCodeAreaSection.CODE_MATRIX : section;
     }
 
-    public void setSection(@Nonnull CodeAreaSection section) {
+    public void setSection(CodeAreaSection section) {
         caretPosition.setSection(section);
         resetBlink();
     }
@@ -164,7 +166,7 @@ public class DefaultCodeAreaCaret implements CodeAreaCaret {
         return renderingMode;
     }
 
-    public void setRenderingMode(@Nonnull CursorRenderingMode renderingMode) {
+    public void setRenderingMode(CursorRenderingMode renderingMode) {
         CodeAreaUtils.requireNonNull(renderingMode);
 
         this.renderingMode = renderingMode;

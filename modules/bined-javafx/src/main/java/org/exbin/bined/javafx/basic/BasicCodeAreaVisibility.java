@@ -16,6 +16,7 @@
 package org.exbin.bined.javafx.basic;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.CodeAreaViewMode;
 import org.exbin.bined.basic.BasicCodeAreaStructure;
 import org.exbin.bined.basic.CodeAreaScrollPosition;
@@ -26,6 +27,7 @@ import org.exbin.bined.basic.CodeAreaScrollPosition;
  * @version 0.2.0 2018/08/31
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public class BasicCodeAreaVisibility {
 
     private double previewRelativeX;
@@ -38,7 +40,7 @@ public class BasicCodeAreaVisibility {
     private int visibleCodeEnd;
     private int visibleMatrixCodeEnd;
 
-    public void recomputeCharPositions(@Nonnull BasicCodeAreaMetrics metrics, @Nonnull BasicCodeAreaStructure structure, @Nonnull BasicCodeAreaDimensions dimensions, @Nonnull CodeAreaScrollPosition scrollPosition) {
+    public void recomputeCharPositions(BasicCodeAreaMetrics metrics, BasicCodeAreaStructure structure, BasicCodeAreaDimensions dimensions, CodeAreaScrollPosition scrollPosition) {
         double dataViewWidth = dimensions.getDataViewWidth();
         int previewCharPos = structure.getPreviewCharPos();
         int characterWidth = metrics.getCharacterWidth();

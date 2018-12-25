@@ -16,14 +16,18 @@
 package org.exbin.bined.javafx.basic;
 
 import com.sun.javafx.tk.FontMetrics;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetEncoder;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * Basic code area component dimensions.
  *
- * @version 0.2.0 2018/09/01
+ * @version 0.2.0 2018/12/25
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public class BasicCodeAreaMetrics {
 
     @Nullable
@@ -32,11 +36,12 @@ public class BasicCodeAreaMetrics {
     private int rowHeight;
     private int characterWidth;
     private int fontHeight;
+    private int maxBytesPerChar;
 
     // TODO replace with computation
     private final int subFontSpace = 3;
 
-    public void recomputeMetrics(@Nullable FontMetrics fontMetrics) {
+    public void recomputeMetrics(@Nullable FontMetrics fontMetrics, Charset charset) {
         this.fontMetrics = fontMetrics;
         if (fontMetrics == null) {
             characterWidth = 0;
@@ -44,14 +49,15 @@ public class BasicCodeAreaMetrics {
         } else {
             fontHeight = (int) Math.ceil(fontMetrics.getAscent() + fontMetrics.getDescent());
 
-            /**
+            /*
              * Use small 'w' character to guess normal font width.
              */
             characterWidth = (int) Math.ceil(fontMetrics.computeStringWidth("w"));
             int fontSize = (int) fontMetrics.getFont().getSize();
             rowHeight = fontSize + subFontSpace;
+            CharsetEncoder encoder = charset.newEncoder();
+            maxBytesPerChar = (int) encoder.maxBytesPerChar();
         }
-
     }
 
     public boolean isInitialized() {
@@ -65,6 +71,14 @@ public class BasicCodeAreaMetrics {
 
     public double getCharWidth(char value) {
         return fontMetrics.computeStringWidth(Character.toString(value));
+    }
+
+    public double getCharsWidth(char[] data, int offset, int length) {
+        return fontMetrics.computeStringWidth(String.valueOf(data, offset, length));
+    }
+
+    public boolean hasUniformLineMetrics() {
+        return false; // TODO fontMetrics.hasUniformLineMetrics();
     }
 
     public int getRowHeight() {
@@ -81,5 +95,9 @@ public class BasicCodeAreaMetrics {
 
     public int getSubFontSpace() {
         return subFontSpace;
+    }
+
+    public int getMaxBytesPerChar() {
+        return maxBytesPerChar;
     }
 }

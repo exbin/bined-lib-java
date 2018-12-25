@@ -17,6 +17,7 @@ package org.exbin.bined.swt;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.eclipse.swt.graphics.GC;
 import org.exbin.bined.BasicCodeAreaZone;
 import org.exbin.bined.CaretPosition;
@@ -24,14 +25,14 @@ import org.exbin.bined.PositionOverflowMode;
 import org.exbin.bined.basic.CodeAreaScrollPosition;
 import org.exbin.bined.basic.MovementDirection;
 import org.exbin.bined.basic.ScrollingDirection;
-import org.exbin.bined.swt.basic.BasicCodeAreaColors;
 
 /**
  * Hexadecimal editor painter.
  *
- * @version 0.2.0 2018/09/01
+ * @version 0.2.0 2018/12/24
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public interface CodeAreaPainter {
 
     /**
@@ -46,21 +47,21 @@ public interface CodeAreaPainter {
      *
      * @param g graphics
      */
-    void paintComponent(@Nonnull GC g);
+    void paintComponent(GC g);
 
     /**
      * Paints main hexadecimal data section of the component.
      *
      * @param g graphics
      */
-    void paintMainArea(@Nonnull GC g);
+    void paintMainArea(GC g);
 
     /**
      * Paints cursor symbol.
      *
      * @param g graphics
      */
-    void paintCursor(@Nonnull GC g);
+    void paintCursor(GC g);
 
     /**
      * Resets complete painter state for new painting.
@@ -78,9 +79,14 @@ public interface CodeAreaPainter {
     void resetColors();
 
     /**
-     * Resets painter layout state for new painting.
+     * Updates painter layout state for new painting.
      */
-    void updateLayout();
+    void resetLayout();
+
+    /**
+     * Resets caret state.
+     */
+    void resetCaret();
 
     /**
      * Returns type of cursor for given painter relative position.
@@ -111,7 +117,7 @@ public interface CodeAreaPainter {
      * @return closest caret position
      */
     @Nonnull
-    CaretPosition mousePositionToClosestCaretPosition(int positionX, int positionY, @Nonnull PositionOverflowMode overlowMode);
+    CaretPosition mousePositionToClosestCaretPosition(int positionX, int positionY, PositionOverflowMode overlowMode);
 
     void updateScrollBars();
 
@@ -128,7 +134,7 @@ public interface CodeAreaPainter {
      * scrolled to the best fit
      */
     @Nullable
-    CodeAreaScrollPosition computeRevealScrollPosition(@Nonnull CaretPosition caretPosition);
+    CodeAreaScrollPosition computeRevealScrollPosition(CaretPosition caretPosition);
 
     /**
      * Returns scroll position so that provided caret position is visible in the
@@ -141,7 +147,7 @@ public interface CodeAreaPainter {
      * current scroll position.
      */
     @Nullable
-    CodeAreaScrollPosition computeCenterOnScrollPosition(@Nonnull CaretPosition caretPosition);
+    CodeAreaScrollPosition computeCenterOnScrollPosition(CaretPosition caretPosition);
 
     /**
      * Computes position for movement action.
@@ -151,7 +157,7 @@ public interface CodeAreaPainter {
      * @return target position
      */
     @Nonnull
-    CaretPosition computeMovePosition(@Nonnull CaretPosition position, @Nonnull MovementDirection direction);
+    CaretPosition computeMovePosition(CaretPosition position, MovementDirection direction);
 
     /**
      * Computes scrolling position for given shift action.
@@ -161,12 +167,7 @@ public interface CodeAreaPainter {
      * @return target position
      */
     @Nonnull
-    CodeAreaScrollPosition computeScrolling(@Nonnull CodeAreaScrollPosition startPosition, @Nonnull ScrollingDirection direction);
-
-    @Nonnull
-    BasicCodeAreaColors getBasicColors();
-
-    void setBasicColors(@Nonnull BasicCodeAreaColors colors);
+    CodeAreaScrollPosition computeScrolling(CodeAreaScrollPosition startPosition, ScrollingDirection direction);
 
     public void repaint();
 

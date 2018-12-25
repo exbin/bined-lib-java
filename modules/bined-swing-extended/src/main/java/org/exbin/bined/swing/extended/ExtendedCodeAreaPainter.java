@@ -549,7 +549,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
             int stripePositionY = rowPosRectangle.y - scrollPosition.getRowOffset() + ((scrollPosition.getRowPosition() & 1) > 0 ? 0 : rowHeight);
             g.setColor(colorsProfile.getColor(CodeAreaBasicColors.ALTERNATE_BACKGROUND));
             for (int row = 0; row <= rowsPerRect / 2; row++) {
-                if (dataPosition > dataSize - bytesPerRow) {
+                if (dataPosition > dataSize) {
                     break;
                 }
 

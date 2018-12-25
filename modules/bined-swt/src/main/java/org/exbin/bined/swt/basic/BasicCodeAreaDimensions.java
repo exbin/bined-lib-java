@@ -22,13 +22,11 @@ import org.exbin.bined.BasicCodeAreaZone;
 /**
  * Basic code area component dimensions.
  *
- * @version 0.2.0 2017/08/31
+ * @version 0.2.0 2018/12/25
  * @author ExBin Project (https://exbin.org)
  */
 public class BasicCodeAreaDimensions {
 
-    private int componentWidth;
-    private int componentHeight;
     private int dataViewX;
     private int dataViewY;
     private int verticalScrollBarSize;
@@ -48,6 +46,8 @@ public class BasicCodeAreaDimensions {
     private int charactersPerRect;
 
     @Nonnull
+    private final Rectangle componentRect = new Rectangle(0, 0, 0, 0);
+    @Nonnull
     private final Rectangle mainAreaRect = new Rectangle(0, 0, 0, 0);
     @Nonnull
     private final Rectangle headerAreaRectangle = new Rectangle(0, 0, 0, 0);
@@ -59,8 +59,7 @@ public class BasicCodeAreaDimensions {
     private final Rectangle dataViewRectangle = new Rectangle(0, 0, 0, 0);
 
     public void recomputeSizes(@Nonnull BasicCodeAreaMetrics metrics, int componentWidth, int componentHeight, int rowPositionLength, int verticalScrollBarSize, int horizontalScrollBarSize) {
-        this.componentWidth = componentWidth;
-        this.componentHeight = componentHeight;
+        modifyRect(componentRect, 0, 0, componentWidth, componentHeight);
         this.verticalScrollBarSize = verticalScrollBarSize;
         this.horizontalScrollBarSize = horizontalScrollBarSize;
         rowPositionAreaWidth = metrics.getCharacterWidth() * (rowPositionLength + 1);
@@ -113,7 +112,11 @@ public class BasicCodeAreaDimensions {
         }
 
         if (positionX < rowPositionAreaWidth) {
-            return BasicCodeAreaZone.ROW_POSITIONS;
+            if (positionY >= dataViewY + scrollPanelHeight) {
+                return BasicCodeAreaZone.BOTTOM_LEFT_CORNER;
+            } else {
+                return BasicCodeAreaZone.ROW_POSITIONS;
+            }
         }
 
         if (positionX >= dataViewX + scrollPanelWidth && positionY < dataViewY + scrollPanelHeight) {
@@ -121,24 +124,14 @@ public class BasicCodeAreaDimensions {
         }
 
         if (positionY >= dataViewY + scrollPanelHeight) {
-            if (positionX < rowPositionAreaWidth) {
-                return BasicCodeAreaZone.BOTTOM_LEFT_CORNER;
-            } else if (positionX >= dataViewX + scrollPanelWidth) {
+            if (positionX >= dataViewX + scrollPanelWidth) {
                 return BasicCodeAreaZone.SCROLLBAR_CORNER;
+            } else {
+                return BasicCodeAreaZone.HORIZONTAL_SCROLLBAR;
             }
-
-            return BasicCodeAreaZone.HORIZONTAL_SCROLLBAR;
         }
 
         return BasicCodeAreaZone.CODE_AREA;
-    }
-
-    public int getComponentWidth() {
-        return componentWidth;
-    }
-
-    public int getComponentHeight() {
-        return componentHeight;
     }
 
     public int getDataViewX() {
@@ -203,6 +196,11 @@ public class BasicCodeAreaDimensions {
 
     public int getLastRowOffset() {
         return lastRowOffset;
+    }
+
+    @Nonnull
+    public Rectangle getComponentRect() {
+        return componentRect;
     }
 
     @Nonnull

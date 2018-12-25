@@ -22,13 +22,11 @@ import org.exbin.bined.BasicCodeAreaZone;
 /**
  * Basic code area component dimensions.
  *
- * @version 0.2.0 2018/09/01
+ * @version 0.2.0 2018/12/25
  * @author ExBin Project (https://exbin.org)
  */
 public class BasicCodeAreaDimensions {
 
-    private double componentWidth;
-    private double componentHeight;
     private double dataViewX;
     private double dataViewY;
     private double verticalScrollBarSize;
@@ -48,6 +46,8 @@ public class BasicCodeAreaDimensions {
     private int charactersPerRect;
 
     @Nonnull
+    private Rectangle2D componentRect = new Rectangle2D(0, 0, 0, 0);
+    @Nonnull
     private Rectangle2D mainAreaRect = new Rectangle2D(0, 0, 0, 0);
     @Nonnull
     private Rectangle2D headerAreaRectangle = new Rectangle2D(0, 0, 0, 0);
@@ -58,9 +58,8 @@ public class BasicCodeAreaDimensions {
     @Nonnull
     private Rectangle2D dataViewRectangle = new Rectangle2D(0, 0, 0, 0);
 
-    public void recomputeSizes(@Nonnull BasicCodeAreaMetrics metrics, double componentWidth, double componentHeight, int rowPositionLength, int verticalScrollBarSize, int horizontalScrollBarSize) {
-        this.componentWidth = componentWidth;
-        this.componentHeight = componentHeight;
+    public void recomputeSizes(@Nonnull BasicCodeAreaMetrics metrics, double componentX, double componentY, double componentWidth, double componentHeight, int rowPositionLength, int verticalScrollBarSize, int horizontalScrollBarSize) {
+        componentRect = new Rectangle2D(componentX, componentY, componentWidth, componentHeight);
         this.verticalScrollBarSize = verticalScrollBarSize;
         this.horizontalScrollBarSize = horizontalScrollBarSize;
         rowPositionAreaWidth = metrics.getCharacterWidth() * (rowPositionLength + 1);
@@ -106,7 +105,11 @@ public class BasicCodeAreaDimensions {
         }
 
         if (positionX < rowPositionAreaWidth) {
-            return BasicCodeAreaZone.ROW_POSITIONS;
+            if (positionY >= dataViewY + scrollPanelHeight) {
+                return BasicCodeAreaZone.BOTTOM_LEFT_CORNER;
+            } else {
+                return BasicCodeAreaZone.ROW_POSITIONS;
+            }
         }
 
         if (positionX >= dataViewX + scrollPanelWidth && positionY < dataViewY + scrollPanelHeight) {
@@ -114,24 +117,14 @@ public class BasicCodeAreaDimensions {
         }
 
         if (positionY >= dataViewY + scrollPanelHeight) {
-            if (positionX < rowPositionAreaWidth) {
-                return BasicCodeAreaZone.BOTTOM_LEFT_CORNER;
-            } else if (positionX >= dataViewX + scrollPanelWidth) {
+            if (positionX >= dataViewX + scrollPanelWidth) {
                 return BasicCodeAreaZone.SCROLLBAR_CORNER;
+            } else {
+                return BasicCodeAreaZone.HORIZONTAL_SCROLLBAR;
             }
-
-            return BasicCodeAreaZone.HORIZONTAL_SCROLLBAR;
         }
 
         return BasicCodeAreaZone.CODE_AREA;
-    }
-
-    public double getComponentWidth() {
-        return componentWidth;
-    }
-
-    public double getComponentHeight() {
-        return componentHeight;
     }
 
     public double getDataViewX() {
@@ -196,6 +189,11 @@ public class BasicCodeAreaDimensions {
 
     public int getLastRowOffset() {
         return lastRowOffset;
+    }
+
+    @Nonnull
+    public Rectangle2D getComponentRect() {
+        return componentRect;
     }
 
     @Nonnull

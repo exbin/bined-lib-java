@@ -15,7 +15,6 @@
  */
 package org.exbin.bined.swt.basic;
 
-import javax.annotation.Nonnull;
 import org.exbin.bined.CodeAreaViewMode;
 import org.exbin.bined.basic.BasicCodeAreaStructure;
 import org.exbin.bined.basic.CodeAreaScrollPosition;
@@ -23,7 +22,7 @@ import org.exbin.bined.basic.CodeAreaScrollPosition;
 /**
  * Basic code area component characters visibility in scroll window.
  *
- * @version 0.2.0 2017/08/28
+ * @version 0.2.0 2018/12/24
  * @author ExBin Project (https://exbin.org)
  */
 public class BasicCodeAreaVisibility {
@@ -38,7 +37,7 @@ public class BasicCodeAreaVisibility {
     private int visibleCodeEnd;
     private int visibleMatrixCodeEnd;
 
-    public void recomputeCharPositions(@Nonnull BasicCodeAreaMetrics metrics, @Nonnull BasicCodeAreaStructure structure, @Nonnull BasicCodeAreaDimensions dimensions, @Nonnull CodeAreaScrollPosition scrollPosition) {
+    public void recomputeCharPositions(BasicCodeAreaMetrics metrics, BasicCodeAreaStructure structure, BasicCodeAreaDimensions dimensions, CodeAreaScrollPosition scrollPosition) {
         int dataViewWidth = dimensions.getDataViewWidth();
         int previewCharPos = structure.getPreviewCharPos();
         int characterWidth = metrics.getCharacterWidth();

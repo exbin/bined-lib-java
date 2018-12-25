@@ -493,7 +493,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
             int stripePositionY = rowPosRectangle.y - scrollPosition.getRowOffset() + ((scrollPosition.getRowPosition() & 1) > 0 ? 0 : rowHeight);
             g.setColor(colorsProfile.getAlternateBackground());
             for (int row = 0; row <= rowsPerRect / 2; row++) {
-                if (dataPosition > dataSize - bytesPerRow) {
+                if (dataPosition > dataSize) {
                     break;
                 }
 
@@ -597,7 +597,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
             int stripePositionY = dataViewRect.y - scrollPosition.getRowOffset() + (int) ((scrollPosition.getRowPosition() & 1) > 0 ? 0 : rowHeight);
             g.setColor(colorsProfile.getAlternateBackground());
             for (int row = 0; row <= rowsPerRect / 2; row++) {
-                if (dataPosition > dataSize - bytesPerRow) {
+                if (dataPosition > dataSize) {
                     break;
                 }
 
@@ -1306,8 +1306,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
     }
 
     @Override
-    public void setBasicColors(BasicCodeAreaColorsProfile colors) {
-        this.colorsProfile = colors;
+    public void setBasicColors(BasicCodeAreaColorsProfile colorsProfile) {
+        this.colorsProfile = colorsProfile;
     }
 
     /**

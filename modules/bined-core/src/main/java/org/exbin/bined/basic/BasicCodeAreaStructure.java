@@ -36,7 +36,7 @@ import org.exbin.bined.capability.ViewModeCapable;
 /**
  * Code area data representation structure for basic variant.
  *
- * @version 0.2.0 2018/12/08
+ * @version 0.2.0 2018/12/25
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -267,7 +267,7 @@ public class BasicCodeAreaStructure {
                 break;
             }
             case SWITCH_SECTION: {
-                CodeAreaSection activeSection = caretPosition.getSection() == BasicCodeAreaSection.CODE_MATRIX ? BasicCodeAreaSection.TEXT_PREVIEW : BasicCodeAreaSection.CODE_MATRIX;
+                CodeAreaSection activeSection = position.getSection() == BasicCodeAreaSection.CODE_MATRIX ? BasicCodeAreaSection.TEXT_PREVIEW : BasicCodeAreaSection.CODE_MATRIX;
                 if (activeSection == BasicCodeAreaSection.TEXT_PREVIEW) {
                     target.setCodeOffset(0);
                 }

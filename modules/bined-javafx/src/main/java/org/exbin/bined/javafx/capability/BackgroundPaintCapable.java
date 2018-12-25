@@ -16,21 +16,23 @@
 package org.exbin.bined.javafx.capability;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.basic.BasicBackgroundPaintMode;
 import org.exbin.bined.capability.CodeAreaCapability;
 
 /**
  * Support for background paint mode capability.
  *
- * @version 0.2.0 2018/06/21
+ * @version 0.2.0 2018/12/25
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public interface BackgroundPaintCapable {
 
     @Nonnull
     BasicBackgroundPaintMode getBackgroundPaintMode();
 
-    void setBackgroundPaintMode(@Nonnull BasicBackgroundPaintMode borderPaintMode);
+    void setBackgroundPaintMode(BasicBackgroundPaintMode borderPaintMode);
 
     public static class BackgroundPaintCapability implements CodeAreaCapability {
 

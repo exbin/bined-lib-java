@@ -26,6 +26,7 @@ import java.nio.charset.Charset;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
 import org.exbin.bined.BasicCodeAreaSection;
@@ -52,6 +53,7 @@ import org.exbin.bined.capability.SelectionCapable;
 import org.exbin.bined.capability.ViewModeCapable;
 import org.exbin.bined.swt.CodeAreaCommandHandler;
 import org.exbin.bined.swt.CodeAreaCore;
+import org.exbin.bined.swt.CodeAreaSwtUtils;
 import org.exbin.utils.binary_data.BinaryData;
 import org.exbin.utils.binary_data.ByteArrayEditableData;
 import org.exbin.utils.binary_data.EditableBinaryData;
@@ -59,9 +61,10 @@ import org.exbin.utils.binary_data.EditableBinaryData;
 /**
  * Default hexadecimal editor command handler.
  *
- * @version 0.2.0 2018/08/11
+ * @version 0.2.0 2018/12/24
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
     public static final int NO_MODIFIER = 0;
@@ -77,9 +80,9 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     private Clipboard clipboard;
     private boolean canPaste = false;
     private DataFlavor binaryDataFlavor;
-    private CodeAreaUtils.ClipboardData currentClipboardData = null;
+    private CodeAreaSwtUtils.ClipboardData currentClipboardData = null;
 
-    public DefaultCodeAreaCommandHandler(@Nonnull CodeAreaCore codeArea) {
+    public DefaultCodeAreaCommandHandler(CodeAreaCore codeArea) {
         this.codeArea = codeArea;
         codeTypeSupported = codeArea instanceof CodeTypeCapable;
         viewModeSupported = codeArea instanceof ViewModeCapable;
@@ -129,14 +132,14 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     }
 
     @Override
-    public void keyPressed(@Nonnull KeyEvent keyEvent) {
+    public void keyPressed(KeyEvent keyEvent) {
         if (!codeArea.isEnabled()) {
             return;
         }
     }
 
     @Override
-    public void keyTyped(@Nonnull KeyEvent keyEvent) {
+    public void keyTyped(KeyEvent keyEvent) {
         switch (keyEvent.keyCode) {
             case SWT.ARROW_LEFT: {
                 move(keyEvent.stateMask, MovementDirection.LEFT);
@@ -477,7 +480,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
             BinaryData copy = data.copy(first, last - first + 1);
 
-            CodeAreaUtils.BinaryDataClipboardData binaryData = new CodeAreaUtils.BinaryDataClipboardData(copy, binaryDataFlavor);
+            CodeAreaSwtUtils.BinaryDataClipboardData binaryData = new CodeAreaSwtUtils.BinaryDataClipboardData(copy, binaryDataFlavor);
             setClipboardContent(binaryData);
         }
     }
@@ -498,12 +501,12 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
             CodeType codeType = ((CodeTypeCapable) codeArea).getCodeType();
             CodeCharactersCase charactersCase = ((CodeCharactersCaseCapable) codeArea).getCodeCharactersCase();
-            CodeAreaUtils.CodeDataClipboardData binaryData = new CodeAreaUtils.CodeDataClipboardData(copy, binaryDataFlavor, codeType, charactersCase);
+            CodeAreaSwtUtils.CodeDataClipboardData binaryData = new CodeAreaSwtUtils.CodeDataClipboardData(copy, binaryDataFlavor, codeType, charactersCase);
             setClipboardContent(binaryData);
         }
     }
 
-    private void setClipboardContent(@Nonnull CodeAreaUtils.ClipboardData content) {
+    private void setClipboardContent(CodeAreaSwtUtils.ClipboardData content) {
         clearClipboardData();
         try {
             currentClipboardData = content;
@@ -590,7 +593,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                         DefaultCodeAreaCaret caret = (DefaultCodeAreaCaret) ((CaretCapable) codeArea).getCaret();
                         long dataPosition = caret.getDataPosition();
 
-                        byte[] bytes = ((String) insertedData).getBytes(Charset.forName(CodeAreaUtils.DEFAULT_ENCODING));
+                        byte[] bytes = ((String) insertedData).getBytes(Charset.forName(CodeAreaSwtUtils.DEFAULT_ENCODING));
                         int length = bytes.length;
                         if ((editationMode == EditationMode.EXPANDING && editationOperation == EditationOperation.OVERWRITE) || editationMode == EditationMode.INPLACE) {
                             long toRemove = length;
@@ -697,7 +700,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         ((SelectionCapable) codeArea).clearSelection();
     }
 
-    public void updateSelection(@Nonnull SelectingMode selecting, @Nonnull CaretPosition caretPosition) {
+    public void updateSelection(SelectingMode selecting, CaretPosition caretPosition) {
         DefaultCodeAreaCaret caret = (DefaultCodeAreaCaret) ((CaretCapable) codeArea).getCaret();
         SelectionRange selection = ((SelectionCapable) codeArea).getSelection();
         if (selecting == SelectingMode.SELECTING) {
@@ -708,11 +711,11 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     }
 
     private void updateCanPaste() {
-        canPaste = CodeAreaUtils.canPaste(clipboard, binaryDataFlavor);
+        canPaste = CodeAreaSwtUtils.canPaste(clipboard, binaryDataFlavor);
     }
 
     @Override
-    public void moveCaret(int positionX, int positionY, @Nonnull SelectingMode selecting) {
+    public void moveCaret(int positionX, int positionY, SelectingMode selecting) {
         CaretPosition caretPosition = ((CaretCapable) codeArea).mousePositionToClosestCaretPosition(positionX, positionY, PositionOverflowMode.OVERFLOW);
         if (caretPosition != null) {
             ((CaretCapable) codeArea).getCaret().setCaretPosition(caretPosition);
@@ -724,7 +727,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         }
     }
 
-    public void move(int modifiers, @Nonnull MovementDirection direction) {
+    public void move(int modifiers, MovementDirection direction) {
         DefaultCodeAreaCaret caret = (DefaultCodeAreaCaret) ((CaretCapable) codeArea).getCaret();
         CaretPosition caretPosition = caret.getCaretPosition();
         CaretPosition movePosition = ((CaretCapable) codeArea).computeMovePosition(caretPosition, direction);
@@ -735,7 +738,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         }
     }
 
-    public void scroll(@Nonnull ScrollingDirection direction) {
+    public void scroll(ScrollingDirection direction) {
         CodeAreaScrollPosition sourcePosition = ((ScrollingCapable) codeArea).getScrollPosition();
         CodeAreaScrollPosition scrollPosition = ((ScrollingCapable) codeArea).computeScrolling(sourcePosition, direction);
         if (!sourcePosition.equals(scrollPosition)) {
@@ -747,7 +750,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     }
 
     @Override
-    public void wheelScroll(int scrollSize, @Nonnull ScrollbarOrientation direction) {
+    public void wheelScroll(int scrollSize, ScrollbarOrientation direction) {
         // TODO
         scroll(ScrollingDirection.UP);
     }

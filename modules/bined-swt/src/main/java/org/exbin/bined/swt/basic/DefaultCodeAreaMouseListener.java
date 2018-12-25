@@ -15,7 +15,7 @@
  */
 package org.exbin.bined.swt.basic;
 
-import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.MouseEvent;
@@ -35,6 +35,7 @@ import org.exbin.bined.swt.CodeAreaCore;
  * @version 0.2.0 2018/08/11
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public class DefaultCodeAreaMouseListener implements MouseListener, MouseMoveListener, MouseWheelListener, MouseTrackListener {
 
     public static final int MOUSE_SCROLL_LINES = 3;
@@ -47,18 +48,18 @@ public class DefaultCodeAreaMouseListener implements MouseListener, MouseMoveLis
     private Cursor currentCursor;
     private boolean mouseDown = false;
 
-    public DefaultCodeAreaMouseListener(@Nonnull CodeAreaCore codeArea, @Nonnull ScrolledComposite view) {
+    public DefaultCodeAreaMouseListener(CodeAreaCore codeArea, ScrolledComposite view) {
         this.codeArea = codeArea;
         this.view = view;
         currentCursor = codeArea.getCursor();
     }
 
     @Override
-    public void mouseDoubleClick(@Nonnull MouseEvent me) {
+    public void mouseDoubleClick(MouseEvent me) {
     }
 
     @Override
-    public void mouseDown(@Nonnull MouseEvent me) {
+    public void mouseDown(MouseEvent me) {
         codeArea.forceFocus();
         if (codeArea.isEnabled() && me.button == 1) {
             moveCaret(me);
@@ -67,11 +68,11 @@ public class DefaultCodeAreaMouseListener implements MouseListener, MouseMoveLis
     }
 
     @Override
-    public void mouseUp(@Nonnull MouseEvent me) {
+    public void mouseUp(MouseEvent me) {
         mouseDown = false;
     }
 
-    private void moveCaret(@Nonnull MouseEvent me) {
+    private void moveCaret(MouseEvent me) {
         int relativeX = computeRelativeX(me);
         int relativeY = computeRelativeY(me);
         boolean selecting = (me.stateMask & SWT.SHIFT) > 0;
@@ -80,22 +81,22 @@ public class DefaultCodeAreaMouseListener implements MouseListener, MouseMoveLis
     }
 
     @Override
-    public void mouseExit(@Nonnull MouseEvent e) {
+    public void mouseExit(MouseEvent e) {
         currentCursor = defaultCursor;
         codeArea.setCursor(defaultCursor);
     }
 
     @Override
-    public void mouseEnter(@Nonnull MouseEvent e) {
+    public void mouseEnter(MouseEvent e) {
         updateMouseCursor(e);
     }
 
     @Override
-    public void mouseHover(@Nonnull MouseEvent e) {
+    public void mouseHover(MouseEvent e) {
         updateMouseCursor(e);
     }
 
-    private void updateMouseCursor(@Nonnull MouseEvent me) {
+    private void updateMouseCursor(MouseEvent me) {
         int cursorShape = ((CaretCapable) codeArea).getMouseCursorShape(computeRelativeX(me), computeRelativeY(me));
 
         // Reuse current cursor if unchanged
@@ -115,18 +116,18 @@ public class DefaultCodeAreaMouseListener implements MouseListener, MouseMoveLis
         }
     }
 
-    private int computeRelativeX(@Nonnull MouseEvent me) {
+    private int computeRelativeX(MouseEvent me) {
         boolean isDataView = me.getSource() == view.getContent();
         return isDataView ? me.x + view.getLocation().x : me.x;
     }
 
-    private int computeRelativeY(@Nonnull MouseEvent me) {
+    private int computeRelativeY(MouseEvent me) {
         boolean isDataView = me.getSource() == view.getContent();
         return isDataView ? me.y + view.getLocation().y : me.y;
     }
 
     @Override
-    public void mouseScrolled(@Nonnull MouseEvent e) {
+    public void mouseScrolled(MouseEvent e) {
 //        if (!codeArea.isEnabled() || e.getWheelRotation() == 0) {
 //            return;
 //        }

@@ -15,6 +15,7 @@
  */
 package org.exbin.bined.swt.basic;
 
+import org.exbin.bined.capability.BackgroundPaintCapable;
 import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.capability.CharsetCapable;
 import org.exbin.bined.capability.ClipboardCapable;
@@ -26,14 +27,13 @@ import org.exbin.bined.capability.ScrollingCapable;
 import org.exbin.bined.capability.SelectionCapable;
 import org.exbin.bined.capability.ViewModeCapable;
 import org.exbin.bined.swt.CodeAreaSwtControl;
-import org.exbin.bined.swt.capability.BackgroundPaintCapable;
 import org.exbin.bined.swt.capability.BasicColorsCapable;
 import org.exbin.bined.swt.capability.FontCapable;
 
 /**
  * Code area component default interface.
  *
- * @version 0.2.0 2018/09/01
+ * @version 0.2.0 2018/12/25
  * @author ExBin Project (https://exbin.org)
  */
 public interface DefaultCodeArea extends CodeAreaSwtControl, SelectionCapable, CaretCapable, ScrollingCapable, ViewModeCapable,

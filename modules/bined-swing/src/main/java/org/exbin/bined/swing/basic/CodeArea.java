@@ -53,13 +53,14 @@ import org.exbin.bined.swing.CodeAreaCommandHandler;
 import org.exbin.bined.swing.CodeAreaCore;
 import org.exbin.bined.swing.CodeAreaPainter;
 import org.exbin.bined.swing.CodeAreaSwingControl;
+import org.exbin.bined.swing.CodeAreaSwingUtils;
 import org.exbin.bined.swing.basic.color.BasicCodeAreaColorsProfile;
 import org.exbin.bined.swing.basic.color.BasicColorsCapableCodeAreaPainter;
 
 /**
  * Code area component.
  *
- * @version 0.2.0 2018/12/20
+ * @version 0.2.0 2018/12/24
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -76,7 +77,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
     private final CodeAreaScrollPosition scrollPosition = new CodeAreaScrollPosition();
 
     @Nonnull
-    private Charset charset = Charset.forName(CodeAreaUtils.DEFAULT_ENCODING);
+    private Charset charset = Charset.forName(CodeAreaSwingUtils.DEFAULT_ENCODING);
     private boolean handleClipboard = true;
 
     @Nonnull

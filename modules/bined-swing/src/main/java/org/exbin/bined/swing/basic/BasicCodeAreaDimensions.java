@@ -23,7 +23,7 @@ import org.exbin.bined.BasicCodeAreaZone;
 /**
  * Basic code area component dimensions.
  *
- * @version 0.2.0 2018/12/17
+ * @version 0.2.0 2018/12/25
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -113,7 +113,11 @@ public class BasicCodeAreaDimensions {
         }
 
         if (positionX < rowPositionAreaWidth) {
-            return BasicCodeAreaZone.ROW_POSITIONS;
+            if (positionY >= dataViewY + scrollPanelHeight) {
+                return BasicCodeAreaZone.BOTTOM_LEFT_CORNER;
+            } else {
+                return BasicCodeAreaZone.ROW_POSITIONS;
+            }
         }
 
         if (positionX >= dataViewX + scrollPanelWidth && positionY < dataViewY + scrollPanelHeight) {
@@ -121,13 +125,11 @@ public class BasicCodeAreaDimensions {
         }
 
         if (positionY >= dataViewY + scrollPanelHeight) {
-            if (positionX < rowPositionAreaWidth) {
-                return BasicCodeAreaZone.BOTTOM_LEFT_CORNER;
-            } else if (positionX >= dataViewX + scrollPanelWidth) {
+            if (positionX >= dataViewX + scrollPanelWidth) {
                 return BasicCodeAreaZone.SCROLLBAR_CORNER;
+            } else {
+                return BasicCodeAreaZone.HORIZONTAL_SCROLLBAR;
             }
-
-            return BasicCodeAreaZone.HORIZONTAL_SCROLLBAR;
         }
 
         return BasicCodeAreaZone.CODE_AREA;

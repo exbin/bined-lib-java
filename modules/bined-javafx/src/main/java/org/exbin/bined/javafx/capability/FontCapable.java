@@ -17,20 +17,22 @@ package org.exbin.bined.javafx.capability;
 
 import javafx.scene.text.Font;
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.capability.CodeAreaCapability;
 
 /**
  * Support for font capability.
  *
- * @version 0.2.0 2018/08/01
+ * @version 0.2.0 2018/12/25
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public interface FontCapable {
 
     @Nonnull
     Font getFont();
 
-    void setFont(@Nonnull Font font);
+    void setFont(Font font);
 
     public static class FontCapability implements CodeAreaCapability {
 
