@@ -59,7 +59,7 @@ import org.exbin.bined.javafx.capability.FontCapable;
 /**
  * Code area component default code area.
  *
- * @version 0.2.0 2018/12/25
+ * @version 0.2.0 2018/12/26
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -141,6 +141,12 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaJ
     private void init() {
         UIManager.addPropertyChangeListener((@Nonnull PropertyChangeEvent evt) -> {
             resetColors();
+        });
+        widthProperty().addListener(e -> {
+            painter.onResize();
+        });
+        heightProperty().addListener(e -> {
+            painter.onResize();
         });
     }
 

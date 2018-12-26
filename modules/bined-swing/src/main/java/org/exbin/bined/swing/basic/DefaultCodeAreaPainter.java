@@ -549,6 +549,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         g.setClip(clipBounds != null ? clipBounds.intersection(mainAreaRect) : mainAreaRect);
         paintBackground(g);
 
+        // Decoration lines
         g.setColor(colorsProfile.getDecorationLine());
         int lineX = dataViewRectangle.x + previewRelativeX - scrollPosition.getCharPosition() * characterWidth - scrollPosition.getCharOffset() - characterWidth / 2;
         if (lineX >= dataViewRectangle.x) {

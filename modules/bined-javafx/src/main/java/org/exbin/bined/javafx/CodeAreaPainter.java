@@ -29,7 +29,7 @@ import org.exbin.bined.basic.ScrollingDirection;
 /**
  * Hexadecimal editor painter interface.
  *
- * @version 0.2.0 2018/12/25
+ * @version 0.2.0 2018/12/26
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -49,17 +49,13 @@ public interface CodeAreaPainter {
 
     /**
      * Paints main hexadecimal data section of the component.
-     *
-     * @param g graphics
      */
-    void paintMainArea(GraphicsContext g);
+    void paintMainArea();
 
     /**
      * Paints cursor symbol.
-     *
-     * @param g graphics
      */
-    void paintCursor(GraphicsContext g);
+    void paintCursor();
 
     /**
      * Resets complete painter state for new painting.
@@ -166,4 +162,6 @@ public interface CodeAreaPainter {
      */
     @Nonnull
     CodeAreaScrollPosition computeScrolling(CodeAreaScrollPosition startPosition, ScrollingDirection direction);
+
+    void onResize();
 }
