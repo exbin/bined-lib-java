@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.ShellAdapter;
 import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.layout.FillLayout;
@@ -32,7 +33,7 @@ import org.exbin.utils.binary_data.ByteArrayEditableData;
 /**
  * Example Swing GUI demonstration application of the bined component.
  *
- * @version 0.2.0 2018/05/01
+ * @version 0.2.0 2018/12/29
  * @author ExBin Project (https://exbin.org)
  */
 public class BinEdExample {
@@ -53,18 +54,14 @@ public class BinEdExample {
 
 //        shell.setLocation(point);
         final TabFolder tabFolder = new TabFolder(shell, SWT.BORDER);
+
         TabItem basicTabItem = new TabItem(tabFolder, SWT.NULL);
         basicTabItem.setText("Basic");
+        SashForm basicForm = new SashForm(tabFolder, SWT.HORIZONTAL);
+        basicForm.setLayout(new FillLayout());
 
-//        Text text = new Text(tabFolder, SWT.BORDER);
-//        text.setText("TEST");
-//        basicTabItem.setControl(text);
-
-        TabItem extendedTabItem = new TabItem(tabFolder, SWT.NULL);
-        extendedTabItem.setText("Extended");
-
-//        final BinEdExampleBasicPanel basicPanel = new BinEdExampleBasicPanel();
-        final CodeArea basicCodeArea = new CodeArea(tabFolder, SWT.BORDER);
+        final BinEdExampleBasicPanel basicPanel = new BinEdExampleBasicPanel(basicForm, SWT.NONE);
+        final CodeArea basicCodeArea = new CodeArea(basicForm, SWT.BORDER);
         ByteArrayEditableData basicData = new ByteArrayEditableData();
         try {
             basicData.loadFromStream(basicCodeArea.getClass().getResourceAsStream(EXAMPLE_FILE_PATH));
@@ -72,9 +69,13 @@ public class BinEdExample {
             Logger.getLogger(BinEdExample.class.getName()).log(Level.SEVERE, null, ex);
         }
         basicCodeArea.setContentData(basicData);
-        basicTabItem.setControl(basicCodeArea);
-//        basicPanel.setCodeArea(basicCodeArea);
 
+        TabItem extendedTabItem = new TabItem(tabFolder, SWT.NULL);
+        extendedTabItem.setText("Extended");
+
+//        basicTabItem.setControl(basicCodeArea);
+//        basicPanel.setCodeArea(basicCodeArea);
+        basicTabItem.setControl(basicForm);
         shell.addShellListener(new ShellAdapter() {
             @Override
             public void shellClosed(ShellEvent se) {

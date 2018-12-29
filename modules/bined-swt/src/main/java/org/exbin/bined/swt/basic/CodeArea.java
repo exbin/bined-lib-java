@@ -60,7 +60,7 @@ import org.exbin.bined.swt.basic.color.BasicColorsCapableCodeAreaPainter;
 /**
  * Code area component default code area.
  *
- * @version 0.2.0 2018/12/25
+ * @version 0.2.0 2018/12/29
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault

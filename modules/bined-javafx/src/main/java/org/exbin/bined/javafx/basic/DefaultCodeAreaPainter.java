@@ -72,7 +72,7 @@ import org.exbin.utils.binary_data.BinaryData;
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2018/12/26
+ * @version 0.2.0 2018/12/29
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -382,6 +382,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         scrollPanel.relocate(rowPositionAreaWidth, headerAreaHeight);
         scrollPanel.setMinWidth(width - rowPositionAreaWidth);
         scrollPanel.setMinHeight(height - headerAreaHeight);
+        scrollPanel.setMaxWidth(width - rowPositionAreaWidth);
+        scrollPanel.setMaxHeight(height - headerAreaHeight);
     }
 
     protected synchronized void updateCache() {
@@ -397,6 +399,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         double rowPositionAreaWidth = dimensions.getRowPositionAreaWidth();
         Rectangle2D componentRect = dimensions.getComponentRect();
         int characterWidth = metrics.getCharacterWidth();
+        gc.setFill(colorsProfile.getTextBackground());
         gc.fillRect(componentRect.getMinX(), componentRect.getMinY(), componentRect.getWidth(), headerAreaHeight);
 
         // Decoration lines
@@ -430,6 +433,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
 
         g.setFill(colorsProfile.getTextBackground());
         g.fillRect(headerAreaX, headerAreaY, headerArea.getWidth(), headerArea.getHeight());
+        g.setFont(font);
 
         CodeAreaViewMode viewMode = structure.getViewMode();
         if (viewMode == CodeAreaViewMode.DUAL || viewMode == CodeAreaViewMode.CODE_MATRIX) {
@@ -519,6 +523,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
 
         g.setFill(colorsProfile.getTextBackground());
         g.fillRect(rowPosRectangleX, rowPosRectangleY, rowPosRectangle.getWidth(), rowPosRectangle.getHeight());
+        g.setFont(font);
 
         CodeAreaScrollPosition scrollPosition = scrolling.getScrollPosition();
         if (backgroundPaintMode == BasicBackgroundPaintMode.STRIPED) {
@@ -574,7 +579,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
             fontChanged = false;
         }
 
-        Rectangle2D mainAreaRect = dimensions.getMainAreaRect();
+//        Rectangle2D mainAreaRect = dimensions.getMainAreaRect();
         Rectangle2D dataViewRectangle = dimensions.getDataViewRectangle();
         CodeAreaScrollPosition scrollPosition = scrolling.getScrollPosition();
         int characterWidth = metrics.getCharacterWidth();
@@ -1015,49 +1020,39 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
             return;
         }
 
-//        g.restore();
-//        Rectangle clipBounds = g.getClipBounds();
-//        Rectangle mainAreaRect = getMainAreaRect();
-//        Rectangle intersection = mainAreaRect.intersection(cursorRect);
-//        boolean cursorVisible = caret.isCursorVisible() && !intersection.isEmpty();
-//
-//        if (cursorVisible) {
-//            g.setClip(intersection);
-//            DefaultCodeAreaCaret.CursorRenderingMode renderingMode = caret.getRenderingMode();
-//            g.setColor(colors.cursor);
-//
-//            paintCursorRect(g, intersection.x, intersection.y, intersection.width, intersection.height, renderingMode, caret);
-//        }
-//
-//        // Paint mirror cursor
-//        if (viewMode == CodeAreaViewMode.DUAL && showMirrorCursor) {
-//            Rectangle mirrorCursorRect = getMirrorCursorRect(caret.getDataPosition(), caret.getSection());
-//            if (mirrorCursorRect != null) {
-//                intersection = mainAreaRect.intersection(mirrorCursorRect);
-//                boolean mirrorCursorVisible = !intersection.isEmpty();
-//                if (mirrorCursorVisible) {
-//                    g.setClip(intersection);
-//                    g.setColor(colors.cursor);
-//                    GraphicsContext2D g2d = (GraphicsContext2D) g.create();
-//                    Stroke dashed = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{2}, 0);
-//                    g2d.setStroke(dashed);
-//                    g2d.drawRect(mirrorCursorRect.x, mirrorCursorRect.y, mirrorCursorRect.width - 1, mirrorCursorRect.height - 1);
-//                }
-//            }
-//        }
-//        g.setClip(clipBounds);
+        boolean cursorVisible = caret.isCursorVisible(); // && !intersection.isEmpty();
+
+        if (cursorVisible) {
+            DefaultCodeAreaCaret.CursorRenderingMode renderingMode = caret.getRenderingMode();
+            g.setFill(colorsProfile.getCursorColor());
+
+            paintCursorRect(g, cursorRect.getMinX(), cursorRect.getMinY(), cursorRect.getWidth(), cursorRect.getHeight(), renderingMode, caret);
+        }
+
+        // Paint mirror cursor
+        if (viewMode == CodeAreaViewMode.DUAL && showMirrorCursor) {
+            Rectangle2D mirrorCursorRect = getMirrorCursorRect(caret.getDataPosition(), caret.getSection());
+            if (mirrorCursorRect != null) {
+                boolean mirrorCursorVisible = true; // !intersection.isEmpty();
+                if (mirrorCursorVisible) {
+                    g.setFill(colorsProfile.getCursorColor());
+                    // TODO Stroke dashed = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{2}, 0);
+                    // TODO g2d.setStroke(dashed);
+                    // TODO g2d.drawRect(mirrorCursorRect.x, mirrorCursorRect.y, mirrorCursorRect.width - 1, mirrorCursorRect.height - 1);
+                }
+            }
+        }
     }
 
-    private void paintCursorRect(GraphicsContext g, int x, int y, int width, int height, CursorRenderingMode renderingMode, DefaultCodeAreaCaret caret) {
-//        switch (renderingMode) {
-//            case PAINT: {
-//                g.fillRect(x, y, width, height);
-//                break;
-//            }
+    private void paintCursorRect(GraphicsContext g, double x, double y, double width, double height, CursorRenderingMode renderingMode, DefaultCodeAreaCaret caret) {
+        switch (renderingMode) {
+            case PAINT: {
+                g.fillRect(x, y, width, height);
+                break;
+            }
 //            case XOR: {
-//                g.setXORMode(colors.background);
+//                g.setXORMode(colorsProfile.getTextBackground());
 //                g.fillRect(x, y, width, height);
-//                g.setPaintMode();
 //                break;
 //            }
 //            case NEGATIVE: {
@@ -1104,11 +1099,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
 //                        }
 //                    }
 //                    int posX = previewRelativeX + charPos * characterWidth - scrollPosition.getScrollCharPosition() * characterWidth - scrollPosition.getScrollCharOffset();
-////                        if (characterRenderingMode == CharacterRenderingMode.LINE_AT_ONCE) {
-////                            g.drawChars(previewChars, 0, 1, posX, posY);
-////                        } else {
 //                    drawCenteredChar(g, previewChars, 0, characterWidth, posX, posY);
-////                        }
 //                } else {
 //                    int charPos = (scrolledX - dataViewX) / characterWidth;
 //                    int byteOffset = computePositionByte(charPos);
@@ -1123,17 +1114,13 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
 //                    }
 //                    int posX = dataViewX + codeCharPos * characterWidth - scrollPosition.getScrollCharPosition() * characterWidth - scrollPosition.getScrollCharOffset();
 //                    int charsOffset = charPos - codeCharPos;
-////                        if (characterRenderingMode == CharacterRenderingMode.LINE_AT_ONCE) {
-////                            g.drawChars(lineChars, charsOffset, 1, posX + (charsOffset * characterWidth), posY);
-////                        } else {
 //                    drawCenteredChar(g, rowChars, charsOffset, characterWidth, posX + (charsOffset * characterWidth), posY);
-////                        }
 //                }
 //                break;
 //            }
-//            default:
-//                throw new IllegalStateException("Unexpected rendering mode " + renderingMode.name());
-//        }
+            default:
+                throw new IllegalStateException("Unexpected rendering mode " + renderingMode.name());
+        }
     }
 
     @Nonnull
