@@ -17,11 +17,13 @@ package org.exbin.bined.swing.extended.layout;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import org.exbin.bined.CodeAreaViewMode;
+import org.exbin.bined.CodeType;
 
 /**
  * Layout profile for extended code area.
  *
- * @version 0.2.0 2018/12/10
+ * @version 0.2.0 2019/01/21
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -62,6 +64,20 @@ public class ExtendedCodeAreaLayoutProfile {
         copy.doubleSpaceGroupSize = profile.doubleSpaceGroupSize;
 
         return copy;
+    }
+    
+    public int computeCharacterPosition(long positionX, int characterWidth, CodeAreaViewMode viewMode, CodeType codeType, int bytesPerRow) {
+        // TODO
+        return 0;
+    }
+
+    public int computeClosestCharacterPosition(long positionX, int characterWidth, CodeAreaViewMode viewMode, CodeType codeType, int bytesPerRow) {
+        // TODO
+        return 0;
+    }
+
+    public long computePixelPosition(int characterPosition, int characterWidth, CodeAreaViewMode viewMode, CodeType codeType, int bytesPerRow) {
+        return 0;
     }
 
     public boolean isShowHeader() {

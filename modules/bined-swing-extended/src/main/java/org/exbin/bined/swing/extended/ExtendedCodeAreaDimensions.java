@@ -80,7 +80,7 @@ public class ExtendedCodeAreaDimensions {
         scrollPanelHeight = componentHeight - headerAreaHeight;
         dataViewWidth = scrollPanelWidth - verticalScrollBarSize;
         dataViewHeight = scrollPanelHeight - horizontalScrollBarSize;
-        charactersPerRect = computeCharactersPerRectangle(metrics);
+        charactersPerRect = computeCharactersPerRectangle(metrics, layoutProfile);
         charactersPerPage = computeCharactersPerPage(metrics);
         rowsPerRect = computeRowsPerRectangle(metrics);
         rowsPerPage = computeRowsPerPage(metrics);
@@ -239,7 +239,8 @@ public class ExtendedCodeAreaDimensions {
         return rowPositionAreaRectangle;
     }
 
-    private int computeCharactersPerRectangle(BasicCodeAreaMetrics metrics) {
+    private int computeCharactersPerRectangle(BasicCodeAreaMetrics metrics, ExtendedCodeAreaLayoutProfile layoutProfile) {
+        // TODO use layout profile
         int characterWidth = metrics.getCharacterWidth();
         return characterWidth == 0 ? 0 : (dataViewWidth + characterWidth - 1) / characterWidth;
     }
