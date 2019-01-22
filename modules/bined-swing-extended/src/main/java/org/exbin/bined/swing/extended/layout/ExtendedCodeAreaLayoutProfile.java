@@ -65,7 +65,7 @@ public class ExtendedCodeAreaLayoutProfile {
 
         return copy;
     }
-    
+
     public int computeCharacterPosition(long positionX, int characterWidth, CodeAreaViewMode viewMode, CodeType codeType, int bytesPerRow) {
         // TODO
         return 0;
@@ -76,7 +76,51 @@ public class ExtendedCodeAreaLayoutProfile {
         return 0;
     }
 
-    public long computePixelPosition(int characterPosition, int characterWidth, CodeAreaViewMode viewMode, CodeType codeType, int bytesPerRow) {
+    public long computePixelPosition(int codeCharPosition, int characterWidth, CodeAreaViewMode viewMode, CodeType codeType, int bytesPerRow) {
+        if (codeCharPosition == 0) {
+            return 0;
+        }
+
+        int digitsPerByte = codeType.getMaxDigitsForByte();
+        int firstPreviewCodeChar = viewMode == CodeAreaViewMode.TEXT_PREVIEW ? 0 : bytesPerRow * digitsPerByte;
+
+//        long positionX;
+//        if (viewMode != CodeAreaViewMode.TEXT_PREVIEW && codeCharPosition < firstPreviewCodeChar) {
+//            int bytePosition = codeCharPosition / digitsPerByte;
+//            int byteCharacterOffset = codeCharPosition % digitsPerByte;
+//
+//            long positionX = (bytePosition * digitsPerByte * characterWidth) + (byteCharacterOffset * characterWidth);
+//            for (int pos = 0; pos < bytePosition; pos++) {
+//                
+//                
+//            }
+//            for (int codeChar = 0)
+//            if (spaceGroupSize > 0) {
+//                positionX += (bytePosition / spaceGroupSize) * characterWidth;
+//            }
+//            return positionX;
+//        }
+//        
+//        if (viewMode != CodeAreaViewMode.CODE_MATRIX) {
+//            return positionX + 
+//        }
+        return -1;
+    }
+
+    public int getSpaceSizeBefore(int byteOffset, int characterWidth) {
+        if (byteOffset == 0) {
+            return 0;
+        }
+        if (doubleSpaceGroupSize > 0 && (byteOffset % doubleSpaceGroupSize) == 0) {
+            return 2 * characterWidth;
+        }
+        if (spaceGroupSize > 0 && (byteOffset % spaceGroupSize) == 0) {
+            return characterWidth;
+        }
+        if (halfSpaceGroupSize > 0 && (byteOffset % halfSpaceGroupSize) == 0) {
+            return characterWidth / 2;
+        }
+
         return 0;
     }
 
