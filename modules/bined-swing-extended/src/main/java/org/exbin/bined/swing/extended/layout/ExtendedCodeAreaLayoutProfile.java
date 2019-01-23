@@ -84,26 +84,25 @@ public class ExtendedCodeAreaLayoutProfile {
         int digitsPerByte = codeType.getMaxDigitsForByte();
         int firstPreviewCodeChar = viewMode == CodeAreaViewMode.TEXT_PREVIEW ? 0 : bytesPerRow * digitsPerByte;
 
-//        long positionX;
-//        if (viewMode != CodeAreaViewMode.TEXT_PREVIEW && codeCharPosition < firstPreviewCodeChar) {
-//            int bytePosition = codeCharPosition / digitsPerByte;
-//            int byteCharacterOffset = codeCharPosition % digitsPerByte;
-//
-//            long positionX = (bytePosition * digitsPerByte * characterWidth) + (byteCharacterOffset * characterWidth);
-//            for (int pos = 0; pos < bytePosition; pos++) {
-//                
-//                
-//            }
-//            for (int codeChar = 0)
-//            if (spaceGroupSize > 0) {
-//                positionX += (bytePosition / spaceGroupSize) * characterWidth;
-//            }
-//            return positionX;
-//        }
-//        
-//        if (viewMode != CodeAreaViewMode.CODE_MATRIX) {
-//            return positionX + 
-//        }
+        long positionX;
+        if (viewMode != CodeAreaViewMode.TEXT_PREVIEW && codeCharPosition < firstPreviewCodeChar) {
+            int bytePosition = codeCharPosition / digitsPerByte;
+            int byteCharacterOffset = codeCharPosition % digitsPerByte;
+
+            positionX = (bytePosition * digitsPerByte * characterWidth) + (byteCharacterOffset * characterWidth);
+            for (int bytePos = 1; bytePos < bytePosition; bytePos++) {
+                positionX += getSpaceSizeBefore(bytePos, characterWidth);
+            }
+
+            if (spaceGroupSize > 0) {
+                positionX += (bytePosition / spaceGroupSize) * characterWidth;
+            }
+            return positionX;
+        }
+
+        if (viewMode != CodeAreaViewMode.CODE_MATRIX) {
+// TODO            return positionX + 
+        }
         return -1;
     }
 
