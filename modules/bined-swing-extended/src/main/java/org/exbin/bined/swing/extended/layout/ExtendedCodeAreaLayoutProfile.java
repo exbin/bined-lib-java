@@ -23,7 +23,7 @@ import org.exbin.bined.CodeType;
 /**
  * Layout profile for extended code area.
  *
- * @version 0.2.0 2019/01/21
+ * @version 0.2.0 2019/01/24
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -84,8 +84,8 @@ public class ExtendedCodeAreaLayoutProfile {
         int digitsPerByte = codeType.getMaxDigitsForByte();
         int firstPreviewCodeChar = viewMode == CodeAreaViewMode.TEXT_PREVIEW ? 0 : bytesPerRow * digitsPerByte;
 
-        long positionX;
-        if (viewMode != CodeAreaViewMode.TEXT_PREVIEW && codeCharPosition < firstPreviewCodeChar) {
+        long positionX = 0;
+        if (viewMode != CodeAreaViewMode.TEXT_PREVIEW) {
             int bytePosition = codeCharPosition / digitsPerByte;
             int byteCharacterOffset = codeCharPosition % digitsPerByte;
 
@@ -97,11 +97,18 @@ public class ExtendedCodeAreaLayoutProfile {
             if (spaceGroupSize > 0) {
                 positionX += (bytePosition / spaceGroupSize) * characterWidth;
             }
-            return positionX;
+
+            if (codeCharPosition < firstPreviewCodeChar) {
+                return positionX;
+            }
         }
 
         if (viewMode != CodeAreaViewMode.CODE_MATRIX) {
-// TODO            return positionX + 
+            long previewCharPos = codeCharPosition - (digitsPerByte * bytesPerRow);
+            if (previewCharPos > bytesPerRow) {
+                return -1;
+            }
+            return positionX + (viewMode == CodeAreaViewMode.DUAL ? characterWidth : 0) + (previewCharPos * characterWidth);
         }
         return -1;
     }
