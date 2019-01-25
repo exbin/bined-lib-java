@@ -201,4 +201,57 @@ public class ExtendedCodeAreaLayoutProfile {
     public void setDoubleSpaceGroupSize(int doubleSpaceGroupSize) {
         this.doubleSpaceGroupSize = doubleSpaceGroupSize;
     }
+
+    private class CharPosIterator {
+
+        final int characterWidth;
+        int halfSpacePos = 0;
+        int spacePos = 0;
+        int doubleSpacePos = 0;
+
+        public CharPosIterator(int characterWidth) {
+            if (characterWidth < 2) {
+                throw new IllegalArgumentException("Characters must be at least 2 pixels wide");
+            }
+            this.characterWidth = characterWidth;
+
+            halfSpacePos = halfSpaceGroupSize;
+            spacePos = spaceGroupSize;
+            doubleSpacePos = doubleSpaceGroupSize;
+        }
+
+        int nextSpaceSize() {
+            int spaceSize = 0;
+            if (halfSpacePos > 0) {
+                if (halfSpacePos == 1) {
+                    spaceSize = characterWidth / 2;
+                    halfSpacePos = halfSpaceGroupSize;
+                } else {
+                    halfSpacePos--;
+                }
+            }
+            if (spacePos > 0) {
+                if (spacePos == 1) {
+                    if (spaceSize == 0) {
+                        spaceSize = characterWidth;
+                    }
+                    spacePos = spaceGroupSize;
+                } else {
+                    spacePos--;
+                }
+            }
+            if (doubleSpacePos > 0) {
+                if (doubleSpacePos == 1) {
+                    if (spaceSize == 0) {
+                        spaceSize = characterWidth * 2;
+                    }
+                    doubleSpacePos = doubleSpaceGroupSize;
+                } else {
+                    doubleSpacePos--;
+                }
+            }
+
+            return spaceSize;
+        }
+    }
 }
