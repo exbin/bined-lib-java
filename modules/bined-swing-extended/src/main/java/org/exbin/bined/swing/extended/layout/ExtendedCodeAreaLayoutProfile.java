@@ -23,7 +23,7 @@ import org.exbin.bined.CodeType;
 /**
  * Layout profile for extended code area.
  *
- * @version 0.2.0 2019/01/24
+ * @version 0.2.0 2019/01/26
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -74,6 +74,10 @@ public class ExtendedCodeAreaLayoutProfile {
     public int computeClosestCharacterPosition(long positionX, int characterWidth, CodeAreaViewMode viewMode, CodeType codeType, int bytesPerRow) {
         // TODO
         return 0;
+    }
+
+    public CharacterPositionIterator getCharPositionIterator(int characterWidth) {
+        return new CharPosIterator(characterWidth);
     }
 
     public long computePixelPosition(int codeCharPosition, int characterWidth, CodeAreaViewMode viewMode, CodeType codeType, int bytesPerRow) {
@@ -202,25 +206,38 @@ public class ExtendedCodeAreaLayoutProfile {
         this.doubleSpaceGroupSize = doubleSpaceGroupSize;
     }
 
-    private class CharPosIterator {
+    private final class CharPosIterator implements CharacterPositionIterator {
+
+        private int position = 0;
 
         final int characterWidth;
         int halfSpacePos = 0;
         int spacePos = 0;
         int doubleSpacePos = 0;
 
-        public CharPosIterator(int characterWidth) {
+        CharPosIterator(int characterWidth) {
             if (characterWidth < 2) {
                 throw new IllegalArgumentException("Characters must be at least 2 pixels wide");
             }
             this.characterWidth = characterWidth;
+            reset();
+        }
 
+        @Override
+        public void reset() {
+            position = 0;
             halfSpacePos = halfSpaceGroupSize;
             spacePos = spaceGroupSize;
             doubleSpacePos = doubleSpaceGroupSize;
         }
 
-        int nextSpaceSize() {
+        @Override
+        public int getPosition() {
+            return position;
+        }
+
+        @Override
+        public int nextSpaceSize() {
             int spaceSize = 0;
             if (halfSpacePos > 0) {
                 if (halfSpacePos == 1) {
@@ -252,6 +269,13 @@ public class ExtendedCodeAreaLayoutProfile {
             }
 
             return spaceSize;
+        }
+
+        @Override
+        public void skip(int count) {
+            for (int step = 0; step < count; step++) {
+                nextSpaceSize();
+            }
         }
     }
 }
