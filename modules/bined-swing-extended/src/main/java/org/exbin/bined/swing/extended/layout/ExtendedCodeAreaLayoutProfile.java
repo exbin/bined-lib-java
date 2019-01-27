@@ -23,7 +23,7 @@ import org.exbin.bined.CodeType;
 /**
  * Layout profile for extended code area.
  *
- * @version 0.2.0 2019/01/26
+ * @version 0.2.0 2019/01/27
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -66,18 +66,47 @@ public class ExtendedCodeAreaLayoutProfile {
         return copy;
     }
 
-    public int computeCharacterPosition(long positionX, int characterWidth, CodeAreaViewMode viewMode, CodeType codeType, int bytesPerRow) {
-        // TODO
-        return 0;
+    public int computeCodeCharacterPosition(long positionX, int characterWidth, int bytesPerRow, CodeType codeType) {
+        CodeCharPositionIterator charPositionIterator = getCharPositionIterator(characterWidth, codeType);
+        int charPositionX = 0;
+        do {
+            if (positionX >= charPositionX && positionX < charPositionX + characterWidth) {
+                return charPositionIterator.getPosition();
+            }
+
+            int spaceSizeX = charPositionIterator.nextSpaceSize();
+            charPositionX += characterWidth + spaceSizeX;
+        } while (charPositionX < bytesPerRow * codeType.getMaxDigitsForByte());
+
+        return -1;
     }
 
-    public int computeClosestCharacterPosition(long positionX, int characterWidth, CodeAreaViewMode viewMode, CodeType codeType, int bytesPerRow) {
-        // TODO
-        return 0;
+    public int computeClosestCharacterPosition(long positionX, int characterWidth, int bytesPerRow, CodeType codeType) {
+        CodeCharPositionIterator charPositionIterator = getCharPositionIterator(characterWidth, codeType);
+        int charPositionX = 0;
+        do {
+            if (positionX >= charPositionX && positionX < charPositionX + characterWidth) {
+                return charPositionIterator.getPosition();
+            }
+
+            charPositionX += characterWidth;
+            int spaceSize = charPositionIterator.nextSpaceSize();
+            int halfSpaceSize = spaceSize / 2;
+            if (positionX >= charPositionX && positionX < charPositionX + halfSpaceSize) {
+                return charPositionIterator.getPosition() - 1;
+            } else if (positionX >= charPositionX + halfSpaceSize && positionX < charPositionX + spaceSize) {
+                return charPositionIterator.getPosition();
+            }
+
+            charPositionX += spaceSize;
+        } while (charPositionX < bytesPerRow * codeType.getMaxDigitsForByte());
+
+        return -1;
     }
 
-    public CharacterPositionIterator getCharPositionIterator(int characterWidth) {
-        return new CharPosIterator(characterWidth);
+    @Nonnull
+    public CodeCharPositionIterator getCharPositionIterator(int characterWidth, CodeType codeType) {
+        return new CodeCharPosIterator(characterWidth, codeType);
     }
 
     public long computePixelPosition(int codeCharPosition, int characterWidth, CodeAreaViewMode viewMode, CodeType codeType, int bytesPerRow) {
@@ -206,26 +235,30 @@ public class ExtendedCodeAreaLayoutProfile {
         this.doubleSpaceGroupSize = doubleSpaceGroupSize;
     }
 
-    private final class CharPosIterator implements CharacterPositionIterator {
+    private final class CodeCharPosIterator implements CodeCharPositionIterator {
 
         private int position = 0;
+        private int codeOffset = 0;
 
         final int characterWidth;
+        final int codeLength;
         int halfSpacePos = 0;
         int spacePos = 0;
         int doubleSpacePos = 0;
 
-        CharPosIterator(int characterWidth) {
+        CodeCharPosIterator(int characterWidth, CodeType codeType) {
             if (characterWidth < 2) {
                 throw new IllegalArgumentException("Characters must be at least 2 pixels wide");
             }
             this.characterWidth = characterWidth;
+            codeLength = codeType.getMaxDigitsForByte();
             reset();
         }
 
         @Override
         public void reset() {
             position = 0;
+            codeOffset = codeLength;
             halfSpacePos = halfSpaceGroupSize;
             spacePos = spaceGroupSize;
             doubleSpacePos = doubleSpaceGroupSize;
@@ -238,6 +271,11 @@ public class ExtendedCodeAreaLayoutProfile {
 
         @Override
         public int nextSpaceSize() {
+            if (codeOffset > 0) {
+                codeOffset--;
+                return 0;
+            }
+
             int spaceSize = 0;
             if (halfSpacePos > 0) {
                 if (halfSpacePos == 1) {
@@ -268,6 +306,7 @@ public class ExtendedCodeAreaLayoutProfile {
                 }
             }
 
+            codeOffset = codeLength;
             return spaceSize;
         }
 
