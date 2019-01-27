@@ -271,18 +271,18 @@ public class ExtendedCodeAreaLayoutProfile {
 
         @Override
         public int nextSpaceSize() {
-            if (codeOffset > 0) {
+            if (codeOffset > 1) {
                 codeOffset--;
                 return 0;
             }
 
             int spaceSize = 0;
-            if (halfSpacePos > 0) {
-                if (halfSpacePos == 1) {
-                    spaceSize = characterWidth / 2;
-                    halfSpacePos = halfSpaceGroupSize;
+            if (doubleSpacePos > 0) {
+                if (doubleSpacePos == 1) {
+                    spaceSize = characterWidth * 2;
+                    doubleSpacePos = doubleSpaceGroupSize;
                 } else {
-                    halfSpacePos--;
+                    doubleSpacePos--;
                 }
             }
             if (spacePos > 0) {
@@ -295,14 +295,14 @@ public class ExtendedCodeAreaLayoutProfile {
                     spacePos--;
                 }
             }
-            if (doubleSpacePos > 0) {
-                if (doubleSpacePos == 1) {
+            if (halfSpacePos > 0) {
+                if (halfSpacePos == 1) {
                     if (spaceSize == 0) {
-                        spaceSize = characterWidth * 2;
+                        spaceSize = characterWidth / 2;
                     }
-                    doubleSpacePos = doubleSpaceGroupSize;
+                    halfSpacePos = halfSpaceGroupSize;
                 } else {
-                    doubleSpacePos--;
+                    halfSpacePos--;
                 }
             }
 

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.swing;
+package org.exbin.bined.swing.extended;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,7 +22,6 @@ import java.util.logging.Logger;
 import org.exbin.bined.EditationOperation;
 import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.capability.EditationModeCapable;
-import org.exbin.bined.swing.basic.CodeArea;
 import org.exbin.utils.binary_data.ByteArrayEditableData;
 import org.exbin.utils.binary_data.EditableBinaryData;
 import org.junit.Assert;
@@ -46,7 +45,7 @@ public class ExtendedCodeAreaTest {
 
     @Test
     public void testDeleteAll() {
-        CodeArea codeArea = new CodeArea();
+        ExtCodeArea codeArea = new ExtCodeArea();
         codeArea.setContentData(getSampleData(SAMPLE_ALLBYTES));
         codeArea.selectAll();
         codeArea.delete();
@@ -55,7 +54,7 @@ public class ExtendedCodeAreaTest {
 
     @Test
     public void testCopyPasteInOverwriteMode() {
-        CodeArea codeArea = new CodeArea();
+        ExtCodeArea codeArea = new ExtCodeArea();
         EditableBinaryData sampleData = getSampleData(SAMPLE_ALLBYTES);
         codeArea.setContentData(sampleData);
         long dataSize = sampleData.getDataSize();
@@ -68,7 +67,7 @@ public class ExtendedCodeAreaTest {
 
     @Test
     public void testCopyPasteInInsertMode() {
-        CodeArea codeArea = new CodeArea();
+        ExtCodeArea codeArea = new ExtCodeArea();
         ((EditationModeCapable) codeArea).setEditationOperation(EditationOperation.INSERT);
         EditableBinaryData sampleData = getSampleData(SAMPLE_ALLBYTES);
         codeArea.setContentData(sampleData);
@@ -82,7 +81,7 @@ public class ExtendedCodeAreaTest {
 
     @Test
     public void testCopyPasteAtTheEnd() {
-        CodeArea codeArea = new CodeArea();
+        ExtCodeArea codeArea = new ExtCodeArea();
         EditableBinaryData sampleData = getSampleData(SAMPLE_ALLBYTES);
         codeArea.setContentData(sampleData);
         long dataSize = sampleData.getDataSize();
