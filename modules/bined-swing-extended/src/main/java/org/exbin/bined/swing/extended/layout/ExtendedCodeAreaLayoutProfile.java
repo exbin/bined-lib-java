@@ -109,7 +109,7 @@ public class ExtendedCodeAreaLayoutProfile {
         return new CodeCharPosIterator(characterWidth, codeType);
     }
 
-    public long computePixelPosition(int codeCharPosition, int characterWidth, CodeAreaViewMode viewMode, CodeType codeType, int bytesPerRow) {
+    public int computePixelPosition(int codeCharPosition, int characterWidth, CodeAreaViewMode viewMode, CodeType codeType, int bytesPerRow) {
         if (codeCharPosition == 0) {
             return 0;
         }
@@ -117,18 +117,11 @@ public class ExtendedCodeAreaLayoutProfile {
         int digitsPerByte = codeType.getMaxDigitsForByte();
         int firstPreviewCodeChar = viewMode == CodeAreaViewMode.TEXT_PREVIEW ? 0 : bytesPerRow * digitsPerByte;
 
-        long positionX = 0;
+        int positionX = 0;
         if (viewMode != CodeAreaViewMode.TEXT_PREVIEW) {
-            int bytePosition = codeCharPosition / digitsPerByte;
-            int byteCharacterOffset = codeCharPosition % digitsPerByte;
-
-            positionX = (bytePosition * digitsPerByte * characterWidth) + (byteCharacterOffset * characterWidth);
-            for (int bytePos = 1; bytePos < bytePosition; bytePos++) {
-                positionX += getSpaceSizeBefore(bytePos, characterWidth);
-            }
-
-            if (spaceGroupSize > 0) {
-                positionX += (bytePosition / spaceGroupSize) * characterWidth;
+            CodeCharPosIterator codeCharPosIterator = new CodeCharPosIterator(characterWidth, codeType);
+            while (codeCharPosIterator.getPosition() < codeCharPosition) {
+                positionX += characterWidth + codeCharPosIterator.nextSpaceSize();
             }
 
             if (codeCharPosition < firstPreviewCodeChar) {
@@ -137,7 +130,7 @@ public class ExtendedCodeAreaLayoutProfile {
         }
 
         if (viewMode != CodeAreaViewMode.CODE_MATRIX) {
-            long previewCharPos = codeCharPosition - (digitsPerByte * bytesPerRow);
+            int previewCharPos = codeCharPosition - (digitsPerByte * bytesPerRow);
             if (previewCharPos > bytesPerRow) {
                 return -1;
             }
@@ -271,6 +264,8 @@ public class ExtendedCodeAreaLayoutProfile {
 
         @Override
         public int nextSpaceSize() {
+            position++;
+
             if (codeOffset > 1) {
                 codeOffset--;
                 return 0;
