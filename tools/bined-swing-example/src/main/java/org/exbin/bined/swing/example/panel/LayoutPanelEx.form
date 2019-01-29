@@ -19,9 +19,19 @@
           <Group type="102" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="halfSpaceGroupSizeSpinner" alignment="0" max="32767" attributes="0"/>
-                  <Group type="102" alignment="1" attributes="0">
+                  <Group type="102" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="maxBytesPerRowLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="wrapLineModeCheckBox" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="halfSpaceGroupSizeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="doubleSpaceGroupSizeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                  </Group>
+                  <Group type="102" alignment="1" attributes="0">
+                      <Group type="103" groupAlignment="1" attributes="0">
+                          <Component id="doubleSpaceGroupSizeSpinner" alignment="0" max="32767" attributes="0"/>
+                          <Component id="halfSpaceGroupSizeSpinner" alignment="0" max="32767" attributes="0"/>
                           <Component id="headerPanel" alignment="0" max="32767" attributes="0"/>
                           <Component id="maxBytesPerRowSpinner" alignment="0" max="32767" attributes="0"/>
                           <Component id="rowPositionPanel" alignment="0" max="32767" attributes="0"/>
@@ -32,16 +42,6 @@
                           </Group>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
-                  </Group>
-                  <Component id="doubleSpaceGroupSizeSpinner" alignment="0" max="32767" attributes="0"/>
-                  <Group type="102" attributes="0">
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="maxBytesPerRowLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="wrapLineModeCheckBox" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="halfSpaceGroupSizeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="doubleSpaceGroupSizeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                   </Group>
               </Group>
           </Group>

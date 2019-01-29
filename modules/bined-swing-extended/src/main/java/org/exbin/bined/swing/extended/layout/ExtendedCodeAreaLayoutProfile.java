@@ -23,7 +23,7 @@ import org.exbin.bined.CodeType;
 /**
  * Layout profile for extended code area.
  *
- * @version 0.2.0 2019/01/27
+ * @version 0.2.0 2019/01/29
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -67,7 +67,7 @@ public class ExtendedCodeAreaLayoutProfile {
     }
 
     public int computeCodeCharacterPosition(long positionX, int characterWidth, int bytesPerRow, CodeType codeType) {
-        CodeCharPositionIterator charPositionIterator = getCharPositionIterator(characterWidth, codeType);
+        CodeCharPositionIterator charPositionIterator = createCharPositionIterator(characterWidth, codeType);
         int charPositionX = 0;
         do {
             if (positionX >= charPositionX && positionX < charPositionX + characterWidth) {
@@ -82,7 +82,7 @@ public class ExtendedCodeAreaLayoutProfile {
     }
 
     public int computeClosestCharacterPosition(long positionX, int characterWidth, int bytesPerRow, CodeType codeType) {
-        CodeCharPositionIterator charPositionIterator = getCharPositionIterator(characterWidth, codeType);
+        CodeCharPositionIterator charPositionIterator = createCharPositionIterator(characterWidth, codeType);
         int charPositionX = 0;
         do {
             if (positionX >= charPositionX && positionX < charPositionX + characterWidth) {
@@ -105,7 +105,7 @@ public class ExtendedCodeAreaLayoutProfile {
     }
 
     @Nonnull
-    public CodeCharPositionIterator getCharPositionIterator(int characterWidth, CodeType codeType) {
+    public CodeCharPositionIterator createCharPositionIterator(int characterWidth, CodeType codeType) {
         return new CodeCharPosIterator(characterWidth, codeType);
     }
 
@@ -139,21 +139,21 @@ public class ExtendedCodeAreaLayoutProfile {
         return -1;
     }
 
-    public int getSpaceSizeBefore(int byteOffset, int characterWidth) {
+    public SpaceType getSpaceSizeTypeBefore(int byteOffset, int characterWidth) {
         if (byteOffset == 0) {
-            return 0;
+            return SpaceType.NONE;
         }
         if (doubleSpaceGroupSize > 0 && (byteOffset % doubleSpaceGroupSize) == 0) {
-            return 2 * characterWidth;
+            return SpaceType.DOUBLE;
         }
         if (spaceGroupSize > 0 && (byteOffset % spaceGroupSize) == 0) {
-            return characterWidth;
+            return SpaceType.SINGLE;
         }
         if (halfSpaceGroupSize > 0 && (byteOffset % halfSpaceGroupSize) == 0) {
-            return characterWidth / 2;
+            return SpaceType.HALF;
         }
 
-        return 0;
+        return SpaceType.NONE;
     }
 
     public boolean isShowHeader() {
@@ -232,12 +232,13 @@ public class ExtendedCodeAreaLayoutProfile {
 
         private int position = 0;
         private int codeOffset = 0;
+        private boolean oddHalf = false;
 
-        final int characterWidth;
-        final int codeLength;
-        int halfSpacePos = 0;
-        int spacePos = 0;
-        int doubleSpacePos = 0;
+        private final int characterWidth;
+        private final int codeLength;
+        private int halfSpacePos = 0;
+        private int spacePos = 0;
+        private int doubleSpacePos = 0;
 
         CodeCharPosIterator(int characterWidth, CodeType codeType) {
             if (characterWidth < 2) {
@@ -293,7 +294,8 @@ public class ExtendedCodeAreaLayoutProfile {
             if (halfSpacePos > 0) {
                 if (halfSpacePos == 1) {
                     if (spaceSize == 0) {
-                        spaceSize = characterWidth / 2;
+                        spaceSize = oddHalf ? characterWidth - characterWidth / 2 : characterWidth / 2;
+                        oddHalf = !oddHalf;
                     }
                     halfSpacePos = halfSpaceGroupSize;
                 } else {
@@ -312,4 +314,8 @@ public class ExtendedCodeAreaLayoutProfile {
             }
         }
     }
+
+    public enum SpaceType {
+        NONE, HALF, SINGLE, DOUBLE
+    };
 }

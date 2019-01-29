@@ -83,6 +83,7 @@ import org.exbin.bined.swing.capability.AntialiasingCapable;
 import org.exbin.bined.swing.capability.FontCapable;
 import org.exbin.bined.swing.extended.color.ColorsProfileCapableCodeAreaPainter;
 import org.exbin.bined.swing.extended.color.ExtendedCodeAreaColorProfile;
+import org.exbin.bined.swing.extended.layout.CodeCharPositionIterator;
 import org.exbin.bined.swing.extended.layout.ExtendedCodeAreaLayoutProfile;
 import org.exbin.bined.swing.extended.layout.LayoutProfileCapableCodeAreaPainter;
 import org.exbin.bined.swing.extended.theme.ExtendedCodeAreaThemeProfile;
@@ -92,7 +93,7 @@ import org.exbin.utils.binary_data.BinaryData;
 /**
  * Extended code area component default painter.
  *
- * @version 0.2.0 2018/12/20
+ * @version 0.2.0 2019/01/29
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -139,6 +140,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
     private CodeCharactersCase codeCharactersCase;
     @Nullable
     private EditationOperation editationOperation;
+    private CodeCharPositionIterator codeCharPositionIterator;
     private boolean showMirrorCursor;
     private boolean showUnprintables;
     @Nonnull
@@ -236,6 +238,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
 
         int charactersPerPage = dimensions.getCharactersPerPage();
         structure.updateCache(codeArea, charactersPerPage);
+        codeCharPositionIterator = layoutProfile.createCharPositionIterator(charactersPerPage, structure.getCodeType());
         codeCharactersCase = ((CodeCharactersCaseCapable) codeArea).getCodeCharactersCase();
         showUnprintables = ((ShowUnprintablesCapable) codeArea).isShowUnprintables();
         minRowPositionLength = ((RowWrappingCapable) codeArea).getMinRowPositionLength();
@@ -446,6 +449,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
             g.setColor(colorsProfile.getColor(CodeAreaBasicColors.ALTERNATE_BACKGROUND));
             boolean interleaving = false;
             int lastPos = 0;
+            codeCharPositionIterator.reset();
             int visibleCodeStart = visibility.getVisibleCodeStart();
             int visibleMatrixCodeEnd = visibility.getVisibleMatrixCodeEnd();
             for (int characterOnRow = visibleCodeStart; characterOnRow < visibleMatrixCodeEnd; characterOnRow++) {

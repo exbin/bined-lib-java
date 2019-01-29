@@ -26,7 +26,7 @@ import org.junit.Test;
 /**
  * Tests for ExtendedCodeAreaLayoutProfile.
  *
- * @version 0.2.0 2019/01/28
+ * @version 0.2.0 2019/01/29
  * @author ExBin Project (https://exbin.org)
  */
 public class ExtendedCodeAreaLayoutProfileTest {
@@ -39,7 +39,7 @@ public class ExtendedCodeAreaLayoutProfileTest {
     @Test
     public void testDefaultCharPosIterator() {
         ExtendedCodeAreaLayoutProfile layout = new ExtendedCodeAreaLayoutProfile();
-        CodeCharPositionIterator charPositionIterator = layout.getCharPositionIterator(TEST_CHARACTER_WIDTH, CodeType.HEXADECIMAL);
+        CodeCharPositionIterator charPositionIterator = layout.createCharPositionIterator(TEST_CHARACTER_WIDTH, CodeType.HEXADECIMAL);
 
         Assert.assertNotNull(charPositionIterator);
         Assert.assertThat(charPositionIterator.nextSpaceSize(), CoreMatchers.is(0));
@@ -54,7 +54,7 @@ public class ExtendedCodeAreaLayoutProfileTest {
         layout.setHalfSpaceGroupSize(2);
         layout.setSpaceGroupSize(3);
         layout.setDoubleSpaceGroupSize(4);
-        CodeCharPositionIterator charPositionIterator = layout.getCharPositionIterator(TEST_CHARACTER_WIDTH, CodeType.HEXADECIMAL);
+        CodeCharPositionIterator charPositionIterator = layout.createCharPositionIterator(TEST_CHARACTER_WIDTH, CodeType.HEXADECIMAL);
 
         Assert.assertNotNull(charPositionIterator);
         Assert.assertThat(charPositionIterator.nextSpaceSize(), CoreMatchers.is(0));
@@ -86,17 +86,17 @@ public class ExtendedCodeAreaLayoutProfileTest {
         layout.setSpaceGroupSize(3);
         layout.setDoubleSpaceGroupSize(4);
 
-        Assert.assertThat(layout.getSpaceSizeBefore(0, TEST_CHARACTER_WIDTH), CoreMatchers.is(0));
-        Assert.assertThat(layout.getSpaceSizeBefore(1, TEST_CHARACTER_WIDTH), CoreMatchers.is(0));
-        Assert.assertThat(layout.getSpaceSizeBefore(2, TEST_CHARACTER_WIDTH), CoreMatchers.is(TEST_CHARACTER_WIDTH / 2));
-        Assert.assertThat(layout.getSpaceSizeBefore(3, TEST_CHARACTER_WIDTH), CoreMatchers.is(TEST_CHARACTER_WIDTH));
-        Assert.assertThat(layout.getSpaceSizeBefore(4, TEST_CHARACTER_WIDTH), CoreMatchers.is(TEST_CHARACTER_WIDTH * 2));
-        Assert.assertThat(layout.getSpaceSizeBefore(5, TEST_CHARACTER_WIDTH), CoreMatchers.is(0));
-        Assert.assertThat(layout.getSpaceSizeBefore(6, TEST_CHARACTER_WIDTH), CoreMatchers.is(TEST_CHARACTER_WIDTH));
-        Assert.assertThat(layout.getSpaceSizeBefore(7, TEST_CHARACTER_WIDTH), CoreMatchers.is(0));
-        Assert.assertThat(layout.getSpaceSizeBefore(8, TEST_CHARACTER_WIDTH), CoreMatchers.is(TEST_CHARACTER_WIDTH * 2));
-        Assert.assertThat(layout.getSpaceSizeBefore(9, TEST_CHARACTER_WIDTH), CoreMatchers.is(TEST_CHARACTER_WIDTH));
-        Assert.assertThat(layout.getSpaceSizeBefore(10, TEST_CHARACTER_WIDTH), CoreMatchers.is(TEST_CHARACTER_WIDTH / 2));
+        Assert.assertThat(layout.getSpaceSizeTypeBefore(0, TEST_CHARACTER_WIDTH), CoreMatchers.is(ExtendedCodeAreaLayoutProfile.SpaceType.NONE));
+        Assert.assertThat(layout.getSpaceSizeTypeBefore(1, TEST_CHARACTER_WIDTH), CoreMatchers.is(ExtendedCodeAreaLayoutProfile.SpaceType.NONE));
+        Assert.assertThat(layout.getSpaceSizeTypeBefore(2, TEST_CHARACTER_WIDTH), CoreMatchers.is(ExtendedCodeAreaLayoutProfile.SpaceType.HALF));
+        Assert.assertThat(layout.getSpaceSizeTypeBefore(3, TEST_CHARACTER_WIDTH), CoreMatchers.is(ExtendedCodeAreaLayoutProfile.SpaceType.SINGLE));
+        Assert.assertThat(layout.getSpaceSizeTypeBefore(4, TEST_CHARACTER_WIDTH), CoreMatchers.is(ExtendedCodeAreaLayoutProfile.SpaceType.DOUBLE));
+        Assert.assertThat(layout.getSpaceSizeTypeBefore(5, TEST_CHARACTER_WIDTH), CoreMatchers.is(ExtendedCodeAreaLayoutProfile.SpaceType.NONE));
+        Assert.assertThat(layout.getSpaceSizeTypeBefore(6, TEST_CHARACTER_WIDTH), CoreMatchers.is(ExtendedCodeAreaLayoutProfile.SpaceType.SINGLE));
+        Assert.assertThat(layout.getSpaceSizeTypeBefore(7, TEST_CHARACTER_WIDTH), CoreMatchers.is(ExtendedCodeAreaLayoutProfile.SpaceType.NONE));
+        Assert.assertThat(layout.getSpaceSizeTypeBefore(8, TEST_CHARACTER_WIDTH), CoreMatchers.is(ExtendedCodeAreaLayoutProfile.SpaceType.DOUBLE));
+        Assert.assertThat(layout.getSpaceSizeTypeBefore(9, TEST_CHARACTER_WIDTH), CoreMatchers.is(ExtendedCodeAreaLayoutProfile.SpaceType.SINGLE));
+        Assert.assertThat(layout.getSpaceSizeTypeBefore(10, TEST_CHARACTER_WIDTH), CoreMatchers.is(ExtendedCodeAreaLayoutProfile.SpaceType.HALF));
     }
 
     @Test
