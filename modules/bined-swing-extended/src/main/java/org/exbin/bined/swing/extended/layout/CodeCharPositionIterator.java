@@ -15,7 +15,9 @@
  */
 package org.exbin.bined.swing.extended.layout;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import org.exbin.bined.swing.extended.layout.ExtendedCodeAreaLayoutProfile.SpaceType;
 
 /**
  * Iterator for layout character position iteration.
@@ -29,7 +31,10 @@ public interface CodeCharPositionIterator {
     void reset();
 
     int nextSpaceSize();
-    
+
+    @Nonnull
+    SpaceType nextSpaceSizeType();
+
     int getPosition();
 
     void skip(int count);

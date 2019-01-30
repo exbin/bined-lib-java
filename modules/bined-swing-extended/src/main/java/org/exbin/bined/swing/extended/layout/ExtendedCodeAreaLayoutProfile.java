@@ -23,7 +23,7 @@ import org.exbin.bined.CodeType;
 /**
  * Layout profile for extended code area.
  *
- * @version 0.2.0 2019/01/29
+ * @version 0.2.0 2019/01/30
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -295,6 +295,50 @@ public class ExtendedCodeAreaLayoutProfile {
                 if (halfSpacePos == 1) {
                     if (spaceSize == 0) {
                         spaceSize = oddHalf ? characterWidth - characterWidth / 2 : characterWidth / 2;
+                        oddHalf = !oddHalf;
+                    }
+                    halfSpacePos = halfSpaceGroupSize;
+                } else {
+                    halfSpacePos--;
+                }
+            }
+
+            codeOffset = codeLength;
+            return spaceSize;
+        }
+
+        @Override
+        public SpaceType nextSpaceSizeType() {
+            position++;
+
+            if (codeOffset > 1) {
+                codeOffset--;
+                return SpaceType.NONE;
+            }
+
+            SpaceType spaceSize = SpaceType.NONE;
+            if (doubleSpacePos > 0) {
+                if (doubleSpacePos == 1) {
+                    spaceSize = SpaceType.DOUBLE;
+                    doubleSpacePos = doubleSpaceGroupSize;
+                } else {
+                    doubleSpacePos--;
+                }
+            }
+            if (spacePos > 0) {
+                if (spacePos == 1) {
+                    if (spaceSize == SpaceType.NONE) {
+                        spaceSize = SpaceType.SINGLE;
+                    }
+                    spacePos = spaceGroupSize;
+                } else {
+                    spacePos--;
+                }
+            }
+            if (halfSpacePos > 0) {
+                if (halfSpacePos == 1) {
+                    if (spaceSize == SpaceType.NONE) {
+                        spaceSize = SpaceType.HALF;
                         oddHalf = !oddHalf;
                     }
                     halfSpacePos = halfSpaceGroupSize;
