@@ -83,7 +83,7 @@ import org.exbin.bined.swing.capability.AntialiasingCapable;
 import org.exbin.bined.swing.capability.FontCapable;
 import org.exbin.bined.swing.extended.color.ColorsProfileCapableCodeAreaPainter;
 import org.exbin.bined.swing.extended.color.ExtendedCodeAreaColorProfile;
-import org.exbin.bined.swing.extended.layout.CodeCharPositionIterator;
+import org.exbin.bined.extended.layout.CodeCharPositionIterator;
 import org.exbin.bined.swing.extended.layout.ExtendedCodeAreaLayoutProfile;
 import org.exbin.bined.swing.extended.layout.LayoutProfileCapableCodeAreaPainter;
 import org.exbin.bined.swing.extended.theme.ExtendedCodeAreaThemeProfile;
@@ -237,7 +237,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         recomputeDimensions();
 
         int charactersPerPage = dimensions.getCharactersPerPage();
-        structure.updateCache(codeArea, charactersPerPage);
+        structure.updateCache(codeArea, charactersPerPage, layoutProfile);
         codeCharPositionIterator = layoutProfile.createCharPositionIterator(charactersPerPage, structure.getCodeType());
         codeCharactersCase = ((CodeCharactersCaseCapable) codeArea).getCodeCharactersCase();
         showUnprintables = ((ShowUnprintablesCapable) codeArea).isShowUnprintables();

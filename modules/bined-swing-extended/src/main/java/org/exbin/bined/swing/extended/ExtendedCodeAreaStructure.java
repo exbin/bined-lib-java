@@ -35,11 +35,12 @@ import org.exbin.bined.capability.RowWrappingCapable.RowWrappingMode;
 import org.exbin.bined.capability.SelectionCapable;
 import org.exbin.bined.capability.ViewModeCapable;
 import org.exbin.bined.extended.capability.PositionCodeTypeCapable;
+import org.exbin.bined.extended.layout.ExtendedCodeAreaLayout;
 
 /**
  * Code area data representation structure for extended variant.
  *
- * @version 0.2.0 2018/12/03
+ * @version 0.2.0 2019/01/31
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -71,7 +72,7 @@ public class ExtendedCodeAreaStructure {
     private int codeLastCharPos;
     private int previewCharPos;
 
-    public void updateCache(DataProvider codeArea, int charactersPerPage) {
+    public void updateCache(DataProvider codeArea, int charactersPerPage, ExtendedCodeAreaLayout layout) {
         viewMode = ((ViewModeCapable) codeArea).getViewMode();
         codeType = ((CodeTypeCapable) codeArea).getCodeType();
         positionCodeType = ((PositionCodeTypeCapable) codeArea).getPositionCodeType();

@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.swing.extended.layout;
+package org.exbin.bined.extended.layout;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import org.exbin.bined.swing.extended.layout.ExtendedCodeAreaLayoutProfile.SpaceType;
 
 /**
  * Iterator for layout character position iteration.

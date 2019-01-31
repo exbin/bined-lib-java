@@ -15,19 +15,22 @@
  */
 package org.exbin.bined.swing.extended.layout;
 
+import org.exbin.bined.extended.layout.CodeCharPositionIterator;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.CodeAreaViewMode;
 import org.exbin.bined.CodeType;
+import org.exbin.bined.extended.layout.SpaceType;
+import org.exbin.bined.extended.layout.ExtendedCodeAreaLayout;
 
 /**
  * Layout profile for extended code area.
  *
- * @version 0.2.0 2019/01/30
+ * @version 0.2.0 2019/01/31
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public class ExtendedCodeAreaLayoutProfile {
+public class ExtendedCodeAreaLayoutProfile implements ExtendedCodeAreaLayout {
 
     private boolean showHeader = true;
     private int topHeaderSpace = 0;
@@ -358,8 +361,4 @@ public class ExtendedCodeAreaLayoutProfile {
             }
         }
     }
-
-    public enum SpaceType {
-        NONE, HALF, SINGLE, DOUBLE
-    };
 }
