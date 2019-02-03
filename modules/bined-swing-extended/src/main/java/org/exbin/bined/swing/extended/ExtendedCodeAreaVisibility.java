@@ -15,6 +15,7 @@
  */
 package org.exbin.bined.swing.extended;
 
+import org.exbin.bined.extended.ExtendedCodeAreaStructure;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.CodeAreaViewMode;
 import org.exbin.bined.basic.CodeAreaScrollPosition;
@@ -23,80 +24,81 @@ import org.exbin.bined.swing.basic.BasicCodeAreaMetrics;
 /**
  * Basic code area component characters visibility in scroll window.
  *
- * @version 0.2.0 2018/12/20
+ * @version 0.2.0 2019/02/03
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class ExtendedCodeAreaVisibility {
 
     private int previewRelativeX;
-    private int visibleCharStart;
-    private int visibleCharEnd;
-    private int visibleMatrixCharEnd;
-    private int visiblePreviewStart;
-    private int visiblePreviewEnd;
-    private int visibleCodeStart;
-    private int visibleCodeEnd;
-    private int visibleMatrixCodeEnd;
+    private int visibleHalfCharStart;
+    private int visibleHalfCharEnd;
+    private int visibleMatrixHalfCharEnd;
+    private int visiblePreviewHalfCharStart;
+    private int visiblePreviewHalfCharEnd;
+    private int visibleCodeHalfCharStart;
+    private int visibleCodeHalfCharEnd;
+    private int visibleMatrixCodeHalfCharEnd;
 
     public void recomputeCharPositions(BasicCodeAreaMetrics metrics, ExtendedCodeAreaStructure structure, ExtendedCodeAreaDimensions dimensions, CodeAreaScrollPosition scrollPosition) {
         int dataViewWidth = dimensions.getDataViewWidth();
-        int previewCharPos = structure.getPreviewCharPos();
+        int previewCharPos = structure.getPreviewHalfCharPos();
         int characterWidth = metrics.getCharacterWidth();
+        int halfCharWidth = characterWidth / 2;
         previewRelativeX = previewCharPos * characterWidth;
 
         CodeAreaViewMode viewMode = structure.getViewMode();
-        int charactersPerCodeSection = structure.getCharactersPerCodeSection();
+        int charactersPerCodeSection = structure.getHalfCharsPerCodeSection();
         int bytesPerRow = structure.getBytesPerRow();
         if (viewMode == CodeAreaViewMode.DUAL || viewMode == CodeAreaViewMode.CODE_MATRIX) {
-            visibleCharStart = (scrollPosition.getCharPosition() * characterWidth + scrollPosition.getCharOffset()) / characterWidth;
-            if (visibleCharStart < 0) {
-                visibleCharStart = 0;
+            visibleHalfCharStart = (scrollPosition.getCharPosition() * characterWidth + scrollPosition.getCharOffset()) / characterWidth;
+            if (visibleHalfCharStart < 0) {
+                visibleHalfCharStart = 0;
             }
-            visibleCharEnd = ((scrollPosition.getCharPosition() + dimensions.getCharactersPerRect()) * characterWidth + scrollPosition.getCharOffset()) / characterWidth;
-            if (visibleCharEnd > structure.getCharactersPerRow()) {
-                visibleCharEnd = structure.getCharactersPerRow();
+            visibleHalfCharEnd = ((scrollPosition.getCharPosition() + dimensions.getCharactersPerRect()) * characterWidth + scrollPosition.getCharOffset()) / characterWidth;
+            if (visibleHalfCharEnd > structure.getHalfCharsPerRow()) {
+                visibleHalfCharEnd = structure.getHalfCharsPerRow();
             }
-            visibleMatrixCharEnd = (dataViewWidth + (scrollPosition.getCharPosition() + charactersPerCodeSection) * characterWidth + scrollPosition.getCharOffset()) / characterWidth;
-            if (visibleMatrixCharEnd > charactersPerCodeSection) {
-                visibleMatrixCharEnd = charactersPerCodeSection;
+            visibleMatrixHalfCharEnd = (dataViewWidth + (scrollPosition.getCharPosition() + charactersPerCodeSection) * characterWidth + scrollPosition.getCharOffset()) / characterWidth;
+            if (visibleMatrixHalfCharEnd > charactersPerCodeSection) {
+                visibleMatrixHalfCharEnd = charactersPerCodeSection;
             }
-            visibleCodeStart = structure.computePositionByte(visibleCharStart);
-            visibleCodeEnd = structure.computePositionByte(visibleCharEnd - 1) + 1;
-            if (visibleCodeEnd > bytesPerRow) {
-                visibleCodeEnd = bytesPerRow;
+            visibleCodeHalfCharStart = structure.computePositionByte(visibleHalfCharStart);
+            visibleCodeHalfCharEnd = structure.computePositionByte(visibleHalfCharEnd - 1) + 1;
+            if (visibleCodeHalfCharEnd > bytesPerRow) {
+                visibleCodeHalfCharEnd = bytesPerRow;
             }
 
-            visibleMatrixCodeEnd = structure.computePositionByte(visibleMatrixCharEnd - 1) + 1;
-            if (visibleMatrixCodeEnd > bytesPerRow) {
-                visibleMatrixCodeEnd = bytesPerRow;
+            visibleMatrixCodeHalfCharEnd = structure.computePositionByte(visibleMatrixHalfCharEnd - 1) + 1;
+            if (visibleMatrixCodeHalfCharEnd > bytesPerRow) {
+                visibleMatrixCodeHalfCharEnd = bytesPerRow;
             }
         } else {
-            visibleCharStart = 0;
-            visibleCharEnd = -1;
-            visibleCodeStart = 0;
-            visibleCodeEnd = -1;
-            visibleMatrixCodeEnd = -1;
+            visibleHalfCharStart = 0;
+            visibleHalfCharEnd = -1;
+            visibleCodeHalfCharStart = 0;
+            visibleCodeHalfCharEnd = -1;
+            visibleMatrixCodeHalfCharEnd = -1;
         }
 
         if (viewMode == CodeAreaViewMode.DUAL || viewMode == CodeAreaViewMode.TEXT_PREVIEW) {
-            visiblePreviewStart = (scrollPosition.getCharPosition() * characterWidth + scrollPosition.getCharOffset()) / characterWidth - previewCharPos;
-            if (visiblePreviewStart < 0) {
-                visiblePreviewStart = 0;
+            visiblePreviewHalfCharStart = (scrollPosition.getCharPosition() * characterWidth + scrollPosition.getCharOffset()) / characterWidth - previewCharPos;
+            if (visiblePreviewHalfCharStart < 0) {
+                visiblePreviewHalfCharStart = 0;
             }
-            if (visibleCodeEnd < 0) {
-                visibleCharStart = visiblePreviewStart + previewCharPos;
+            if (visibleCodeHalfCharEnd < 0) {
+                visibleHalfCharStart = visiblePreviewHalfCharStart + previewCharPos;
             }
-            visiblePreviewEnd = (dataViewWidth + (scrollPosition.getCharPosition() + 1) * characterWidth + scrollPosition.getCharOffset()) / characterWidth - previewCharPos;
-            if (visiblePreviewEnd > bytesPerRow) {
-                visiblePreviewEnd = bytesPerRow;
+            visiblePreviewHalfCharEnd = (dataViewWidth + (scrollPosition.getCharPosition() + 1) * characterWidth + scrollPosition.getCharOffset()) / characterWidth - previewCharPos;
+            if (visiblePreviewHalfCharEnd > bytesPerRow) {
+                visiblePreviewHalfCharEnd = bytesPerRow;
             }
-            if (visiblePreviewEnd >= 0) {
-                visibleCharEnd = visiblePreviewEnd + previewCharPos;
+            if (visiblePreviewHalfCharEnd >= 0) {
+                visibleHalfCharEnd = visiblePreviewHalfCharEnd + previewCharPos;
             }
         } else {
-            visiblePreviewStart = 0;
-            visiblePreviewEnd = -1;
+            visiblePreviewHalfCharStart = 0;
+            visiblePreviewHalfCharEnd = -1;
         }
     }
 
@@ -105,34 +107,34 @@ public class ExtendedCodeAreaVisibility {
     }
 
     public int getVisibleCharStart() {
-        return visibleCharStart;
+        return visibleHalfCharStart;
     }
 
     public int getVisibleCharEnd() {
-        return visibleCharEnd;
+        return visibleHalfCharEnd;
     }
 
     public int getVisibleMatrixCharEnd() {
-        return visibleMatrixCharEnd;
+        return visibleMatrixHalfCharEnd;
     }
 
     public int getVisiblePreviewStart() {
-        return visiblePreviewStart;
+        return visiblePreviewHalfCharStart;
     }
 
     public int getVisiblePreviewEnd() {
-        return visiblePreviewEnd;
+        return visiblePreviewHalfCharEnd;
     }
 
     public int getVisibleCodeStart() {
-        return visibleCodeStart;
+        return visibleCodeHalfCharStart;
     }
 
     public int getVisibleCodeEnd() {
-        return visibleCodeEnd;
+        return visibleCodeHalfCharEnd;
     }
 
     public int getVisibleMatrixCodeEnd() {
-        return visibleMatrixCodeEnd;
+        return visibleMatrixCodeHalfCharEnd;
     }
 }

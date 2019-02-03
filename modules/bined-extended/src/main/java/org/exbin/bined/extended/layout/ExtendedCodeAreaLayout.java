@@ -15,12 +15,30 @@
  */
 package org.exbin.bined.extended.layout;
 
+import javax.annotation.Nonnull;
+import org.exbin.bined.CaretPosition;
+import org.exbin.bined.basic.MovementDirection;
+import org.exbin.bined.extended.ExtendedCodeAreaStructure;
+
 /**
  * Layout interface for extended code area.
  *
- * @version 0.2.0 2019/01/31
+ * @version 0.2.0 2019/02/03
  * @author ExBin Project (https://exbin.org)
  */
 public interface ExtendedCodeAreaLayout {
 
+    int computeBytesPerRow(int halfCharsPerPage, ExtendedCodeAreaStructure structure);
+
+    int computeHalfCharsPerRow(ExtendedCodeAreaStructure structure);
+
+    long computeRowsPerDocument(ExtendedCodeAreaStructure structure);
+
+    int computePositionByte(int rowHalfCharPosition, ExtendedCodeAreaStructure structure);
+
+    int computeFirstCodeHalfCharPos(int byteOffset, ExtendedCodeAreaStructure structure);
+
+    int computeLastCodeHalfCharPos(int byteOffset, ExtendedCodeAreaStructure structure);
+
+    CaretPosition computeMovePosition(CaretPosition position, MovementDirection direction, ExtendedCodeAreaStructure structure, int rowsPerPage);
 }

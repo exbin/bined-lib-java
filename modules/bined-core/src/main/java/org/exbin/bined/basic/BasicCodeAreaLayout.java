@@ -13,10 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.swing.extended;
+package org.exbin.bined.basic;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.BasicCodeAreaSection;
 import org.exbin.bined.CaretPosition;
@@ -24,116 +23,25 @@ import org.exbin.bined.CodeAreaCaretPosition;
 import org.exbin.bined.CodeAreaSection;
 import org.exbin.bined.CodeAreaViewMode;
 import org.exbin.bined.CodeType;
-import org.exbin.bined.DataProvider;
-import org.exbin.bined.PositionCodeType;
-import org.exbin.bined.SelectionRange;
-import org.exbin.bined.basic.MovementDirection;
-import org.exbin.bined.capability.CaretCapable;
-import org.exbin.bined.capability.CodeTypeCapable;
 import org.exbin.bined.capability.RowWrappingCapable;
-import org.exbin.bined.capability.RowWrappingCapable.RowWrappingMode;
-import org.exbin.bined.capability.SelectionCapable;
-import org.exbin.bined.capability.ViewModeCapable;
-import org.exbin.bined.extended.capability.PositionCodeTypeCapable;
-import org.exbin.bined.extended.layout.ExtendedCodeAreaLayout;
 
 /**
- * Code area data representation structure for extended variant.
+ * Code area data representation structure for basic variant.
  *
- * @version 0.2.0 2019/01/31
+ * @version 0.2.0 2019/02/03
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public class ExtendedCodeAreaStructure {
+public class BasicCodeAreaLayout {
 
-    @Nonnull
-    private CodeAreaViewMode viewMode = CodeAreaViewMode.DUAL;
-    @Nonnull
-    private final CodeAreaCaretPosition caretPosition = new CodeAreaCaretPosition();
-    @Nullable
-    private SelectionRange selectionRange = null;
-
-    @Nonnull
-    private CodeType codeType = CodeType.HEXADECIMAL;
-    @Nonnull
-    private PositionCodeType positionCodeType = PositionCodeType.HEXADECIMAL;
-
-    private long dataSize;
-    @Nonnull
-    private RowWrappingMode rowWrapping = RowWrappingMode.NO_WRAPPING;
-    private int maxBytesPerLine;
-    private int wrappingBytesGroupSize;
-
-    private long rowsPerDocument;
-    private int bytesPerRow;
-    private int charactersPerRow;
-    private int charactersPerCodeSection;
-
-    private int codeLastCharPos;
-    private int previewCharPos;
-
-    public void updateCache(DataProvider codeArea, int charactersPerPage, ExtendedCodeAreaLayout layout) {
-        viewMode = ((ViewModeCapable) codeArea).getViewMode();
-        codeType = ((CodeTypeCapable) codeArea).getCodeType();
-        positionCodeType = ((PositionCodeTypeCapable) codeArea).getPositionCodeType();
-        caretPosition.setPosition(((CaretCapable) codeArea).getCaret().getCaretPosition());
-        selectionRange = ((SelectionCapable) codeArea).getSelection();
-        dataSize = codeArea.getDataSize();
-        rowWrapping = ((RowWrappingCapable) codeArea).getRowWrapping();
-        maxBytesPerLine = ((RowWrappingCapable) codeArea).getMaxBytesPerRow();
-        wrappingBytesGroupSize = ((RowWrappingCapable) codeArea).getWrappingBytesGroupSize();
-        bytesPerRow = computeBytesPerRow(charactersPerPage);
-        charactersPerRow = computeCharactersPerRow();
-        charactersPerCodeSection = computeFirstCodeCharacterPos(bytesPerRow);
-        rowsPerDocument = computeRowsPerDocument();
-
-        // Compute first and last visible character of the code area
-        if (viewMode != CodeAreaViewMode.TEXT_PREVIEW) {
-            codeLastCharPos = bytesPerRow * (codeType.getMaxDigitsForByte() + 1) - 1;
-        } else {
-            codeLastCharPos = 0;
-        }
-
-        if (viewMode == CodeAreaViewMode.DUAL) {
-            previewCharPos = bytesPerRow * (codeType.getMaxDigitsForByte() + 1);
-        } else {
-            previewCharPos = 0;
-        }
-    }
-
-    private int computeCharactersPerRow() {
-        int charsPerRow = 0;
-        if (viewMode != CodeAreaViewMode.TEXT_PREVIEW) {
-            charsPerRow += computeLastCodeCharPos(bytesPerRow - 1) + 1;
-        }
-        if (viewMode != CodeAreaViewMode.CODE_MATRIX) {
-            charsPerRow += bytesPerRow;
-            if (viewMode == CodeAreaViewMode.DUAL) {
-                charsPerRow++;
-            }
-        }
-        return charsPerRow;
-    }
-
-    private long computeRowsPerDocument() {
-        return dataSize / bytesPerRow + (dataSize % bytesPerRow > 0 ? 1 : 0);
-    }
-
-    public int computePositionByte(int rowCharPosition) {
-        return rowCharPosition / (codeType.getMaxDigitsForByte() + 1);
-    }
-
-    public int computeFirstCodeCharacterPos(int byteOffset) {
-        return byteOffset * (codeType.getMaxDigitsForByte() + 1);
-    }
-
-    public int computeLastCodeCharPos(int byteOffset) {
-        return byteOffset * (codeType.getMaxDigitsForByte() + 1) + codeType.getMaxDigitsForByte() - 1;
-    }
-
-    private int computeBytesPerRow(int charactersPerPage) {
+    public int computeBytesPerRow(BasicCodeAreaStructure structure, int charactersPerPage) {
+        CodeAreaViewMode viewMode = structure.getViewMode();
+        CodeType codeType = structure.getCodeType();
+        int maxBytesPerLine = structure.getMaxBytesPerLine();
+        int wrappingBytesGroupSize = structure.getWrappingBytesGroupSize();
+        RowWrappingCapable.RowWrappingMode rowWrapping = structure.getRowWrapping();
         int computedBytesPerRow;
-        if (rowWrapping == RowWrappingMode.WRAPPING) {
+        if (rowWrapping == RowWrappingCapable.RowWrappingMode.WRAPPING) {
             int charactersPerByte = 0;
             if (viewMode != CodeAreaViewMode.TEXT_PREVIEW) {
                 charactersPerByte += codeType.getMaxDigitsForByte() + 1;
@@ -164,7 +72,48 @@ public class ExtendedCodeAreaStructure {
         return computedBytesPerRow;
     }
 
-    public CaretPosition computeMovePosition(CaretPosition position, MovementDirection direction, int rowsPerPage) {
+    public int computeCharactersPerRow(BasicCodeAreaStructure structure) {
+        CodeAreaViewMode viewMode = structure.getViewMode();
+        int bytesPerRow = structure.getBytesPerRow();
+        int charsPerRow = 0;
+        if (viewMode != CodeAreaViewMode.TEXT_PREVIEW) {
+            charsPerRow += computeLastCodeCharPos(structure, bytesPerRow - 1) + 1;
+        }
+        if (viewMode != CodeAreaViewMode.CODE_MATRIX) {
+            charsPerRow += bytesPerRow;
+            if (viewMode == CodeAreaViewMode.DUAL) {
+                charsPerRow++;
+            }
+        }
+        return charsPerRow;
+    }
+
+    public long computeRowsPerDocument(BasicCodeAreaStructure structure) {
+        long dataSize = structure.getDataSize();
+        int bytesPerRow = structure.getBytesPerRow();
+        return dataSize / bytesPerRow + (dataSize % bytesPerRow > 0 ? 1 : 0);
+    }
+
+    public int computePositionByte(BasicCodeAreaStructure structure, int rowCharPosition) {
+        CodeType codeType = structure.getCodeType();
+        return rowCharPosition / (codeType.getMaxDigitsForByte() + 1);
+    }
+
+    public int computeFirstCodeCharacterPos(BasicCodeAreaStructure structure, int byteOffset) {
+        CodeType codeType = structure.getCodeType();
+        return byteOffset * (codeType.getMaxDigitsForByte() + 1);
+    }
+
+    public int computeLastCodeCharPos(BasicCodeAreaStructure structure, int byteOffset) {
+        CodeType codeType = structure.getCodeType();
+        return byteOffset * (codeType.getMaxDigitsForByte() + 1) + codeType.getMaxDigitsForByte() - 1;
+    }
+
+    @Nonnull
+    public CaretPosition computeMovePosition(BasicCodeAreaStructure structure, CaretPosition position, MovementDirection direction, int rowsPerPage) {
+        CodeType codeType = structure.getCodeType();
+        int bytesPerRow = structure.getBytesPerRow();
+        long dataSize = structure.getDataSize();
         CodeAreaCaretPosition target = new CodeAreaCaretPosition(position.getDataPosition(), position.getCodeOffset(), position.getSection());
         switch (direction) {
             case LEFT: {
@@ -274,7 +223,7 @@ public class ExtendedCodeAreaStructure {
                 break;
             }
             case SWITCH_SECTION: {
-                CodeAreaSection activeSection = caretPosition.getSection() == BasicCodeAreaSection.CODE_MATRIX ? BasicCodeAreaSection.TEXT_PREVIEW : BasicCodeAreaSection.CODE_MATRIX;
+                CodeAreaSection activeSection = position.getSection() == BasicCodeAreaSection.CODE_MATRIX ? BasicCodeAreaSection.TEXT_PREVIEW : BasicCodeAreaSection.CODE_MATRIX;
                 if (activeSection == BasicCodeAreaSection.TEXT_PREVIEW) {
                     target.setCodeOffset(0);
                 }
@@ -287,71 +236,5 @@ public class ExtendedCodeAreaStructure {
         }
 
         return target;
-    }
-
-    @Nonnull
-    public CodeAreaViewMode getViewMode() {
-        return viewMode;
-    }
-
-    @Nonnull
-    public CodeAreaCaretPosition getCaretPosition() {
-        return caretPosition;
-    }
-
-    @Nullable
-    public SelectionRange getSelectionRange() {
-        return selectionRange;
-    }
-
-    @Nonnull
-    public CodeType getCodeType() {
-        return codeType;
-    }
-
-    @Nonnull
-    public PositionCodeType getPositionCodeType() {
-        return positionCodeType;
-    }
-
-    public long getDataSize() {
-        return dataSize;
-    }
-
-    @Nonnull
-    public RowWrappingMode getRowWrapping() {
-        return rowWrapping;
-    }
-
-    public int getMaxBytesPerLine() {
-        return maxBytesPerLine;
-    }
-
-    public int getWrappingBytesGroupSize() {
-        return wrappingBytesGroupSize;
-    }
-
-    public long getRowsPerDocument() {
-        return rowsPerDocument;
-    }
-
-    public int getBytesPerRow() {
-        return bytesPerRow;
-    }
-
-    public int getCharactersPerRow() {
-        return charactersPerRow;
-    }
-
-    public int getCharactersPerCodeSection() {
-        return charactersPerCodeSection;
-    }
-
-    public int getCodeLastCharPos() {
-        return codeLastCharPos;
-    }
-
-    public int getPreviewCharPos() {
-        return previewCharPos;
     }
 }

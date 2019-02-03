@@ -793,7 +793,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
     public Color getPositionBackgroundColor(long rowDataPosition, int byteOnRow, int charOnRow, CodeAreaSection section) {
         SelectionRange selectionRange = structure.getSelectionRange();
         int codeLastCharPos = structure.getCodeLastCharPos();
-        CodeAreaCaretPosition caretPosition = structure.getCaretPosition();
+        CaretPosition caretPosition = ((CaretCapable) codeArea).getCaret().getCaretPosition();
         boolean inSelection = selectionRange != null && selectionRange.isInSelection(rowDataPosition + byteOnRow);
         if (inSelection && (section == BasicCodeAreaSection.CODE_MATRIX)) {
             if (charOnRow == codeLastCharPos) {
@@ -952,7 +952,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
     @Nullable
     public Color getPositionTextColor(long rowDataPosition, int byteOnRow, int charOnRow, CodeAreaSection section) {
         SelectionRange selectionRange = structure.getSelectionRange();
-        CodeAreaCaretPosition caretPosition = structure.getCaretPosition();
+        CaretPosition caretPosition = ((CaretCapable) codeArea).getCaret().getCaretPosition();
         boolean inSelection = selectionRange != null && selectionRange.isInSelection(rowDataPosition + byteOnRow);
         if (inSelection) {
             return section == caretPosition.getSection() ? colorsProfile.getSelectionColor() : colorsProfile.getSelectionMirrorColor();
@@ -1224,6 +1224,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         return caret;
     }
 
+    @Nonnull
     @Override
     public CaretPosition computeMovePosition(CaretPosition position, MovementDirection direction) {
         return structure.computeMovePosition(position, direction, dimensions.getRowsPerPage());

@@ -13,34 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.basic;
+package org.exbin.bined.extended;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.CaretPosition;
-import org.exbin.bined.CodeAreaCaretPosition;
 import org.exbin.bined.CodeAreaViewMode;
 import org.exbin.bined.CodeType;
 import org.exbin.bined.DataProvider;
+import org.exbin.bined.PositionCodeType;
 import org.exbin.bined.SelectionRange;
-import org.exbin.bined.capability.CaretCapable;
+import org.exbin.bined.basic.MovementDirection;
 import org.exbin.bined.capability.CodeTypeCapable;
 import org.exbin.bined.capability.RowWrappingCapable;
 import org.exbin.bined.capability.RowWrappingCapable.RowWrappingMode;
 import org.exbin.bined.capability.SelectionCapable;
 import org.exbin.bined.capability.ViewModeCapable;
+import org.exbin.bined.extended.capability.PositionCodeTypeCapable;
+import org.exbin.bined.extended.layout.ExtendedCodeAreaLayout;
 
 /**
- * Code area data representation structure for basic variant.
+ * Code area data representation structure for extended variant.
  *
  * @version 0.2.0 2019/02/03
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public class BasicCodeAreaStructure {
+public class ExtendedCodeAreaStructure {
 
-    private BasicCodeAreaLayout layout;
     @Nonnull
     private CodeAreaViewMode viewMode = CodeAreaViewMode.DUAL;
     @Nullable
@@ -48,6 +49,8 @@ public class BasicCodeAreaStructure {
 
     @Nonnull
     private CodeType codeType = CodeType.HEXADECIMAL;
+    @Nonnull
+    private PositionCodeType positionCodeType = PositionCodeType.HEXADECIMAL;
 
     private long dataSize;
     @Nonnull
@@ -55,41 +58,41 @@ public class BasicCodeAreaStructure {
     private int maxBytesPerLine;
     private int wrappingBytesGroupSize;
 
+    private ExtendedCodeAreaLayout layout;
     private long rowsPerDocument;
     private int bytesPerRow;
-    private int charactersPerRow;
-    private int charactersPerCodeSection;
+    private int halfCharsPerRow;
+    private int halfCharsPerCodeSection;
 
-    private int codeLastCharPos;
-    private int previewCharPos;
+    private int codeLastHalfCharPos;
+    private int previewHalfCharPos;
 
-    public void updateCache(DataProvider codeArea, int charactersPerPage) {
+    public void updateCache(DataProvider codeArea, int charactersPerPage, ExtendedCodeAreaLayout layout) {
+        this.layout = layout;
         viewMode = ((ViewModeCapable) codeArea).getViewMode();
         codeType = ((CodeTypeCapable) codeArea).getCodeType();
+        positionCodeType = ((PositionCodeTypeCapable) codeArea).getPositionCodeType();
         selectionRange = ((SelectionCapable) codeArea).getSelection();
         dataSize = codeArea.getDataSize();
         rowWrapping = ((RowWrappingCapable) codeArea).getRowWrapping();
         maxBytesPerLine = ((RowWrappingCapable) codeArea).getMaxBytesPerRow();
         wrappingBytesGroupSize = ((RowWrappingCapable) codeArea).getWrappingBytesGroupSize();
-
-        layout = new BasicCodeAreaLayout();
-
         bytesPerRow = layout.computeBytesPerRow(this, charactersPerPage);
-        charactersPerRow = layout.computeCharactersPerRow(this);
-        charactersPerCodeSection = layout.computeFirstCodeCharacterPos(this, bytesPerRow);
+        halfCharsPerRow = layout.computeHalfCharsPerRow(this);
+        halfCharsPerCodeSection = layout.computeFirstCodeHalfCharPos(this, bytesPerRow);
         rowsPerDocument = layout.computeRowsPerDocument(this);
 
         // Compute first and last visible character of the code area
         if (viewMode != CodeAreaViewMode.TEXT_PREVIEW) {
-            codeLastCharPos = bytesPerRow * (codeType.getMaxDigitsForByte() + 1) - 1;
+            codeLastHalfCharPos = bytesPerRow * (codeType.getMaxDigitsForByte() + 1) - 1;
         } else {
-            codeLastCharPos = 0;
+            codeLastHalfCharPos = 0;
         }
 
         if (viewMode == CodeAreaViewMode.DUAL) {
-            previewCharPos = bytesPerRow * (codeType.getMaxDigitsForByte() + 1);
+            previewHalfCharPos = bytesPerRow * (codeType.getMaxDigitsForByte() + 1);
         } else {
-            previewCharPos = 0;
+            previewHalfCharPos = 0;
         }
     }
 
@@ -97,8 +100,8 @@ public class BasicCodeAreaStructure {
         return layout.computePositionByte(this, rowCharPosition);
     }
 
-    public int computeFirstCodeCharacterPos(int byteOffset) {
-        return layout.computeFirstCodeCharacterPos(this, byteOffset);
+    public int computeFirstCodeHalfCharPos(int byteOffset) {
+        return layout.computeFirstCodeHalfCharPos(this, byteOffset);
     }
 
     @Nonnull
@@ -119,6 +122,11 @@ public class BasicCodeAreaStructure {
     @Nonnull
     public CodeType getCodeType() {
         return codeType;
+    }
+
+    @Nonnull
+    public PositionCodeType getPositionCodeType() {
+        return positionCodeType;
     }
 
     public long getDataSize() {
@@ -146,19 +154,19 @@ public class BasicCodeAreaStructure {
         return bytesPerRow;
     }
 
-    public int getCharactersPerRow() {
-        return charactersPerRow;
+    public int getHalfCharsPerRow() {
+        return halfCharsPerRow;
     }
 
-    public int getCharactersPerCodeSection() {
-        return charactersPerCodeSection;
+    public int getHalfCharsPerCodeSection() {
+        return halfCharsPerCodeSection;
     }
 
-    public int getCodeLastCharPos() {
-        return codeLastCharPos;
+    public int getCodeLastHalfCharPos() {
+        return codeLastHalfCharPos;
     }
 
-    public int getPreviewCharPos() {
-        return previewCharPos;
+    public int getPreviewHalfCharPos() {
+        return previewHalfCharPos;
     }
 }

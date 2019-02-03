@@ -18,9 +18,19 @@ package org.exbin.bined.extended.layout;
 /**
  * Type of space between characters.
  *
- * @version 0.2.0 2019/01/31
+ * @version 0.2.0 2019/02/03
  * @author ExBin Project (https://exbin.org)
  */
 public enum SpaceType {
-    NONE, HALF, SINGLE, DOUBLE
+    NONE(0), HALF(1), SINGLE(2), DOUBLE(4);
+
+    private final int halfCharSize;
+
+    private SpaceType(int halfCharSize) {
+        this.halfCharSize = halfCharSize;
+    }
+
+    public int getHalfCharSize() {
+        return halfCharSize;
+    }
 }

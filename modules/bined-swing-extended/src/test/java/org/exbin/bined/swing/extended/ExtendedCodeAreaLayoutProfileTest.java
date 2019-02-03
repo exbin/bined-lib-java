@@ -27,7 +27,7 @@ import org.junit.Test;
 /**
  * Tests for ExtendedCodeAreaLayoutProfile.
  *
- * @version 0.2.0 2019/01/29
+ * @version 0.2.0 2019/02/03
  * @author ExBin Project (https://exbin.org)
  */
 public class ExtendedCodeAreaLayoutProfileTest {
@@ -43,10 +43,10 @@ public class ExtendedCodeAreaLayoutProfileTest {
         CodeCharPositionIterator charPositionIterator = layout.createCharPositionIterator(TEST_CHARACTER_WIDTH, CodeType.HEXADECIMAL);
 
         Assert.assertNotNull(charPositionIterator);
-        Assert.assertThat(charPositionIterator.nextSpaceSize(), CoreMatchers.is(0));
-        Assert.assertThat(charPositionIterator.nextSpaceSize(), CoreMatchers.is(TEST_CHARACTER_WIDTH));
-        Assert.assertThat(charPositionIterator.nextSpaceSize(), CoreMatchers.is(0));
-        Assert.assertThat(charPositionIterator.nextSpaceSize(), CoreMatchers.is(TEST_CHARACTER_WIDTH));
+        Assert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
+        Assert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.SINGLE));
+        Assert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
+        Assert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.SINGLE));
     }
 
     @Test
@@ -58,26 +58,26 @@ public class ExtendedCodeAreaLayoutProfileTest {
         CodeCharPositionIterator charPositionIterator = layout.createCharPositionIterator(TEST_CHARACTER_WIDTH, CodeType.HEXADECIMAL);
 
         Assert.assertNotNull(charPositionIterator);
-        Assert.assertThat(charPositionIterator.nextSpaceSize(), CoreMatchers.is(0));
-        Assert.assertThat(charPositionIterator.nextSpaceSize(), CoreMatchers.is(0));
-        Assert.assertThat(charPositionIterator.nextSpaceSize(), CoreMatchers.is(0));
-        Assert.assertThat(charPositionIterator.nextSpaceSize(), CoreMatchers.is(TEST_CHARACTER_WIDTH / 2));
-        Assert.assertThat(charPositionIterator.nextSpaceSize(), CoreMatchers.is(0));
-        Assert.assertThat(charPositionIterator.nextSpaceSize(), CoreMatchers.is(TEST_CHARACTER_WIDTH));
-        Assert.assertThat(charPositionIterator.nextSpaceSize(), CoreMatchers.is(0));
-        Assert.assertThat(charPositionIterator.nextSpaceSize(), CoreMatchers.is(TEST_CHARACTER_WIDTH * 2));
-        Assert.assertThat(charPositionIterator.nextSpaceSize(), CoreMatchers.is(0));
-        Assert.assertThat(charPositionIterator.nextSpaceSize(), CoreMatchers.is(0));
-        Assert.assertThat(charPositionIterator.nextSpaceSize(), CoreMatchers.is(0));
-        Assert.assertThat(charPositionIterator.nextSpaceSize(), CoreMatchers.is(TEST_CHARACTER_WIDTH));
-        Assert.assertThat(charPositionIterator.nextSpaceSize(), CoreMatchers.is(0));
-        Assert.assertThat(charPositionIterator.nextSpaceSize(), CoreMatchers.is(0));
-        Assert.assertThat(charPositionIterator.nextSpaceSize(), CoreMatchers.is(0));
-        Assert.assertThat(charPositionIterator.nextSpaceSize(), CoreMatchers.is(TEST_CHARACTER_WIDTH * 2));
-        Assert.assertThat(charPositionIterator.nextSpaceSize(), CoreMatchers.is(0));
-        Assert.assertThat(charPositionIterator.nextSpaceSize(), CoreMatchers.is(TEST_CHARACTER_WIDTH));
-        Assert.assertThat(charPositionIterator.nextSpaceSize(), CoreMatchers.is(0));
-        Assert.assertThat(charPositionIterator.nextSpaceSize(), CoreMatchers.is(TEST_CHARACTER_WIDTH / 2));
+        Assert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
+        Assert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
+        Assert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
+        Assert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.HALF));
+        Assert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
+        Assert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.SINGLE));
+        Assert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
+        Assert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.DOUBLE));
+        Assert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
+        Assert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
+        Assert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
+        Assert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.SINGLE));
+        Assert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
+        Assert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
+        Assert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
+        Assert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.DOUBLE));
+        Assert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
+        Assert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.SINGLE));
+        Assert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
+        Assert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.HALF));
     }
 
     @Test

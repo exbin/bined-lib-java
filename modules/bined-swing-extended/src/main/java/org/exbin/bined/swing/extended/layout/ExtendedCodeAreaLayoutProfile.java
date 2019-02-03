@@ -18,15 +18,22 @@ package org.exbin.bined.swing.extended.layout;
 import org.exbin.bined.extended.layout.CodeCharPositionIterator;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import org.exbin.bined.BasicCodeAreaSection;
+import org.exbin.bined.CaretPosition;
+import org.exbin.bined.CodeAreaCaretPosition;
+import org.exbin.bined.CodeAreaSection;
 import org.exbin.bined.CodeAreaViewMode;
 import org.exbin.bined.CodeType;
+import org.exbin.bined.basic.MovementDirection;
+import org.exbin.bined.capability.RowWrappingCapable;
 import org.exbin.bined.extended.layout.SpaceType;
 import org.exbin.bined.extended.layout.ExtendedCodeAreaLayout;
+import org.exbin.bined.extended.ExtendedCodeAreaStructure;
 
 /**
  * Layout profile for extended code area.
  *
- * @version 0.2.0 2019/01/31
+ * @version 0.2.0 2019/02/03
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -69,12 +76,225 @@ public class ExtendedCodeAreaLayoutProfile implements ExtendedCodeAreaLayout {
         return copy;
     }
 
+    @Override
+    public int computeHalfCharsPerRow(ExtendedCodeAreaStructure structure) {
+        CodeAreaViewMode viewMode = structure.getViewMode();
+        int bytesPerRow = structure.getBytesPerRow();
+        int charsPerRow = 0;
+        if (viewMode != CodeAreaViewMode.TEXT_PREVIEW) {
+            charsPerRow += computeLastCodeHalfCharPos(bytesPerRow - 1, structure) + 1;
+        }
+        if (viewMode != CodeAreaViewMode.CODE_MATRIX) {
+            charsPerRow += bytesPerRow;
+            if (viewMode == CodeAreaViewMode.DUAL) {
+                charsPerRow++;
+            }
+        }
+        return new CharactersNumAndHalf(charsPerRow, false);
+    }
+
+    @Override
+    public int computeBytesPerRow(int charactersPerPage, ExtendedCodeAreaStructure structure) {
+        CodeAreaViewMode viewMode = structure.getViewMode();
+        CodeType codeType = structure.getCodeType();
+        int maxBytesPerLine = structure.getMaxBytesPerLine();
+        RowWrappingCapable.RowWrappingMode rowWrapping = structure.getRowWrapping();
+        int wrappingBytesGroupSize = structure.getWrappingBytesGroupSize();
+        int computedBytesPerRow;
+        if (rowWrapping == RowWrappingCapable.RowWrappingMode.WRAPPING) {
+            int charactersPerByte = 0;
+            if (viewMode != CodeAreaViewMode.TEXT_PREVIEW) {
+                charactersPerByte += codeType.getMaxDigitsForByte() + 1;
+            }
+            if (viewMode != CodeAreaViewMode.CODE_MATRIX) {
+                charactersPerByte++;
+            }
+            computedBytesPerRow = charactersPerPage / charactersPerByte;
+
+            if (maxBytesPerLine > 0 && computedBytesPerRow > maxBytesPerLine) {
+                computedBytesPerRow = maxBytesPerLine;
+            }
+
+            if (wrappingBytesGroupSize > 1) {
+                int wrappingBytesGroupOffset = computedBytesPerRow % wrappingBytesGroupSize;
+                if (wrappingBytesGroupOffset > 0) {
+                    computedBytesPerRow -= wrappingBytesGroupOffset;
+                }
+            }
+        } else {
+            computedBytesPerRow = maxBytesPerLine;
+        }
+
+        if (computedBytesPerRow < 1) {
+            computedBytesPerRow = 1;
+        }
+
+        return computedBytesPerRow;
+    }
+
+    @Override
+    public long computeRowsPerDocument(ExtendedCodeAreaStructure structure) {
+        long dataSize = structure.getDataSize();
+        int bytesPerRow = structure.getBytesPerRow();
+        return dataSize / bytesPerRow + (dataSize % bytesPerRow > 0 ? 1 : 0);
+    }
+
+    @Override
+    public int computePositionByte(int rowHalfCharPosition, ExtendedCodeAreaStructure structure) {
+        CodeType codeType = structure.getCodeType();
+        CodeCharPosIterator codeCharPosIterator = new CodeCharPosIterator(codeType);
+
+        return rowHalfCharPosition / (codeType.getMaxDigitsForByte() + 1);
+    }
+
+    @Override
+    public synchronized int computeFirstCodeHalfCharPos(int byteOffset, ExtendedCodeAreaStructure structure) {
+        CodeType codeType = structure.getCodeType();
+        CodeCharPosIterator iterator = new CodeCharPosIterator(byteOffset, codeType);
+        return new CharactersNumAndHalf(byteOffset * (codeType.getMaxDigitsForByte() + 1), false);
+    }
+
+    @Override
+    public int computeLastCodeHalfCharPos(int byteOffset, ExtendedCodeAreaStructure structure) {
+        CodeType codeType = structure.getCodeType();
+        return byteOffset * (codeType.getMaxDigitsForByte() + 1) + codeType.getMaxDigitsForByte() - 1;
+    }
+
+    @Override
+    public CaretPosition computeMovePosition(CaretPosition position, MovementDirection direction, ExtendedCodeAreaStructure structure, int rowsPerPage) {
+        CodeType codeType = structure.getCodeType();
+        long dataSize = structure.getDataSize();
+        int bytesPerRow = structure.getBytesPerRow();
+        CodeAreaCaretPosition target = new CodeAreaCaretPosition(position.getDataPosition(), position.getCodeOffset(), position.getSection());
+        switch (direction) {
+            case LEFT: {
+                if (position.getSection() == BasicCodeAreaSection.CODE_MATRIX) {
+                    int codeOffset = position.getCodeOffset();
+                    if (codeOffset > 0) {
+                        target.setCodeOffset(codeOffset - 1);
+                    } else if (position.getDataPosition() > 0) {
+                        target.setDataPosition(position.getDataPosition() - 1);
+                        target.setCodeOffset(codeType.getMaxDigitsForByte() - 1);
+                    }
+                } else if (position.getDataPosition() > 0) {
+                    target.setDataPosition(position.getDataPosition() - 1);
+                }
+                break;
+            }
+            case RIGHT: {
+                if (position.getSection() == BasicCodeAreaSection.CODE_MATRIX) {
+                    int codeOffset = position.getCodeOffset();
+                    if (position.getDataPosition() < dataSize && codeOffset < codeType.getMaxDigitsForByte() - 1) {
+                        target.setCodeOffset(codeOffset + 1);
+                    } else if (position.getDataPosition() < dataSize) {
+                        target.setDataPosition(position.getDataPosition() + 1);
+                        target.setCodeOffset(0);
+                    }
+                } else if (position.getDataPosition() < dataSize) {
+                    target.setDataPosition(position.getDataPosition() + 1);
+                }
+                break;
+            }
+            case UP: {
+                if (position.getDataPosition() >= bytesPerRow) {
+                    target.setDataPosition(position.getDataPosition() - bytesPerRow);
+                }
+                break;
+            }
+            case DOWN: {
+                if (position.getDataPosition() + bytesPerRow < dataSize || (position.getDataPosition() + bytesPerRow == dataSize && position.getCodeOffset() == 0)) {
+                    target.setDataPosition(position.getDataPosition() + bytesPerRow);
+                }
+                break;
+            }
+            case ROW_START: {
+                long dataPosition = position.getDataPosition();
+                dataPosition -= (dataPosition % bytesPerRow);
+                target.setDataPosition(dataPosition);
+                target.setCodeOffset(0);
+                break;
+            }
+            case ROW_END: {
+                long dataPosition = position.getDataPosition();
+                long increment = bytesPerRow - 1 - (dataPosition % bytesPerRow);
+                if (dataPosition > Long.MAX_VALUE - increment || dataPosition + increment > dataSize) {
+                    target.setDataPosition(dataSize);
+                } else {
+                    target.setDataPosition(dataPosition + increment);
+                }
+                if (position.getSection() == BasicCodeAreaSection.CODE_MATRIX) {
+                    if (target.getDataPosition() == dataSize) {
+                        target.setCodeOffset(0);
+                    } else {
+                        target.setCodeOffset(codeType.getMaxDigitsForByte() - 1);
+                    }
+                }
+                break;
+            }
+            case PAGE_UP: {
+                long dataPosition = position.getDataPosition();
+                long increment = bytesPerRow * rowsPerPage;
+                if (dataPosition < increment) {
+                    target.setDataPosition(dataPosition % bytesPerRow);
+                } else {
+                    target.setDataPosition(dataPosition - increment);
+                }
+                break;
+            }
+            case PAGE_DOWN: {
+                long dataPosition = position.getDataPosition();
+                long increment = bytesPerRow * rowsPerPage;
+                if (dataPosition > dataSize - increment) {
+                    long positionOnRow = dataPosition % bytesPerRow;
+                    long lastRowDataStart = dataSize - (dataSize % bytesPerRow);
+                    if (lastRowDataStart == dataSize - positionOnRow) {
+                        target.setDataPosition(dataSize);
+                        target.setCodeOffset(0);
+                    } else if (lastRowDataStart > dataSize - positionOnRow) {
+                        if (lastRowDataStart > bytesPerRow) {
+                            lastRowDataStart -= bytesPerRow;
+                            target.setDataPosition(lastRowDataStart + positionOnRow);
+                        }
+                    } else {
+                        target.setDataPosition(lastRowDataStart + positionOnRow);
+                    }
+                } else {
+                    target.setDataPosition(dataPosition + increment);
+                }
+                break;
+            }
+            case DOC_START: {
+                target.setDataPosition(0);
+                target.setCodeOffset(0);
+                break;
+            }
+            case DOC_END: {
+                target.setDataPosition(dataSize);
+                target.setCodeOffset(0);
+                break;
+            }
+            case SWITCH_SECTION: {
+                CodeAreaSection activeSection = position.getSection() == BasicCodeAreaSection.CODE_MATRIX ? BasicCodeAreaSection.TEXT_PREVIEW : BasicCodeAreaSection.CODE_MATRIX;
+                if (activeSection == BasicCodeAreaSection.TEXT_PREVIEW) {
+                    target.setCodeOffset(0);
+                }
+                target.setSection(activeSection);
+                break;
+            }
+            default: {
+                throw new IllegalStateException("Unexpected movement direction " + direction.name());
+            }
+        }
+
+        return target;
+    }
+
     public int computeCodeCharacterPosition(long positionX, int characterWidth, int bytesPerRow, CodeType codeType) {
         CodeCharPositionIterator charPositionIterator = createCharPositionIterator(characterWidth, codeType);
         int charPositionX = 0;
         do {
             if (positionX >= charPositionX && positionX < charPositionX + characterWidth) {
-                return charPositionIterator.getPosition();
+                return charPositionIterator.getCharPosition();
             }
 
             int spaceSizeX = charPositionIterator.nextSpaceSize();
@@ -89,16 +309,16 @@ public class ExtendedCodeAreaLayoutProfile implements ExtendedCodeAreaLayout {
         int charPositionX = 0;
         do {
             if (positionX >= charPositionX && positionX < charPositionX + characterWidth) {
-                return charPositionIterator.getPosition();
+                return charPositionIterator.getCharPosition();
             }
 
             charPositionX += characterWidth;
             int spaceSize = charPositionIterator.nextSpaceSize();
             int halfSpaceSize = spaceSize / 2;
             if (positionX >= charPositionX && positionX < charPositionX + halfSpaceSize) {
-                return charPositionIterator.getPosition() - 1;
+                return charPositionIterator.getCharPosition() - 1;
             } else if (positionX >= charPositionX + halfSpaceSize && positionX < charPositionX + spaceSize) {
-                return charPositionIterator.getPosition();
+                return charPositionIterator.getCharPosition();
             }
 
             charPositionX += spaceSize;
@@ -123,8 +343,8 @@ public class ExtendedCodeAreaLayoutProfile implements ExtendedCodeAreaLayout {
         int positionX = 0;
         if (viewMode != CodeAreaViewMode.TEXT_PREVIEW) {
             CodeCharPosIterator codeCharPosIterator = new CodeCharPosIterator(characterWidth, codeType);
-            while (codeCharPosIterator.getPosition() < codeCharPosition) {
-                positionX += characterWidth + codeCharPosIterator.nextSpaceSize();
+            while (codeCharPosIterator.getCharPosition() < codeCharPosition) {
+                positionX += characterWidth + codeCharPosIterator.nextSpaceType();
             }
 
             if (codeCharPosition < firstPreviewCodeChar) {
@@ -142,6 +362,7 @@ public class ExtendedCodeAreaLayoutProfile implements ExtendedCodeAreaLayout {
         return -1;
     }
 
+    @Nonnull
     public SpaceType getSpaceSizeTypeBefore(int byteOffset, int characterWidth) {
         if (byteOffset == 0) {
             return SpaceType.NONE;
@@ -233,28 +454,28 @@ public class ExtendedCodeAreaLayoutProfile implements ExtendedCodeAreaLayout {
 
     private final class CodeCharPosIterator implements CodeCharPositionIterator {
 
-        private int position = 0;
-        private int codeOffset = 0;
-        private boolean oddHalf = false;
+        private int codeCharPosition;
+        private int bytePosition;
+        private int halfCharPosition;
+        private int codeOffset;
+        private boolean oddHalf;
 
-        private final int characterWidth;
         private final int codeLength;
         private int halfSpacePos = 0;
         private int spacePos = 0;
         private int doubleSpacePos = 0;
 
-        CodeCharPosIterator(int characterWidth, CodeType codeType) {
-            if (characterWidth < 2) {
-                throw new IllegalArgumentException("Characters must be at least 2 pixels wide");
-            }
-            this.characterWidth = characterWidth;
+        CodeCharPosIterator(CodeType codeType) {
             codeLength = codeType.getMaxDigitsForByte();
             reset();
         }
 
         @Override
         public void reset() {
-            position = 0;
+            codeCharPosition = 0;
+            bytePosition = 0;
+            halfCharPosition = 0;
+            oddHalf = false;
             codeOffset = codeLength;
             halfSpacePos = halfSpaceGroupSize;
             spacePos = spaceGroupSize;
@@ -262,67 +483,29 @@ public class ExtendedCodeAreaLayoutProfile implements ExtendedCodeAreaLayout {
         }
 
         @Override
-        public int getPosition() {
-            return position;
+        public int getCharPosition() {
+            return codeCharPosition;
         }
 
         @Override
-        public int nextSpaceSize() {
-            position++;
-
-            if (codeOffset > 1) {
-                codeOffset--;
-                return 0;
-            }
-
-            int spaceSize = 0;
-            if (doubleSpacePos > 0) {
-                if (doubleSpacePos == 1) {
-                    spaceSize = characterWidth * 2;
-                    doubleSpacePos = doubleSpaceGroupSize;
-                } else {
-                    doubleSpacePos--;
-                }
-            }
-            if (spacePos > 0) {
-                if (spacePos == 1) {
-                    if (spaceSize == 0) {
-                        spaceSize = characterWidth;
-                    }
-                    spacePos = spaceGroupSize;
-                } else {
-                    spacePos--;
-                }
-            }
-            if (halfSpacePos > 0) {
-                if (halfSpacePos == 1) {
-                    if (spaceSize == 0) {
-                        spaceSize = oddHalf ? characterWidth - characterWidth / 2 : characterWidth / 2;
-                        oddHalf = !oddHalf;
-                    }
-                    halfSpacePos = halfSpaceGroupSize;
-                } else {
-                    halfSpacePos--;
-                }
-            }
-
-            codeOffset = codeLength;
-            return spaceSize;
+        public int getBytePosition() {
+            return bytePosition;
         }
 
         @Override
-        public SpaceType nextSpaceSizeType() {
-            position++;
+        public SpaceType nextSpaceType() {
+            codeCharPosition++;
 
             if (codeOffset > 1) {
                 codeOffset--;
+                halfCharPosition += 2;
                 return SpaceType.NONE;
             }
 
-            SpaceType spaceSize = SpaceType.NONE;
+            SpaceType spaceType = SpaceType.NONE;
             if (doubleSpacePos > 0) {
                 if (doubleSpacePos == 1) {
-                    spaceSize = SpaceType.DOUBLE;
+                    spaceType = SpaceType.DOUBLE;
                     doubleSpacePos = doubleSpaceGroupSize;
                 } else {
                     doubleSpacePos--;
@@ -330,8 +513,8 @@ public class ExtendedCodeAreaLayoutProfile implements ExtendedCodeAreaLayout {
             }
             if (spacePos > 0) {
                 if (spacePos == 1) {
-                    if (spaceSize == SpaceType.NONE) {
-                        spaceSize = SpaceType.SINGLE;
+                    if (spaceType == SpaceType.NONE) {
+                        spaceType = SpaceType.SINGLE;
                     }
                     spacePos = spaceGroupSize;
                 } else {
@@ -340,8 +523,8 @@ public class ExtendedCodeAreaLayoutProfile implements ExtendedCodeAreaLayout {
             }
             if (halfSpacePos > 0) {
                 if (halfSpacePos == 1) {
-                    if (spaceSize == SpaceType.NONE) {
-                        spaceSize = SpaceType.HALF;
+                    if (spaceType == SpaceType.NONE) {
+                        spaceType = SpaceType.HALF;
                         oddHalf = !oddHalf;
                     }
                     halfSpacePos = halfSpaceGroupSize;
@@ -351,13 +534,15 @@ public class ExtendedCodeAreaLayoutProfile implements ExtendedCodeAreaLayout {
             }
 
             codeOffset = codeLength;
-            return spaceSize;
+            bytePosition++;
+            halfCharPosition += 2 + spaceType.getHalfCharSize();
+            return spaceType;
         }
 
         @Override
         public void skip(int count) {
             for (int step = 0; step < count; step++) {
-                nextSpaceSize();
+                nextSpaceType();
             }
         }
     }
