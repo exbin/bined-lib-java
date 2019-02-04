@@ -17,22 +17,23 @@ package org.exbin.bined.swing.extended;
 
 import org.exbin.bined.CodeAreaViewMode;
 import org.exbin.bined.CodeType;
-import org.exbin.bined.extended.layout.CodeCharPositionIterator;
 import org.exbin.bined.extended.layout.SpaceType;
 import org.exbin.bined.swing.extended.layout.ExtendedCodeAreaLayoutProfile;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
+import org.exbin.bined.extended.layout.PositionIterator;
 
 /**
  * Tests for ExtendedCodeAreaLayoutProfile.
  *
- * @version 0.2.0 2019/02/03
+ * @version 0.2.0 2019/02/04
  * @author ExBin Project (https://exbin.org)
  */
 public class ExtendedCodeAreaLayoutProfileTest {
 
     private static final int TEST_CHARACTER_WIDTH = 10;
+    private static final int TEST_BYTES_PER_ROW = 16;
 
     public ExtendedCodeAreaLayoutProfileTest() {
     }
@@ -40,7 +41,7 @@ public class ExtendedCodeAreaLayoutProfileTest {
     @Test
     public void testDefaultCharPosIterator() {
         ExtendedCodeAreaLayoutProfile layout = new ExtendedCodeAreaLayoutProfile();
-        CodeCharPositionIterator charPositionIterator = layout.createCharPositionIterator(TEST_CHARACTER_WIDTH, CodeType.HEXADECIMAL);
+        PositionIterator charPositionIterator = layout.createPositionIterator(CodeType.HEXADECIMAL, CodeAreaViewMode.DUAL, TEST_BYTES_PER_ROW);
 
         Assert.assertNotNull(charPositionIterator);
         Assert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
@@ -55,7 +56,7 @@ public class ExtendedCodeAreaLayoutProfileTest {
         layout.setHalfSpaceGroupSize(2);
         layout.setSpaceGroupSize(3);
         layout.setDoubleSpaceGroupSize(4);
-        CodeCharPositionIterator charPositionIterator = layout.createCharPositionIterator(TEST_CHARACTER_WIDTH, CodeType.HEXADECIMAL);
+        PositionIterator charPositionIterator = layout.createPositionIterator(CodeType.HEXADECIMAL, CodeAreaViewMode.DUAL, TEST_BYTES_PER_ROW);
 
         Assert.assertNotNull(charPositionIterator);
         Assert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));

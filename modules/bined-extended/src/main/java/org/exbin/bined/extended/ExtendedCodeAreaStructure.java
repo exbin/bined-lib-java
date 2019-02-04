@@ -36,7 +36,7 @@ import org.exbin.bined.extended.layout.ExtendedCodeAreaLayout;
 /**
  * Code area data representation structure for extended variant.
  *
- * @version 0.2.0 2019/02/03
+ * @version 0.2.0 2019/02/04
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -77,9 +77,9 @@ public class ExtendedCodeAreaStructure {
         rowWrapping = ((RowWrappingCapable) codeArea).getRowWrapping();
         maxBytesPerLine = ((RowWrappingCapable) codeArea).getMaxBytesPerRow();
         wrappingBytesGroupSize = ((RowWrappingCapable) codeArea).getWrappingBytesGroupSize();
-        bytesPerRow = layout.computeBytesPerRow(this, charactersPerPage);
+        bytesPerRow = layout.computeBytesPerRow(charactersPerPage, this);
         halfCharsPerRow = layout.computeHalfCharsPerRow(this);
-        halfCharsPerCodeSection = layout.computeFirstCodeHalfCharPos(this, bytesPerRow);
+        halfCharsPerCodeSection = layout.computeFirstCodeHalfCharPos(bytesPerRow, this);
         rowsPerDocument = layout.computeRowsPerDocument(this);
 
         // Compute first and last visible character of the code area
@@ -97,16 +97,16 @@ public class ExtendedCodeAreaStructure {
     }
 
     public int computePositionByte(int rowCharPosition) {
-        return layout.computePositionByte(this, rowCharPosition);
+        return layout.computePositionByte(rowCharPosition, this);
     }
 
     public int computeFirstCodeHalfCharPos(int byteOffset) {
-        return layout.computeFirstCodeHalfCharPos(this, byteOffset);
+        return layout.computeFirstCodeHalfCharPos(byteOffset, this);
     }
 
     @Nonnull
     public CaretPosition computeMovePosition(CaretPosition position, MovementDirection direction, int rowsPerPage) {
-        return layout.computeMovePosition(this, position, direction, rowsPerPage);
+        return layout.computeMovePosition(position, direction, this, rowsPerPage);
     }
 
     @Nonnull

@@ -34,13 +34,13 @@ import org.exbin.bined.capability.ViewModeCapable;
 /**
  * Code area data representation structure for basic variant.
  *
- * @version 0.2.0 2019/02/03
+ * @version 0.2.0 2019/02/04
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class BasicCodeAreaStructure {
 
-    private BasicCodeAreaLayout layout;
+    private BasicCodeAreaLayout layout = new BasicCodeAreaLayout();
     @Nonnull
     private CodeAreaViewMode viewMode = CodeAreaViewMode.DUAL;
     @Nullable
@@ -71,8 +71,6 @@ public class BasicCodeAreaStructure {
         rowWrapping = ((RowWrappingCapable) codeArea).getRowWrapping();
         maxBytesPerLine = ((RowWrappingCapable) codeArea).getMaxBytesPerRow();
         wrappingBytesGroupSize = ((RowWrappingCapable) codeArea).getWrappingBytesGroupSize();
-
-        layout = new BasicCodeAreaLayout();
 
         bytesPerRow = layout.computeBytesPerRow(this, charactersPerPage);
         charactersPerRow = layout.computeCharactersPerRow(this);

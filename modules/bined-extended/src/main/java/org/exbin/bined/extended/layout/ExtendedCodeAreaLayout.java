@@ -15,7 +15,6 @@
  */
 package org.exbin.bined.extended.layout;
 
-import javax.annotation.Nonnull;
 import org.exbin.bined.CaretPosition;
 import org.exbin.bined.basic.MovementDirection;
 import org.exbin.bined.extended.ExtendedCodeAreaStructure;

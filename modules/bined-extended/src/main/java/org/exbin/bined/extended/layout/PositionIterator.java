@@ -21,11 +21,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 /**
  * Iterator for layout character position iteration.
  *
- * @version 0.2.0 2019/02/03
+ * @version 0.2.0 2019/02/04
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public interface CodeCharPositionIterator {
+public interface PositionIterator {
 
     void reset();
 
@@ -35,6 +35,8 @@ public interface CodeCharPositionIterator {
     int getCharPosition();
 
     int getBytePosition();
+
+    int getHalfCharPosition();
 
     void skip(int count);
 }
