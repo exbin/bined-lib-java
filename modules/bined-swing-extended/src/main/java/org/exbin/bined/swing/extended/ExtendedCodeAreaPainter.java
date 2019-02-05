@@ -94,7 +94,7 @@ import org.exbin.bined.extended.layout.PositionIterator;
 /**
  * Extended code area component default painter.
  *
- * @version 0.2.0 2019/02/04
+ * @version 0.2.0 2019/02/05
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -237,8 +237,8 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         rowPositionLength = getRowPositionLength();
         recomputeDimensions();
 
-        int charactersPerPage = dimensions.getCharactersPerPage();
-        structure.updateCache(codeArea, charactersPerPage, layoutProfile);
+        int halfCharsPerPage = dimensions.getHalfCharsPerPage();
+        structure.updateCache(codeArea, halfCharsPerPage, layoutProfile);
         codeCharPositionIterator = layoutProfile.createPositionIterator(structure.getCodeType(), structure.getViewMode(), structure.getBytesPerRow());
         codeCharactersCase = ((CodeCharactersCaseCapable) codeArea).getCodeCharactersCase();
         showUnprintables = ((ShowUnprintablesCapable) codeArea).isShowUnprintables();
@@ -251,7 +251,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         int halfCharsPerRow = structure.getHalfCharsPerRow();
 
         if (metrics.isInitialized()) {
-            scrolling.updateMaximumScrollPosition(rowsPerDocument, rowsPerPage, halfCharsPerRow, charactersPerPage, dimensions.getLastCharOffset(), dimensions.getLastRowOffset());
+            scrolling.updateMaximumScrollPosition(rowsPerDocument, rowsPerPage, halfCharsPerRow, halfCharsPerPage, dimensions.getLastCharOffset(), dimensions.getLastRowOffset());
         }
 
         recomputeScrollState();
@@ -301,6 +301,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         metrics.recomputeMetrics(g.getFontMetrics(font), charset);
 
         recomputeDimensions();
+        recomputeLayout();
         recomputeCharPositions();
         initialized = true;
     }
@@ -964,7 +965,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         int dataViewWidth = dimensions.getDataViewWidth();
         int dataViewHeight = dimensions.getDataViewHeight();
         int rowsPerPage = dimensions.getRowsPerPage();
-        int charactersPerPage = dimensions.getCharactersPerPage();
+        int charactersPerPage = dimensions.getHalfCharsPerPage();
 
         long shiftedPosition = caretPosition.getDataPosition();
         long rowPosition = shiftedPosition / bytesPerRow;
@@ -989,7 +990,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         int dataViewWidth = dimensions.getDataViewWidth();
         int dataViewHeight = dimensions.getDataViewHeight();
         int rowsPerPage = dimensions.getRowsPerPage();
-        int charactersPerPage = dimensions.getCharactersPerPage();
+        int charactersPerPage = dimensions.getHalfCharsPerPage();
 
         long shiftedPosition = caretPosition.getDataPosition();
         long rowPosition = shiftedPosition / bytesPerRow;
@@ -1136,7 +1137,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
     @Nullable
     public Color getPositionTextColor(long rowDataPosition, int byteOnRow, int charOnRow, CodeAreaSection section, boolean unprintable) {
         SelectionRange selectionRange = structure.getSelectionRange();
-        CaretPosition caretPosition = ((CaretCapable) structure).getCaret().getCaretPosition();
+        CaretPosition caretPosition = ((CaretCapable) codeArea).getCaret().getCaretPosition();
         boolean inSelection = selectionRange != null && selectionRange.isInSelection(rowDataPosition + byteOnRow);
 
         if (unprintable && section == BasicCodeAreaSection.TEXT_PREVIEW) {

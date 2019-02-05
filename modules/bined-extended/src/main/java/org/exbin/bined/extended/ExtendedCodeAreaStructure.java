@@ -67,7 +67,7 @@ public class ExtendedCodeAreaStructure {
     private int codeLastHalfCharPos;
     private int previewHalfCharPos;
 
-    public void updateCache(DataProvider codeArea, int charactersPerPage, ExtendedCodeAreaLayout layout) {
+    public void updateCache(DataProvider codeArea, int halfCharsPerPage, ExtendedCodeAreaLayout layout) {
         this.layout = layout;
         viewMode = ((ViewModeCapable) codeArea).getViewMode();
         codeType = ((CodeTypeCapable) codeArea).getCodeType();
@@ -77,7 +77,7 @@ public class ExtendedCodeAreaStructure {
         rowWrapping = ((RowWrappingCapable) codeArea).getRowWrapping();
         maxBytesPerLine = ((RowWrappingCapable) codeArea).getMaxBytesPerRow();
         wrappingBytesGroupSize = ((RowWrappingCapable) codeArea).getWrappingBytesGroupSize();
-        bytesPerRow = layout.computeBytesPerRow(charactersPerPage, this);
+        bytesPerRow = layout.computeBytesPerRow(halfCharsPerPage, this);
         halfCharsPerRow = layout.computeHalfCharsPerRow(this);
         halfCharsPerCodeSection = layout.computeFirstCodeHalfCharPos(bytesPerRow, this);
         rowsPerDocument = layout.computeRowsPerDocument(this);

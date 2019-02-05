@@ -27,7 +27,7 @@ import org.exbin.bined.swing.extended.layout.ExtendedCodeAreaLayoutProfile;
 /**
  * Basic code area component dimensions.
  *
- * @version 0.2.0 2018/12/17
+ * @version 0.2.0 2019/02/05
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -48,7 +48,7 @@ public class ExtendedCodeAreaDimensions {
     private int rowPositionAreaWidth;
     private int rowsPerRect;
     private int rowsPerPage;
-    private int charactersPerPage;
+    private int halfCharsPerPage;
     private int charactersPerRect;
 
     @Nullable
@@ -81,7 +81,7 @@ public class ExtendedCodeAreaDimensions {
         dataViewWidth = scrollPanelWidth - verticalScrollBarSize;
         dataViewHeight = scrollPanelHeight - horizontalScrollBarSize;
         charactersPerRect = computeCharactersPerRectangle(metrics, layoutProfile);
-        charactersPerPage = computeCharactersPerPage(metrics);
+        halfCharsPerPage = computeHalfCharsPerPage(metrics);
         rowsPerRect = computeRowsPerRectangle(metrics);
         rowsPerPage = computeRowsPerPage(metrics);
         lastCharOffset = metrics.isInitialized() ? dataViewWidth % metrics.getCharacterWidth() : 0;
@@ -189,8 +189,8 @@ public class ExtendedCodeAreaDimensions {
         return charactersPerRect;
     }
 
-    public int getCharactersPerPage() {
-        return charactersPerPage;
+    public int getHalfCharsPerPage() {
+        return halfCharsPerPage;
     }
 
     public int getRowsPerPage() {
@@ -245,9 +245,18 @@ public class ExtendedCodeAreaDimensions {
         return characterWidth == 0 ? 0 : (dataViewWidth + characterWidth - 1) / characterWidth;
     }
 
-    private int computeCharactersPerPage(BasicCodeAreaMetrics metrics) {
+    private int computeHalfCharsPerPage(BasicCodeAreaMetrics metrics) {
         int characterWidth = metrics.getCharacterWidth();
-        return characterWidth == 0 ? 0 : dataViewWidth / characterWidth;
+        int halfSpaceWidth = characterWidth / 2;
+        if (characterWidth == 0) {
+            return 0;
+        }
+        int halfCharsPerPage = (dataViewWidth / characterWidth) * 2;
+        if (dataViewWidth % characterWidth >= halfSpaceWidth) {
+            halfCharsPerPage++;
+        }
+
+        return halfCharsPerPage;
     }
 
     private int computeRowsPerRectangle(BasicCodeAreaMetrics metrics) {

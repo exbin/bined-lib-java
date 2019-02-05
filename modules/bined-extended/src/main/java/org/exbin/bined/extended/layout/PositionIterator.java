@@ -38,5 +38,7 @@ public interface PositionIterator {
 
     int getHalfCharPosition();
 
+    boolean isEndReached();
+
     void skip(int count);
 }
