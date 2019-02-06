@@ -94,7 +94,7 @@ import org.exbin.bined.extended.layout.PositionIterator;
 /**
  * Extended code area component default painter.
  *
- * @version 0.2.0 2019/02/05
+ * @version 0.2.0 2019/02/06
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -141,7 +141,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
     private CodeCharactersCase codeCharactersCase;
     @Nullable
     private EditationOperation editationOperation;
-    private PositionIterator codeCharPositionIterator;
+    private PositionIterator positionIterator;
     private boolean showMirrorCursor;
     private boolean showUnprintables;
     @Nonnull
@@ -239,7 +239,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
 
         int halfCharsPerPage = dimensions.getHalfCharsPerPage();
         structure.updateCache(codeArea, halfCharsPerPage, layoutProfile);
-        codeCharPositionIterator = layoutProfile.createPositionIterator(structure.getCodeType(), structure.getViewMode(), structure.getBytesPerRow());
+        positionIterator = layoutProfile.createPositionIterator(structure.getCodeType(), structure.getViewMode(), structure.getBytesPerRow());
         codeCharactersCase = ((CodeCharactersCaseCapable) codeArea).getCodeCharactersCase();
         showUnprintables = ((ShowUnprintablesCapable) codeArea).isShowUnprintables();
         minRowPositionLength = ((RowWrappingCapable) codeArea).getMinRowPositionLength();
@@ -284,10 +284,23 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
             rowDataCache = new RowDataCache();
         }
 
-        rowDataCache.headerChars = new char[structure.getHalfCharsPerCodeSection()];
+        boolean shifted = layoutProfile.isHalfShiftedUsed();
+        int maxCodeSectionChars = (structure.getHalfCharsPerCodeSection() >> 1) + 1;
+        maxCodeSectionChars *= 2;
+        rowDataCache.headerCodeData = new char[structure.getPositionCodeType().getMaxDigitsForByte()];
+        rowDataCache.headerChars = new char[maxCodeSectionChars];
+        if (shifted) {
+            rowDataCache.headerChars = new char[maxCodeSectionChars];
+        }
+        rowDataCache.rowCodeData = new char[structure.getCodeType().getMaxDigitsForByte()];
         rowDataCache.rowData = new byte[structure.getBytesPerRow() + metrics.getMaxBytesPerChar() - 1];
         rowDataCache.rowPositionCode = new char[rowPositionLength];
-        rowDataCache.rowCharacters = new char[structure.getHalfCharsPerRow()];
+        int maxRowDataChars = (structure.getHalfCharsPerRow() >> 1) + 1;
+        maxRowDataChars *= 2;
+        rowDataCache.rowCharacters = new char[maxRowDataChars];
+        if (shifted) {
+            rowDataCache.rowCharactersShifted = new char[maxRowDataChars];
+        }
         rowDataCache.unprintables = new byte[(structure.getBytesPerRow() + 7) >> 3];
     }
 
@@ -433,7 +446,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         g.setClip(clipBounds != null ? clipBounds.intersection(headerArea) : headerArea);
 
         int characterWidth = metrics.getCharacterWidth();
-        int byteCodeWidth = structure.getPositionCodeType().getMaxDigitsForByte() * characterWidth;
+        int halfSpaceWidth = characterWidth / 2;
         int rowHeight = metrics.getRowHeight();
         int dataViewX = dimensions.getDataViewX();
 
@@ -447,35 +460,50 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
             int headerY = headerArea.y + dimensions.getLayoutProfile().getTopHeaderSpace() + rowHeight - metrics.getSubFontSpace();
 
             Arrays.fill(rowDataCache.headerChars, ' ');
+            if (layoutProfile.isHalfShiftedUsed()) {
+                Arrays.fill(rowDataCache.headerCharsShifted, ' ');
+            }
 
             g.setColor(colorsProfile.getColor(CodeAreaBasicColors.ALTERNATE_BACKGROUND));
-            boolean interleaving = false;
-            int lastPos = 0;
-            codeCharPositionIterator.reset();
+            int codeLength = structure.getPositionCodeType().getMaxDigitsForByte();
+            int base = structure.getPositionCodeType().getBase();
+            positionIterator.reset();
             int visibleCodeStart = visibility.getVisibleCodeStart();
             int visibleMatrixCodeEnd = visibility.getVisibleMatrixCodeEnd();
-            for (int characterOnRow = visibleCodeStart; characterOnRow < visibleMatrixCodeEnd; characterOnRow++) {
-                int codePos = structure.computeFirstCodeHalfCharPos(characterOnRow);
-                if (codePos == lastPos + 2 && !interleaving) {
-                    interleaving = true;
-                } else {
-                    CodeAreaUtils.longToBaseCode(rowDataCache.headerChars, codePos, characterOnRow, structure.getPositionCodeType().getBase(), 2, true, codeCharactersCase);
-                    lastPos = codePos;
-                    interleaving = false;
+            while (positionIterator.getBytePosition() < visibleCodeStart) {
+                positionIterator.nextSpaceType();
+            }
+            boolean paintGrid = themeProfile.getBackgroundPaintMode() == ExtendedBackgroundPaintMode.GRIDDED
+                    || themeProfile.getBackgroundPaintMode() == ExtendedBackgroundPaintMode.CHESSBOARD;
+            int halfCharPos = positionIterator.getHalfCharPosition();
+            for (int byteOffset = visibleCodeStart; byteOffset <= visibleMatrixCodeEnd; byteOffset++) {
+                int gridStartX = paintGrid ? layoutProfile.computeHalfCharWidth(halfCharPos, characterWidth, halfSpaceWidth) : 0;
+                int gridEndX = 0;
+                CodeAreaUtils.longToBaseCode(rowDataCache.headerCodeData, 0, byteOffset, base, 2, true, codeCharactersCase);
+                for (int i = 0; i < codeLength; i++) {
+                    int charPos = halfCharPos >> 1;
+                    if ((halfCharPos & 1) == 0) {
+                        rowDataCache.headerChars[charPos] = rowDataCache.headerCodeData[i];
+                    } else {
+                        rowDataCache.headerCharsShifted[charPos] = rowDataCache.headerCodeData[i];
+                    }
 
-                    if (themeProfile.getBackgroundPaintMode() == ExtendedBackgroundPaintMode.GRIDDED
-                            || themeProfile.getBackgroundPaintMode() == ExtendedBackgroundPaintMode.CHESSBOARD) {
-                        int bytePosition = structure.computePositionByte(codePos);
-                        if ((bytePosition & 1) != 0) {
-                            g.fillRect(headerX + codePos * characterWidth, headerArea.y, byteCodeWidth, headerArea.height);
-                        }
+                    if (paintGrid && i + 1 == codeLength) {
+                        gridEndX = layoutProfile.computeHalfCharWidth(halfCharPos + 2, characterWidth, halfSpaceWidth);
+                    }
+                    halfCharPos += 2 + positionIterator.nextSpaceType().getHalfCharSize();
+                }
+
+                if (paintGrid) {
+                    if ((byteOffset & 1) != 0) {
+                        g.fillRect(headerX + gridStartX, headerArea.y, gridEndX - gridStartX, headerArea.height);
                     }
                 }
             }
 
             g.setColor(colorsProfile.getColor(CodeAreaBasicColors.TEXT_COLOR));
-            int visibleCharStart = visibility.getVisibleCharStart();
-            int visibleMatrixCharEnd = visibility.getVisibleMatrixCharEnd();
+            int visibleCharStart = visibility.getVisibleHalfCharStart() >> 1;
+            int visibleMatrixCharEnd = visibility.getVisibleMatrixHalfCharEnd() >> 1;
             int renderOffset = visibleCharStart;
             Color renderColor = null;
             for (int characterOnRow = visibleCharStart; characterOnRow < visibleMatrixCharEnd; characterOnRow++) {
@@ -874,8 +902,8 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         int previewCharPos = structure.getPreviewHalfCharPos();
         CodeAreaViewMode viewMode = structure.getViewMode();
         int charactersPerRow = structure.getHalfCharsPerRow();
-        int visibleCharStart = visibility.getVisibleCharStart();
-        int visibleCharEnd = visibility.getVisibleCharEnd();
+        int visibleCharStart = visibility.getVisibleHalfCharStart();
+        int visibleCharEnd = visibility.getVisibleHalfCharEnd();
 
         int renderOffset = visibleCharStart;
         Color renderColor = null;
@@ -1051,8 +1079,8 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         Color renderColor = null;
 
         boolean unprintables = false;
-        int visibleCharStart = visibility.getVisibleCharStart();
-        int visibleCharEnd = visibility.getVisibleCharEnd();
+        int visibleCharStart = visibility.getVisibleHalfCharStart();
+        int visibleCharEnd = visibility.getVisibleHalfCharEnd();
         int renderOffset = visibleCharStart;
         for (int charOnRow = visibleCharStart; charOnRow < visibleCharEnd; charOnRow++) {
             CodeAreaSection section;
@@ -1738,10 +1766,14 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
 
     private static class RowDataCache {
 
+        char[] headerCodeData;
         char[] headerChars;
+        char[] headerCharsShifted;
+        char[] rowCodeData;
         byte[] rowData;
         char[] rowPositionCode;
         char[] rowCharacters;
+        char[] rowCharactersShifted;
         byte[] unprintables;
     }
 

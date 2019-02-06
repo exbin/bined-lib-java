@@ -17,11 +17,12 @@ package org.exbin.bined.extended.layout;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import org.exbin.bined.BasicCodeAreaSection;
 
 /**
  * Iterator for layout character position iteration.
  *
- * @version 0.2.0 2019/02/04
+ * @version 0.2.0 2019/02/06
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -37,6 +38,9 @@ public interface PositionIterator {
     int getBytePosition();
 
     int getHalfCharPosition();
+
+    @Nonnull
+    BasicCodeAreaSection getSection();
 
     boolean isEndReached();
 

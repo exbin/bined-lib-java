@@ -82,7 +82,7 @@ public class ExtendedCodeAreaLayoutProfile implements ExtendedCodeAreaLayout {
         int bytesPerRow = structure.getBytesPerRow();
         int halfCharsPerRow = 0;
         if (viewMode != CodeAreaViewMode.TEXT_PREVIEW) {
-            halfCharsPerRow += computeLastCodeHalfCharPos(bytesPerRow - 1, structure) + 1;
+            halfCharsPerRow += computeLastByteHalfCharPos(bytesPerRow - 1, BasicCodeAreaSection.CODE_MATRIX, structure) + 1;
         }
         if (viewMode != CodeAreaViewMode.CODE_MATRIX) {
             halfCharsPerRow += bytesPerRow;
@@ -164,7 +164,7 @@ public class ExtendedCodeAreaLayoutProfile implements ExtendedCodeAreaLayout {
     }
 
     @Override
-    public synchronized int computeFirstCodeHalfCharPos(int byteOffset, ExtendedCodeAreaStructure structure) {
+    public synchronized int computeFirstByteHalfCharPos(int byteOffset, CodeAreaSection section, ExtendedCodeAreaStructure structure) {
         CodeType codeType = structure.getCodeType();
         CodeAreaViewMode viewMode = structure.getViewMode();
         int bytesPerRow = structure.getBytesPerRow();
@@ -173,20 +173,20 @@ public class ExtendedCodeAreaLayoutProfile implements ExtendedCodeAreaLayout {
         }
 
         PosIterator posIterator = new PosIterator(codeType, viewMode, bytesPerRow);
-        while (posIterator.getBytePosition() < byteOffset && !posIterator.isEndReached()) {
+        while ((posIterator.getBytePosition() < byteOffset || posIterator.getSection() != section) && !posIterator.isEndReached()) {
             posIterator.nextSpaceType();
         }
         return posIterator.getHalfCharPosition();
     }
 
     @Override
-    public int computeLastCodeHalfCharPos(int byteOffset, ExtendedCodeAreaStructure structure) {
+    public int computeLastByteHalfCharPos(int byteOffset, CodeAreaSection section, ExtendedCodeAreaStructure structure) {
         CodeType codeType = structure.getCodeType();
         CodeAreaViewMode viewMode = structure.getViewMode();
         int bytesPerRow = structure.getBytesPerRow();
         PosIterator posIterator = new PosIterator(codeType, viewMode, bytesPerRow);
         int halfCharPos = 0;
-        while (posIterator.getBytePosition() <= byteOffset && !posIterator.isEndReached()) {
+        while ((posIterator.getBytePosition() <= byteOffset || posIterator.getSection() != section) && !posIterator.isEndReached()) {
             halfCharPos = posIterator.getHalfCharPosition();
             posIterator.nextSpaceType();
         }
@@ -492,9 +492,13 @@ public class ExtendedCodeAreaLayoutProfile implements ExtendedCodeAreaLayout {
         this.doubleSpaceGroupSize = doubleSpaceGroupSize;
     }
 
+    public boolean isHalfShiftedUsed() {
+        return halfSpaceGroupSize > 0;
+    }
+
     private final class PosIterator implements PositionIterator {
 
-        private int codeCharPosition;
+        private int charPosition;
         private int bytePosition;
         private int halfCharPosition;
         private int codeOffset;
@@ -520,7 +524,7 @@ public class ExtendedCodeAreaLayoutProfile implements ExtendedCodeAreaLayout {
         @Override
         public void reset() {
             endReached = false;
-            codeCharPosition = 0;
+            charPosition = 0;
             bytePosition = 0;
             halfCharPosition = 0;
             oddHalf = false;
@@ -533,7 +537,7 @@ public class ExtendedCodeAreaLayoutProfile implements ExtendedCodeAreaLayout {
 
         @Override
         public int getCharPosition() {
-            return codeCharPosition;
+            return charPosition;
         }
 
         @Override
@@ -551,13 +555,19 @@ public class ExtendedCodeAreaLayoutProfile implements ExtendedCodeAreaLayout {
             return endReached;
         }
 
+        @Nonnull
+        @Override
+        public BasicCodeAreaSection getSection() {
+            return section;
+        }
+
         @Override
         public SpaceType nextSpaceType() {
             if (endReached) {
                 return SpaceType.NONE;
             }
 
-            codeCharPosition++;
+            charPosition++;
 
             SpaceType spaceType = SpaceType.NONE;
             if (section == BasicCodeAreaSection.CODE_MATRIX) {

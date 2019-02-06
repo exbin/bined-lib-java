@@ -17,13 +17,14 @@ package org.exbin.bined.extended.layout;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.CaretPosition;
+import org.exbin.bined.CodeAreaSection;
 import org.exbin.bined.basic.MovementDirection;
 import org.exbin.bined.extended.ExtendedCodeAreaStructure;
 
 /**
  * Layout interface for extended code area.
  *
- * @version 0.2.0 2019/02/05
+ * @version 0.2.0 2019/02/06
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -37,9 +38,9 @@ public interface ExtendedCodeAreaLayout {
 
     int computePositionByte(int rowHalfCharPosition, ExtendedCodeAreaStructure structure);
 
-    int computeFirstCodeHalfCharPos(int byteOffset, ExtendedCodeAreaStructure structure);
+    int computeFirstByteHalfCharPos(int byteOffset, CodeAreaSection section, ExtendedCodeAreaStructure structure);
 
-    int computeLastCodeHalfCharPos(int byteOffset, ExtendedCodeAreaStructure structure);
+    int computeLastByteHalfCharPos(int byteOffset, CodeAreaSection section, ExtendedCodeAreaStructure structure);
 
     CaretPosition computeMovePosition(CaretPosition position, MovementDirection direction, ExtendedCodeAreaStructure structure, int rowsPerPage);
 }

@@ -18,6 +18,7 @@ package org.exbin.bined.extended;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import org.exbin.bined.BasicCodeAreaSection;
 import org.exbin.bined.CaretPosition;
 import org.exbin.bined.CodeAreaViewMode;
 import org.exbin.bined.CodeType;
@@ -79,29 +80,30 @@ public class ExtendedCodeAreaStructure {
         wrappingBytesGroupSize = ((RowWrappingCapable) codeArea).getWrappingBytesGroupSize();
         bytesPerRow = layout.computeBytesPerRow(halfCharsPerPage, this);
         halfCharsPerRow = layout.computeHalfCharsPerRow(this);
-        halfCharsPerCodeSection = layout.computeFirstCodeHalfCharPos(bytesPerRow, this);
+        codeLastHalfCharPos = layout.computeLastByteHalfCharPos(bytesPerRow - 1, viewMode == CodeAreaViewMode.CODE_MATRIX ? BasicCodeAreaSection.CODE_MATRIX : BasicCodeAreaSection.TEXT_PREVIEW, this);
         rowsPerDocument = layout.computeRowsPerDocument(this);
 
-        // Compute first and last visible character of the code area
+        // Compute last visible character of the code area
         if (viewMode != CodeAreaViewMode.TEXT_PREVIEW) {
-            codeLastHalfCharPos = bytesPerRow * (codeType.getMaxDigitsForByte() + 1) - 1;
+            halfCharsPerCodeSection = layout.computeLastByteHalfCharPos(bytesPerRow - 1, BasicCodeAreaSection.CODE_MATRIX, this);
         } else {
+            halfCharsPerCodeSection = -1;
             codeLastHalfCharPos = 0;
         }
 
         if (viewMode == CodeAreaViewMode.DUAL) {
-            previewHalfCharPos = bytesPerRow * (codeType.getMaxDigitsForByte() + 1);
+            previewHalfCharPos = layout.computeFirstByteHalfCharPos(0, BasicCodeAreaSection.TEXT_PREVIEW, this);
         } else {
             previewHalfCharPos = 0;
         }
     }
 
-    public int computePositionByte(int rowCharPosition) {
-        return layout.computePositionByte(rowCharPosition, this);
+    public int computePositionByte(int rowHalfCharPosition) {
+        return layout.computePositionByte(rowHalfCharPosition, this);
     }
 
     public int computeFirstCodeHalfCharPos(int byteOffset) {
-        return layout.computeFirstCodeHalfCharPos(byteOffset, this);
+        return layout.computeFirstByteHalfCharPos(byteOffset, BasicCodeAreaSection.CODE_MATRIX, this);
     }
 
     @Nonnull
