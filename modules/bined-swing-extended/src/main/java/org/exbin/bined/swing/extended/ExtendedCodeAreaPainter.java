@@ -94,7 +94,7 @@ import org.exbin.bined.extended.layout.PositionIterator;
 /**
  * Extended code area component default painter.
  *
- * @version 0.2.0 2019/02/06
+ * @version 0.2.0 2019/02/07
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -467,10 +467,10 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
             g.setColor(colorsProfile.getColor(CodeAreaBasicColors.ALTERNATE_BACKGROUND));
             int codeLength = structure.getPositionCodeType().getMaxDigitsForByte();
             int base = structure.getPositionCodeType().getBase();
-            positionIterator.reset();
             int visibleCodeStart = visibility.getVisibleCodeStart();
             int visibleMatrixCodeEnd = visibility.getVisibleMatrixCodeEnd();
-            while (positionIterator.getBytePosition() < visibleCodeStart) {
+            positionIterator.reset();
+            while (!positionIterator.isEndReached() && positionIterator.getBytePosition() < visibleCodeStart) {
                 positionIterator.nextSpaceType();
             }
             boolean paintGrid = themeProfile.getBackgroundPaintMode() == ExtendedBackgroundPaintMode.GRIDDED
@@ -792,34 +792,51 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
             }
         }
 
+        positionIterator.reset();
         // Fill codes
         if (viewMode != CodeAreaViewMode.TEXT_PREVIEW) {
+            int codeLength = structure.getCodeType().getMaxDigitsForByte();
+            int base = structure.getCodeType().getBase();
             int visibleCodeStart = visibility.getVisibleCodeStart();
             int visibleCodeEnd = visibility.getVisibleCodeEnd();
+            while (!positionIterator.isEndReached() && positionIterator.getBytePosition() < visibleCodeStart) {
+                positionIterator.nextSpaceType();
+            }
             char targetChar;
             Character replacement;
-            for (int byteOnRow = Math.max(visibleCodeStart, rowStart); byteOnRow < Math.min(visibleCodeEnd, rowBytesLimit); byteOnRow++) {
-                byte dataByte = rowDataCache.rowData[byteOnRow];
+            int halfCharPos = positionIterator.getHalfCharPosition();
+            for (int byteOffset = Math.max(visibleCodeStart, rowStart); byteOffset < Math.min(visibleCodeEnd, rowBytesLimit); byteOffset++) {
+                byte dataByte = rowDataCache.rowData[byteOffset];
                 if (showUnprintables) {
                     int charDataLength = maxBytesPerChar;
-                    if (byteOnRow + charDataLength > rowDataCache.rowData.length) {
-                        charDataLength = rowDataCache.rowData.length - byteOnRow;
+                    if (byteOffset + charDataLength > rowDataCache.rowData.length) {
+                        charDataLength = rowDataCache.rowData.length - byteOffset;
                     }
-                    String displayString = new String(rowDataCache.rowData, byteOnRow, charDataLength, charset);
+                    String displayString = new String(rowDataCache.rowData, byteOffset, charDataLength, charset);
                     if (!displayString.isEmpty()) {
                         targetChar = displayString.charAt(0);
                         replacement = unprintableCharactersMapping.get(targetChar);
                         if (replacement != null) {
-                            rowDataCache.unprintables[byteOnRow >> 3] |= 1 << (byteOnRow & 7);
+                            rowDataCache.unprintables[byteOffset >> 3] |= 1 << (byteOffset & 7);
                         }
                     }
                 }
 
-                int byteRowPos = structure.computeFirstCodeHalfCharPos(byteOnRow);
+                int byteRowPos = structure.computeFirstCodeHalfCharPos(byteOffset);
                 if (byteRowPos > 0) {
                     rowDataCache.rowCharacters[byteRowPos - 1] = ' ';
                 }
-                CodeAreaUtils.byteToCharsCode(dataByte, codeType, rowDataCache.rowCharacters, byteRowPos, codeCharactersCase);
+                CodeAreaUtils.byteToCharsCode(dataByte, codeType, rowDataCache.rowCodeData, 0, codeCharactersCase);
+                for (int i = 0; i < codeLength; i++) {
+                    int charPos = halfCharPos >> 1;
+                    if ((halfCharPos & 1) == 0) {
+                        rowDataCache.rowCharacters[charPos] = rowDataCache.rowCodeData[i];
+                    } else {
+                        rowDataCache.rowCharactersShifted[charPos] = rowDataCache.rowCodeData[i];
+                    }
+
+                    halfCharPos += 2 + positionIterator.nextSpaceType().getHalfCharSize();
+                }
             }
             if (bytesPerRow > rowBytesLimit) {
                 Arrays.fill(rowDataCache.rowCharacters, structure.computeFirstCodeHalfCharPos(rowBytesLimit), rowDataCache.rowCharacters.length, ' ');
@@ -834,10 +851,13 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         if (viewMode != CodeAreaViewMode.CODE_MATRIX) {
             int visiblePreviewStart = visibility.getVisiblePreviewStart();
             int visiblePreviewEnd = visibility.getVisiblePreviewEnd();
+            while (!positionIterator.isEndReached() && (positionIterator.getBytePosition() < visiblePreviewStart || positionIterator.getSection() == BasicCodeAreaSection.CODE_MATRIX)) {
+                positionIterator.nextSpaceType();
+            }
             Character replacement;
             char targetChar;
-            for (int byteOnRow = visiblePreviewStart; byteOnRow < Math.min(visiblePreviewEnd, rowBytesLimit); byteOnRow++) {
-                byte dataByte = rowDataCache.rowData[byteOnRow];
+            for (int byteOffset = visiblePreviewStart; byteOffset < Math.min(visiblePreviewEnd, rowBytesLimit); byteOffset++) {
+                byte dataByte = rowDataCache.rowData[byteOffset];
 
                 if (maxBytesPerChar > 1) {
                     if (dataPosition + maxBytesPerChar > dataSize) {
@@ -845,22 +865,22 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
                     }
 
                     int charDataLength = maxBytesPerChar;
-                    if (byteOnRow + charDataLength > rowDataCache.rowData.length) {
-                        charDataLength = rowDataCache.rowData.length - byteOnRow;
+                    if (byteOffset + charDataLength > rowDataCache.rowData.length) {
+                        charDataLength = rowDataCache.rowData.length - byteOffset;
                     }
-                    String displayString = new String(rowDataCache.rowData, byteOnRow, charDataLength, charset);
+                    String displayString = new String(rowDataCache.rowData, byteOffset, charDataLength, charset);
                     if (!displayString.isEmpty()) {
                         targetChar = displayString.charAt(0);
                         if (showUnprintables) {
                             replacement = unprintableCharactersMapping.get(targetChar);
                             if (replacement != null) {
-                                rowDataCache.unprintables[byteOnRow >> 3] |= 1 << (byteOnRow & 7);
+                                rowDataCache.unprintables[byteOffset >> 3] |= 1 << (byteOffset & 7);
                                 targetChar = replacement;
                             }
 
                         }
 
-                        rowDataCache.rowCharacters[previewCharPos + byteOnRow] = targetChar;
+                        rowDataCache.rowCharacters[previewCharPos + byteOffset] = targetChar;
                     }
                 } else {
                     if (charMappingCharset == null || charMappingCharset != charset) {
@@ -874,13 +894,13 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
                         }
                         replacement = unprintableCharactersMapping.get(targetChar);
                         if (replacement != null) {
-                            rowDataCache.unprintables[byteOnRow >> 3] |= 1 << (byteOnRow & 7);
+                            rowDataCache.unprintables[byteOffset >> 3] |= 1 << (byteOffset & 7);
                             targetChar = replacement;
                         }
 
-                        rowDataCache.rowCharacters[previewCharPos + byteOnRow] = targetChar;
+                        rowDataCache.rowCharacters[previewCharPos + byteOffset] = targetChar;
                     } else {
-                        rowDataCache.rowCharacters[previewCharPos + byteOnRow] = targetChar;
+                        rowDataCache.rowCharacters[previewCharPos + byteOffset] = targetChar;
                     }
                 }
             }
