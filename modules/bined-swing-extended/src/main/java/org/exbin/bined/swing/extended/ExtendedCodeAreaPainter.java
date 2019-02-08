@@ -94,7 +94,7 @@ import org.exbin.bined.extended.layout.PositionIterator;
 /**
  * Extended code area component default painter.
  *
- * @version 0.2.0 2019/02/07
+ * @version 0.2.0 2019/02/08
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -464,18 +464,18 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
                 Arrays.fill(rowDataCache.headerCharsShifted, ' ');
             }
 
-            g.setColor(colorsProfile.getColor(CodeAreaBasicColors.ALTERNATE_BACKGROUND));
             int codeLength = structure.getPositionCodeType().getMaxDigitsForByte();
             int base = structure.getPositionCodeType().getBase();
+            g.setColor(colorsProfile.getColor(CodeAreaBasicColors.ALTERNATE_BACKGROUND));
             int visibleCodeStart = visibility.getVisibleCodeStart();
             int visibleMatrixCodeEnd = visibility.getVisibleMatrixCodeEnd();
             positionIterator.reset();
             while (!positionIterator.isEndReached() && positionIterator.getBytePosition() < visibleCodeStart) {
                 positionIterator.nextSpaceType();
             }
+            int halfCharPos = positionIterator.getHalfCharPosition();
             boolean paintGrid = themeProfile.getBackgroundPaintMode() == ExtendedBackgroundPaintMode.GRIDDED
                     || themeProfile.getBackgroundPaintMode() == ExtendedBackgroundPaintMode.CHESSBOARD;
-            int halfCharPos = positionIterator.getHalfCharPosition();
             for (int byteOffset = visibleCodeStart; byteOffset <= visibleMatrixCodeEnd; byteOffset++) {
                 int gridStartX = paintGrid ? layoutProfile.computeHalfCharWidth(halfCharPos, characterWidth, halfSpaceWidth) : 0;
                 int gridEndX = 0;
@@ -502,39 +502,83 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
             }
 
             g.setColor(colorsProfile.getColor(CodeAreaBasicColors.TEXT_COLOR));
-            int visibleCharStart = visibility.getVisibleHalfCharStart() >> 1;
-            int visibleMatrixCharEnd = visibility.getVisibleMatrixHalfCharEnd() >> 1;
-            int renderOffset = visibleCharStart;
+            positionIterator.reset();
+            while (!positionIterator.isEndReached() && positionIterator.getBytePosition() < visibleCodeStart) {
+                positionIterator.nextSpaceType();
+            }
+            halfCharPos = positionIterator.getHalfCharPosition();
+
+            int renderOffset = halfCharPos >> 1;
+            int renderOffsetShifted = renderOffset >> 1;
             Color renderColor = null;
-            for (int characterOnRow = visibleCharStart; characterOnRow < visibleMatrixCharEnd; characterOnRow++) {
-                boolean sequenceBreak = false;
+            Color renderColorShifted = null;
+            for (int byteOffset = visibleCodeStart; byteOffset <= visibleMatrixCodeEnd; byteOffset++) {
+                for (int i = 0; i < codeLength; i++) {
+                    int charPos = halfCharPos >> 1;
+                    boolean sequenceBreak = false;
+                    boolean nonshifted = (halfCharPos & 1) == 0;
 
-                char currentChar = rowDataCache.headerChars[characterOnRow];
-                if (currentChar == ' ' && renderOffset == characterOnRow) {
-                    renderOffset++;
-                    continue;
-                }
+                    char currentChar;
+                    if (nonshifted) {
+                        currentChar = rowDataCache.headerChars[charPos];
+                        if (currentChar == ' ' && renderOffset == charPos) {
+                            renderOffset++;
+                            continue;
+                        }
 
-                Color color = colorsProfile.getColor(CodeAreaBasicColors.TEXT_COLOR);
-                if (!CodeAreaSwingUtils.areSameColors(color, renderColor)) { // || !colorType.equals(renderColorType)
-                    sequenceBreak = true;
-                }
-                if (sequenceBreak) {
-                    if (renderOffset < characterOnRow) {
-                        drawCenteredChars(g, rowDataCache.headerChars, renderOffset, characterOnRow - renderOffset, characterWidth, headerX + renderOffset * characterWidth, headerY);
+                        Color color = colorsProfile.getColor(CodeAreaBasicColors.TEXT_COLOR);
+                        if (!CodeAreaSwingUtils.areSameColors(color, renderColor)) {
+                            sequenceBreak = true;
+                        }
+                        if (sequenceBreak) {
+                            if (renderOffset < charPos) {
+                                drawCenteredChars(g, rowDataCache.headerChars, renderOffset, charPos - renderOffset, characterWidth, headerX + renderOffset * characterWidth, headerY);
+                            }
+
+                            if (!CodeAreaSwingUtils.areSameColors(color, renderColor)) {
+                                renderColor = color;
+                                g.setColor(color);
+                            }
+
+                            renderOffset = charPos;
+                        }
+                    } else {
+                        currentChar = rowDataCache.headerCharsShifted[charPos];
+                        if (currentChar == ' ' && renderOffsetShifted == charPos) {
+                            renderOffsetShifted++;
+                            continue;
+                        }
+
+                        Color color = colorsProfile.getColor(CodeAreaBasicColors.TEXT_COLOR);
+                        if (!CodeAreaSwingUtils.areSameColors(color, renderColorShifted)) {
+                            sequenceBreak = true;
+                        }
+                        if (sequenceBreak) {
+                            if (renderOffsetShifted < charPos) {
+                                drawCenteredChars(g, rowDataCache.headerCharsShifted, renderOffsetShifted, charPos - renderOffsetShifted, characterWidth, headerX + renderOffsetShifted * characterWidth + halfSpaceWidth, headerY);
+                            }
+
+                            if (!CodeAreaSwingUtils.areSameColors(color, renderColorShifted)) {
+                                renderColorShifted = color;
+                                g.setColor(color);
+                            }
+
+                            renderOffsetShifted = charPos;
+                        }
                     }
-
-                    if (!CodeAreaSwingUtils.areSameColors(color, renderColor)) {
-                        renderColor = color;
-                        g.setColor(color);
-                    }
-
-                    renderOffset = characterOnRow;
+                    halfCharPos += 2 + positionIterator.nextSpaceType().getHalfCharSize();
                 }
             }
 
-            if (renderOffset < charactersPerCodeSection) {
-                drawCenteredChars(g, rowDataCache.headerChars, renderOffset, charactersPerCodeSection - renderOffset, characterWidth, headerX + renderOffset * characterWidth, headerY);
+            boolean nonshifted = (halfCharPos & 1) == 0;
+            if (nonshifted) {
+                if (renderOffset < charactersPerCodeSection) {
+                    drawCenteredChars(g, rowDataCache.headerChars, renderOffset, charactersPerCodeSection - renderOffset, characterWidth, headerX + renderOffset * characterWidth, headerY);
+                }
+            } else {
+                if (renderOffsetShifted < charactersPerCodeSection) {
+                    drawCenteredChars(g, rowDataCache.headerCharsShifted, renderOffset, charactersPerCodeSection - renderOffset, characterWidth, headerX + renderOffsetShifted * characterWidth + halfSpaceWidth, headerY);
+                }
             }
         }
 
@@ -1099,8 +1143,8 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         Color renderColor = null;
 
         boolean unprintables = false;
-        int visibleCharStart = visibility.getVisibleHalfCharStart();
-        int visibleCharEnd = visibility.getVisibleHalfCharEnd();
+        int visibleCharStart = visibility.getVisibleHalfCharStart() >> 1;
+        int visibleCharEnd = visibility.getVisibleHalfCharEnd() >> 1;
         int renderOffset = visibleCharStart;
         for (int charOnRow = visibleCharStart; charOnRow < visibleCharEnd; charOnRow++) {
             CodeAreaSection section;
