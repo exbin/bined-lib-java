@@ -803,7 +803,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         CodeAreaViewMode viewMode = structure.getViewMode();
         int bytesPerRow = structure.getBytesPerRow();
         long dataSize = structure.getDataSize();
-        int previewCharPos = structure.getPreviewHalfCharPos();
+//        int previewCharPos = structure.getPreviewHalfCharPos();
         CodeType codeType = structure.getCodeType();
 
         int rowBytesLimit = bytesPerRow;
@@ -837,20 +837,23 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         }
 
         positionIterator.reset();
-        // Fill codes
-        if (viewMode != CodeAreaViewMode.TEXT_PREVIEW) {
-            int codeLength = structure.getCodeType().getMaxDigitsForByte();
-            int base = structure.getCodeType().getBase();
-            int visibleCodeStart = visibility.getVisibleCodeStart();
-            int visibleCodeEnd = visibility.getVisibleCodeEnd();
-            while (!positionIterator.isEndReached() && positionIterator.getBytePosition() < visibleCodeStart) {
-                positionIterator.nextSpaceType();
-            }
-            char targetChar;
-            Character replacement;
-            int halfCharPos = positionIterator.getHalfCharPosition();
-            for (int byteOffset = Math.max(visibleCodeStart, rowStart); byteOffset < Math.min(visibleCodeEnd, rowBytesLimit); byteOffset++) {
-                byte dataByte = rowDataCache.rowData[byteOffset];
+        int codeLength = structure.getCodeType().getMaxDigitsForByte();
+        int base = structure.getCodeType().getBase();
+        int visibleCodeStart = visibility.getVisibleCodeStart();
+        int visibleCodeEnd = visibility.getVisibleCodeEnd();
+        while (!positionIterator.isEndReached() && positionIterator.getBytePosition() < visibleCodeStart) {
+            positionIterator.nextSpaceType();
+        }
+        char targetChar;
+        Character replacement;
+        int halfCharPos = positionIterator.getHalfCharPosition();
+        do {
+            int byteOffset = positionIterator.getBytePosition();
+            int charPos = halfCharPos >> 1;
+            BasicCodeAreaSection section = positionIterator.getSection();
+            int codeOffset = positionIterator.getCodeOffset();
+            byte dataByte = rowDataCache.rowData[byteOffset];
+            if (section == BasicCodeAreaSection.CODE_MATRIX) {
                 if (showUnprintables) {
                     int charDataLength = maxBytesPerChar;
                     if (byteOffset + charDataLength > rowDataCache.rowData.length) {
@@ -866,43 +869,15 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
                     }
                 }
 
-                int byteRowPos = structure.computeFirstCodeHalfCharPos(byteOffset);
-                if (byteRowPos > 0) {
-                    rowDataCache.rowCharacters[byteRowPos - 1] = ' ';
+                if (codeOffset == 1) {
+                    CodeAreaUtils.byteToCharsCode(dataByte, codeType, rowDataCache.rowCodeData, 0, codeCharactersCase);
                 }
-                CodeAreaUtils.byteToCharsCode(dataByte, codeType, rowDataCache.rowCodeData, 0, codeCharactersCase);
-                for (int i = 0; i < codeLength; i++) {
-                    int charPos = halfCharPos >> 1;
-                    if ((halfCharPos & 1) == 0) {
-                        rowDataCache.rowCharacters[charPos] = rowDataCache.rowCodeData[i];
-                    } else {
-                        rowDataCache.rowCharactersShifted[charPos] = rowDataCache.rowCodeData[i];
-                    }
-
-                    halfCharPos += 2 + positionIterator.nextSpaceType().getHalfCharSize();
+                if ((halfCharPos & 1) == 0) {
+                    rowDataCache.rowCharacters[charPos] = rowDataCache.rowCodeData[codeOffset - 1];
+                } else {
+                    rowDataCache.rowCharactersShifted[charPos] = rowDataCache.rowCodeData[codeOffset - 1];
                 }
-            }
-            if (bytesPerRow > rowBytesLimit) {
-                Arrays.fill(rowDataCache.rowCharacters, structure.computeFirstCodeHalfCharPos(rowBytesLimit), rowDataCache.rowCharacters.length, ' ');
-            }
-        }
-
-        if (previewCharPos > 0) {
-            rowDataCache.rowCharacters[previewCharPos - 1] = ' ';
-        }
-
-        // Fill preview characters
-        if (viewMode != CodeAreaViewMode.CODE_MATRIX) {
-            int visiblePreviewStart = visibility.getVisiblePreviewStart();
-            int visiblePreviewEnd = visibility.getVisiblePreviewEnd();
-            while (!positionIterator.isEndReached() && (positionIterator.getBytePosition() < visiblePreviewStart || positionIterator.getSection() == BasicCodeAreaSection.CODE_MATRIX)) {
-                positionIterator.nextSpaceType();
-            }
-            Character replacement;
-            char targetChar;
-            for (int byteOffset = visiblePreviewStart; byteOffset < Math.min(visiblePreviewEnd, rowBytesLimit); byteOffset++) {
-                byte dataByte = rowDataCache.rowData[byteOffset];
-
+            } else {
                 if (maxBytesPerChar > 1) {
                     if (dataPosition + maxBytesPerChar > dataSize) {
                         maxBytesPerChar = (int) (dataSize - dataPosition);
@@ -924,7 +899,11 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
 
                         }
 
-                        rowDataCache.rowCharacters[previewCharPos + byteOffset] = targetChar;
+                        if ((halfCharPos & 1) == 0) {
+                            rowDataCache.rowCharacters[charPos] = targetChar;
+                        } else {
+                            rowDataCache.rowCharactersShifted[charPos] = targetChar;
+                        }
                     }
                 } else {
                     if (charMappingCharset == null || charMappingCharset != charset) {
@@ -942,16 +921,22 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
                             targetChar = replacement;
                         }
 
-                        rowDataCache.rowCharacters[previewCharPos + byteOffset] = targetChar;
+                        if ((halfCharPos & 1) == 0) {
+                            rowDataCache.rowCharacters[charPos + byteOffset] = targetChar;
+                        } else {
+                            rowDataCache.rowCharactersShifted[charPos + byteOffset] = targetChar;
+                        }
                     } else {
-                        rowDataCache.rowCharacters[previewCharPos + byteOffset] = targetChar;
+                        if ((halfCharPos & 1) == 0) {
+                            rowDataCache.rowCharacters[charPos + byteOffset] = targetChar;
+                        } else {
+                            rowDataCache.rowCharactersShifted[charPos + byteOffset] = targetChar;
+                        }
                     }
                 }
             }
-            if (bytesPerRow > rowBytesLimit) {
-                Arrays.fill(rowDataCache.rowCharacters, previewCharPos + rowBytesLimit, previewCharPos + bytesPerRow, ' ');
-            }
-        }
+            halfCharPos += 2 + positionIterator.nextSpaceType().getHalfCharSize();
+        } while (!positionIterator.isEndReached());
     }
 
     /**

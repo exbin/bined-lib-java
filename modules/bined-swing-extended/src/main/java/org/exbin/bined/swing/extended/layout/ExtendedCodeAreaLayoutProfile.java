@@ -551,6 +551,11 @@ public class ExtendedCodeAreaLayoutProfile implements ExtendedCodeAreaLayout {
         }
 
         @Override
+        public int getCodeOffset() {
+            return codeOffset;
+        }
+
+        @Override
         public boolean isEndReached() {
             return endReached;
         }

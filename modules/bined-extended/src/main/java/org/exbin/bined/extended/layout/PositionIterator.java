@@ -22,7 +22,7 @@ import org.exbin.bined.BasicCodeAreaSection;
 /**
  * Iterator for layout character position iteration.
  *
- * @version 0.2.0 2019/02/06
+ * @version 0.2.0 2019/02/10
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -36,6 +36,8 @@ public interface PositionIterator {
     int getCharPosition();
 
     int getBytePosition();
+
+    int getCodeOffset();
 
     int getHalfCharPosition();
 
