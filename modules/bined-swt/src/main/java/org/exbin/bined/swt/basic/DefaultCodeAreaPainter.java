@@ -44,6 +44,7 @@ import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.CodeAreaViewMode;
 import org.exbin.bined.CodeCharactersCase;
 import org.exbin.bined.CodeType;
+import org.exbin.bined.DataChangedListener;
 import org.exbin.bined.EditationOperation;
 import org.exbin.bined.PositionCodeType;
 import org.exbin.bined.PositionOverflowMode;
@@ -141,8 +142,14 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
 
     public DefaultCodeAreaPainter(CodeAreaCore codeArea) {
         this.codeArea = codeArea;
-        codeArea.setLayout(null);
+        codeArea.addDataChangedListener(new DataChangedListener() {
+            @Override
+            public void dataChanged() {
+                recomputeLayout();
+            }
+        });
 
+        codeArea.setLayout(null);
         scrollPanel = new ScrolledComposite(codeArea, SWT.H_SCROLL | SWT.V_SCROLL);
         ScrollBar verticalScrollBar = scrollPanel.getVerticalBar();
         verticalScrollBar.addSelectionListener(new VerticalSelectionListener());

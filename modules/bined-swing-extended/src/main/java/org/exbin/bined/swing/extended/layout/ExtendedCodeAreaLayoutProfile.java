@@ -529,7 +529,7 @@ public class ExtendedCodeAreaLayoutProfile implements ExtendedCodeAreaLayout {
             halfCharPosition = 0;
             oddHalf = false;
             section = viewMode == CodeAreaViewMode.TEXT_PREVIEW ? BasicCodeAreaSection.TEXT_PREVIEW : BasicCodeAreaSection.CODE_MATRIX;
-            codeOffset = codeLength;
+            codeOffset = codeLength - 1;
             halfSpacePos = halfSpaceGroupSize;
             spacePos = spaceGroupSize;
             doubleSpacePos = doubleSpaceGroupSize;
@@ -576,7 +576,7 @@ public class ExtendedCodeAreaLayoutProfile implements ExtendedCodeAreaLayout {
 
             SpaceType spaceType = SpaceType.NONE;
             if (section == BasicCodeAreaSection.CODE_MATRIX) {
-                if (codeOffset > 1) {
+                if (codeOffset > 0) {
                     codeOffset--;
                     halfCharPosition += 2;
                     return spaceType;
@@ -613,7 +613,7 @@ public class ExtendedCodeAreaLayoutProfile implements ExtendedCodeAreaLayout {
                 }
             }
 
-            codeOffset = codeLength;
+            codeOffset = codeLength - 1;
             if (bytePosition + 1 == bytesPerRow) {
                 if (viewMode == CodeAreaViewMode.DUAL && section == BasicCodeAreaSection.CODE_MATRIX) {
                     section = BasicCodeAreaSection.TEXT_PREVIEW;

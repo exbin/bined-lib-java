@@ -837,8 +837,6 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         }
 
         positionIterator.reset();
-        int codeLength = structure.getCodeType().getMaxDigitsForByte();
-        int base = structure.getCodeType().getBase();
         int visibleCodeStart = visibility.getVisibleCodeStart();
         int visibleCodeEnd = visibility.getVisibleCodeEnd();
         while (!positionIterator.isEndReached() && positionIterator.getBytePosition() < visibleCodeStart) {
@@ -869,13 +867,13 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
                     }
                 }
 
-                if (codeOffset == 1) {
+                if (codeOffset == 0) {
                     CodeAreaUtils.byteToCharsCode(dataByte, codeType, rowDataCache.rowCodeData, 0, codeCharactersCase);
                 }
                 if ((halfCharPos & 1) == 0) {
-                    rowDataCache.rowCharacters[charPos] = rowDataCache.rowCodeData[codeOffset - 1];
+                    rowDataCache.rowCharacters[charPos] = rowDataCache.rowCodeData[codeOffset];
                 } else {
-                    rowDataCache.rowCharactersShifted[charPos] = rowDataCache.rowCodeData[codeOffset - 1];
+                    rowDataCache.rowCharactersShifted[charPos] = rowDataCache.rowCodeData[codeOffset];
                 }
             } else {
                 if (maxBytesPerChar > 1) {
@@ -921,17 +919,12 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
                             targetChar = replacement;
                         }
 
-                        if ((halfCharPos & 1) == 0) {
-                            rowDataCache.rowCharacters[charPos + byteOffset] = targetChar;
-                        } else {
-                            rowDataCache.rowCharactersShifted[charPos + byteOffset] = targetChar;
-                        }
+                    }
+
+                    if ((halfCharPos & 1) == 0) {
+                        rowDataCache.rowCharacters[charPos + byteOffset] = targetChar;
                     } else {
-                        if ((halfCharPos & 1) == 0) {
-                            rowDataCache.rowCharacters[charPos + byteOffset] = targetChar;
-                        } else {
-                            rowDataCache.rowCharactersShifted[charPos + byteOffset] = targetChar;
-                        }
+                        rowDataCache.rowCharactersShifted[charPos + byteOffset] = targetChar;
                     }
                 }
             }
@@ -956,28 +949,27 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
 
         int renderOffset = visibleCharStart;
         Color renderColor = null;
+        positionIterator.reset();
+        while (!positionIterator.isEndReached() && positionIterator.getBytePosition() < 0) {
+            positionIterator.nextSpaceType();
+        }
+        int halfCharPos = positionIterator.getHalfCharPosition();
         boolean unprintable;
-        for (int charOnRow = visibleCharStart; charOnRow < visibleCharEnd; charOnRow++) {
-            CodeAreaSection section;
-            int byteOnRow;
-            if (charOnRow >= previewCharPos && viewMode != CodeAreaViewMode.CODE_MATRIX) {
-                byteOnRow = charOnRow - previewCharPos;
-                section = BasicCodeAreaSection.TEXT_PREVIEW;
-            } else {
-                byteOnRow = structure.computePositionByte(charOnRow);
-                section = BasicCodeAreaSection.CODE_MATRIX;
-            }
-            boolean sequenceBreak = false;
+        do {
+            int byteOnRow = positionIterator.getBytePosition();
+            int charPos = halfCharPos >> 1;
+            CodeAreaSection section = positionIterator.getSection();
 
+            boolean sequenceBreak = false;
             unprintable = showUnprintables && (rowDataCache.unprintables[byteOnRow >> 3] & (1 << (byteOnRow & 7))) != 0;
-            Color color = getPositionBackgroundColor(rowDataPosition, byteOnRow, charOnRow, section, unprintable);
+            Color color = getPositionBackgroundColor(rowDataPosition, byteOnRow, charPos, section, unprintable);
             if (!CodeAreaSwingUtils.areSameColors(color, renderColor)) {
                 sequenceBreak = true;
             }
             if (sequenceBreak) {
-                if (renderOffset < charOnRow) {
+                if (renderOffset < charPos) {
                     if (renderColor != null) {
-                        renderBackgroundSequence(g, renderOffset, charOnRow, rowPositionX, rowPositionY);
+                        renderBackgroundSequence(g, renderOffset, charPos, rowPositionX, rowPositionY);
                     }
                 }
 
@@ -988,9 +980,10 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
                     }
                 }
 
-                renderOffset = charOnRow;
+                renderOffset = charPos;
             }
-        }
+            halfCharPos += 2 + positionIterator.nextSpaceType().getHalfCharSize();
+        } while (!positionIterator.isEndReached());
 
         if (renderOffset < charactersPerRow) {
             if (renderColor != null) {

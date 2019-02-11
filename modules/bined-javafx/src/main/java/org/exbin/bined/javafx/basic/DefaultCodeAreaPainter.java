@@ -42,6 +42,7 @@ import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.CodeAreaViewMode;
 import org.exbin.bined.CodeCharactersCase;
 import org.exbin.bined.CodeType;
+import org.exbin.bined.DataChangedListener;
 import org.exbin.bined.EditationOperation;
 import org.exbin.bined.PositionCodeType;
 import org.exbin.bined.PositionOverflowMode;
@@ -144,6 +145,13 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
 
     public DefaultCodeAreaPainter(CodeAreaCore codeArea) {
         this.codeArea = codeArea;
+        codeArea.addDataChangedListener(new DataChangedListener() {
+            @Override
+            public void dataChanged() {
+                recomputeLayout();
+            }
+        });
+
         topCanvas = new Canvas();
         headerCanvas = new Canvas();
         rowPositionCanvas = new Canvas();
