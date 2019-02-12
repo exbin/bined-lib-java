@@ -33,7 +33,7 @@ import org.exbin.bined.extended.layout.PositionIterator;
 /**
  * Layout profile for extended code area.
  *
- * @version 0.2.0 2019/02/05
+ * @version 0.2.0 2019/02/12
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -529,7 +529,7 @@ public class ExtendedCodeAreaLayoutProfile implements ExtendedCodeAreaLayout {
             halfCharPosition = 0;
             oddHalf = false;
             section = viewMode == CodeAreaViewMode.TEXT_PREVIEW ? BasicCodeAreaSection.TEXT_PREVIEW : BasicCodeAreaSection.CODE_MATRIX;
-            codeOffset = codeLength - 1;
+            codeOffset = 0;
             halfSpacePos = halfSpaceGroupSize;
             spacePos = spaceGroupSize;
             doubleSpacePos = doubleSpaceGroupSize;
@@ -566,6 +566,7 @@ public class ExtendedCodeAreaLayoutProfile implements ExtendedCodeAreaLayout {
             return section;
         }
 
+        @Nonnull
         @Override
         public SpaceType nextSpaceType() {
             if (endReached) {
@@ -576,8 +577,8 @@ public class ExtendedCodeAreaLayoutProfile implements ExtendedCodeAreaLayout {
 
             SpaceType spaceType = SpaceType.NONE;
             if (section == BasicCodeAreaSection.CODE_MATRIX) {
-                if (codeOffset > 0) {
-                    codeOffset--;
+                if (codeOffset < codeLength - 1) {
+                    codeOffset++;
                     halfCharPosition += 2;
                     return spaceType;
                 }
@@ -611,9 +612,10 @@ public class ExtendedCodeAreaLayoutProfile implements ExtendedCodeAreaLayout {
                         halfSpacePos--;
                     }
                 }
+
+                codeOffset = 0;
             }
 
-            codeOffset = codeLength - 1;
             if (bytePosition + 1 == bytesPerRow) {
                 if (viewMode == CodeAreaViewMode.DUAL && section == BasicCodeAreaSection.CODE_MATRIX) {
                     section = BasicCodeAreaSection.TEXT_PREVIEW;

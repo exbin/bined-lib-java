@@ -403,7 +403,7 @@ public class LayoutPanelEx extends javax.swing.JPanel {
 
     private void doubleSpaceGroupSizeSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_doubleSpaceGroupSizeSpinnerStateChanged
         ExtendedCodeAreaLayoutProfile layoutProfile = codeArea.getLayoutProfile();
-        layoutProfile.setTopHeaderSpace((Integer) headerTopSpaceSpinner.getValue());
+        layoutProfile.setDoubleSpaceGroupSize((Integer) doubleSpaceGroupSizeSpinner.getValue());
         codeArea.setLayoutProfile(layoutProfile);
     }//GEN-LAST:event_doubleSpaceGroupSizeSpinnerStateChanged
 

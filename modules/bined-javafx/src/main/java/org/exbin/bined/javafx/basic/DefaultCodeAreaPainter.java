@@ -145,12 +145,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
 
     public DefaultCodeAreaPainter(CodeAreaCore codeArea) {
         this.codeArea = codeArea;
-        codeArea.addDataChangedListener(new DataChangedListener() {
-            @Override
-            public void dataChanged() {
-                recomputeLayout();
-            }
-        });
+        codeArea.addDataChangedListener(this::recomputeLayout);
 
         topCanvas = new Canvas();
         headerCanvas = new Canvas();

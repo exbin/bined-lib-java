@@ -147,12 +147,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
 //    private long paintCounter = 0;
     public DefaultCodeAreaPainter(CodeAreaCore codeArea) {
         this.codeArea = codeArea;
-        codeArea.addDataChangedListener(new DataChangedListener() {
-            @Override
-            public void dataChanged() {
-                recomputeLayout();
-            }
-        });
+        codeArea.addDataChangedListener(this::recomputeLayout);
 
         dataView = new JPanel();
         dataView.setBorder(null);
