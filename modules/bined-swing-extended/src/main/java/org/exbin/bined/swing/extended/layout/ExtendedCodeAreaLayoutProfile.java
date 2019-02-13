@@ -168,9 +168,6 @@ public class ExtendedCodeAreaLayoutProfile implements ExtendedCodeAreaLayout {
         CodeType codeType = structure.getCodeType();
         CodeAreaViewMode viewMode = structure.getViewMode();
         int bytesPerRow = structure.getBytesPerRow();
-        if (byteOffset == 0) {
-            return 0;
-        }
 
         PosIterator posIterator = new PosIterator(codeType, viewMode, bytesPerRow);
         while ((posIterator.getBytePosition() < byteOffset || posIterator.getSection() != section) && !posIterator.isEndReached()) {
