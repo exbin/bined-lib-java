@@ -1479,6 +1479,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         CodeAreaCaretPosition caret = new CodeAreaCaretPosition();
         CodeAreaScrollPosition scrollPosition = scrolling.getScrollPosition();
         int characterWidth = metrics.getCharacterWidth();
+        int halfSpaceWidth = characterWidth / 2;
         int rowHeight = metrics.getRowHeight();
         int rowPositionAreaWidth = dimensions.getRowPositionAreaWidth();
         int headerAreaHeight = dimensions.getHeaderAreaHeight();
@@ -1486,14 +1487,27 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         int diffX = 0;
         if (positionX < rowPositionAreaWidth) {
             if (overflowMode == PositionOverflowMode.OVERFLOW) {
-                diffX = 1;
+                diffX = characterWidth;
             }
             positionX = rowPositionAreaWidth;
         }
-        int cursorCharX = (positionX - rowPositionAreaWidth + scrollPosition.getCharOffset()) / characterWidth + scrollPosition.getCharPosition() - diffX;
-        if (cursorCharX < 0) {
-            cursorCharX = 0;
-        }
+        int cursorX = (positionX - rowPositionAreaWidth + scrollPosition.getCharOffset()) + characterWidth * scrollPosition.getCharPosition() - diffX;
+        int halfCharPosX = 0;
+        int codeOffset = 0;
+        int byteOnRow = 0;
+        CodeAreaSection section = null;
+        positionIterator.reset();
+        do {
+            codeOffset = positionIterator.getCodeOffset();
+            byteOnRow = positionIterator.getBytePosition();
+            section = positionIterator.getSection();
+            int nextSpaceSize = positionIterator.nextSpaceType().getHalfCharSize();
+            int posX = layoutProfile.computeHalfCharWidth(halfCharPosX + 2 + nextSpaceSize / 2, characterWidth, halfSpaceWidth);
+            if (cursorX < posX) {
+                break;
+            }
+            halfCharPosX += 2 + nextSpaceSize;
+        } while (!positionIterator.isEndReached());
 
         int diffY = 0;
         if (positionY < headerAreaHeight) {
@@ -1507,38 +1521,10 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
             cursorRowY = 0;
         }
 
-        CodeAreaViewMode viewMode = structure.getViewMode();
-        int previewCharPos = structure.getPreviewHalfCharPos();
         int bytesPerRow = structure.getBytesPerRow();
-        CodeType codeType = structure.getCodeType();
         long dataSize = structure.getDataSize();
-        long dataPosition;
-        int codeOffset = 0;
-        int byteOnRow;
-        if ((viewMode == CodeAreaViewMode.DUAL && cursorCharX < previewCharPos) || viewMode == CodeAreaViewMode.CODE_MATRIX) {
-            caret.setSection(BasicCodeAreaSection.CODE_MATRIX);
-            byteOnRow = structure.computePositionByte(cursorCharX);
-            if (byteOnRow >= bytesPerRow) {
-                codeOffset = 0;
-            } else {
-                codeOffset = cursorCharX - structure.computeFirstCodeHalfCharPos(byteOnRow);
-                if (codeOffset >= codeType.getMaxDigitsForByte()) {
-                    codeOffset = codeType.getMaxDigitsForByte() - 1;
-                }
-            }
-        } else {
-            caret.setSection(BasicCodeAreaSection.TEXT_PREVIEW);
-            byteOnRow = cursorCharX;
-            if (viewMode == CodeAreaViewMode.DUAL) {
-                byteOnRow -= previewCharPos;
-            }
-        }
+        long dataPosition = byteOnRow + (cursorRowY * bytesPerRow);
 
-        if (byteOnRow >= bytesPerRow) {
-            byteOnRow = bytesPerRow - 1;
-        }
-
-        dataPosition = byteOnRow + (cursorRowY * bytesPerRow);
         if (dataPosition < 0) {
             dataPosition = 0;
             codeOffset = 0;
@@ -1549,8 +1535,9 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
             codeOffset = 0;
         }
 
-        caret.setDataPosition(dataPosition);
+        caret.setSection(section);
         caret.setCodeOffset(codeOffset);
+        caret.setDataPosition(dataPosition);
         return caret;
     }
 
@@ -1856,6 +1843,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         }
 
         return size;
+
     }
 
     private class VerticalAdjustmentListener implements AdjustmentListener {
@@ -1903,6 +1891,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
     private void notifyScrolled() {
         recomputeScrollState();
         ((ScrollingCapable) codeArea).notifyScrolled();
+
     }
 
     private static class RowDataCache {
