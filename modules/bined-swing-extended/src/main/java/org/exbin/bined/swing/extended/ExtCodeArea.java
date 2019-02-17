@@ -58,10 +58,11 @@ import org.exbin.bined.swing.basic.AntialiasingMode;
 import org.exbin.bined.swing.basic.DefaultCodeAreaCaret;
 import org.exbin.bined.swing.basic.DefaultCodeAreaCommandHandler;
 import org.exbin.bined.swing.extended.color.ColorsProfileCapableCodeAreaPainter;
-import org.exbin.bined.swing.extended.layout.ExtendedCodeAreaLayoutProfile;
+import org.exbin.bined.swing.extended.layout.DefaultExtendedCodeAreaLayoutProfile;
 import org.exbin.bined.swing.extended.layout.LayoutProfileCapableCodeAreaPainter;
 import org.exbin.bined.swing.extended.theme.ExtendedCodeAreaThemeProfile;
 import org.exbin.bined.swing.extended.theme.ThemeProfileCapableCodeAreaPainter;
+import org.exbin.bined.extended.layout.ExtendedCodeAreaLayoutProfile;
 
 /**
  * Code area component extended code area.

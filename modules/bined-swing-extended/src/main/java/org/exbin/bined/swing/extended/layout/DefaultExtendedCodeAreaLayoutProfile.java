@@ -26,18 +26,18 @@ import org.exbin.bined.CodeType;
 import org.exbin.bined.basic.MovementDirection;
 import org.exbin.bined.capability.RowWrappingCapable;
 import org.exbin.bined.extended.layout.SpaceType;
-import org.exbin.bined.extended.layout.ExtendedCodeAreaLayout;
 import org.exbin.bined.extended.ExtendedCodeAreaStructure;
 import org.exbin.bined.extended.layout.PositionIterator;
+import org.exbin.bined.extended.layout.ExtendedCodeAreaLayoutProfile;
 
 /**
  * Layout profile for extended code area.
  *
- * @version 0.2.0 2019/02/12
+ * @version 0.2.0 2019/02/17
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public class ExtendedCodeAreaLayoutProfile implements ExtendedCodeAreaLayout {
+public class DefaultExtendedCodeAreaLayoutProfile implements ExtendedCodeAreaLayoutProfile {
 
     private boolean showHeader = true;
     private int topHeaderSpace = 0;
@@ -51,27 +51,27 @@ public class ExtendedCodeAreaLayoutProfile implements ExtendedCodeAreaLayout {
     private int spaceGroupSize = 1;
     private int doubleSpaceGroupSize = 0;
 
-    public ExtendedCodeAreaLayoutProfile() {
+    public DefaultExtendedCodeAreaLayoutProfile() {
     }
 
     /**
      * Copy constructor.
      *
-     * @param profile source profile
      * @return copy of profile
      */
+    @Override
     @Nonnull
-    public static ExtendedCodeAreaLayoutProfile createCopy(ExtendedCodeAreaLayoutProfile profile) {
-        ExtendedCodeAreaLayoutProfile copy = new ExtendedCodeAreaLayoutProfile();
-        copy.showHeader = profile.showHeader;
-        copy.topHeaderSpace = profile.topHeaderSpace;
-        copy.bottomHeaderSpace = profile.bottomHeaderSpace;
-        copy.showRowPosition = profile.showRowPosition;
-        copy.leftRowPositionSpace = profile.leftRowPositionSpace;
-        copy.rightRowPositionSpace = profile.rightRowPositionSpace;
-        copy.halfSpaceGroupSize = profile.halfSpaceGroupSize;
-        copy.spaceGroupSize = profile.spaceGroupSize;
-        copy.doubleSpaceGroupSize = profile.doubleSpaceGroupSize;
+    public DefaultExtendedCodeAreaLayoutProfile createCopy() {
+        DefaultExtendedCodeAreaLayoutProfile copy = new DefaultExtendedCodeAreaLayoutProfile();
+        copy.showHeader = this.showHeader;
+        copy.topHeaderSpace = this.topHeaderSpace;
+        copy.bottomHeaderSpace = this.bottomHeaderSpace;
+        copy.showRowPosition = this.showRowPosition;
+        copy.leftRowPositionSpace = this.leftRowPositionSpace;
+        copy.rightRowPositionSpace = this.rightRowPositionSpace;
+        copy.halfSpaceGroupSize = this.halfSpaceGroupSize;
+        copy.spaceGroupSize = this.spaceGroupSize;
+        copy.doubleSpaceGroupSize = this.doubleSpaceGroupSize;
 
         return copy;
     }
@@ -191,6 +191,7 @@ public class ExtendedCodeAreaLayoutProfile implements ExtendedCodeAreaLayout {
         return halfCharPos;
     }
 
+    @Nonnull
     @Override
     public CaretPosition computeMovePosition(CaretPosition position, MovementDirection direction, ExtendedCodeAreaStructure structure, int rowsPerPage) {
         CodeType codeType = structure.getCodeType();
@@ -344,7 +345,7 @@ public class ExtendedCodeAreaLayoutProfile implements ExtendedCodeAreaLayout {
             }
 
             charPositionX += characterWidth;
-            SpaceType spaceType = charPositionIterator.nextSpaceType();
+            charPositionIterator.nextSpaceType();
             int halfSpaceSize = characterWidth / 2;
             if (positionX >= charPositionX && positionX < charPositionX + halfSpaceSize) {
                 return charPositionIterator.getCharPosition() - 1;
@@ -358,6 +359,7 @@ public class ExtendedCodeAreaLayoutProfile implements ExtendedCodeAreaLayout {
         return -1;
     }
 
+    @Override
     @Nonnull
     public PositionIterator createPositionIterator(CodeType codeType, CodeAreaViewMode viewMode, int bytesPerRow) {
         return new PosIterator(codeType, viewMode, bytesPerRow);
@@ -377,7 +379,7 @@ public class ExtendedCodeAreaLayoutProfile implements ExtendedCodeAreaLayout {
             PosIterator posIterator = new PosIterator(codeType, viewMode, bytesPerRow);
             while (posIterator.getCharPosition() < codeCharPosition) {
                 posIterator.nextSpaceType();
-                positionX = computeHalfCharWidth(posIterator.getHalfCharPosition(), characterWidth, halfSpaceWidth);
+                positionX = computePositionX(posIterator.getHalfCharPosition(), characterWidth, halfSpaceWidth);
             }
 
             if (codeCharPosition < firstPreviewCodeChar) {
@@ -413,10 +415,12 @@ public class ExtendedCodeAreaLayoutProfile implements ExtendedCodeAreaLayout {
         return SpaceType.NONE;
     }
 
-    public int computeHalfCharWidth(int halfCharPosition, int characterWidth, int halfSpaceWidth) {
+    @Override
+    public int computePositionX(int halfCharPosition, int characterWidth, int halfSpaceWidth) {
         return characterWidth * (halfCharPosition >> 1) + halfSpaceWidth * (halfCharPosition & 1);
     }
 
+    @Override
     public boolean isShowHeader() {
         return showHeader;
     }
@@ -441,6 +445,7 @@ public class ExtendedCodeAreaLayoutProfile implements ExtendedCodeAreaLayout {
         this.leftRowPositionSpace = leftRowPositionSpace;
     }
 
+    @Override
     public boolean isShowRowPosition() {
         return showRowPosition;
     }
@@ -489,10 +494,32 @@ public class ExtendedCodeAreaLayoutProfile implements ExtendedCodeAreaLayout {
         this.doubleSpaceGroupSize = doubleSpaceGroupSize;
     }
 
+    @Override
     public boolean isHalfShiftedUsed() {
         return halfSpaceGroupSize > 0;
     }
 
+    @Override
+    public int computeRowPositionAreaWidth(int characterWidth, int rowPositionLength) {
+        return isShowRowPosition() ? characterWidth * (rowPositionLength + 1) + getLeftRowPositionSpace() + getRightRowPositionSpace() : 0;
+    }
+
+    @Override
+    public int computeHeaderAreaHeight(int fontHeight) {
+        return isShowHeader() ? fontHeight + fontHeight / 4 + getTopHeaderSpace() + getBottomHeaderSpace() : 0;
+    }
+
+    @Override
+    public int computeHeaderOffsetPositionY() {
+        return topHeaderSpace;
+    }
+
+    @Override
+    public int computeRowPositionOffsetPositionX() {
+        return leftRowPositionSpace;
+    }
+
+    @ParametersAreNonnullByDefault
     private final class PosIterator implements PositionIterator {
 
         private int charPosition;

@@ -15,20 +15,23 @@
  */
 package org.exbin.bined.extended.layout;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.CaretPosition;
 import org.exbin.bined.CodeAreaSection;
+import org.exbin.bined.CodeAreaViewMode;
+import org.exbin.bined.CodeType;
 import org.exbin.bined.basic.MovementDirection;
 import org.exbin.bined.extended.ExtendedCodeAreaStructure;
 
 /**
  * Layout interface for extended code area.
  *
- * @version 0.2.0 2019/02/06
+ * @version 0.2.0 2019/02/17
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public interface ExtendedCodeAreaLayout {
+public interface ExtendedCodeAreaLayoutProfile {
 
     int computeBytesPerRow(int halfCharsPerPage, ExtendedCodeAreaStructure structure);
 
@@ -42,5 +45,28 @@ public interface ExtendedCodeAreaLayout {
 
     int computeLastByteHalfCharPos(int byteOffset, CodeAreaSection section, ExtendedCodeAreaStructure structure);
 
+    boolean isShowHeader();
+
+    boolean isShowRowPosition();
+
+    boolean isHalfShiftedUsed();
+
+    int computeHeaderOffsetPositionY();
+
+    int computeRowPositionOffsetPositionX();
+
+    @Nonnull
     CaretPosition computeMovePosition(CaretPosition position, MovementDirection direction, ExtendedCodeAreaStructure structure, int rowsPerPage);
+
+    int computePositionX(int halfCharPosition, int characterWidth, int halfSpaceWidth);
+
+    @Nonnull
+    ExtendedCodeAreaLayoutProfile createCopy();
+
+    @Nonnull
+    PositionIterator createPositionIterator(CodeType codeType, CodeAreaViewMode viewMode, int bytesPerRow);
+
+    public int computeRowPositionAreaWidth(int characterWidth, int rowPositionLength);
+
+    public int computeHeaderAreaHeight(int fontHeight);
 }

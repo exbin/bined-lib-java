@@ -18,7 +18,7 @@ package org.exbin.bined.swing.extended.capability;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.exbin.bined.capability.CodeAreaCapability;
-import org.exbin.bined.swing.extended.layout.ExtendedCodeAreaLayoutProfile;
+import org.exbin.bined.extended.layout.ExtendedCodeAreaLayoutProfile;
 
 /**
  * Support for layout profiling.

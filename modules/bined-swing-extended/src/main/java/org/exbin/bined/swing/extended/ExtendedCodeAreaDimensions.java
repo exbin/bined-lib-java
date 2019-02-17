@@ -22,7 +22,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.BasicCodeAreaZone;
 import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.swing.basic.BasicCodeAreaMetrics;
-import org.exbin.bined.swing.extended.layout.ExtendedCodeAreaLayoutProfile;
+import org.exbin.bined.swing.extended.layout.DefaultExtendedCodeAreaLayoutProfile;
+import org.exbin.bined.extended.layout.ExtendedCodeAreaLayoutProfile;
 
 /**
  * Basic code area component dimensions.
@@ -71,8 +72,8 @@ public class ExtendedCodeAreaDimensions {
         this.layoutProfile = layoutProfile;
         this.verticalScrollBarSize = verticalScrollBarSize;
         this.horizontalScrollBarSize = horizontalScrollBarSize;
-        headerAreaHeight = layoutProfile.isShowHeader() ? metrics.getFontHeight() + metrics.getFontHeight() / 4 + layoutProfile.getTopHeaderSpace() + layoutProfile.getBottomHeaderSpace() : 0;
-        rowPositionAreaWidth = layoutProfile.isShowRowPosition() ? metrics.getCharacterWidth() * (rowPositionLength + 1) + layoutProfile.getLeftRowPositionSpace() + layoutProfile.getRightRowPositionSpace() : 0;
+        headerAreaHeight = layoutProfile.computeHeaderAreaHeight(metrics.getFontHeight());
+        rowPositionAreaWidth = layoutProfile.computeRowPositionAreaWidth(metrics.getCharacterWidth(), rowPositionLength);
 
         dataViewX = componentX + rowPositionAreaWidth;
         dataViewY = componentX + headerAreaHeight;

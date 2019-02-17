@@ -17,20 +17,23 @@ package org.exbin.bined.swing.extended;
 
 import org.exbin.bined.extended.ExtendedCodeAreaStructure;
 import javax.annotation.ParametersAreNonnullByDefault;
+import org.exbin.bined.BasicCodeAreaSection;
 import org.exbin.bined.CodeAreaViewMode;
 import org.exbin.bined.basic.CodeAreaScrollPosition;
 import org.exbin.bined.swing.basic.BasicCodeAreaMetrics;
+import org.exbin.bined.extended.layout.ExtendedCodeAreaLayoutProfile;
+import org.exbin.bined.extended.layout.PositionIterator;
 
 /**
  * Basic code area component characters visibility in scroll window.
  *
- * @version 0.2.0 2019/02/06
+ * @version 0.2.0 2019/02/17
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class ExtendedCodeAreaVisibility {
 
-    private int previewRelativeX;
+    private int splitLinePos;
     private int visibleHalfCharStart;
     private int visibleHalfCharEnd;
     private int visibleMatrixHalfCharEnd;
@@ -40,13 +43,12 @@ public class ExtendedCodeAreaVisibility {
     private int visibleCodeEnd;
     private int visibleMatrixCodeEnd;
 
-    public void recomputeCharPositions(BasicCodeAreaMetrics metrics, ExtendedCodeAreaStructure structure, ExtendedCodeAreaDimensions dimensions, CodeAreaScrollPosition scrollPosition) {
+    public void recomputeCharPositions(BasicCodeAreaMetrics metrics, ExtendedCodeAreaStructure structure, ExtendedCodeAreaDimensions dimensions, ExtendedCodeAreaLayoutProfile layout, CodeAreaScrollPosition scrollPosition) {
         int dataViewWidth = dimensions.getDataViewWidth();
         int previewCharPos = structure.getPreviewHalfCharPos();
         int characterWidth = metrics.getCharacterWidth();
-        previewRelativeX = previewCharPos * characterWidth;
-
         CodeAreaViewMode viewMode = structure.getViewMode();
+        splitLinePos = computeSlitLinePos(viewMode, characterWidth, structure, layout);
         int halfCharsPerCodeSection = structure.getHalfCharsPerCodeSection();
         int bytesPerRow = structure.getBytesPerRow();
         if (viewMode == CodeAreaViewMode.DUAL || viewMode == CodeAreaViewMode.CODE_MATRIX) {
@@ -101,8 +103,33 @@ public class ExtendedCodeAreaVisibility {
         }
     }
 
-    public int getPreviewRelativeX() {
-        return previewRelativeX;
+    private int computeSlitLinePos(CodeAreaViewMode viewMode, int characterWidth, ExtendedCodeAreaStructure structure, ExtendedCodeAreaLayoutProfile layout) {
+        int linePos = 0;
+        if (viewMode == CodeAreaViewMode.DUAL) {
+            PositionIterator positionIterator = layout.createPositionIterator(structure.getCodeType(), structure.getViewMode(), structure.getBytesPerRow());
+            int halfCharPos = 0;
+            while (!positionIterator.isEndReached()) {
+                int nextSpaceSize = positionIterator.nextSpaceType().getHalfCharSize();
+                if (positionIterator.getBytePosition() == 0 && positionIterator.getSection() == BasicCodeAreaSection.TEXT_PREVIEW) {
+                    linePos = layout.computePositionX(halfCharPos + 2, characterWidth, characterWidth / 2)
+                            + layout.computePositionX(nextSpaceSize, characterWidth, characterWidth / 2) / 2;
+                    break;
+                }
+                halfCharPos += 2 + nextSpaceSize;
+            }
+        }
+
+        return linePos;
+    }
+
+    /**
+     * Returns pixel position of slit line relative to data view or 0 if not in
+     * use.
+     *
+     * @return x-position or 0
+     */
+    public int getSplitLinePos() {
+        return splitLinePos;
     }
 
     public int getVisibleHalfCharStart() {

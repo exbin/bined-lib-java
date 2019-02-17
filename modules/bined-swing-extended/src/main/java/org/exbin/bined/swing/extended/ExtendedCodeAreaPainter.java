@@ -84,12 +84,13 @@ import org.exbin.bined.swing.capability.AntialiasingCapable;
 import org.exbin.bined.swing.capability.FontCapable;
 import org.exbin.bined.swing.extended.color.ColorsProfileCapableCodeAreaPainter;
 import org.exbin.bined.swing.extended.color.ExtendedCodeAreaColorProfile;
-import org.exbin.bined.swing.extended.layout.ExtendedCodeAreaLayoutProfile;
+import org.exbin.bined.swing.extended.layout.DefaultExtendedCodeAreaLayoutProfile;
 import org.exbin.bined.swing.extended.layout.LayoutProfileCapableCodeAreaPainter;
 import org.exbin.bined.swing.extended.theme.ExtendedCodeAreaThemeProfile;
 import org.exbin.bined.swing.extended.theme.ThemeProfileCapableCodeAreaPainter;
 import org.exbin.utils.binary_data.BinaryData;
 import org.exbin.bined.extended.layout.PositionIterator;
+import org.exbin.bined.extended.layout.ExtendedCodeAreaLayoutProfile;
 
 /**
  * Extended code area component default painter.
@@ -129,7 +130,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
     private volatile ScrollingState scrollingState = ScrollingState.NO_SCROLLING;
 
     @Nonnull
-    private ExtendedCodeAreaLayoutProfile layoutProfile = new ExtendedCodeAreaLayoutProfile();
+    private ExtendedCodeAreaLayoutProfile layoutProfile = new DefaultExtendedCodeAreaLayoutProfile();
     @Nonnull
     private CodeAreaColorsProfile colorsProfile = new ExtendedCodeAreaColorProfile();
     @Nonnull
@@ -277,7 +278,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
     }
 
     public void recomputeCharPositions() {
-        visibility.recomputeCharPositions(metrics, structure, dimensions, scrolling.getScrollPosition());
+        visibility.recomputeCharPositions(metrics, structure, dimensions, layoutProfile, scrolling.getScrollPosition());
         updateRowDataCache();
     }
 
@@ -459,7 +460,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         CodeAreaViewMode viewMode = structure.getViewMode();
         if (viewMode == CodeAreaViewMode.DUAL || viewMode == CodeAreaViewMode.CODE_MATRIX) {
             int headerX = dataViewX - scrollPosition.getCharPosition() * characterWidth - scrollPosition.getCharOffset();
-            int headerY = headerArea.y + dimensions.getLayoutProfile().getTopHeaderSpace() + rowHeight - metrics.getSubFontSpace();
+            int headerY = headerArea.y + dimensions.getLayoutProfile().computeHeaderOffsetPositionY() + rowHeight - metrics.getSubFontSpace();
 
             Arrays.fill(rowDataCache.headerChars, ' ');
             if (layoutProfile.isHalfShiftedUsed()) {
@@ -479,7 +480,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
             boolean paintGrid = themeProfile.getBackgroundPaintMode() == ExtendedBackgroundPaintMode.GRIDDED
                     || themeProfile.getBackgroundPaintMode() == ExtendedBackgroundPaintMode.CHESSBOARD;
             for (int byteOffset = visibleCodeStart; byteOffset <= visibleMatrixCodeEnd; byteOffset++) {
-                int gridStartX = paintGrid ? layoutProfile.computeHalfCharWidth(halfCharPos, characterWidth, halfSpaceWidth) : 0;
+                int gridStartX = paintGrid ? layoutProfile.computePositionX(halfCharPos, characterWidth, halfSpaceWidth) : 0;
                 int gridEndX = 0;
                 CodeAreaUtils.longToBaseCode(rowDataCache.headerCodeData, 0, byteOffset, base, 2, true, codeCharactersCase);
                 for (int i = 0; i < codeLength; i++) {
@@ -491,7 +492,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
                     }
 
                     if (paintGrid && i + 1 == codeLength) {
-                        gridEndX = layoutProfile.computeHalfCharWidth(halfCharPos + 2, characterWidth, halfSpaceWidth);
+                        gridEndX = layoutProfile.computePositionX(halfCharPos + 2, characterWidth, halfSpaceWidth);
                     }
                     halfCharPos += 2 + positionIterator.nextSpaceType().getHalfCharSize();
                 }
@@ -586,8 +587,9 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         if (themeProfile.showHeaderLine() || themeProfile.showBoxLine()) {
             g.drawLine(headerArea.x, headerArea.y + headerArea.height - 1, headerArea.x + headerArea.width, headerArea.y + headerArea.height - 1);
         }
-        if (themeProfile.showSplitLine()) {
-            int lineX = dataViewX + visibility.getPreviewRelativeX() - scrollPosition.getCharPosition() * characterWidth - scrollPosition.getCharOffset() - characterWidth / 2;
+        int splitLinePos = visibility.getSplitLinePos();
+        if (themeProfile.showSplitLine() && splitLinePos > 0) {
+            int lineX = dataViewX + splitLinePos - scrollPosition.getCharPosition() * characterWidth - scrollPosition.getCharOffset();
             if (lineX >= dataViewX) {
                 g.drawLine(lineX, headerArea.y, lineX, headerArea.y + headerArea.height);
             }
@@ -644,7 +646,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
             }
 
             CodeAreaUtils.longToBaseCode(rowDataCache.rowPositionCode, 0, dataPosition < 0 ? 0 : dataPosition, structure.getPositionCodeType().getBase(), rowPositionLength, true, CodeCharactersCase.UPPER);
-            drawCenteredChars(g, rowDataCache.rowPositionCode, 0, rowPositionLength, characterWidth, rowPosRectangle.x + dimensions.getLayoutProfile().getLeftRowPositionSpace(), positionY);
+            drawCenteredChars(g, rowDataCache.rowPositionCode, 0, rowPositionLength, characterWidth, rowPosRectangle.x + dimensions.getLayoutProfile().computeRowPositionOffsetPositionX(), positionY);
 
             positionY += rowHeight;
             dataPosition += bytesPerRow;
@@ -682,15 +684,15 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         Rectangle dataViewRectangle = dimensions.getDataViewRectangle();
         CodeAreaScrollPosition scrollPosition = scrolling.getScrollPosition();
         int characterWidth = metrics.getCharacterWidth();
-        int previewRelativeX = visibility.getPreviewRelativeX();
+        int splitLinePos = visibility.getSplitLinePos();
 
         Rectangle clipBounds = g.getClipBounds();
         g.setClip(clipBounds != null ? clipBounds.intersection(mainAreaRect) : mainAreaRect);
         paintBackground(g);
 
         g.setColor(colorsProfile.getColor(BasicCodeAreaDecorationColorType.LINE));
-        int lineX = dataViewRectangle.x + previewRelativeX - scrollPosition.getCharPosition() * characterWidth - scrollPosition.getCharOffset() - characterWidth / 2;
-        if (themeProfile.showSplitLine() && lineX >= dataViewRectangle.x) {
+        int lineX = dataViewRectangle.x + splitLinePos - scrollPosition.getCharPosition() * characterWidth - scrollPosition.getCharOffset();
+        if (themeProfile.showSplitLine() && splitLinePos > 0) {
             g.drawLine(lineX, dataViewRectangle.y, lineX, dataViewRectangle.y + dataViewRectangle.height);
         }
 
@@ -1392,7 +1394,6 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
                 int subFontSpace = metrics.getSubFontSpace();
                 int dataViewX = dimensions.getDataViewX();
                 int dataViewY = dimensions.getDataViewY();
-                int previewRelativeX = visibility.getPreviewRelativeX();
 
                 CodeAreaViewMode viewMode = structure.getViewMode();
                 CodeAreaScrollPosition scrollPosition = scrolling.getScrollPosition();
@@ -1413,7 +1414,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
                 int halfCharPos = layoutProfile.computeFirstByteHalfCharPos(byteOffset, section, structure);
                 halfCharPos += codeOffset * 2; // TODO
                 int relativeX = dataViewX - scrollPosition.getCharPosition() * characterWidth - scrollPosition.getCharOffset();
-                int posX = relativeX + layoutProfile.computeHalfCharWidth(halfCharPos, characterWidth, characterWidth / 2);
+                int posX = relativeX + layoutProfile.computePositionX(halfCharPos, characterWidth, characterWidth / 2);
 
                 if (viewMode != CodeAreaViewMode.CODE_MATRIX && caret.getSection() == BasicCodeAreaSection.TEXT_PREVIEW) {
 //                    int charPos = (scrolledX - previewRelativeX) / characterWidth;
@@ -1502,7 +1503,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
             byteOnRow = positionIterator.getBytePosition();
             section = positionIterator.getSection();
             int nextSpaceSize = positionIterator.nextSpaceType().getHalfCharSize();
-            int posX = layoutProfile.computeHalfCharWidth(halfCharPosX + 2 + nextSpaceSize / 2, characterWidth, halfSpaceWidth);
+            int posX = layoutProfile.computePositionX(halfCharPosX + 2 + nextSpaceSize / 2, characterWidth, halfSpaceWidth);
             if (cursorX < posX) {
                 break;
             }
@@ -1583,9 +1584,9 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         int caretX;
         int halfCharPos = layoutProfile.computeFirstByteHalfCharPos(byteOffset, section, structure);
         halfCharPos += codeOffset * 2; // TODO
-        caretX = dataViewRect.x + layoutProfile.computeHalfCharWidth(halfCharPos, characterWidth, characterWidth / 2);
+        caretX = dataViewRect.x + layoutProfile.computePositionX(halfCharPos, characterWidth, characterWidth / 2);
 //        if (section == BasicCodeAreaSection.TEXT_PREVIEW) {
-//            caretX = dataViewRect.x + visibility.getPreviewRelativeX() + characterWidth * byteOffset;
+//            caretX = dataViewRect.x + visibility.getSplitLinePos() + characterWidth * byteOffset;
 //        } else {
 //            caretX = dataViewRect.x + characterWidth * (structure.computeFirstCodeHalfCharPos(byteOffset) + codeOffset);
 //        }
@@ -1638,12 +1639,12 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
     @Nonnull
     @Override
     public ExtendedCodeAreaLayoutProfile getLayoutProfile() {
-        return ExtendedCodeAreaLayoutProfile.createCopy(layoutProfile);
+        return layoutProfile.createCopy();
     }
 
     @Override
     public void setLayoutProfile(ExtendedCodeAreaLayoutProfile layoutProfile) {
-        this.layoutProfile = ExtendedCodeAreaLayoutProfile.createCopy(layoutProfile);
+        this.layoutProfile = layoutProfile.createCopy();
         resetLayout();
     }
 

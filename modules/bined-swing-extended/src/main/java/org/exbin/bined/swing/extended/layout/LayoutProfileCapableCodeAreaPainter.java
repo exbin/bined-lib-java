@@ -17,11 +17,12 @@ package org.exbin.bined.swing.extended.layout;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import org.exbin.bined.extended.layout.ExtendedCodeAreaLayoutProfile;
 
 /**
  * Capability of painter to handle layout profiling.
  *
- * @version 0.2.0 2018/12/04
+ * @version 0.2.0 2019/02/17
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault

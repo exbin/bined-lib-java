@@ -32,7 +32,7 @@ import org.exbin.bined.capability.RowWrappingCapable.RowWrappingMode;
 import org.exbin.bined.capability.SelectionCapable;
 import org.exbin.bined.capability.ViewModeCapable;
 import org.exbin.bined.extended.capability.PositionCodeTypeCapable;
-import org.exbin.bined.extended.layout.ExtendedCodeAreaLayout;
+import org.exbin.bined.extended.layout.ExtendedCodeAreaLayoutProfile;
 
 /**
  * Code area data representation structure for extended variant.
@@ -59,7 +59,7 @@ public class ExtendedCodeAreaStructure {
     private int maxBytesPerLine;
     private int wrappingBytesGroupSize;
 
-    private ExtendedCodeAreaLayout layout;
+    private ExtendedCodeAreaLayoutProfile layout;
     private long rowsPerDocument;
     private int bytesPerRow;
     private int halfCharsPerRow;
@@ -68,7 +68,7 @@ public class ExtendedCodeAreaStructure {
     private int codeLastHalfCharPos;
     private int previewHalfCharPos;
 
-    public void updateCache(DataProvider codeArea, int halfCharsPerPage, ExtendedCodeAreaLayout layout) {
+    public void updateCache(DataProvider codeArea, int halfCharsPerPage, ExtendedCodeAreaLayoutProfile layout) {
         this.layout = layout;
         viewMode = ((ViewModeCapable) codeArea).getViewMode();
         codeType = ((CodeTypeCapable) codeArea).getCodeType();
