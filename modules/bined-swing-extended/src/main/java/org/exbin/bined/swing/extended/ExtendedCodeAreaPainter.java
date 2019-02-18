@@ -64,11 +64,11 @@ import org.exbin.bined.capability.CharsetCapable;
 import org.exbin.bined.capability.CodeCharactersCaseCapable;
 import org.exbin.bined.capability.EditationModeCapable;
 import org.exbin.bined.capability.RowWrappingCapable;
-import org.exbin.bined.capability.ScrollingCapable;
 import org.exbin.bined.color.BasicCodeAreaDecorationColorType;
 import org.exbin.bined.color.CodeAreaBasicColors;
 import org.exbin.bined.swing.basic.color.CodeAreaColorsProfile;
 import org.exbin.bined.extended.capability.CodeAreaCaretsProfile;
+import org.exbin.bined.extended.capability.ExtendedScrollingCapable;
 import org.exbin.bined.extended.capability.PositionCodeTypeCapable;
 import org.exbin.bined.extended.capability.ShowUnprintablesCapable;
 import org.exbin.bined.extended.color.CodeAreaUnprintablesColorType;
@@ -95,7 +95,7 @@ import org.exbin.bined.extended.layout.ExtendedCodeAreaLayoutProfile;
 /**
  * Extended code area component default painter.
  *
- * @version 0.2.0 2019/02/12
+ * @version 0.2.0 2019/02/18
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -121,7 +121,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
     @Nonnull
     private final ExtendedCodeAreaStructure structure = new ExtendedCodeAreaStructure();
     @Nonnull
-    private final BasicCodeAreaScrolling scrolling = new BasicCodeAreaScrolling();
+    private final ExtendedCodeAreaScrolling scrolling = new ExtendedCodeAreaScrolling();
     @Nonnull
     private final ExtendedCodeAreaDimensions dimensions = new ExtendedCodeAreaDimensions();
     @Nonnull
@@ -335,7 +335,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
     }
 
     private void recomputeScrollState() {
-        scrolling.setScrollPosition(((ScrollingCapable) codeArea).getScrollPosition());
+        scrolling.setScrollPosition(((ExtendedScrollingCapable) codeArea).getScrollPosition());
         int characterWidth = metrics.getCharacterWidth();
         int rowHeight = metrics.getRowHeight();
 
@@ -1042,7 +1042,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         }
 
         if (showUnprintables && unprintable) {
-//            return colors.getColorType.UNPRINTABLES_BACKGROUND;
+            return colorsProfile.getColor(CodeAreaUnprintablesColorType.UNPRINTABLES_BACKGROUND, null);
         }
 
         return null;
@@ -1862,7 +1862,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
             int maxValue = Integer.MAX_VALUE - scrollPanel.getVerticalScrollBar().getVisibleAmount();
             long rowsPerDocumentToLastPage = structure.getRowsPerDocument() - dimensions.getRowsPerRect();
             scrolling.updateVerticalScrollBarValue(scrollBarValue, metrics.getRowHeight(), maxValue, rowsPerDocumentToLastPage);
-            ((ScrollingCapable) codeArea).setScrollPosition(scrolling.getScrollPosition());
+            ((ExtendedScrollingCapable) codeArea).setScrollPosition(scrolling.getScrollPosition());
             notifyScrolled();
             codeArea.repaint();
 //            dataViewScrolled(codeArea.getGraphics());
@@ -1882,7 +1882,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
 
             int scrollBarValue = scrollPanel.getHorizontalScrollBar().getValue();
             scrolling.updateHorizontalScrollBarValue(scrollBarValue, metrics.getCharacterWidth());
-            ((ScrollingCapable) codeArea).setScrollPosition(scrolling.getScrollPosition());
+            ((ExtendedScrollingCapable) codeArea).setScrollPosition(scrolling.getScrollPosition());
             notifyScrolled();
             codeArea.repaint();
 //            dataViewScrolled(codeArea.getGraphics());
@@ -1891,8 +1891,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
 
     private void notifyScrolled() {
         recomputeScrollState();
-        ((ScrollingCapable) codeArea).notifyScrolled();
-
+        ((ExtendedScrollingCapable) codeArea).notifyScrolled();
     }
 
     private static class RowDataCache {

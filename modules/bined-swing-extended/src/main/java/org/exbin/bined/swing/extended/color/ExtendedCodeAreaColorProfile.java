@@ -31,7 +31,7 @@ import org.exbin.bined.swing.CodeAreaSwingUtils;
 /**
  * Color profile for extended code area.
  *
- * @version 0.2.0 2018/11/29
+ * @version 0.2.0 2019/02/18
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -62,9 +62,9 @@ public class ExtendedCodeAreaColorProfile implements CodeAreaColorsProfile {
      */
     @Nullable
     @Override
-    public Color getColor(CodeAreaColorType colorType, CodeAreaBasicColors basicAltColor) {
+    public Color getColor(CodeAreaColorType colorType, @Nullable CodeAreaBasicColors basicAltColor) {
         Color color = colors.get(colorType);
-        return color == null ? colors.get(basicAltColor) : color;
+        return color == null ? (basicAltColor == null ? null : colors.get(basicAltColor)) : color;
     }
 
     /**

@@ -18,15 +18,15 @@ package org.exbin.bined.swing.example.panel;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.ScrollBarVisibility;
 import org.exbin.bined.basic.CodeAreaScrollPosition;
-import org.exbin.bined.basic.HorizontalScrollUnit;
 import org.exbin.bined.basic.VerticalScrollUnit;
-import org.exbin.bined.capability.ScrollingCapable;
+import org.exbin.bined.extended.ExtendedHorizontalScrollUnit;
+import org.exbin.bined.extended.capability.ExtendedScrollingCapable;
 import org.exbin.bined.swing.extended.ExtCodeArea;
 
 /**
  * Hexadecimal editor example panel.
  *
- * @version 0.2.0 2019/02/17
+ * @version 0.2.0 2019/02/18
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -39,13 +39,13 @@ public class ScrollingPanelEx extends javax.swing.JPanel {
 
         initComponents();
 
-        verticalScrollBarVisibilityComboBox.setSelectedIndex(((ScrollingCapable) codeArea).getVerticalScrollBarVisibility().ordinal());
+        verticalScrollBarVisibilityComboBox.setSelectedIndex(((ExtendedScrollingCapable) codeArea).getVerticalScrollBarVisibility().ordinal());
         verticalScrollModeComboBox.setSelectedIndex(codeArea.getVerticalScrollUnit().ordinal());
-        horizontalScrollBarVisibilityComboBox.setSelectedIndex(((ScrollingCapable) codeArea).getHorizontalScrollBarVisibility().ordinal());
+        horizontalScrollBarVisibilityComboBox.setSelectedIndex(((ExtendedScrollingCapable) codeArea).getHorizontalScrollBarVisibility().ordinal());
         horizontalScrollModeComboBox.setSelectedIndex(codeArea.getHorizontalScrollUnit().ordinal());
 
-        ((ScrollingCapable) codeArea).addScrollingListener(() -> {
-            CodeAreaScrollPosition scrollPosition = ((ScrollingCapable) codeArea).getScrollPosition();
+        ((ExtendedScrollingCapable) codeArea).addScrollingListener(() -> {
+            CodeAreaScrollPosition scrollPosition = ((ExtendedScrollingCapable) codeArea).getScrollPosition();
             verticalPositionTextField.setText(scrollPosition.getRowPosition() + ":" + scrollPosition.getRowOffset());
             horizontalPositionTextField.setText(scrollPosition.getCharPosition() + ":" + scrollPosition.getCharOffset());
         });
@@ -91,7 +91,7 @@ public class ScrollingPanelEx extends javax.swing.JPanel {
 
         horizontalScrollModeLabel.setText("Horizontal Scroll Mode");
 
-        horizontalScrollModeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "PER_CHAR", "PIXEL" }));
+        horizontalScrollModeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "PER_CHAR", "PER_HALF_CHAR", "PIXEL" }));
         horizontalScrollModeComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 horizontalScrollModeComboBoxActionPerformed(evt);
@@ -180,7 +180,7 @@ public class ScrollingPanelEx extends javax.swing.JPanel {
                             .addComponent(verticalScrollBarVisibilityModeLabel)
                             .addComponent(verticalScrollModeLabel)
                             .addComponent(verticalPositionLabel))
-                        .addGap(0, 20, Short.MAX_VALUE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         verticalPanelLayout.setVerticalGroup(
@@ -241,7 +241,7 @@ public class ScrollingPanelEx extends javax.swing.JPanel {
     }//GEN-LAST:event_horizontalScrollBarVisibilityComboBoxActionPerformed
 
     private void horizontalScrollModeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_horizontalScrollModeComboBoxActionPerformed
-        codeArea.setHorizontalScrollUnit(HorizontalScrollUnit.values()[horizontalScrollModeComboBox.getSelectedIndex()]);
+        codeArea.setHorizontalScrollUnit(ExtendedHorizontalScrollUnit.values()[horizontalScrollModeComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_horizontalScrollModeComboBoxActionPerformed
 
     private void verticalScrollBarVisibilityComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_verticalScrollBarVisibilityComboBoxActionPerformed

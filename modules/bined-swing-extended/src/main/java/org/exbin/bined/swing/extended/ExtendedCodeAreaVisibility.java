@@ -48,7 +48,7 @@ public class ExtendedCodeAreaVisibility {
         int previewCharPos = structure.getPreviewHalfCharPos();
         int characterWidth = metrics.getCharacterWidth();
         CodeAreaViewMode viewMode = structure.getViewMode();
-        splitLinePos = computeSlitLinePos(viewMode, characterWidth, structure, layout);
+        splitLinePos = computeSplitLinePos(viewMode, characterWidth, structure, layout);
         int halfCharsPerCodeSection = structure.getHalfCharsPerCodeSection();
         int bytesPerRow = structure.getBytesPerRow();
         if (viewMode == CodeAreaViewMode.DUAL || viewMode == CodeAreaViewMode.CODE_MATRIX) {
@@ -103,7 +103,7 @@ public class ExtendedCodeAreaVisibility {
         }
     }
 
-    private int computeSlitLinePos(CodeAreaViewMode viewMode, int characterWidth, ExtendedCodeAreaStructure structure, ExtendedCodeAreaLayoutProfile layout) {
+    private int computeSplitLinePos(CodeAreaViewMode viewMode, int characterWidth, ExtendedCodeAreaStructure structure, ExtendedCodeAreaLayoutProfile layout) {
         int linePos = 0;
         if (viewMode == CodeAreaViewMode.DUAL) {
             PositionIterator positionIterator = layout.createPositionIterator(structure.getCodeType(), structure.getViewMode(), structure.getBytesPerRow());

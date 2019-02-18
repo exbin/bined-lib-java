@@ -29,7 +29,7 @@ import org.exbin.bined.swing.CodeAreaSwingUtils;
 /**
  * Basic code area set of colors.
  *
- * @version 0.2.0 2018/11/28
+ * @version 0.2.0 2019/02/18
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -158,9 +158,9 @@ public class BasicCodeAreaColorsProfile implements CodeAreaColorsProfile {
 
     @Nullable
     @Override
-    public Color getColor(CodeAreaColorType colorType, CodeAreaBasicColors basicAltColor) {
+    public Color getColor(CodeAreaColorType colorType, @Nullable CodeAreaBasicColors basicAltColor) {
         Color color = getColor(colorType);
-        return (color == null) ? getColor(basicAltColor) : color;
+        return (color == null) ? (basicAltColor == null ? null : getColor(basicAltColor)) : color;
     }
 
     @Override

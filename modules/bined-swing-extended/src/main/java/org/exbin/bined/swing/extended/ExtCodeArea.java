@@ -45,10 +45,10 @@ import org.exbin.bined.ScrollingListener;
 import org.exbin.bined.SelectionChangedListener;
 import org.exbin.bined.SelectionRange;
 import org.exbin.bined.basic.CodeAreaScrollPosition;
-import org.exbin.bined.basic.HorizontalScrollUnit;
 import org.exbin.bined.basic.MovementDirection;
 import org.exbin.bined.basic.ScrollingDirection;
 import org.exbin.bined.basic.VerticalScrollUnit;
+import org.exbin.bined.extended.ExtendedHorizontalScrollUnit;
 import org.exbin.bined.swing.basic.color.CodeAreaColorsProfile;
 import org.exbin.bined.swing.CodeAreaCommandHandler;
 import org.exbin.bined.swing.CodeAreaCore;
@@ -58,7 +58,6 @@ import org.exbin.bined.swing.basic.AntialiasingMode;
 import org.exbin.bined.swing.basic.DefaultCodeAreaCaret;
 import org.exbin.bined.swing.basic.DefaultCodeAreaCommandHandler;
 import org.exbin.bined.swing.extended.color.ColorsProfileCapableCodeAreaPainter;
-import org.exbin.bined.swing.extended.layout.DefaultExtendedCodeAreaLayoutProfile;
 import org.exbin.bined.swing.extended.layout.LayoutProfileCapableCodeAreaPainter;
 import org.exbin.bined.swing.extended.theme.ExtendedCodeAreaThemeProfile;
 import org.exbin.bined.swing.extended.theme.ThemeProfileCapableCodeAreaPainter;
@@ -119,7 +118,7 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
     @Nonnull
     private ScrollBarVisibility horizontalScrollBarVisibility = ScrollBarVisibility.IF_NEEDED;
     @Nonnull
-    private HorizontalScrollUnit horizontalScrollUnit = HorizontalScrollUnit.PIXEL;
+    private ExtendedHorizontalScrollUnit horizontalScrollUnit = ExtendedHorizontalScrollUnit.PIXEL;
 
     private final List<CaretMovedListener> caretMovedListeners = new ArrayList<>();
     private final List<ScrollingListener> scrollingListeners = new ArrayList<>();
@@ -443,15 +442,15 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
 
     @Nonnull
     @Override
-    public HorizontalScrollUnit getHorizontalScrollUnit() {
+    public ExtendedHorizontalScrollUnit getHorizontalScrollUnit() {
         return horizontalScrollUnit;
     }
 
     @Override
-    public void setHorizontalScrollUnit(HorizontalScrollUnit horizontalScrollUnit) {
+    public void setHorizontalScrollUnit(ExtendedHorizontalScrollUnit horizontalScrollUnit) {
         this.horizontalScrollUnit = horizontalScrollUnit;
         int bytePosition = scrollPosition.getCharPosition();
-        if (horizontalScrollUnit == HorizontalScrollUnit.CHARACTER) {
+        if (horizontalScrollUnit == ExtendedHorizontalScrollUnit.CHARACTER) {
             scrollPosition.setCharOffset(0);
         }
         resetPainter();

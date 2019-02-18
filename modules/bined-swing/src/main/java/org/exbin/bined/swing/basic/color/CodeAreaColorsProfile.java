@@ -47,7 +47,7 @@ public interface CodeAreaColorsProfile {
      * @return color or null if not defined
      */
     @Nullable
-    Color getColor(CodeAreaColorType colorType, CodeAreaBasicColors basicAltColor);
+    Color getColor(CodeAreaColorType colorType, @Nullable CodeAreaBasicColors basicAltColor);
 
     /**
      * Reinitialize colors.
