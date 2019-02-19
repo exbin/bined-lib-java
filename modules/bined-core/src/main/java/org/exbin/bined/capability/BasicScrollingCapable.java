@@ -13,27 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.extended.capability;
+package org.exbin.bined.capability;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import org.exbin.bined.CaretPosition;
 import org.exbin.bined.ScrollBarVisibility;
-import org.exbin.bined.ScrollingListener;
-import org.exbin.bined.basic.CodeAreaScrollPosition;
-import org.exbin.bined.basic.ScrollingDirection;
+import org.exbin.bined.basic.HorizontalScrollUnit;
 import org.exbin.bined.basic.VerticalScrollUnit;
-import org.exbin.bined.capability.CodeAreaCapability;
-import org.exbin.bined.extended.ExtendedHorizontalScrollUnit;
 
 /**
- * Support for code type capability for extended code area.
+ * Support for position revealing.
  *
  * @version 0.2.0 2019/02/19
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public interface ExtendedScrollingCapable {
+public interface BasicScrollingCapable {
 
     @Nonnull
     ScrollBarVisibility getVerticalScrollBarVisibility();
@@ -51,11 +46,11 @@ public interface ExtendedScrollingCapable {
     void setHorizontalScrollBarVisibility(ScrollBarVisibility horizontalScrollBarVisibility);
 
     @Nonnull
-    ExtendedHorizontalScrollUnit getHorizontalScrollUnit();
+    HorizontalScrollUnit getHorizontalScrollUnit();
 
-    void setHorizontalScrollUnit(ExtendedHorizontalScrollUnit horizontalScrollUnit);
+    void setHorizontalScrollUnit(HorizontalScrollUnit horizontalScrollUnit);
 
-    public static class ExtendedScrollingCapability implements CodeAreaCapability {
+    public static class BasicScrollingCapability implements CodeAreaCapability {
 
     }
 }

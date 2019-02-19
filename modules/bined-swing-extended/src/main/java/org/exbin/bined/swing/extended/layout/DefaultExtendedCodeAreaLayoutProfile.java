@@ -33,7 +33,7 @@ import org.exbin.bined.extended.layout.ExtendedCodeAreaLayoutProfile;
 /**
  * Layout profile for extended code area.
  *
- * @version 0.2.0 2019/02/17
+ * @version 0.2.0 2019/02/19
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -79,18 +79,14 @@ public class DefaultExtendedCodeAreaLayoutProfile implements ExtendedCodeAreaLay
     @Override
     public int computeHalfCharsPerRow(ExtendedCodeAreaStructure structure) {
         CodeAreaViewMode viewMode = structure.getViewMode();
+        CodeType codeType = structure.getCodeType();
         int bytesPerRow = structure.getBytesPerRow();
-        int halfCharsPerRow = 0;
-        if (viewMode != CodeAreaViewMode.TEXT_PREVIEW) {
-            halfCharsPerRow += computeLastByteHalfCharPos(bytesPerRow - 1, BasicCodeAreaSection.CODE_MATRIX, structure) + 1;
+        PosIterator posIterator = new PosIterator(codeType, viewMode, bytesPerRow);
+        while (!posIterator.isEndReached()) {
+            posIterator.nextSpaceType();
         }
-        if (viewMode != CodeAreaViewMode.CODE_MATRIX) {
-            halfCharsPerRow += bytesPerRow;
-            if (viewMode == CodeAreaViewMode.DUAL) {
-                halfCharsPerRow++;
-            }
-        }
-        return halfCharsPerRow;
+
+        return posIterator.getHalfCharPosition();
     }
 
     @Override

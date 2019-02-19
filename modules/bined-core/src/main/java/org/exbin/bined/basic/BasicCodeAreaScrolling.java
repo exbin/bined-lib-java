@@ -20,6 +20,7 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.DataProvider;
 import org.exbin.bined.ScrollBarVisibility;
+import org.exbin.bined.capability.BasicScrollingCapable;
 import org.exbin.bined.capability.ScrollingCapable;
 
 /**
@@ -37,21 +38,21 @@ public class BasicCodeAreaScrolling {
     private ScrollBarVerticalScale scrollBarVerticalScale = ScrollBarVerticalScale.NORMAL;
 
     @Nonnull
-    private VerticalScrollUnit verticalScrollUnit = VerticalScrollUnit.PIXEL;
+    private VerticalScrollUnit verticalScrollUnit = VerticalScrollUnit.ROW;
     @Nonnull
     private ScrollBarVisibility verticalScrollBarVisibility = ScrollBarVisibility.IF_NEEDED;
     @Nonnull
-    private HorizontalScrollUnit horizontalScrollUnit = HorizontalScrollUnit.CHARACTER;
+    private HorizontalScrollUnit horizontalScrollUnit = HorizontalScrollUnit.PIXEL;
     @Nonnull
     private ScrollBarVisibility horizontalScrollBarVisibility = ScrollBarVisibility.IF_NEEDED;
     @Nonnull
     private final CodeAreaScrollPosition maximumScrollPosition = new CodeAreaScrollPosition();
 
     public void updateCache(DataProvider codeArea) {
-        verticalScrollUnit = ((ScrollingCapable) codeArea).getVerticalScrollUnit();
-        verticalScrollBarVisibility = ((ScrollingCapable) codeArea).getVerticalScrollBarVisibility();
-        horizontalScrollUnit = ((ScrollingCapable) codeArea).getHorizontalScrollUnit();
-        horizontalScrollBarVisibility = ((ScrollingCapable) codeArea).getHorizontalScrollBarVisibility();
+        verticalScrollUnit = ((BasicScrollingCapable) codeArea).getVerticalScrollUnit();
+        verticalScrollBarVisibility = ((BasicScrollingCapable) codeArea).getVerticalScrollBarVisibility();
+        horizontalScrollUnit = ((BasicScrollingCapable) codeArea).getHorizontalScrollUnit();
+        horizontalScrollBarVisibility = ((BasicScrollingCapable) codeArea).getHorizontalScrollBarVisibility();
     }
 
     public void updateHorizontalScrollBarValue(int scrollBarValue, int characterWidth) {
@@ -60,13 +61,6 @@ public class BasicCodeAreaScrolling {
         } else {
             if (characterWidth == 0) {
                 scrollPosition.setCharPosition(0);
-                scrollPosition.setCharOffset(0);
-            } else if (horizontalScrollUnit == HorizontalScrollUnit.CHARACTER) {
-                int charPosition = scrollBarValue / characterWidth;
-                if (scrollBarValue % characterWidth > 0) {
-                    charPosition++;
-                }
-                scrollPosition.setCharPosition(charPosition);
                 scrollPosition.setCharOffset(0);
             } else {
                 scrollPosition.setCharPosition(scrollBarValue / characterWidth);

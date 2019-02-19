@@ -29,14 +29,15 @@ import org.exbin.bined.capability.ViewModeCapable;
 import org.exbin.bined.swing.capability.AntialiasingCapable;
 import org.exbin.bined.swing.capability.BasicColorsCapable;
 import org.exbin.bined.swing.capability.FontCapable;
+import org.exbin.bined.capability.BasicScrollingCapable;
 
 /**
  * Code area default component interface.
  *
- * @version 0.2.0 2018/09/01
+ * @version 0.2.0 2019/02/19
  * @author ExBin Project (https://exbin.org)
  */
-public interface DefaultCodeArea extends SelectionCapable, CaretCapable, ScrollingCapable, ViewModeCapable,
+public interface DefaultCodeArea extends SelectionCapable, CaretCapable, BasicScrollingCapable, ScrollingCapable, ViewModeCapable,
         CodeTypeCapable, EditationModeCapable, CharsetCapable, CodeCharactersCaseCapable, FontCapable,
         BackgroundPaintCapable, RowWrappingCapable, ClipboardCapable, BasicColorsCapable, AntialiasingCapable {
 }

@@ -19,6 +19,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.ScrollBarVisibility;
 import org.exbin.bined.basic.CodeAreaScrollPosition;
 import org.exbin.bined.basic.VerticalScrollUnit;
+import org.exbin.bined.capability.ScrollingCapable;
 import org.exbin.bined.extended.ExtendedHorizontalScrollUnit;
 import org.exbin.bined.extended.capability.ExtendedScrollingCapable;
 import org.exbin.bined.swing.extended.ExtCodeArea;
@@ -44,8 +45,8 @@ public class ScrollingPanelEx extends javax.swing.JPanel {
         horizontalScrollBarVisibilityComboBox.setSelectedIndex(((ExtendedScrollingCapable) codeArea).getHorizontalScrollBarVisibility().ordinal());
         horizontalScrollModeComboBox.setSelectedIndex(codeArea.getHorizontalScrollUnit().ordinal());
 
-        ((ExtendedScrollingCapable) codeArea).addScrollingListener(() -> {
-            CodeAreaScrollPosition scrollPosition = ((ExtendedScrollingCapable) codeArea).getScrollPosition();
+        ((ScrollingCapable) codeArea).addScrollingListener(() -> {
+            CodeAreaScrollPosition scrollPosition = ((ScrollingCapable) codeArea).getScrollPosition();
             verticalPositionTextField.setText(scrollPosition.getRowPosition() + ":" + scrollPosition.getRowOffset());
             horizontalPositionTextField.setText(scrollPosition.getCharPosition() + ":" + scrollPosition.getCharOffset());
         });

@@ -103,6 +103,7 @@ public class BasicCodeAreaDimensions {
         dataViewRectangle.setBounds(dataViewX, dataViewY, dataViewWidth >= 0 ? dataViewWidth : 0, dataViewHeight >= 0 ? dataViewHeight : 0);
     }
 
+    @Nonnull
     public BasicCodeAreaZone getPositionZone(int positionX, int positionY) {
         if (positionY <= dataViewY) {
             if (positionX < rowPositionAreaWidth) {
@@ -133,6 +134,26 @@ public class BasicCodeAreaDimensions {
         }
 
         return BasicCodeAreaZone.CODE_AREA;
+    }
+
+    private int computeCharactersPerRectangle(BasicCodeAreaMetrics metrics) {
+        int characterWidth = metrics.getCharacterWidth();
+        return characterWidth == 0 ? 0 : (dataViewWidth + characterWidth - 1) / characterWidth;
+    }
+
+    private int computeCharactersPerPage(BasicCodeAreaMetrics metrics) {
+        int characterWidth = metrics.getCharacterWidth();
+        return characterWidth == 0 ? 0 : dataViewWidth / characterWidth;
+    }
+
+    private int computeRowsPerRectangle(BasicCodeAreaMetrics metrics) {
+        int rowHeight = metrics.getRowHeight();
+        return rowHeight == 0 ? 0 : (dataViewHeight + rowHeight - 1) / rowHeight;
+    }
+
+    private int computeRowsPerPage(BasicCodeAreaMetrics metrics) {
+        int rowHeight = metrics.getRowHeight();
+        return rowHeight == 0 ? 0 : dataViewHeight / rowHeight;
     }
 
     public int getDataViewX() {
@@ -227,25 +248,5 @@ public class BasicCodeAreaDimensions {
     @Nonnull
     public Rectangle getRowPositionAreaRectangle() {
         return rowPositionAreaRectangle;
-    }
-
-    private int computeCharactersPerRectangle(BasicCodeAreaMetrics metrics) {
-        int characterWidth = metrics.getCharacterWidth();
-        return characterWidth == 0 ? 0 : (dataViewWidth + characterWidth - 1) / characterWidth;
-    }
-
-    private int computeCharactersPerPage(BasicCodeAreaMetrics metrics) {
-        int characterWidth = metrics.getCharacterWidth();
-        return characterWidth == 0 ? 0 : dataViewWidth / characterWidth;
-    }
-
-    private int computeRowsPerRectangle(BasicCodeAreaMetrics metrics) {
-        int rowHeight = metrics.getRowHeight();
-        return rowHeight == 0 ? 0 : (dataViewHeight + rowHeight - 1) / rowHeight;
-    }
-
-    private int computeRowsPerPage(BasicCodeAreaMetrics metrics) {
-        int rowHeight = metrics.getRowHeight();
-        return rowHeight == 0 ? 0 : dataViewHeight / rowHeight;
     }
 }

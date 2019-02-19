@@ -18,17 +18,14 @@ package org.exbin.bined.capability;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.CaretPosition;
-import org.exbin.bined.ScrollBarVisibility;
 import org.exbin.bined.ScrollingListener;
 import org.exbin.bined.basic.CodeAreaScrollPosition;
-import org.exbin.bined.basic.HorizontalScrollUnit;
 import org.exbin.bined.basic.ScrollingDirection;
-import org.exbin.bined.basic.VerticalScrollUnit;
 
 /**
  * Support for code type capability.
  *
- * @version 0.2.0 2018/01/29
+ * @version 0.2.0 2019/02/19
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -38,26 +35,6 @@ public interface ScrollingCapable {
     CodeAreaScrollPosition getScrollPosition();
 
     void setScrollPosition(CodeAreaScrollPosition scrollPosition);
-
-    @Nonnull
-    ScrollBarVisibility getVerticalScrollBarVisibility();
-
-    void setVerticalScrollBarVisibility(ScrollBarVisibility verticalScrollBarVisibility);
-
-    @Nonnull
-    VerticalScrollUnit getVerticalScrollUnit();
-
-    void setVerticalScrollUnit(VerticalScrollUnit verticalScrollUnit);
-
-    @Nonnull
-    ScrollBarVisibility getHorizontalScrollBarVisibility();
-
-    void setHorizontalScrollBarVisibility(ScrollBarVisibility horizontalScrollBarVisibility);
-
-    @Nonnull
-    HorizontalScrollUnit getHorizontalScrollUnit();
-
-    void setHorizontalScrollUnit(HorizontalScrollUnit horizontalScrollUnit);
 
     void notifyScrolled();
 

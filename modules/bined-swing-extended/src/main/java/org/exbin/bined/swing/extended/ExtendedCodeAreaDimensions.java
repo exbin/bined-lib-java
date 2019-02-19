@@ -22,7 +22,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.BasicCodeAreaZone;
 import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.swing.basic.BasicCodeAreaMetrics;
-import org.exbin.bined.swing.extended.layout.DefaultExtendedCodeAreaLayoutProfile;
 import org.exbin.bined.extended.layout.ExtendedCodeAreaLayoutProfile;
 
 /**
@@ -142,6 +141,36 @@ public class ExtendedCodeAreaDimensions {
         return BasicCodeAreaZone.CODE_AREA;
     }
 
+    private int computeCharactersPerRectangle(BasicCodeAreaMetrics metrics, ExtendedCodeAreaLayoutProfile layoutProfile) {
+        // TODO use layout profile
+        int characterWidth = metrics.getCharacterWidth();
+        return characterWidth == 0 ? 0 : (dataViewWidth + characterWidth - 1) / characterWidth;
+    }
+
+    private int computeHalfCharsPerPage(BasicCodeAreaMetrics metrics) {
+        int characterWidth = metrics.getCharacterWidth();
+        int halfSpaceWidth = characterWidth / 2;
+        if (characterWidth == 0) {
+            return 0;
+        }
+        int halfCharsPerPage = (dataViewWidth / characterWidth) * 2;
+        if (dataViewWidth % characterWidth >= halfSpaceWidth) {
+            halfCharsPerPage++;
+        }
+
+        return halfCharsPerPage;
+    }
+
+    private int computeRowsPerRectangle(BasicCodeAreaMetrics metrics) {
+        int rowHeight = metrics.getRowHeight();
+        return rowHeight == 0 ? 0 : (dataViewHeight + rowHeight - 1) / rowHeight;
+    }
+
+    private int computeRowsPerPage(BasicCodeAreaMetrics metrics) {
+        int rowHeight = metrics.getRowHeight();
+        return rowHeight == 0 ? 0 : dataViewHeight / rowHeight;
+    }
+
     public int getDataViewX() {
         return dataViewX;
     }
@@ -232,41 +261,13 @@ public class ExtendedCodeAreaDimensions {
         return dataViewRectangle;
     }
 
+    @Nonnull
     public Rectangle getHeaderAreaRectangle() {
         return headerAreaRectangle;
     }
 
+    @Nonnull
     public Rectangle getRowPositionAreaRectangle() {
         return rowPositionAreaRectangle;
-    }
-
-    private int computeCharactersPerRectangle(BasicCodeAreaMetrics metrics, ExtendedCodeAreaLayoutProfile layoutProfile) {
-        // TODO use layout profile
-        int characterWidth = metrics.getCharacterWidth();
-        return characterWidth == 0 ? 0 : (dataViewWidth + characterWidth - 1) / characterWidth;
-    }
-
-    private int computeHalfCharsPerPage(BasicCodeAreaMetrics metrics) {
-        int characterWidth = metrics.getCharacterWidth();
-        int halfSpaceWidth = characterWidth / 2;
-        if (characterWidth == 0) {
-            return 0;
-        }
-        int halfCharsPerPage = (dataViewWidth / characterWidth) * 2;
-        if (dataViewWidth % characterWidth >= halfSpaceWidth) {
-            halfCharsPerPage++;
-        }
-
-        return halfCharsPerPage;
-    }
-
-    private int computeRowsPerRectangle(BasicCodeAreaMetrics metrics) {
-        int rowHeight = metrics.getRowHeight();
-        return rowHeight == 0 ? 0 : (dataViewHeight + rowHeight - 1) / rowHeight;
-    }
-
-    private int computeRowsPerPage(BasicCodeAreaMetrics metrics) {
-        int rowHeight = metrics.getRowHeight();
-        return rowHeight == 0 ? 0 : dataViewHeight / rowHeight;
     }
 }

@@ -20,6 +20,7 @@ import org.exbin.bined.ScrollBarVisibility;
 import org.exbin.bined.basic.CodeAreaScrollPosition;
 import org.exbin.bined.basic.HorizontalScrollUnit;
 import org.exbin.bined.basic.VerticalScrollUnit;
+import org.exbin.bined.capability.BasicScrollingCapable;
 import org.exbin.bined.capability.ScrollingCapable;
 import org.exbin.bined.swing.basic.CodeArea;
 
@@ -39,10 +40,10 @@ public class ScrollingPanel extends javax.swing.JPanel {
 
         initComponents();
 
-        verticalScrollBarVisibilityComboBox.setSelectedIndex(((ScrollingCapable) codeArea).getVerticalScrollBarVisibility().ordinal());
-        verticalScrollModeComboBox.setSelectedIndex(((ScrollingCapable) codeArea).getVerticalScrollUnit().ordinal());
-        horizontalScrollBarVisibilityComboBox.setSelectedIndex(((ScrollingCapable) codeArea).getHorizontalScrollBarVisibility().ordinal());
-        horizontalScrollModeComboBox.setSelectedIndex(((ScrollingCapable) codeArea).getHorizontalScrollUnit().ordinal());
+        verticalScrollBarVisibilityComboBox.setSelectedIndex(((BasicScrollingCapable) codeArea).getVerticalScrollBarVisibility().ordinal());
+        verticalScrollModeComboBox.setSelectedIndex(((BasicScrollingCapable) codeArea).getVerticalScrollUnit().ordinal());
+        horizontalScrollBarVisibilityComboBox.setSelectedIndex(((BasicScrollingCapable) codeArea).getHorizontalScrollBarVisibility().ordinal());
+        horizontalScrollModeComboBox.setSelectedIndex(((BasicScrollingCapable) codeArea).getHorizontalScrollUnit().ordinal());
 
         ((ScrollingCapable) codeArea).addScrollingListener(() -> {
             CodeAreaScrollPosition scrollPosition = ((ScrollingCapable) codeArea).getScrollPosition();
@@ -237,19 +238,19 @@ public class ScrollingPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void horizontalScrollBarVisibilityComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_horizontalScrollBarVisibilityComboBoxActionPerformed
-        ((ScrollingCapable) codeArea).setHorizontalScrollBarVisibility(ScrollBarVisibility.values()[horizontalScrollBarVisibilityComboBox.getSelectedIndex()]);
+        ((BasicScrollingCapable) codeArea).setHorizontalScrollBarVisibility(ScrollBarVisibility.values()[horizontalScrollBarVisibilityComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_horizontalScrollBarVisibilityComboBoxActionPerformed
 
     private void horizontalScrollModeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_horizontalScrollModeComboBoxActionPerformed
-        ((ScrollingCapable) codeArea).setHorizontalScrollUnit(HorizontalScrollUnit.values()[horizontalScrollModeComboBox.getSelectedIndex()]);
+        ((BasicScrollingCapable) codeArea).setHorizontalScrollUnit(HorizontalScrollUnit.values()[horizontalScrollModeComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_horizontalScrollModeComboBoxActionPerformed
 
     private void verticalScrollBarVisibilityComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_verticalScrollBarVisibilityComboBoxActionPerformed
-        ((ScrollingCapable) codeArea).setVerticalScrollBarVisibility(ScrollBarVisibility.values()[verticalScrollBarVisibilityComboBox.getSelectedIndex()]);
+        ((BasicScrollingCapable) codeArea).setVerticalScrollBarVisibility(ScrollBarVisibility.values()[verticalScrollBarVisibilityComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_verticalScrollBarVisibilityComboBoxActionPerformed
 
     private void verticalScrollModeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_verticalScrollModeComboBoxActionPerformed
-        ((ScrollingCapable) codeArea).setVerticalScrollUnit(VerticalScrollUnit.values()[verticalScrollModeComboBox.getSelectedIndex()]);
+        ((BasicScrollingCapable) codeArea).setVerticalScrollUnit(VerticalScrollUnit.values()[verticalScrollModeComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_verticalScrollModeComboBoxActionPerformed
 
 

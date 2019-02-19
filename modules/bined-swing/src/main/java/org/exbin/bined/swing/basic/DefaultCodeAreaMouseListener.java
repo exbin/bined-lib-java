@@ -25,16 +25,16 @@ import java.awt.event.MouseWheelListener;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.swing.JScrollPane;
 import org.exbin.bined.capability.CaretCapable;
-import org.exbin.bined.capability.ScrollingCapable;
 import org.exbin.bined.swing.CodeAreaCommandHandler;
 import org.exbin.bined.swing.CodeAreaCommandHandler.ScrollbarOrientation;
 import org.exbin.bined.swing.CodeAreaCommandHandler.SelectingMode;
 import org.exbin.bined.swing.CodeAreaCore;
+import org.exbin.bined.capability.ScrollingCapable;
 
 /**
- * Code Area component mouse listener.
+ * Component mouse listener for code area.
  *
- * @version 0.2.0 2018/08/11
+ * @version 0.2.0 2019/02/19
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
