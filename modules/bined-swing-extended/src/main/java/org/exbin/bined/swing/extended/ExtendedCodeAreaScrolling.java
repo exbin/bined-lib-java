@@ -61,17 +61,30 @@ public class ExtendedCodeAreaScrolling {
     }
 
     public void updateHorizontalScrollBarValue(int scrollBarValue, int characterWidth) {
-        if (horizontalScrollUnit != ExtendedHorizontalScrollUnit.PIXEL) {
-            scrollPosition.setCharPosition(scrollBarValue);
-            scrollPosition.setCharOffset(0);
-        } else {
-            if (characterWidth == 0) {
-                scrollPosition.setCharPosition(0);
-                scrollPosition.setCharOffset(0);
-            } else {
+        if (characterWidth == 0) {
+            return;
+        }
+
+        switch (horizontalScrollUnit) {
+            case PIXEL: {
                 scrollPosition.setCharPosition(scrollBarValue / characterWidth);
                 scrollPosition.setCharOffset(scrollBarValue % characterWidth);
+                break;
             }
+            case CHARACTER: {
+                scrollPosition.setCharPosition(scrollBarValue / characterWidth);
+                scrollPosition.setCharOffset(0);
+                break;
+            }
+            case HALF_CHARACTER: {
+                int charPos = scrollBarValue / characterWidth;
+                int halfCharPos = (scrollBarValue % characterWidth) > (characterWidth / 2) ? 1 : 0;
+                scrollPosition.setCharPosition(charPos * 2 + halfCharPos);
+                scrollPosition.setCharOffset(0);
+                break;
+            }
+            default:
+                throw new IllegalStateException("Unexpected horizontal scroll unit: " + horizontalScrollUnit.name());
         }
     }
 
@@ -365,6 +378,7 @@ public class ExtendedCodeAreaScrolling {
         return PositionScrollVisibility.NOT_VISIBLE;
     }
 
+    @Nonnull
     public CodeAreaScrollPosition computeCenterOnScrollPosition(long rowPosition, int halfCharsPosition, int bytesPerRow, int previewCharPos, int rowsPerRect, int halfCharsPerRect, int dataViewWidth, int dataViewHeight, int characterWidth, int rowHeight) {
         CodeAreaScrollPosition targetScrollPosition = new CodeAreaScrollPosition();
         targetScrollPosition.setScrollPosition(scrollPosition);

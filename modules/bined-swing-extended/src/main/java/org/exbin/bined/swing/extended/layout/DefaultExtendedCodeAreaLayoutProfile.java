@@ -524,9 +524,11 @@ public class DefaultExtendedCodeAreaLayoutProfile implements ExtendedCodeAreaLay
         private int codeOffset;
         private boolean oddHalf;
         private boolean endReached;
+        @Nonnull
         private BasicCodeAreaSection section;
 
         private final int codeLength;
+        @Nonnull
         private final CodeAreaViewMode viewMode;
         private final int bytesPerRow;
 

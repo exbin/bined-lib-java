@@ -46,7 +46,6 @@ import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.CodeAreaViewMode;
 import org.exbin.bined.CodeCharactersCase;
 import org.exbin.bined.CodeType;
-import org.exbin.bined.DataChangedListener;
 import org.exbin.bined.EditationOperation;
 import org.exbin.bined.PositionCodeType;
 import org.exbin.bined.PositionOverflowMode;
@@ -55,10 +54,12 @@ import org.exbin.bined.basic.BasicBackgroundPaintMode;
 import org.exbin.bined.basic.BasicCodeAreaScrolling;
 import org.exbin.bined.basic.BasicCodeAreaStructure;
 import org.exbin.bined.basic.CodeAreaScrollPosition;
+import org.exbin.bined.basic.HorizontalScrollUnit;
 import org.exbin.bined.basic.MovementDirection;
 import org.exbin.bined.basic.PositionScrollVisibility;
 import org.exbin.bined.basic.ScrollBarVerticalScale;
 import org.exbin.bined.basic.ScrollingDirection;
+import org.exbin.bined.basic.VerticalScrollUnit;
 import org.exbin.bined.capability.BackgroundPaintCapable;
 import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.capability.CharsetCapable;
@@ -1091,8 +1092,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
                         break;
                     }
 
-                    char[] previewChars = new char[1];
-
                     if (maxBytesPerChar > 1) {
                         int charDataLength = maxBytesPerChar;
                         if (dataPosition + maxBytesPerChar > dataSize) {
@@ -1100,12 +1099,12 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
                         }
 
                         if (contentData == null) {
-                            previewChars[0] = ' ';
+                            cursorDataCache.cursorChars[0] = ' ';
                         } else {
                             contentData.copyToArray(dataPosition, cursorDataCache.cursorData, 0, charDataLength);
                             String displayString = new String(cursorDataCache.cursorData, 0, charDataLength, charset);
                             if (!displayString.isEmpty()) {
-                                previewChars[0] = displayString.charAt(0);
+                                cursorDataCache.cursorChars[0] = displayString.charAt(0);
                             }
                         }
                     } else {
@@ -1114,13 +1113,13 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
                         }
 
                         if (contentData == null) {
-                            previewChars[0] = ' ';
+                            cursorDataCache.cursorChars[0] = ' ';
                         } else {
-                            previewChars[0] = charMapping[contentData.getByte(dataPosition) & 0xFF];
+                            cursorDataCache.cursorChars[0] = charMapping[contentData.getByte(dataPosition) & 0xFF];
                         }
                     }
                     int posX = previewRelativeX + charPos * characterWidth - scrollPosition.getCharPosition() * characterWidth - scrollPosition.getCharOffset();
-                    drawCenteredChars(g, previewChars, 0, 1, characterWidth, posX, posY);
+                    drawCenteredChars(g, cursorDataCache.cursorChars, 0, 1, characterWidth, posX, posY);
                 } else {
                     int charPos = (scrolledX - dataViewX) / characterWidth;
                     int byteOffset = structure.computePositionByte(charPos);
