@@ -103,16 +103,17 @@ public class DefaultExtendedCodeAreaLayoutProfile implements ExtendedCodeAreaLay
             } else {
                 PosIterator posIterator = new PosIterator(codeType, CodeAreaViewMode.CODE_MATRIX, 0);
                 do {
+                    computedBytesPerRow = posIterator.getBytePosition();
                     int halfCharPos = posIterator.getHalfCharPosition() + 2;
                     if (viewMode == CodeAreaViewMode.DUAL) {
-                        halfCharPos += 2 + posIterator.getBytePosition() * 2;
+                        halfCharPos += 4 + posIterator.getBytePosition() * 2;
                     }
 
                     if (halfCharPos > halfCharsPerPage) {
                         break;
-                    } else {
-                        computedBytesPerRow = posIterator.getBytePosition();
                     }
+
+                    posIterator.nextSpaceType();
                 } while (!posIterator.endReached);
             }
 
@@ -421,6 +422,7 @@ public class DefaultExtendedCodeAreaLayoutProfile implements ExtendedCodeAreaLay
         return showHeader;
     }
 
+    @Override
     public void setShowHeader(boolean showHeader) {
         this.showHeader = showHeader;
     }
@@ -446,6 +448,7 @@ public class DefaultExtendedCodeAreaLayoutProfile implements ExtendedCodeAreaLay
         return showRowPosition;
     }
 
+    @Override
     public void setShowRowPosition(boolean showRowPosition) {
         this.showRowPosition = showRowPosition;
     }

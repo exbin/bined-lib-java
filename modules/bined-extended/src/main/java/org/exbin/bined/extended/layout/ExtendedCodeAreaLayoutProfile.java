@@ -27,7 +27,7 @@ import org.exbin.bined.extended.ExtendedCodeAreaStructure;
 /**
  * Layout interface for extended code area.
  *
- * @version 0.2.0 2019/02/17
+ * @version 0.2.0 2019/02/21
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -47,7 +47,11 @@ public interface ExtendedCodeAreaLayoutProfile {
 
     boolean isShowHeader();
 
+    void setShowHeader(boolean showHeader);
+
     boolean isShowRowPosition();
+
+    void setShowRowPosition(boolean showRowPosition);
 
     boolean isHalfShiftedUsed();
 
