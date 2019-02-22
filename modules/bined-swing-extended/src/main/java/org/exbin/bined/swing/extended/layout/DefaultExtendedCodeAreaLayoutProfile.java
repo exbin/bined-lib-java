@@ -323,7 +323,7 @@ public class DefaultExtendedCodeAreaLayoutProfile implements ExtendedCodeAreaLay
         int charPositionX = 0;
         do {
             if (positionX >= charPositionX && positionX < charPositionX + characterWidth) {
-                return charPositionIterator.getCharPosition();
+                return charPositionIterator.getPosition();
             }
 
             SpaceType spaceType = charPositionIterator.nextSpaceType();
@@ -338,16 +338,16 @@ public class DefaultExtendedCodeAreaLayoutProfile implements ExtendedCodeAreaLay
         int charPositionX = 0;
         do {
             if (positionX >= charPositionX && positionX < charPositionX + characterWidth) {
-                return charPositionIterator.getCharPosition();
+                return charPositionIterator.getPosition();
             }
 
             charPositionX += characterWidth;
             charPositionIterator.nextSpaceType();
             int halfSpaceSize = characterWidth / 2;
             if (positionX >= charPositionX && positionX < charPositionX + halfSpaceSize) {
-                return charPositionIterator.getCharPosition() - 1;
+                return charPositionIterator.getPosition() - 1;
             } else if (positionX >= charPositionX + halfSpaceSize && positionX < charPositionX + characterWidth) {
-                return charPositionIterator.getCharPosition();
+                return charPositionIterator.getPosition();
             }
 
             charPositionX += characterWidth;
@@ -374,7 +374,7 @@ public class DefaultExtendedCodeAreaLayoutProfile implements ExtendedCodeAreaLay
         int positionX = 0;
         if (viewMode != CodeAreaViewMode.TEXT_PREVIEW) {
             PosIterator posIterator = new PosIterator(codeType, viewMode, bytesPerRow);
-            while (posIterator.getCharPosition() < codeCharPosition) {
+            while (posIterator.getPosition() < codeCharPosition) {
                 posIterator.nextSpaceType();
                 positionX = computePositionX(posIterator.getHalfCharPosition(), characterWidth, halfSpaceWidth);
             }
@@ -521,7 +521,7 @@ public class DefaultExtendedCodeAreaLayoutProfile implements ExtendedCodeAreaLay
     @ParametersAreNonnullByDefault
     private final class PosIterator implements PositionIterator {
 
-        private int charPosition;
+        private int position;
         private int bytePosition;
         private int halfCharPosition;
         private int codeOffset;
@@ -549,7 +549,7 @@ public class DefaultExtendedCodeAreaLayoutProfile implements ExtendedCodeAreaLay
         @Override
         public void reset() {
             endReached = false;
-            charPosition = 0;
+            position = 0;
             bytePosition = 0;
             halfCharPosition = 0;
             oddHalf = false;
@@ -561,8 +561,8 @@ public class DefaultExtendedCodeAreaLayoutProfile implements ExtendedCodeAreaLay
         }
 
         @Override
-        public int getCharPosition() {
-            return charPosition;
+        public int getPosition() {
+            return position;
         }
 
         @Override
@@ -598,7 +598,7 @@ public class DefaultExtendedCodeAreaLayoutProfile implements ExtendedCodeAreaLay
                 return SpaceType.NONE;
             }
 
-            charPosition++;
+            position++;
 
             SpaceType spaceType = SpaceType.NONE;
             if (section == BasicCodeAreaSection.CODE_MATRIX) {

@@ -19,7 +19,6 @@ import org.exbin.bined.extended.ExtendedCodeAreaStructure;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.BasicCodeAreaSection;
 import org.exbin.bined.CodeAreaViewMode;
-import org.exbin.bined.basic.CodeAreaScrollPosition;
 import org.exbin.bined.swing.basic.BasicCodeAreaMetrics;
 import org.exbin.bined.extended.layout.ExtendedCodeAreaLayoutProfile;
 import org.exbin.bined.extended.layout.PositionIterator;
@@ -27,99 +26,59 @@ import org.exbin.bined.extended.layout.PositionIterator;
 /**
  * Basic code area component characters visibility in scroll window.
  *
- * @version 0.2.0 2019/02/17
+ * @version 0.2.0 2019/02/22
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class ExtendedCodeAreaVisibility {
 
     private int splitLinePos;
-    private int visibleHalfCharStart;
-    private int visibleHalfCharEnd;
-    private int visibleMatrixHalfCharEnd;
-    private int visiblePreviewStart;
-    private int visiblePreviewEnd;
-    private int visibleCodeStart;
-    private int visibleCodeEnd;
-    private int visibleMatrixCodeEnd;
 
-    public void recomputeCharPositions(BasicCodeAreaMetrics metrics, ExtendedCodeAreaStructure structure, ExtendedCodeAreaDimensions dimensions, ExtendedCodeAreaLayoutProfile layout, CodeAreaScrollPosition scrollPosition) {
-        int dataViewWidth = dimensions.getDataViewWidth();
-        int previewCharPos = structure.getPreviewHalfCharPos();
+    private int skipTo;
+    private int skipRestFrom;
+
+    private boolean codeSectionVisible;
+    private boolean previewSectionVisible;
+
+    public void recomputeCharPositions(BasicCodeAreaMetrics metrics, ExtendedCodeAreaStructure structure, ExtendedCodeAreaDimensions dimensions, ExtendedCodeAreaLayoutProfile layout, ExtendedCodeAreaScrolling scrolling) {
         int characterWidth = metrics.getCharacterWidth();
+        int halfSpaceWidth = characterWidth / 2;
         CodeAreaViewMode viewMode = structure.getViewMode();
-        splitLinePos = computeSplitLinePos(viewMode, characterWidth, structure, layout);
-        int halfCharsPerCodeSection = structure.getHalfCharsPerCodeSection();
-        int bytesPerRow = structure.getBytesPerRow();
-        if (viewMode == CodeAreaViewMode.DUAL || viewMode == CodeAreaViewMode.CODE_MATRIX) {
-            visibleHalfCharStart = (scrollPosition.getCharPosition() * characterWidth + scrollPosition.getCharOffset()) / characterWidth;
-            if (visibleHalfCharStart < 0) {
-                visibleHalfCharStart = 0;
-            }
-            visibleHalfCharEnd = ((scrollPosition.getCharPosition() + dimensions.getCharactersPerRect()) * characterWidth + scrollPosition.getCharOffset()) / characterWidth;
-            if (visibleHalfCharEnd > structure.getHalfCharsPerRow()) {
-                visibleHalfCharEnd = structure.getHalfCharsPerRow();
-            }
-            visibleMatrixHalfCharEnd = (dataViewWidth + (scrollPosition.getCharPosition() + halfCharsPerCodeSection) * characterWidth + scrollPosition.getCharOffset()) / characterWidth;
-            if (visibleMatrixHalfCharEnd > halfCharsPerCodeSection) {
-                visibleMatrixHalfCharEnd = halfCharsPerCodeSection;
-            }
-            visibleCodeStart = structure.computePositionByte(visibleHalfCharStart);
-            visibleCodeEnd = structure.computePositionByte(visibleHalfCharEnd - 1) + 1;
-            if (visibleCodeEnd > bytesPerRow) {
-                visibleCodeEnd = bytesPerRow;
-            }
 
-            visibleMatrixCodeEnd = structure.computePositionByte(visibleMatrixHalfCharEnd - 1) + 1;
-            if (visibleMatrixCodeEnd > bytesPerRow) {
-                visibleMatrixCodeEnd = bytesPerRow;
-            }
-        } else {
-            visibleHalfCharStart = 0;
-            visibleHalfCharEnd = -1;
-            visibleCodeStart = 0;
-            visibleCodeEnd = -1;
-            visibleMatrixCodeEnd = -1;
-        }
+        int invisibleFromLeftX = scrolling.getHorizontalScrollX(characterWidth);
+        int invisibleFromRightX = invisibleFromLeftX + dimensions.getDataViewWidth();
 
-        if (viewMode == CodeAreaViewMode.DUAL || viewMode == CodeAreaViewMode.TEXT_PREVIEW) {
-            visiblePreviewStart = (scrollPosition.getCharPosition() * characterWidth + scrollPosition.getCharOffset()) / characterWidth - previewCharPos;
-            if (visiblePreviewStart < 0) {
-                visiblePreviewStart = 0;
-            }
-            if (visibleCodeEnd < 0) {
-                visibleHalfCharStart = visiblePreviewStart + previewCharPos;
-            }
-            visiblePreviewEnd = (dataViewWidth + (scrollPosition.getCharPosition() + 1) * characterWidth + scrollPosition.getCharOffset()) / characterWidth - previewCharPos;
-            if (visiblePreviewEnd > bytesPerRow) {
-                visiblePreviewEnd = bytesPerRow;
-            }
-            if (visiblePreviewEnd >= 0) {
-                visibleHalfCharEnd = visiblePreviewEnd + previewCharPos;
-            }
-        } else {
-            visiblePreviewStart = 0;
-            visiblePreviewEnd = -1;
-        }
-    }
+        skipTo = 0;
+        skipRestFrom = -1;
+        codeSectionVisible = viewMode != CodeAreaViewMode.TEXT_PREVIEW;
+        previewSectionVisible = viewMode != CodeAreaViewMode.CODE_MATRIX;
 
-    private int computeSplitLinePos(CodeAreaViewMode viewMode, int characterWidth, ExtendedCodeAreaStructure structure, ExtendedCodeAreaLayoutProfile layout) {
         int linePos = 0;
-        if (viewMode == CodeAreaViewMode.DUAL) {
-            PositionIterator positionIterator = layout.createPositionIterator(structure.getCodeType(), structure.getViewMode(), structure.getBytesPerRow());
-            int halfCharPos = 0;
-            while (!positionIterator.isEndReached()) {
-                int nextSpaceSize = positionIterator.nextSpaceType().getHalfCharSize();
-                if (positionIterator.getBytePosition() == 0 && positionIterator.getSection() == BasicCodeAreaSection.TEXT_PREVIEW) {
-                    linePos = layout.computePositionX(halfCharPos + 2, characterWidth, characterWidth / 2)
-                            + layout.computePositionX(nextSpaceSize, characterWidth, characterWidth / 2) / 2;
-                    break;
+        PositionIterator positionIterator = layout.createPositionIterator(structure.getCodeType(), structure.getViewMode(), structure.getBytesPerRow());
+        int halfCharPos = 0;
+        while (!positionIterator.isEndReached()) {
+            int nextSpaceSize = positionIterator.nextSpaceType().getHalfCharSize();
+            if (viewMode == CodeAreaViewMode.DUAL && positionIterator.getBytePosition() == 0 && positionIterator.getSection() == BasicCodeAreaSection.TEXT_PREVIEW) {
+                linePos = layout.computePositionX(halfCharPos + 2, characterWidth, halfSpaceWidth)
+                        + layout.computePositionX(nextSpaceSize, characterWidth, halfSpaceWidth) / 2;
+            }
+
+            halfCharPos += 2 + nextSpaceSize;
+            int positionX = layout.computePositionX(halfCharPos, characterWidth, halfSpaceWidth);
+            if (positionX < invisibleFromLeftX) {
+                skipTo++;
+                if (positionIterator.getSection() == BasicCodeAreaSection.TEXT_PREVIEW || positionIterator.isEndReached()) {
+                    codeSectionVisible = false;
                 }
-                halfCharPos += 2 + nextSpaceSize;
+            } else if (skipRestFrom == -1 && positionX > invisibleFromRightX) {
+                skipRestFrom = positionIterator.getPosition();
+                if (viewMode == CodeAreaViewMode.DUAL || positionIterator.getSection() == BasicCodeAreaSection.CODE_MATRIX) {
+                    previewSectionVisible = false;
+                }
             }
         }
 
-        return linePos;
+        splitLinePos = linePos;
     }
 
     /**
@@ -132,35 +91,19 @@ public class ExtendedCodeAreaVisibility {
         return splitLinePos;
     }
 
-    public int getVisibleHalfCharStart() {
-        return visibleHalfCharStart;
+    public int getSkipTo() {
+        return skipTo;
     }
 
-    public int getVisibleHalfCharEnd() {
-        return visibleHalfCharEnd;
+    public int getSkipRestFrom() {
+        return skipRestFrom;
     }
 
-    public int getVisibleMatrixHalfCharEnd() {
-        return visibleMatrixHalfCharEnd;
+    public boolean isCodeSectionVisible() {
+        return codeSectionVisible;
     }
 
-    public int getVisiblePreviewStart() {
-        return visiblePreviewStart;
-    }
-
-    public int getVisiblePreviewEnd() {
-        return visiblePreviewEnd;
-    }
-
-    public int getVisibleCodeStart() {
-        return visibleCodeStart;
-    }
-
-    public int getVisibleCodeEnd() {
-        return visibleCodeEnd;
-    }
-
-    public int getVisibleMatrixCodeEnd() {
-        return visibleMatrixCodeEnd;
+    public boolean isPreviewSectionVisible() {
+        return previewSectionVisible;
     }
 }

@@ -31,7 +31,7 @@ import org.exbin.bined.extended.capability.ExtendedScrollingCapable;
 /**
  * Code area scrolling for extended core area.
  *
- * @version 0.2.0 2019/02/19
+ * @version 0.2.0 2019/02/22
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -457,6 +457,23 @@ public class ExtendedCodeAreaScrolling {
         }
         if (horizontalScrollUnit == ExtendedHorizontalScrollUnit.PIXEL) {
             maximumScrollPosition.setCharOffset(lastCharOffset);
+        }
+    }
+
+    public int getHorizontalScrollX(int characterWidth) {
+        switch (horizontalScrollUnit) {
+            case CHARACTER: {
+                return scrollPosition.getCharPosition() * characterWidth;
+            }
+            case HALF_CHARACTER: {
+                return (scrollPosition.getCharPosition() >> 1) * characterWidth
+                        + (scrollPosition.getCharPosition() & 1) * (characterWidth / 2);
+            }
+            case PIXEL: {
+                return scrollPosition.getCharPosition() * characterWidth + scrollPosition.getCharOffset();
+            }
+            default:
+                throw new IllegalStateException("Unexpected horizontal scrolling unit " + horizontalScrollUnit);
         }
     }
 

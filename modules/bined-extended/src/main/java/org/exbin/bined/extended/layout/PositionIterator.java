@@ -33,7 +33,7 @@ public interface PositionIterator {
     @Nonnull
     SpaceType nextSpaceType();
 
-    int getCharPosition();
+    int getPosition();
 
     int getBytePosition();
 
