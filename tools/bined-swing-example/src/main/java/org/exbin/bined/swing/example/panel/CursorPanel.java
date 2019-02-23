@@ -55,6 +55,8 @@ public class CursorPanel extends javax.swing.JPanel {
         cursorRenderingModeComboBox = new javax.swing.JComboBox<>();
         cursorBlinkingRateLabel = new javax.swing.JLabel();
         cursorBlinkingRateSpinner = new javax.swing.JSpinner();
+        centerCursorButton = new javax.swing.JButton();
+        revealCursorButton = new javax.swing.JButton();
 
         showMirrorCursorCheckBox.setText("Show Mirror Cursor");
         showMirrorCursorCheckBox.addItemListener(new java.awt.event.ItemListener() {
@@ -81,6 +83,20 @@ public class CursorPanel extends javax.swing.JPanel {
             }
         });
 
+        centerCursorButton.setText("Center Cursor");
+        centerCursorButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                centerCursorButtonActionPerformed(evt);
+            }
+        });
+
+        revealCursorButton.setText("Reveal Cursor");
+        revealCursorButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                revealCursorButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -89,9 +105,6 @@ public class CursorPanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(cursorBlinkingRateLabel)
-                        .addGap(0, 0, 0))
-                    .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(cursorRenderingModeLabel)
@@ -99,7 +112,13 @@ public class CursorPanel extends javax.swing.JPanel {
                             .addComponent(cursorRenderingModeComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(showMirrorCursorCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(cursorBlinkingRateSpinner, javax.swing.GroupLayout.Alignment.TRAILING))
-                        .addContainerGap())))
+                        .addContainerGap())
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(cursorBlinkingRateLabel)
+                            .addComponent(centerCursorButton)
+                            .addComponent(revealCursorButton))
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -114,6 +133,10 @@ public class CursorPanel extends javax.swing.JPanel {
                 .addComponent(cursorRenderingModeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(showMirrorCursorCheckBox)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(centerCursorButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(revealCursorButton)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -130,12 +153,24 @@ public class CursorPanel extends javax.swing.JPanel {
         ((DefaultCodeAreaCaret) ((CaretCapable) codeArea).getCaret()).setBlinkRate((Integer) cursorBlinkingRateSpinner.getValue());
     }//GEN-LAST:event_cursorBlinkingRateSpinnerStateChanged
 
+    private void centerCursorButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_centerCursorButtonActionPerformed
+        codeArea.centerOnCursor();
+        codeArea.requestFocus();
+    }//GEN-LAST:event_centerCursorButtonActionPerformed
+
+    private void revealCursorButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_revealCursorButtonActionPerformed
+        codeArea.revealCursor();
+        codeArea.requestFocus();
+    }//GEN-LAST:event_revealCursorButtonActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton centerCursorButton;
     private javax.swing.JLabel cursorBlinkingRateLabel;
     private javax.swing.JSpinner cursorBlinkingRateSpinner;
     private javax.swing.JComboBox<String> cursorRenderingModeComboBox;
     private javax.swing.JLabel cursorRenderingModeLabel;
+    private javax.swing.JButton revealCursorButton;
     private javax.swing.JCheckBox showMirrorCursorCheckBox;
     // End of variables declaration//GEN-END:variables
 }

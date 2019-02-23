@@ -118,7 +118,7 @@ public class ScrollingPanelEx extends javax.swing.JPanel {
                             .addComponent(horizontalScrollBarVisibilityLabel)
                             .addComponent(horizontalScrollModeLabel)
                             .addComponent(horizontalPositionLabel))
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addGap(0, 11, Short.MAX_VALUE))
                     .addComponent(horizontalPositionTextField))
                 .addContainerGap())
         );
@@ -252,7 +252,6 @@ public class ScrollingPanelEx extends javax.swing.JPanel {
     private void verticalScrollModeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_verticalScrollModeComboBoxActionPerformed
         codeArea.setVerticalScrollUnit(VerticalScrollUnit.values()[verticalScrollModeComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_verticalScrollModeComboBoxActionPerformed
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel horizontalByteShiftLabel;

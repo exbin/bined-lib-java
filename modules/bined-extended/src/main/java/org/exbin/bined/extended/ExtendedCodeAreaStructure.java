@@ -20,6 +20,7 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.BasicCodeAreaSection;
 import org.exbin.bined.CaretPosition;
+import org.exbin.bined.CodeAreaSection;
 import org.exbin.bined.CodeAreaViewMode;
 import org.exbin.bined.CodeType;
 import org.exbin.bined.DataProvider;
@@ -37,7 +38,7 @@ import org.exbin.bined.extended.layout.ExtendedCodeAreaLayoutProfile;
 /**
  * Code area data representation structure for extended variant.
  *
- * @version 0.2.0 2019/02/04
+ * @version 0.2.0 2019/02/23
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -66,7 +67,6 @@ public class ExtendedCodeAreaStructure {
     private int halfCharsPerCodeSection;
 
     private int codeLastHalfCharPos;
-    private int previewHalfCharPos;
 
     public void updateCache(DataProvider codeArea, int halfCharsPerPage, ExtendedCodeAreaLayoutProfile layout) {
         this.layout = layout;
@@ -90,20 +90,14 @@ public class ExtendedCodeAreaStructure {
             halfCharsPerCodeSection = -1;
             codeLastHalfCharPos = 0;
         }
-
-        if (viewMode == CodeAreaViewMode.DUAL) {
-            previewHalfCharPos = layout.computeFirstByteHalfCharPos(0, BasicCodeAreaSection.TEXT_PREVIEW, this);
-        } else {
-            previewHalfCharPos = 0;
-        }
     }
 
     public int computePositionByte(int rowHalfCharPosition) {
         return layout.computePositionByte(rowHalfCharPosition, this);
     }
 
-    public int computeFirstCodeHalfCharPos(int byteOffset) {
-        return layout.computeFirstByteHalfCharPos(byteOffset, BasicCodeAreaSection.CODE_MATRIX, this);
+    public int computeFirstCodeHalfCharPos(int byteOffset, CodeAreaSection section) {
+        return layout.computeFirstByteHalfCharPos(byteOffset, section, this);
     }
 
     @Nonnull
@@ -166,9 +160,5 @@ public class ExtendedCodeAreaStructure {
 
     public int getCodeLastHalfCharPos() {
         return codeLastHalfCharPos;
-    }
-
-    public int getPreviewHalfCharPos() {
-        return previewHalfCharPos;
     }
 }

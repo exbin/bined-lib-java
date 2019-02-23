@@ -62,6 +62,8 @@ public class CursorPanelEx extends javax.swing.JPanel {
         cursorOverwriteShapeComboBox = new javax.swing.JComboBox<>();
         cursorBlinkingRateLabel = new javax.swing.JLabel();
         cursorBlinkingRateSpinner = new javax.swing.JSpinner();
+        revealCursorButton = new javax.swing.JButton();
+        centerCursorButton = new javax.swing.JButton();
 
         showMirrorCursorCheckBox.setText("Show Mirror Cursor");
         showMirrorCursorCheckBox.addItemListener(new java.awt.event.ItemListener() {
@@ -108,6 +110,20 @@ public class CursorPanelEx extends javax.swing.JPanel {
             }
         });
 
+        revealCursorButton.setText("Reveal Cursor");
+        revealCursorButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                revealCursorButtonActionPerformed(evt);
+            }
+        });
+
+        centerCursorButton.setText("Center Cursor");
+        centerCursorButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                centerCursorButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -118,17 +134,17 @@ public class CursorPanelEx extends javax.swing.JPanel {
                     .addComponent(cursorRenderingModeComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(cursorInsertShapeComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(cursorOverwriteShapeComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(showMirrorCursorCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(cursorBlinkingRateSpinner, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(cursorRenderingModeLabel)
                             .addComponent(cursorInsertShapeModeLabel)
-                            .addComponent(cursorOverwriteShapeModeLabel))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(showMirrorCursorCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(cursorBlinkingRateLabel)
-                        .addGap(0, 0, 0))
-                    .addComponent(cursorBlinkingRateSpinner, javax.swing.GroupLayout.Alignment.TRAILING))
+                            .addComponent(cursorOverwriteShapeModeLabel)
+                            .addComponent(cursorBlinkingRateLabel)
+                            .addComponent(centerCursorButton)
+                            .addComponent(revealCursorButton))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -152,6 +168,10 @@ public class CursorPanelEx extends javax.swing.JPanel {
                 .addComponent(cursorOverwriteShapeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(showMirrorCursorCheckBox)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(centerCursorButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(revealCursorButton)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -176,8 +196,19 @@ public class CursorPanelEx extends javax.swing.JPanel {
         //        ((CaretCapable) codeArea).getCaret().setBlinkRate((Integer) cursorBlinkingRateSpinner.getValue());
     }//GEN-LAST:event_cursorBlinkingRateSpinnerStateChanged
 
+    private void revealCursorButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_revealCursorButtonActionPerformed
+        codeArea.revealCursor();
+        codeArea.requestFocus();
+    }//GEN-LAST:event_revealCursorButtonActionPerformed
+
+    private void centerCursorButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_centerCursorButtonActionPerformed
+        codeArea.centerOnCursor();
+        codeArea.requestFocus();
+    }//GEN-LAST:event_centerCursorButtonActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton centerCursorButton;
     private javax.swing.JLabel cursorBlinkingRateLabel;
     private javax.swing.JSpinner cursorBlinkingRateSpinner;
     private javax.swing.JComboBox<String> cursorInsertShapeComboBox;
@@ -186,6 +217,7 @@ public class CursorPanelEx extends javax.swing.JPanel {
     private javax.swing.JLabel cursorOverwriteShapeModeLabel;
     private javax.swing.JComboBox<String> cursorRenderingModeComboBox;
     private javax.swing.JLabel cursorRenderingModeLabel;
+    private javax.swing.JButton revealCursorButton;
     private javax.swing.JCheckBox showMirrorCursorCheckBox;
     // End of variables declaration//GEN-END:variables
 }

@@ -27,7 +27,7 @@ import org.exbin.bined.extended.layout.ExtendedCodeAreaLayoutProfile;
 /**
  * Basic code area component dimensions.
  *
- * @version 0.2.0 2019/02/05
+ * @version 0.2.0 2019/02/23
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -41,15 +41,15 @@ public class ExtendedCodeAreaDimensions {
     private int scrollPanelHeight;
     private int dataViewWidth;
     private int dataViewHeight;
-    private int lastCharOffset;
-    private int lastRowOffset;
+    private int halfCharOffset;
+    private int rowOffset;
 
     private int headerAreaHeight;
     private int rowPositionAreaWidth;
     private int rowsPerRect;
     private int rowsPerPage;
     private int halfCharsPerPage;
-    private int charactersPerRect;
+    private int halfCharsPerRect;
 
     @Nullable
     private ExtendedCodeAreaLayoutProfile layoutProfile;
@@ -71,6 +71,8 @@ public class ExtendedCodeAreaDimensions {
         this.layoutProfile = layoutProfile;
         this.verticalScrollBarSize = verticalScrollBarSize;
         this.horizontalScrollBarSize = horizontalScrollBarSize;
+        int characterWidth = metrics.getCharacterWidth();
+        int halfSpaceWidth = characterWidth / 2;
         headerAreaHeight = layoutProfile.computeHeaderAreaHeight(metrics.getFontHeight());
         rowPositionAreaWidth = layoutProfile.computeRowPositionAreaWidth(metrics.getCharacterWidth(), rowPositionLength);
 
@@ -80,12 +82,12 @@ public class ExtendedCodeAreaDimensions {
         scrollPanelHeight = componentHeight - headerAreaHeight;
         dataViewWidth = scrollPanelWidth - verticalScrollBarSize;
         dataViewHeight = scrollPanelHeight - horizontalScrollBarSize;
-        charactersPerRect = computeCharactersPerRectangle(metrics, layoutProfile);
+        halfCharsPerRect = computeHalfCharsPerRectangle(metrics);
         halfCharsPerPage = computeHalfCharsPerPage(metrics);
         rowsPerRect = computeRowsPerRectangle(metrics);
         rowsPerPage = computeRowsPerPage(metrics);
-        lastCharOffset = metrics.isInitialized() ? dataViewWidth % metrics.getCharacterWidth() : 0;
-        lastRowOffset = metrics.isInitialized() ? dataViewHeight % metrics.getRowHeight() : 0;
+        halfCharOffset = metrics.isInitialized() ? dataViewWidth % halfSpaceWidth : 0;
+        rowOffset = metrics.isInitialized() ? dataViewHeight % metrics.getRowHeight() : 0;
 
         boolean availableWidth = rowPositionAreaWidth + verticalScrollBarSize <= componentWidth;
         boolean availableHeight = dataViewY + horizontalScrollBarSize <= componentHeight;
@@ -141,10 +143,19 @@ public class ExtendedCodeAreaDimensions {
         return BasicCodeAreaZone.CODE_AREA;
     }
 
-    private int computeCharactersPerRectangle(BasicCodeAreaMetrics metrics, ExtendedCodeAreaLayoutProfile layoutProfile) {
-        // TODO use layout profile
+    private int computeHalfCharsPerRectangle(BasicCodeAreaMetrics metrics) {
         int characterWidth = metrics.getCharacterWidth();
-        return characterWidth == 0 ? 0 : (dataViewWidth + characterWidth - 1) / characterWidth;
+        int halfSpaceWidth = characterWidth / 2;
+        if (characterWidth == 0) {
+            return 0;
+        }
+        int width = (dataViewWidth + halfSpaceWidth - 1);
+        int halfChars = (width / characterWidth) * 2;
+        if (width % characterWidth >= halfSpaceWidth) {
+            halfChars++;
+        }
+
+        return halfChars;
     }
 
     private int computeHalfCharsPerPage(BasicCodeAreaMetrics metrics) {
@@ -153,12 +164,12 @@ public class ExtendedCodeAreaDimensions {
         if (characterWidth == 0) {
             return 0;
         }
-        int halfCharsPerPage = (dataViewWidth / characterWidth) * 2;
+        int halfChars = (dataViewWidth / characterWidth) * 2;
         if (dataViewWidth % characterWidth >= halfSpaceWidth) {
-            halfCharsPerPage++;
+            halfChars++;
         }
 
-        return halfCharsPerPage;
+        return halfChars;
     }
 
     private int computeRowsPerRectangle(BasicCodeAreaMetrics metrics) {
@@ -215,8 +226,8 @@ public class ExtendedCodeAreaDimensions {
         return rowsPerRect;
     }
 
-    public int getCharactersPerRect() {
-        return charactersPerRect;
+    public int getHalfCharsPerRect() {
+        return halfCharsPerRect;
     }
 
     public int getHalfCharsPerPage() {
@@ -227,12 +238,12 @@ public class ExtendedCodeAreaDimensions {
         return rowsPerPage;
     }
 
-    public int getLastCharOffset() {
-        return lastCharOffset;
+    public int getHalfCharOffset() {
+        return halfCharOffset;
     }
 
-    public int getLastRowOffset() {
-        return lastRowOffset;
+    public int getRowOffset() {
+        return rowOffset;
     }
 
     @Nonnull

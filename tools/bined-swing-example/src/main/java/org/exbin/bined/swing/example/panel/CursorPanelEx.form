@@ -16,26 +16,25 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" alignment="0" attributes="0">
+          <Group type="102" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="cursorRenderingModeComboBox" alignment="0" max="32767" attributes="0"/>
                   <Component id="cursorInsertShapeComboBox" alignment="0" max="32767" attributes="0"/>
                   <Component id="cursorOverwriteShapeComboBox" alignment="0" max="32767" attributes="0"/>
-                  <Group type="102" alignment="0" attributes="0">
+                  <Component id="showMirrorCursorCheckBox" alignment="0" max="32767" attributes="0"/>
+                  <Component id="cursorBlinkingRateSpinner" alignment="1" max="32767" attributes="0"/>
+                  <Group type="102" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="cursorRenderingModeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="cursorInsertShapeModeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="cursorOverwriteShapeModeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="cursorBlinkingRateLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="centerCursorButton" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="revealCursorButton" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                   </Group>
-                  <Component id="showMirrorCursorCheckBox" alignment="0" max="32767" attributes="0"/>
-                  <Group type="102" alignment="0" attributes="0">
-                      <Component id="cursorBlinkingRateLabel" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
-                  </Group>
-                  <Component id="cursorBlinkingRateSpinner" alignment="1" max="32767" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -62,6 +61,10 @@
               <Component id="cursorOverwriteShapeComboBox" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="showMirrorCursorCheckBox" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="centerCursorButton" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="revealCursorButton" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="32767" attributes="0"/>
           </Group>
       </Group>
@@ -191,6 +194,22 @@
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value=""/>
       </AuxValues>
+    </Component>
+    <Component class="javax.swing.JButton" name="revealCursorButton">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Reveal Cursor"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="revealCursorButtonActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="centerCursorButton">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Center Cursor"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="centerCursorButtonActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

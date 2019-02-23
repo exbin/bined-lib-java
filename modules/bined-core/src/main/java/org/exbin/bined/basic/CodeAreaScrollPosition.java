@@ -22,7 +22,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 /**
  * Code area scrolling position.
  *
- * @version 0.2.0 2018/12/08
+ * @version 0.2.0 2019/02/23
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -47,6 +47,16 @@ public class CodeAreaScrollPosition {
      * Scrollbar document character pixel offset position.
      */
     private int charOffset = 0;
+
+    public CodeAreaScrollPosition() {
+    }
+
+    public CodeAreaScrollPosition(long rowPosition, int rowOffset, int charPosition, int charOffset) {
+        this.rowPosition = rowPosition;
+        this.rowOffset = rowOffset;
+        this.charPosition = charPosition;
+        this.charOffset = charOffset;
+    }
 
     public long getRowPosition() {
         return rowPosition;
