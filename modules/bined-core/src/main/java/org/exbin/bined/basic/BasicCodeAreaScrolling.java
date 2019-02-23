@@ -21,7 +21,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.DataProvider;
 import org.exbin.bined.ScrollBarVisibility;
 import org.exbin.bined.capability.BasicScrollingCapable;
-import org.exbin.bined.capability.ScrollingCapable;
 
 /**
  * Code area scrolling.
