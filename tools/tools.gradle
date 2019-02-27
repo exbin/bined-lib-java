@@ -34,13 +34,14 @@ tasks.withType(JavaCompile) {
     options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
     doFirst {
         options.fork = true
-        options.bootClasspath = "${System.properties['java.home']}/lib/rt.jar"
-     	   options.bootClasspath += "$File.pathSeparator${System.properties['java.home']}/jre/lib/jsse.jar"
+        if (JavaVersion.current() == JavaVersion.VERSION_1_8) {
+            options.bootstrapClasspath = files("${System.properties['java.home']}/lib/rt.jar", "$File.pathSeparator${System.properties['java.home']}/jre/lib/jsse.jar")
+        }
     }
 }
 
 // Disable tests on build
-check.dependsOn.remove(test)
+tasks.withType(Test) {enabled = false}
 
 task testJar(type: Jar, dependsOn: testClasses) {
     classifier "tests"
@@ -59,6 +60,12 @@ artifacts {
 task sourceJar(type: Jar) {
     classifier = 'sources'
     from sourceSets.main.java
+}
+
+javadoc {
+    if (JavaVersion.current() != JavaVersion.VERSION_1_8) {
+        options.addBooleanOption('html5', true)
+    }
 }
 
 task javadocJar (type: Jar, dependsOn: javadoc) {
@@ -100,7 +107,7 @@ project.dependencies.ext.moduleDep = { depsName, packageName, moduleName ->
 
         createSvnDownloadTask(moduleName, githubModulePath, depModuleDir)
         tasks["svnDownload${moduleName}"].execute()
-        
+
         // Report as placeholder dependency
         if (!new File(depsDir + "_placeholder").exists()) {
             new File(depsDir + "_placeholder").mkdir()

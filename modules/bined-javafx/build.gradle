@@ -4,7 +4,7 @@ ext.libraryDescription = 'Library for BinEd editor component'
 
 apply from: '../bined-java-modules.gradle'
 
-def javaFxHome = "${System.properties['java.home']}"
+//def javaFxHome = "${System.properties['java.home']}"
 
 sourceCompatibility = '1.8'
 
@@ -35,7 +35,10 @@ repositories {
 }
 
 dependencies {
-//    providedCompile files("$javaFxHome/lib/jfxrt.jar")
+    //    providedCompile files("$javaFxHome/lib/jfxrt.jar")
+    compile group: 'org.openjfx', name: 'javafx-base', version: '11.0.2'
+    compile group: 'org.openjfx', name: 'javafx-controls', version: '11.0.2'
+    compile group: 'org.openjfx', name: 'javafx-graphics', version: '11.0.2'
     compile moduleDep('BinedJava', 'org.exbin.bined', 'bined-core')
     compile moduleDep('ExbinUtilsJava', 'org.exbin.utils', 'exbin-binary_data')
     testCompile group : 'junit', name: 'junit', version: '4.10'

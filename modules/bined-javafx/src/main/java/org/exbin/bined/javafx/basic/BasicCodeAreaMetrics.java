@@ -15,16 +15,18 @@
  */
 package org.exbin.bined.javafx.basic;
 
+import com.sun.javafx.scene.control.skin.Utils;
 import com.sun.javafx.tk.FontMetrics;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
+import javafx.scene.text.Text;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * Basic code area component dimensions.
  *
- * @version 0.2.0 2018/12/25
+ * @version 0.2.0 2019/02/27
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -52,11 +54,15 @@ public class BasicCodeAreaMetrics {
             /*
              * Use small 'w' character to guess normal font width.
              */
-            characterWidth = (int) Math.ceil(fontMetrics.computeStringWidth("w"));
+            Text text = new Text("w");
+            text.setFont(fontMetrics.getFont());
+            characterWidth = (int) Math.ceil(text.getBoundsInLocal().getWidth());
             int fontSize = (int) fontMetrics.getFont().getSize();
             rowHeight = fontSize + subFontSpace;
             CharsetEncoder encoder = charset.newEncoder();
             maxBytesPerChar = (int) encoder.maxBytesPerChar();
+            
+//            Utils.
         }
     }
 
@@ -70,11 +76,15 @@ public class BasicCodeAreaMetrics {
     }
 
     public double getCharWidth(char value) {
-        return fontMetrics.computeStringWidth(Character.toString(value));
+        Text text = new Text(Character.toString(value));
+        text.setFont(fontMetrics.getFont());
+        return text.getBoundsInLocal().getWidth();
     }
 
     public double getCharsWidth(char[] data, int offset, int length) {
-        return fontMetrics.computeStringWidth(String.valueOf(data, offset, length));
+        Text text = new Text(String.valueOf(data, offset, length));
+        text.setFont(fontMetrics.getFont());
+        return text.getBoundsInLocal().getWidth();
     }
 
     public boolean hasUniformLineMetrics() {
