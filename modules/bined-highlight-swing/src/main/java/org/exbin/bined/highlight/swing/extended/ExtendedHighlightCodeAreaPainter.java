@@ -69,7 +69,7 @@ public class ExtendedHighlightCodeAreaPainter extends ExtendedCodeAreaPainter {
                 SearchMatch currentMatch = matches.get(currentMatchIndex);
                 if (dataPosition >= currentMatch.position && dataPosition < currentMatch.position + currentMatch.length
                         && (section == BasicCodeAreaSection.TEXT_PREVIEW || charOnRow != ((currentMatch.position + currentMatch.length) - rowDataPosition) * getCharactersPerRow() - 1)) {
-                    Color activeMatchColor = getColorsProfile().getColor(CodeAreaMatchColorType.ACTIVE_MATCH_BACKGROUND);
+                    Color activeMatchColor = getColorsProfile().getColor(CodeAreaMatchColorType.ACTIVE_MATCH_COLOR);
                     return activeMatchColor != null ? activeMatchColor : super.getPositionTextColor(rowDataPosition, byteOnRow, charOnRow, section, unprintables);
                 }
             }
@@ -87,7 +87,7 @@ public class ExtendedHighlightCodeAreaPainter extends ExtendedCodeAreaPainter {
                         matchPosition = match.position;
                     }
 
-                    Color matchesColor = getColorsProfile().getColor(CodeAreaMatchColorType.MATCH_BACKGROUND);
+                    Color matchesColor = getColorsProfile().getColor(CodeAreaMatchColorType.MATCH_COLOR);
                     return matchesColor != null ? matchesColor : super.getPositionTextColor(rowDataPosition, byteOnRow, charOnRow, section, unprintables);
                 }
 

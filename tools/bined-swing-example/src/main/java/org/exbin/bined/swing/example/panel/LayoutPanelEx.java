@@ -37,20 +37,20 @@ public class LayoutPanelEx extends javax.swing.JPanel {
         this.codeArea = codeArea;
 
         initComponents();
-        DefaultExtendedCodeAreaLayoutProfile layout = getLayoutProfile();
+        DefaultExtendedCodeAreaLayoutProfile layoutProfile = getLayoutProfile();
         wrapLineModeCheckBox.setSelected(codeArea.getRowWrapping() == RowWrappingCapable.RowWrappingMode.WRAPPING);
         maxBytesPerRowSpinner.setValue(codeArea.getMaxBytesPerRow());
         minRowPositionLengthSpinner.setValue(codeArea.getMinRowPositionLength());
         maxRowPositionLengthSpinner.setValue(codeArea.getMaxRowPositionLength());
-        showHeaderCheckBox.setSelected(layout.isShowHeader());
-        headerTopSpaceSpinner.setValue(layout.getTopHeaderSpace());
-        headerBottomSpaceSpinner.setValue(layout.getBottomHeaderSpace());
-        showRowPositionCheckBox.setSelected(layout.isShowRowPosition());
-        rowPositionLeftSpaceSpinner.setValue(layout.getLeftRowPositionSpace());
-        rowPositionRightSpaceSpinner.setValue(layout.getRightRowPositionSpace());
-        spaceGroupSizeSpinner.setValue(layout.getSpaceGroupSize());
-        halfSpaceGroupSizeSpinner.setValue(layout.getHalfSpaceGroupSize());
-        doubleSpaceGroupSizeSpinner.setValue(layout.getDoubleSpaceGroupSize());
+        showHeaderCheckBox.setSelected(layoutProfile.isShowHeader());
+        headerTopSpaceSpinner.setValue(layoutProfile.getTopHeaderSpace());
+        headerBottomSpaceSpinner.setValue(layoutProfile.getBottomHeaderSpace());
+        showRowPositionCheckBox.setSelected(layoutProfile.isShowRowPosition());
+        rowPositionLeftSpaceSpinner.setValue(layoutProfile.getLeftRowPositionSpace());
+        rowPositionRightSpaceSpinner.setValue(layoutProfile.getRightRowPositionSpace());
+        spaceGroupSizeSpinner.setValue(layoutProfile.getSpaceGroupSize());
+        halfSpaceGroupSizeSpinner.setValue(layoutProfile.getHalfSpaceGroupSize());
+        doubleSpaceGroupSizeSpinner.setValue(layoutProfile.getDoubleSpaceGroupSize());
     }
 
     /**

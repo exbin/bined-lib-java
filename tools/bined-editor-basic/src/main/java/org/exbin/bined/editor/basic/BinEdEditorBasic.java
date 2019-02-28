@@ -19,7 +19,6 @@ import java.awt.BorderLayout;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.FlavorEvent;
-import java.awt.datatransfer.FlavorListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
@@ -37,18 +36,16 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-import org.exbin.bined.CaretMovedListener;
 import org.exbin.bined.CaretPosition;
 import org.exbin.bined.EditationMode;
-import org.exbin.bined.EditationModeChangedListener;
 import org.exbin.bined.EditationOperation;
-import org.exbin.bined.SelectionChangedListener;
 import org.exbin.bined.SelectionRange;
 import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.capability.CharsetCapable;
 import org.exbin.bined.capability.EditationModeCapable;
 import org.exbin.bined.capability.SelectionCapable;
 import org.exbin.bined.operation.BinaryDataCommand;
+import org.exbin.bined.operation.BinaryDataOperationException;
 import org.exbin.bined.operation.swing.CodeAreaOperationCommandHandler;
 import org.exbin.bined.operation.swing.CodeAreaUndoHandler;
 import org.exbin.bined.operation.undo.BinaryDataUndoUpdateListener;
@@ -60,7 +57,7 @@ import org.exbin.utils.binary_data.EditableBinaryData;
 /**
  * Basic single jar swing version of BinEd Hexadecimal editor.
  *
- * @version 0.2.0 2018/12/11
+ * @version 0.2.0 2019/02/28
  * @author ExBin Project (https://exbin.org)
  */
 public class BinEdEditorBasic extends javax.swing.JFrame {
@@ -175,7 +172,7 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
             public void actionPerformed(ActionEvent evt) {
                 try {
                     undoHandler.performUndo();
-                } catch (Exception ex) {
+                } catch (BinaryDataOperationException ex) {
                     Logger.getLogger(BinEdEditorBasic.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
@@ -190,7 +187,7 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
             public void actionPerformed(ActionEvent evt) {
                 try {
                     undoHandler.performRedo();
-                } catch (Exception ex) {
+                } catch (BinaryDataOperationException ex) {
                     Logger.getLogger(BinEdEditorBasic.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
@@ -268,42 +265,30 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
                 codeArea.repaint();
             }
         });
-        ((EditationModeCapable) codeArea).addEditationModeChangedListener(new EditationModeChangedListener() {
-            @Override
-            public void editationModeChanged(EditationMode editationMode, EditationOperation editationOperation) {
-                switch (editationOperation) {
-                    case INSERT: {
-                        editationModeLabel.setText("INS");
-                        break;
-                    }
-                    case OVERWRITE: {
-                        editationModeLabel.setText("OVR");
-                        break;
-                    }
-                    default: {
-                        throw new IllegalStateException("Unexpected editation mode " + editationOperation.name());
-                    }
+        ((EditationModeCapable) codeArea).addEditationModeChangedListener((EditationMode editationMode, EditationOperation editationOperation) -> {
+            switch (editationOperation) {
+                case INSERT: {
+                    editationModeLabel.setText("INS");
+                    break;
+                }
+                case OVERWRITE: {
+                    editationModeLabel.setText("OVR");
+                    break;
+                }
+                default: {
+                    throw new IllegalStateException("Unexpected editation mode " + editationOperation.name());
                 }
             }
         });
-        ((CaretCapable) codeArea).addCaretMovedListener(new CaretMovedListener() {
-            @Override
-            public void caretMoved(CaretPosition caretPosition) {
-                positionLabel.setText(caretPosition.getDataPosition() + ":" + caretPosition.getCodeOffset());
-            }
+        ((CaretCapable) codeArea).addCaretMovedListener((CaretPosition caretPosition) -> {
+            positionLabel.setText(caretPosition.getDataPosition() + ":" + caretPosition.getCodeOffset());
         });
-        ((SelectionCapable) codeArea).addSelectionChangedListener(new SelectionChangedListener() {
-            @Override
-            public void selectionChanged(SelectionRange selection) {
-                updateClipboardState();
-            }
+        ((SelectionCapable) codeArea).addSelectionChangedListener((SelectionRange selection) -> {
+            updateClipboardState();
         });
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-        clipboard.addFlavorListener(new FlavorListener() {
-            @Override
-            public void flavorsChanged(FlavorEvent e) {
-                updateClipboardState();
-            }
+        clipboard.addFlavorListener((FlavorEvent e) -> {
+            updateClipboardState();
         });
         updateUndoState();
         updateClipboardState();
@@ -786,18 +771,10 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(BinEdEditorBasic.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-
-        //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new BinEdEditorBasic().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new BinEdEditorBasic().setVisible(true);
         });
     }
 

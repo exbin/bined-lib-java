@@ -623,7 +623,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
                 && (themeProfile.getBackgroundPaintMode() == ExtendedBackgroundPaintMode.STRIPED
                 || themeProfile.getBackgroundPaintMode() == ExtendedBackgroundPaintMode.GRIDDED
                 || themeProfile.getBackgroundPaintMode() == ExtendedBackgroundPaintMode.CHESSBOARD)) {
-            long dataPosition = scrollPosition.getRowPosition() * bytesPerRow;
+            long dataPosition = scrollPosition.getRowPosition() * bytesPerRow + ((scrollPosition.getRowPosition() & 1) > 0 ? 0 : bytesPerRow);
             int stripePositionY = rowPosRectangle.y - scrollPosition.getRowOffset() + ((scrollPosition.getRowPosition() & 1) > 0 ? 0 : rowHeight);
             g.setColor(colorsProfile.getColor(CodeAreaBasicColors.ALTERNATE_BACKGROUND));
             for (int row = 0; row <= rowsPerRect / 2; row++) {
@@ -821,10 +821,8 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
 
     private void prepareRowData(long dataPosition) {
         int maxBytesPerChar = metrics.getMaxBytesPerChar();
-//        CodeAreaViewMode viewMode = structure.getViewMode();
         int bytesPerRow = structure.getBytesPerRow();
         long dataSize = structure.getDataSize();
-//        int previewCharPos = structure.getPreviewHalfCharPos();
         CodeType codeType = structure.getCodeType();
 
         int rowBytesLimit = bytesPerRow;
@@ -877,10 +875,6 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
             }
 
             int byteOffset = positionIterator.getBytePosition();
-            if (dataPosition > dataSize - byteOffset) {
-                break;
-            }
-
             int charPos = halfCharPos >> 1;
             int codeOffset = positionIterator.getCodeOffset();
             byte dataByte = rowDataCache.rowData[byteOffset];
@@ -912,7 +906,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
                     }
                 }
             } else {
-                if (dataPosition + byteOffset > dataSize) {
+                if (dataPosition + byteOffset >= dataSize) {
                     break;
                 }
 
