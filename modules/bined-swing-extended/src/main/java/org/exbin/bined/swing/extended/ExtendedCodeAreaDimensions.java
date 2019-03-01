@@ -77,7 +77,7 @@ public class ExtendedCodeAreaDimensions {
         rowPositionAreaWidth = layoutProfile.computeRowPositionAreaWidth(metrics.getCharacterWidth(), rowPositionLength);
 
         dataViewX = componentX + rowPositionAreaWidth;
-        dataViewY = componentX + headerAreaHeight;
+        dataViewY = componentY + headerAreaHeight;
         scrollPanelWidth = componentWidth - rowPositionAreaWidth;
         scrollPanelHeight = componentHeight - headerAreaHeight;
         dataViewWidth = scrollPanelWidth - verticalScrollBarSize;

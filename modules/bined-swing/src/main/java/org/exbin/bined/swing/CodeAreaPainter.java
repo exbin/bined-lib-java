@@ -30,7 +30,7 @@ import org.exbin.bined.basic.ScrollingDirection;
 /**
  * Hexadecimal editor painter interface.
  *
- * @version 0.2.0 2018/12/20
+ * @version 0.2.0 2019/03/01
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -42,6 +42,16 @@ public interface CodeAreaPainter {
      * @return true if initialized
      */
     boolean isInitialized();
+
+    /**
+     * Attaches painter to code area.
+     */
+    void attach();
+
+    /**
+     * Dettaches painter to code area.
+     */
+    void detach();
 
     /**
      * Paints the main component.

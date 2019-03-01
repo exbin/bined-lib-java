@@ -9,13 +9,18 @@ include ":modules:bined-swing"
 include ":modules:bined-swing-extended"
 include ":modules:bined-swt"
 //include ":modules:bined-swt-extended"
-include ":modules:bined-javafx"
+// Unfortunatelly current version of javafx doesn't work with JDK 9 or later
+if (JavaVersion.current() == JavaVersion.VERSION_1_8) {
+    include ":modules:bined-javafx"
+}
 include ":modules:bined-operation"
 include ":modules:bined-operation-swing"
 include ":modules:bined-highlight-swing"
 
 include ":tools:bined-swing-example"
-include ":tools:bined-javafx-example"
+if (JavaVersion.current() == JavaVersion.VERSION_1_8) {
+    include ":tools:bined-javafx-example"
+}
 include ":tools:bined-swt-example"
 include ":tools:bined-editor-basic"
 

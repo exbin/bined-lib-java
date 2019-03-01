@@ -81,19 +81,19 @@ public class DefaultCodeAreaMouseListener implements MouseListener, MouseMoveLis
     }
 
     @Override
-    public void mouseExit(MouseEvent e) {
+    public void mouseExit(MouseEvent me) {
         currentCursor = defaultCursor;
         codeArea.setCursor(defaultCursor);
     }
 
     @Override
-    public void mouseEnter(MouseEvent e) {
-        updateMouseCursor(e);
+    public void mouseEnter(MouseEvent me) {
+        updateMouseCursor(me);
     }
 
     @Override
-    public void mouseHover(MouseEvent e) {
-        updateMouseCursor(e);
+    public void mouseHover(MouseEvent me) {
+        updateMouseCursor(me);
     }
 
     private void updateMouseCursor(MouseEvent me) {
@@ -127,11 +127,11 @@ public class DefaultCodeAreaMouseListener implements MouseListener, MouseMoveLis
     }
 
     @Override
-    public void mouseScrolled(MouseEvent e) {
-//        if (!codeArea.isEnabled() || e.getWheelRotation() == 0) {
+    public void mouseScrolled(MouseEvent me) {
+//        if (!codeArea.isEnabled() || me.getWheelRotation() == 0) {
 //            return;
 //        }
 //
-//        codeArea.getCommandHandler().wheelScroll(e.getWheelRotation() > 0 ? MOUSE_SCROLL_LINES : -MOUSE_SCROLL_LINES, e.isShiftDown() ? CodeAreaCommandHandler.ScrollbarOrientation.VERTICAL : CodeAreaCommandHandler.ScrollbarOrientation.HORIZONTAL);
+//        codeArea.getCommandHandler().wheelScroll(me.getWheelRotation() > 0 ? MOUSE_SCROLL_LINES : -MOUSE_SCROLL_LINES, me.isShiftDown() ? CodeAreaCommandHandler.ScrollbarOrientation.VERTICAL : CodeAreaCommandHandler.ScrollbarOrientation.HORIZONTAL);
     }
 }

@@ -34,7 +34,7 @@ import org.exbin.bined.capability.ScrollingCapable;
 /**
  * Component mouse listener for code area.
  *
- * @version 0.2.0 2019/02/19
+ * @version 0.2.0 2019/02/28
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -77,19 +77,19 @@ public class DefaultCodeAreaMouseListener extends MouseAdapter implements MouseM
     }
 
     @Override
-    public void mouseExited(MouseEvent e) {
+    public void mouseExited(MouseEvent me) {
         currentCursor = defaultCursor;
         codeArea.setCursor(defaultCursor);
     }
 
     @Override
-    public void mouseEntered(MouseEvent e) {
-        updateMouseCursor(e);
+    public void mouseEntered(MouseEvent me) {
+        updateMouseCursor(me);
     }
 
     @Override
-    public void mouseMoved(MouseEvent e) {
-        updateMouseCursor(e);
+    public void mouseMoved(MouseEvent me) {
+        updateMouseCursor(me);
     }
 
     private void updateMouseCursor(MouseEvent me) {
@@ -123,13 +123,13 @@ public class DefaultCodeAreaMouseListener extends MouseAdapter implements MouseM
     }
 
     @Override
-    public void mouseWheelMoved(MouseWheelEvent e) {
-        if (!codeArea.isEnabled() || e.getWheelRotation() == 0) {
+    public void mouseWheelMoved(MouseWheelEvent me) {
+        if (!codeArea.isEnabled() || me.getWheelRotation() == 0) {
             return;
         }
 
-        ScrollbarOrientation orientation = e.isShiftDown() ? CodeAreaCommandHandler.ScrollbarOrientation.HORIZONTAL : CodeAreaCommandHandler.ScrollbarOrientation.VERTICAL;
-        int scrollAmount = e.getWheelRotation() > 0 ? MOUSE_SCROLL_LINES : -MOUSE_SCROLL_LINES;
+        ScrollbarOrientation orientation = me.isShiftDown() ? CodeAreaCommandHandler.ScrollbarOrientation.HORIZONTAL : CodeAreaCommandHandler.ScrollbarOrientation.VERTICAL;
+        int scrollAmount = me.getWheelRotation() > 0 ? MOUSE_SCROLL_LINES : -MOUSE_SCROLL_LINES;
         codeArea.getCommandHandler().wheelScroll(scrollAmount, orientation);
     }
 }

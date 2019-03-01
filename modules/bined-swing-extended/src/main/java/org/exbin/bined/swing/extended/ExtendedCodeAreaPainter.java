@@ -40,6 +40,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
+import javax.swing.JViewport;
 import org.exbin.bined.BasicCodeAreaSection;
 import org.exbin.bined.BasicCodeAreaZone;
 import org.exbin.bined.CaretPosition;
@@ -94,7 +95,7 @@ import org.exbin.bined.swing.basic.DefaultCodeAreaMouseListener;
 /**
  * Extended code area component default painter.
  *
- * @version 0.2.0 2019/02/23
+ * @version 0.2.0 2019/03/01
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -114,6 +115,8 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
     private final JPanel dataView;
     @Nonnull
     private final JScrollPane scrollPanel;
+    @Nonnull
+    private final DefaultCodeAreaMouseListener codeAreaMouseListener;
 
     @Nonnull
     private final BasicCodeAreaMetrics metrics = new BasicCodeAreaMetrics();
@@ -190,20 +193,33 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         JScrollBar horizontalScrollBar = scrollPanel.getHorizontalScrollBar();
         horizontalScrollBar.setIgnoreRepaint(true);
         horizontalScrollBar.addAdjustmentListener(new HorizontalAdjustmentListener());
-        codeArea.add(scrollPanel);
         scrollPanel.setOpaque(false);
         scrollPanel.setViewportView(dataView);
         scrollPanel.setInheritsPopupMenu(true);
         scrollPanel.setViewportBorder(null);
-        scrollPanel.getViewport().setOpaque(false);
+        JViewport viewport = scrollPanel.getViewport();
+        viewport.setOpaque(false);
 
-        DefaultCodeAreaMouseListener codeAreaMouseListener = new DefaultCodeAreaMouseListener(codeArea, scrollPanel);
+        codeAreaMouseListener = new DefaultCodeAreaMouseListener(codeArea, scrollPanel);
+        viewport.addMouseListener(codeAreaMouseListener);
+        viewport.addMouseMotionListener(codeAreaMouseListener);
+        viewport.addMouseWheelListener(codeAreaMouseListener);
+    }
+
+    @Override
+    public void attach() {
+        codeArea.add(scrollPanel);
         codeArea.addMouseListener(codeAreaMouseListener);
         codeArea.addMouseMotionListener(codeAreaMouseListener);
         codeArea.addMouseWheelListener(codeAreaMouseListener);
-        scrollPanel.addMouseListener(codeAreaMouseListener);
-        scrollPanel.addMouseMotionListener(codeAreaMouseListener);
-        scrollPanel.addMouseWheelListener(codeAreaMouseListener);
+    }
+    
+    @Override
+    public void detach() {
+        codeArea.remove(scrollPanel);
+        codeArea.removeMouseListener(codeAreaMouseListener);
+        codeArea.removeMouseMotionListener(codeAreaMouseListener);
+        codeArea.removeMouseWheelListener(codeAreaMouseListener);
     }
 
     @Override

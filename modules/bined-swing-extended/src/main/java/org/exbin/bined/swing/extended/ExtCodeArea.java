@@ -66,7 +66,7 @@ import org.exbin.bined.extended.layout.ExtendedCodeAreaLayoutProfile;
 /**
  * Code area component extended code area.
  *
- * @version 0.2.0 2018/12/20
+ * @version 0.2.0 2019/03/01
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -133,6 +133,7 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
 
         caret = new DefaultCodeAreaCaret(this);
         painter = new ExtendedCodeAreaPainter(this);
+        painter.attach();
         init();
     }
 
@@ -146,6 +147,7 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
 
         caret = new DefaultCodeAreaCaret(this);
         painter = new ExtendedCodeAreaPainter(this);
+        painter.attach();
         init();
     }
 
@@ -164,7 +166,9 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
     public void setPainter(CodeAreaPainter painter) {
         CodeAreaUtils.requireNonNull(painter);
 
+        this.painter.detach();
         this.painter = painter;
+        painter.attach();
         reset();
         repaint();
     }

@@ -892,7 +892,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
     public void selectAll() {
         long dataSize = codeArea.getDataSize();
         if (dataSize > 0) {
-            ((SelectionCapable) codeArea).setSelection(0, dataSize - 1);
+            ((SelectionCapable) codeArea).setSelection(0, dataSize);
         }
     }
 

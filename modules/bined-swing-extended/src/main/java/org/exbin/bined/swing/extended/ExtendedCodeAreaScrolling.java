@@ -427,7 +427,7 @@ public class ExtendedCodeAreaScrolling {
             CodeAreaScrollPosition centerPosition = createScrollPosition(centerHalfCharPosition, charOffset, characterWidth);
 
             if (centerPosition.isCharPositionGreaterThan(maximumScrollPosition)) {
-                centerHalfCharPosition = getHorizontalScrollHalfChar(maximumScrollPosition, characterWidth);;
+                centerHalfCharPosition = getHorizontalScrollHalfChar(maximumScrollPosition, characterWidth);
                 charOffset = maximumScrollPosition.getCharOffset();
             }
         }

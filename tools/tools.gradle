@@ -41,7 +41,9 @@ tasks.withType(JavaCompile) {
 }
 
 // Disable tests on build
-tasks.withType(Test) {enabled = false}
+if (!gradle.startParameter.taskNames.any {it.endsWith("test")}) {
+    tasks.withType(Test) {enabled = false}
+}
 
 task testJar(type: Jar, dependsOn: testClasses) {
     classifier "tests"

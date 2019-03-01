@@ -235,8 +235,4 @@ public class ExtendedHighlightCodeAreaPainter extends ExtendedCodeAreaPainter {
             this.length = length;
         }
     }
-
-    private static class MatchColors {
-
-    }
 }
