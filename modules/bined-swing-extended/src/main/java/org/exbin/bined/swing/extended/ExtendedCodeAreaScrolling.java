@@ -15,6 +15,7 @@
  */
 package org.exbin.bined.swing.extended;
 
+import java.awt.Dimension;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -31,7 +32,7 @@ import org.exbin.bined.extended.capability.ExtendedScrollingCapable;
 /**
  * Code area scrolling for extended core area.
  *
- * @version 0.2.0 2019/02/24
+ * @version 0.2.0 2019/03/03
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -52,6 +53,8 @@ public class ExtendedCodeAreaScrolling {
     private ScrollBarVisibility horizontalScrollBarVisibility = ScrollBarVisibility.IF_NEEDED;
     @Nonnull
     private final CodeAreaScrollPosition maximumScrollPosition = new CodeAreaScrollPosition();
+    @Nonnull
+    private final Dimension viewDimension = new Dimension();
 
     public void updateCache(DataProvider codeArea) {
         verticalScrollUnit = ((ExtendedScrollingCapable) codeArea).getVerticalScrollUnit();
@@ -89,50 +92,89 @@ public class ExtendedCodeAreaScrolling {
     }
 
     public void updateVerticalScrollBarValue(int scrollBarValue, int rowHeight, int maxValue, long rowsPerDocumentToLastPage) {
-        if (scrollBarVerticalScale == ScrollBarVerticalScale.SCALED) {
-            long targetRow;
-            if (scrollBarValue > 0 && rowsPerDocumentToLastPage > maxValue / scrollBarValue) {
-                targetRow = scrollBarValue * (rowsPerDocumentToLastPage / maxValue);
-                long rest = rowsPerDocumentToLastPage % maxValue;
-                targetRow += (rest * scrollBarValue) / maxValue;
-            } else {
-                targetRow = (scrollBarValue * rowsPerDocumentToLastPage) / Integer.MAX_VALUE;
-            }
-            scrollPosition.setRowPosition(targetRow);
-            if (verticalScrollUnit != VerticalScrollUnit.ROW) {
-                scrollPosition.setRowOffset(0);
-            }
-        } else {
-            if (rowHeight == 0) {
-                scrollPosition.setRowPosition(0);
-                scrollPosition.setRowOffset(0);
-            } else if (verticalScrollUnit == VerticalScrollUnit.ROW) {
-                int rowPosition = scrollBarValue / rowHeight;
-                if (scrollBarValue % rowHeight > 0) {
-                    rowPosition++;
+        if (rowHeight == 0) {
+            scrollPosition.setRowPosition(0);
+            scrollPosition.setRowOffset(0);
+            return;
+        }
+
+        switch (verticalScrollUnit) {
+            case PIXEL: {
+                if (scrollBarVerticalScale == ScrollBarVerticalScale.SCALED) {
+                    long targetRow;
+                    if (scrollBarValue > 0 && rowsPerDocumentToLastPage > maxValue / scrollBarValue) {
+                        targetRow = scrollBarValue * (rowsPerDocumentToLastPage / maxValue);
+                        long rest = rowsPerDocumentToLastPage % maxValue;
+                        targetRow += (rest * scrollBarValue) / maxValue;
+                    } else {
+                        targetRow = (scrollBarValue * rowsPerDocumentToLastPage) / Integer.MAX_VALUE;
+                    }
+                    scrollPosition.setRowPosition(targetRow);
+                    if (verticalScrollUnit != VerticalScrollUnit.ROW) {
+                        scrollPosition.setRowOffset(0);
+                    }
+                    return;
                 }
-                scrollPosition.setRowPosition(rowPosition);
-                scrollPosition.setRowOffset(0);
-            } else {
+
                 scrollPosition.setRowPosition(scrollBarValue / rowHeight);
                 scrollPosition.setRowOffset(scrollBarValue % rowHeight);
+                break;
             }
+            case ROW: {
+                if (scrollBarVerticalScale == ScrollBarVerticalScale.SCALED) {
+                    long targetRow;
+                    if (scrollBarValue > 0 && rowsPerDocumentToLastPage > maxValue / scrollBarValue) {
+                        targetRow = scrollBarValue * (rowsPerDocumentToLastPage / maxValue);
+                        long rest = rowsPerDocumentToLastPage % maxValue;
+                        targetRow += (rest * scrollBarValue) / maxValue;
+                    } else {
+                        targetRow = (scrollBarValue * rowsPerDocumentToLastPage) / Integer.MAX_VALUE;
+                    }
+                    scrollPosition.setRowPosition(targetRow);
+                    if (verticalScrollUnit != VerticalScrollUnit.ROW) {
+                        scrollPosition.setRowOffset(0);
+                    }
+                    return;
+                }
+
+                int rowPosition = scrollBarValue;
+                scrollPosition.setRowPosition(rowPosition);
+                scrollPosition.setRowOffset(0);
+                break;
+            }
+            default:
+                throw new IllegalStateException("Unexpected vertical scroll unit: " + verticalScrollUnit.name());
         }
     }
 
     public int getVerticalScrollValue(int rowHeight, long rowsPerDocument) {
-        if (scrollBarVerticalScale == ScrollBarVerticalScale.SCALED) {
-            int scrollValue;
-            if (scrollPosition.getCharPosition() < Long.MAX_VALUE / Integer.MAX_VALUE) {
-                scrollValue = (int) ((scrollPosition.getRowPosition() * Integer.MAX_VALUE) / rowsPerDocument);
-            } else {
-                scrollValue = (int) (scrollPosition.getRowPosition() / (rowsPerDocument / Integer.MAX_VALUE));
+        switch (verticalScrollUnit) {
+            case PIXEL: {
+                if (scrollBarVerticalScale == ScrollBarVerticalScale.SCALED) {
+                    int scrollValue;
+                    if (scrollPosition.getCharPosition() < Long.MAX_VALUE / Integer.MAX_VALUE) {
+                        scrollValue = (int) ((scrollPosition.getRowPosition() * Integer.MAX_VALUE) / rowsPerDocument);
+                    } else {
+                        scrollValue = (int) (scrollPosition.getRowPosition() / (rowsPerDocument / Integer.MAX_VALUE));
+                    }
+                    return scrollValue;
+                }
+                return (int) (scrollPosition.getRowPosition() * rowHeight + scrollPosition.getRowOffset());
             }
-            return scrollValue;
-        } else if (verticalScrollUnit == VerticalScrollUnit.ROW) {
-            return (int) scrollPosition.getRowPosition() * rowHeight;
-        } else {
-            return (int) (scrollPosition.getRowPosition() * rowHeight + scrollPosition.getRowOffset());
+            case ROW: {
+                if (scrollBarVerticalScale == ScrollBarVerticalScale.SCALED) {
+                    int scrollValue;
+                    if (scrollPosition.getCharPosition() < Long.MAX_VALUE / Integer.MAX_VALUE) {
+                        scrollValue = (int) ((scrollPosition.getRowPosition() * Integer.MAX_VALUE) / rowsPerDocument);
+                    } else {
+                        scrollValue = (int) (scrollPosition.getRowPosition() / (rowsPerDocument / Integer.MAX_VALUE));
+                    }
+                    return scrollValue;
+                }
+                return (int) scrollPosition.getRowPosition();
+            }
+            default:
+                throw new IllegalStateException("Unexpected vertical scroll unit: " + verticalScrollUnit.name());
         }
     }
 
@@ -572,5 +614,11 @@ public class ExtendedCodeAreaScrolling {
     @Nonnull
     public CodeAreaScrollPosition getMaximumScrollPosition() {
         return maximumScrollPosition;
+    }
+
+    @Nonnull
+    public Dimension computeViewDimension() {
+        
+        return viewDimension;
     }
 }

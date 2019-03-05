@@ -18,6 +18,7 @@ package org.exbin.bined.highlight.swing.extended;
 import java.awt.Color;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.BasicCodeAreaSection;
 import org.exbin.bined.CodeAreaSection;
 import org.exbin.bined.highlight.swing.color.CodeAreaColorizationColorType;
@@ -26,9 +27,10 @@ import org.exbin.bined.swing.CodeAreaCore;
 /**
  * Experimental support for highlighting of non-ascii characters.
  *
- * @version 0.2.0 2018/11/30
+ * @version 0.2.0 2019/02/03
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public class ExtendedHighlightNonAsciiCodeAreaPainter extends ExtendedHighlightCodeAreaPainter {
 
     private Color controlCodes;
@@ -36,7 +38,7 @@ public class ExtendedHighlightNonAsciiCodeAreaPainter extends ExtendedHighlightC
     private Color textColor;
     private boolean nonAsciiHighlightingEnabled = true;
 
-    public ExtendedHighlightNonAsciiCodeAreaPainter(@Nonnull CodeAreaCore codeArea) {
+    public ExtendedHighlightNonAsciiCodeAreaPainter(CodeAreaCore codeArea) {
         super(codeArea);
 
         textColor = codeArea.getForeground(); //MainColors().getTextColor();
@@ -110,7 +112,7 @@ public class ExtendedHighlightNonAsciiCodeAreaPainter extends ExtendedHighlightC
 
     @Nullable
     @Override
-    public Color getPositionTextColor(long rowDataPosition, int byteOnRow, int charOnRow, @Nonnull CodeAreaSection section, boolean unprintables) {
+    public Color getPositionTextColor(long rowDataPosition, int byteOnRow, int charOnRow, CodeAreaSection section, boolean unprintables) {
         Color color = super.getPositionTextColor(rowDataPosition, byteOnRow, charOnRow, section, unprintables);
         if (nonAsciiHighlightingEnabled && section == BasicCodeAreaSection.CODE_MATRIX) {
             if (color == null || textColor.equals(color)) {
@@ -133,7 +135,7 @@ public class ExtendedHighlightNonAsciiCodeAreaPainter extends ExtendedHighlightC
 
     @Nullable
     @Override
-    public Color getPositionBackgroundColor(long rowDataPosition, int byteOnRow, int charOnRow, @Nonnull CodeAreaSection section, boolean unprintables) {
+    public Color getPositionBackgroundColor(long rowDataPosition, int byteOnRow, int charOnRow, CodeAreaSection section, boolean unprintables) {
         Color color = super.getPositionBackgroundColor(rowDataPosition, byteOnRow, charOnRow, section, unprintables);
         if (nonAsciiHighlightingEnabled && section == BasicCodeAreaSection.CODE_MATRIX) {
             if (color == null || textColor.equals(color)) {
@@ -163,7 +165,7 @@ public class ExtendedHighlightNonAsciiCodeAreaPainter extends ExtendedHighlightC
         return controlCodes;
     }
 
-    public void setControlCodes(@Nonnull Color controlCodes) {
+    public void setControlCodes(Color controlCodes) {
         this.controlCodes = controlCodes;
     }
 
@@ -172,7 +174,7 @@ public class ExtendedHighlightNonAsciiCodeAreaPainter extends ExtendedHighlightC
         return upperCodes;
     }
 
-    public void setUpperCodes(@Nonnull Color upperCodes) {
+    public void setUpperCodes(Color upperCodes) {
         this.upperCodes = upperCodes;
     }
 
