@@ -26,13 +26,15 @@ import org.exbin.bined.basic.PositionScrollVisibility;
 import org.exbin.bined.basic.ScrollBarVerticalScale;
 import org.exbin.bined.basic.ScrollingDirection;
 import org.exbin.bined.basic.VerticalScrollUnit;
+import org.exbin.bined.extended.ExtendedCodeAreaStructure;
 import org.exbin.bined.extended.ExtendedHorizontalScrollUnit;
 import org.exbin.bined.extended.capability.ExtendedScrollingCapable;
+import org.exbin.bined.extended.layout.ExtendedCodeAreaLayoutProfile;
 
 /**
  * Code area scrolling for extended core area.
  *
- * @version 0.2.0 2019/03/03
+ * @version 0.2.0 2019/03/06
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -42,6 +44,10 @@ public class ExtendedCodeAreaScrolling {
     private final CodeAreaScrollPosition scrollPosition = new CodeAreaScrollPosition();
     @Nonnull
     private ScrollBarVerticalScale scrollBarVerticalScale = ScrollBarVerticalScale.NORMAL;
+    @Nonnull
+    private final Dimension viewDimension = new Dimension();
+    private int horizontalScrollbarHeight;
+    private int verticalScrollbarWidth;
 
     @Nonnull
     private VerticalScrollUnit verticalScrollUnit = VerticalScrollUnit.ROW;
@@ -53,14 +59,84 @@ public class ExtendedCodeAreaScrolling {
     private ScrollBarVisibility horizontalScrollBarVisibility = ScrollBarVisibility.IF_NEEDED;
     @Nonnull
     private final CodeAreaScrollPosition maximumScrollPosition = new CodeAreaScrollPosition();
-    @Nonnull
-    private final Dimension viewDimension = new Dimension();
 
     public void updateCache(DataProvider codeArea) {
         verticalScrollUnit = ((ExtendedScrollingCapable) codeArea).getVerticalScrollUnit();
         verticalScrollBarVisibility = ((ExtendedScrollingCapable) codeArea).getVerticalScrollBarVisibility();
         horizontalScrollUnit = ((ExtendedScrollingCapable) codeArea).getHorizontalScrollUnit();
         horizontalScrollBarVisibility = ((ExtendedScrollingCapable) codeArea).getHorizontalScrollBarVisibility();
+    }
+
+    @Nonnull
+    public Dimension computeViewDimension(int dataViewWidth, int dataViewHeight, ExtendedCodeAreaLayoutProfile layoutProfile, ExtendedCodeAreaStructure structure, int characterWidth, int rowHeight) {
+        int dataWidth = layoutProfile.computePositionX(structure.getHalfCharsPerRow(), characterWidth, characterWidth / 2);
+        boolean fitsHorizontally = dataWidth > dataViewWidth;
+
+        long rowsPerData = structure.getRowsPerDocument();
+        int availableRows = dataViewHeight / rowHeight;
+        boolean fitsVertically = rowsPerData <= availableRows;
+        
+        if (fitsHorizontally && fitsVertically) {
+            viewDimension.width = dataWidth;
+            viewDimension.height = (int) (rowsPerData * rowHeight);
+            return viewDimension;
+        }
+        
+        if (!fitsHorizontally) {
+            dataViewWidth -= verticalScrollbarWidth;
+            
+        }
+        
+
+        return viewDimension;
+    }
+
+    private void recomputeViewWidth(int dataViewWidth, int characterWidth) {
+        switch (horizontalScrollUnit) {
+            case PIXEL: {
+//                int dataViewWidth = layoutProfile.computePositionX(structure.getHalfCharsPerRow(), characterWidth, characterWidth / 2);
+//                long rowsPerData = (structure.getDataSize() / structure.getBytesPerRow()) + 1;
+
+                break;
+            }
+            case CHARACTER: {
+                break;
+            }
+            case HALF_CHARACTER: {
+                break;
+            }
+            default:
+                throw new IllegalStateException("Unexpected scrolling unit " + horizontalScrollUnit);
+        }
+    }
+
+    private void recomputeViewHeight() {
+        int dataViewHeight = 0;
+        switch (verticalScrollUnit) {
+            case PIXEL: {
+//                if (rowsPerData > Integer.MAX_VALUE / rowHeight) {
+//                    scrolling.setScrollBarVerticalScale(ScrollBarVerticalScale.SCALED);
+//                    dataViewHeight = Integer.MAX_VALUE;
+//                } else {
+//                    scrolling.setScrollBarVerticalScale(ScrollBarVerticalScale.NORMAL);
+//                    dataViewHeight = (int) (rowsPerData * rowHeight);
+//                }
+                break;
+            }
+            case ROW: {
+//                if (rowsPerData > Integer.MAX_VALUE) {
+//                    scrolling.setScrollBarVerticalScale(ScrollBarVerticalScale.SCALED);
+//                    dataViewHeight = Integer.MAX_VALUE;
+//                } else {
+//                    scrolling.setScrollBarVerticalScale(ScrollBarVerticalScale.NORMAL);
+//                    int viewportRows = viewportHeight / rowHeight;
+//                    dataViewHeight = rowsPerData > viewportRows || rowsPerData * rowHeight > viewportHeight ? (int) (viewportHeight + (rowsPerData - viewportRows)) : viewportHeight;
+//                }
+                break;
+            }
+            default:
+                throw new IllegalStateException("Unexpected scrolling unit " + verticalScrollUnit);
+        }
     }
 
     public void updateHorizontalScrollBarValue(int scrollBarValue, int characterWidth) {
@@ -614,11 +690,5 @@ public class ExtendedCodeAreaScrolling {
     @Nonnull
     public CodeAreaScrollPosition getMaximumScrollPosition() {
         return maximumScrollPosition;
-    }
-
-    @Nonnull
-    public Dimension computeViewDimension() {
-        
-        return viewDimension;
     }
 }

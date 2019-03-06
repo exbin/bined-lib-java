@@ -362,11 +362,12 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         int viewportHeight = scrollPanelRectangle.height - 30;
 
         if (rowHeight > 0 && characterWidth > 0) {
-            Dimension viewDimension = scrolling.computeViewDimension();
+            Dimension viewDimension = scrolling.computeViewDimension(dataView.getWidth(), dataView.getHeight(), layoutProfile, structure, characterWidth, rowHeight);
             
+            scrolling.updateCache(codeArea);
+
             int dataViewWidth = layoutProfile.computePositionX(structure.getHalfCharsPerRow(), characterWidth, characterWidth / 2);
             long rowsPerData = (structure.getDataSize() / structure.getBytesPerRow()) + 1;
-            scrolling.updateCache(codeArea);
 
             int dataViewHeight = 0;
             switch (scrolling.getVerticalScrollUnit()) {
