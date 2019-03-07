@@ -34,7 +34,7 @@ import org.exbin.bined.extended.layout.ExtendedCodeAreaLayoutProfile;
 /**
  * Code area scrolling for extended core area.
  *
- * @version 0.2.0 2019/03/06
+ * @version 0.2.0 2019/03/07
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -45,7 +45,7 @@ public class ExtendedCodeAreaScrolling {
     @Nonnull
     private ScrollBarVerticalScale scrollBarVerticalScale = ScrollBarVerticalScale.NORMAL;
     @Nonnull
-    private final Dimension viewDimension = new Dimension();
+    private final Dimension scrollViewDimension = new Dimension();
     private int horizontalScrollbarHeight;
     private int verticalScrollbarWidth;
 
@@ -69,74 +69,101 @@ public class ExtendedCodeAreaScrolling {
 
     @Nonnull
     public Dimension computeViewDimension(int dataViewWidth, int dataViewHeight, ExtendedCodeAreaLayoutProfile layoutProfile, ExtendedCodeAreaStructure structure, int characterWidth, int rowHeight) {
-        int dataWidth = layoutProfile.computePositionX(structure.getHalfCharsPerRow(), characterWidth, characterWidth / 2);
-        boolean fitsHorizontally = dataWidth > dataViewWidth;
+        int halfCharsPerRow = structure.getHalfCharsPerRow();
+        int dataWidth = layoutProfile.computePositionX(halfCharsPerRow, characterWidth, characterWidth / 2);
+        boolean fitsHorizontally = computeFitsHorizontally(dataViewWidth, dataWidth);
 
         long rowsPerData = structure.getRowsPerDocument();
-        int availableRows = dataViewHeight / rowHeight;
-        boolean fitsVertically = rowsPerData <= availableRows;
-        
-        if (fitsHorizontally && fitsVertically) {
-            viewDimension.width = dataWidth;
-            viewDimension.height = (int) (rowsPerData * rowHeight);
-            return viewDimension;
-        }
-        
-        if (!fitsHorizontally) {
-            dataViewWidth -= verticalScrollbarWidth;
-            
-        }
-        
+        boolean fitsVertically = computeFitsVertically(dataViewHeight, rowsPerData, rowHeight);
 
-        return viewDimension;
+        if (!fitsVertically) {
+            fitsHorizontally = computeFitsHorizontally(dataViewWidth - verticalScrollbarWidth, dataWidth);
+        }
+        if (!fitsHorizontally) {
+            fitsVertically = computeFitsVertically(dataViewHeight - horizontalScrollbarHeight, rowsPerData, rowHeight);
+        }
+
+        if (fitsHorizontally) {
+            scrollViewDimension.width = dataWidth;
+        } else {
+            scrollViewDimension.width = recomputeScrollViewWidth(dataViewWidth - verticalScrollbarWidth, characterWidth, dataWidth, halfCharsPerRow);
+        }
+
+        if (fitsVertically) {
+            scrollViewDimension.height = (int) (rowsPerData * rowHeight);
+        } else {
+            scrollViewDimension.height = recomputeScrollViewHeight(dataViewHeight - horizontalScrollbarHeight, rowHeight, rowsPerData);
+        }
+
+        return scrollViewDimension;
     }
 
-    private void recomputeViewWidth(int dataViewWidth, int characterWidth) {
+    private boolean computeFitsHorizontally(int dataViewWidth, int dataWidth) {
+        return dataWidth <= dataViewWidth;
+    }
+
+    private boolean computeFitsVertically(int dataViewHeight, long rowsPerData, int rowHeight) {
+        int availableRows = (dataViewHeight + rowHeight - 1) / rowHeight;
+        if (rowsPerData > availableRows) {
+            return false;
+        }
+
+        return rowsPerData * rowHeight <= dataViewHeight;
+    }
+
+    private int recomputeScrollViewWidth(int dataViewWidth, int characterWidth, int dataWidth, int halfCharsPerRow) {
+        int scrollViewWidth = 0;
         switch (horizontalScrollUnit) {
             case PIXEL: {
-//                int dataViewWidth = layoutProfile.computePositionX(structure.getHalfCharsPerRow(), characterWidth, characterWidth / 2);
-//                long rowsPerData = (structure.getDataSize() / structure.getBytesPerRow()) + 1;
-
+                scrollViewWidth = dataWidth;
                 break;
             }
             case CHARACTER: {
+                int charsPerDataView = dataViewWidth / characterWidth;
+                scrollViewWidth = dataViewWidth + (((halfCharsPerRow + 1) / 2) - charsPerDataView);
                 break;
             }
             case HALF_CHARACTER: {
+                int halfCharsPerDataView = dataViewWidth / (characterWidth / 2);
+                scrollViewWidth = dataViewWidth + (halfCharsPerRow - halfCharsPerDataView);
                 break;
             }
             default:
                 throw new IllegalStateException("Unexpected scrolling unit " + horizontalScrollUnit);
         }
+
+        return scrollViewWidth;
     }
 
-    private void recomputeViewHeight() {
-        int dataViewHeight = 0;
+    private int recomputeScrollViewHeight(int dataViewHeight, int rowHeight, long rowsPerData) {
+        int scrollViewHeight = 0;
         switch (verticalScrollUnit) {
             case PIXEL: {
-//                if (rowsPerData > Integer.MAX_VALUE / rowHeight) {
-//                    scrolling.setScrollBarVerticalScale(ScrollBarVerticalScale.SCALED);
-//                    dataViewHeight = Integer.MAX_VALUE;
-//                } else {
-//                    scrolling.setScrollBarVerticalScale(ScrollBarVerticalScale.NORMAL);
-//                    dataViewHeight = (int) (rowsPerData * rowHeight);
-//                }
+                if (rowsPerData > Integer.MAX_VALUE / rowHeight) {
+                    scrollBarVerticalScale = ScrollBarVerticalScale.SCALED;
+                    scrollViewHeight = Integer.MAX_VALUE;
+                } else {
+                    scrollBarVerticalScale = ScrollBarVerticalScale.NORMAL;
+                    scrollViewHeight = (int) (rowsPerData * rowHeight) - dataViewHeight;
+                }
                 break;
             }
             case ROW: {
-//                if (rowsPerData > Integer.MAX_VALUE) {
-//                    scrolling.setScrollBarVerticalScale(ScrollBarVerticalScale.SCALED);
-//                    dataViewHeight = Integer.MAX_VALUE;
-//                } else {
-//                    scrolling.setScrollBarVerticalScale(ScrollBarVerticalScale.NORMAL);
-//                    int viewportRows = viewportHeight / rowHeight;
-//                    dataViewHeight = rowsPerData > viewportRows || rowsPerData * rowHeight > viewportHeight ? (int) (viewportHeight + (rowsPerData - viewportRows)) : viewportHeight;
-//                }
+                if (rowsPerData > (Integer.MAX_VALUE - dataViewHeight)) {
+                    scrollBarVerticalScale = ScrollBarVerticalScale.SCALED;
+                    scrollViewHeight = Integer.MAX_VALUE;
+                } else {
+                    scrollBarVerticalScale = ScrollBarVerticalScale.NORMAL;
+                    int rowsPerDataView = dataViewHeight / rowHeight;
+                    scrollViewHeight = (int) (dataViewHeight + (rowsPerData - rowsPerDataView));
+                }
                 break;
             }
             default:
                 throw new IllegalStateException("Unexpected scrolling unit " + verticalScrollUnit);
         }
+
+        return scrollViewHeight;
     }
 
     public void updateHorizontalScrollBarValue(int scrollBarValue, int characterWidth) {
@@ -151,14 +178,12 @@ public class ExtendedCodeAreaScrolling {
                 break;
             }
             case CHARACTER: {
-                scrollPosition.setCharPosition(scrollBarValue / characterWidth);
+                scrollPosition.setCharPosition(scrollBarValue);
                 scrollPosition.setCharOffset(0);
                 break;
             }
             case HALF_CHARACTER: {
-                int charPos = scrollBarValue / characterWidth;
-                int halfCharPos = (scrollBarValue % characterWidth) > (characterWidth / 2) ? 1 : 0;
-                scrollPosition.setCharPosition(charPos * 2 + halfCharPos);
+                scrollPosition.setCharPosition(scrollBarValue);
                 scrollPosition.setCharOffset(0);
                 break;
             }

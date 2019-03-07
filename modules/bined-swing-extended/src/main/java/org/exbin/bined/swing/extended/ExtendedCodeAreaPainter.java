@@ -30,6 +30,9 @@ import java.awt.RenderingHints;
 import java.awt.Stroke;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -117,6 +120,8 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
     private final JScrollPane scrollPanel;
     @Nonnull
     private final DefaultCodeAreaMouseListener codeAreaMouseListener;
+    @Nonnull
+    private final ComponentListener codeAreaComponentListener;
 
     @Nonnull
     private final BasicCodeAreaMetrics metrics = new BasicCodeAreaMetrics();
@@ -206,6 +211,12 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         viewport.addMouseListener(codeAreaMouseListener);
         viewport.addMouseMotionListener(codeAreaMouseListener);
         viewport.addMouseWheelListener(codeAreaMouseListener);
+        codeAreaComponentListener = new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                recomputeLayout();
+            }
+        };
     }
 
     @Override
@@ -214,6 +225,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         codeArea.addMouseListener(codeAreaMouseListener);
         codeArea.addMouseMotionListener(codeAreaMouseListener);
         codeArea.addMouseWheelListener(codeAreaMouseListener);
+        codeArea.addComponentListener(codeAreaComponentListener);
     }
 
     @Override
@@ -222,6 +234,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         codeArea.removeMouseListener(codeAreaMouseListener);
         codeArea.removeMouseMotionListener(codeAreaMouseListener);
         codeArea.removeMouseWheelListener(codeAreaMouseListener);
+        codeArea.removeComponentListener(codeAreaComponentListener);
     }
 
     @Override
@@ -359,44 +372,12 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
 
         Rectangle scrollPanelRectangle = dimensions.getScrollPanelRectangle();
         scrollPanel.setBounds(scrollPanelRectangle);
-        int viewportHeight = scrollPanelRectangle.height - 30;
 
         if (rowHeight > 0 && characterWidth > 0) {
-            Dimension viewDimension = scrolling.computeViewDimension(dataView.getWidth(), dataView.getHeight(), layoutProfile, structure, characterWidth, rowHeight);
-            
             scrolling.updateCache(codeArea);
-
-            int dataViewWidth = layoutProfile.computePositionX(structure.getHalfCharsPerRow(), characterWidth, characterWidth / 2);
-            long rowsPerData = (structure.getDataSize() / structure.getBytesPerRow()) + 1;
-
-            int dataViewHeight = 0;
-            switch (scrolling.getVerticalScrollUnit()) {
-                case PIXEL: {
-                    if (rowsPerData > Integer.MAX_VALUE / rowHeight) {
-                        scrolling.setScrollBarVerticalScale(ScrollBarVerticalScale.SCALED);
-                        dataViewHeight = Integer.MAX_VALUE;
-                    } else {
-                        scrolling.setScrollBarVerticalScale(ScrollBarVerticalScale.NORMAL);
-                        dataViewHeight = (int) (rowsPerData * rowHeight);
-                    }
-                    break;
-                }
-                case ROW: {
-                    if (rowsPerData > Integer.MAX_VALUE) {
-                        scrolling.setScrollBarVerticalScale(ScrollBarVerticalScale.SCALED);
-                        dataViewHeight = Integer.MAX_VALUE;
-                    } else {
-                        scrolling.setScrollBarVerticalScale(ScrollBarVerticalScale.NORMAL);
-                        int viewportRows = viewportHeight / rowHeight;
-                        dataViewHeight = rowsPerData > viewportRows || rowsPerData * rowHeight > viewportHeight ? (int) (viewportHeight + (rowsPerData - viewportRows)) : viewportHeight;
-                    }
-                    break;
-                }
-                default:
-                    throw new IllegalStateException("Unexpected scrolling unit " + scrolling.getVerticalScrollUnit());
-            }
-
-            dataView.setPreferredSize(new Dimension(dataViewWidth, dataViewHeight));
+            JViewport viewport = scrollPanel.getViewport();
+            Dimension viewDimension = scrolling.computeViewDimension(viewport.getWidth(), viewport.getHeight(), layoutProfile, structure, characterWidth, rowHeight);
+            dataView.setPreferredSize(viewDimension);
         }
 
         // TODO on resize only
