@@ -34,7 +34,7 @@ import org.exbin.bined.extended.layout.ExtendedCodeAreaLayoutProfile;
 /**
  * Code area scrolling for extended core area.
  *
- * @version 0.2.0 2019/03/07
+ * @version 0.2.0 2019/03/10
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -46,6 +46,8 @@ public class ExtendedCodeAreaScrolling {
     private ScrollBarVerticalScale scrollBarVerticalScale = ScrollBarVerticalScale.NORMAL;
     @Nonnull
     private final Dimension scrollViewDimension = new Dimension();
+    private int horizontalExtendDifference;
+    private int verticalExtendDifference;
     private int horizontalScrollbarHeight;
     private int verticalScrollbarWidth;
 
@@ -60,11 +62,13 @@ public class ExtendedCodeAreaScrolling {
     @Nonnull
     private final CodeAreaScrollPosition maximumScrollPosition = new CodeAreaScrollPosition();
 
-    public void updateCache(DataProvider codeArea) {
+    public void updateCache(DataProvider codeArea, int horizontalScrollbarHeight, int verticalScrollbarWidth) {
         verticalScrollUnit = ((ExtendedScrollingCapable) codeArea).getVerticalScrollUnit();
         verticalScrollBarVisibility = ((ExtendedScrollingCapable) codeArea).getVerticalScrollBarVisibility();
         horizontalScrollUnit = ((ExtendedScrollingCapable) codeArea).getHorizontalScrollUnit();
         horizontalScrollBarVisibility = ((ExtendedScrollingCapable) codeArea).getHorizontalScrollBarVisibility();
+        this.horizontalScrollbarHeight = horizontalScrollbarHeight;
+        this.verticalScrollbarWidth = verticalScrollbarWidth;
     }
 
     @Nonnull
@@ -85,14 +89,16 @@ public class ExtendedCodeAreaScrolling {
 
         if (fitsHorizontally) {
             scrollViewDimension.width = dataWidth;
+            verticalExtendDifference = 0;
         } else {
-            scrollViewDimension.width = recomputeScrollViewWidth(dataViewWidth - verticalScrollbarWidth, characterWidth, dataWidth, halfCharsPerRow);
+            scrollViewDimension.width = recomputeScrollViewWidth(dataViewWidth, characterWidth, dataWidth, halfCharsPerRow);
         }
 
         if (fitsVertically) {
             scrollViewDimension.height = (int) (rowsPerData * rowHeight);
+            horizontalExtendDifference = 0;
         } else {
-            scrollViewDimension.height = recomputeScrollViewHeight(dataViewHeight - horizontalScrollbarHeight, rowHeight, rowsPerData);
+            scrollViewDimension.height = recomputeScrollViewHeight(dataViewHeight, rowHeight, rowsPerData);
         }
 
         return scrollViewDimension;
@@ -142,9 +148,11 @@ public class ExtendedCodeAreaScrolling {
                 if (rowsPerData > Integer.MAX_VALUE / rowHeight) {
                     scrollBarVerticalScale = ScrollBarVerticalScale.SCALED;
                     scrollViewHeight = Integer.MAX_VALUE;
+                    verticalExtendDifference = 0;
                 } else {
                     scrollBarVerticalScale = ScrollBarVerticalScale.NORMAL;
                     scrollViewHeight = (int) (rowsPerData * rowHeight) - dataViewHeight;
+                    verticalExtendDifference = 0;
                 }
                 break;
             }
@@ -152,10 +160,14 @@ public class ExtendedCodeAreaScrolling {
                 if (rowsPerData > (Integer.MAX_VALUE - dataViewHeight)) {
                     scrollBarVerticalScale = ScrollBarVerticalScale.SCALED;
                     scrollViewHeight = Integer.MAX_VALUE;
+                    verticalExtendDifference = 0;
                 } else {
                     scrollBarVerticalScale = ScrollBarVerticalScale.NORMAL;
                     int rowsPerDataView = dataViewHeight / rowHeight;
                     scrollViewHeight = (int) (dataViewHeight + (rowsPerData - rowsPerDataView));
+                    verticalExtendDifference = 0;
+//                    verticalExtendDifference = 473;
+//                    verticalExtendDifference = (int) (dataViewHeight - ((dataViewHeight * scrollViewHeight) / rowHeight / rowsPerData));
                 }
                 break;
             }
@@ -171,6 +183,7 @@ public class ExtendedCodeAreaScrolling {
             return;
         }
 
+        horizontalExtendDifference = 0;
         switch (horizontalScrollUnit) {
             case PIXEL: {
                 scrollPosition.setCharPosition(scrollBarValue / characterWidth);
@@ -681,6 +694,14 @@ public class ExtendedCodeAreaScrolling {
 
     public void setScrollPosition(CodeAreaScrollPosition scrollPosition) {
         this.scrollPosition.setScrollPosition(scrollPosition);
+    }
+
+    public int getHorizontalExtendDifference() {
+        return horizontalExtendDifference;
+    }
+
+    public int getVerticalExtendDifference() {
+        return verticalExtendDifference;
     }
 
     @Nonnull

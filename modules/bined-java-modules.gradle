@@ -2,7 +2,7 @@
 
 version = '0.2.0-SNAPSHOT'
 def repositoryName = "bined-java"
-def libraryUrl = 'http://bined.exbin.org'
+def libraryUrl = 'https://bined.exbin.org/library'
 
 ext.depsExbinUtilsJava = [
     githubProfile: 'exbin',

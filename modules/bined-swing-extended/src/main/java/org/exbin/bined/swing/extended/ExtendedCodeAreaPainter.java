@@ -40,6 +40,7 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import javax.swing.DefaultBoundedRangeModel;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
@@ -60,7 +61,6 @@ import org.exbin.bined.SelectionRange;
 import org.exbin.bined.basic.CodeAreaScrollPosition;
 import org.exbin.bined.basic.MovementDirection;
 import org.exbin.bined.basic.PositionScrollVisibility;
-import org.exbin.bined.basic.ScrollBarVerticalScale;
 import org.exbin.bined.basic.ScrollingDirection;
 import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.capability.CharsetCapable;
@@ -98,7 +98,7 @@ import org.exbin.bined.swing.basic.DefaultCodeAreaMouseListener;
 /**
  * Extended code area component default painter.
  *
- * @version 0.2.0 2019/03/03
+ * @version 0.2.0 2019/03/10
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -197,9 +197,11 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         JScrollBar verticalScrollBar = scrollPanel.getVerticalScrollBar();
         verticalScrollBar.setIgnoreRepaint(true);
         verticalScrollBar.addAdjustmentListener(new VerticalAdjustmentListener());
+        verticalScrollBar.setModel(new VerticalScrollBarModel());
         JScrollBar horizontalScrollBar = scrollPanel.getHorizontalScrollBar();
         horizontalScrollBar.setIgnoreRepaint(true);
         horizontalScrollBar.addAdjustmentListener(new HorizontalAdjustmentListener());
+        horizontalScrollBar.setModel(new HorizontalScrollBarModel());
         scrollPanel.setOpaque(false);
         scrollPanel.setViewportView(dataView);
         scrollPanel.setInheritsPopupMenu(true);
@@ -374,7 +376,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         scrollPanel.setBounds(scrollPanelRectangle);
 
         if (rowHeight > 0 && characterWidth > 0) {
-            scrolling.updateCache(codeArea);
+            scrolling.updateCache(codeArea, getHorizontalScrollBarSize(), getVerticalScrollBarSize());
             JViewport viewport = scrollPanel.getViewport();
             Dimension viewDimension = scrolling.computeViewDimension(viewport.getWidth(), viewport.getHeight(), layoutProfile, structure, characterWidth, rowHeight);
             dataView.setPreferredSize(viewDimension);
@@ -1869,7 +1871,40 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         }
 
         return size;
+    }
 
+    private class VerticalScrollBarModel extends DefaultBoundedRangeModel {
+
+        public VerticalScrollBarModel() {
+            super();
+        }
+
+        @Override
+        public int getExtent() {
+            return super.getExtent() - scrolling.getVerticalExtendDifference();
+        }
+
+        @Override
+        public int getMaximum() {
+            return super.getMaximum() - scrolling.getVerticalExtendDifference();
+        }
+    }
+
+    private class HorizontalScrollBarModel extends DefaultBoundedRangeModel {
+
+        public HorizontalScrollBarModel() {
+            super();
+        }
+
+        @Override
+        public int getExtent() {
+            return super.getExtent() - scrolling.getHorizontalExtendDifference();
+        }
+
+        @Override
+        public int getMaximum() {
+            return super.getMaximum() - scrolling.getHorizontalExtendDifference();
+        }
     }
 
     private class VerticalAdjustmentListener implements AdjustmentListener {

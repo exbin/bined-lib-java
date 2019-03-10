@@ -154,7 +154,7 @@ public class ScrollingPanel extends javax.swing.JPanel {
 
         verticalScrollModeLabel.setText("Vertical Scroll Mode");
 
-        verticalScrollModeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "PER_LINE", "PIXEL" }));
+        verticalScrollModeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "PER_ROW", "PIXEL" }));
         verticalScrollModeComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 verticalScrollModeComboBoxActionPerformed(evt);
