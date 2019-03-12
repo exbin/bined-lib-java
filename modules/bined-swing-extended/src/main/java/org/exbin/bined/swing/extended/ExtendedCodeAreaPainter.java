@@ -219,6 +219,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
                 recomputeLayout();
             }
         };
+        colorsProfile.reinitialize();
     }
 
     @Override

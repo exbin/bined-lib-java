@@ -31,15 +31,26 @@ import org.exbin.bined.swing.CodeAreaSwingUtils;
 /**
  * Color profile for extended code area.
  *
- * @version 0.2.0 2019/02/18
+ * @version 0.2.0 2019/03/12
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class ExtendedCodeAreaColorProfile implements CodeAreaColorsProfile {
 
     private final Map<CodeAreaColorType, Color> colors = new HashMap<>();
+    private boolean inheritSystemColors = true;
 
     public ExtendedCodeAreaColorProfile() {
+    }
+
+    /**
+     * Copy constructor.
+     *
+     * @param profile source profile
+     */
+    public ExtendedCodeAreaColorProfile(ExtendedCodeAreaColorProfile profile) {
+        colors.putAll(profile.colors);
+        inheritSystemColors = profile.inheritSystemColors;
     }
 
     /**
@@ -68,12 +79,13 @@ public class ExtendedCodeAreaColorProfile implements CodeAreaColorsProfile {
     }
 
     /**
-     * Add new color or or replace existing color.
+     * Sets color as replacement of the existing color.
      *
      * @param colorType color type
      * @param color color value
      */
-    public void addColor(CodeAreaColorType colorType, Color color) {
+    public void setColor(CodeAreaColorType colorType, Color color) {
+        inheritSystemColors = false;
         colors.put(colorType, color);
     }
 
@@ -81,57 +93,70 @@ public class ExtendedCodeAreaColorProfile implements CodeAreaColorsProfile {
         colors.remove(colorType);
     }
 
+    public boolean isInheritSystemColors() {
+        return inheritSystemColors;
+    }
+
+    public void setInheritSystemColors(boolean inheritSystemColors) {
+        this.inheritSystemColors = inheritSystemColors;
+        if (!inheritSystemColors) {
+            reinitialize();
+        }
+    }
+
     @Override
     public void reinitialize() {
-        Color textColor = UIManager.getColor("TextArea.foreground");
-        if (textColor == null) {
-            textColor = Color.BLACK;
+        if (inheritSystemColors) {
+            Color textColor = UIManager.getColor("TextArea.foreground");
+            if (textColor == null) {
+                textColor = Color.BLACK;
+            }
+            setColor(CodeAreaBasicColors.TEXT_COLOR, textColor);
+
+            Color textBackground = UIManager.getColor("TextArea.background");
+            if (textBackground == null) {
+                textBackground = Color.WHITE;
+            }
+            setColor(CodeAreaBasicColors.TEXT_BACKGROUND, textBackground);
+
+            Color selectionColor = UIManager.getColor("TextArea.selectionForeground");
+            if (selectionColor == null) {
+                selectionColor = Color.WHITE;
+            }
+            setColor(CodeAreaBasicColors.SELECTION_COLOR, selectionColor);
+
+            Color selectionBackground = UIManager.getColor("TextArea.selectionBackground");
+            if (selectionBackground == null) {
+                selectionBackground = new Color(96, 96, 255);
+            }
+            setColor(CodeAreaBasicColors.SELECTION_BACKGROUND, selectionBackground);
+
+            Color selectionMirrorColor = selectionColor;
+            setColor(CodeAreaBasicColors.SELECTION_MIRROR_COLOR, selectionMirrorColor);
+
+            Color selectionMirrorBackground = CodeAreaSwingUtils.computeGrayColor(selectionBackground);
+            setColor(CodeAreaBasicColors.SELECTION_MIRROR_BACKGROUND, selectionMirrorBackground);
+
+            Color cursorColor = UIManager.getColor("TextArea.caretForeground");
+            if (cursorColor == null) {
+                cursorColor = Color.BLACK;
+            }
+            setColor(CodeAreaBasicColors.CURSOR_COLOR, cursorColor);
+
+            Color cursorNegativeColor = CodeAreaSwingUtils.createNegativeColor(cursorColor);
+            setColor(CodeAreaBasicColors.CURSOR_NEGATIVE_COLOR, cursorNegativeColor);
+
+            Color decorationLine = Color.GRAY;
+            setColor(BasicCodeAreaDecorationColorType.LINE, decorationLine);
+
+            Color alternateColor = textColor;
+            setColor(CodeAreaBasicColors.ALTERNATE_COLOR, alternateColor);
+
+            Color alternateBackground = CodeAreaSwingUtils.createOddColor(textBackground);
+            setColor(CodeAreaBasicColors.ALTERNATE_BACKGROUND, alternateBackground);
+
+            Color unprintablesColor = new Color(textColor.getRed(), textColor.getGreen(), (textColor.getBlue() + 196) % 256);
+            setColor(CodeAreaUnprintablesColorType.UNPRINTABLES_COLOR, unprintablesColor);
         }
-        addColor(CodeAreaBasicColors.TEXT_COLOR, textColor);
-
-        Color textBackground = UIManager.getColor("TextArea.background");
-        if (textBackground == null) {
-            textBackground = Color.WHITE;
-        }
-        addColor(CodeAreaBasicColors.TEXT_BACKGROUND, textBackground);
-
-        Color selectionColor = UIManager.getColor("TextArea.selectionForeground");
-        if (selectionColor == null) {
-            selectionColor = Color.WHITE;
-        }
-        addColor(CodeAreaBasicColors.SELECTION_COLOR, selectionColor);
-
-        Color selectionBackground = UIManager.getColor("TextArea.selectionBackground");
-        if (selectionBackground == null) {
-            selectionBackground = new Color(96, 96, 255);
-        }
-        addColor(CodeAreaBasicColors.SELECTION_BACKGROUND, selectionBackground);
-
-        Color selectionMirrorColor = selectionColor;
-        addColor(CodeAreaBasicColors.SELECTION_MIRROR_COLOR, selectionMirrorColor);
-
-        Color selectionMirrorBackground = CodeAreaSwingUtils.computeGrayColor(selectionBackground);
-        addColor(CodeAreaBasicColors.SELECTION_MIRROR_BACKGROUND, selectionMirrorBackground);
-
-        Color cursorColor = UIManager.getColor("TextArea.caretForeground");
-        if (cursorColor == null) {
-            cursorColor = Color.BLACK;
-        }
-        addColor(CodeAreaBasicColors.CURSOR_COLOR, cursorColor);
-
-        Color cursorNegativeColor = CodeAreaSwingUtils.createNegativeColor(cursorColor);
-        addColor(CodeAreaBasicColors.CURSOR_NEGATIVE_COLOR, cursorNegativeColor);
-
-        Color decorationLine = Color.GRAY;
-        addColor(BasicCodeAreaDecorationColorType.LINE, decorationLine);
-
-        Color alternateColor = textColor;
-        addColor(CodeAreaBasicColors.ALTERNATE_COLOR, alternateColor);
-
-        Color alternateBackground = CodeAreaSwingUtils.createOddColor(textBackground);
-        addColor(CodeAreaBasicColors.ALTERNATE_BACKGROUND, alternateBackground);
-
-        Color unprintablesColor = new Color(textColor.getRed(), textColor.getGreen(), (textColor.getBlue() + 196) % 256);
-        addColor(CodeAreaUnprintablesColorType.UNPRINTABLES_COLOR, unprintablesColor);
     }
 }
