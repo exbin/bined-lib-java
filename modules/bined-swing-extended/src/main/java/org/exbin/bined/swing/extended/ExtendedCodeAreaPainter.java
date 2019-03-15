@@ -1674,12 +1674,12 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
     @Nonnull
     @Override
     public ExtendedCodeAreaThemeProfile getThemeProfile() {
-        return ExtendedCodeAreaThemeProfile.createCopy(themeProfile);
+        return themeProfile.createCopy();
     }
 
     @Override
     public void setThemeProfile(ExtendedCodeAreaThemeProfile themeProfile) {
-        this.themeProfile = ExtendedCodeAreaThemeProfile.createCopy(themeProfile);
+        this.themeProfile = themeProfile.createCopy();
         codeArea.repaint();
     }
 

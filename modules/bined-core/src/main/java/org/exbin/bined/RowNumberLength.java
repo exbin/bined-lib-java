@@ -19,46 +19,46 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * Line number length.
+ * Row number length.
  *
- * @version 0.2.0 2018/12/08
+ * @version 0.2.0 2019/03/15
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public class LineNumberLength {
+public class RowNumberLength {
 
     @Nonnull
-    private LineNumberType lineNumberType = LineNumberType.SPECIFIED;
-    private int lineNumberLength = 8;
+    private RowNumberType rowNumberType = RowNumberType.SPECIFIED;
+    private int rowNumberLength = 8;
 
-    public LineNumberLength() {
+    public RowNumberLength() {
     }
 
     @Nonnull
-    public LineNumberType getLineNumberType() {
-        return lineNumberType;
+    public RowNumberType getRowNumberType() {
+        return rowNumberType;
     }
 
-    public void setLineNumberType(LineNumberType lineNumberType) {
-        if (lineNumberType == null) {
+    public void setRowNumberType(RowNumberType rowNumberType) {
+        if (rowNumberType == null) {
             throw new NullPointerException();
         }
 
-        this.lineNumberType = lineNumberType;
+        this.rowNumberType = rowNumberType;
     }
 
-    public int getLineNumberLength() {
-        return lineNumberLength;
+    public int getRowNumberLength() {
+        return rowNumberLength;
     }
 
-    public void setLineNumberLength(int lineNumberLength) {
-        this.lineNumberLength = lineNumberLength;
+    public void setRowNumberLength(int rowNumberLength) {
+        this.rowNumberLength = rowNumberLength;
     }
 
     /**
      * Enumeration of line number types.
      */
-    public static enum LineNumberType {
+    public static enum RowNumberType {
         /**
          * Line number length is computed from data size and position code type.
          */

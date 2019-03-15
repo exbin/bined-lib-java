@@ -107,9 +107,9 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
     @Nonnull
     private PositionCodeType positionCodeType = PositionCodeType.HEXADECIMAL;
     @Nonnull
-    private RowWrappingMode lineWrapping = RowWrappingMode.NO_WRAPPING;
+    private RowWrappingMode rowWrapping = RowWrappingMode.NO_WRAPPING;
     private int wrappingBytesGroupSize = 0;
-    private int maxBytesPerLine = 16;
+    private int maxBytesPerRow = 16;
 
     @Nonnull
     private ScrollBarVisibility verticalScrollBarVisibility = ScrollBarVisibility.IF_NEEDED;
@@ -654,12 +654,12 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
     @Nonnull
     @Override
     public RowWrappingMode getRowWrapping() {
-        return lineWrapping;
+        return rowWrapping;
     }
 
     @Override
-    public void setRowWrapping(RowWrappingMode lineWrapping) {
-        this.lineWrapping = lineWrapping;
+    public void setRowWrapping(RowWrappingMode rowWrapping) {
+        this.rowWrapping = rowWrapping;
         updateLayout();
     }
 
@@ -676,12 +676,12 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
 
     @Override
     public int getMaxBytesPerRow() {
-        return maxBytesPerLine;
+        return maxBytesPerRow;
     }
 
     @Override
-    public void setMaxBytesPerLine(int maxBytesPerLine) {
-        this.maxBytesPerLine = maxBytesPerLine;
+    public void setMaxBytesPerRow(int maxBytesPerRow) {
+        this.maxBytesPerRow = maxBytesPerRow;
         updateLayout();
     }
 

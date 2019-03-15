@@ -138,7 +138,7 @@ public class LayoutPanel extends javax.swing.JPanel {
 
     private void maxBytesPerRowSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_maxBytesPerRowSpinnerStateChanged
         int value = (Integer) maxBytesPerRowSpinner.getValue();
-        codeArea.setMaxBytesPerLine(value);
+        codeArea.setMaxBytesPerRow(value);
     }//GEN-LAST:event_maxBytesPerRowSpinnerStateChanged
 
     private void minRowPositionLengthSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_minRowPositionLengthSpinnerStateChanged

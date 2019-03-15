@@ -18,6 +18,7 @@ package org.exbin.bined.swing.extended.color;
 import java.awt.Color;
 import java.util.HashMap;
 import java.util.Map;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.swing.UIManager;
@@ -46,11 +47,14 @@ public class ExtendedCodeAreaColorProfile implements CodeAreaColorsProfile {
     /**
      * Copy constructor.
      *
-     * @param profile source profile
+     * @return full copy of profile
      */
-    public ExtendedCodeAreaColorProfile(ExtendedCodeAreaColorProfile profile) {
-        colors.putAll(profile.colors);
-        inheritSystemColors = profile.inheritSystemColors;
+    @Nonnull
+    public ExtendedCodeAreaColorProfile createCopy() {
+        ExtendedCodeAreaColorProfile copy = new ExtendedCodeAreaColorProfile();
+        copy.colors.putAll(colors);
+        copy.inheritSystemColors = inheritSystemColors;
+        return copy;
     }
 
     /**

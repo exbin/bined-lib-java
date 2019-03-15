@@ -19,9 +19,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * Line wrapping capability interface.
+ * Row wrapping capability interface.
  *
- * @version 0.2.0 2018/12/13
+ * @version 0.2.0 2019/03/15
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -30,11 +30,11 @@ public interface RowWrappingCapable {
     @Nonnull
     RowWrappingMode getRowWrapping();
 
-    void setRowWrapping(RowWrappingMode lineWrapping);
+    void setRowWrapping(RowWrappingMode rowWrapping);
 
     int getMaxBytesPerRow();
 
-    void setMaxBytesPerLine(int maxBytesPerLine);
+    void setMaxBytesPerRow(int maxBytesPerRow);
 
     int getWrappingBytesGroupSize();
 
@@ -47,10 +47,6 @@ public interface RowWrappingCapable {
     int getMaxRowPositionLength();
 
     void setMaxRowPositionLength(int maxRowPositionLength);
-
-    public static class LineWrappingCapability implements CodeAreaCapability {
-
-    }
 
     public enum RowWrappingMode {
         NO_WRAPPING, WRAPPING

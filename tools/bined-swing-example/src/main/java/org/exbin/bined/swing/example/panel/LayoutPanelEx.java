@@ -352,7 +352,7 @@ public class LayoutPanelEx extends javax.swing.JPanel {
     }//GEN-LAST:event_headerTopSpaceSpinnerStateChanged
 
     private void maxBytesPerRowSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_maxBytesPerRowSpinnerStateChanged
-        codeArea.setMaxBytesPerLine((Integer) maxBytesPerRowSpinner.getValue());
+        codeArea.setMaxBytesPerRow((Integer) maxBytesPerRowSpinner.getValue());
     }//GEN-LAST:event_maxBytesPerRowSpinnerStateChanged
 
     private void showRowPositionCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_showRowPositionCheckBoxItemStateChanged

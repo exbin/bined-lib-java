@@ -102,7 +102,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
     private int minRowPositionLength = 0;
     private int maxRowPositionLength = 0;
     private int wrappingBytesGroupSize = 0;
-    private int maxBytesPerLine = 16;
+    private int maxBytesPerRow = 16;
 
     @Nonnull
     private ScrollBarVisibility verticalScrollBarVisibility = ScrollBarVisibility.IF_NEEDED;
@@ -679,12 +679,12 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
 
     @Override
     public int getMaxBytesPerRow() {
-        return maxBytesPerLine;
+        return maxBytesPerRow;
     }
 
     @Override
-    public void setMaxBytesPerLine(int maxBytesPerLine) {
-        this.maxBytesPerLine = maxBytesPerLine;
+    public void setMaxBytesPerRow(int maxBytesPerRow) {
+        this.maxBytesPerRow = maxBytesPerRow;
         updateLayout();
     }
 

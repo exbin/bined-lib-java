@@ -26,7 +26,7 @@ import org.exbin.bined.swing.extended.layout.ExtendedCodeAreaDecorations;
 /**
  * Layout profile for extended code area.
  *
- * @version 0.2.0 2018/12/18
+ * @version 0.2.0 2018/03/15
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -48,17 +48,16 @@ public class ExtendedCodeAreaThemeProfile {
     /**
      * Copy constructor.
      *
-     * @param profile source profile
      * @return copy of the profile
      */
     @Nonnull
-    public static ExtendedCodeAreaThemeProfile createCopy(ExtendedCodeAreaThemeProfile profile) {
+    public ExtendedCodeAreaThemeProfile createCopy() {
         ExtendedCodeAreaThemeProfile copy = new ExtendedCodeAreaThemeProfile();
-        copy.borderPaintMode = profile.borderPaintMode;
-        copy.paintRowPosBackground = profile.paintRowPosBackground;
-        copy.verticalLineByteGroupSize = profile.verticalLineByteGroupSize;
+        copy.borderPaintMode = borderPaintMode;
+        copy.paintRowPosBackground = paintRowPosBackground;
+        copy.verticalLineByteGroupSize = verticalLineByteGroupSize;
         copy.decorations.clear();
-        copy.decorations.addAll(profile.decorations);
+        copy.decorations.addAll(decorations);
 
         return copy;
     }
