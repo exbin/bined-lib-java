@@ -20,11 +20,11 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.BasicCodeAreaZone;
-import org.exbin.bined.CaretPosition;
 import org.exbin.bined.PositionOverflowMode;
 import org.exbin.bined.basic.CodeAreaScrollPosition;
 import org.exbin.bined.basic.MovementDirection;
 import org.exbin.bined.basic.ScrollingDirection;
+import org.exbin.bined.CodeAreaCaretPosition;
 
 /**
  * Hexadecimal editor painter interface.
@@ -111,7 +111,7 @@ public interface CodeAreaPainter {
      * @return closest caret position
      */
     @Nonnull
-    CaretPosition mousePositionToClosestCaretPosition(int positionX, int positionY, PositionOverflowMode overflowMode);
+    CodeAreaCaretPosition mousePositionToClosestCaretPosition(int positionX, int positionY, PositionOverflowMode overflowMode);
 
     void updateScrollBars();
 
@@ -128,7 +128,7 @@ public interface CodeAreaPainter {
      * scrolled to the best fit
      */
     @Nullable
-    CodeAreaScrollPosition computeRevealScrollPosition(CaretPosition caretPosition);
+    CodeAreaScrollPosition computeRevealScrollPosition(CodeAreaCaretPosition caretPosition);
 
     /**
      * Returns scroll position so that provided caret position is visible in the
@@ -141,7 +141,7 @@ public interface CodeAreaPainter {
      * current scroll position.
      */
     @Nullable
-    CodeAreaScrollPosition computeCenterOnScrollPosition(CaretPosition caretPosition);
+    CodeAreaScrollPosition computeCenterOnScrollPosition(CodeAreaCaretPosition caretPosition);
 
     /**
      * Computes position for movement action.
@@ -151,7 +151,7 @@ public interface CodeAreaPainter {
      * @return target position
      */
     @Nonnull
-    CaretPosition computeMovePosition(CaretPosition position, MovementDirection direction);
+    CodeAreaCaretPosition computeMovePosition(CodeAreaCaretPosition position, MovementDirection direction);
 
     /**
      * Computes scrolling position for given shift action.

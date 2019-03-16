@@ -18,12 +18,12 @@ package org.exbin.bined.basic;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.BasicCodeAreaSection;
-import org.exbin.bined.CaretPosition;
-import org.exbin.bined.CodeAreaCaretPosition;
+import org.exbin.bined.DefaultCodeAreaCaretPosition;
 import org.exbin.bined.CodeAreaSection;
 import org.exbin.bined.CodeAreaViewMode;
 import org.exbin.bined.CodeType;
 import org.exbin.bined.capability.RowWrappingCapable;
+import org.exbin.bined.CodeAreaCaretPosition;
 
 /**
  * Code area data representation structure for basic variant.
@@ -110,11 +110,11 @@ public class BasicCodeAreaLayout {
     }
 
     @Nonnull
-    public CaretPosition computeMovePosition(BasicCodeAreaStructure structure, CaretPosition position, MovementDirection direction, int rowsPerPage) {
+    public CodeAreaCaretPosition computeMovePosition(BasicCodeAreaStructure structure, CodeAreaCaretPosition position, MovementDirection direction, int rowsPerPage) {
         CodeType codeType = structure.getCodeType();
         int bytesPerRow = structure.getBytesPerRow();
         long dataSize = structure.getDataSize();
-        CodeAreaCaretPosition target = new CodeAreaCaretPosition(position.getDataPosition(), position.getCodeOffset(), position.getSection());
+        DefaultCodeAreaCaretPosition target = new DefaultCodeAreaCaretPosition(position.getDataPosition(), position.getCodeOffset(), position.getSection());
         switch (direction) {
             case LEFT: {
                 if (position.getSection() == BasicCodeAreaSection.CODE_MATRIX) {

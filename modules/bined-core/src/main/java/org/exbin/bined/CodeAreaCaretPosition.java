@@ -15,99 +15,37 @@
  */
 package org.exbin.bined;
 
-import java.util.Objects;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
+import javax.annotation.Nonnull;
 
 /**
  * Specifies caret position as combination of data position, section and code
  * offset of code representation.
  *
- * @version 0.2.0 2018/12/08
+ * @version 0.2.0 2018/10/24
  * @author ExBin Project (https://exbin.org)
  */
-@ParametersAreNonnullByDefault
-public class CodeAreaCaretPosition implements CaretPosition {
-
-    private long dataPosition = 0;
-    private int codeOffset = 0;
-    @Nullable
-    private CodeAreaSection section = null;
-
-    public CodeAreaCaretPosition() {
-    }
-
-    public CodeAreaCaretPosition(long dataPosition, int codeOffset, CodeAreaSection section) {
-        this.dataPosition = dataPosition;
-        this.codeOffset = codeOffset;
-        this.section = section;
-    }
-
-    @Override
-    public long getDataPosition() {
-        return dataPosition;
-    }
-
-    public void setDataPosition(long dataPosition) {
-        this.dataPosition = dataPosition;
-    }
-
-    @Override
-    public int getCodeOffset() {
-        return codeOffset;
-    }
-
-    public void setCodeOffset(int codeOffset) {
-        this.codeOffset = codeOffset;
-    }
-
-    @Nullable
-    @Override
-    public CodeAreaSection getSection() {
-        return section;
-    }
-
-    public void setSection(@Nullable CodeAreaSection section) {
-        this.section = section;
-    }
+public interface CodeAreaCaretPosition {
 
     /**
-     * Sets caret position according to given position.
+     * Returns position of byte in document.
      *
-     * @param position source position
+     * @return data position
      */
-    public void setPosition(CaretPosition position) {
-        dataPosition = position.getDataPosition();
-        codeOffset = position.getCodeOffset();
-        section = position.getSection();
-    }
+    long getDataPosition();
 
-    public void clear() {
-        this.dataPosition = 0;
-        this.codeOffset = 0;
-        this.section = null;
-    }
+    /**
+     * Returns offset position of current code on current position and code
+     * type.
+     *
+     * @return code offset
+     */
+    int getCodeOffset();
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(dataPosition, codeOffset, section);
-    }
-
-    @Override
-    public boolean equals(@Nullable Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-
-        final CodeAreaCaretPosition other = (CodeAreaCaretPosition) obj;
-        return Objects.equals(this.dataPosition, other.dataPosition)
-                && Objects.equals(this.codeOffset, other.codeOffset)
-                && Objects.equals(this.section, other.section);
-    }
+    /**
+     * Returns active code area section.
+     *
+     * @return section
+     */
+    @Nonnull
+    CodeAreaSection getSection();
 }

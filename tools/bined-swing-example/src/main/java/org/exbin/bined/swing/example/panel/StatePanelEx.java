@@ -25,13 +25,13 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 import org.exbin.bined.BasicCodeAreaSection;
-import org.exbin.bined.CaretPosition;
 import org.exbin.bined.EditationOperation;
 import org.exbin.bined.SelectionRange;
 import org.exbin.bined.capability.SelectionCapable;
 import org.exbin.bined.swing.example.BinEdExampleBasicPanel;
 import org.exbin.bined.swing.extended.ExtCodeArea;
 import org.exbin.utils.binary_data.EditableBinaryData;
+import org.exbin.bined.CodeAreaCaretPosition;
 
 /**
  * Hexadecimal editor example panel.
@@ -51,7 +51,7 @@ public class StatePanelEx extends javax.swing.JPanel {
 
         dataSizeTextField.setText(String.valueOf(codeArea.getDataSize()));
 
-        codeArea.addCaretMovedListener((CaretPosition caretPosition) -> {
+        codeArea.addCaretMovedListener((CodeAreaCaretPosition caretPosition) -> {
             positionTextField.setText(String.valueOf(caretPosition.getDataPosition()));
             codeOffsetTextField.setText(String.valueOf(caretPosition.getCodeOffset()));
             activeSectionComboBox.setSelectedIndex(((BasicCodeAreaSection) caretPosition.getSection()).ordinal());

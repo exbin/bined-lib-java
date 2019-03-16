@@ -36,7 +36,6 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-import org.exbin.bined.CaretPosition;
 import org.exbin.bined.EditationMode;
 import org.exbin.bined.EditationOperation;
 import org.exbin.bined.SelectionRange;
@@ -53,6 +52,7 @@ import org.exbin.bined.swing.CodeAreaCommandHandler;
 import org.exbin.bined.swing.basic.CodeArea;
 import org.exbin.utils.binary_data.ByteArrayEditableData;
 import org.exbin.utils.binary_data.EditableBinaryData;
+import org.exbin.bined.CodeAreaCaretPosition;
 
 /**
  * Basic single jar swing version of BinEd Hexadecimal editor.
@@ -280,7 +280,7 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
                 }
             }
         });
-        ((CaretCapable) codeArea).addCaretMovedListener((CaretPosition caretPosition) -> {
+        ((CaretCapable) codeArea).addCaretMovedListener((CodeAreaCaretPosition caretPosition) -> {
             positionLabel.setText(caretPosition.getDataPosition() + ":" + caretPosition.getCodeOffset());
         });
         ((SelectionCapable) codeArea).addSelectionChangedListener((SelectionRange selection) -> {

@@ -34,14 +34,14 @@ public interface CodeAreaCaret {
      * @return caret position
      */
     @Nonnull
-    CaretPosition getCaretPosition();
+    CodeAreaCaretPosition getCaretPosition();
 
     /**
      * Sets current caret position to provided value.
      *
      * @param caretPosition caret position
      */
-    void setCaretPosition(@Nullable CaretPosition caretPosition);
+    void setCaretPosition(@Nullable CodeAreaCaretPosition caretPosition);
 
     /**
      * Sets current caret position to given position preserving section.

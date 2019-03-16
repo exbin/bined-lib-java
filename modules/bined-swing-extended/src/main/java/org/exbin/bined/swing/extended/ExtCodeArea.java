@@ -28,8 +28,7 @@ import javax.swing.UIManager;
 import org.exbin.bined.BasicCodeAreaSection;
 import org.exbin.bined.BasicCodeAreaZone;
 import org.exbin.bined.CaretMovedListener;
-import org.exbin.bined.CaretPosition;
-import org.exbin.bined.CodeAreaCaretPosition;
+import org.exbin.bined.DefaultCodeAreaCaretPosition;
 import org.exbin.bined.CodeAreaSection;
 import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.CodeAreaViewMode;
@@ -62,6 +61,7 @@ import org.exbin.bined.swing.extended.layout.LayoutProfileCapableCodeAreaPainter
 import org.exbin.bined.swing.extended.theme.ExtendedCodeAreaThemeProfile;
 import org.exbin.bined.swing.extended.theme.ThemeProfileCapableCodeAreaPainter;
 import org.exbin.bined.extended.layout.ExtendedCodeAreaLayoutProfile;
+import org.exbin.bined.CodeAreaCaretPosition;
 
 /**
  * Code area component extended code area.
@@ -235,11 +235,11 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
     }
 
     @Nonnull
-    public CaretPosition getCaretPosition() {
+    public CodeAreaCaretPosition getCaretPosition() {
         return caret.getCaretPosition();
     }
 
-    public void setCaretPosition(CaretPosition caretPosition) {
+    public void setCaretPosition(CodeAreaCaretPosition caretPosition) {
         caret.setCaretPosition(caretPosition);
         notifyCaretMoved();
     }
@@ -319,7 +319,7 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
     }
 
     @Override
-    public void revealPosition(CaretPosition caretPosition) {
+    public void revealPosition(CodeAreaCaretPosition caretPosition) {
         if (!isInitialized()) {
             // Silently ignore if painter is not yet initialized
             return;
@@ -335,7 +335,7 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
     }
 
     public void revealPosition(long dataPosition, int dataOffset, CodeAreaSection section) {
-        revealPosition(new CodeAreaCaretPosition(dataPosition, dataOffset, section));
+        revealPosition(new DefaultCodeAreaCaretPosition(dataPosition, dataOffset, section));
     }
 
     @Override
@@ -344,7 +344,7 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
     }
 
     @Override
-    public void centerOnPosition(CaretPosition caretPosition) {
+    public void centerOnPosition(CodeAreaCaretPosition caretPosition) {
         if (!isInitialized()) {
             // Silently ignore if painter is not yet initialized
             return;
@@ -360,18 +360,18 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
     }
 
     public void centerOnPosition(long dataPosition, int dataOffset, CodeAreaSection section) {
-        centerOnPosition(new CodeAreaCaretPosition(dataPosition, dataOffset, section));
+        centerOnPosition(new DefaultCodeAreaCaretPosition(dataPosition, dataOffset, section));
     }
 
     @Nullable
     @Override
-    public CaretPosition mousePositionToClosestCaretPosition(int positionX, int positionY, PositionOverflowMode overflowMode) {
+    public CodeAreaCaretPosition mousePositionToClosestCaretPosition(int positionX, int positionY, PositionOverflowMode overflowMode) {
         return painter.mousePositionToClosestCaretPosition(positionX, positionY, overflowMode);
     }
 
     @Nonnull
     @Override
-    public CaretPosition computeMovePosition(CaretPosition position, MovementDirection direction) {
+    public CodeAreaCaretPosition computeMovePosition(CodeAreaCaretPosition position, MovementDirection direction) {
         return painter.computeMovePosition(position, direction);
     }
 

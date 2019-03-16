@@ -30,7 +30,6 @@ import java.util.logging.Logger;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.BasicCodeAreaSection;
-import org.exbin.bined.CaretPosition;
 import org.exbin.bined.CharsetStreamTranslator;
 import org.exbin.bined.CodeAreaCaret;
 import org.exbin.bined.CodeAreaUtils;
@@ -74,6 +73,7 @@ import org.exbin.utils.binary_data.ByteArrayData;
 import org.exbin.utils.binary_data.ByteArrayEditableData;
 import org.exbin.utils.binary_data.EditableBinaryData;
 import org.exbin.utils.binary_data.PagedData;
+import org.exbin.bined.CodeAreaCaretPosition;
 
 /**
  * Command handler for undo/redo aware hexadecimal editor editing.
@@ -312,7 +312,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
         EditationMode editationMode = ((EditationModeCapable) codeArea).getEditationMode();
         EditationOperation editationOperation = ((EditationModeCapable) codeArea).getActiveOperation();
         DefaultCodeAreaCaret caret = (DefaultCodeAreaCaret) ((CaretCapable) codeArea).getCaret();
-        CaretPosition caretPosition = caret.getCaretPosition();
+        CodeAreaCaretPosition caretPosition = caret.getCaretPosition();
         if (caretPosition.getSection() == BasicCodeAreaSection.CODE_MATRIX) {
             long dataPosition = caretPosition.getDataPosition();
             int startCodeOffset = caretPosition.getCodeOffset();
@@ -902,7 +902,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
         ((SelectionCapable) codeArea).setSelection(selection.getStart(), selection.getStart());
     }
 
-    public void updateSelection(SelectingMode selecting, CaretPosition caretPosition) {
+    public void updateSelection(SelectingMode selecting, CodeAreaCaretPosition caretPosition) {
         DefaultCodeAreaCaret caret = (DefaultCodeAreaCaret) ((CaretCapable) codeArea).getCaret();
         SelectionRange selection = ((SelectionCapable) codeArea).getSelection();
         if (selecting == SelectingMode.SELECTING) {
@@ -914,7 +914,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
 
     @Override
     public void moveCaret(int positionX, int positionY, SelectingMode selecting) {
-        CaretPosition caretPosition = ((CaretCapable) codeArea).mousePositionToClosestCaretPosition(positionX, positionY, PositionOverflowMode.OVERFLOW);
+        CodeAreaCaretPosition caretPosition = ((CaretCapable) codeArea).mousePositionToClosestCaretPosition(positionX, positionY, PositionOverflowMode.OVERFLOW);
         if (caretPosition != null) {
             ((CaretCapable) codeArea).getCaret().setCaretPosition(caretPosition);
             updateSelection(selecting, caretPosition);
@@ -927,8 +927,8 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
 
     public void move(int modifiers, MovementDirection direction) {
         DefaultCodeAreaCaret caret = (DefaultCodeAreaCaret) ((CaretCapable) codeArea).getCaret();
-        CaretPosition caretPosition = caret.getCaretPosition();
-        CaretPosition movePosition = ((CaretCapable) codeArea).computeMovePosition(caretPosition, direction);
+        CodeAreaCaretPosition caretPosition = caret.getCaretPosition();
+        CodeAreaCaretPosition movePosition = ((CaretCapable) codeArea).computeMovePosition(caretPosition, direction);
         if (!caretPosition.equals(movePosition)) {
             caret.setCaretPosition(movePosition);
             updateSelection((modifiers & KeyEvent.SHIFT_DOWN_MASK) > 0 ? SelectingMode.SELECTING : SelectingMode.NONE, movePosition);

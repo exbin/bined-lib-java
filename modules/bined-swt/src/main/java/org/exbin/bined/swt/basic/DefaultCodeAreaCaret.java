@@ -22,12 +22,12 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.swing.Timer;
 import org.exbin.bined.BasicCodeAreaSection;
-import org.exbin.bined.CaretPosition;
 import org.exbin.bined.CodeAreaCaret;
-import org.exbin.bined.CodeAreaCaretPosition;
+import org.exbin.bined.DefaultCodeAreaCaretPosition;
 import org.exbin.bined.CodeAreaSection;
 import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.capability.CaretCapable;
+import org.exbin.bined.CodeAreaCaretPosition;
 
 /**
  * Default implementation of code area caret.
@@ -43,7 +43,7 @@ public class DefaultCodeAreaCaret implements CodeAreaCaret {
 
     @Nonnull
     private final CodeArea codeArea;
-    private final CodeAreaCaretPosition caretPosition = new CodeAreaCaretPosition();
+    private final DefaultCodeAreaCaretPosition caretPosition = new DefaultCodeAreaCaretPosition();
 
     private int blinkRate = 0;
     private Timer blinkTimer = null;
@@ -73,7 +73,7 @@ public class DefaultCodeAreaCaret implements CodeAreaCaret {
 
     @Nonnull
     @Override
-    public CaretPosition getCaretPosition() {
+    public CodeAreaCaretPosition getCaretPosition() {
         return caretPosition;
     }
 
@@ -90,7 +90,7 @@ public class DefaultCodeAreaCaret implements CodeAreaCaret {
     }
 
     @Override
-    public void setCaretPosition(@Nullable CaretPosition caretPosition) {
+    public void setCaretPosition(@Nullable CodeAreaCaretPosition caretPosition) {
         if (caretPosition != null) {
             this.caretPosition.setPosition(caretPosition);
         } else {

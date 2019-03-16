@@ -19,7 +19,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.BasicCodeAreaSection;
-import org.exbin.bined.CaretPosition;
 import org.exbin.bined.CodeAreaSection;
 import org.exbin.bined.CodeAreaViewMode;
 import org.exbin.bined.CodeType;
@@ -34,6 +33,7 @@ import org.exbin.bined.capability.SelectionCapable;
 import org.exbin.bined.capability.ViewModeCapable;
 import org.exbin.bined.extended.capability.PositionCodeTypeCapable;
 import org.exbin.bined.extended.layout.ExtendedCodeAreaLayoutProfile;
+import org.exbin.bined.CodeAreaCaretPosition;
 
 /**
  * Code area data representation structure for extended variant.
@@ -101,7 +101,7 @@ public class ExtendedCodeAreaStructure {
     }
 
     @Nonnull
-    public CaretPosition computeMovePosition(CaretPosition position, MovementDirection direction, int rowsPerPage) {
+    public CodeAreaCaretPosition computeMovePosition(CodeAreaCaretPosition position, MovementDirection direction, int rowsPerPage) {
         return layout.computeMovePosition(position, direction, this, rowsPerPage);
     }
 

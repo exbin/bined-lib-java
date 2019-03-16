@@ -18,8 +18,7 @@ package org.exbin.bined.swing.extended.layout;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.BasicCodeAreaSection;
-import org.exbin.bined.CaretPosition;
-import org.exbin.bined.CodeAreaCaretPosition;
+import org.exbin.bined.DefaultCodeAreaCaretPosition;
 import org.exbin.bined.CodeAreaSection;
 import org.exbin.bined.CodeAreaViewMode;
 import org.exbin.bined.CodeType;
@@ -29,6 +28,7 @@ import org.exbin.bined.extended.layout.SpaceType;
 import org.exbin.bined.extended.ExtendedCodeAreaStructure;
 import org.exbin.bined.extended.layout.PositionIterator;
 import org.exbin.bined.extended.layout.ExtendedCodeAreaLayoutProfile;
+import org.exbin.bined.CodeAreaCaretPosition;
 
 /**
  * Layout profile for extended code area.
@@ -190,11 +190,11 @@ public class DefaultExtendedCodeAreaLayoutProfile implements ExtendedCodeAreaLay
 
     @Nonnull
     @Override
-    public CaretPosition computeMovePosition(CaretPosition position, MovementDirection direction, ExtendedCodeAreaStructure structure, int rowsPerPage) {
+    public CodeAreaCaretPosition computeMovePosition(CodeAreaCaretPosition position, MovementDirection direction, ExtendedCodeAreaStructure structure, int rowsPerPage) {
         CodeType codeType = structure.getCodeType();
         long dataSize = structure.getDataSize();
         int bytesPerRow = structure.getBytesPerRow();
-        CodeAreaCaretPosition target = new CodeAreaCaretPosition(position.getDataPosition(), position.getCodeOffset(), position.getSection());
+        DefaultCodeAreaCaretPosition target = new DefaultCodeAreaCaretPosition(position.getDataPosition(), position.getCodeOffset(), position.getSection());
         switch (direction) {
             case LEFT: {
                 if (position.getSection() == BasicCodeAreaSection.CODE_MATRIX) {

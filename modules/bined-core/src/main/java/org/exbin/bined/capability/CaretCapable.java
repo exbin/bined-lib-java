@@ -20,10 +20,10 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.BasicCodeAreaZone;
 import org.exbin.bined.CaretMovedListener;
-import org.exbin.bined.CaretPosition;
 import org.exbin.bined.CodeAreaCaret;
 import org.exbin.bined.PositionOverflowMode;
 import org.exbin.bined.basic.MovementDirection;
+import org.exbin.bined.CodeAreaCaretPosition;
 
 /**
  * Support for caret / cursor capability.
@@ -50,7 +50,7 @@ public interface CaretCapable {
      * @return target position
      */
     @Nonnull
-    CaretPosition computeMovePosition(CaretPosition position, MovementDirection direction);
+    CodeAreaCaretPosition computeMovePosition(CodeAreaCaretPosition position, MovementDirection direction);
 
     /**
      * Computes closest caret position for given relative component position.
@@ -61,7 +61,7 @@ public interface CaretCapable {
      * @return mouse position
      */
     @Nullable
-    CaretPosition mousePositionToClosestCaretPosition(int positionX, int positionY, PositionOverflowMode overflowMode);
+    CodeAreaCaretPosition mousePositionToClosestCaretPosition(int positionX, int positionY, PositionOverflowMode overflowMode);
 
     /**
      * Returns if cursor should be visible in other sections.

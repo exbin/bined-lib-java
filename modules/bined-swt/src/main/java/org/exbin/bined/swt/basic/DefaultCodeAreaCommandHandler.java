@@ -30,7 +30,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
 import org.exbin.bined.BasicCodeAreaSection;
-import org.exbin.bined.CaretPosition;
 import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.CodeAreaViewMode;
 import org.exbin.bined.CodeCharactersCase;
@@ -57,6 +56,7 @@ import org.exbin.bined.swt.CodeAreaSwtUtils;
 import org.exbin.utils.binary_data.BinaryData;
 import org.exbin.utils.binary_data.ByteArrayEditableData;
 import org.exbin.utils.binary_data.EditableBinaryData;
+import org.exbin.bined.CodeAreaCaretPosition;
 
 /**
  * Default hexadecimal editor command handler.
@@ -283,7 +283,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         EditationMode editationMode = ((EditationModeCapable) codeArea).getEditationMode();
         EditationOperation editationOperation = ((EditationModeCapable) codeArea).getActiveOperation();
         DefaultCodeAreaCaret caret = (DefaultCodeAreaCaret) ((CaretCapable) codeArea).getCaret();
-        CaretPosition caretPosition = caret.getCaretPosition();
+        CodeAreaCaretPosition caretPosition = caret.getCaretPosition();
         if (caretPosition.getSection() == BasicCodeAreaSection.CODE_MATRIX) {
             long dataPosition = caretPosition.getDataPosition();
             int codeOffset = caretPosition.getCodeOffset();
@@ -370,7 +370,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     }
 
     private void setCodeValue(int value) {
-        CaretPosition caretPosition = ((CaretCapable) codeArea).getCaret().getCaretPosition();
+        CodeAreaCaretPosition caretPosition = ((CaretCapable) codeArea).getCaret().getCaretPosition();
         long dataPosition = caretPosition.getDataPosition();
         int codeOffset = caretPosition.getCodeOffset();
         BinaryData data = codeArea.getContentData();
@@ -700,7 +700,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         ((SelectionCapable) codeArea).clearSelection();
     }
 
-    public void updateSelection(SelectingMode selecting, CaretPosition caretPosition) {
+    public void updateSelection(SelectingMode selecting, CodeAreaCaretPosition caretPosition) {
         DefaultCodeAreaCaret caret = (DefaultCodeAreaCaret) ((CaretCapable) codeArea).getCaret();
         SelectionRange selection = ((SelectionCapable) codeArea).getSelection();
         if (selecting == SelectingMode.SELECTING) {
@@ -716,7 +716,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
     @Override
     public void moveCaret(int positionX, int positionY, SelectingMode selecting) {
-        CaretPosition caretPosition = ((CaretCapable) codeArea).mousePositionToClosestCaretPosition(positionX, positionY, PositionOverflowMode.OVERFLOW);
+        CodeAreaCaretPosition caretPosition = ((CaretCapable) codeArea).mousePositionToClosestCaretPosition(positionX, positionY, PositionOverflowMode.OVERFLOW);
         if (caretPosition != null) {
             ((CaretCapable) codeArea).getCaret().setCaretPosition(caretPosition);
             updateSelection(selecting, caretPosition);
@@ -729,8 +729,8 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
     public void move(int modifiers, MovementDirection direction) {
         DefaultCodeAreaCaret caret = (DefaultCodeAreaCaret) ((CaretCapable) codeArea).getCaret();
-        CaretPosition caretPosition = caret.getCaretPosition();
-        CaretPosition movePosition = ((CaretCapable) codeArea).computeMovePosition(caretPosition, direction);
+        CodeAreaCaretPosition caretPosition = caret.getCaretPosition();
+        CodeAreaCaretPosition movePosition = ((CaretCapable) codeArea).computeMovePosition(caretPosition, direction);
         if (!caretPosition.equals(movePosition)) {
             caret.setCaretPosition(movePosition);
             updateSelection((modifiers & java.awt.event.KeyEvent.SHIFT_DOWN_MASK) > 0 ? SelectingMode.SELECTING : SelectingMode.NONE, movePosition);

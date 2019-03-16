@@ -31,5 +31,5 @@ public interface CaretMovedListener {
      *
      * @param caretPosition caret position
      */
-    void caretMoved(CaretPosition caretPosition);
+    void caretMoved(CodeAreaCaretPosition caretPosition);
 }

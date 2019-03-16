@@ -18,11 +18,11 @@ package org.exbin.bined.operation.swing;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import org.exbin.bined.CaretPosition;
-import org.exbin.bined.CodeAreaCaretPosition;
+import org.exbin.bined.DefaultCodeAreaCaretPosition;
 import org.exbin.bined.operation.BinaryDataOperation;
 import org.exbin.bined.operation.BinaryDataOperationException;
 import org.exbin.bined.swing.CodeAreaCore;
+import org.exbin.bined.CodeAreaCaretPosition;
 
 /**
  * Abstract class for operation on code area component.
@@ -36,13 +36,13 @@ public abstract class CodeAreaOperation implements BinaryDataOperation {
     @Nonnull
     protected final CodeAreaCore codeArea;
     @Nonnull
-    protected final CodeAreaCaretPosition backPosition = new CodeAreaCaretPosition();
+    protected final DefaultCodeAreaCaretPosition backPosition = new DefaultCodeAreaCaretPosition();
 
     public CodeAreaOperation(CodeAreaCore codeArea) {
         this(codeArea, null);
     }
 
-    public CodeAreaOperation(CodeAreaCore codeArea, @Nullable CaretPosition backPosition) {
+    public CodeAreaOperation(CodeAreaCore codeArea, @Nullable CodeAreaCaretPosition backPosition) {
         this.codeArea = codeArea;
         if (backPosition != null) {
             this.backPosition.setPosition(backPosition);
@@ -74,11 +74,11 @@ public abstract class CodeAreaOperation implements BinaryDataOperation {
     }
 
     @Nonnull
-    public CaretPosition getBackPosition() {
+    public CodeAreaCaretPosition getBackPosition() {
         return backPosition;
     }
 
-    public void setBackPosition(CaretPosition backPosition) {
+    public void setBackPosition(CodeAreaCaretPosition backPosition) {
         this.backPosition.setPosition(backPosition);
     }
 

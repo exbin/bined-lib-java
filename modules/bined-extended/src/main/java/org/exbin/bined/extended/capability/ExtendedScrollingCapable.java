@@ -17,7 +17,6 @@ package org.exbin.bined.extended.capability;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import org.exbin.bined.CaretPosition;
 import org.exbin.bined.ScrollBarVisibility;
 import org.exbin.bined.ScrollingListener;
 import org.exbin.bined.basic.CodeAreaScrollPosition;
@@ -25,6 +24,7 @@ import org.exbin.bined.basic.ScrollingDirection;
 import org.exbin.bined.basic.VerticalScrollUnit;
 import org.exbin.bined.capability.CodeAreaCapability;
 import org.exbin.bined.extended.ExtendedHorizontalScrollUnit;
+import org.exbin.bined.CodeAreaCaretPosition;
 
 /**
  * Support for code type capability for extended code area.

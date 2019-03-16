@@ -27,8 +27,7 @@ import javax.swing.UIManager;
 import org.exbin.bined.BasicCodeAreaSection;
 import org.exbin.bined.BasicCodeAreaZone;
 import org.exbin.bined.CaretMovedListener;
-import org.exbin.bined.CaretPosition;
-import org.exbin.bined.CodeAreaCaretPosition;
+import org.exbin.bined.DefaultCodeAreaCaretPosition;
 import org.exbin.bined.CodeAreaSection;
 import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.CodeAreaViewMode;
@@ -55,6 +54,7 @@ import org.exbin.bined.javafx.CodeAreaPainter;
 import org.exbin.bined.javafx.basic.color.BasicCodeAreaColorsProfile;
 import org.exbin.bined.javafx.basic.color.BasicColorsCapableCodeAreaPainter;
 import org.exbin.bined.javafx.capability.FontCapable;
+import org.exbin.bined.CodeAreaCaretPosition;
 
 /**
  * Code area component default code area.
@@ -226,11 +226,11 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaJ
     }
 
     @Nonnull
-    public CaretPosition getCaretPosition() {
+    public CodeAreaCaretPosition getCaretPosition() {
         return caret.getCaretPosition();
     }
 
-    public void setCaretPosition(CaretPosition caretPosition) {
+    public void setCaretPosition(CodeAreaCaretPosition caretPosition) {
         caret.setCaretPosition(caretPosition);
         notifyCaretMoved();
     }
@@ -320,7 +320,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaJ
     }
 
     @Override
-    public void revealPosition(CaretPosition caretPosition) {
+    public void revealPosition(CodeAreaCaretPosition caretPosition) {
         if (!isInitialized()) {
             // Silently ignore if painter is not yet initialized
             return;
@@ -336,7 +336,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaJ
     }
 
     public void revealPosition(long dataPosition, int dataOffset, CodeAreaSection section) {
-        revealPosition(new CodeAreaCaretPosition(dataPosition, dataOffset, section));
+        revealPosition(new DefaultCodeAreaCaretPosition(dataPosition, dataOffset, section));
     }
 
     @Override
@@ -345,7 +345,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaJ
     }
 
     @Override
-    public void centerOnPosition(CaretPosition caretPosition) {
+    public void centerOnPosition(CodeAreaCaretPosition caretPosition) {
         if (!isInitialized()) {
             // Silently ignore if painter is not yet initialized
             return;
@@ -361,18 +361,18 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaJ
     }
 
     public void centerOnPosition(long dataPosition, int dataOffset, CodeAreaSection section) {
-        centerOnPosition(new CodeAreaCaretPosition(dataPosition, dataOffset, section));
+        centerOnPosition(new DefaultCodeAreaCaretPosition(dataPosition, dataOffset, section));
     }
 
     @Nullable
     @Override
-    public CaretPosition mousePositionToClosestCaretPosition(int positionX, int positionY, PositionOverflowMode overflowMode) {
+    public CodeAreaCaretPosition mousePositionToClosestCaretPosition(int positionX, int positionY, PositionOverflowMode overflowMode) {
         return painter.mousePositionToClosestCaretPosition(positionX, positionY, overflowMode);
     }
 
     @Nonnull
     @Override
-    public CaretPosition computeMovePosition(CaretPosition position, MovementDirection direction) {
+    public CodeAreaCaretPosition computeMovePosition(CodeAreaCaretPosition position, MovementDirection direction) {
         return painter.computeMovePosition(position, direction);
     }
 

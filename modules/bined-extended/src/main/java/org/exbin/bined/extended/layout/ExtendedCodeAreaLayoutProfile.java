@@ -17,12 +17,12 @@ package org.exbin.bined.extended.layout;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import org.exbin.bined.CaretPosition;
 import org.exbin.bined.CodeAreaSection;
 import org.exbin.bined.CodeAreaViewMode;
 import org.exbin.bined.CodeType;
 import org.exbin.bined.basic.MovementDirection;
 import org.exbin.bined.extended.ExtendedCodeAreaStructure;
+import org.exbin.bined.CodeAreaCaretPosition;
 
 /**
  * Layout interface for extended code area.
@@ -60,7 +60,7 @@ public interface ExtendedCodeAreaLayoutProfile {
     int computeRowPositionOffsetPositionX();
 
     @Nonnull
-    CaretPosition computeMovePosition(CaretPosition position, MovementDirection direction, ExtendedCodeAreaStructure structure, int rowsPerPage);
+    CodeAreaCaretPosition computeMovePosition(CodeAreaCaretPosition position, MovementDirection direction, ExtendedCodeAreaStructure structure, int rowsPerPage);
 
     int computePositionX(int halfCharPosition, int characterWidth, int halfSpaceWidth);
 

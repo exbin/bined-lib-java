@@ -40,8 +40,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JViewport;
 import org.exbin.bined.BasicCodeAreaSection;
 import org.exbin.bined.BasicCodeAreaZone;
-import org.exbin.bined.CaretPosition;
-import org.exbin.bined.CodeAreaCaretPosition;
+import org.exbin.bined.DefaultCodeAreaCaretPosition;
 import org.exbin.bined.CodeAreaSection;
 import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.CodeAreaViewMode;
@@ -75,6 +74,7 @@ import org.exbin.bined.swing.basic.color.BasicColorsCapableCodeAreaPainter;
 import org.exbin.bined.swing.capability.AntialiasingCapable;
 import org.exbin.bined.swing.capability.FontCapable;
 import org.exbin.utils.binary_data.BinaryData;
+import org.exbin.bined.CodeAreaCaretPosition;
 
 /**
  * Code area component default painter.
@@ -808,7 +808,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
     public Color getPositionBackgroundColor(long rowDataPosition, int byteOnRow, int charOnRow, CodeAreaSection section) {
         SelectionRange selectionRange = structure.getSelectionRange();
         int codeLastCharPos = structure.getCodeLastCharPos();
-        CaretPosition caretPosition = ((CaretCapable) codeArea).getCaret().getCaretPosition();
+        CodeAreaCaretPosition caretPosition = ((CaretCapable) codeArea).getCaret().getCaretPosition();
         boolean inSelection = selectionRange != null && selectionRange.isInSelection(rowDataPosition + byteOnRow);
         if (inSelection && (section == BasicCodeAreaSection.CODE_MATRIX)) {
             if (charOnRow == codeLastCharPos) {
@@ -825,7 +825,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
 
     @Nullable
     @Override
-    public PositionScrollVisibility computePositionScrollVisibility(CaretPosition caretPosition) {
+    public PositionScrollVisibility computePositionScrollVisibility(CodeAreaCaretPosition caretPosition) {
         int bytesPerRow = structure.getBytesPerRow();
         int previewCharPos = structure.getPreviewCharPos();
         int characterWidth = metrics.getCharacterWidth();
@@ -850,7 +850,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
 
     @Nullable
     @Override
-    public CodeAreaScrollPosition computeRevealScrollPosition(CaretPosition caretPosition) {
+    public CodeAreaScrollPosition computeRevealScrollPosition(CodeAreaCaretPosition caretPosition) {
         int bytesPerRow = structure.getBytesPerRow();
         int previewCharPos = structure.getPreviewCharPos();
         int characterWidth = metrics.getCharacterWidth();
@@ -874,7 +874,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
     }
 
     @Override
-    public CodeAreaScrollPosition computeCenterOnScrollPosition(CaretPosition caretPosition) {
+    public CodeAreaScrollPosition computeCenterOnScrollPosition(CodeAreaCaretPosition caretPosition) {
         int bytesPerRow = structure.getBytesPerRow();
         int previewCharPos = structure.getPreviewCharPos();
         int characterWidth = metrics.getCharacterWidth();
@@ -993,7 +993,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
     @Nullable
     public Color getPositionTextColor(long rowDataPosition, int byteOnRow, int charOnRow, CodeAreaSection section) {
         SelectionRange selectionRange = structure.getSelectionRange();
-        CaretPosition caretPosition = ((CaretCapable) codeArea).getCaret().getCaretPosition();
+        CodeAreaCaretPosition caretPosition = ((CaretCapable) codeArea).getCaret().getCaretPosition();
         boolean inSelection = selectionRange != null && selectionRange.isInSelection(rowDataPosition + byteOnRow);
         if (inSelection) {
             return section == caretPosition.getSection() ? colorsProfile.getSelectionColor() : colorsProfile.getSelectionMirrorColor();
@@ -1158,8 +1158,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
 
     @Nonnull
     @Override
-    public CaretPosition mousePositionToClosestCaretPosition(int positionX, int positionY, PositionOverflowMode overflowMode) {
-        CodeAreaCaretPosition caret = new CodeAreaCaretPosition();
+    public CodeAreaCaretPosition mousePositionToClosestCaretPosition(int positionX, int positionY, PositionOverflowMode overflowMode) {
+        DefaultCodeAreaCaretPosition caret = new DefaultCodeAreaCaretPosition();
         CodeAreaScrollPosition scrollPosition = scrolling.getScrollPosition();
         int characterWidth = metrics.getCharacterWidth();
         int rowHeight = metrics.getRowHeight();
@@ -1238,7 +1238,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
     }
 
     @Override
-    public CaretPosition computeMovePosition(CaretPosition position, MovementDirection direction) {
+    public CodeAreaCaretPosition computeMovePosition(CodeAreaCaretPosition position, MovementDirection direction) {
         return structure.computeMovePosition(position, direction, dimensions.getRowsPerPage());
     }
 
