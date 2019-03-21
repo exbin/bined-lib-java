@@ -346,7 +346,6 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         font = ((FontCapable) codeArea).getCodeFont();
         metrics.recomputeMetrics(g.getFontMetrics(font), charset);
 
-        recomputeDimensions();
         recomputeLayout();
         recomputeCharPositions();
         initialized = true;
@@ -399,7 +398,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         }
         updateCache();
         if (font == null) {
-            ((FontCapable) codeArea).setCodeFont(codeArea.getFont());
+            ((FontCapable) codeArea).setCodeFont(((FontCapable) codeArea).getCodeFont());
             fontChanged(g);
         }
         if (rowDataCache == null) {
