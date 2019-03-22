@@ -344,6 +344,9 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
 
         charset = ((CharsetCapable) codeArea).getCharset();
         font = ((FontCapable) codeArea).getCodeFont();
+        if (font == null) {
+            font = codeArea.getFont();
+        }
         metrics.recomputeMetrics(g.getFontMetrics(font), charset);
 
         recomputeLayout();
