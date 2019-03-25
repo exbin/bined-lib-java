@@ -581,6 +581,7 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
         }
     }
 
+    @Nonnull
     @Override
     public EditationOperation getActiveOperation() {
         switch (editationMode) {

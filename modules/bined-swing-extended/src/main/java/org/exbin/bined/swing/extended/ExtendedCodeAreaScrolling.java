@@ -165,9 +165,7 @@ public class ExtendedCodeAreaScrolling {
                     scrollBarVerticalScale = ScrollBarVerticalScale.NORMAL;
                     int rowsPerDataView = dataViewHeight / rowHeight;
                     scrollViewHeight = (int) (dataViewHeight + (rowsPerData - rowsPerDataView));
-                    verticalExtendDifference = 0;
-//                    verticalExtendDifference = 473;
-//                    verticalExtendDifference = (int) (dataViewHeight - ((dataViewHeight * scrollViewHeight) / rowHeight / rowsPerData));
+                    verticalExtendDifference = dataViewHeight - rowsPerDataView;
                 }
                 break;
             }
