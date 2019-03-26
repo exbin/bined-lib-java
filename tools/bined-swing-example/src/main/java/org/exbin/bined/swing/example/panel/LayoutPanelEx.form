@@ -23,21 +23,23 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="maxBytesPerRowLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="wrapLineModeCheckBox" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="halfSpaceGroupSizeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="doubleSpaceGroupSizeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="spaceGroupSizeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="1" attributes="0">
                       <Group type="103" groupAlignment="1" attributes="0">
                           <Component id="doubleSpaceGroupSizeSpinner" alignment="0" max="32767" attributes="0"/>
+                          <Component id="spaceGroupSizeSpinner" alignment="0" max="32767" attributes="0"/>
                           <Component id="halfSpaceGroupSizeSpinner" alignment="0" max="32767" attributes="0"/>
                           <Component id="headerPanel" alignment="0" max="32767" attributes="0"/>
                           <Component id="maxBytesPerRowSpinner" alignment="0" max="32767" attributes="0"/>
                           <Component id="rowPositionPanel" alignment="0" max="32767" attributes="0"/>
-                          <Component id="spaceGroupSizeSpinner" alignment="0" max="32767" attributes="0"/>
                           <Group type="102" alignment="0" attributes="0">
-                              <Component id="spaceGroupSizeLabel" min="-2" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="1" attributes="0">
+                                  <Component id="halfSpaceGroupSizeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="doubleSpaceGroupSizeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                              </Group>
                               <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                           </Group>
                       </Group>
@@ -61,13 +63,13 @@
               <EmptySpace max="-2" attributes="0"/>
               <Component id="rowPositionPanel" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="spaceGroupSizeLabel" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
-              <Component id="spaceGroupSizeSpinner" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
               <Component id="halfSpaceGroupSizeLabel" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="halfSpaceGroupSizeSpinner" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="spaceGroupSizeLabel" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="spaceGroupSizeSpinner" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="doubleSpaceGroupSizeLabel" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>

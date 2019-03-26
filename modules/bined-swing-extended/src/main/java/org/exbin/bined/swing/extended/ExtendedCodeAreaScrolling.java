@@ -34,7 +34,7 @@ import org.exbin.bined.extended.layout.ExtendedCodeAreaLayoutProfile;
 /**
  * Code area scrolling for extended core area.
  *
- * @version 0.2.0 2019/03/10
+ * @version 0.2.0 2019/03/26
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -122,16 +122,19 @@ public class ExtendedCodeAreaScrolling {
         switch (horizontalScrollUnit) {
             case PIXEL: {
                 scrollViewWidth = dataWidth;
+                horizontalExtendDifference = 0;
                 break;
             }
             case CHARACTER: {
                 int charsPerDataView = dataViewWidth / characterWidth;
                 scrollViewWidth = dataViewWidth + (((halfCharsPerRow + 1) / 2) - charsPerDataView);
+                horizontalExtendDifference = dataViewWidth - charsPerDataView;
                 break;
             }
             case HALF_CHARACTER: {
                 int halfCharsPerDataView = dataViewWidth / (characterWidth / 2);
                 scrollViewWidth = dataViewWidth + (halfCharsPerRow - halfCharsPerDataView);
+                horizontalExtendDifference = dataViewWidth - halfCharsPerDataView;
                 break;
             }
             default:
@@ -181,7 +184,6 @@ public class ExtendedCodeAreaScrolling {
             return;
         }
 
-        horizontalExtendDifference = 0;
         switch (horizontalScrollUnit) {
             case PIXEL: {
                 scrollPosition.setCharPosition(scrollBarValue / characterWidth);
@@ -530,23 +532,31 @@ public class ExtendedCodeAreaScrolling {
     }
 
     @Nonnull
-    public CodeAreaScrollPosition computeCenterOnScrollPosition(long rowPosition, int halfCharsPosition, int bytesPerRow, int rowsPerRect, int halfCharsPerRect, int dataViewWidth, int rowOffset, int characterWidth, int rowHeight) {
+    public CodeAreaScrollPosition computeCenterOnScrollPosition(long rowPosition, int halfCharsPosition, int bytesPerRow, int rowsPerRect, int halfCharsPerRect, int dataViewWidth, int dataViewHeight, int rowOffset, int characterWidth, int rowHeight) {
         CodeAreaScrollPosition targetScrollPosition = new CodeAreaScrollPosition();
         targetScrollPosition.setScrollPosition(scrollPosition);
 
         long centerRowPosition = rowPosition - rowsPerRect / 2;
-// TODO        int rowCorrection = (rowsPerRect & 1) == 0 ? rowHeight : 0;
-        int heightDiff = 0; // (rowsPerRect * rowHeight + rowCorrection - dataViewHeight) / 2;
+        int rowCorrection = (rowsPerRect & 1) == 0 ? rowHeight : 0;
+        int heightDiff = (rowsPerRect * rowHeight + rowCorrection - dataViewHeight) / 2;
         int targetRowOffset;
-        if (verticalScrollUnit == VerticalScrollUnit.ROW) {
-            targetRowOffset = 0;
-        } else {
-            if (heightDiff > 0) {
-                targetRowOffset = heightDiff;
-            } else {
-                targetRowOffset = 0;
+        switch (verticalScrollUnit) {
+            case PIXEL: {
+                if (heightDiff > 0) {
+                    targetRowOffset = heightDiff;
+                } else {
+                    targetRowOffset = 0;
+                }
+                break;
             }
+            case ROW: {
+                targetRowOffset = 0;
+                break;
+            }
+            default:
+                throw new IllegalStateException("Unexpected scrolling unit " + verticalScrollUnit);
         }
+
         if (centerRowPosition < 0) {
             centerRowPosition = 0;
             targetRowOffset = 0;
@@ -561,18 +571,30 @@ public class ExtendedCodeAreaScrolling {
         targetScrollPosition.setRowPosition(centerRowPosition);
         targetScrollPosition.setRowOffset(targetRowOffset);
 
+        int halfSpaceSize = characterWidth / 2;
         int centerHalfCharPosition = halfCharsPosition - halfCharsPerRect / 2;
-        int charCorrection = (halfCharsPerRect & 1) == 0 ? rowHeight : 0;
-        int widthDiff = (halfCharsPerRect * characterWidth + charCorrection - dataViewWidth) / 2;
+        int charCorrection = (halfCharsPerRect & 1) == 0 ? halfSpaceSize : 0;
+        int widthDiff = (halfCharsPerRect * halfSpaceSize + charCorrection - dataViewWidth) / 2;
         int charOffset;
-        if (horizontalScrollUnit != ExtendedHorizontalScrollUnit.PIXEL) {
-            charOffset = 0;
-        } else {
-            if (widthDiff > 0) {
-                charOffset = widthDiff;
-            } else {
-                charOffset = 0;
+        switch (horizontalScrollUnit) {
+            case PIXEL: {
+                if (widthDiff > 0) {
+                    charOffset = widthDiff;
+                } else {
+                    charOffset = 0;
+                }
+                break;
             }
+            case CHARACTER: {
+                charOffset = 0;
+                break;
+            }
+            case HALF_CHARACTER: {
+                charOffset = 0;
+                break;
+            }
+            default:
+                throw new IllegalStateException("Unexpected scrolling unit " + horizontalScrollUnit);
         }
         if (centerHalfCharPosition < 0) {
             centerHalfCharPosition = 0;
@@ -585,7 +607,7 @@ public class ExtendedCodeAreaScrolling {
                 charOffset = maximumScrollPosition.getCharOffset();
             }
         }
-        setHorizontalScrollPosition(scrollPosition, centerHalfCharPosition, charOffset, characterWidth);
+        setHorizontalScrollPosition(targetScrollPosition, centerHalfCharPosition, charOffset, characterWidth);
         return targetScrollPosition;
     }
 
@@ -604,14 +626,19 @@ public class ExtendedCodeAreaScrolling {
             switch (horizontalScrollUnit) {
                 case CHARACTER: {
                     maximumScrollPosition.setCharPosition((halfCharsDifference >> 1) + ((halfCharsDifference & 1) == 1 || halfCharOffset > 0 ? 1 : 0));
+                    break;
                 }
                 case HALF_CHARACTER: {
                     maximumScrollPosition.setCharPosition(halfCharsDifference + ((halfCharOffset > 0) ? 1 : 0));
+                    break;
                 }
                 case PIXEL: {
                     maximumScrollPosition.setCharPosition(halfCharsDifference >> 1);
                     maximumScrollPosition.setCharOffset(halfCharOffset + (halfCharsDifference & 1) * (characterWidth / 2));
+                    break;
                 }
+                default:
+                    throw new IllegalStateException("Unexpected horizontal scrolling unit " + horizontalScrollUnit);
             }
         }
     }

@@ -1143,6 +1143,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         int characterWidth = metrics.getCharacterWidth();
         int rowHeight = metrics.getRowHeight();
         int dataViewWidth = dimensions.getDataViewWidth();
+        int dataViewHeight = dimensions.getDataViewHeight();
         int rowOffset = dimensions.getRowOffset();
         int rowsPerRect = dimensions.getRowsPerRect();
         int halfCharsPerRect = dimensions.getHalfCharsPerRect();
@@ -1152,7 +1153,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         int byteOffset = (int) (shiftedPosition % bytesPerRow);
         int halfCharPosition = structure.computeFirstCodeHalfCharPos(byteOffset, caretPosition.getSection()) + caretPosition.getCodeOffset();
 
-        return scrolling.computeCenterOnScrollPosition(rowPosition, halfCharPosition, bytesPerRow, rowsPerRect, halfCharsPerRect, dataViewWidth, rowOffset, characterWidth, rowHeight);
+        return scrolling.computeCenterOnScrollPosition(rowPosition, halfCharPosition, bytesPerRow, rowsPerRect, halfCharsPerRect, dataViewWidth, dataViewHeight, rowOffset, characterWidth, rowHeight);
     }
 
     /**
