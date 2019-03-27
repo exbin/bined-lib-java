@@ -1070,19 +1070,19 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
      *
      * @param rowDataPosition row data position
      * @param byteOnRow byte on current row
-     * @param charOnRow character on current row
+     * @param halfCharOnRow character on current row
      * @param section current section
      * @param unprintable flag for unprintable characters
      * @return color or null for default color
      */
     @Nullable
-    public Color getPositionBackgroundColor(long rowDataPosition, int byteOnRow, int charOnRow, CodeAreaSection section, boolean unprintable) {
+    public Color getPositionBackgroundColor(long rowDataPosition, int byteOnRow, int halfCharOnRow, CodeAreaSection section, boolean unprintable) {
         SelectionRange selectionRange = structure.getSelectionRange();
         int codeLastCharPos = structure.getCodeLastHalfCharPos();
         CodeAreaCaretPosition caretPosition = ((CaretCapable) codeArea).getCaret().getCaretPosition();
         boolean inSelection = selectionRange != null && selectionRange.isInSelection(rowDataPosition + byteOnRow);
         if (inSelection && (section == BasicCodeAreaSection.CODE_MATRIX)) {
-            if (charOnRow == codeLastCharPos) {
+            if (halfCharOnRow == codeLastCharPos) {
                 inSelection = false;
             }
         }
@@ -1176,7 +1176,6 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
 
         Color lastColor = null;
         Color renderColor = null;
-        Color lastColorShifted = null;
         Color renderColorShifted = null;
 
         boolean unprintables = false;
@@ -1205,7 +1204,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
                     continue;
                 }
 
-                Color color = getPositionTextColor(rowDataPosition, byteOffset, charPos, section, currentUnprintables);
+                Color color = getPositionTextColor(rowDataPosition, byteOffset, halfCharPos, section, currentUnprintables);
                 if (color == null) {
                     color = colorsProfile.getColor(CodeAreaBasicColors.TEXT_COLOR);
                 }
@@ -1250,7 +1249,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
                     continue;
                 }
 
-                Color color = getPositionTextColor(rowDataPosition, byteOffset, charPos, section, currentUnprintables);
+                Color color = getPositionTextColor(rowDataPosition, byteOffset, halfCharPos, section, currentUnprintables);
                 if (color == null) {
                     color = colorsProfile.getColor(CodeAreaBasicColors.TEXT_COLOR);
                 }
@@ -1269,9 +1268,9 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
                 }
 
                 if (sequenceBreak) {
-                    if (!CodeAreaSwingUtils.areSameColors(lastColorShifted, renderColorShifted)) {
+                    if (!CodeAreaSwingUtils.areSameColors(lastColor, renderColorShifted)) {
                         g.setColor(renderColorShifted);
-                        lastColorShifted = renderColorShifted;
+                        lastColor = renderColorShifted;
                     }
 
                     if (charPos > renderOffset) {
@@ -1279,9 +1278,9 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
                     }
 
                     renderColorShifted = color;
-                    if (!CodeAreaSwingUtils.areSameColors(lastColorShifted, renderColorShifted)) {
+                    if (!CodeAreaSwingUtils.areSameColors(lastColor, renderColorShifted)) {
                         g.setColor(renderColorShifted);
-                        lastColorShifted = renderColorShifted;
+                        lastColor = renderColorShifted;
                     }
 
                     renderOffsetShifted = charPos;
@@ -1299,13 +1298,14 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         if (renderOffset < charactersPerRow) {
             if (!CodeAreaSwingUtils.areSameColors(lastColor, renderColor)) {
                 g.setColor(renderColor);
+                lastColor = renderColor;
             }
 
             drawCenteredChars(g, rowDataCache.rowCharacters, renderOffset, charactersPerRow - renderOffset, characterWidth, rowPositionX + renderOffset * characterWidth, positionY);
         }
 
         if (layoutProfile.isHalfShiftedUsed() && renderOffsetShifted < charactersPerRow) {
-            if (!CodeAreaSwingUtils.areSameColors(lastColorShifted, renderColorShifted)) {
+            if (!CodeAreaSwingUtils.areSameColors(lastColor, renderColorShifted)) {
                 g.setColor(renderColorShifted);
             }
 
@@ -1318,16 +1318,22 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
      *
      * @param rowDataPosition row data position
      * @param byteOnRow byte on current row
-     * @param codeOffset character on current row
+     * @param halfCharOnRow character on current row
      * @param section current section
      * @param unprintable flag for unprintable characters
      * @return color or null for default color
      */
     @Nullable
-    public Color getPositionTextColor(long rowDataPosition, int byteOnRow, int codeOffset, CodeAreaSection section, boolean unprintable) {
+    public Color getPositionTextColor(long rowDataPosition, int byteOnRow, int halfCharOnRow, CodeAreaSection section, boolean unprintable) {
         SelectionRange selectionRange = structure.getSelectionRange();
+        int codeLastCharPos = structure.getCodeLastHalfCharPos();
         CodeAreaCaretPosition caretPosition = ((CaretCapable) codeArea).getCaret().getCaretPosition();
         boolean inSelection = selectionRange != null && selectionRange.isInSelection(rowDataPosition + byteOnRow);
+        if (inSelection && (section == BasicCodeAreaSection.CODE_MATRIX)) {
+            if (halfCharOnRow == codeLastCharPos) {
+                inSelection = false;
+            }
+        }
 
         if (unprintable && section == BasicCodeAreaSection.TEXT_PREVIEW) {
             return colorsProfile.getColor(CodeAreaUnprintablesColorType.UNPRINTABLES_COLOR, CodeAreaBasicColors.TEXT_COLOR);
