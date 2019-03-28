@@ -58,7 +58,7 @@ public class LayoutPanel extends javax.swing.JPanel {
         maxRowPositionLengthLabel = new javax.swing.JLabel();
         maxRowPositionLengthSpinner = new javax.swing.JSpinner();
 
-        rowWrappingModeCheckBox.setText("Wrap Line Mode");
+        rowWrappingModeCheckBox.setText("Row Wrapping Mode");
         rowWrappingModeCheckBox.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 rowWrappingModeCheckBoxItemStateChanged(evt);

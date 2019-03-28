@@ -65,7 +65,7 @@
   <SubComponents>
     <Component class="javax.swing.JCheckBox" name="rowWrappingModeCheckBox">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Wrap Line Mode"/>
+        <Property name="text" type="java.lang.String" value="Row Wrapping Mode"/>
       </Properties>
       <Events>
         <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="rowWrappingModeCheckBoxItemStateChanged"/>

@@ -22,7 +22,7 @@
                   <Group type="102" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="maxBytesPerRowLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="wrapLineModeCheckBox" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="rowWrappingModeCheckBox" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="spaceGroupSizeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
@@ -53,7 +53,7 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="wrapLineModeCheckBox" min="-2" max="-2" attributes="0"/>
+              <Component id="rowWrappingModeCheckBox" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="maxBytesPerRowLabel" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
@@ -80,12 +80,12 @@
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Component class="javax.swing.JCheckBox" name="wrapLineModeCheckBox">
+    <Component class="javax.swing.JCheckBox" name="rowWrappingModeCheckBox">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Wrap Line Mode"/>
+        <Property name="text" type="java.lang.String" value="Row Wrapping Mode"/>
       </Properties>
       <Events>
-        <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="wrapLineModeCheckBoxItemStateChanged"/>
+        <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="rowWrappingModeCheckBoxItemStateChanged"/>
       </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="maxBytesPerRowLabel">
