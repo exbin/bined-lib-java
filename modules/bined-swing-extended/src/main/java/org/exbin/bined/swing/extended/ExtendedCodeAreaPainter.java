@@ -1273,7 +1273,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
                         lastColor = renderColorShifted;
                     }
 
-                    if (charPos > renderOffset) {
+                    if (charPos > renderOffsetShifted) {
                         drawCenteredChars(g, rowDataCache.rowCharactersShifted, renderOffsetShifted, charPos - renderOffsetShifted, characterWidth, rowPositionX + renderOffsetShifted * characterWidth + halfSpaceWidth, positionY);
                     }
 
