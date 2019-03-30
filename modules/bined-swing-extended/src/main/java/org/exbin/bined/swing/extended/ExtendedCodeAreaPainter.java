@@ -950,20 +950,8 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
                     String displayString = new String(rowDataCache.rowData, byteOffset, charDataLength, charset);
                     if (!displayString.isEmpty()) {
                         targetChar = displayString.charAt(0);
-                        if (showUnprintables) {
-                            replacement = unprintableCharactersMapping.get(targetChar);
-                            if (replacement != null) {
-                                rowDataCache.unprintables[byteOffset >> 3] |= 1 << (byteOffset & 7);
-                                targetChar = replacement;
-                            }
-
-                        }
-
-                        if ((halfCharPos & 1) == 0) {
-                            rowDataCache.rowCharacters[charPos] = targetChar;
-                        } else {
-                            rowDataCache.rowCharactersShifted[charPos] = targetChar;
-                        }
+                    } else {
+                        targetChar = SPACE_CHAR;
                     }
                 } else {
                     if (charMappingCharset == null || charMappingCharset != charset) {
@@ -971,23 +959,21 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
                     }
 
                     targetChar = charMapping[dataByte & 0xFF];
-                    if (showUnprintables) {
-                        if (unprintableCharactersMapping == null) {
-                            buildUnprintableCharactersMapping();
-                        }
-                        replacement = unprintableCharactersMapping.get(targetChar);
-                        if (replacement != null) {
-                            rowDataCache.unprintables[byteOffset >> 3] |= 1 << (byteOffset & 7);
-                            targetChar = replacement;
-                        }
+                }
 
+                if (showUnprintables) {
+                    replacement = unprintableCharactersMapping.get(targetChar);
+                    if (replacement != null) {
+                        rowDataCache.unprintables[byteOffset >> 3] |= 1 << (byteOffset & 7);
+                        targetChar = replacement;
                     }
 
-                    if ((halfCharPos & 1) == 0) {
-                        rowDataCache.rowCharacters[charPos + byteOffset] = targetChar;
-                    } else {
-                        rowDataCache.rowCharactersShifted[charPos + byteOffset] = targetChar;
-                    }
+                }
+
+                if ((halfCharPos & 1) == 0) {
+                    rowDataCache.rowCharacters[charPos] = targetChar;
+                } else {
+                    rowDataCache.rowCharactersShifted[charPos] = targetChar;
                 }
             }
             halfCharPos += 2 + positionIterator.nextSpaceType().getHalfCharSize();
