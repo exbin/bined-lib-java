@@ -875,11 +875,9 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
             rowBytesLimit = 0;
         }
 
-        if (rowBytesLimit < bytesPerRow) {
-            Arrays.fill(rowDataCache.rowCharacters, SPACE_CHAR);
-            if (layoutProfile.isHalfShiftedUsed()) {
-                Arrays.fill(rowDataCache.rowCharactersShifted, SPACE_CHAR);
-            }
+        Arrays.fill(rowDataCache.rowCharacters, SPACE_CHAR);
+        if (layoutProfile.isHalfShiftedUsed()) {
+            Arrays.fill(rowDataCache.rowCharactersShifted, SPACE_CHAR);
         }
 
         if (showUnprintables) {
