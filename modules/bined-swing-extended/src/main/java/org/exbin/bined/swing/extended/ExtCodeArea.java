@@ -628,14 +628,14 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
         this.handleClipboard = handleClipboard;
     }
 
-    @Nonnull
+    @Nullable
     @Override
     public Font getCodeFont() {
         return font;
     }
 
     @Override
-    public void setCodeFont(Font font) {
+    public void setCodeFont(@Nullable Font font) {
         this.font = font;
         painter.resetFont();
         repaint();

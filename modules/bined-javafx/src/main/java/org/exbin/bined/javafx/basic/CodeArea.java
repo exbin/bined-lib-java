@@ -86,7 +86,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaJ
     @Nonnull
     private CodeAreaViewMode viewMode = CodeAreaViewMode.DUAL;
     @Nullable
-    private Font font;
+    private Font codeFont;
     @Nonnull
     private BasicBackgroundPaintMode borderPaintMode = BasicBackgroundPaintMode.STRIPED;
     @Nonnull
@@ -472,7 +472,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaJ
     @Override
     public void updateLayout() {
         if (!isInitialized()) {
-            ((FontCapable) this).setFont(new Font("Arial", 17.0));
+            ((FontCapable) this).setCodeFont(new Font("Arial", 17.0));
         }
 
         painter.resetLayout();
@@ -624,15 +624,15 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaJ
         this.handleClipboard = handleClipboard;
     }
 
-    @Nonnull
+    @Nullable
     @Override
-    public Font getFont() {
-        return font;
+    public Font getCodeFont() {
+        return codeFont;
     }
 
     @Override
-    public void setFont(Font font) {
-        this.font = font;
+    public void setCodeFont(@Nullable Font codeFont) {
+        this.codeFont = codeFont;
         painter.reset();
         repaint();
     }

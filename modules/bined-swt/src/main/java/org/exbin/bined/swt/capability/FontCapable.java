@@ -28,9 +28,9 @@ import org.exbin.bined.capability.CodeAreaCapability;
 public interface FontCapable {
 
     @Nonnull
-    Font getFont();
+    Font getCodeFont();
 
-    void setFont(@Nonnull Font font);
+    void setCodeFont(@Nonnull Font codeFont);
 
     public static class FontCapability implements CodeAreaCapability {
 

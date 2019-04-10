@@ -43,7 +43,6 @@ import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.CodeAreaViewMode;
 import org.exbin.bined.CodeCharactersCase;
 import org.exbin.bined.CodeType;
-import org.exbin.bined.DataChangedListener;
 import org.exbin.bined.EditationOperation;
 import org.exbin.bined.PositionCodeType;
 import org.exbin.bined.PositionOverflowMode;
@@ -273,7 +272,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         }
 
         charset = ((CharsetCapable) codeArea).getCharset();
-        font = ((FontCapable) codeArea).getFont();
+        font = ((FontCapable) codeArea).getCodeFont();
         if (font == null) {
             font = g.getFont();
         } else {
@@ -1337,7 +1336,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         int pos = 0;
         int group = 0;
         while (pos < length) {
-            int charWidth = metrics.getCharWidth(g, drawnChars[charOffset + pos]);
+            char drawnChar = drawnChars[charOffset + pos];
+            int charWidth = metrics.getCharWidth(g, drawnChar);
 
             boolean groupable;
             if (metrics.hasUniformLineMetrics()) {
@@ -1345,6 +1345,18 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
             } else {
                 int charsWidth = metrics.getCharsWidth(g, drawnChars, charOffset + pos - group, group + 1);
                 groupable = charsWidth == cellWidth * (group + 1);
+            }
+
+            switch (Character.getDirectionality(drawnChar)) {
+                case Character.DIRECTIONALITY_UNDEFINED:
+                case Character.DIRECTIONALITY_RIGHT_TO_LEFT:
+                case Character.DIRECTIONALITY_RIGHT_TO_LEFT_ARABIC:
+                case Character.DIRECTIONALITY_RIGHT_TO_LEFT_EMBEDDING:
+                case Character.DIRECTIONALITY_RIGHT_TO_LEFT_OVERRIDE:
+                case Character.DIRECTIONALITY_POP_DIRECTIONAL_FORMAT:
+                case Character.DIRECTIONALITY_BOUNDARY_NEUTRAL:
+                case Character.DIRECTIONALITY_OTHER_NEUTRALS:
+                    groupable = false;
             }
 
             if (groupable) {

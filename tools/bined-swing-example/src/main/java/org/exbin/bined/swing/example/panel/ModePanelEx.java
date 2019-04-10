@@ -319,7 +319,8 @@ public class ModePanelEx extends javax.swing.JPanel {
     }//GEN-LAST:event_editationModeComboBoxActionPerformed
 
     private void fontFamilyComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fontFamilyComboBoxActionPerformed
-        int size = codeArea.getCodeFont().getSize();
+        Font codeFont = codeArea.getCodeFont();
+        int size = codeFont == null ? codeArea.getFont().getSize() : codeFont.getSize();
         switch (fontFamilyComboBox.getSelectedIndex()) {
             case 0: {
                 codeArea.setCodeFont(new Font(Font.DIALOG, Font.PLAIN, size));

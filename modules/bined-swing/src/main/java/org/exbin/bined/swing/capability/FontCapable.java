@@ -32,7 +32,7 @@ public interface FontCapable {
     @Nonnull
     Font getCodeFont();
 
-    void setCodeFont(Font font);
+    void setCodeFont(Font codeFont);
 
     public static class FontCapability implements CodeAreaCapability {
 

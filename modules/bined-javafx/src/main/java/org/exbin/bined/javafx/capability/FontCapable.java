@@ -30,9 +30,9 @@ import org.exbin.bined.capability.CodeAreaCapability;
 public interface FontCapable {
 
     @Nonnull
-    Font getFont();
+    Font getCodeFont();
 
-    void setFont(Font font);
+    void setCodeFont(Font codeFont);
 
     public static class FontCapability implements CodeAreaCapability {
 

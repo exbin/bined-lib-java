@@ -1691,7 +1691,8 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         int pos = 0;
         int group = 0;
         while (pos < length) {
-            int charWidth = metrics.getCharWidth(drawnChars[charOffset + pos]);
+            char drawnChar = drawnChars[charOffset + pos];
+            int charWidth = metrics.getCharWidth(drawnChar);
 
             boolean groupable;
             if (metrics.hasUniformLineMetrics()) {
@@ -1699,6 +1700,18 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
             } else {
                 int charsWidth = metrics.getCharsWidth(drawnChars, charOffset + pos - group, group + 1);
                 groupable = charsWidth == cellWidth * (group + 1);
+            }
+
+            switch (Character.getDirectionality(drawnChar)) {
+                case Character.DIRECTIONALITY_UNDEFINED:
+                case Character.DIRECTIONALITY_RIGHT_TO_LEFT:
+                case Character.DIRECTIONALITY_RIGHT_TO_LEFT_ARABIC:
+                case Character.DIRECTIONALITY_RIGHT_TO_LEFT_EMBEDDING:
+                case Character.DIRECTIONALITY_RIGHT_TO_LEFT_OVERRIDE:
+                case Character.DIRECTIONALITY_POP_DIRECTIONAL_FORMAT:
+                case Character.DIRECTIONALITY_BOUNDARY_NEUTRAL:
+                case Character.DIRECTIONALITY_OTHER_NEUTRALS:
+                    groupable = false;
             }
 
             if (groupable) {
