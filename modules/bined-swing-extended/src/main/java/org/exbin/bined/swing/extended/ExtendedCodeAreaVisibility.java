@@ -35,7 +35,9 @@ public class ExtendedCodeAreaVisibility {
     private int splitLinePos;
 
     private int skipTo;
+    private int skipToChar;
     private int skipRestFrom;
+    private int skipRestFromChar;
 
     private boolean codeSectionVisible;
     private boolean previewSectionVisible;
@@ -49,7 +51,9 @@ public class ExtendedCodeAreaVisibility {
         int invisibleFromRightX = invisibleFromLeftX + dimensions.getDataViewWidth();
 
         skipTo = 0;
+        skipToChar = 0;
         skipRestFrom = -1;
+        skipRestFromChar = -1;
         codeSectionVisible = viewMode != CodeAreaViewMode.TEXT_PREVIEW;
         previewSectionVisible = viewMode != CodeAreaViewMode.CODE_MATRIX;
 
@@ -67,15 +71,20 @@ public class ExtendedCodeAreaVisibility {
             int positionX = layout.computePositionX(halfCharPos, characterWidth, halfSpaceWidth);
             if (positionX < invisibleFromLeftX) {
                 skipTo++;
+                skipToChar = positionIterator.getHalfCharPosition() / 2;
                 if (positionIterator.getSection() == BasicCodeAreaSection.TEXT_PREVIEW || positionIterator.isEndReached()) {
                     codeSectionVisible = false;
                 }
             } else if (skipRestFrom == -1 && positionX > invisibleFromRightX) {
                 skipRestFrom = positionIterator.getPosition();
+                skipRestFromChar = (positionIterator.getHalfCharPosition() + 1) / 2;
                 if (viewMode == CodeAreaViewMode.DUAL || positionIterator.getSection() == BasicCodeAreaSection.CODE_MATRIX) {
                     previewSectionVisible = false;
                 }
             }
+        }
+        if (skipRestFromChar == -1) {
+            skipRestFromChar = (positionIterator.getHalfCharPosition() + 1) / 2;
         }
 
         splitLinePos = linePos;
@@ -95,8 +104,16 @@ public class ExtendedCodeAreaVisibility {
         return skipTo;
     }
 
+    public int getSkipToChar() {
+        return skipToChar;
+    }
+
     public int getSkipRestFrom() {
         return skipRestFrom;
+    }
+
+    public int getSkipRestFromChar() {
+        return skipRestFromChar;
     }
 
     public boolean isCodeSectionVisible() {
@@ -105,5 +122,9 @@ public class ExtendedCodeAreaVisibility {
 
     public boolean isPreviewSectionVisible() {
         return previewSectionVisible;
+    }
+
+    public int getMaxRowDataChars() {
+        return skipRestFromChar - skipToChar;
     }
 }

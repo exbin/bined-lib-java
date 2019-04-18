@@ -70,7 +70,7 @@ public interface ExtendedCodeAreaLayoutProfile {
     @Nonnull
     PositionIterator createPositionIterator(CodeType codeType, CodeAreaViewMode viewMode, int bytesPerRow);
 
-    public int computeRowPositionAreaWidth(int characterWidth, int rowPositionLength);
+    int computeRowPositionAreaWidth(int characterWidth, int rowPositionLength);
 
-    public int computeHeaderAreaHeight(int fontHeight);
+    int computeHeaderAreaHeight(int fontHeight);
 }

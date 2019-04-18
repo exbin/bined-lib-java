@@ -1372,7 +1372,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
                     drawShiftedChars(g, drawnChars, charOffset + pos - group, group, positionX + (pos - group) * cellWidth, positionY);
                     group = 0;
                 }
-                drawShiftedChars(g, drawnChars, charOffset + pos, 1, positionX + pos * cellWidth + ((cellWidth - charWidth) >> 1), positionY);
+                drawShiftedChars(g, drawnChars, charOffset + pos, 1, positionX + pos * cellWidth + ((cellWidth - charWidth) / 2), positionY);
             }
             pos++;
         }

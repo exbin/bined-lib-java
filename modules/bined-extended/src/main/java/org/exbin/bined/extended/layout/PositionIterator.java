@@ -33,8 +33,14 @@ public interface PositionIterator {
     @Nonnull
     SpaceType nextSpaceType();
 
+    /**
+     * @return iteration step position.
+     */
     int getPosition();
 
+    /**
+     * @return byte on row offset position.
+     */
     int getBytePosition();
 
     int getCodeOffset();

@@ -297,7 +297,7 @@ public class ExtendedCodeAreaScrolling {
             case CHARACTER:
                 return scrollPosition.getCharPosition() * characterWidth;
             case HALF_CHARACTER:
-                return (scrollPosition.getCharPosition() >> 1) * characterWidth + (scrollPosition.getCharPosition() & 1) * (characterWidth / 2);
+                return (scrollPosition.getCharPosition() / 2) * characterWidth + (scrollPosition.getCharPosition() & 1) * (characterWidth / 2);
             case PIXEL:
                 return scrollPosition.getCharPosition() * characterWidth + scrollPosition.getCharOffset();
             default:
@@ -625,7 +625,7 @@ public class ExtendedCodeAreaScrolling {
             int halfCharsDifference = halfCharsPerRow - halfCharsPerPage;
             switch (horizontalScrollUnit) {
                 case CHARACTER: {
-                    maximumScrollPosition.setCharPosition((halfCharsDifference >> 1) + ((halfCharsDifference & 1) == 1 || halfCharOffset > 0 ? 1 : 0));
+                    maximumScrollPosition.setCharPosition((halfCharsDifference / 2) + ((halfCharsDifference & 1) == 1 || halfCharOffset > 0 ? 1 : 0));
                     break;
                 }
                 case HALF_CHARACTER: {
@@ -633,7 +633,7 @@ public class ExtendedCodeAreaScrolling {
                     break;
                 }
                 case PIXEL: {
-                    maximumScrollPosition.setCharPosition(halfCharsDifference >> 1);
+                    maximumScrollPosition.setCharPosition(halfCharsDifference / 2);
                     maximumScrollPosition.setCharOffset(halfCharOffset + (halfCharsDifference & 1) * (characterWidth / 2));
                     break;
                 }
@@ -649,7 +649,7 @@ public class ExtendedCodeAreaScrolling {
                 return scrollPosition.getCharPosition() * characterWidth;
             }
             case HALF_CHARACTER: {
-                return (scrollPosition.getCharPosition() >> 1) * characterWidth
+                return (scrollPosition.getCharPosition() / 2) * characterWidth
                         + (scrollPosition.getCharPosition() & 1) * (characterWidth / 2);
             }
             case PIXEL: {
@@ -679,7 +679,7 @@ public class ExtendedCodeAreaScrolling {
     private void setHorizontalScrollPosition(CodeAreaScrollPosition scrollPosition, int halfCharPos, int pixelOffset, int characterWidth) {
         switch (horizontalScrollUnit) {
             case CHARACTER: {
-                scrollPosition.setCharPosition(halfCharPos >> 1);
+                scrollPosition.setCharPosition(halfCharPos / 2);
                 scrollPosition.setCharOffset(0);
                 break;
             }
@@ -689,7 +689,7 @@ public class ExtendedCodeAreaScrolling {
                 break;
             }
             case PIXEL: {
-                int charPos = halfCharPos >> 1;
+                int charPos = halfCharPos / 2;
                 int halfSpaceWidth = characterWidth / 2;
                 int offset = 0;
                 if ((halfCharPos & 1) != 0 && (halfSpaceWidth + pixelOffset > characterWidth)) {

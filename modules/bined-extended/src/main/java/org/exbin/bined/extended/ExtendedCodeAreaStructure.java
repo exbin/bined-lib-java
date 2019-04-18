@@ -38,7 +38,7 @@ import org.exbin.bined.CodeAreaCaretPosition;
 /**
  * Code area data representation structure for extended variant.
  *
- * @version 0.2.0 2019/02/23
+ * @version 0.2.0 2019/04/18
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -64,7 +64,6 @@ public class ExtendedCodeAreaStructure {
     private long rowsPerDocument;
     private int bytesPerRow;
     private int halfCharsPerRow;
-    private int halfCharsPerCodeSection;
 
     private int codeLastHalfCharPos;
 
@@ -80,16 +79,9 @@ public class ExtendedCodeAreaStructure {
         wrappingBytesGroupSize = ((RowWrappingCapable) codeArea).getWrappingBytesGroupSize();
         bytesPerRow = layout.computeBytesPerRow(halfCharsPerPage, this);
         halfCharsPerRow = layout.computeHalfCharsPerRow(this);
-        codeLastHalfCharPos = layout.computeLastByteHalfCharPos(bytesPerRow - 1, viewMode == CodeAreaViewMode.CODE_MATRIX ? BasicCodeAreaSection.CODE_MATRIX : BasicCodeAreaSection.TEXT_PREVIEW, this);
+        codeLastHalfCharPos = viewMode == CodeAreaViewMode.TEXT_PREVIEW ? 0
+                : layout.computeLastByteHalfCharPos(bytesPerRow - 1, viewMode == CodeAreaViewMode.CODE_MATRIX ? BasicCodeAreaSection.CODE_MATRIX : BasicCodeAreaSection.TEXT_PREVIEW, this);
         rowsPerDocument = layout.computeRowsPerDocument(this);
-
-        // Compute last visible character of the code area
-        if (viewMode != CodeAreaViewMode.TEXT_PREVIEW) {
-            halfCharsPerCodeSection = layout.computeLastByteHalfCharPos(bytesPerRow - 1, BasicCodeAreaSection.CODE_MATRIX, this);
-        } else {
-            halfCharsPerCodeSection = -1;
-            codeLastHalfCharPos = 0;
-        }
     }
 
     public int computePositionByte(int rowHalfCharPosition) {
@@ -152,10 +144,6 @@ public class ExtendedCodeAreaStructure {
 
     public int getHalfCharsPerRow() {
         return halfCharsPerRow;
-    }
-
-    public int getHalfCharsPerCodeSection() {
-        return halfCharsPerCodeSection;
     }
 
     public int getCodeLastHalfCharPos() {
