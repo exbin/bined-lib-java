@@ -46,8 +46,8 @@ public class ExtendedCodeAreaScrolling {
     private ScrollBarVerticalScale scrollBarVerticalScale = ScrollBarVerticalScale.NORMAL;
     @Nonnull
     private final Dimension scrollViewDimension = new Dimension();
-    private int horizontalExtendDifference;
-    private int verticalExtendDifference;
+    private int horizontalExtentDifference;
+    private int verticalExtentDifference;
     private int horizontalScrollbarHeight;
     private int verticalScrollbarWidth;
 
@@ -89,14 +89,14 @@ public class ExtendedCodeAreaScrolling {
 
         if (fitsHorizontally) {
             scrollViewDimension.width = dataWidth;
-            verticalExtendDifference = 0;
+            verticalExtentDifference = 0;
         } else {
             scrollViewDimension.width = recomputeScrollViewWidth(dataViewWidth, characterWidth, dataWidth, halfCharsPerRow);
         }
 
         if (fitsVertically) {
             scrollViewDimension.height = (int) (rowsPerData * rowHeight);
-            horizontalExtendDifference = 0;
+            horizontalExtentDifference = 0;
         } else {
             scrollViewDimension.height = recomputeScrollViewHeight(dataViewHeight, rowHeight, rowsPerData);
         }
@@ -122,19 +122,19 @@ public class ExtendedCodeAreaScrolling {
         switch (horizontalScrollUnit) {
             case PIXEL: {
                 scrollViewWidth = dataWidth;
-                horizontalExtendDifference = 0;
+                horizontalExtentDifference = 0;
                 break;
             }
             case CHARACTER: {
                 int charsPerDataView = dataViewWidth / characterWidth;
                 scrollViewWidth = dataViewWidth + (((halfCharsPerRow + 1) / 2) - charsPerDataView);
-                horizontalExtendDifference = dataViewWidth - charsPerDataView;
+                horizontalExtentDifference = dataViewWidth - charsPerDataView;
                 break;
             }
             case HALF_CHARACTER: {
                 int halfCharsPerDataView = dataViewWidth / (characterWidth / 2);
                 scrollViewWidth = dataViewWidth + (halfCharsPerRow - halfCharsPerDataView);
-                horizontalExtendDifference = dataViewWidth - halfCharsPerDataView;
+                horizontalExtentDifference = dataViewWidth - halfCharsPerDataView;
                 break;
             }
             default:
@@ -151,11 +151,11 @@ public class ExtendedCodeAreaScrolling {
                 if (rowsPerData > Integer.MAX_VALUE / rowHeight) {
                     scrollBarVerticalScale = ScrollBarVerticalScale.SCALED;
                     scrollViewHeight = Integer.MAX_VALUE;
-                    verticalExtendDifference = 0;
+                    verticalExtentDifference = 0;
                 } else {
                     scrollBarVerticalScale = ScrollBarVerticalScale.NORMAL;
                     scrollViewHeight = (int) (rowsPerData * rowHeight) - dataViewHeight;
-                    verticalExtendDifference = 0;
+                    verticalExtentDifference = 0;
                 }
                 break;
             }
@@ -163,12 +163,12 @@ public class ExtendedCodeAreaScrolling {
                 if (rowsPerData > (Integer.MAX_VALUE - dataViewHeight)) {
                     scrollBarVerticalScale = ScrollBarVerticalScale.SCALED;
                     scrollViewHeight = Integer.MAX_VALUE;
-                    verticalExtendDifference = 0;
+                    verticalExtentDifference = 0;
                 } else {
                     scrollBarVerticalScale = ScrollBarVerticalScale.NORMAL;
                     int rowsPerDataView = dataViewHeight / rowHeight;
                     scrollViewHeight = (int) (dataViewHeight + (rowsPerData - rowsPerDataView));
-                    verticalExtendDifference = dataViewHeight - rowsPerDataView;
+                    verticalExtentDifference = dataViewHeight - rowsPerDataView;
                 }
                 break;
             }
@@ -721,12 +721,12 @@ public class ExtendedCodeAreaScrolling {
         this.scrollPosition.setScrollPosition(scrollPosition);
     }
 
-    public int getHorizontalExtendDifference() {
-        return horizontalExtendDifference;
+    public int getHorizontalExtentDifference() {
+        return horizontalExtentDifference;
     }
 
-    public int getVerticalExtendDifference() {
-        return verticalExtendDifference;
+    public int getVerticalExtentDifference() {
+        return verticalExtentDifference;
     }
 
     @Nonnull

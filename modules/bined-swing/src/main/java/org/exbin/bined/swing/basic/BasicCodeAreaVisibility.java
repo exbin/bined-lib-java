@@ -23,11 +23,21 @@ import org.exbin.bined.basic.CodeAreaScrollPosition;
 /**
  * Basic code area component characters visibility in scroll window.
  *
- * @version 0.2.0 2018/12/20
+ * @version 0.2.0 2019/05/16
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class BasicCodeAreaVisibility {
+
+    private int splitLinePos;
+
+    private int skipTo;
+    private int skipToChar;
+    private int skipRestFrom;
+    private int skipRestFromChar;
+
+    private boolean codeSectionVisible;
+    private boolean previewSectionVisible;
 
     private int previewRelativeX;
     private int visibleCharStart;
@@ -134,5 +144,9 @@ public class BasicCodeAreaVisibility {
 
     public int getVisibleMatrixCodeEnd() {
         return visibleMatrixCodeEnd;
+    }
+
+    public int getMaxRowDataChars() {
+        return skipRestFromChar - skipToChar;
     }
 }

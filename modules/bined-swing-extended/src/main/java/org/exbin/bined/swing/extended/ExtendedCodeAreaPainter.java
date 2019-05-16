@@ -1890,12 +1890,12 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
 
         @Override
         public int getExtent() {
-            return super.getExtent() - scrolling.getVerticalExtendDifference();
+            return super.getExtent() - scrolling.getVerticalExtentDifference();
         }
 
         @Override
         public int getMaximum() {
-            return super.getMaximum() - scrolling.getVerticalExtendDifference();
+            return super.getMaximum() - scrolling.getVerticalExtentDifference();
         }
     }
 
@@ -1907,12 +1907,12 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
 
         @Override
         public int getExtent() {
-            return super.getExtent() - scrolling.getHorizontalExtendDifference();
+            return super.getExtent() - scrolling.getHorizontalExtentDifference();
         }
 
         @Override
         public int getMaximum() {
-            return super.getMaximum() - scrolling.getHorizontalExtendDifference();
+            return super.getMaximum() - scrolling.getHorizontalExtentDifference();
         }
     }
 

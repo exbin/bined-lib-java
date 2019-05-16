@@ -29,11 +29,15 @@ import java.awt.RenderingHints;
 import java.awt.Stroke;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import javax.swing.DefaultBoundedRangeModel;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
@@ -79,7 +83,7 @@ import org.exbin.bined.CodeAreaCaretPosition;
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2019/03/01
+ * @version 0.2.0 2019/05/16
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -101,6 +105,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
     private final JScrollPane scrollPanel;
     @Nonnull
     private final DefaultCodeAreaMouseListener codeAreaMouseListener;
+    @Nonnull
+    private final ComponentListener codeAreaComponentListener;
 
     @Nonnull
     private final BasicCodeAreaMetrics metrics = new BasicCodeAreaMetrics();
@@ -127,9 +133,9 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
     @Nonnull
     private AntialiasingMode antialiasingMode = AntialiasingMode.AUTO;
 
+    private int rowPositionLength;
     private int minRowPositionLength;
     private int maxRowPositionLength;
-    private int rowPositionLength;
 
     @Nullable
     private Font font;
@@ -165,9 +171,11 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         JScrollBar verticalScrollBar = scrollPanel.getVerticalScrollBar();
         verticalScrollBar.setIgnoreRepaint(true);
         verticalScrollBar.addAdjustmentListener(new VerticalAdjustmentListener());
+        verticalScrollBar.setModel(new VerticalScrollBarModel());
         JScrollBar horizontalScrollBar = scrollPanel.getHorizontalScrollBar();
         horizontalScrollBar.setIgnoreRepaint(true);
         horizontalScrollBar.addAdjustmentListener(new HorizontalAdjustmentListener());
+        horizontalScrollBar.setModel(new HorizontalScrollBarModel());
         scrollPanel.setOpaque(false);
         scrollPanel.setViewportView(dataView);
         scrollPanel.setInheritsPopupMenu(true);
@@ -179,6 +187,13 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         viewport.addMouseListener(codeAreaMouseListener);
         viewport.addMouseMotionListener(codeAreaMouseListener);
         viewport.addMouseWheelListener(codeAreaMouseListener);
+        codeAreaComponentListener = new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                recomputeLayout();
+            }
+        };
+        colorsProfile.reinitialize();
     }
 
     @Override
@@ -187,6 +202,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         codeArea.addMouseListener(codeAreaMouseListener);
         codeArea.addMouseMotionListener(codeAreaMouseListener);
         codeArea.addMouseWheelListener(codeAreaMouseListener);
+        codeArea.addComponentListener(codeAreaComponentListener);
     }
 
     @Override
@@ -195,6 +211,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         codeArea.removeMouseListener(codeAreaMouseListener);
         codeArea.removeMouseMotionListener(codeAreaMouseListener);
         codeArea.removeMouseWheelListener(codeAreaMouseListener);
+        codeArea.removeComponentListener(codeAreaComponentListener);
     }
 
     @Override
@@ -276,6 +293,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
             rowDataCache = new RowDataCache();
         }
 
+        int maxRowDataChars = visibility.getMaxRowDataChars();
         rowDataCache.headerChars = new char[structure.getCharactersPerCodeSection()];
         rowDataCache.rowData = new byte[structure.getBytesPerRow() + metrics.getMaxBytesPerChar() - 1];
         rowDataCache.rowPositionCode = new char[rowPositionLength];
@@ -1506,6 +1524,40 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         }
 
         return size;
+    }
+
+    private class VerticalScrollBarModel extends DefaultBoundedRangeModel {
+
+        public VerticalScrollBarModel() {
+            super();
+        }
+
+        @Override
+        public int getExtent() {
+            return super.getExtent() - scrolling.getVerticalExtentDifference();
+        }
+
+        @Override
+        public int getMaximum() {
+            return super.getMaximum() - scrolling.getVerticalExtentDifference();
+        }
+    }
+
+    private class HorizontalScrollBarModel extends DefaultBoundedRangeModel {
+
+        public HorizontalScrollBarModel() {
+            super();
+        }
+
+        @Override
+        public int getExtent() {
+            return super.getExtent() - scrolling.getHorizontalExtentDifference();
+        }
+
+        @Override
+        public int getMaximum() {
+            return super.getMaximum() - scrolling.getHorizontalExtentDifference();
+        }
     }
 
     private class VerticalAdjustmentListener implements AdjustmentListener {

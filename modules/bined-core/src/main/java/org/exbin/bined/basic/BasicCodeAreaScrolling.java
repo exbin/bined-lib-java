@@ -25,7 +25,7 @@ import org.exbin.bined.capability.BasicScrollingCapable;
 /**
  * Code area scrolling.
  *
- * @version 0.2.0 2018/12/08
+ * @version 0.2.0 2019/05/16
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -35,6 +35,9 @@ public class BasicCodeAreaScrolling {
     private final CodeAreaScrollPosition scrollPosition = new CodeAreaScrollPosition();
     @Nonnull
     private ScrollBarVerticalScale scrollBarVerticalScale = ScrollBarVerticalScale.NORMAL;
+
+    private int horizontalExtentDifference;
+    private int verticalExtentDifference;
 
     @Nonnull
     private VerticalScrollUnit verticalScrollUnit = VerticalScrollUnit.ROW;
@@ -430,6 +433,14 @@ public class BasicCodeAreaScrolling {
 
     public void setScrollPosition(CodeAreaScrollPosition scrollPosition) {
         this.scrollPosition.setScrollPosition(scrollPosition);
+    }
+
+    public int getHorizontalExtentDifference() {
+        return horizontalExtentDifference;
+    }
+
+    public int getVerticalExtentDifference() {
+        return verticalExtentDifference;
     }
 
     @Nonnull
