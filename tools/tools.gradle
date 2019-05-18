@@ -65,9 +65,6 @@ task sourceJar(type: Jar) {
 }
 
 javadoc {
-    if (JavaVersion.current() != JavaVersion.VERSION_1_8) {
-        options.addBooleanOption('html5', true)
-    }
 }
 
 task javadocJar (type: Jar, dependsOn: javadoc) {
