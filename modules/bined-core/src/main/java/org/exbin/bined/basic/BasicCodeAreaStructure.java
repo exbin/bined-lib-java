@@ -32,7 +32,7 @@ import org.exbin.bined.CodeAreaCaretPosition;
 /**
  * Code area data representation structure for basic variant.
  *
- * @version 0.2.0 2019/02/04
+ * @version 0.2.0 2019/06/10
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -56,10 +56,6 @@ public class BasicCodeAreaStructure {
     private long rowsPerDocument;
     private int bytesPerRow;
     private int charactersPerRow;
-    private int charactersPerCodeSection;
-
-    private int codeLastCharPos;
-    private int previewCharPos;
 
     public void updateCache(DataProvider codeArea, int charactersPerPage) {
         viewMode = ((ViewModeCapable) codeArea).getViewMode();
@@ -72,21 +68,7 @@ public class BasicCodeAreaStructure {
 
         bytesPerRow = layout.computeBytesPerRow(this, charactersPerPage);
         charactersPerRow = layout.computeCharactersPerRow(this);
-        charactersPerCodeSection = layout.computeFirstCodeCharacterPos(this, bytesPerRow);
         rowsPerDocument = layout.computeRowsPerDocument(this);
-
-        // Compute first and last visible character of the code area
-        if (viewMode != CodeAreaViewMode.TEXT_PREVIEW) {
-            codeLastCharPos = bytesPerRow * (codeType.getMaxDigitsForByte() + 1) - 1;
-        } else {
-            codeLastCharPos = 0;
-        }
-
-        if (viewMode == CodeAreaViewMode.DUAL) {
-            previewCharPos = bytesPerRow * (codeType.getMaxDigitsForByte() + 1);
-        } else {
-            previewCharPos = 0;
-        }
     }
 
     public int computePositionByte(int rowCharPosition) {
@@ -144,17 +126,5 @@ public class BasicCodeAreaStructure {
 
     public int getCharactersPerRow() {
         return charactersPerRow;
-    }
-
-    public int getCharactersPerCodeSection() {
-        return charactersPerCodeSection;
-    }
-
-    public int getCodeLastCharPos() {
-        return codeLastCharPos;
-    }
-
-    public int getPreviewCharPos() {
-        return previewCharPos;
     }
 }

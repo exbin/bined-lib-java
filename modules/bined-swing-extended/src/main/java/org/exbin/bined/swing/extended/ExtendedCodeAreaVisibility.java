@@ -26,7 +26,7 @@ import org.exbin.bined.extended.layout.PositionIterator;
 /**
  * Basic code area component characters visibility in scroll window.
  *
- * @version 0.2.0 2019/02/22
+ * @version 0.2.0 2019/06/10
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault

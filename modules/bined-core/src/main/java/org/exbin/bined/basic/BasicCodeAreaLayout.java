@@ -237,4 +237,8 @@ public class BasicCodeAreaLayout {
 
         return target;
     }
+
+    public int computePositionX(int charsPerRow, int characterWidth) {
+        return charsPerRow * characterWidth;
+    }
 }

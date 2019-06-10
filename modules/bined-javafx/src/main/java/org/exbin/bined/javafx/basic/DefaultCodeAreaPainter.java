@@ -68,6 +68,7 @@ import org.exbin.bined.javafx.capability.BackgroundPaintCapable;
 import org.exbin.bined.javafx.capability.FontCapable;
 import org.exbin.utils.binary_data.BinaryData;
 import org.exbin.bined.CodeAreaCaretPosition;
+import org.exbin.bined.basic.BasicCodeAreaLayout;
 
 /**
  * Code area component default painter.
@@ -112,6 +113,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
     @Nonnull
     private volatile ScrollingState scrollingState = ScrollingState.NO_SCROLLING;
 
+    @Nonnull
+    private final BasicCodeAreaLayout layout = new BasicCodeAreaLayout();
     private BasicCodeAreaColorsProfile colorsProfile = new BasicCodeAreaColorsProfile();
 
     @Nullable
@@ -257,7 +260,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
     }
 
     public void recomputeCharPositions() {
-        visibility.recomputeCharPositions(metrics, structure, dimensions, scrolling.getScrollPosition());
+        visibility.recomputeCharPositions(metrics, structure, dimensions, layout, scrolling);
         updateRowDataCache();
     }
 
@@ -266,7 +269,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
             rowDataCache = new RowDataCache();
         }
 
-        rowDataCache.headerChars = new char[structure.getCharactersPerCodeSection()];
+        rowDataCache.headerChars = new char[visibility.getCharactersPerCodeSection()];
         rowDataCache.rowData = new byte[structure.getBytesPerRow() + metrics.getMaxBytesPerChar() - 1];
         rowDataCache.rowPositionCode = new char[rowPositionLength];
         rowDataCache.rowCharacters = new char[structure.getCharactersPerRow()];
@@ -310,7 +313,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         if (rowHeight > 0 && characterWidth > 0) {
             int documentDataWidth = structure.getCharactersPerRow() * characterWidth;
             long rowsPerData = (structure.getDataSize() / structure.getBytesPerRow()) + 1;
-            scrolling.updateCache(codeArea);
+            scrolling.updateCache(codeArea, getHorizontalScrollBarSize(), getVerticalScrollBarSize());
 
             int documentDataHeight;
             if (rowsPerData > Integer.MAX_VALUE / rowHeight) {
@@ -423,7 +426,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
 //        gc.setStroke(Color.YELLOW);
 //        gc.setFill(Color.YELLOW);
 //        gc.fillRect(0, 0, 500, 50);
-        int charactersPerCodeSection = structure.getCharactersPerCodeSection();
+        int charactersPerCodeSection = visibility.getCharactersPerCodeSection();
         Rectangle2D headerArea = dimensions.getHeaderAreaRectangle();
         double headerAreaX = 0;
         double headerAreaY = 0;
@@ -447,9 +450,9 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
 
             boolean interleaving = false;
             int lastPos = 0;
-            int visibleCodeStart = visibility.getVisibleCodeStart();
-            int visibleMatrixCodeEnd = visibility.getVisibleMatrixCodeEnd();
-            for (int index = visibleCodeStart; index < visibleMatrixCodeEnd; index++) {
+            int skipToCode = visibility.getSkipToCode();
+            int skipRestFromCode = visibility.getSkipRestFromCode();
+            for (int index = skipToCode; index < skipRestFromCode; index++) {
                 int codePos = structure.computeFirstCodeCharacterPos(index);
                 if (codePos == lastPos + 2 && !interleaving) {
                     interleaving = true;
@@ -460,11 +463,12 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
                 }
             }
 
-            int visibleCharStart = visibility.getVisibleCharStart();
-            int visibleMatrixCharEnd = visibility.getVisibleMatrixCharEnd();
-            int renderOffset = visibleCharStart;
+            int skipToChar = visibility.getSkipToChar();
+            int skipRestFromChar = visibility.getSkipRestFromChar();
+            int codeCharEnd = Math.min(skipRestFromChar, visibility.getCharactersPerCodeSection());
+            int renderOffset = skipToChar;
             Color renderColor = null;
-            for (int characterOnRow = visibleCharStart; characterOnRow < visibleMatrixCharEnd; characterOnRow++) {
+            for (int characterOnRow = skipToChar; characterOnRow < codeCharEnd; characterOnRow++) {
                 boolean sequenceBreak = false;
 
                 char currentChar = rowDataCache.headerChars[characterOnRow];
@@ -674,7 +678,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         CodeAreaViewMode viewMode = structure.getViewMode();
         int bytesPerRow = structure.getBytesPerRow();
         long dataSize = structure.getDataSize();
-        int previewCharPos = structure.getPreviewCharPos();
+        int previewCharPos = visibility.getPreviewCharPos();
         CodeType codeType = structure.getCodeType();
 
         int rowBytesLimit = bytesPerRow;
@@ -701,9 +705,10 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
 
         // Fill codes
         if (viewMode != CodeAreaViewMode.TEXT_PREVIEW) {
-            int visibleCodeStart = visibility.getVisibleCodeStart();
-            int visibleCodeEnd = visibility.getVisibleCodeEnd();
-            for (int byteOnRow = Math.max(visibleCodeStart, rowStart); byteOnRow < Math.min(visibleCodeEnd, rowBytesLimit); byteOnRow++) {
+            int skipToCode = visibility.getSkipToCode();
+            int skipRestFromCode = visibility.getSkipRestFromCode();
+            int endCode = Math.min(skipRestFromCode, rowBytesLimit);
+            for (int byteOnRow = Math.max(skipToCode, rowStart); byteOnRow < endCode; byteOnRow++) {
                 byte dataByte = rowDataCache.rowData[byteOnRow];
                 CodeAreaUtils.byteToCharsCode(dataByte, codeType, rowDataCache.rowCharacters, structure.computeFirstCodeCharacterPos(byteOnRow), codeCharactersCase);
             }
@@ -714,9 +719,10 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
 
         // Fill preview characters
         if (viewMode != CodeAreaViewMode.CODE_MATRIX) {
-            int visiblePreviewStart = visibility.getVisiblePreviewStart();
-            int visiblePreviewEnd = visibility.getVisiblePreviewEnd();
-            for (int byteOnRow = visiblePreviewStart; byteOnRow < Math.min(visiblePreviewEnd, rowBytesLimit); byteOnRow++) {
+            int skipToPreview = visibility.getSkipToPreview();
+            int skipRestFromPreview = visibility.getSkipRestFromPreview();
+            int endPreview = Math.min(skipRestFromPreview, rowBytesLimit);
+            for (int byteOnRow = skipToPreview; byteOnRow < endPreview; byteOnRow++) {
                 byte dataByte = rowDataCache.rowData[byteOnRow];
 
                 if (maxBytesPerChar > 1) {
@@ -755,15 +761,15 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
      * @param rowPositionY row position Y
      */
     public void paintRowBackground(GraphicsContext g, long rowDataPosition, double rowPositionX, double rowPositionY) {
-        int previewCharPos = structure.getPreviewCharPos();
+        int previewCharPos = visibility.getPreviewCharPos();
         CodeAreaViewMode viewMode = structure.getViewMode();
         int charactersPerRow = structure.getCharactersPerRow();
-        int visibleCharStart = visibility.getVisibleCharStart();
-        int visibleCharEnd = visibility.getVisibleCharEnd();
+        int skipToChar = visibility.getSkipToChar();
+        int skipRestFromChar = visibility.getSkipRestFromChar();
 
-        int renderOffset = visibleCharStart;
+        int renderOffset = skipToChar;
         Color renderColor = null;
-        for (int charOnRow = visibleCharStart; charOnRow < visibleCharEnd; charOnRow++) {
+        for (int charOnRow = skipToChar; charOnRow < skipRestFromChar; charOnRow++) {
             CodeAreaSection section;
             int byteOnRow;
             if (charOnRow >= previewCharPos && viewMode != CodeAreaViewMode.CODE_MATRIX) {
@@ -816,7 +822,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
     @Nullable
     public Color getPositionBackgroundColor(long rowDataPosition, int byteOnRow, int charOnRow, CodeAreaSection section) {
         SelectionRange selectionRange = structure.getSelectionRange();
-        int codeLastCharPos = structure.getCodeLastCharPos();
+        int codeLastCharPos = visibility.getCodeLastCharPos();
         CodeAreaCaretPosition caretPosition = ((CaretCapable) codeArea).getCaret().getCaretPosition();
         boolean inSelection = selectionRange != null && selectionRange.isInSelection(rowDataPosition + byteOnRow);
         if (inSelection && (section == BasicCodeAreaSection.CODE_MATRIX)) {
@@ -836,7 +842,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
     @Override
     public CodeAreaScrollPosition computeRevealScrollPosition(CodeAreaCaretPosition caretPosition) {
         int bytesPerRow = structure.getBytesPerRow();
-        int previewCharPos = structure.getPreviewCharPos();
+        int previewCharPos = visibility.getPreviewCharPos();
         int characterWidth = metrics.getCharacterWidth();
         int rowHeight = metrics.getRowHeight();
         double dataViewWidth = dimensions.getDataViewWidth();
@@ -854,13 +860,13 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
             charPosition = structure.computeFirstCodeCharacterPos(byteOffset) + caretPosition.getCodeOffset();
         }
 
-        return scrolling.computeRevealScrollPosition(rowPosition, charPosition, bytesPerRow, previewCharPos, rowsPerPage, charactersPerPage, (int) dataViewWidth, (int) dataViewHeight, characterWidth, rowHeight);
+        return scrolling.computeRevealScrollPosition(rowPosition, charPosition, bytesPerRow, rowsPerPage, charactersPerPage, (int) dataViewWidth, (int) dataViewHeight, characterWidth, rowHeight);
     }
 
     @Override
     public CodeAreaScrollPosition computeCenterOnScrollPosition(CodeAreaCaretPosition caretPosition) {
         int bytesPerRow = structure.getBytesPerRow();
-        int previewCharPos = structure.getPreviewCharPos();
+        int previewCharPos = visibility.getPreviewCharPos();
         int characterWidth = metrics.getCharacterWidth();
         int rowHeight = metrics.getRowHeight();
         double dataViewWidth = dimensions.getDataViewWidth();
@@ -878,7 +884,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
             charPosition = structure.computeFirstCodeCharacterPos(byteOffset) + caretPosition.getCodeOffset();
         }
 
-        return scrolling.computeCenterOnScrollPosition(rowPosition, charPosition, bytesPerRow, previewCharPos, rowsPerRect, charactersPerRect, (int) dataViewWidth, (int) dataViewHeight, characterWidth, rowHeight);
+        return scrolling.computeCenterOnScrollPosition(rowPosition, charPosition, bytesPerRow, rowsPerRect, charactersPerRect, (int) dataViewWidth, (int) dataViewHeight, characterWidth, rowHeight);
     }
 
     /**
@@ -890,7 +896,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
      * @param rowPositionY row position Y
      */
     public void paintRowText(GraphicsContext g, long rowDataPosition, double rowPositionX, double rowPositionY) {
-        int previewCharPos = structure.getPreviewCharPos();
+        int previewCharPos = visibility.getPreviewCharPos();
         int charactersPerRow = structure.getCharactersPerRow();
         int rowHeight = metrics.getRowHeight();
         int characterWidth = metrics.getCharacterWidth();
@@ -902,10 +908,10 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         Color lastColor = null;
         Color renderColor = null;
 
-        int visibleCharStart = visibility.getVisibleCharStart();
-        int visibleCharEnd = visibility.getVisibleCharEnd();
-        int renderOffset = visibleCharStart;
-        for (int charOnRow = visibleCharStart; charOnRow < visibleCharEnd; charOnRow++) {
+        int skipToChar = visibility.getSkipToChar();
+        int skipRestFromChar = visibility.getSkipRestFromChar();
+        int renderOffset = skipToChar;
+        for (int charOnRow = skipToChar; charOnRow < skipRestFromChar; charOnRow++) {
             CodeAreaSection section;
             int byteOnRow;
             if (charOnRow >= previewCharPos) {
@@ -1160,7 +1166,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         }
 
         CodeAreaViewMode viewMode = structure.getViewMode();
-        int previewCharPos = structure.getPreviewCharPos();
+        int previewCharPos = visibility.getPreviewCharPos();
         int bytesPerRow = structure.getBytesPerRow();
         CodeType codeType = structure.getCodeType();
         long dataSize = structure.getDataSize();
