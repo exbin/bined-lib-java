@@ -26,7 +26,7 @@ import org.exbin.utils.binary_data.EditableBinaryData;
 /**
  * Hexadecimal editor component utilities.
  *
- * @version 0.2.0 2018/12/24
+ * @version 0.2.1 2019/06/20
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -261,10 +261,10 @@ public class CodeAreaUtils {
         char[] codes = characterCase == CodeCharactersCase.UPPER ? UPPER_HEX_CODES : LOWER_HEX_CODES;
         for (int i = lengthLimit - 1; i >= 0; i--) {
             target[targetOffset + i] = codes[(int) (value % base)];
+            value = value / base;
             if (!fillZeros && value == 0) {
                 return i;
             }
-            value = value / base;
         }
 
         return 0;
