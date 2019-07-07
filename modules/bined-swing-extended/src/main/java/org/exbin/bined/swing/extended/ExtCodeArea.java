@@ -66,7 +66,7 @@ import org.exbin.bined.CodeAreaCaretPosition;
 /**
  * Code area component extended code area.
  *
- * @version 0.2.0 2019/03/01
+ * @version 0.2.0 2019/07/07
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -142,7 +142,7 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
      *
      * @param commandHandlerFactory command handler or null for default handler
      */
-    public ExtCodeArea(@Nullable CodeAreaCommandHandler.CodeAreaCommandHandlerFactory commandHandlerFactory) {
+    public ExtCodeArea(CodeAreaCommandHandler.CodeAreaCommandHandlerFactory commandHandlerFactory) {
         super(commandHandlerFactory);
 
         caret = new DefaultCodeAreaCaret(this);
@@ -180,6 +180,12 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
     @Override
     public void paintComponent(Graphics g) {
         painter.paintComponent(g);
+    }
+
+    @Override
+    public void updateUI() {
+        super.updateUI();
+        painter.rebuildColors();
     }
 
     @Nonnull
@@ -577,6 +583,7 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
                 listener.editationModeChanged(editationMode, getActiveOperation());
             });
             caret.resetBlink();
+            notifyCaretChanged();
             repaint();
         }
     }
@@ -614,6 +621,7 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
                 listener.editationModeChanged(editationMode, currentOperation);
             });
             caret.resetBlink();
+            notifyCaretChanged();
             repaint();
         }
     }
@@ -641,6 +649,7 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
         repaint();
     }
 
+    @Nonnull
     @Override
     public PositionCodeType getPositionCodeType() {
         return positionCodeType;
@@ -768,42 +777,42 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
     }
 
     @Override
-    public void addSelectionChangedListener(@Nullable SelectionChangedListener selectionChangedListener) {
+    public void addSelectionChangedListener(SelectionChangedListener selectionChangedListener) {
         selectionChangedListeners.add(selectionChangedListener);
     }
 
     @Override
-    public void removeSelectionChangedListener(@Nullable SelectionChangedListener selectionChangedListener) {
+    public void removeSelectionChangedListener(SelectionChangedListener selectionChangedListener) {
         selectionChangedListeners.remove(selectionChangedListener);
     }
 
     @Override
-    public void addCaretMovedListener(@Nullable CaretMovedListener caretMovedListener) {
+    public void addCaretMovedListener(CaretMovedListener caretMovedListener) {
         caretMovedListeners.add(caretMovedListener);
     }
 
     @Override
-    public void removeCaretMovedListener(@Nullable CaretMovedListener caretMovedListener) {
+    public void removeCaretMovedListener(CaretMovedListener caretMovedListener) {
         caretMovedListeners.remove(caretMovedListener);
     }
 
     @Override
-    public void addScrollingListener(@Nullable ScrollingListener scrollingListener) {
+    public void addScrollingListener(ScrollingListener scrollingListener) {
         scrollingListeners.add(scrollingListener);
     }
 
     @Override
-    public void removeScrollingListener(@Nullable ScrollingListener scrollingListener) {
+    public void removeScrollingListener(ScrollingListener scrollingListener) {
         scrollingListeners.remove(scrollingListener);
     }
 
     @Override
-    public void addEditationModeChangedListener(@Nullable EditationModeChangedListener editationModeChangedListener) {
+    public void addEditationModeChangedListener(EditationModeChangedListener editationModeChangedListener) {
         editationModeChangedListeners.add(editationModeChangedListener);
     }
 
     @Override
-    public void removeEditationModeChangedListener(@Nullable EditationModeChangedListener editationModeChangedListener) {
+    public void removeEditationModeChangedListener(EditationModeChangedListener editationModeChangedListener) {
         editationModeChangedListeners.remove(editationModeChangedListener);
     }
 }

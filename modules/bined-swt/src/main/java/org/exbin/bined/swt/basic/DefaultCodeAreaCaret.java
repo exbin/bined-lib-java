@@ -94,7 +94,7 @@ public class DefaultCodeAreaCaret implements CodeAreaCaret {
         if (caretPosition != null) {
             this.caretPosition.setPosition(caretPosition);
         } else {
-            this.caretPosition.clear();
+            this.caretPosition.reset();
         }
         resetBlink();
     }
@@ -139,6 +139,7 @@ public class DefaultCodeAreaCaret implements CodeAreaCaret {
     }
 
     @Nonnull
+    @Override
     public CodeAreaSection getSection() {
         CodeAreaSection section = caretPosition.getSection();
         return section == null ? BasicCodeAreaSection.CODE_MATRIX : section;

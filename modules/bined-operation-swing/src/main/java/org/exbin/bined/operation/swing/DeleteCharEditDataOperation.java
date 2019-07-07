@@ -92,6 +92,7 @@ public class DeleteCharEditDataOperation extends CharEditDataOperation {
         codeArea.repaint();
     }
 
+    @Nonnull
     @Override
     public CodeAreaOperation[] generateUndo() {
         InsertDataOperation insertOperation = new InsertDataOperation(codeArea, position, 0, (EditableBinaryData) undoData.copy());

@@ -16,7 +16,6 @@
 package org.exbin.bined.capability;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.EditationMode;
 import org.exbin.bined.EditationModeChangedListener;
@@ -25,7 +24,7 @@ import org.exbin.bined.EditationOperation;
 /**
  * Support for editation mode capability.
  *
- * @version 0.2.0 2018/12/13
+ * @version 0.2.0 2019/07/07
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -52,11 +51,7 @@ public interface EditationModeCapable {
 
     void setEditationOperation(EditationOperation editationOperation);
 
-    void addEditationModeChangedListener(@Nullable EditationModeChangedListener editationModeChangedListener);
+    void addEditationModeChangedListener(EditationModeChangedListener editationModeChangedListener);
 
-    void removeEditationModeChangedListener(@Nullable EditationModeChangedListener editationModeChangedListener);
-
-    public static class EditationModeCapability implements CodeAreaCapability {
-
-    }
+    void removeEditationModeChangedListener(EditationModeChangedListener editationModeChangedListener);
 }

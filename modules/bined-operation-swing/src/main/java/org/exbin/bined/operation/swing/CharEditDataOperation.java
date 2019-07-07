@@ -15,6 +15,7 @@
  */
 package org.exbin.bined.operation.swing;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.swing.CodeAreaCore;
 
@@ -43,5 +44,6 @@ public abstract class CharEditDataOperation extends CodeAreaOperation {
      *
      * @return hexadecimal operation
      */
+    @Nonnull
     public abstract CodeAreaOperation[] generateUndo();
 }

@@ -35,8 +35,8 @@ public enum EditationMode {
      */
     EXPANDING,
     /**
-     * Data are inserted and replaced, but size file of the file remains the
-     * same cutting out excessive data.
+     * Data are inserted and replaced, but size of the file remains the same
+     * cutting out excessive data.
      */
     CAPPED,
     /**

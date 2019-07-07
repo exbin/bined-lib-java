@@ -31,14 +31,14 @@ public interface BinaryDataOperation {
      * @return text caption
      */
     @Nonnull
-    public String getCaption();
+    String getCaption();
 
     /**
      * Performs operation on given document.
      *
      * @throws BinaryDataOperationException for operation handling issues
      */
-    public void execute() throws BinaryDataOperationException;
+    void execute() throws BinaryDataOperationException;
 
     /**
      * Performs operation on given document and returns undo operation.
@@ -47,12 +47,12 @@ public interface BinaryDataOperation {
      * @throws BinaryDataOperationException for operation handling issues
      */
     @Nonnull
-    public BinaryDataOperation executeWithUndo() throws BinaryDataOperationException;
+    BinaryDataOperation executeWithUndo() throws BinaryDataOperationException;
 
     /**
      * Disposes command.
      *
      * @throws BinaryDataOperationException for operation handling issues
      */
-    public void dispose() throws BinaryDataOperationException;
+    void dispose() throws BinaryDataOperationException;
 }

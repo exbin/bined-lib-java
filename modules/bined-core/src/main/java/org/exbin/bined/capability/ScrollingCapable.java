@@ -17,10 +17,10 @@ package org.exbin.bined.capability;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import org.exbin.bined.CodeAreaCaretPosition;
 import org.exbin.bined.ScrollingListener;
 import org.exbin.bined.basic.CodeAreaScrollPosition;
 import org.exbin.bined.basic.ScrollingDirection;
-import org.exbin.bined.CodeAreaCaretPosition;
 
 /**
  * Support for code type capability.
@@ -71,8 +71,4 @@ public interface ScrollingCapable {
      * @param caretPosition caret position
      */
     void centerOnPosition(CodeAreaCaretPosition caretPosition);
-
-    public static class ScrollingCapability implements CodeAreaCapability {
-
-    }
 }

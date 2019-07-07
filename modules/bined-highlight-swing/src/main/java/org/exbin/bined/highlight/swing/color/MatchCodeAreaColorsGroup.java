@@ -16,6 +16,7 @@
 package org.exbin.bined.highlight.swing.color;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.color.CodeAreaColorGroup;
 
 /**
@@ -24,6 +25,7 @@ import org.exbin.bined.color.CodeAreaColorGroup;
  * @version 0.2.0 2018/11/17
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public enum MatchCodeAreaColorsGroup implements CodeAreaColorGroup {
 
     MATCHING("matching");
@@ -31,7 +33,7 @@ public enum MatchCodeAreaColorsGroup implements CodeAreaColorGroup {
     @Nonnull
     private final String groupId;
 
-    private MatchCodeAreaColorsGroup(@Nonnull String groupId) {
+    private MatchCodeAreaColorsGroup(String groupId) {
         this.groupId = groupId;
     }
 

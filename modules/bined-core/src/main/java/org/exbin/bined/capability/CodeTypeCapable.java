@@ -30,8 +30,4 @@ public interface CodeTypeCapable {
     CodeType getCodeType();
 
     void setCodeType(@Nonnull CodeType codeType);
-
-    public static class CodeTypeCapability implements CodeAreaCapability {
-
-    }
 }

@@ -26,8 +26,4 @@ public interface ClipboardCapable {
     boolean isHandleClipboard();
 
     void setHandleClipboard(boolean handleClipboard);
-
-    public static class ClipboardCapability implements CodeAreaCapability {
-
-    }
 }

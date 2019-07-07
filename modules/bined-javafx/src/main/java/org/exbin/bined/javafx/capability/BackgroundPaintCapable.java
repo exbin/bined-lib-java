@@ -18,7 +18,6 @@ package org.exbin.bined.javafx.capability;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.basic.BasicBackgroundPaintMode;
-import org.exbin.bined.capability.CodeAreaCapability;
 
 /**
  * Support for background paint mode capability.
@@ -33,8 +32,4 @@ public interface BackgroundPaintCapable {
     BasicBackgroundPaintMode getBackgroundPaintMode();
 
     void setBackgroundPaintMode(BasicBackgroundPaintMode borderPaintMode);
-
-    public static class BackgroundPaintCapability implements CodeAreaCapability {
-
-    }
 }

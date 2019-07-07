@@ -33,5 +33,4 @@ public class BinEdExampleBasicPanel extends Composite {
     public BinEdExampleBasicPanel(Composite parent, int i) {
         super(parent, i);
     }
-
 }

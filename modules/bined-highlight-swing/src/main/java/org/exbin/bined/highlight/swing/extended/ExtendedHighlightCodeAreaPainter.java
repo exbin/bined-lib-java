@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.BasicCodeAreaSection;
 import org.exbin.bined.CodeAreaSection;
 import org.exbin.bined.highlight.swing.color.CodeAreaMatchColorType;
@@ -34,6 +35,7 @@ import org.exbin.bined.swing.extended.ExtendedCodeAreaPainter;
  * @version 0.2.0 2018/11/30
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public class ExtendedHighlightCodeAreaPainter extends ExtendedCodeAreaPainter {
 
     /**
@@ -47,7 +49,7 @@ public class ExtendedHighlightCodeAreaPainter extends ExtendedCodeAreaPainter {
     private Color foundMatchesColor;
     private Color currentMatchColor;
 
-    public ExtendedHighlightCodeAreaPainter(@Nonnull CodeAreaCore codeArea) {
+    public ExtendedHighlightCodeAreaPainter(CodeAreaCore codeArea) {
         super(codeArea);
 
         foundMatchesColor = new Color(180, 255, 180);
@@ -62,7 +64,7 @@ public class ExtendedHighlightCodeAreaPainter extends ExtendedCodeAreaPainter {
 
     @Nullable
     @Override
-    public Color getPositionTextColor(long rowDataPosition, int byteOnRow, int charOnRow, @Nonnull CodeAreaSection section, boolean unprintables) {
+    public Color getPositionTextColor(long rowDataPosition, int byteOnRow, int charOnRow, CodeAreaSection section, boolean unprintables) {
         if (!matches.isEmpty() && charOnRow < getCharactersPerRow() - 1) {
             long dataPosition = rowDataPosition + byteOnRow;
             if (currentMatchIndex >= 0) {
@@ -108,7 +110,7 @@ public class ExtendedHighlightCodeAreaPainter extends ExtendedCodeAreaPainter {
 
     @Nullable
     @Override
-    public Color getPositionBackgroundColor(long rowDataPosition, int byteOnRow, int charOnRow, @Nonnull CodeAreaSection section, boolean unprintables) {
+    public Color getPositionBackgroundColor(long rowDataPosition, int byteOnRow, int charOnRow, CodeAreaSection section, boolean unprintables) {
         if (!matches.isEmpty() && charOnRow < getCharactersPerRow() - 1) {
             long dataPosition = rowDataPosition + byteOnRow;
             if (currentMatchIndex >= 0) {
@@ -157,7 +159,7 @@ public class ExtendedHighlightCodeAreaPainter extends ExtendedCodeAreaPainter {
         return matches;
     }
 
-    public void setMatches(@Nonnull List<SearchMatch> matches) {
+    public void setMatches(List<SearchMatch> matches) {
         this.matches.clear();
         this.matches.addAll(matches);
         currentMatchIndex = -1;
@@ -190,7 +192,7 @@ public class ExtendedHighlightCodeAreaPainter extends ExtendedCodeAreaPainter {
         return foundMatchesColor;
     }
 
-    public void setFoundMatchesBackgroundColor(@Nonnull Color foundMatchesBackgroundColor) {
+    public void setFoundMatchesBackgroundColor(Color foundMatchesBackgroundColor) {
         this.foundMatchesColor = foundMatchesBackgroundColor;
     }
 
@@ -199,7 +201,7 @@ public class ExtendedHighlightCodeAreaPainter extends ExtendedCodeAreaPainter {
         return currentMatchColor;
     }
 
-    public void setCurrentMatchBackgroundColor(@Nonnull Color currentMatchBackgroundColor) {
+    public void setCurrentMatchBackgroundColor(Color currentMatchBackgroundColor) {
         this.currentMatchColor = currentMatchBackgroundColor;
     }
 

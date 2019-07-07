@@ -23,7 +23,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * Specifies caret position as combination of data position, section and code
  * offset of code representation.
  *
- * @version 0.2.0 2019/03/16
+ * @version 0.2.0 2019/07/07
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -82,7 +82,8 @@ public class DefaultCodeAreaCaretPosition implements CodeAreaCaretPosition {
         section = position.getSection();
     }
 
-    public void clear() {
+    @Override
+    public void reset() {
         this.dataPosition = 0;
         this.codeOffset = 0;
         this.section = null;

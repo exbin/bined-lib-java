@@ -32,8 +32,4 @@ public interface CodeCharactersCaseCapable {
     CodeCharactersCase getCodeCharactersCase();
 
     void setCodeCharactersCase(CodeCharactersCase codeCharactersCase);
-
-    public static class CodeCharactersCaseCapability implements CodeAreaCapability {
-
-    }
 }

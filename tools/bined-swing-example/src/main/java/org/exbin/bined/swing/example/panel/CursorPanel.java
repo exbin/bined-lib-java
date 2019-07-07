@@ -16,6 +16,7 @@
 package org.exbin.bined.swing.example.panel;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import javax.swing.JFrame;
 import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.swing.basic.CodeArea;
 import org.exbin.bined.swing.basic.DefaultCodeAreaCaret;
@@ -163,6 +164,18 @@ public class CursorPanel extends javax.swing.JPanel {
         codeArea.requestFocus();
     }//GEN-LAST:event_revealCursorButtonActionPerformed
 
+    /**
+     * Test method for this panel.
+     *
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        final JFrame frame = new JFrame("Panel");
+        frame.setSize(1000, 600);
+        frame.add(new CursorPanel(new CodeArea()));
+        frame.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        frame.setVisible(true);
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton centerCursorButton;

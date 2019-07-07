@@ -284,7 +284,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         EditationOperation editationOperation = ((EditationModeCapable) codeArea).getActiveOperation();
         DefaultCodeAreaCaret caret = (DefaultCodeAreaCaret) ((CaretCapable) codeArea).getCaret();
         CodeAreaCaretPosition caretPosition = caret.getCaretPosition();
-        if (caretPosition.getSection() == BasicCodeAreaSection.CODE_MATRIX) {
+        if (caretPosition.getSection() != BasicCodeAreaSection.TEXT_PREVIEW) {
             long dataPosition = caretPosition.getDataPosition();
             int codeOffset = caretPosition.getCodeOffset();
             CodeType codeType = getCodeType();

@@ -32,8 +32,4 @@ public interface BackgroundPaintCapable {
     BasicBackgroundPaintMode getBackgroundPaintMode();
 
     void setBackgroundPaintMode(BasicBackgroundPaintMode borderPaintMode);
-
-    public static class BackgroundPaintCapability implements CodeAreaCapability {
-
-    }
 }

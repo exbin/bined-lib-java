@@ -23,11 +23,12 @@ import org.exbin.bined.BasicCodeAreaSection;
 import org.exbin.bined.CodeAreaSection;
 import org.exbin.bined.highlight.swing.color.CodeAreaColorizationColorType;
 import org.exbin.bined.swing.CodeAreaCore;
+import org.exbin.utils.binary_data.BinaryData;
 
 /**
  * Experimental support for highlighting of non-ascii characters.
  *
- * @version 0.2.0 2019/02/03
+ * @version 0.2.0 2019/07/07
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -118,7 +119,11 @@ public class ExtendedHighlightNonAsciiCodeAreaPainter extends ExtendedHighlightC
             if (color == null || textColor.equals(color)) {
                 long dataPosition = rowDataPosition + byteOnRow;
                 if (dataPosition < codeArea.getDataSize()) {
-                    byte value = codeArea.getContentData().getByte(dataPosition);
+                    BinaryData contentData = codeArea.getContentData();
+                    if (contentData == null) {
+                        throw new IllegalStateException("Missing data when nonnull size reported");
+                    }
+                    byte value = contentData.getByte(dataPosition);
                     if (value < 0) {
                         Color upperCodesColor = getColorsProfile().getColor(CodeAreaColorizationColorType.UPPER_CODES_COLOR);
                         color = upperCodesColor != null ? upperCodesColor : upperCodes;
@@ -141,7 +146,11 @@ public class ExtendedHighlightNonAsciiCodeAreaPainter extends ExtendedHighlightC
             if (color == null || textColor.equals(color)) {
                 long dataPosition = rowDataPosition + byteOnRow;
                 if (dataPosition < codeArea.getDataSize()) {
-                    byte value = codeArea.getContentData().getByte(dataPosition);
+                    BinaryData contentData = codeArea.getContentData();
+                    if (contentData == null) {
+                        throw new IllegalStateException("Missing data when nonnull size reported");
+                    }
+                    byte value = contentData.getByte(dataPosition);
                     if (value < 0) {
                         Color upperCodesBackground = getColorsProfile().getColor(CodeAreaColorizationColorType.UPPER_CODES_BACKGROUND);
                         if (upperCodesBackground != null) {

@@ -74,6 +74,7 @@ public class InsertCharEditDataOperation extends CharEditDataOperation {
         ((CaretCapable) codeArea).getCaret().setCaretPosition(startPosition + length);
     }
 
+    @Nonnull
     @Override
     public CodeAreaOperation[] generateUndo() {
         return new CodeAreaOperation[]{new RemoveDataOperation(codeArea, startPosition, 0, length)};

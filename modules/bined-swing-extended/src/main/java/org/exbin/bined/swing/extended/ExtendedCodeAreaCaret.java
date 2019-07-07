@@ -33,7 +33,7 @@ import org.exbin.bined.CodeAreaCaretPosition;
 /**
  * Default implementation of code area caret.
  *
- * @version 0.2.0 2018/08/11
+ * @version 0.2.0 2019/07/07
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -109,8 +109,12 @@ public class ExtendedCodeAreaCaret implements CodeAreaCaret {
 
     @Override
     public void setCaretPosition(@Nullable CodeAreaCaretPosition caretPosition) {
-        this.caretPosition.setDataPosition(caretPosition == null ? 0 : caretPosition.getDataPosition());
-        this.caretPosition.setCodeOffset(caretPosition == null ? 0 : caretPosition.getCodeOffset());
+        if (caretPosition != null) {
+            this.caretPosition.setPosition(caretPosition);
+        } else {
+            this.caretPosition.reset();
+        }
+        resetBlink();
     }
 
     @Override
@@ -153,6 +157,7 @@ public class ExtendedCodeAreaCaret implements CodeAreaCaret {
     }
 
     @Nonnull
+    @Override
     public CodeAreaSection getSection() {
         CodeAreaSection section = caretPosition.getSection();
         return section == null ? BasicCodeAreaSection.CODE_MATRIX : section;

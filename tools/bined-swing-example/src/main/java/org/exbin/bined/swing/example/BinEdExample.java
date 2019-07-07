@@ -41,6 +41,9 @@ public class BinEdExample {
 
     private static final String EXAMPLE_FILE_PATH = "/org/exbin/bined/swing/example/resources/lorem_1.txt";
 
+    public BinEdExample() {
+    }
+
     /**
      * Main method launching the application.
      *

@@ -30,7 +30,7 @@ import org.exbin.bined.CodeAreaCaretPosition;
 /**
  * Hexadecimal editor painter interface.
  *
- * @version 0.2.0 2019/03/01
+ * @version 0.2.0 2019/07/07
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -98,6 +98,11 @@ public interface CodeAreaPainter {
      * Resets caret state.
      */
     void resetCaret();
+
+    /**
+     * Calls rebuild of the colors profile.
+     */
+    void rebuildColors();
 
     /**
      * Returns type of cursor for given painter relative position.

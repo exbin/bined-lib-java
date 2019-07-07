@@ -34,14 +34,14 @@ public interface BinaryDataCompoundCommand extends BinaryDataCommand {
      *
      * @param command appended command
      */
-    public void appendCommand(BinaryDataCommand command);
+    void appendCommand(BinaryDataCommand command);
 
     /**
      * Append list of commands to the list of commands.
      *
      * @param commands appended commands
      */
-    public void appendCommands(Collection<BinaryDataCommand> commands);
+    void appendCommands(Collection<BinaryDataCommand> commands);
 
     /**
      * Returns list of commands.
@@ -49,12 +49,12 @@ public interface BinaryDataCompoundCommand extends BinaryDataCommand {
      * @return list of commands
      */
     @Nonnull
-    public List<BinaryDataCommand> getCommands();
+    List<BinaryDataCommand> getCommands();
 
     /**
      * Returns true if compound command is empty.
      *
      * @return true if command is empty
      */
-    public boolean isEmpty();
+    boolean isEmpty();
 }

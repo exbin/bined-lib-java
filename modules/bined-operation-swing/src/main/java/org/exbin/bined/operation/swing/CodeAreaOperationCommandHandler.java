@@ -147,13 +147,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
 
     @Nonnull
     public static CodeAreaCommandHandler.CodeAreaCommandHandlerFactory createDefaultCodeAreaCommandHandlerFactory() {
-        return new CodeAreaCommandHandlerFactory() {
-            @Nonnull
-            @Override
-            public CodeAreaCommandHandler createCommandHandler(@Nonnull CodeAreaCore codeArea) {
-                return new CodeAreaOperationCommandHandler(codeArea, new CodeAreaUndoHandler(codeArea));
-            }
-        };
+        return (CodeAreaCore codeArea1) -> new CodeAreaOperationCommandHandler(codeArea1, new CodeAreaUndoHandler(codeArea1));
     }
 
     private void updateCanPaste() {
@@ -313,7 +307,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
         EditationOperation editationOperation = ((EditationModeCapable) codeArea).getActiveOperation();
         DefaultCodeAreaCaret caret = (DefaultCodeAreaCaret) ((CaretCapable) codeArea).getCaret();
         CodeAreaCaretPosition caretPosition = caret.getCaretPosition();
-        if (caretPosition.getSection() == BasicCodeAreaSection.CODE_MATRIX) {
+        if (caretPosition.getSection() != BasicCodeAreaSection.TEXT_PREVIEW) {
             long dataPosition = caretPosition.getDataPosition();
             int startCodeOffset = caretPosition.getCodeOffset();
             CodeType codeType = getCodeType();

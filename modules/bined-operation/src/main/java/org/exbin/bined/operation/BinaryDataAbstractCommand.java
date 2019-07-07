@@ -29,6 +29,9 @@ public abstract class BinaryDataAbstractCommand implements BinaryDataCommand {
     @Nullable
     private Date executionTime = null;
 
+    public BinaryDataAbstractCommand() {
+    }
+
     /**
      * Default execution method performs simply redo operation.
      *

@@ -18,7 +18,6 @@ package org.exbin.bined.extended.capability;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.PositionCodeType;
-import org.exbin.bined.capability.CodeAreaCapability;
 
 /**
  * Support for position code type.
@@ -33,8 +32,4 @@ public interface PositionCodeTypeCapable {
     PositionCodeType getPositionCodeType();
 
     void setPositionCodeType(PositionCodeType positionCodeType);
-
-    public static class PositionCodeTypeCapability implements CodeAreaCapability {
-
-    }
 }

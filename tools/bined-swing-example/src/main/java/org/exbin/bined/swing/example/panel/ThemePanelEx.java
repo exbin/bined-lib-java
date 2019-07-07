@@ -16,6 +16,7 @@
 package org.exbin.bined.swing.example.panel;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import javax.swing.JFrame;
 import org.exbin.bined.extended.theme.ExtendedBackgroundPaintMode;
 import org.exbin.bined.swing.extended.ExtCodeArea;
 import org.exbin.bined.swing.extended.layout.ExtendedCodeAreaDecorations;
@@ -218,6 +219,18 @@ public class ThemePanelEx extends javax.swing.JPanel {
         codeArea.setThemeProfile(themeProfile);
     }//GEN-LAST:event_decoratorHeaderLineCheckBoxItemStateChanged
 
+    /**
+     * Test method for this panel.
+     *
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        final JFrame frame = new JFrame("Panel");
+        frame.setSize(1000, 600);
+        frame.add(new ThemePanelEx(new ExtCodeArea()));
+        frame.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        frame.setVisible(true);
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<String> backgroundModeComboBox;

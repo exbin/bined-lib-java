@@ -17,7 +17,6 @@ package org.exbin.bined.javafx.capability;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import org.exbin.bined.capability.CodeAreaCapability;
 import org.exbin.bined.javafx.basic.color.BasicCodeAreaColorsProfile;
 
 /**
@@ -33,8 +32,4 @@ public interface BasicColorsCapable {
     BasicCodeAreaColorsProfile getBasicColors();
 
     void setBasicColors(@Nonnull BasicCodeAreaColorsProfile colors);
-
-    public static class BasicColorsCapability implements CodeAreaCapability {
-
-    }
 }

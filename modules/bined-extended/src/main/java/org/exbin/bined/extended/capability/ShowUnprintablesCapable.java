@@ -15,8 +15,6 @@
  */
 package org.exbin.bined.extended.capability;
 
-import org.exbin.bined.capability.CodeAreaCapability;
-
 /**
  * Support for showing unprintable characters.
  *
@@ -28,8 +26,4 @@ public interface ShowUnprintablesCapable {
     boolean isShowUnprintables();
 
     void setShowUnprintables(boolean show);
-
-    public static class ShowUnprintablesCapability implements CodeAreaCapability {
-
-    }
 }

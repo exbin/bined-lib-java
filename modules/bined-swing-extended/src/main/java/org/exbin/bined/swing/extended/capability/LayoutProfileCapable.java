@@ -17,7 +17,6 @@ package org.exbin.bined.swing.extended.capability;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import org.exbin.bined.capability.CodeAreaCapability;
 import org.exbin.bined.extended.layout.ExtendedCodeAreaLayoutProfile;
 
 /**
@@ -32,8 +31,4 @@ public interface LayoutProfileCapable {
     ExtendedCodeAreaLayoutProfile getLayoutProfile();
 
     void setLayoutProfile(@Nonnull ExtendedCodeAreaLayoutProfile layoutProfile);
-
-    public static class LayoutProfileCapability implements CodeAreaCapability {
-
-    }
 }

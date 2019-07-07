@@ -57,7 +57,7 @@ public enum CodeType {
     }
 
     /**
-     * Return numeric base for current code type.
+     * Returns numeric base for current code type.
      *
      * @return base
      */
@@ -66,7 +66,7 @@ public enum CodeType {
     }
 
     /**
-     * Maximum number of digits per single byte.
+     * Returns maximum number of digits per single byte.
      *
      * @return number of digits
      */

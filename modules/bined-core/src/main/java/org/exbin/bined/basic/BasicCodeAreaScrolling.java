@@ -54,6 +54,9 @@ public class BasicCodeAreaScrolling {
     @Nonnull
     private final CodeAreaScrollPosition maximumScrollPosition = new CodeAreaScrollPosition();
 
+    public BasicCodeAreaScrolling() {
+    }
+
     public void updateCache(DataProvider codeArea, int horizontalScrollbarHeight, int verticalScrollbarWidth) {
         verticalScrollUnit = ((BasicScrollingCapable) codeArea).getVerticalScrollUnit();
         verticalScrollBarVisibility = ((BasicScrollingCapable) codeArea).getVerticalScrollBarVisibility();

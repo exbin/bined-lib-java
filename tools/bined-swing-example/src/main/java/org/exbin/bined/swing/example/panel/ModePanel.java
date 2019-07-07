@@ -20,6 +20,7 @@ import java.awt.Font;
 import java.nio.charset.Charset;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import javax.swing.JFrame;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
@@ -298,6 +299,18 @@ public class ModePanel extends javax.swing.JPanel {
         codeArea.setBorder(getBorderByType(borderTypeComboBox.getSelectedIndex()));
     }//GEN-LAST:event_borderTypeComboBoxActionPerformed
 
+    /**
+     * Test method for this panel.
+     *
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        final JFrame frame = new JFrame("Panel");
+        frame.setSize(1000, 600);
+        frame.add(new ModePanel(new CodeArea()));
+        frame.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        frame.setVisible(true);
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<String> antialiasingComboBox;

@@ -17,7 +17,6 @@ package org.exbin.bined.swt.capability;
 
 import javax.annotation.Nonnull;
 import org.eclipse.swt.graphics.Font;
-import org.exbin.bined.capability.CodeAreaCapability;
 
 /**
  * Support for font capability.
@@ -31,8 +30,4 @@ public interface FontCapable {
     Font getCodeFont();
 
     void setCodeFont(@Nonnull Font codeFont);
-
-    public static class FontCapability implements CodeAreaCapability {
-
-    }
 }

@@ -26,7 +26,7 @@ import org.exbin.utils.binary_data.EditableBinaryData;
 /**
  * Hexadecimal editor component utilities.
  *
- * @version 0.2.1 2019/06/20
+ * @version 0.2.0 2019/06/20
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -277,6 +277,7 @@ public class CodeAreaUtils {
      * @param charset charset
      * @return byte array
      */
+    @Nonnull
     public static byte[] characterToBytes(char value, Charset charset) {
         ByteBuffer buffer = charset.encode(Character.toString(value));
         byte[] bytes = new byte[buffer.remaining()];
@@ -460,10 +461,7 @@ public class CodeAreaUtils {
 
     @Nonnull
     public static <T> T requireNonNull(@Nullable T object) {
-        if (object == null) {
-            throw new NullPointerException();
-        }
-        return object;
+        return Objects.requireNonNull(object, "Field cannot be null");
     }
 
     public static void requireNonNull(Object... objects) {

@@ -574,6 +574,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaJ
             editationModeChangedListeners.forEach((listener) -> {
                 listener.editationModeChanged(editationMode, getActiveOperation());
             });
+            notifyCaretChanged();
             caret.resetBlink();
             repaint();
         }
@@ -610,6 +611,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaJ
                 listener.editationModeChanged(editationMode, currentOperation);
             });
             caret.resetBlink();
+            notifyCaretChanged();
             repaint();
         }
     }
@@ -718,42 +720,42 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaJ
     }
 
     @Override
-    public void addSelectionChangedListener(@Nullable SelectionChangedListener selectionChangedListener) {
+    public void addSelectionChangedListener(SelectionChangedListener selectionChangedListener) {
         selectionChangedListeners.add(selectionChangedListener);
     }
 
     @Override
-    public void removeSelectionChangedListener(@Nullable SelectionChangedListener selectionChangedListener) {
+    public void removeSelectionChangedListener(SelectionChangedListener selectionChangedListener) {
         selectionChangedListeners.remove(selectionChangedListener);
     }
 
     @Override
-    public void addCaretMovedListener(@Nullable CaretMovedListener caretMovedListener) {
+    public void addCaretMovedListener(CaretMovedListener caretMovedListener) {
         caretMovedListeners.add(caretMovedListener);
     }
 
     @Override
-    public void removeCaretMovedListener(@Nullable CaretMovedListener caretMovedListener) {
+    public void removeCaretMovedListener(CaretMovedListener caretMovedListener) {
         caretMovedListeners.remove(caretMovedListener);
     }
 
     @Override
-    public void addScrollingListener(@Nullable ScrollingListener scrollingListener) {
+    public void addScrollingListener(ScrollingListener scrollingListener) {
         scrollingListeners.add(scrollingListener);
     }
 
     @Override
-    public void removeScrollingListener(@Nullable ScrollingListener scrollingListener) {
+    public void removeScrollingListener(ScrollingListener scrollingListener) {
         scrollingListeners.remove(scrollingListener);
     }
 
     @Override
-    public void addEditationModeChangedListener(@Nullable EditationModeChangedListener editationModeChangedListener) {
+    public void addEditationModeChangedListener(EditationModeChangedListener editationModeChangedListener) {
         editationModeChangedListeners.add(editationModeChangedListener);
     }
 
     @Override
-    public void removeEditationModeChangedListener(@Nullable EditationModeChangedListener editationModeChangedListener) {
+    public void removeEditationModeChangedListener(EditationModeChangedListener editationModeChangedListener) {
         editationModeChangedListeners.remove(editationModeChangedListener);
     }
 }

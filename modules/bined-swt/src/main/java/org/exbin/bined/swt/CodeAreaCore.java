@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.DisposeEvent;
@@ -38,6 +39,7 @@ import org.exbin.utils.binary_data.BinaryData;
  * @version 0.2.0 2018/08/11
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public abstract class CodeAreaCore extends Composite implements CodeAreaControl {
 
     @Nullable
@@ -56,7 +58,7 @@ public abstract class CodeAreaCore extends Composite implements CodeAreaControl 
      * @param style style
      * @param commandHandlerFactory command handler or null for default handler
      */
-    public CodeAreaCore(@Nullable Composite parent, int style, @Nonnull CodeAreaCommandHandler.CodeAreaCommandHandlerFactory commandHandlerFactory) {
+    public CodeAreaCore(@Nullable Composite parent, int style, CodeAreaCommandHandler.CodeAreaCommandHandlerFactory commandHandlerFactory) {
         super(parent, style);
         this.commandHandler = commandHandlerFactory.createCommandHandler(this);
         init();
@@ -116,7 +118,7 @@ public abstract class CodeAreaCore extends Composite implements CodeAreaControl 
         return commandHandler;
     }
 
-    public void setCommandHandler(@Nonnull CodeAreaCommandHandler commandHandler) {
+    public void setCommandHandler(CodeAreaCommandHandler commandHandler) {
         this.commandHandler = commandHandler;
     }
 
@@ -212,11 +214,11 @@ public abstract class CodeAreaCore extends Composite implements CodeAreaControl 
         resetPainter();
     }
 
-    public void addDataChangedListener(@Nonnull DataChangedListener dataChangedListener) {
+    public void addDataChangedListener(DataChangedListener dataChangedListener) {
         dataChangedListeners.add(dataChangedListener);
     }
 
-    public void removeDataChangedListener(@Nonnull DataChangedListener dataChangedListener) {
+    public void removeDataChangedListener(DataChangedListener dataChangedListener) {
         dataChangedListeners.remove(dataChangedListener);
     }
 

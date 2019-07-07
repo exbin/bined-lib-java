@@ -28,6 +28,7 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.swing.JComponent;
 import org.exbin.bined.CodeAreaControl;
+import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.DataChangedListener;
 import org.exbin.bined.capability.SelectionCapable;
 import org.exbin.utils.binary_data.BinaryData;
@@ -56,7 +57,7 @@ public abstract class CodeAreaCore extends JComponent implements CodeAreaControl
      */
     public CodeAreaCore(CodeAreaCommandHandler.CodeAreaCommandHandlerFactory commandHandlerFactory) {
         super();
-        this.commandHandler = commandHandlerFactory.createCommandHandler(this);
+        this.commandHandler = createCommandHandler(CodeAreaUtils.requireNonNull(commandHandlerFactory));
         init();
     }
 
@@ -64,6 +65,10 @@ public abstract class CodeAreaCore extends JComponent implements CodeAreaControl
         setFocusable(true);
         setFocusTraversalKeysEnabled(false);
         registerControlListeners();
+    }
+
+    private CodeAreaCommandHandler createCommandHandler(CodeAreaCommandHandler.CodeAreaCommandHandlerFactory commandHandlerFactory) {
+        return commandHandlerFactory.createCommandHandler(this);
     }
 
     private void registerControlListeners() {

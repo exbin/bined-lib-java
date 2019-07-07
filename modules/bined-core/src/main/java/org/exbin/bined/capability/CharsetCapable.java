@@ -42,8 +42,4 @@ public interface CharsetCapable {
      * @param charset charset
      */
     void setCharset(Charset charset);
-
-    public static class CharsetCapability implements CodeAreaCapability {
-
-    }
 }

@@ -16,7 +16,6 @@
 package org.exbin.bined.capability;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.SelectionChangedListener;
 import org.exbin.bined.SelectionRange;
@@ -24,7 +23,7 @@ import org.exbin.bined.SelectionRange;
 /**
  * Support for selection capability.
  *
- * @version 0.2.0 2018/03/04
+ * @version 0.2.0 2019/07/07
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -46,11 +45,7 @@ public interface SelectionCapable {
      */
     boolean hasSelection();
 
-    void addSelectionChangedListener(@Nullable SelectionChangedListener selectionChangedListener);
+    void addSelectionChangedListener(SelectionChangedListener selectionChangedListener);
 
-    void removeSelectionChangedListener(@Nullable SelectionChangedListener selectionChangedListener);
-
-    public static class SelectionCapability implements CodeAreaCapability {
-
-    }
+    void removeSelectionChangedListener(SelectionChangedListener selectionChangedListener);
 }

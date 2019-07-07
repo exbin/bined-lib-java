@@ -56,15 +56,15 @@ public class RowNumberLength {
     }
 
     /**
-     * Enumeration of line number types.
+     * Enumeration of row number types.
      */
     public static enum RowNumberType {
         /**
-         * Line number length is computed from data size and position code type.
+         * Row number length is computed from data size and position code type.
          */
         AUTO,
         /**
-         * Line number length is specified as fixed number of figures.
+         * Row number length is specified as fixed number of figures.
          */
         SPECIFIED
     }

@@ -21,8 +21,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.filechooser.FileFilter;
 import org.exbin.bined.BasicCodeAreaSection;
 import org.exbin.bined.EditationOperation;
@@ -32,11 +34,12 @@ import org.exbin.bined.swing.example.BinEdExampleBasicPanel;
 import org.exbin.bined.swing.extended.ExtCodeArea;
 import org.exbin.utils.binary_data.EditableBinaryData;
 import org.exbin.bined.CodeAreaCaretPosition;
+import org.exbin.bined.CodeAreaUtils;
 
 /**
  * Hexadecimal editor example panel.
  *
- * @version 0.2.0 2018/11/12
+ * @version 0.2.0 2019/07/07
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -54,7 +57,7 @@ public class StatePanelEx extends javax.swing.JPanel {
         codeArea.addCaretMovedListener((CodeAreaCaretPosition caretPosition) -> {
             positionTextField.setText(String.valueOf(caretPosition.getDataPosition()));
             codeOffsetTextField.setText(String.valueOf(caretPosition.getCodeOffset()));
-            activeSectionComboBox.setSelectedIndex(((BasicCodeAreaSection) caretPosition.getSection()).ordinal());
+            activeSectionComboBox.setSelectedIndex(getSection(caretPosition).ordinal());
         });
         ((SelectionCapable) codeArea).addSelectionChangedListener((SelectionRange selection) -> {
             if (selection != null) {
@@ -290,7 +293,7 @@ public class StatePanelEx extends javax.swing.JPanel {
             try {
                 File selectedFile = saveFC.getSelectedFile();
                 try (FileOutputStream stream = new FileOutputStream(selectedFile)) {
-                    codeArea.getContentData().saveToStream(stream);
+                    CodeAreaUtils.requireNonNull(codeArea.getContentData()).saveToStream(stream);
                 }
             } catch (IOException ex) {
                 Logger.getLogger(BinEdExampleBasicPanel.class.getName()).log(Level.SEVERE, null, ex);
@@ -320,7 +323,7 @@ public class StatePanelEx extends javax.swing.JPanel {
             try {
                 File selectedFile = openFC.getSelectedFile();
                 try (FileInputStream stream = new FileInputStream(selectedFile)) {
-                    ((EditableBinaryData) codeArea.getContentData()).loadFromStream(stream);
+                    CodeAreaUtils.requireNonNull(((EditableBinaryData) codeArea.getContentData())).loadFromStream(stream);
                     codeArea.notifyDataChanged();
                     //                    codeArea.resetPosition();
                 }
@@ -334,6 +337,18 @@ public class StatePanelEx extends javax.swing.JPanel {
         codeArea.setEditationOperation(EditationOperation.values()[activeOperationComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_activeOperationComboBoxActionPerformed
 
+    /**
+     * Test method for this panel.
+     *
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        final JFrame frame = new JFrame("Panel");
+        frame.setSize(1000, 600);
+        frame.add(new StatePanelEx(new ExtCodeArea()));
+        frame.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        frame.setVisible(true);
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<String> activeOperationComboBox;
@@ -355,4 +370,10 @@ public class StatePanelEx extends javax.swing.JPanel {
     private javax.swing.JLabel selectionStartLabel;
     private javax.swing.JTextField selectionStartTextField;
     // End of variables declaration//GEN-END:variables
+
+    @Nonnull
+    private BasicCodeAreaSection getSection(CodeAreaCaretPosition caretPosition) {
+        BasicCodeAreaSection section = (BasicCodeAreaSection) caretPosition.getSection();
+        return section == null ? BasicCodeAreaSection.CODE_MATRIX : section;
+    }
 }

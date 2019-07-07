@@ -18,6 +18,7 @@ package org.exbin.bined.basic;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import org.exbin.bined.CodeAreaCaretPosition;
 import org.exbin.bined.CodeAreaViewMode;
 import org.exbin.bined.CodeType;
 import org.exbin.bined.DataProvider;
@@ -27,7 +28,6 @@ import org.exbin.bined.capability.RowWrappingCapable;
 import org.exbin.bined.capability.RowWrappingCapable.RowWrappingMode;
 import org.exbin.bined.capability.SelectionCapable;
 import org.exbin.bined.capability.ViewModeCapable;
-import org.exbin.bined.CodeAreaCaretPosition;
 
 /**
  * Code area data representation structure for basic variant.
@@ -56,6 +56,9 @@ public class BasicCodeAreaStructure {
     private long rowsPerDocument;
     private int bytesPerRow;
     private int charactersPerRow;
+
+    public BasicCodeAreaStructure() {
+    }
 
     public void updateCache(DataProvider codeArea, int charactersPerPage) {
         viewMode = ((ViewModeCapable) codeArea).getViewMode();

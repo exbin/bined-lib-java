@@ -102,6 +102,7 @@ public class OverwriteCharEditDataOperation extends CharEditDataOperation {
         ((CaretCapable) codeArea).getCaret().setCaretPosition(startPosition + length);
     }
 
+    @Nonnull
     @Override
     public CodeAreaOperation[] generateUndo() {
         ModifyDataOperation modifyOperation = null;

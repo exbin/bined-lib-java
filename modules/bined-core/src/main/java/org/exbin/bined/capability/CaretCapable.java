@@ -21,14 +21,14 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.BasicCodeAreaZone;
 import org.exbin.bined.CaretMovedListener;
 import org.exbin.bined.CodeAreaCaret;
+import org.exbin.bined.CodeAreaCaretPosition;
 import org.exbin.bined.PositionOverflowMode;
 import org.exbin.bined.basic.MovementDirection;
-import org.exbin.bined.CodeAreaCaretPosition;
 
 /**
  * Support for caret / cursor capability.
  *
- * @version 0.2.0 2018/12/08
+ * @version 0.2.0 2019/07/07
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -110,11 +110,7 @@ public interface CaretCapable {
     @Nonnull
     BasicCodeAreaZone getPositionZone(int positionX, int positionY);
 
-    void addCaretMovedListener(@Nullable CaretMovedListener caretMovedListener);
+    void addCaretMovedListener(CaretMovedListener caretMovedListener);
 
-    void removeCaretMovedListener(@Nullable CaretMovedListener caretMovedListener);
-
-    public static class CaretCapability implements CodeAreaCapability {
-
-    }
+    void removeCaretMovedListener(CaretMovedListener caretMovedListener);
 }

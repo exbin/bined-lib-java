@@ -18,7 +18,6 @@ package org.exbin.bined.javafx.capability;
 import javafx.scene.text.Font;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import org.exbin.bined.capability.CodeAreaCapability;
 
 /**
  * Support for font capability.
@@ -33,8 +32,4 @@ public interface FontCapable {
     Font getCodeFont();
 
     void setCodeFont(Font codeFont);
-
-    public static class FontCapability implements CodeAreaCapability {
-
-    }
 }

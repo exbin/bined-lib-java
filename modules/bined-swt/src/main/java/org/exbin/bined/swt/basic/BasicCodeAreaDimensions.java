@@ -16,15 +16,17 @@
 package org.exbin.bined.swt.basic;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.eclipse.swt.graphics.Rectangle;
 import org.exbin.bined.BasicCodeAreaZone;
 
 /**
  * Basic code area component dimensions.
  *
- * @version 0.2.0 2018/12/25
+ * @version 0.2.0 2019/07/07
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public class BasicCodeAreaDimensions {
 
     private int dataViewX;
@@ -58,7 +60,7 @@ public class BasicCodeAreaDimensions {
     @Nonnull
     private final Rectangle dataViewRectangle = new Rectangle(0, 0, 0, 0);
 
-    public void recomputeSizes(@Nonnull BasicCodeAreaMetrics metrics, int componentWidth, int componentHeight, int rowPositionLength, int verticalScrollBarSize, int horizontalScrollBarSize) {
+    public void recomputeSizes(BasicCodeAreaMetrics metrics, int componentWidth, int componentHeight, int rowPositionLength, int verticalScrollBarSize, int horizontalScrollBarSize) {
         modifyRect(componentRect, 0, 0, componentWidth, componentHeight);
         this.verticalScrollBarSize = verticalScrollBarSize;
         this.horizontalScrollBarSize = horizontalScrollBarSize;
@@ -102,6 +104,7 @@ public class BasicCodeAreaDimensions {
         modifyRect(dataViewRectangle, dataViewX, dataViewY, dataViewWidth >= 0 ? dataViewWidth : 0, dataViewHeight >= 0 ? dataViewHeight : 0);
     }
 
+    @Nonnull
     public BasicCodeAreaZone getPositionZone(int positionX, int positionY) {
         if (positionY <= dataViewY) {
             if (positionX < rowPositionAreaWidth) {
@@ -218,35 +221,37 @@ public class BasicCodeAreaDimensions {
         return dataViewRectangle;
     }
 
+    @Nonnull
     public Rectangle getHeaderAreaRectangle() {
         return headerAreaRectangle;
     }
 
+    @Nonnull
     public Rectangle getRowPositionAreaRectangle() {
         return rowPositionAreaRectangle;
     }
 
-    private int computeCharactersPerRectangle(@Nonnull BasicCodeAreaMetrics metrics) {
+    private int computeCharactersPerRectangle(BasicCodeAreaMetrics metrics) {
         int characterWidth = metrics.getCharacterWidth();
         return characterWidth == 0 ? 0 : (dataViewWidth + characterWidth - 1) / characterWidth;
     }
 
-    private int computeCharactersPerPage(@Nonnull BasicCodeAreaMetrics metrics) {
+    private int computeCharactersPerPage(BasicCodeAreaMetrics metrics) {
         int characterWidth = metrics.getCharacterWidth();
         return characterWidth == 0 ? 0 : dataViewWidth / characterWidth;
     }
 
-    private int computeRowsPerRectangle(@Nonnull BasicCodeAreaMetrics metrics) {
+    private int computeRowsPerRectangle(BasicCodeAreaMetrics metrics) {
         int rowHeight = metrics.getRowHeight();
         return rowHeight == 0 ? 0 : (dataViewHeight + rowHeight - 1) / rowHeight;
     }
 
-    private int computeRowsPerPage(@Nonnull BasicCodeAreaMetrics metrics) {
+    private int computeRowsPerPage(BasicCodeAreaMetrics metrics) {
         int rowHeight = metrics.getRowHeight();
         return rowHeight == 0 ? 0 : dataViewHeight / rowHeight;
     }
 
-    private static void modifyRect(@Nonnull Rectangle rect, int x, int y, int width, int height) {
+    private static void modifyRect(Rectangle rect, int x, int y, int width, int height) {
         rect.x = x;
         rect.y = y;
         rect.width = width;

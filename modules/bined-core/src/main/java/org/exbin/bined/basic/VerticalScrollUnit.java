@@ -30,5 +30,4 @@ public enum VerticalScrollUnit {
      * Scroll per pixel.
      */
     PIXEL
-
 }

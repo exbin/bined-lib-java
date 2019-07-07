@@ -33,47 +33,47 @@ public interface BinaryDataCommand {
      * @return text caption
      */
     @Nonnull
-    public String getCaption();
+    String getCaption();
 
     /**
      * Performs operation on given document.
      *
      * @throws BinaryDataOperationException for operation handling issues
      */
-    public void execute() throws BinaryDataOperationException;
+    void execute() throws BinaryDataOperationException;
 
     /**
      * Performs update of command use information.
      */
-    public void use();
+    void use();
 
     /**
      * Performs redo on given document.
      *
      * @throws BinaryDataOperationException for operation handling issues
      */
-    public void redo() throws BinaryDataOperationException;
+    void redo() throws BinaryDataOperationException;
 
     /**
      * Performs undo operation on given document.
      *
      * @throws BinaryDataOperationException for operation handling issues
      */
-    public void undo() throws BinaryDataOperationException;
+    void undo() throws BinaryDataOperationException;
 
     /**
      * Returns true if command support undo operation.
      *
      * @return true if undo supported
      */
-    public boolean canUndo();
+    boolean canUndo();
 
     /**
      * Disposes command.
      *
      * @throws BinaryDataOperationException for operation handling issues
      */
-    public void dispose() throws BinaryDataOperationException;
+    void dispose() throws BinaryDataOperationException;
 
     /**
      * Returns time of command execution.
@@ -81,5 +81,5 @@ public interface BinaryDataCommand {
      * @return time
      */
     @Nullable
-    public Date getExecutionTime();
+    Date getExecutionTime();
 }

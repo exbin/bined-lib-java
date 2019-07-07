@@ -60,7 +60,7 @@ import org.exbin.bined.CodeAreaCaretPosition;
 /**
  * Code area component default code area.
  *
- * @version 0.2.0 2018/12/29
+ * @version 0.2.0 2019/07/07
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -307,8 +307,8 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
         }
     }
 
-    @Override
     @Nonnull
+    @Override
     public CodeType getCodeType() {
         return codeType;
     }
@@ -574,6 +574,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
                 listener.editationModeChanged(editationMode, getActiveOperation());
             });
             caret.resetBlink();
+            notifyCaretChanged();
             repaint();
         }
     }
@@ -593,6 +594,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
         }
     }
 
+    @Nonnull
     @Override
     public EditationOperation getEditationOperation() {
         return editationOperation;
@@ -609,6 +611,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
                 listener.editationModeChanged(editationMode, currentOperation);
             });
             caret.resetBlink();
+            notifyCaretChanged();
             repaint();
         }
     }
@@ -719,42 +722,42 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
     }
 
     @Override
-    public void addSelectionChangedListener(@Nullable SelectionChangedListener selectionChangedListener) {
+    public void addSelectionChangedListener(SelectionChangedListener selectionChangedListener) {
         selectionChangedListeners.add(selectionChangedListener);
     }
 
     @Override
-    public void removeSelectionChangedListener(@Nullable SelectionChangedListener selectionChangedListener) {
+    public void removeSelectionChangedListener(SelectionChangedListener selectionChangedListener) {
         selectionChangedListeners.remove(selectionChangedListener);
     }
 
     @Override
-    public void addCaretMovedListener(@Nullable CaretMovedListener caretMovedListener) {
+    public void addCaretMovedListener(CaretMovedListener caretMovedListener) {
         caretMovedListeners.add(caretMovedListener);
     }
 
     @Override
-    public void removeCaretMovedListener(@Nullable CaretMovedListener caretMovedListener) {
+    public void removeCaretMovedListener(CaretMovedListener caretMovedListener) {
         caretMovedListeners.remove(caretMovedListener);
     }
 
     @Override
-    public void addScrollingListener(@Nullable ScrollingListener scrollingListener) {
+    public void addScrollingListener(ScrollingListener scrollingListener) {
         scrollingListeners.add(scrollingListener);
     }
 
     @Override
-    public void removeScrollingListener(@Nullable ScrollingListener scrollingListener) {
+    public void removeScrollingListener(ScrollingListener scrollingListener) {
         scrollingListeners.remove(scrollingListener);
     }
 
     @Override
-    public void addEditationModeChangedListener(@Nullable EditationModeChangedListener editationModeChangedListener) {
+    public void addEditationModeChangedListener(EditationModeChangedListener editationModeChangedListener) {
         editationModeChangedListeners.add(editationModeChangedListener);
     }
 
     @Override
-    public void removeEditationModeChangedListener(@Nullable EditationModeChangedListener editationModeChangedListener) {
+    public void removeEditationModeChangedListener(EditationModeChangedListener editationModeChangedListener) {
         editationModeChangedListeners.remove(editationModeChangedListener);
     }
 

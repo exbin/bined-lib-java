@@ -21,7 +21,7 @@ import javax.annotation.Nullable;
 /**
  * Interface for code area caret.
  *
- * @version 0.2.0 2018/02/14
+ * @version 0.2.0 2019/07/07
  * @author ExBin Project (https://exbin.org)
  */
 public interface CodeAreaCaret {
@@ -35,6 +35,14 @@ public interface CodeAreaCaret {
      */
     @Nonnull
     CodeAreaCaretPosition getCaretPosition();
+
+    /**
+     * Returns currently active section.
+     *
+     * @return section
+     */
+    @Nonnull
+    CodeAreaSection getSection();
 
     /**
      * Sets current caret position to provided value.

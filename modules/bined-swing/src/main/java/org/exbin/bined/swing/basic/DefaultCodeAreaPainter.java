@@ -44,6 +44,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JViewport;
 import org.exbin.bined.BasicCodeAreaSection;
 import org.exbin.bined.BasicCodeAreaZone;
+import org.exbin.bined.CodeAreaCaret;
 import org.exbin.bined.DefaultCodeAreaCaretPosition;
 import org.exbin.bined.CodeAreaSection;
 import org.exbin.bined.CodeAreaUtils;
@@ -158,7 +159,10 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
 //    private long paintCounter = 0;
     public DefaultCodeAreaPainter(CodeAreaCore codeArea) {
         this.codeArea = codeArea;
-        codeArea.addDataChangedListener(this::recomputeLayout);
+        codeArea.addDataChangedListener(() -> {
+            validateCaret();
+            recomputeLayout();
+        });
 
         dataView = new JPanel();
         dataView.setBorder(null);
@@ -246,6 +250,11 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         caretChanged = true;
     }
 
+    @Override
+    public void rebuildColors() {
+        colorsProfile.reinitialize();
+    }
+
     public void recomputeLayout() {
         rowPositionLength = getRowPositionLength();
         recomputeDimensions();
@@ -275,6 +284,14 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         editationOperation = ((EditationModeCapable) codeArea).getActiveOperation();
 
         caretChanged = false;
+    }
+
+    private void validateCaret() {
+        CodeAreaCaret caret = ((CaretCapable) codeArea).getCaret();
+        CodeAreaCaretPosition caretPosition = caret.getCaretPosition();
+        if (caretPosition.getDataPosition() > codeArea.getDataSize()) {
+            caret.setCaretPosition(null);
+        }
     }
 
     private void recomputeDimensions() {
@@ -832,7 +849,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
     public Color getPositionBackgroundColor(long rowDataPosition, int byteOnRow, int charOnRow, CodeAreaSection section) {
         SelectionRange selectionRange = structure.getSelectionRange();
         int codeLastCharPos = visibility.getCodeLastCharPos();
-        CodeAreaCaretPosition caretPosition = ((CaretCapable) codeArea).getCaret().getCaretPosition();
+        CodeAreaCaret caret = ((CaretCapable) codeArea).getCaret();
         boolean inSelection = selectionRange != null && selectionRange.isInSelection(rowDataPosition + byteOnRow);
         if (inSelection && (section == BasicCodeAreaSection.CODE_MATRIX)) {
             if (charOnRow == codeLastCharPos) {
@@ -841,7 +858,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         }
 
         if (inSelection) {
-            return section == caretPosition.getSection() ? colorsProfile.getSelectionBackground() : colorsProfile.getSelectionMirrorBackground();
+            return section == caret.getSection() ? colorsProfile.getSelectionBackground() : colorsProfile.getSelectionMirrorBackground();
         }
 
         return null;
@@ -1017,10 +1034,10 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
     @Nullable
     public Color getPositionTextColor(long rowDataPosition, int byteOnRow, int charOnRow, CodeAreaSection section) {
         SelectionRange selectionRange = structure.getSelectionRange();
-        CodeAreaCaretPosition caretPosition = ((CaretCapable) codeArea).getCaret().getCaretPosition();
+        CodeAreaCaret caret = ((CaretCapable) codeArea).getCaret();
         boolean inSelection = selectionRange != null && selectionRange.isInSelection(rowDataPosition + byteOnRow);
         if (inSelection) {
-            return section == caretPosition.getSection() ? colorsProfile.getSelectionColor() : colorsProfile.getSelectionMirrorColor();
+            return section == caret.getSection() ? colorsProfile.getSelectionColor() : colorsProfile.getSelectionMirrorColor();
         }
 
         return null;

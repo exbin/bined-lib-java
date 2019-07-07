@@ -32,8 +32,4 @@ public interface ViewModeCapable {
     CodeAreaViewMode getViewMode();
 
     void setViewMode(CodeAreaViewMode viewMode);
-
-    public static class ViewModeCapability implements CodeAreaCapability {
-
-    }
 }

@@ -18,6 +18,7 @@ package org.exbin.bined.highlight.swing;
 import java.awt.Color;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.BasicCodeAreaSection;
 import org.exbin.bined.CodeAreaSection;
 import org.exbin.bined.swing.CodeAreaCore;
@@ -28,6 +29,7 @@ import org.exbin.bined.swing.CodeAreaCore;
  * @version 0.2.0 2018/11/10
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public class HighlightNonAsciiCodeAreaPainter extends HighlightCodeAreaPainter {
 
     private Color controlCodes;
@@ -35,7 +37,7 @@ public class HighlightNonAsciiCodeAreaPainter extends HighlightCodeAreaPainter {
     private Color textColor;
     private boolean nonAsciiHighlightingEnabled = true;
 
-    public HighlightNonAsciiCodeAreaPainter(@Nonnull CodeAreaCore codeArea) {
+    public HighlightNonAsciiCodeAreaPainter(CodeAreaCore codeArea) {
         super(codeArea);
 
         textColor = codeArea.getForeground(); //MainColors().getTextColor();
@@ -133,7 +135,7 @@ public class HighlightNonAsciiCodeAreaPainter extends HighlightCodeAreaPainter {
         return controlCodes;
     }
 
-    public void setControlCodes(@Nonnull Color controlCodes) {
+    public void setControlCodes(Color controlCodes) {
         this.controlCodes = controlCodes;
     }
 
@@ -142,7 +144,7 @@ public class HighlightNonAsciiCodeAreaPainter extends HighlightCodeAreaPainter {
         return aboveCodes;
     }
 
-    public void setAboveCodes(@Nonnull Color aboveCodes) {
+    public void setAboveCodes(Color aboveCodes) {
         this.aboveCodes = aboveCodes;
     }
 

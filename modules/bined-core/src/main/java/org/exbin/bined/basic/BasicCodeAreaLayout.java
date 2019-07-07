@@ -18,21 +18,24 @@ package org.exbin.bined.basic;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.BasicCodeAreaSection;
-import org.exbin.bined.DefaultCodeAreaCaretPosition;
+import org.exbin.bined.CodeAreaCaretPosition;
 import org.exbin.bined.CodeAreaSection;
 import org.exbin.bined.CodeAreaViewMode;
 import org.exbin.bined.CodeType;
+import org.exbin.bined.DefaultCodeAreaCaretPosition;
 import org.exbin.bined.capability.RowWrappingCapable;
-import org.exbin.bined.CodeAreaCaretPosition;
 
 /**
  * Code area data representation structure for basic variant.
  *
- * @version 0.2.0 2019/02/03
+ * @version 0.2.0 2019/07/07
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class BasicCodeAreaLayout {
+
+    public BasicCodeAreaLayout() {
+    }
 
     public int computeBytesPerRow(BasicCodeAreaStructure structure, int charactersPerPage) {
         CodeAreaViewMode viewMode = structure.getViewMode();
@@ -117,7 +120,7 @@ public class BasicCodeAreaLayout {
         DefaultCodeAreaCaretPosition target = new DefaultCodeAreaCaretPosition(position.getDataPosition(), position.getCodeOffset(), position.getSection());
         switch (direction) {
             case LEFT: {
-                if (position.getSection() == BasicCodeAreaSection.CODE_MATRIX) {
+                if (position.getSection() != BasicCodeAreaSection.TEXT_PREVIEW) {
                     int codeOffset = position.getCodeOffset();
                     if (codeOffset > 0) {
                         target.setCodeOffset(codeOffset - 1);
@@ -131,7 +134,7 @@ public class BasicCodeAreaLayout {
                 break;
             }
             case RIGHT: {
-                if (position.getSection() == BasicCodeAreaSection.CODE_MATRIX) {
+                if (position.getSection() != BasicCodeAreaSection.TEXT_PREVIEW) {
                     int codeOffset = position.getCodeOffset();
                     if (position.getDataPosition() < dataSize && codeOffset < codeType.getMaxDigitsForByte() - 1) {
                         target.setCodeOffset(codeOffset + 1);
@@ -171,7 +174,7 @@ public class BasicCodeAreaLayout {
                 } else {
                     target.setDataPosition(dataPosition + increment);
                 }
-                if (position.getSection() == BasicCodeAreaSection.CODE_MATRIX) {
+                if (position.getSection() != BasicCodeAreaSection.TEXT_PREVIEW) {
                     if (target.getDataPosition() == dataSize) {
                         target.setCodeOffset(0);
                     } else {
@@ -223,7 +226,7 @@ public class BasicCodeAreaLayout {
                 break;
             }
             case SWITCH_SECTION: {
-                CodeAreaSection activeSection = position.getSection() == BasicCodeAreaSection.CODE_MATRIX ? BasicCodeAreaSection.TEXT_PREVIEW : BasicCodeAreaSection.CODE_MATRIX;
+                CodeAreaSection activeSection = position.getSection() == BasicCodeAreaSection.TEXT_PREVIEW ? BasicCodeAreaSection.CODE_MATRIX : BasicCodeAreaSection.TEXT_PREVIEW;
                 if (activeSection == BasicCodeAreaSection.TEXT_PREVIEW) {
                     target.setCodeOffset(0);
                 }

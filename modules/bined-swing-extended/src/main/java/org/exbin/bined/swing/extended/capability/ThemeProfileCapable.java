@@ -17,7 +17,6 @@ package org.exbin.bined.swing.extended.capability;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import org.exbin.bined.capability.CodeAreaCapability;
 import org.exbin.bined.swing.extended.theme.ExtendedCodeAreaThemeProfile;
 
 /**
@@ -32,8 +31,4 @@ public interface ThemeProfileCapable {
     ExtendedCodeAreaThemeProfile getThemeProfile();
 
     void setThemeProfile(@Nonnull ExtendedCodeAreaThemeProfile themeProfile);
-
-    public static class ThemeProfileCapability implements CodeAreaCapability {
-
-    }
 }

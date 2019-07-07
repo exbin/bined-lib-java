@@ -49,8 +49,4 @@ public interface BasicScrollingCapable {
     HorizontalScrollUnit getHorizontalScrollUnit();
 
     void setHorizontalScrollUnit(HorizontalScrollUnit horizontalScrollUnit);
-
-    public static class BasicScrollingCapability implements CodeAreaCapability {
-
-    }
 }
