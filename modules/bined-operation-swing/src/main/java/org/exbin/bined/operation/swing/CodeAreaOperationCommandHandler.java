@@ -78,7 +78,7 @@ import org.exbin.bined.CodeAreaCaretPosition;
 /**
  * Command handler for undo/redo aware hexadecimal editor editing.
  *
- * @version 0.2.0 2019/02/28
+ * @version 0.2.0 2019/07/09
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -259,6 +259,11 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
                 }
                 break;
             }
+            case KeyEvent.VK_ENTER: {
+                enterPressed();
+                keyEvent.consume();
+                break;
+            }
             case KeyEvent.VK_DELETE: {
                 deletePressed();
                 keyEvent.consume();
@@ -377,60 +382,80 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
                 revealCursor();
             }
         } else {
-            char keyChar = keyValue;
-            boolean validKey = keyChar > 31 && keyChar != DELETE_CHAR && isValidChar(keyValue);
-            if (validKey) {
-                if (editCommand != null && editCommand.wasReverted()) {
-                    editCommand = null;
-                }
-                long dataPosition = ((CaretCapable) codeArea).getCaret().getCaretPosition().getDataPosition();
-                DeleteSelectionCommand deleteCommand = null;
-                if (codeArea.hasSelection()) {
-                    deleteCommand = new DeleteSelectionCommand(codeArea);
-                }
-
-                if (editationMode == EditationMode.EXPANDING && editationOperation == EditationOperation.OVERWRITE) {
-                    if (editCommand == null || !(editCommand instanceof EditCharDataCommand) || editCommand.getCommandType() != EditCodeDataCommand.EditCommandType.OVERWRITE) {
-                        editCommand = new EditCharDataCommand(codeArea, EditCodeDataCommand.EditCommandType.OVERWRITE, dataPosition);
-                        if (deleteCommand != null) {
-                            HexCompoundCommand compoundCommand = new HexCompoundCommand(codeArea);
-                            compoundCommand.appendCommand(deleteCommand);
-                            try {
-                                undoHandler.execute(compoundCommand);
-                            } catch (BinaryDataOperationException ex) {
-                                Logger.getLogger(CodeAreaOperationCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                            compoundCommand.appendCommand(editCommand);
-                        } else {
-                            undoHandler.addCommand(editCommand);
-                        }
-                    }
-
-                    ((EditCharDataCommand) editCommand).appendEdit(keyChar);
-                } else {
-                    if (editCommand == null || !(editCommand instanceof EditCharDataCommand) || editCommand.getCommandType() != EditCodeDataCommand.EditCommandType.INSERT) {
-                        editCommand = new EditCharDataCommand(codeArea, EditCodeDataCommand.EditCommandType.INSERT, dataPosition);
-                        if (deleteCommand != null) {
-                            HexCompoundCommand compoundCommand = new HexCompoundCommand(codeArea);
-                            compoundCommand.appendCommand(deleteCommand);
-                            try {
-                                undoHandler.execute(compoundCommand);
-                            } catch (BinaryDataOperationException ex) {
-                                Logger.getLogger(CodeAreaOperationCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                            compoundCommand.appendCommand(editCommand);
-                        } else {
-                            undoHandler.addCommand(editCommand);
-                        }
-                    }
-
-                    ((EditCharDataCommand) editCommand).appendEdit(keyChar);
-                }
-
-                codeArea.notifyDataChanged();
-                revealCursor();
-                codeArea.repaint();
+            if (keyValue > DefaultCodeAreaCommandHandler.LAST_CONTROL_CODE && keyValue != DELETE_CHAR) {
+                pressedCharInPreview(keyValue);
             }
+        }
+    }
+
+    private void pressedCharInPreview(char keyChar) {
+        boolean validKey = keyChar != DELETE_CHAR && isValidChar(keyChar);
+        if (validKey) {
+            EditationMode editationMode = ((EditationModeCapable) codeArea).getEditationMode();
+            EditationOperation editationOperation = ((EditationModeCapable) codeArea).getActiveOperation();
+            DefaultCodeAreaCaret caret = (DefaultCodeAreaCaret) ((CaretCapable) codeArea).getCaret();
+            if (editCommand != null && editCommand.wasReverted()) {
+                editCommand = null;
+            }
+            long dataPosition = ((CaretCapable) codeArea).getCaret().getCaretPosition().getDataPosition();
+            DeleteSelectionCommand deleteCommand = null;
+            if (codeArea.hasSelection()) {
+                deleteCommand = new DeleteSelectionCommand(codeArea);
+            }
+
+            if (editationMode == EditationMode.EXPANDING && editationOperation == EditationOperation.OVERWRITE) {
+                if (editCommand == null || !(editCommand instanceof EditCharDataCommand) || editCommand.getCommandType() != EditCodeDataCommand.EditCommandType.OVERWRITE) {
+                    editCommand = new EditCharDataCommand(codeArea, EditCodeDataCommand.EditCommandType.OVERWRITE, dataPosition);
+                    if (deleteCommand != null) {
+                        HexCompoundCommand compoundCommand = new HexCompoundCommand(codeArea);
+                        compoundCommand.appendCommand(deleteCommand);
+                        try {
+                            undoHandler.execute(compoundCommand);
+                        } catch (BinaryDataOperationException ex) {
+                            Logger.getLogger(CodeAreaOperationCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        compoundCommand.appendCommand(editCommand);
+                    } else {
+                        undoHandler.addCommand(editCommand);
+                    }
+                }
+
+                ((EditCharDataCommand) editCommand).appendEdit(keyChar);
+            } else {
+                if (editCommand == null || !(editCommand instanceof EditCharDataCommand) || editCommand.getCommandType() != EditCodeDataCommand.EditCommandType.INSERT) {
+                    editCommand = new EditCharDataCommand(codeArea, EditCodeDataCommand.EditCommandType.INSERT, dataPosition);
+                    if (deleteCommand != null) {
+                        HexCompoundCommand compoundCommand = new HexCompoundCommand(codeArea);
+                        compoundCommand.appendCommand(deleteCommand);
+                        try {
+                            undoHandler.execute(compoundCommand);
+                        } catch (BinaryDataOperationException ex) {
+                            Logger.getLogger(CodeAreaOperationCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        compoundCommand.appendCommand(editCommand);
+                    } else {
+                        undoHandler.addCommand(editCommand);
+                    }
+                }
+
+                ((EditCharDataCommand) editCommand).appendEdit(keyChar);
+            }
+
+            codeArea.notifyDataChanged();
+            revealCursor();
+            codeArea.repaint();
+        }
+    }
+
+    @Override
+    public void enterPressed() {
+        if (!((EditationModeCapable) codeArea).isEditable()) {
+            return;
+        }
+
+        DefaultCodeAreaCaret caret = (DefaultCodeAreaCaret) ((CaretCapable) codeArea).getCaret();
+        if (caret.getSection() == BasicCodeAreaSection.TEXT_PREVIEW) {
+            pressedCharInPreview((char) 10);
         }
     }
 
@@ -510,7 +535,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
             long first = selection.getFirst();
             long last = selection.getLast();
 
-            BinaryData copy = codeArea.getContentData().copy(first, last - first + 1);
+            BinaryData copy = CodeAreaUtils.requireNonNull(codeArea.getContentData()).copy(first, last - first + 1);
 
             CodeAreaSwingUtils.BinaryDataClipboardData binaryData = new CodeAreaSwingUtils.BinaryDataClipboardData(copy, binedDataFlavor);
             setClipboardContent(binaryData);
@@ -524,7 +549,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
             long first = selection.getFirst();
             long last = selection.getLast();
 
-            BinaryData copy = codeArea.getContentData().copy(first, last - first + 1);
+            BinaryData copy = CodeAreaUtils.requireNonNull(codeArea.getContentData()).copy(first, last - first + 1);
 
             CodeType codeType = ((CodeTypeCapable) codeArea).getCodeType();
             CodeCharactersCase charactersCase = ((CodeCharactersCaseCapable) codeArea).getCodeCharactersCase();

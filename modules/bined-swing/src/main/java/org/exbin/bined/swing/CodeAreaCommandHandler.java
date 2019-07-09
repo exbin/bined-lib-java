@@ -22,7 +22,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 /**
  * Interface for code area data manipulation.
  *
- * @version 0.2.0 2018/01/01
+ * @version 0.2.0 2019/07/09
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -46,6 +46,11 @@ public interface CodeAreaCommandHandler {
      * @param keyEvent key event
      */
     void keyTyped(KeyEvent keyEvent);
+
+    /**
+     * Enter key was pressed.
+     */
+    void enterPressed();
 
     /**
      * Backspace key was pressed.
