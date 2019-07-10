@@ -30,5 +30,4 @@ public enum ScrollBarVerticalScale {
      * Height is more than available range and scaled.
      */
     SCALED
-
 }

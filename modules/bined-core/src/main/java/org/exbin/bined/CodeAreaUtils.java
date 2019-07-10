@@ -464,6 +464,11 @@ public class CodeAreaUtils {
         return Objects.requireNonNull(object, "Field cannot be null");
     }
 
+    @Nonnull
+    public static <T> T requireNonNull(@Nullable T object, String message) {
+        return Objects.requireNonNull(object, message);
+    }
+
     public static void requireNonNull(Object... objects) {
         for (Object object : objects) {
             Objects.requireNonNull(object, "Field cannot be null");
