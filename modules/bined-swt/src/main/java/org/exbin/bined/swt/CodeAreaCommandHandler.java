@@ -48,6 +48,11 @@ public interface CodeAreaCommandHandler {
     void keyTyped(KeyEvent keyEvent);
 
     /**
+     * Enter key was pressed.
+     */
+    void enterPressed();
+
+    /**
      * Backspace key was pressed.
      */
     void backSpacePressed();

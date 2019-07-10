@@ -52,6 +52,7 @@ import org.exbin.utils.binary_data.BinaryData;
 import org.exbin.utils.binary_data.ByteArrayEditableData;
 import org.exbin.utils.binary_data.EditableBinaryData;
 import org.exbin.bined.CodeAreaCaretPosition;
+import org.exbin.bined.basic.EnterKeyHandlingMode;
 
 /**
  * Default hexadecimal editor command handler.
@@ -64,11 +65,14 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     public static final int NO_MODIFIER = 0;
     public static final String FALLBACK_CLIPBOARD = "clipboard";
     public static final int LAST_CONTROL_CODE = 31;
+    private static final char DELETE_CHAR = (char) 0x7f;
 
     private final int metaMask;
 
     @Nonnull
     private final CodeAreaCore codeArea;
+    @Nonnull
+    private EnterKeyHandlingMode enterKeyHandlingMode = EnterKeyHandlingMode.PLATFORM_SPECIFIC;
     private final boolean codeTypeSupported;
     private final boolean viewModeSupported;
 
@@ -355,10 +359,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         CodeAreaCaretPosition caretPosition = ((CaretCapable) codeArea).getCaret().getCaretPosition();
         long dataPosition = caretPosition.getDataPosition();
         int codeOffset = caretPosition.getCodeOffset();
-        BinaryData data = codeArea.getContentData();
-        if (data == null) {
-            throw new NullPointerException("Content data is null");
-        }
+        BinaryData data = CodeAreaUtils.requireNonNull(codeArea.getContentData(), "Content data is null");
         CodeType codeType = getCodeType();
         byte byteValue = data.getByte(dataPosition);
         byte outputValue = CodeAreaUtils.setCodeValue(byteValue, value, codeOffset, codeType);

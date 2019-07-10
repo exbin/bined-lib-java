@@ -461,7 +461,6 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         if (!((EditationModeCapable) codeArea).isEditable()) {
             return;
         }
-        BinaryData data = CodeAreaUtils.requireNonNull(codeArea.getContentData(), "Content data is null");
 
         if (codeArea.hasSelection()) {
             deleteSelection();
@@ -470,6 +469,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             notifyCaretMoved();
             revealCursor();
         } else {
+            BinaryData data = CodeAreaUtils.requireNonNull(codeArea.getContentData(), "Content data is null");
             DefaultCodeAreaCaret caret = (DefaultCodeAreaCaret) ((CaretCapable) codeArea).getCaret();
             long dataPosition = caret.getDataPosition();
             if (dataPosition < codeArea.getDataSize()) {
@@ -599,8 +599,8 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         if (!((EditationModeCapable) codeArea).isEditable()) {
             return;
         }
-        BinaryData data = CodeAreaUtils.requireNonNull(codeArea.getContentData(), "Content data is null");
 
+        BinaryData data = CodeAreaUtils.requireNonNull(codeArea.getContentData(), "Content data is null");
         EditationMode editationMode = ((EditationModeCapable) codeArea).getEditationMode();
         EditationOperation editationOperation = ((EditationModeCapable) codeArea).getActiveOperation();
         try {
@@ -694,8 +694,8 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         if (!((EditationModeCapable) codeArea).isEditable()) {
             return;
         }
-        BinaryData data = CodeAreaUtils.requireNonNull(codeArea.getContentData(), "Content data is null");
 
+        BinaryData data = CodeAreaUtils.requireNonNull(codeArea.getContentData(), "Content data is null");
         EditationMode editationMode = ((EditationModeCapable) codeArea).getEditationMode();
         EditationOperation editationOperation = ((EditationModeCapable) codeArea).getActiveOperation();
         try {
