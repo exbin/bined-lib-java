@@ -61,7 +61,6 @@ import org.exbin.bined.basic.BasicCodeAreaStructure;
 import org.exbin.bined.basic.CodeAreaScrollPosition;
 import org.exbin.bined.basic.MovementDirection;
 import org.exbin.bined.basic.PositionScrollVisibility;
-import org.exbin.bined.basic.ScrollBarVerticalScale;
 import org.exbin.bined.basic.ScrollingDirection;
 import org.exbin.bined.capability.BackgroundPaintCapable;
 import org.exbin.bined.capability.CaretCapable;
@@ -85,7 +84,7 @@ import org.exbin.bined.basic.BasicCodeAreaLayout;
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2019/06/09
+ * @version 0.2.0 2019/07/11
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -355,21 +354,14 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
             recomputeCharPositions();
         }
 
+        Rectangle scrollPanelRectangle = dimensions.getScrollPanelRectangle();
+        scrollPanel.setBounds(scrollPanelRectangle);
+
         if (rowHeight > 0 && characterWidth > 0) {
-            int documentDataWidth = structure.getCharactersPerRow() * characterWidth;
-            long rowsPerData = (structure.getDataSize() / structure.getBytesPerRow()) + 1;
             scrolling.updateCache(codeArea, getHorizontalScrollBarSize(), getVerticalScrollBarSize());
-
-            int documentDataHeight;
-            if (rowsPerData > Integer.MAX_VALUE / rowHeight) {
-                scrolling.setScrollBarVerticalScale(ScrollBarVerticalScale.SCALED);
-                documentDataHeight = Integer.MAX_VALUE;
-            } else {
-                scrolling.setScrollBarVerticalScale(ScrollBarVerticalScale.NORMAL);
-                documentDataHeight = (int) (rowsPerData * rowHeight);
-            }
-
-            dataView.setPreferredSize(new Dimension(documentDataWidth, documentDataHeight));
+            JViewport viewport = scrollPanel.getViewport();
+            Dimension viewDimension = scrolling.computeViewDimension(viewport.getWidth(), viewport.getHeight(), layout, structure, characterWidth, rowHeight);
+            dataView.setPreferredSize(viewDimension);
         }
 
         // TODO on resize only
