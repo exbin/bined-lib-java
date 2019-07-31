@@ -21,7 +21,7 @@ Features
 - Support for undo/redo
 - Support for charset/encoding selection
 - Codes can be also binary, octal or decimal
-- Support for code and matching highlighting
+- Support for customizable highlighting
 - Support for huge files
 - Delta mode - Only changes are stored in memory
 

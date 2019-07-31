@@ -45,6 +45,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JViewport;
+import javax.swing.border.EmptyBorder;
 import org.exbin.bined.BasicCodeAreaSection;
 import org.exbin.bined.BasicCodeAreaZone;
 import org.exbin.bined.CodeAreaCaret;
@@ -196,8 +197,11 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         // Fill whole area, no more suitable method found so far
         dataView.setPreferredSize(new Dimension(0, 0));
         scrollPanel = new JScrollPane();
-        scrollPanel.setBorder(null);
+        scrollPanel.setBorder(new EmptyBorder(0, 0, 0, 0));
         scrollPanel.setIgnoreRepaint(true);
+        scrollPanel.setOpaque(false);
+        scrollPanel.setInheritsPopupMenu(true);
+        scrollPanel.setViewportBorder(null);
         JScrollBar verticalScrollBar = scrollPanel.getVerticalScrollBar();
         verticalScrollBar.setIgnoreRepaint(true);
         verticalScrollBar.addAdjustmentListener(new VerticalAdjustmentListener());
@@ -206,10 +210,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         horizontalScrollBar.setIgnoreRepaint(true);
         horizontalScrollBar.addAdjustmentListener(new HorizontalAdjustmentListener());
         horizontalScrollBar.setModel(new HorizontalScrollBarModel());
-        scrollPanel.setOpaque(false);
         scrollPanel.setViewportView(dataView);
-        scrollPanel.setInheritsPopupMenu(true);
-        scrollPanel.setViewportBorder(null);
         JViewport viewport = scrollPanel.getViewport();
         viewport.setOpaque(false);
 

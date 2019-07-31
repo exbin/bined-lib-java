@@ -40,9 +40,7 @@ public class BasicCodeAreaMetrics {
     private int characterWidth;
     private int fontHeight;
     private int maxBytesPerChar;
-
-    // TODO replace with computation
-    private final int subFontSpace = 1;
+    private int subFontSpace = 0;
 
     /**
      * GC is expected to have proper font set.
@@ -59,13 +57,14 @@ public class BasicCodeAreaMetrics {
         } else {
             fontMetrics = gc.getFontMetrics();
             fontHeight = fontMetrics.getHeight();
+            rowHeight = fontHeight;
 
             /*
              * Use small 'w' character to guess normal font width.
              */
             characterWidth = gc.textExtent("w").x;
             int fontSize = fontMetrics.getHeight();
-            rowHeight = fontSize + subFontSpace;
+            subFontSpace = fontHeight - fontSize;
             CharsetEncoder encoder = charset.newEncoder();
             maxBytesPerChar = (int) encoder.maxBytesPerChar();
         }

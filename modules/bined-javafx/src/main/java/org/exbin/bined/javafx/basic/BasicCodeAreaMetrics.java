@@ -39,9 +39,7 @@ public class BasicCodeAreaMetrics {
     private int characterWidth;
     private int fontHeight;
     private int maxBytesPerChar;
-
-    // TODO replace with computation
-    private final int subFontSpace = 3;
+    private int subFontSpace = 0;
 
     public void recomputeMetrics(@Nullable FontMetrics fontMetrics, Charset charset) {
         this.fontMetrics = fontMetrics;
@@ -50,6 +48,7 @@ public class BasicCodeAreaMetrics {
             fontHeight = 0;
         } else {
             fontHeight = (int) Math.ceil(fontMetrics.getAscent() + fontMetrics.getDescent());
+            rowHeight = fontHeight;
 
             /*
              * Use small 'w' character to guess normal font width.
@@ -58,7 +57,7 @@ public class BasicCodeAreaMetrics {
             text.setFont(fontMetrics.getFont());
             characterWidth = (int) Math.ceil(text.getBoundsInLocal().getWidth());
             int fontSize = (int) fontMetrics.getFont().getSize();
-            rowHeight = fontSize + subFontSpace;
+            subFontSpace = fontHeight - fontSize;
             CharsetEncoder encoder = charset.newEncoder();
             maxBytesPerChar = (int) encoder.maxBytesPerChar();
             
