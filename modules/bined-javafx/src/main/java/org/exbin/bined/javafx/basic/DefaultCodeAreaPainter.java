@@ -21,9 +21,11 @@ import java.awt.Cursor;
 import java.awt.Stroke;
 import java.nio.charset.Charset;
 import java.util.Arrays;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
+import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.ScrollPane;
@@ -74,7 +76,7 @@ import org.exbin.bined.basic.BasicCodeAreaLayout;
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2019/07/07
+ * @version 0.2.0 2019/08/02
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -178,11 +180,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
 //        scrollPanel.setOpaque(false);
         scrollPanel.setContent(dataView);
 //        scrollPanel.getViewport().setOpaque(false);
-        codeArea.getChildren().add(topCanvas);
-        codeArea.getChildren().add(headerCanvas);
-        codeArea.getChildren().add(rowPositionCanvas);
-        codeArea.getChildren().add(scrollPanel);
-        onResize();
 
 //        codeArea.getChildren().add(dataView);
 //
@@ -193,6 +190,25 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
 //        scrollPanel.addMouseListener(codeAreaMouseListener);
 //        scrollPanel.addMouseMotionListener(codeAreaMouseListener);
 //        scrollPanel.addMouseWheelListener(codeAreaMouseListener);
+    }
+
+    @Override
+    public void attach() {
+        ObservableList<Node> children = codeArea.getChildren();
+        children.add(topCanvas);
+        children.add(headerCanvas);
+        children.add(rowPositionCanvas);
+        children.add(scrollPanel);
+        onResize();
+    }
+
+    @Override
+    public void detach() {
+        ObservableList<Node> children = codeArea.getChildren();
+        children.remove(topCanvas);
+        children.remove(headerCanvas);
+        children.remove(rowPositionCanvas);
+        children.remove(scrollPanel);
     }
 
     @Override
@@ -872,7 +888,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
             charPosition = structure.computeFirstCodeCharacterPos(byteOffset) + caretPosition.getCodeOffset();
         }
 
-        return scrolling.computeRevealScrollPosition(rowPosition, charPosition, bytesPerRow, rowsPerPage, charactersPerPage, (int) dataViewWidth, (int) dataViewHeight, characterWidth, rowHeight);
+        return scrolling.computeRevealScrollPosition(rowPosition, charPosition, bytesPerRow, rowsPerPage, charactersPerPage, (int) dataViewWidth % characterWidth, (int) dataViewHeight % rowHeight, characterWidth, rowHeight);
     }
 
     @Override

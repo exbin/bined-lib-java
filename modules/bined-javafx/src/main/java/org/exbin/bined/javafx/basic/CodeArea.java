@@ -59,7 +59,7 @@ import org.exbin.bined.CodeAreaCaretPosition;
 /**
  * Code area component default code area.
  *
- * @version 0.2.0 2018/12/26
+ * @version 0.2.0 2019/08/02
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -122,6 +122,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaJ
 
         caret = new DefaultCodeAreaCaret(this);
         painter = new DefaultCodeAreaPainter(this);
+        painter.attach();
         init();
     }
 
@@ -135,6 +136,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaJ
 
         caret = new DefaultCodeAreaCaret(this);
         painter = new DefaultCodeAreaPainter(this);
+        painter.attach();
         init();
     }
 

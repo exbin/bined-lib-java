@@ -15,7 +15,6 @@
  */
 package org.exbin.bined.javafx;
 
-import javafx.scene.canvas.GraphicsContext;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -27,9 +26,9 @@ import org.exbin.bined.basic.ScrollingDirection;
 import org.exbin.bined.CodeAreaCaretPosition;
 
 /**
- * Hexadecimal editor painter interface.
+ * Binary editor painter interface.
  *
- * @version 0.2.0 2018/12/26
+ * @version 0.2.0 2019/08/02
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -41,6 +40,16 @@ public interface CodeAreaPainter {
      * @return true if initialized
      */
     boolean isInitialized();
+
+    /**
+     * Attaches painter to code area.
+     */
+    void attach();
+
+    /**
+     * Dettaches painter to code area.
+     */
+    void detach();
 
     /**
      * Paints the main component.

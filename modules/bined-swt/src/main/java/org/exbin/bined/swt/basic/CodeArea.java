@@ -127,6 +127,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
 
         caret = new DefaultCodeAreaCaret(this);
         painter = new DefaultCodeAreaPainter(this);
+        painter.attach();
         init();
     }
 
@@ -142,6 +143,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
 
         caret = new DefaultCodeAreaCaret(this);
         painter = new DefaultCodeAreaPainter(this);
+        painter.attach();
         init();
     }
 

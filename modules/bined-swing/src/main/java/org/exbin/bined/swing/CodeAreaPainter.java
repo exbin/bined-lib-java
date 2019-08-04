@@ -28,7 +28,7 @@ import org.exbin.bined.basic.ScrollingDirection;
 import org.exbin.bined.CodeAreaCaretPosition;
 
 /**
- * Hexadecimal editor painter interface.
+ * Binary editor painter interface.
  *
  * @version 0.2.0 2019/07/07
  * @author ExBin Project (https://exbin.org)

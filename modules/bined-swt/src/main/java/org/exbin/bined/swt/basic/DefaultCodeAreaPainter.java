@@ -24,7 +24,11 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.events.ControlAdapter;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.PaintEvent;
+import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
@@ -77,7 +81,7 @@ import org.exbin.bined.basic.BasicCodeAreaLayout;
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2019/07/07
+ * @version 0.2.0 2019/08/02
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -97,6 +101,12 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
     private final Composite dataView;
     @Nonnull
     private final ScrolledComposite scrollPanel;
+    @Nonnull
+    private final PaintListener codeAreaPaintListener;
+    @Nonnull
+    private final DefaultCodeAreaMouseListener codeAreaMouseListener;
+    @Nonnull
+    private final ControlListener codeAreaControlListener;
 
     @Nonnull
     private final BasicCodeAreaMetrics metrics = new BasicCodeAreaMetrics();
@@ -162,34 +172,64 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
 //        scrollPanel.getViewport().setOpaque(false);
 
         dataView = new Composite(scrollPanel, SWT.NONE);
-        dataView.addPaintListener((PaintEvent paintEvent) -> {
+        codeAreaPaintListener = (PaintEvent paintEvent) -> {
             GC g = paintEvent.gc;
             if (g == null) {
                 return;
             }
 
             paintMainArea(g);
-        });
+        };
 //        dataView.setVisible(false);
 //        dataView.setLayout(null);
         dataView.setBackgroundMode(SWT.INHERIT_NONE);
         // Fill whole area, no more suitable method found so far
         dataView.setSize(0, 0);
 
-        scrollPanel.setContent(dataView);
+        codeAreaMouseListener = new DefaultCodeAreaMouseListener(codeArea, scrollPanel);
+        codeAreaControlListener = new ControlAdapter() {
+            @Override
+            public void controlResized(ControlEvent ce) {
+                if (metrics.isInitialized()) {
+                    recomputeLayout();
+                }
+            }
+        };
 
-        DefaultCodeAreaMouseListener codeAreaMouseListener = new DefaultCodeAreaMouseListener(codeArea, scrollPanel);
-        codeArea.addMouseListener(codeAreaMouseListener);
-        codeArea.addMouseMoveListener(codeAreaMouseListener);
-        codeArea.addMouseWheelListener(codeAreaMouseListener);
-        codeArea.addMouseTrackListener(codeAreaMouseListener);
+//        dataView.layout();
+        codeArea.update();
+//        codeArea.layout();
+    }
+
+    @Override
+    public void attach() {
+        dataView.addPaintListener(codeAreaPaintListener);
         dataView.addMouseListener(codeAreaMouseListener);
         dataView.addMouseMoveListener(codeAreaMouseListener);
         dataView.addMouseWheelListener(codeAreaMouseListener);
         dataView.addMouseTrackListener(codeAreaMouseListener);
-//        dataView.layout();
+        codeArea.addMouseListener(codeAreaMouseListener);
+        codeArea.addMouseMoveListener(codeAreaMouseListener);
+        codeArea.addMouseWheelListener(codeAreaMouseListener);
+        codeArea.addMouseTrackListener(codeAreaMouseListener);
+        codeArea.addControlListener(codeAreaControlListener);
+        scrollPanel.setContent(dataView);
         codeArea.update();
-//        codeArea.layout();
+    }
+
+    @Override
+    public void detach() {
+        scrollPanel.setContent(null);
+        dataView.removePaintListener(codeAreaPaintListener);
+        dataView.removeMouseListener(codeAreaMouseListener);
+        dataView.removeMouseMoveListener(codeAreaMouseListener);
+        dataView.removeMouseWheelListener(codeAreaMouseListener);
+        dataView.removeMouseTrackListener(codeAreaMouseListener);
+        codeArea.removeMouseListener(codeAreaMouseListener);
+        codeArea.removeMouseMoveListener(codeAreaMouseListener);
+        codeArea.removeMouseWheelListener(codeAreaMouseListener);
+        codeArea.removeMouseTrackListener(codeAreaMouseListener);
+        codeArea.removeControlListener(codeAreaControlListener);
     }
 
     @Override
@@ -849,7 +889,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
             charPosition = structure.computeFirstCodeCharacterPos(byteOffset) + caretPosition.getCodeOffset();
         }
 
-        return scrolling.computeRevealScrollPosition(rowPosition, charPosition, bytesPerRow, rowsPerPage, charactersPerPage, dataViewWidth, dataViewHeight, characterWidth, rowHeight);
+        return scrolling.computeRevealScrollPosition(rowPosition, charPosition, bytesPerRow, rowsPerPage, charactersPerPage, dataViewWidth % characterWidth, dataViewHeight % rowHeight, characterWidth, rowHeight);
     }
 
     @Override
