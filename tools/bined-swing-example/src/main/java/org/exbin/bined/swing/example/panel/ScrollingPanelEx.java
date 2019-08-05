@@ -26,7 +26,7 @@ import org.exbin.bined.extended.capability.ExtendedScrollingCapable;
 import org.exbin.bined.swing.extended.ExtCodeArea;
 
 /**
- * Hexadecimal editor example panel.
+ * Binary editor scrolling options panel.
  *
  * @version 0.2.0 2019/02/18
  * @author ExBin Project (https://exbin.org)

@@ -42,7 +42,7 @@ import org.exbin.bined.swing.capability.AntialiasingCapable;
 import org.exbin.bined.swing.extended.ExtCodeArea;
 
 /**
- * Hexadecimal editor example panel.
+ * Binary editor mode options panel.
  *
  * @version 0.2.0 2018/12/20
  * @author ExBin Project (https://exbin.org)

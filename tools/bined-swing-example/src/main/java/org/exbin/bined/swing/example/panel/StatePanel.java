@@ -37,7 +37,7 @@ import org.exbin.bined.CodeAreaCaretPosition;
 import org.exbin.bined.CodeAreaUtils;
 
 /**
- * Hexadecimal editor example panel.
+ * Binary editor state panel.
  *
  * @version 0.2.0 2019/07/07
  * @author ExBin Project (https://exbin.org)

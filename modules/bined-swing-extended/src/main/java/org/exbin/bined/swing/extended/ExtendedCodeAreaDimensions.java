@@ -27,7 +27,7 @@ import org.exbin.bined.extended.layout.ExtendedCodeAreaLayoutProfile;
 /**
  * Basic code area component dimensions.
  *
- * @version 0.2.0 2019/02/23
+ * @version 0.2.0 2019/08/05
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -93,17 +93,17 @@ public class ExtendedCodeAreaDimensions {
         boolean availableHeight = dataViewY + horizontalScrollBarSize <= componentHeight;
 
         if (availableWidth && availableHeight) {
-            mainAreaRect.setBounds(componentX + rowPositionAreaWidth, dataViewY, componentWidth - rowPositionAreaWidth - getVerticalScrollBarSize(), componentHeight - dataViewY - getHorizontalScrollBarSize());
+            mainAreaRect.setBounds(componentX + rowPositionAreaWidth, dataViewY, componentWidth - rowPositionAreaWidth - verticalScrollBarSize, componentHeight - dataViewY - horizontalScrollBarSize);
         } else {
             mainAreaRect.setBounds(0, 0, 0, 0);
         }
         if (availableWidth) {
-            headerAreaRectangle.setBounds(componentX + rowPositionAreaWidth, componentY, componentWidth - rowPositionAreaWidth - getVerticalScrollBarSize(), headerAreaHeight);
+            headerAreaRectangle.setBounds(componentX + rowPositionAreaWidth, componentY, componentWidth - rowPositionAreaWidth - verticalScrollBarSize, headerAreaHeight);
         } else {
             headerAreaRectangle.setBounds(0, 0, 0, 0);
         }
         if (availableHeight) {
-            rowPositionAreaRectangle.setBounds(componentX, dataViewY, rowPositionAreaWidth, componentHeight - dataViewY - getHorizontalScrollBarSize());
+            rowPositionAreaRectangle.setBounds(componentX, dataViewY, rowPositionAreaWidth, componentHeight - dataViewY - horizontalScrollBarSize);
         } else {
             rowPositionAreaRectangle.setBounds(0, 0, 0, 0);
         }

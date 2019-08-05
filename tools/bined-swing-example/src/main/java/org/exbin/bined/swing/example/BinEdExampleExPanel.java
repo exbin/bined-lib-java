@@ -30,7 +30,7 @@ import org.exbin.bined.swing.example.panel.ThemePanelEx;
 import org.exbin.bined.swing.extended.ExtCodeArea;
 
 /**
- * Hexadecimal editor example panel.
+ * Extended binary editor component example panel.
  *
  * @version 0.2.0 2018/12/14
  * @author ExBin Project (https://exbin.org)

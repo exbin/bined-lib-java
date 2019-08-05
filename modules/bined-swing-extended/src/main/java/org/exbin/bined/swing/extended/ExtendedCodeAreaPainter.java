@@ -97,11 +97,12 @@ import org.exbin.bined.extended.layout.ExtendedCodeAreaLayoutProfile;
 import org.exbin.bined.swing.basic.DefaultCodeAreaMouseListener;
 import org.exbin.bined.CodeAreaCaretPosition;
 import org.exbin.bined.extended.ExtendedHorizontalScrollUnit;
+import org.exbin.bined.extended.layout.SpaceType;
 
 /**
  * Extended code area component default painter.
  *
- * @version 0.2.0 2019/07/07
+ * @version 0.2.0 2019/08/05
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -384,6 +385,8 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
     }
 
     private void recomputeScrollState() {
+        int horizontalScrollBarSize = getHorizontalScrollBarSize();
+        int verticalScrollBarSize = getVerticalScrollBarSize();
         scrolling.setScrollPosition(((ScrollingCapable) codeArea).getScrollPosition());
         int characterWidth = metrics.getCharacterWidth();
         int rowHeight = metrics.getRowHeight();
@@ -396,13 +399,16 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         scrollPanel.setBounds(scrollPanelRectangle);
 
         if (rowHeight > 0 && characterWidth > 0) {
-            scrolling.updateCache(codeArea, getHorizontalScrollBarSize(), getVerticalScrollBarSize());
+            scrolling.updateCache(codeArea, horizontalScrollBarSize, verticalScrollBarSize);
             JViewport viewport = scrollPanel.getViewport();
             Dimension viewDimension = scrolling.computeViewDimension(viewport.getWidth(), viewport.getHeight(), layoutProfile, structure, characterWidth, rowHeight);
             dataView.setPreferredSize(viewDimension);
+
+            // TODO on resize only
+            recomputeDimensions();
+            scrollPanel.setBounds(dimensions.getScrollPanelRectangle());
         }
 
-        // TODO on resize only
         scrollPanel.revalidate();
     }
 
@@ -641,6 +647,31 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
                 g.drawLine(lineX, headerArea.y, lineX, headerArea.y + headerArea.height);
             }
         }
+        int groupSize = themeProfile.getVerticalLineByteGroupSize();
+        if (groupSize > 0 && (viewMode == CodeAreaViewMode.DUAL || viewMode == CodeAreaViewMode.CODE_MATRIX) && visibility.isCodeSectionVisible()) {
+            positionIterator.reset();
+            positionIterator.skip(visibility.getSkipTo());
+            int halfCharPos = positionIterator.getHalfCharPosition();
+            while (!positionIterator.isEndReached()) {
+                SpaceType nextSpaceType = positionIterator.nextSpaceType();
+                if (positionIterator.isEndReached() || positionIterator.getSection() != BasicCodeAreaSection.CODE_MATRIX) {
+                    break;
+                }
+
+                int spaceHalfCharSize = nextSpaceType.getHalfCharSize();
+                halfCharPos += 2;
+                if (positionIterator.getCodeOffset() == 0 && positionIterator.getBytePosition() % groupSize == 0) {
+                    int lineX = dataViewX + layoutProfile.computePositionX(halfCharPos, characterWidth, halfSpaceWidth) + (spaceHalfCharSize * halfSpaceWidth) / 2 - scrolling.getHorizontalScrollX(characterWidth);
+                    g.drawLine(lineX, headerArea.y, lineX, headerArea.y + headerArea.height);
+                }
+
+                halfCharPos += spaceHalfCharSize;
+
+                if ((positionIterator.getPosition() >= skipRestFrom && skipRestFrom >= 0) || positionIterator.getSection() == BasicCodeAreaSection.TEXT_PREVIEW) {
+                    break;
+                }
+            }
+        }
 
         g.setClip(clipBounds);
     }
@@ -736,13 +767,44 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         paintBackground(g);
 
         int characterWidth = metrics.getCharacterWidth();
+        paintRows(g);
+
         g.setColor(colorsProfile.getColor(BasicCodeAreaDecorationColorType.LINE));
-        int lineX = dataViewRectangle.x + splitLinePos - scrolling.getHorizontalScrollX(characterWidth);
-        if (themeProfile.showSplitLine() && splitLinePos > 0) {
-            g.drawLine(lineX, dataViewRectangle.y, lineX, dataViewRectangle.y + dataViewRectangle.height);
+        {
+            int lineX = dataViewRectangle.x + splitLinePos - scrolling.getHorizontalScrollX(characterWidth);
+            if (themeProfile.showSplitLine() && splitLinePos > 0) {
+                g.drawLine(lineX, dataViewRectangle.y, lineX, dataViewRectangle.y + dataViewRectangle.height);
+            }
+        }
+        int groupSize = themeProfile.getVerticalLineByteGroupSize();
+        CodeAreaViewMode viewMode = structure.getViewMode();
+        int skipRestFrom = visibility.getSkipRestFrom();
+        if (groupSize > 0 && (viewMode == CodeAreaViewMode.DUAL || viewMode == CodeAreaViewMode.CODE_MATRIX) && visibility.isCodeSectionVisible()) {
+            int halfSpaceWidth = characterWidth / 2;
+            positionIterator.reset();
+            positionIterator.skip(visibility.getSkipTo());
+            int halfCharPos = positionIterator.getHalfCharPosition();
+            while (!positionIterator.isEndReached()) {
+                SpaceType nextSpaceType = positionIterator.nextSpaceType();
+                if (positionIterator.isEndReached() || positionIterator.getSection() != BasicCodeAreaSection.CODE_MATRIX) {
+                    break;
+                }
+
+                int spaceHalfCharSize = nextSpaceType.getHalfCharSize();
+                halfCharPos += 2;
+                if (positionIterator.getBytePosition() > 0 && positionIterator.getCodeOffset() == 0 && positionIterator.getBytePosition() % groupSize == 0) {
+                    int lineX = dataViewRectangle.x + layoutProfile.computePositionX(halfCharPos, characterWidth, halfSpaceWidth) + (spaceHalfCharSize * halfSpaceWidth) / 2 - scrolling.getHorizontalScrollX(characterWidth);
+                    g.drawLine(lineX, dataViewRectangle.y, lineX, dataViewRectangle.y + dataViewRectangle.height);
+                }
+
+                halfCharPos += spaceHalfCharSize;
+
+                if ((positionIterator.getPosition() >= skipRestFrom && skipRestFrom >= 0) || positionIterator.getSection() == BasicCodeAreaSection.TEXT_PREVIEW) {
+                    break;
+                }
+            }
         }
 
-        paintRows(g);
         g.setClip(clipBounds);
         paintCursor(g);
 
@@ -914,13 +976,14 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         Character replacement;
         int halfCharPos = positionIterator.getHalfCharPosition();
         boolean first = true;
+        int byteOffset;
         do {
             BasicCodeAreaSection section = positionIterator.getSection();
             if (positionIterator.getPosition() == visibility.getSkipRestFrom()) {
                 break;
             }
 
-            int byteOffset = positionIterator.getBytePosition();
+            byteOffset = positionIterator.getBytePosition();
             int charPos = halfCharPos / 2 - skipToChar;
             int codeOffset = positionIterator.getCodeOffset();
             byte dataByte = rowDataCache.rowData[byteOffset];
@@ -995,7 +1058,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
                 }
             }
             halfCharPos += 2 + positionIterator.nextSpaceType().getHalfCharSize();
-        } while (!positionIterator.isEndReached());
+        } while (!positionIterator.isEndReached() && byteOffset <= rowBytesLimit);
     }
 
     /**
@@ -1158,7 +1221,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
 
         return scrolling.computeCenterOnScrollPosition(rowPosition, halfCharPosition, bytesPerRow, rowsPerRect, halfCharsPerRect, dataViewWidth, dataViewHeight, rowOffset, characterWidth, rowHeight);
     }
-    
+
     private int computeHalfCharPosition(long dataPosition, int bytesPerRow, CodeAreaCaretPosition caretPosition) {
         int byteOffset = (int) (dataPosition % bytesPerRow);
         return structure.computeFirstCodeHalfCharPos(byteOffset, getSection(caretPosition)) + caretPosition.getCodeOffset() * 2;

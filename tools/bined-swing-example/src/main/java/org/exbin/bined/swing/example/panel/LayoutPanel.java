@@ -21,7 +21,7 @@ import org.exbin.bined.capability.RowWrappingCapable.RowWrappingMode;
 import org.exbin.bined.swing.basic.CodeArea;
 
 /**
- * Hexadecimal editor example panel.
+ * Binary editor layout options panel.
  *
  * @version 0.2.0 2018/12/13
  * @author ExBin Project (https://exbin.org)

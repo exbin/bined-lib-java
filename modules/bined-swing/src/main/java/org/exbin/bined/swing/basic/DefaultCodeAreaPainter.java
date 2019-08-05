@@ -363,10 +363,12 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
             JViewport viewport = scrollPanel.getViewport();
             Dimension viewDimension = scrolling.computeViewDimension(viewport.getWidth(), viewport.getHeight(), layout, structure, characterWidth, rowHeight);
             dataView.setPreferredSize(viewDimension);
+
+            // TODO on resize only
+            recomputeDimensions();
+            scrollPanel.setBounds(dimensions.getScrollPanelRectangle());
         }
 
-        // TODO on resize only
-        scrollPanel.setBounds(dimensions.getScrollPanelRectangle());
         scrollPanel.revalidate();
     }
 
@@ -513,7 +515,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         // Decoration lines
         g.setColor(colorsProfile.getDecorationLine());
         g.drawLine(headerArea.x, headerArea.y + headerArea.height - 1, headerArea.x + headerArea.width, headerArea.y + headerArea.height - 1);
-        int lineX = dataViewX + visibility.getPreviewRelativeX() - scrollPosition.getCharPosition() * characterWidth - scrollPosition.getCharOffset() - characterWidth / 2;
+        int lineX = dataViewX + visibility.getPreviewRelativeX() - scrollPosition.getCharPosition() * characterWidth - scrollPosition.getCharOffset() - characterWidth / 2 - 1;
         if (lineX >= dataViewX) {
             g.drawLine(lineX, headerArea.y, lineX, headerArea.y + headerArea.height);
         }
@@ -601,7 +603,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
 
         // Decoration lines
         g.setColor(colorsProfile.getDecorationLine());
-        int lineX = dataViewRectangle.x + previewRelativeX - scrollPosition.getCharPosition() * characterWidth - scrollPosition.getCharOffset() - characterWidth / 2;
+        int lineX = dataViewRectangle.x + previewRelativeX - scrollPosition.getCharPosition() * characterWidth - scrollPosition.getCharOffset() - characterWidth / 2 - 1;
         if (lineX >= dataViewRectangle.x) {
             g.drawLine(lineX, dataViewRectangle.y, lineX, dataViewRectangle.y + dataViewRectangle.height);
         }

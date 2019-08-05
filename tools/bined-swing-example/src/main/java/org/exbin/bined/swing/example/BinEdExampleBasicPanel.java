@@ -30,7 +30,7 @@ import org.exbin.bined.swing.example.panel.StatePanel;
 import org.exbin.bined.swing.example.panel.ThemePanel;
 
 /**
- * Basic hexadecimal component example panel.
+ * Basic binary editor component example panel.
  *
  * @version 0.2.0 2018/12/14
  * @author ExBin Project (https://exbin.org)

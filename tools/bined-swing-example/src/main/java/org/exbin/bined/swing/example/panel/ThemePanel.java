@@ -22,7 +22,7 @@ import org.exbin.bined.capability.BackgroundPaintCapable;
 import org.exbin.bined.swing.basic.CodeArea;
 
 /**
- * Hexadecimal editor example panel.
+ * Binary editor theme options panel.
  *
  * @version 0.2.0 2018/09/20
  * @author ExBin Project (https://exbin.org)

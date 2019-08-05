@@ -22,7 +22,7 @@ import org.exbin.bined.swing.basic.DefaultCodeAreaCaret;
 import org.exbin.bined.swing.extended.ExtCodeArea;
 
 /**
- * Hexadecimal editor example panel.
+ * Binary editor cursor options panel.
  *
  * @version 0.2.0 2018/03/18
  * @author ExBin Project (https://exbin.org)
