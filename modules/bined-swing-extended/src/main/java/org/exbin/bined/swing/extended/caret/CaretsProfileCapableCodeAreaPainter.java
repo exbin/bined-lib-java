@@ -13,23 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.swing.extended.color;
+package org.exbin.bined.swing.extended.caret;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import org.exbin.bined.swing.basic.color.CodeAreaColorsProfile;
 
 /**
- * Capability of painter to handle colors profiling.
+ * Capability of painter to handle carets profiling.
  *
- * @version 0.2.0 2018/11/28
+ * @version 0.2.0 2019/08/08
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public interface ColorsProfileCapableCodeAreaPainter {
+public interface CaretsProfileCapableCodeAreaPainter {
 
     @Nonnull
-    CodeAreaColorsProfile getColorsProfile();
+    ExtendedCodeAreaCaretsProfile getCaretsProfile();
 
-    void setColorsProfile(CodeAreaColorsProfile profile);
+    void setCaretsProfile(ExtendedCodeAreaCaretsProfile profile);
 }

@@ -62,6 +62,8 @@ import org.exbin.bined.swing.extended.theme.ExtendedCodeAreaThemeProfile;
 import org.exbin.bined.swing.extended.theme.ThemeProfileCapableCodeAreaPainter;
 import org.exbin.bined.extended.layout.ExtendedCodeAreaLayoutProfile;
 import org.exbin.bined.CodeAreaCaretPosition;
+import org.exbin.bined.swing.extended.caret.ExtendedCodeAreaCaretsProfile;
+import org.exbin.bined.swing.extended.caret.CaretsProfileCapableCodeAreaPainter;
 
 /**
  * Code area component extended code area.
@@ -742,6 +744,23 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
     public void setThemeProfile(ExtendedCodeAreaThemeProfile themeProfile) {
         if (painter instanceof ThemeProfileCapableCodeAreaPainter) {
             ((ThemeProfileCapableCodeAreaPainter) painter).setThemeProfile(themeProfile);
+        }
+    }
+
+    @Nullable
+    @Override
+    public ExtendedCodeAreaCaretsProfile getCaretsProfile() {
+        if (painter instanceof CaretsProfileCapableCodeAreaPainter) {
+            return ((CaretsProfileCapableCodeAreaPainter) painter).getCaretsProfile();
+        }
+
+        return null;
+    }
+
+    @Override
+    public void setCaretsProfile(ExtendedCodeAreaCaretsProfile caretsProfile) {
+        if (painter instanceof CaretsProfileCapableCodeAreaPainter) {
+            ((CaretsProfileCapableCodeAreaPainter) painter).setCaretsProfile(caretsProfile);
         }
     }
 

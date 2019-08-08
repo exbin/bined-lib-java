@@ -13,26 +13,59 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.extended.capability;
+package org.exbin.bined.swing.extended.caret;
 
+import java.awt.Graphics;
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+import org.exbin.bined.extended.caret.CodeAreaCaretShape;
+import org.exbin.bined.extended.caret.CodeAreaCaretType;
+import org.exbin.bined.extended.caret.DefaultCodeAreaCaretShape;
 
 /**
  * Support for cursor carets shapes.
  *
- * @version 0.2.0 2018/12/01
+ * @version 0.2.0 2019/08/08
  * @author ExBin Project (https://exbin.org)
  */
-public class CodeAreaCaretsProfile {
+@ParametersAreNonnullByDefault
+public class EditableExtendedCodeAreaCaretsProfile implements ExtendedCodeAreaCaretsProfile {
 
-    public enum CaretType {
-        INSERT,
-        OVERWRITE,
-        SHADDOW
+    @Nonnull
+    @Override
+    public CodeAreaCaretShape identifyCaretShape(CodeAreaCaretType caretType) {
+        switch (caretType) {
+            case INSERT: {
+                return DefaultCodeAreaCaretShape.LINE;
+            }
+            case OVERWRITE: {
+                return DefaultCodeAreaCaretShape.FULL_BOX;
+            }
+            case SHADOW: {
+                return DefaultCodeAreaCaretShape.DOTTED_BOX;
+            }
+            default:
+                throw new IllegalStateException("Unexpected caret type: " + caretType.name());
+        }
     }
 
-    public void paintCaret(@Nonnull CaretType caretType) {
-        
+    @Override
+    public void paintCaret(Graphics g, int cursorX, int cursorY, int width, int height, CodeAreaCaretShape codeAreaCaretShape) {
+        g.fillRect(cursorX, cursorY, width, height);
+
+        if (codeAreaCaretShape instanceof DefaultCodeAreaCaretShape) {
+            switch ((DefaultCodeAreaCaretShape) codeAreaCaretShape) {
+                case FULL_BOX: {
+                    break;
+                }
+                case LINE: {
+                    break;
+                }
+                case DOTTED_BOX: {
+                    break;
+                }
+            }
+        }
     }
 
 //    @Override

@@ -72,7 +72,7 @@ import org.exbin.bined.capability.ScrollingCapable;
 import org.exbin.bined.color.BasicCodeAreaDecorationColorType;
 import org.exbin.bined.color.CodeAreaBasicColors;
 import org.exbin.bined.swing.basic.color.CodeAreaColorsProfile;
-import org.exbin.bined.extended.capability.CodeAreaCaretsProfile;
+import org.exbin.bined.swing.extended.caret.DefaultExtendedCodeAreaCaretsProfile;
 import org.exbin.bined.extended.capability.PositionCodeTypeCapable;
 import org.exbin.bined.extended.capability.ShowUnprintablesCapable;
 import org.exbin.bined.extended.color.CodeAreaUnprintablesColorType;
@@ -97,7 +97,11 @@ import org.exbin.bined.extended.layout.ExtendedCodeAreaLayoutProfile;
 import org.exbin.bined.swing.basic.DefaultCodeAreaMouseListener;
 import org.exbin.bined.CodeAreaCaretPosition;
 import org.exbin.bined.extended.ExtendedHorizontalScrollUnit;
+import org.exbin.bined.extended.caret.CodeAreaCaretShape;
+import org.exbin.bined.extended.caret.CodeAreaCaretType;
+import org.exbin.bined.swing.extended.caret.ExtendedCodeAreaCaretsProfile;
 import org.exbin.bined.extended.layout.SpaceType;
+import org.exbin.bined.swing.extended.caret.CaretsProfileCapableCodeAreaPainter;
 
 /**
  * Extended code area component default painter.
@@ -106,7 +110,7 @@ import org.exbin.bined.extended.layout.SpaceType;
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCapableCodeAreaPainter, LayoutProfileCapableCodeAreaPainter, ThemeProfileCapableCodeAreaPainter {
+public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCapableCodeAreaPainter, LayoutProfileCapableCodeAreaPainter, ThemeProfileCapableCodeAreaPainter, CaretsProfileCapableCodeAreaPainter {
 
     @Nonnull
     protected final CodeAreaCore codeArea;
@@ -147,7 +151,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
     @Nonnull
     private ExtendedCodeAreaThemeProfile themeProfile = new ExtendedCodeAreaThemeProfile();
     @Nonnull
-    private CodeAreaCaretsProfile caretsProfile = new CodeAreaCaretsProfile();
+    private ExtendedCodeAreaCaretsProfile caretsProfile = new DefaultExtendedCodeAreaCaretsProfile();
 
     @Nullable
     private CodeCharactersCase codeCharactersCase;
@@ -935,7 +939,6 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         CodeType codeType = structure.getCodeType();
         int skipToChar = visibility.getSkipToChar();
 
-        int rowBytesLimit = bytesPerRow;
         int rowStart = 0;
         if (dataPosition < dataSize) {
             int rowDataSize = bytesPerRow + maxBytesPerChar - 1;
@@ -950,11 +953,6 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
                 throw new IllegalStateException("Missing data on nonzero data size");
             }
             data.copyToArray(dataPosition + rowStart, rowDataCache.rowData, rowStart, rowDataSize - rowStart);
-            if (dataPosition + rowBytesLimit > dataSize) {
-                rowBytesLimit = (int) (dataSize - dataPosition);
-            }
-        } else {
-            rowBytesLimit = 0;
         }
 
         Arrays.fill(rowDataCache.rowCharacters, SPACE_CHAR);
@@ -1058,7 +1056,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
                 }
             }
             halfCharPos += 2 + positionIterator.nextSpaceType().getHalfCharSize();
-        } while (!positionIterator.isEndReached() && byteOffset <= rowBytesLimit);
+        } while (!positionIterator.isEndReached());
     }
 
     /**
@@ -1462,7 +1460,8 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
             DefaultCodeAreaCaret.CursorRenderingMode renderingMode = caret.getRenderingMode();
             g.setColor(colorsProfile.getColor(CodeAreaBasicColors.CURSOR_COLOR));
 
-            paintCursorRect(g, intersection.x, intersection.y, intersection.width, intersection.height, renderingMode, caret);
+            CodeAreaCaretShape caretShape = caretsProfile.identifyCaretShape(CodeAreaCaretType.INSERT);
+            paintCursorRect(g, intersection.x, intersection.y, intersection.width, intersection.height, renderingMode, caret, caretShape);
         }
 
         // Paint mirror cursor
@@ -1484,15 +1483,15 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         g.setClip(clipBounds);
     }
 
-    private void paintCursorRect(Graphics g, int cursorX, int cursorY, int width, int height, DefaultCodeAreaCaret.CursorRenderingMode renderingMode, DefaultCodeAreaCaret caret) {
+    private void paintCursorRect(Graphics g, int cursorX, int cursorY, int width, int height, DefaultCodeAreaCaret.CursorRenderingMode renderingMode, DefaultCodeAreaCaret caret, CodeAreaCaretShape caretShape) {
         switch (renderingMode) {
             case PAINT: {
-                g.fillRect(cursorX, cursorY, width, height);
+                caretsProfile.paintCaret(g, cursorX, cursorY, width, height, caretShape);
                 break;
             }
             case XOR: {
                 g.setXORMode(colorsProfile.getColor(CodeAreaBasicColors.TEXT_BACKGROUND));
-                g.fillRect(cursorX, cursorY, width, height);
+                caretsProfile.paintCaret(g, cursorX, cursorY, width, height, caretShape);
                 g.setPaintMode();
                 break;
             }
@@ -1508,7 +1507,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
                 CodeAreaScrollPosition scrollPosition = scrolling.getScrollPosition();
                 long dataSize = structure.getDataSize();
                 CodeType codeType = structure.getCodeType();
-                g.fillRect(cursorX, cursorY, width, height);
+                caretsProfile.paintCaret(g, cursorX, cursorY, width, height, caretShape);
                 g.setColor(colorsProfile.getColor(CodeAreaBasicColors.CURSOR_NEGATIVE_COLOR));
                 BinaryData contentData = codeArea.getContentData();
                 int row = (cursorY + scrollPosition.getRowOffset() - dataViewY) / rowHeight;
@@ -1761,6 +1760,17 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
     @Override
     public void setThemeProfile(ExtendedCodeAreaThemeProfile themeProfile) {
         this.themeProfile = themeProfile.createCopy();
+        codeArea.repaint();
+    }
+
+    @Override
+    public ExtendedCodeAreaCaretsProfile getCaretsProfile() {
+        return caretsProfile;
+    }
+
+    @Override
+    public void setCaretsProfile(ExtendedCodeAreaCaretsProfile caretsProfile) {
+        this.caretsProfile = caretsProfile;
         codeArea.repaint();
     }
 
