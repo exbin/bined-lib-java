@@ -59,7 +59,7 @@ import org.exbin.bined.CodeAreaCaretPosition;
 import org.exbin.bined.basic.EnterKeyHandlingMode;
 
 /**
- * Default hexadecimal editor command handler.
+ * Default binary editor command handler.
  *
  * @version 0.2.0 2019/07/10
  * @author ExBin Project (https://exbin.org)

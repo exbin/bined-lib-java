@@ -134,6 +134,7 @@
           </StringArray>
         </Property>
         <Property name="selectedIndex" type="int" value="6"/>
+        <Property name="enabled" type="boolean" value="false"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cursorInsertShapeComboBoxActionPerformed"/>
@@ -174,6 +175,7 @@
           </StringArray>
         </Property>
         <Property name="selectedIndex" type="int" value="16"/>
+        <Property name="enabled" type="boolean" value="false"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cursorOverwriteShapeComboBoxActionPerformed"/>

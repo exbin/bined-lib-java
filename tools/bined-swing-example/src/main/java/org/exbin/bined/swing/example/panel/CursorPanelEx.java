@@ -42,7 +42,7 @@ public class CursorPanelEx extends javax.swing.JPanel {
 
 //        cursorInsertShapeComboBox.setSelectedIndex(((CaretCapable) codeArea).getCaret().getInsertCursorShape().ordinal());
 //        cursorOverwriteShapeComboBox.setSelectedIndex(((CaretCapable) codeArea).getCaret().getOverwriteCursorShape().ordinal());
-//        cursorBlinkingRateSpinner.setValue(((CaretCapable) codeArea).getCaret().getBlinkRate());
+        cursorBlinkingRateSpinner.setValue(((DefaultCodeAreaCaret) ((CaretCapable) codeArea).getCaret()).getBlinkRate());
     }
 
     /**
@@ -87,6 +87,7 @@ public class CursorPanelEx extends javax.swing.JPanel {
 
         cursorInsertShapeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "LINE_BOTTOM", "LINE_TOP", "LINE_LEFT", "LINE_RIGHT", "DOUBLE_BOTTOM", "DOUBLE_TOP", "DOUBLE_LEFT", "DOUBLE_RIGHT", "QUARTER_BOTTOM", "QUARTER_TOP", "QUARTER_LEFT", "QUARTER_RIGHT", "HALF_BOTTOM", "HALF_TOP", "HALF_LEFT", "HALF_RIGHT", "BOX", "FRAME", "CORNERS", "BOTTOM_CORNERS" }));
         cursorInsertShapeComboBox.setSelectedIndex(6);
+        cursorInsertShapeComboBox.setEnabled(false);
         cursorInsertShapeComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cursorInsertShapeComboBoxActionPerformed(evt);
@@ -97,6 +98,7 @@ public class CursorPanelEx extends javax.swing.JPanel {
 
         cursorOverwriteShapeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "LINE_BOTTOM", "LINE_TOP", "LINE_LEFT", "LINE_RIGHT", "DOUBLE_BOTTOM", "DOUBLE_TOP", "DOUBLE_LEFT", "DOUBLE_RIGHT", "QUARTER_BOTTOM", "QUARTER_TOP", "QUARTER_LEFT", "QUARTER_RIGHT", "HALF_BOTTOM", "HALF_TOP", "HALF_LEFT", "HALF_RIGHT", "BOX", "FRAME", "CORNERS", "BOTTOM_CORNERS" }));
         cursorOverwriteShapeComboBox.setSelectedIndex(16);
+        cursorOverwriteShapeComboBox.setEnabled(false);
         cursorOverwriteShapeComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cursorOverwriteShapeComboBoxActionPerformed(evt);
@@ -194,7 +196,7 @@ public class CursorPanelEx extends javax.swing.JPanel {
     }//GEN-LAST:event_cursorOverwriteShapeComboBoxActionPerformed
 
     private void cursorBlinkingRateSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_cursorBlinkingRateSpinnerStateChanged
-        //        ((CaretCapable) codeArea).getCaret().setBlinkRate((Integer) cursorBlinkingRateSpinner.getValue());
+        ((DefaultCodeAreaCaret) ((CaretCapable) codeArea).getCaret()).setBlinkRate((Integer) cursorBlinkingRateSpinner.getValue());
     }//GEN-LAST:event_cursorBlinkingRateSpinnerStateChanged
 
     private void revealCursorButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_revealCursorButtonActionPerformed

@@ -49,7 +49,7 @@ public interface CodeAreaPainter {
     void attach();
 
     /**
-     * Dettaches painter to code area.
+     * Detaches painter to code area.
      */
     void detach();
 

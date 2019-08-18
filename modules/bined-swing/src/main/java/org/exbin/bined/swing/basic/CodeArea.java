@@ -258,6 +258,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
         return painter.getMouseCursorShape(positionX, positionY);
     }
 
+    @Nonnull
     @Override
     public BasicCodeAreaZone getPositionZone(int positionX, int positionY) {
         return painter.getPositionZone(positionX, positionY);

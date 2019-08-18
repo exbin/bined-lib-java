@@ -130,10 +130,10 @@ public class BasicCodeAreaColorsProfile implements CodeAreaColorsProfile {
         if (colorType == CodeAreaBasicColors.SELECTION_BACKGROUND) {
             return selectionBackground;
         }
-        if (colorType == CodeAreaBasicColors.SELECTION_COLOR) {
+        if (colorType == CodeAreaBasicColors.SELECTION_MIRROR_COLOR) {
             return selectionMirrorColor;
         }
-        if (colorType == CodeAreaBasicColors.SELECTION_MIRROR_COLOR) {
+        if (colorType == CodeAreaBasicColors.SELECTION_MIRROR_BACKGROUND) {
             return selectionMirrorBackground;
         }
         if (colorType == CodeAreaBasicColors.ALTERNATE_COLOR) {
