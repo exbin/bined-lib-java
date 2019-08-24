@@ -30,14 +30,10 @@ import org.exbin.bined.swing.basic.CodeArea;
 @ParametersAreNonnullByDefault
 public class ThemePanel extends javax.swing.JPanel {
 
-    private final CodeArea codeArea;
+    private CodeArea codeArea;
 
-    public ThemePanel(CodeArea codeArea) {
-        this.codeArea = codeArea;
-
+    public ThemePanel() {
         initComponents();
-
-        backgroundModeComboBox.setSelectedIndex(((BackgroundPaintCapable) codeArea).getBackgroundPaintMode().ordinal());
     }
 
     /**
@@ -88,6 +84,12 @@ public class ThemePanel extends javax.swing.JPanel {
         ((BackgroundPaintCapable) codeArea).setBackgroundPaintMode(BasicBackgroundPaintMode.values()[backgroundModeComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_backgroundModeComboBoxActionPerformed
 
+    public void setCodeArea(CodeArea codeArea) {
+        this.codeArea = codeArea;
+
+        backgroundModeComboBox.setSelectedIndex(((BackgroundPaintCapable) codeArea).getBackgroundPaintMode().ordinal());
+    }
+
     /**
      * Test method for this panel.
      *
@@ -96,7 +98,7 @@ public class ThemePanel extends javax.swing.JPanel {
     public static void main(String args[]) {
         final JFrame frame = new JFrame("Panel");
         frame.setSize(1000, 600);
-        frame.add(new ThemePanel(new CodeArea()));
+        frame.add(new ThemePanel());
         frame.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         frame.setVisible(true);
     }

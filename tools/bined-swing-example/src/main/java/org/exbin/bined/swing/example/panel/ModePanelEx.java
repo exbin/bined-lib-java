@@ -50,20 +50,10 @@ import org.exbin.bined.swing.extended.ExtCodeArea;
 @ParametersAreNonnullByDefault
 public class ModePanelEx extends javax.swing.JPanel {
 
-    private final ExtCodeArea codeArea;
+    private ExtCodeArea codeArea;
 
-    public ModePanelEx(ExtCodeArea codeArea) {
-        this.codeArea = codeArea;
-
+    public ModePanelEx() {
         initComponents();
-
-        viewModeComboBox.setSelectedIndex(codeArea.getViewMode().ordinal());
-        showNonprintableCharactersCheckBox.setSelected(codeArea.isShowUnprintables());
-        codeTypeComboBox.setSelectedIndex(codeArea.getCodeType().ordinal());
-        positionCodeTypeComboBox.setSelectedIndex(codeArea.getPositionCodeType().ordinal());
-        hexCharactersModeComboBox.setSelectedIndex(((CodeCharactersCaseCapable) codeArea).getCodeCharactersCase().ordinal());
-        antialiasingComboBox.setSelectedIndex(((AntialiasingCapable) codeArea).getAntialiasingMode().ordinal());
-        editationModeComboBox.setSelectedIndex(codeArea.getEditationMode().ordinal());
     }
 
     /**
@@ -75,8 +65,17 @@ public class ModePanelEx extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        viewModeScrollModeLabel = new javax.swing.JLabel();
+        viewModeComboBox = new javax.swing.JComboBox<>();
         showNonprintableCharactersCheckBox = new javax.swing.JCheckBox();
+        codeTypeLabel = new javax.swing.JLabel();
         codeTypeComboBox = new javax.swing.JComboBox<>();
+        positionCodeTypeLabel = new javax.swing.JLabel();
+        positionCodeTypeComboBox = new javax.swing.JComboBox<>();
+        hexCharactersModeLabel = new javax.swing.JLabel();
+        hexCharactersModeComboBox = new javax.swing.JComboBox<>();
+        antialiasingLabel = new javax.swing.JLabel();
+        antialiasingComboBox = new javax.swing.JComboBox<>();
         editationModeLabel = new javax.swing.JLabel();
         editationModeComboBox = new javax.swing.JComboBox<>();
         fontPanel = new javax.swing.JPanel();
@@ -84,19 +83,19 @@ public class ModePanelEx extends javax.swing.JPanel {
         fontFamilyComboBox = new javax.swing.JComboBox<>();
         fontSizeLabel = new javax.swing.JLabel();
         fontSizeComboBox = new javax.swing.JComboBox<>();
-        viewModeScrollModeLabel = new javax.swing.JLabel();
-        viewModeComboBox = new javax.swing.JComboBox<>();
-        antialiasingScrollModeLabel = new javax.swing.JLabel();
         charsetLabel = new javax.swing.JLabel();
-        antialiasingComboBox = new javax.swing.JComboBox<>();
         charsetComboBox = new javax.swing.JComboBox<>();
-        codeTypeScrollModeLabel = new javax.swing.JLabel();
         borderTypeLabel = new javax.swing.JLabel();
         borderTypeComboBox = new javax.swing.JComboBox<>();
-        hexCharactersModeLabel = new javax.swing.JLabel();
-        hexCharactersModeComboBox = new javax.swing.JComboBox<>();
-        positionCodeTypeLabel = new javax.swing.JLabel();
-        positionCodeTypeComboBox = new javax.swing.JComboBox<>();
+
+        viewModeScrollModeLabel.setText("View Mode");
+
+        viewModeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "DUAL", "HEXADECIMAL", "PREVIEW" }));
+        viewModeComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                viewModeComboBoxActionPerformed(evt);
+            }
+        });
 
         showNonprintableCharactersCheckBox.setText("Show Nonprintable Characters");
         showNonprintableCharactersCheckBox.addItemListener(new java.awt.event.ItemListener() {
@@ -105,11 +104,41 @@ public class ModePanelEx extends javax.swing.JPanel {
             }
         });
 
+        codeTypeLabel.setText("Code Type");
+
         codeTypeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "BINARY", "OCTAL", "DECIMAL", "HEXADECIMAL" }));
         codeTypeComboBox.setSelectedIndex(3);
         codeTypeComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 codeTypeComboBoxActionPerformed(evt);
+            }
+        });
+
+        positionCodeTypeLabel.setText("Position Code Type");
+
+        positionCodeTypeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "OCTAL", "DECIMAL", "HEXADECIMAL" }));
+        positionCodeTypeComboBox.setSelectedIndex(2);
+        positionCodeTypeComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                positionCodeTypeComboBoxActionPerformed(evt);
+            }
+        });
+
+        hexCharactersModeLabel.setText("Hex Characters Mode");
+
+        hexCharactersModeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "LOWER", "UPPER" }));
+        hexCharactersModeComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                hexCharactersModeComboBoxActionPerformed(evt);
+            }
+        });
+
+        antialiasingLabel.setText("Character Antialiasing");
+
+        antialiasingComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "OFF", "AUTO", "DEFAULT", "BASIC", "GASP", "LCD_HRGB", "LCD_HBGR", "LCD_VRGB", "LCD_VBGR" }));
+        antialiasingComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                antialiasingComboBoxActionPerformed(evt);
             }
         });
 
@@ -173,25 +202,7 @@ public class ModePanelEx extends javax.swing.JPanel {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        viewModeScrollModeLabel.setText("View Mode");
-
-        viewModeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "DUAL", "HEXADECIMAL", "PREVIEW" }));
-        viewModeComboBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                viewModeComboBoxActionPerformed(evt);
-            }
-        });
-
-        antialiasingScrollModeLabel.setText("Character Antialiasing");
-
         charsetLabel.setText("Charset");
-
-        antialiasingComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "OFF", "AUTO", "DEFAULT", "BASIC", "GASP", "LCD_HRGB", "LCD_HBGR", "LCD_VRGB", "LCD_VBGR" }));
-        antialiasingComboBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                antialiasingComboBoxActionPerformed(evt);
-            }
-        });
 
         charsetComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "UTF-8", "UTF-16", "UTF-16BE", "US-ASCII", "IBM852", "ISO-8859-1" }));
         charsetComboBox.addActionListener(new java.awt.event.ActionListener() {
@@ -200,33 +211,12 @@ public class ModePanelEx extends javax.swing.JPanel {
             }
         });
 
-        codeTypeScrollModeLabel.setText("Code Type");
-
         borderTypeLabel.setText("Border Type");
 
         borderTypeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "NONE", "EMPTY BORDER", "MARGIN BORDER", "BEVEL BORDER - RAISED", "BEVEL BORDER - LOWERED", "ETCHED BORDER - RAISED", "ETCHED BORDER - LOWERED", "LINE BORDER" }));
         borderTypeComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 borderTypeComboBoxActionPerformed(evt);
-            }
-        });
-
-        hexCharactersModeLabel.setText("Hex Characters Mode");
-
-        hexCharactersModeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "LOWER", "UPPER" }));
-        hexCharactersModeComboBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                hexCharactersModeComboBoxActionPerformed(evt);
-            }
-        });
-
-        positionCodeTypeLabel.setText("Position Code Type");
-
-        positionCodeTypeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "OCTAL", "DECIMAL", "HEXADECIMAL" }));
-        positionCodeTypeComboBox.setSelectedIndex(2);
-        positionCodeTypeComboBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                positionCodeTypeComboBoxActionPerformed(evt);
             }
         });
 
@@ -251,14 +241,14 @@ public class ModePanelEx extends javax.swing.JPanel {
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addComponent(viewModeScrollModeLabel, javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(codeTypeScrollModeLabel, javax.swing.GroupLayout.Alignment.LEADING))
+                                    .addComponent(codeTypeLabel, javax.swing.GroupLayout.Alignment.LEADING))
                                 .addGap(0, 0, Short.MAX_VALUE))
                             .addComponent(codeTypeComboBox, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addContainerGap())
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(hexCharactersModeLabel)
-                            .addComponent(antialiasingScrollModeLabel)
+                            .addComponent(antialiasingLabel)
                             .addComponent(editationModeLabel)
                             .addComponent(charsetLabel)
                             .addComponent(borderTypeLabel)
@@ -275,7 +265,7 @@ public class ModePanelEx extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(showNonprintableCharactersCheckBox)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(codeTypeScrollModeLabel)
+                .addComponent(codeTypeLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(codeTypeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -287,7 +277,7 @@ public class ModePanelEx extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(hexCharactersModeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(antialiasingScrollModeLabel)
+                .addComponent(antialiasingLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(antialiasingComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -369,6 +359,18 @@ public class ModePanelEx extends javax.swing.JPanel {
         codeArea.setPositionCodeType(PositionCodeType.values()[positionCodeTypeComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_positionCodeTypeComboBoxActionPerformed
 
+    public void setCodeArea(ExtCodeArea codeArea) {
+        this.codeArea = codeArea;
+
+        viewModeComboBox.setSelectedIndex(codeArea.getViewMode().ordinal());
+        showNonprintableCharactersCheckBox.setSelected(codeArea.isShowUnprintables());
+        codeTypeComboBox.setSelectedIndex(codeArea.getCodeType().ordinal());
+        positionCodeTypeComboBox.setSelectedIndex(codeArea.getPositionCodeType().ordinal());
+        hexCharactersModeComboBox.setSelectedIndex(((CodeCharactersCaseCapable) codeArea).getCodeCharactersCase().ordinal());
+        antialiasingComboBox.setSelectedIndex(((AntialiasingCapable) codeArea).getAntialiasingMode().ordinal());
+        editationModeComboBox.setSelectedIndex(codeArea.getEditationMode().ordinal());
+    }
+
     /**
      * Test method for this panel.
      *
@@ -377,20 +379,20 @@ public class ModePanelEx extends javax.swing.JPanel {
     public static void main(String args[]) {
         final JFrame frame = new JFrame("Panel");
         frame.setSize(1000, 600);
-        frame.add(new ModePanelEx(new ExtCodeArea()));
+        frame.add(new ModePanelEx());
         frame.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         frame.setVisible(true);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<String> antialiasingComboBox;
-    private javax.swing.JLabel antialiasingScrollModeLabel;
+    private javax.swing.JLabel antialiasingLabel;
     private javax.swing.JComboBox<String> borderTypeComboBox;
     private javax.swing.JLabel borderTypeLabel;
     private javax.swing.JComboBox<String> charsetComboBox;
     private javax.swing.JLabel charsetLabel;
     private javax.swing.JComboBox<String> codeTypeComboBox;
-    private javax.swing.JLabel codeTypeScrollModeLabel;
+    private javax.swing.JLabel codeTypeLabel;
     private javax.swing.JComboBox<String> editationModeComboBox;
     private javax.swing.JLabel editationModeLabel;
     private javax.swing.JComboBox<String> fontFamilyComboBox;

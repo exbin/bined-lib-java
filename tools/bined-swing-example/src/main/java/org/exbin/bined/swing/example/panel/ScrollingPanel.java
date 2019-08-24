@@ -34,23 +34,10 @@ import org.exbin.bined.swing.basic.CodeArea;
 @ParametersAreNonnullByDefault
 public class ScrollingPanel extends javax.swing.JPanel {
 
-    private final CodeArea codeArea;
+    private CodeArea codeArea;
 
-    public ScrollingPanel(final CodeArea codeArea) {
-        this.codeArea = codeArea;
-
+    public ScrollingPanel() {
         initComponents();
-
-        verticalScrollBarVisibilityComboBox.setSelectedIndex(((BasicScrollingCapable) codeArea).getVerticalScrollBarVisibility().ordinal());
-        verticalScrollModeComboBox.setSelectedIndex(((BasicScrollingCapable) codeArea).getVerticalScrollUnit().ordinal());
-        horizontalScrollBarVisibilityComboBox.setSelectedIndex(((BasicScrollingCapable) codeArea).getHorizontalScrollBarVisibility().ordinal());
-        horizontalScrollModeComboBox.setSelectedIndex(((BasicScrollingCapable) codeArea).getHorizontalScrollUnit().ordinal());
-
-        ((ScrollingCapable) codeArea).addScrollingListener(() -> {
-            CodeAreaScrollPosition scrollPosition = ((ScrollingCapable) codeArea).getScrollPosition();
-            verticalPositionTextField.setText(scrollPosition.getRowPosition() + ":" + scrollPosition.getRowOffset());
-            horizontalPositionTextField.setText(scrollPosition.getCharPosition() + ":" + scrollPosition.getCharOffset());
-        });
     }
 
     /**
@@ -254,6 +241,21 @@ public class ScrollingPanel extends javax.swing.JPanel {
         ((BasicScrollingCapable) codeArea).setVerticalScrollUnit(VerticalScrollUnit.values()[verticalScrollModeComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_verticalScrollModeComboBoxActionPerformed
 
+    public void setCodeArea(CodeArea codeArea) {
+        this.codeArea = codeArea;
+
+        verticalScrollBarVisibilityComboBox.setSelectedIndex(((BasicScrollingCapable) codeArea).getVerticalScrollBarVisibility().ordinal());
+        verticalScrollModeComboBox.setSelectedIndex(((BasicScrollingCapable) codeArea).getVerticalScrollUnit().ordinal());
+        horizontalScrollBarVisibilityComboBox.setSelectedIndex(((BasicScrollingCapable) codeArea).getHorizontalScrollBarVisibility().ordinal());
+        horizontalScrollModeComboBox.setSelectedIndex(((BasicScrollingCapable) codeArea).getHorizontalScrollUnit().ordinal());
+
+        ((ScrollingCapable) codeArea).addScrollingListener(() -> {
+            CodeAreaScrollPosition scrollPosition = ((ScrollingCapable) codeArea).getScrollPosition();
+            verticalPositionTextField.setText(scrollPosition.getRowPosition() + ":" + scrollPosition.getRowOffset());
+            horizontalPositionTextField.setText(scrollPosition.getCharPosition() + ":" + scrollPosition.getCharOffset());
+        });
+    }
+
     /**
      * Test method for this panel.
      *
@@ -262,7 +264,7 @@ public class ScrollingPanel extends javax.swing.JPanel {
     public static void main(String args[]) {
         final JFrame frame = new JFrame("Panel");
         frame.setSize(1000, 600);
-        frame.add(new ScrollingPanel(new CodeArea()));
+        frame.add(new ScrollingPanel());
         frame.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         frame.setVisible(true);
     }

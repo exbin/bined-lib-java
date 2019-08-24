@@ -29,8 +29,8 @@
                   <Group type="102" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="viewModeScrollModeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="codeTypeScrollModeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="antialiasingScrollModeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="codeTypeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="antialiasingLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="editationModeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="charsetLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="borderTypeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
@@ -50,11 +50,11 @@
               <EmptySpace max="-2" attributes="0"/>
               <Component id="viewModeComboBox" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="codeTypeScrollModeLabel" min="-2" max="-2" attributes="0"/>
+              <Component id="codeTypeLabel" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="codeTypeComboBox" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="antialiasingScrollModeLabel" min="-2" max="-2" attributes="0"/>
+              <Component id="antialiasingLabel" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="antialiasingComboBox" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
@@ -77,25 +77,6 @@
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Component class="javax.swing.JComboBox" name="codeTypeComboBox">
-      <Properties>
-        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-          <StringArray count="4">
-            <StringItem index="0" value="BINARY"/>
-            <StringItem index="1" value="OCTAL"/>
-            <StringItem index="2" value="DECIMAL"/>
-            <StringItem index="3" value="HEXADECIMAL"/>
-          </StringArray>
-        </Property>
-        <Property name="selectedIndex" type="int" value="3"/>
-      </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="codeTypeComboBoxActionPerformed"/>
-      </Events>
-      <AuxValues>
-        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
-      </AuxValues>
-    </Component>
     <Component class="javax.swing.JLabel" name="editationModeLabel">
       <Properties>
         <Property name="text" type="java.lang.String" value="Editation"/>
@@ -263,12 +244,31 @@
         <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
       </AuxValues>
     </Component>
-    <Component class="javax.swing.JLabel" name="codeTypeScrollModeLabel">
+    <Component class="javax.swing.JLabel" name="codeTypeLabel">
       <Properties>
         <Property name="text" type="java.lang.String" value="Code Type"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JLabel" name="antialiasingScrollModeLabel">
+    <Component class="javax.swing.JComboBox" name="codeTypeComboBox">
+      <Properties>
+        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+          <StringArray count="4">
+            <StringItem index="0" value="BINARY"/>
+            <StringItem index="1" value="OCTAL"/>
+            <StringItem index="2" value="DECIMAL"/>
+            <StringItem index="3" value="HEXADECIMAL"/>
+          </StringArray>
+        </Property>
+        <Property name="selectedIndex" type="int" value="3"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="codeTypeComboBoxActionPerformed"/>
+      </Events>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+      </AuxValues>
+    </Component>
+    <Component class="javax.swing.JLabel" name="antialiasingLabel">
       <Properties>
         <Property name="text" type="java.lang.String" value="Character Antialiasing"/>
       </Properties>

@@ -15,10 +15,10 @@
  */
 package org.exbin.bined.basic;
 
-import java.awt.Dimension;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import javax.annotation.concurrent.Immutable;
 import org.exbin.bined.DataProvider;
 import org.exbin.bined.ScrollBarVisibility;
 import org.exbin.bined.capability.BasicScrollingCapable;
@@ -26,7 +26,7 @@ import org.exbin.bined.capability.BasicScrollingCapable;
 /**
  * Code area scrolling.
  *
- * @version 0.2.0 2019/05/16
+ * @version 0.2.0 2019/08/18
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -37,7 +37,7 @@ public class BasicCodeAreaScrolling {
     @Nonnull
     private ScrollBarVerticalScale scrollBarVerticalScale = ScrollBarVerticalScale.NORMAL;
     @Nonnull
-    private final Dimension scrollViewDimension = new Dimension();
+    private final ScrollViewDimension scrollViewDimension = new ScrollViewDimension(0, 0);
     private int horizontalExtentDifference;
     private int verticalExtentDifference;
     private int horizontalScrollbarHeight;
@@ -67,7 +67,7 @@ public class BasicCodeAreaScrolling {
     }
 
     @Nonnull
-    public Dimension computeViewDimension(int dataViewWidth, int dataViewHeight, BasicCodeAreaLayout layout, BasicCodeAreaStructure structure, int characterWidth, int rowHeight) {
+    public ScrollViewDimension computeViewDimension(int dataViewWidth, int dataViewHeight, BasicCodeAreaLayout layout, BasicCodeAreaStructure structure, int characterWidth, int rowHeight) {
         int charsPerRow = structure.getCharactersPerRow();
         int dataWidth = layout.computePositionX(charsPerRow, characterWidth);
         boolean fitsHorizontally = computeFitsHorizontally(dataViewWidth, dataWidth);
@@ -672,5 +672,25 @@ public class BasicCodeAreaScrolling {
     @Nonnull
     public CodeAreaScrollPosition getMaximumScrollPosition() {
         return maximumScrollPosition;
+    }
+
+    @Immutable
+    public static final class ScrollViewDimension {
+
+        private int width;
+        private int height;
+
+        public ScrollViewDimension(int width, int height) {
+            this.width = width;
+            this.height = height;
+        }
+
+        public int getWidth() {
+            return width;
+        }
+
+        public int getHeight() {
+            return height;
+        }
     }
 }

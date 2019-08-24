@@ -24,22 +24,16 @@ import org.exbin.bined.swing.basic.DefaultCodeAreaCaret;
 /**
  * Binary editor cursor options panel.
  *
- * @version 0.2.0 2018/08/11
+ * @version 0.2.0 2019/08/24
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class CursorPanel extends javax.swing.JPanel {
 
-    private final CodeArea codeArea;
+    private CodeArea codeArea;
 
-    public CursorPanel(CodeArea codeArea) {
-        this.codeArea = codeArea;
-
+    public CursorPanel() {
         initComponents();
-
-        cursorRenderingModeComboBox.setSelectedIndex(codeArea.getCaret().getRenderingMode().ordinal());
-        showMirrorCursorCheckBox.setSelected(codeArea.isShowMirrorCursor());
-        cursorBlinkingRateSpinner.setValue(((DefaultCodeAreaCaret) ((CaretCapable) codeArea).getCaret()).getBlinkRate());
     }
 
     /**
@@ -164,6 +158,14 @@ public class CursorPanel extends javax.swing.JPanel {
         codeArea.requestFocus();
     }//GEN-LAST:event_revealCursorButtonActionPerformed
 
+    public void setCodeArea(CodeArea codeArea) {
+        this.codeArea = codeArea;
+        
+        cursorRenderingModeComboBox.setSelectedIndex(codeArea.getCaret().getRenderingMode().ordinal());
+        showMirrorCursorCheckBox.setSelected(codeArea.isShowMirrorCursor());
+        cursorBlinkingRateSpinner.setValue(((DefaultCodeAreaCaret) ((CaretCapable) codeArea).getCaret()).getBlinkRate());
+    }
+
     /**
      * Test method for this panel.
      *
@@ -172,7 +174,7 @@ public class CursorPanel extends javax.swing.JPanel {
     public static void main(String args[]) {
         final JFrame frame = new JFrame("Panel");
         frame.setSize(1000, 600);
-        frame.add(new CursorPanel(new CodeArea()));
+        frame.add(new CursorPanel());
         frame.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         frame.setVisible(true);
     }

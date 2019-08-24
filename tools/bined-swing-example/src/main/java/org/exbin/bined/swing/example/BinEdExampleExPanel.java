@@ -50,12 +50,18 @@ public class BinEdExampleExPanel extends javax.swing.JPanel {
         this.codeArea = codeArea;
         splitPane.setRightComponent(codeArea);
 
-        ModePanelEx modePanel = new ModePanelEx(codeArea);
-        StatePanelEx statePanel = new StatePanelEx(codeArea);
-        LayoutPanelEx layoutPanel = new LayoutPanelEx(codeArea);
-        ThemePanelEx themePanel = new ThemePanelEx(codeArea);
-        ScrollingPanelEx scrollingPanel = new ScrollingPanelEx(codeArea);
-        CursorPanelEx cursorPanel = new CursorPanelEx(codeArea);
+        ModePanelEx modePanel = new ModePanelEx();
+        modePanel.setCodeArea(codeArea);
+        StatePanelEx statePanel = new StatePanelEx();
+        statePanel.setCodeArea(codeArea);
+        LayoutPanelEx layoutPanel = new LayoutPanelEx();
+        layoutPanel.setCodeArea(codeArea);
+        ThemePanelEx themePanel = new ThemePanelEx();
+        themePanel.setCodeArea(codeArea);
+        ScrollingPanelEx scrollingPanel = new ScrollingPanelEx();
+        scrollingPanel.setCodeArea(codeArea);
+        CursorPanelEx cursorPanel = new CursorPanelEx();
+        cursorPanel.setCodeArea(codeArea);
 
         tabMap.put(modeScrollPane, modePanel);
         tabMap.put(stateScrollPane, statePanel);

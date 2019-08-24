@@ -492,7 +492,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
 //            layout(true, true);
 //            resetPainter();
             painter.repaint();
-//            redraw();
+            redraw();
 //            update();
         });
     }

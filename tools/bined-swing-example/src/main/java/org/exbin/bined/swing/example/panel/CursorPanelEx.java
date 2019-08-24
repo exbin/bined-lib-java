@@ -24,25 +24,16 @@ import org.exbin.bined.swing.extended.ExtCodeArea;
 /**
  * Binary editor cursor options panel.
  *
- * @version 0.2.0 2018/03/18
+ * @version 0.2.0 2019/08/24
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class CursorPanelEx extends javax.swing.JPanel {
 
-    private final ExtCodeArea codeArea;
+    private ExtCodeArea codeArea;
 
-    public CursorPanelEx(ExtCodeArea codeArea) {
-        this.codeArea = codeArea;
-
+    public CursorPanelEx() {
         initComponents();
-
-        cursorRenderingModeComboBox.setSelectedIndex(codeArea.getCaret().getRenderingMode().ordinal());
-        showMirrorCursorCheckBox.setSelected(codeArea.isShowMirrorCursor());
-
-//        cursorInsertShapeComboBox.setSelectedIndex(((CaretCapable) codeArea).getCaret().getInsertCursorShape().ordinal());
-//        cursorOverwriteShapeComboBox.setSelectedIndex(((CaretCapable) codeArea).getCaret().getOverwriteCursorShape().ordinal());
-        cursorBlinkingRateSpinner.setValue(((DefaultCodeAreaCaret) ((CaretCapable) codeArea).getCaret()).getBlinkRate());
     }
 
     /**
@@ -209,6 +200,17 @@ public class CursorPanelEx extends javax.swing.JPanel {
         codeArea.requestFocus();
     }//GEN-LAST:event_centerCursorButtonActionPerformed
 
+    public void setCodeArea(ExtCodeArea codeArea) {
+        this.codeArea = codeArea;
+        
+        cursorRenderingModeComboBox.setSelectedIndex(codeArea.getCaret().getRenderingMode().ordinal());
+        showMirrorCursorCheckBox.setSelected(codeArea.isShowMirrorCursor());
+
+//        cursorInsertShapeComboBox.setSelectedIndex(((CaretCapable) codeArea).getCaret().getInsertCursorShape().ordinal());
+//        cursorOverwriteShapeComboBox.setSelectedIndex(((CaretCapable) codeArea).getCaret().getOverwriteCursorShape().ordinal());
+        cursorBlinkingRateSpinner.setValue(((DefaultCodeAreaCaret) ((CaretCapable) codeArea).getCaret()).getBlinkRate());
+    }
+
     /**
      * Test method for this panel.
      *
@@ -217,7 +219,7 @@ public class CursorPanelEx extends javax.swing.JPanel {
     public static void main(String args[]) {
         final JFrame frame = new JFrame("Panel");
         frame.setSize(1000, 600);
-        frame.add(new CursorPanelEx(new ExtCodeArea()));
+        frame.add(new CursorPanelEx());
         frame.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         frame.setVisible(true);
     }

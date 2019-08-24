@@ -48,13 +48,19 @@ public class BinEdExampleBasicPanel extends javax.swing.JPanel {
     public void setCodeArea(final CodeArea codeArea) {
         splitPane.setRightComponent(codeArea);
 
-        ModePanel modePanel = new ModePanel(codeArea);
+        ModePanel modePanel = new ModePanel();
+        modePanel.setCodeArea(codeArea);
         modePanel.setPreferredSize(null);
-        StatePanel statePanel = new StatePanel(codeArea);
-        LayoutPanel layoutPanel = new LayoutPanel(codeArea);
-        ThemePanel themePanel = new ThemePanel(codeArea);
-        ScrollingPanel scrollingPanel = new ScrollingPanel(codeArea);
-        CursorPanel cursorPanel = new CursorPanel(codeArea);
+        StatePanel statePanel = new StatePanel();
+        statePanel.setCodeArea(codeArea);
+        LayoutPanel layoutPanel = new LayoutPanel();
+        layoutPanel.setCodeArea(codeArea);
+        ThemePanel themePanel = new ThemePanel();
+        themePanel.setCodeArea(codeArea);
+        ScrollingPanel scrollingPanel = new ScrollingPanel();
+        scrollingPanel.setCodeArea(codeArea);
+        CursorPanel cursorPanel = new CursorPanel();
+        cursorPanel.setCodeArea(codeArea);
 
         tabMap.put(modeScrollPane, modePanel);
         tabMap.put(stateScrollPane, statePanel);

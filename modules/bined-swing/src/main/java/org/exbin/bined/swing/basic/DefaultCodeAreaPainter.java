@@ -361,8 +361,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         if (rowHeight > 0 && characterWidth > 0) {
             scrolling.updateCache(codeArea, getHorizontalScrollBarSize(), getVerticalScrollBarSize());
             JViewport viewport = scrollPanel.getViewport();
-            Dimension viewDimension = scrolling.computeViewDimension(viewport.getWidth(), viewport.getHeight(), layout, structure, characterWidth, rowHeight);
-            dataView.setPreferredSize(viewDimension);
+            BasicCodeAreaScrolling.ScrollViewDimension viewDimension = scrolling.computeViewDimension(viewport.getWidth(), viewport.getHeight(), layout, structure, characterWidth, rowHeight);
+            dataView.setPreferredSize(new Dimension(viewDimension.getWidth(), viewDimension.getHeight()));
 
             // TODO on resize only
             recomputeDimensions();
@@ -462,8 +462,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
             boolean interleaving = false;
             int lastPos = 0;
             int skipToCode = visibility.getSkipToCode();
-            int skipRectFromCode = visibility.getSkipRestFromCode();
-            for (int index = skipToCode; index < skipRectFromCode; index++) {
+            int skipRestFromCode = visibility.getSkipRestFromCode();
+            for (int index = skipToCode; index < skipRestFromCode; index++) {
                 int codePos = structure.computeFirstCodeCharacterPos(index);
                 if (codePos == lastPos + 2 && !interleaving) {
                     interleaving = true;

@@ -318,7 +318,24 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
     @Override
     public void setCodeType(CodeType codeType) {
         this.codeType = codeType;
+        validateCaret();
         updateLayout();
+    }
+
+    public void validateCaret() {
+        boolean moved = false;
+        if (caret.getDataPosition() > getDataSize()) {
+            caret.setDataPosition(getDataSize());
+            moved = true;
+        }
+        if (caret.getSection() == BasicCodeAreaSection.CODE_MATRIX && caret.getCodeOffset() >= codeType.getMaxDigitsForByte()) {
+            caret.setCodeOffset(codeType.getMaxDigitsForByte() - 1);
+            moved = true;
+        }
+        
+        if (moved) {
+            notifyCaretMoved();
+        }
     }
 
     @Override

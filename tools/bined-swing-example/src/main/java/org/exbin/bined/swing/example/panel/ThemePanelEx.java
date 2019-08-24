@@ -31,21 +31,10 @@ import org.exbin.bined.swing.extended.theme.ExtendedCodeAreaThemeProfile;
 @ParametersAreNonnullByDefault
 public class ThemePanelEx extends javax.swing.JPanel {
 
-    private final ExtCodeArea codeArea;
+    private ExtCodeArea codeArea;
 
-    public ThemePanelEx(ExtCodeArea codeArea) {
-        this.codeArea = codeArea;
-
+    public ThemePanelEx() {
         initComponents();
-
-        ExtendedCodeAreaThemeProfile themeProfile = codeArea.getThemeProfile();
-        backgroundModeComboBox.setSelectedIndex(themeProfile.getBackgroundPaintMode().ordinal());
-        paintRowPosBackgroundCheckBox.setSelected(themeProfile.isPaintRowPosBackground());
-        decoratorHeaderLineCheckBox.setSelected(themeProfile.hasDecoration(ExtendedCodeAreaDecorations.HEADER_LINE));
-        decoratorRowPosLineCheckBox.setSelected(themeProfile.hasDecoration(ExtendedCodeAreaDecorations.ROW_POSITION_LINE));
-        decoratorSplitLineCheckBox.setSelected(themeProfile.hasDecoration(ExtendedCodeAreaDecorations.SPLIT_LINE));
-        decoratorBoxCheckBox.setSelected(themeProfile.hasDecoration(ExtendedCodeAreaDecorations.BOX_LINES));
-        verticalLineByteGroupSizeSpinner.setValue(themeProfile.getVerticalLineByteGroupSize());
     }
 
     /**
@@ -249,6 +238,19 @@ public class ThemePanelEx extends javax.swing.JPanel {
         codeArea.setThemeProfile(themeProfile);
     }//GEN-LAST:event_verticalLineByteGroupSizeSpinnerStateChanged
 
+    public void setCodeArea(ExtCodeArea codeArea) {
+        this.codeArea = codeArea;
+
+        ExtendedCodeAreaThemeProfile themeProfile = codeArea.getThemeProfile();
+        backgroundModeComboBox.setSelectedIndex(themeProfile.getBackgroundPaintMode().ordinal());
+        paintRowPosBackgroundCheckBox.setSelected(themeProfile.isPaintRowPosBackground());
+        decoratorHeaderLineCheckBox.setSelected(themeProfile.hasDecoration(ExtendedCodeAreaDecorations.HEADER_LINE));
+        decoratorRowPosLineCheckBox.setSelected(themeProfile.hasDecoration(ExtendedCodeAreaDecorations.ROW_POSITION_LINE));
+        decoratorSplitLineCheckBox.setSelected(themeProfile.hasDecoration(ExtendedCodeAreaDecorations.SPLIT_LINE));
+        decoratorBoxCheckBox.setSelected(themeProfile.hasDecoration(ExtendedCodeAreaDecorations.BOX_LINES));
+        verticalLineByteGroupSizeSpinner.setValue(themeProfile.getVerticalLineByteGroupSize());
+    }
+
     /**
      * Test method for this panel.
      *
@@ -257,7 +259,7 @@ public class ThemePanelEx extends javax.swing.JPanel {
     public static void main(String args[]) {
         final JFrame frame = new JFrame("Panel");
         frame.setSize(1000, 600);
-        frame.add(new ThemePanelEx(new ExtCodeArea()));
+        frame.add(new ThemePanelEx());
         frame.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         frame.setVisible(true);
     }

@@ -45,37 +45,10 @@ import org.exbin.bined.CodeAreaUtils;
 @ParametersAreNonnullByDefault
 public class StatePanel extends javax.swing.JPanel {
 
-    private final CodeArea codeArea;
+    private CodeArea codeArea;
 
-    public StatePanel(CodeArea codeArea) {
-        this.codeArea = codeArea;
-
+    public StatePanel() {
         initComponents();
-
-        dataSizeTextField.setText(String.valueOf(codeArea.getDataSize()));
-
-        codeArea.addCaretMovedListener((CodeAreaCaretPosition caretPosition) -> {
-            positionTextField.setText(String.valueOf(caretPosition.getDataPosition()));
-            codeOffsetTextField.setText(String.valueOf(caretPosition.getCodeOffset()));
-            activeSectionComboBox.setSelectedIndex(getSection(caretPosition).ordinal());
-        });
-        ((SelectionCapable) codeArea).addSelectionChangedListener((SelectionRange selection) -> {
-            if (selection != null) {
-                long first = ((SelectionCapable) codeArea).getSelection().getFirst();
-                selectionStartTextField.setText(String.valueOf(first));
-                long last = ((SelectionCapable) codeArea).getSelection().getLast();
-                selectionEndTextField.setText(String.valueOf(last));
-            } else {
-                selectionStartTextField.setText("");
-                selectionEndTextField.setText("");
-            }
-        });
-        codeArea.addDataChangedListener(() -> {
-            dataSizeTextField.setText(String.valueOf(codeArea.getDataSize()));
-        });
-        codeArea.addEditationModeChangedListener((editationMode, editationOperation) -> {
-            activeOperationComboBox.setSelectedIndex(editationOperation.ordinal());
-        });
     }
 
     /**
@@ -337,6 +310,35 @@ public class StatePanel extends javax.swing.JPanel {
         codeArea.setEditationOperation(EditationOperation.values()[activeOperationComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_activeOperationComboBoxActionPerformed
 
+    public void setCodeArea(CodeArea codeArea) {
+        this.codeArea = codeArea;
+
+        dataSizeTextField.setText(String.valueOf(codeArea.getDataSize()));
+
+        codeArea.addCaretMovedListener((CodeAreaCaretPosition caretPosition) -> {
+            positionTextField.setText(String.valueOf(caretPosition.getDataPosition()));
+            codeOffsetTextField.setText(String.valueOf(caretPosition.getCodeOffset()));
+            activeSectionComboBox.setSelectedIndex(getSection(caretPosition).ordinal());
+        });
+        ((SelectionCapable) codeArea).addSelectionChangedListener((SelectionRange selection) -> {
+            if (selection != null) {
+                long first = ((SelectionCapable) codeArea).getSelection().getFirst();
+                selectionStartTextField.setText(String.valueOf(first));
+                long last = ((SelectionCapable) codeArea).getSelection().getLast();
+                selectionEndTextField.setText(String.valueOf(last));
+            } else {
+                selectionStartTextField.setText("");
+                selectionEndTextField.setText("");
+            }
+        });
+        codeArea.addDataChangedListener(() -> {
+            dataSizeTextField.setText(String.valueOf(codeArea.getDataSize()));
+        });
+        codeArea.addEditationModeChangedListener((editationMode, editationOperation) -> {
+            activeOperationComboBox.setSelectedIndex(editationOperation.ordinal());
+        });
+    }
+
     /**
      * Test method for this panel.
      *
@@ -345,7 +347,7 @@ public class StatePanel extends javax.swing.JPanel {
     public static void main(String args[]) {
         final JFrame frame = new JFrame("Panel");
         frame.setSize(1000, 600);
-        frame.add(new StatePanel(new CodeArea()));
+        frame.add(new StatePanel());
         frame.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         frame.setVisible(true);
     }

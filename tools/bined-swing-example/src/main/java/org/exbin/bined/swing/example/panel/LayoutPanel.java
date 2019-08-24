@@ -29,17 +29,10 @@ import org.exbin.bined.swing.basic.CodeArea;
 @ParametersAreNonnullByDefault
 public class LayoutPanel extends javax.swing.JPanel {
 
-    private final CodeArea codeArea;
+    private CodeArea codeArea;
 
-    public LayoutPanel(CodeArea codeArea) {
-        this.codeArea = codeArea;
-
+    public LayoutPanel() {
         initComponents();
-
-        rowWrappingModeCheckBox.setSelected(codeArea.getRowWrapping() == RowWrappingMode.WRAPPING);
-        maxBytesPerRowSpinner.setValue(codeArea.getMaxBytesPerRow());
-        minRowPositionLengthSpinner.setValue(codeArea.getMinRowPositionLength());
-        maxRowPositionLengthSpinner.setValue(codeArea.getMaxRowPositionLength());
     }
 
     /**
@@ -154,6 +147,15 @@ public class LayoutPanel extends javax.swing.JPanel {
         codeArea.setMaxRowPositionLength((Integer) maxRowPositionLengthSpinner.getValue());
     }//GEN-LAST:event_maxRowPositionLengthSpinnerStateChanged
 
+    public void setCodeArea(CodeArea codeArea) {
+        this.codeArea = codeArea;
+
+        rowWrappingModeCheckBox.setSelected(codeArea.getRowWrapping() == RowWrappingMode.WRAPPING);
+        maxBytesPerRowSpinner.setValue(codeArea.getMaxBytesPerRow());
+        minRowPositionLengthSpinner.setValue(codeArea.getMinRowPositionLength());
+        maxRowPositionLengthSpinner.setValue(codeArea.getMaxRowPositionLength());
+    }
+
     /**
      * Test method for this panel.
      *
@@ -162,7 +164,7 @@ public class LayoutPanel extends javax.swing.JPanel {
     public static void main(String args[]) {
         final JFrame frame = new JFrame("Panel");
         frame.setSize(1000, 600);
-        frame.add(new LayoutPanel(new CodeArea()));
+        frame.add(new LayoutPanel());
         frame.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         frame.setVisible(true);
     }

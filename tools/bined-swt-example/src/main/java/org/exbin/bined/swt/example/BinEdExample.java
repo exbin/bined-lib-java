@@ -72,12 +72,12 @@ public class BinEdExample {
             Logger.getLogger(BinEdExample.class.getName()).log(Level.SEVERE, null, ex);
         }
         basicCodeArea.setContentData(basicData);
+        basicPanel.setCodeArea(basicCodeArea);
 
         TabItem extendedTabItem = new TabItem(tabFolder, SWT.NULL);
         extendedTabItem.setText("Extended");
 
 //        basicTabItem.setControl(basicCodeArea);
-//        basicPanel.setCodeArea(basicCodeArea);
         basicTabItem.setControl(basicForm);
         shell.addShellListener(new ShellAdapter() {
             @Override

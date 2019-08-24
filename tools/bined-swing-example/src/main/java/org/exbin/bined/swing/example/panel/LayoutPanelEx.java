@@ -32,26 +32,10 @@ import org.exbin.bined.swing.extended.layout.DefaultExtendedCodeAreaLayoutProfil
 @ParametersAreNonnullByDefault
 public class LayoutPanelEx extends javax.swing.JPanel {
 
-    private final ExtCodeArea codeArea;
+    private ExtCodeArea codeArea;
 
-    public LayoutPanelEx(ExtCodeArea codeArea) {
-        this.codeArea = codeArea;
-
+    public LayoutPanelEx() {
         initComponents();
-        DefaultExtendedCodeAreaLayoutProfile layoutProfile = getLayoutProfile();
-        rowWrappingModeCheckBox.setSelected(codeArea.getRowWrapping() == RowWrappingCapable.RowWrappingMode.WRAPPING);
-        maxBytesPerRowSpinner.setValue(codeArea.getMaxBytesPerRow());
-        minRowPositionLengthSpinner.setValue(codeArea.getMinRowPositionLength());
-        maxRowPositionLengthSpinner.setValue(codeArea.getMaxRowPositionLength());
-        showHeaderCheckBox.setSelected(layoutProfile.isShowHeader());
-        headerTopSpaceSpinner.setValue(layoutProfile.getTopHeaderSpace());
-        headerBottomSpaceSpinner.setValue(layoutProfile.getBottomHeaderSpace());
-        showRowPositionCheckBox.setSelected(layoutProfile.isShowRowPosition());
-        rowPositionLeftSpaceSpinner.setValue(layoutProfile.getLeftRowPositionSpace());
-        rowPositionRightSpaceSpinner.setValue(layoutProfile.getRightRowPositionSpace());
-        spaceGroupSizeSpinner.setValue(layoutProfile.getSpaceGroupSize());
-        halfSpaceGroupSizeSpinner.setValue(layoutProfile.getHalfSpaceGroupSize());
-        doubleSpaceGroupSizeSpinner.setValue(layoutProfile.getDoubleSpaceGroupSize());
     }
 
     /**
@@ -416,6 +400,25 @@ public class LayoutPanelEx extends javax.swing.JPanel {
         return CodeAreaUtils.requireNonNull((DefaultExtendedCodeAreaLayoutProfile) codeArea.getLayoutProfile());
     }
 
+    public void setCodeArea(ExtCodeArea codeArea) {
+        this.codeArea = codeArea;
+
+        DefaultExtendedCodeAreaLayoutProfile layoutProfile = getLayoutProfile();
+        rowWrappingModeCheckBox.setSelected(codeArea.getRowWrapping() == RowWrappingCapable.RowWrappingMode.WRAPPING);
+        maxBytesPerRowSpinner.setValue(codeArea.getMaxBytesPerRow());
+        minRowPositionLengthSpinner.setValue(codeArea.getMinRowPositionLength());
+        maxRowPositionLengthSpinner.setValue(codeArea.getMaxRowPositionLength());
+        showHeaderCheckBox.setSelected(layoutProfile.isShowHeader());
+        headerTopSpaceSpinner.setValue(layoutProfile.getTopHeaderSpace());
+        headerBottomSpaceSpinner.setValue(layoutProfile.getBottomHeaderSpace());
+        showRowPositionCheckBox.setSelected(layoutProfile.isShowRowPosition());
+        rowPositionLeftSpaceSpinner.setValue(layoutProfile.getLeftRowPositionSpace());
+        rowPositionRightSpaceSpinner.setValue(layoutProfile.getRightRowPositionSpace());
+        spaceGroupSizeSpinner.setValue(layoutProfile.getSpaceGroupSize());
+        halfSpaceGroupSizeSpinner.setValue(layoutProfile.getHalfSpaceGroupSize());
+        doubleSpaceGroupSizeSpinner.setValue(layoutProfile.getDoubleSpaceGroupSize());
+    }
+
     /**
      * Test method for this panel.
      *
@@ -424,7 +427,7 @@ public class LayoutPanelEx extends javax.swing.JPanel {
     public static void main(String args[]) {
         final JFrame frame = new JFrame("Panel");
         frame.setSize(1000, 600);
-        frame.add(new LayoutPanelEx(new ExtCodeArea()));
+        frame.add(new LayoutPanelEx());
         frame.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         frame.setVisible(true);
     }
