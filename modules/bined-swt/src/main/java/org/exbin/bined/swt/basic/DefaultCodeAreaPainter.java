@@ -81,7 +81,7 @@ import org.exbin.bined.basic.BasicCodeAreaLayout;
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2019/08/02
+ * @version 0.2.0 2019/08/25
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -466,7 +466,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
 
         int characterWidth = metrics.getCharacterWidth();
         int rowHeight = metrics.getRowHeight();
-        int dataViewX = dimensions.getDataViewX();
+        int dataViewX = dimensions.getScrollPanelX();
 
         g.setBackground(colorsProfile.getTextBackground());
         g.fillRectangle(headerArea.x, headerArea.y, headerArea.width, headerArea.height);
@@ -618,15 +618,16 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         Point location = scrollPanel.getLocation();
         Rectangle mainAreaRectSrc = dimensions.getMainAreaRect();
         Rectangle mainAreaRect = new Rectangle(mainAreaRectSrc.x - location.x, mainAreaRectSrc.y - location.y, mainAreaRectSrc.width, mainAreaRectSrc.height);
-        Rectangle dataViewRectangle = dimensions.getDataViewRectangle();
+        Rectangle dataViewRectangle = dimensions.getDataViewInnerRectangle();
         CodeAreaScrollPosition scrollPosition = scrolling.getScrollPosition();
         int characterWidth = metrics.getCharacterWidth();
         int previewRelativeX = visibility.getPreviewRelativeX();
 
-        Rectangle clipBounds = g.getClipping();
-        g.setClipping(clipBounds != null ? clipBounds.intersection(mainAreaRect) : mainAreaRect);
+//        Rectangle clipBounds = g.getClipping();
+//        g.setClipping(clipBounds != null ? clipBounds.intersection(mainAreaRect) : mainAreaRect);
         paintBackground(g);
 
+        // Decoration lines
         g.setForeground(colorsProfile.getDecorationLine());
         int lineX = dataViewRectangle.x + previewRelativeX - scrollPosition.getCharPosition() * characterWidth - scrollPosition.getCharOffset() - characterWidth / 2;
         if (lineX >= dataViewRectangle.x) {
@@ -634,7 +635,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         }
 
         paintRows(g);
-        g.setClipping(clipBounds);
+//        g.setClipping(clipBounds);
         paintCursor(g);
 
         // TODO: Remove later
@@ -655,7 +656,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         long dataSize = structure.getDataSize();
         int rowHeight = metrics.getRowHeight();
         int rowsPerRect = dimensions.getRowsPerRect();
-        Rectangle dataViewRect = dimensions.getDataViewRectangle();
+        Rectangle dataViewRect = dimensions.getDataViewInnerRectangle();
         CodeAreaScrollPosition scrollPosition = scrolling.getScrollPosition();
 
         g.setBackground(colorsProfile.getTextBackground());
@@ -684,8 +685,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         int characterWidth = metrics.getCharacterWidth();
         int rowHeight = metrics.getRowHeight();
         Point location = scrollPanel.getLocation();
-        int dataViewX = dimensions.getDataViewX() - location.x;
-        int dataViewY = dimensions.getDataViewY() - location.y;
+        int dataViewX = dimensions.getScrollPanelX() - location.x;
+        int dataViewY = dimensions.getScrollPanelY() - location.y;
         int rowsPerRect = dimensions.getRowsPerRect();
         CodeAreaScrollPosition scrollPosition = scrolling.getScrollPosition();
         long dataPosition = scrollPosition.getRowPosition() * bytesPerRow;
@@ -1321,15 +1322,14 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
 
         int byteOffset = (int) (dataPosition % bytesPerRow);
 
-        Rectangle dataViewRect = dimensions.getDataViewRectangle();
-        dataViewRect.x = 0;
-        dataViewRect.y = 0;
-        int caretY = (int) (dataViewRect.y + row * rowHeight) - scrollPosition.getRowOffset();
+        int x = 0;
+        int y = 0;
+        int caretY = (int) (y + row * rowHeight) - scrollPosition.getRowOffset();
         int caretX;
         if (section == BasicCodeAreaSection.TEXT_PREVIEW) {
-            caretX = dataViewRect.x + visibility.getPreviewRelativeX() + characterWidth * byteOffset;
+            caretX = x + visibility.getPreviewRelativeX() + characterWidth * byteOffset;
         } else {
-            caretX = dataViewRect.x + characterWidth * (structure.computeFirstCodeCharacterPos(byteOffset) + codeOffset);
+            caretX = x + characterWidth * (structure.computeFirstCodeCharacterPos(byteOffset) + codeOffset);
         }
         caretX -= scrollPosition.getCharPosition() * characterWidth + scrollPosition.getCharOffset();
 
@@ -1351,8 +1351,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
 
     @Override
     public int getMouseCursorShape(int positionX, int positionY) {
-        int dataViewX = dimensions.getDataViewX();
-        int dataViewY = dimensions.getDataViewY();
+        int dataViewX = dimensions.getScrollPanelX();
+        int dataViewY = dimensions.getScrollPanelY();
         int scrollPanelWidth = dimensions.getScrollPanelWidth();
         int scrollPanelHeight = dimensions.getScrollPanelHeight();
         if (positionX >= dataViewX && positionX < dataViewX + scrollPanelWidth

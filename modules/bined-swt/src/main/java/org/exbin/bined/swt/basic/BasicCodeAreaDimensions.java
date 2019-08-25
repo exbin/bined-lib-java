@@ -23,18 +23,18 @@ import org.exbin.bined.BasicCodeAreaZone;
 /**
  * Basic code area component dimensions.
  *
- * @version 0.2.0 2019/07/07
+ * @version 0.2.0 2019/08/25
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class BasicCodeAreaDimensions {
 
-    private int dataViewX;
-    private int dataViewY;
-    private int verticalScrollBarSize;
-    private int horizontalScrollBarSize;
+    private int scrollPanelX;
+    private int scrollPanelY;
     private int scrollPanelWidth;
     private int scrollPanelHeight;
+    private int verticalScrollBarSize;
+    private int horizontalScrollBarSize;
     private int dataViewWidth;
     private int dataViewHeight;
     private int lastCharOffset;
@@ -59,6 +59,8 @@ public class BasicCodeAreaDimensions {
     private final Rectangle scrollPanelRectangle = new Rectangle(0, 0, 0, 0);
     @Nonnull
     private final Rectangle dataViewRectangle = new Rectangle(0, 0, 0, 0);
+    @Nonnull
+    private final Rectangle dataViewInnerRectangle = new Rectangle(0, 0, 0, 0);
 
     public void recomputeSizes(BasicCodeAreaMetrics metrics, int componentWidth, int componentHeight, int rowPositionLength, int verticalScrollBarSize, int horizontalScrollBarSize) {
         modifyRect(componentRect, 0, 0, componentWidth, componentHeight);
@@ -67,8 +69,8 @@ public class BasicCodeAreaDimensions {
         rowPositionAreaWidth = metrics.getCharacterWidth() * (rowPositionLength + 1);
         headerAreaHeight = metrics.getFontHeight() + metrics.getFontHeight() / 4;
 
-        dataViewX = rowPositionAreaWidth;
-        dataViewY = headerAreaHeight;
+        scrollPanelX = rowPositionAreaWidth;
+        scrollPanelY = headerAreaHeight;
         scrollPanelWidth = componentWidth - rowPositionAreaWidth;
         scrollPanelHeight = componentHeight - headerAreaHeight;
         dataViewWidth = scrollPanelWidth - verticalScrollBarSize;
@@ -81,10 +83,10 @@ public class BasicCodeAreaDimensions {
         lastRowOffset = metrics.isInitialized() ? dataViewHeight % metrics.getRowHeight() : 0;
 
         boolean availableWidth = rowPositionAreaWidth + verticalScrollBarSize <= componentWidth;
-        boolean availableHeight = dataViewY + horizontalScrollBarSize <= componentHeight;
+        boolean availableHeight = scrollPanelY + horizontalScrollBarSize <= componentHeight;
 
         if (availableWidth && availableHeight) {
-            modifyRect(mainAreaRect, rowPositionAreaWidth, dataViewY, componentWidth - rowPositionAreaWidth - getVerticalScrollBarSize(), componentHeight - dataViewY - getHorizontalScrollBarSize());
+            modifyRect(mainAreaRect, rowPositionAreaWidth, scrollPanelY, componentWidth - rowPositionAreaWidth - getVerticalScrollBarSize(), componentHeight - scrollPanelY - getHorizontalScrollBarSize());
         } else {
             modifyRect(mainAreaRect, 0, 0, 0, 0);
         }
@@ -95,18 +97,19 @@ public class BasicCodeAreaDimensions {
         }
 
         if (availableHeight) {
-            modifyRect(rowPositionAreaRectangle, 0, dataViewY, rowPositionAreaWidth, componentHeight - dataViewY - getHorizontalScrollBarSize());
+            modifyRect(rowPositionAreaRectangle, 0, scrollPanelY, rowPositionAreaWidth, componentHeight - scrollPanelY - getHorizontalScrollBarSize());
         } else {
             modifyRect(rowPositionAreaRectangle, 0, 0, 0, 0);
         }
 
-        modifyRect(scrollPanelRectangle, dataViewX, dataViewY, scrollPanelWidth, scrollPanelHeight);
-        modifyRect(dataViewRectangle, dataViewX, dataViewY, dataViewWidth >= 0 ? dataViewWidth : 0, dataViewHeight >= 0 ? dataViewHeight : 0);
+        modifyRect(scrollPanelRectangle, scrollPanelX, scrollPanelY, scrollPanelWidth, scrollPanelHeight);
+        modifyRect(dataViewRectangle, scrollPanelX, scrollPanelY, dataViewWidth >= 0 ? dataViewWidth : 0, dataViewHeight >= 0 ? dataViewHeight : 0);
+        modifyRect(dataViewInnerRectangle, 0, 0, dataViewWidth >= 0 ? dataViewWidth : 0, dataViewHeight >= 0 ? dataViewHeight : 0);
     }
 
     @Nonnull
     public BasicCodeAreaZone getPositionZone(int positionX, int positionY) {
-        if (positionY <= dataViewY) {
+        if (positionY <= scrollPanelY) {
             if (positionX < rowPositionAreaWidth) {
                 return BasicCodeAreaZone.TOP_LEFT_CORNER;
             } else {
@@ -115,19 +118,19 @@ public class BasicCodeAreaDimensions {
         }
 
         if (positionX < rowPositionAreaWidth) {
-            if (positionY >= dataViewY + scrollPanelHeight) {
+            if (positionY >= scrollPanelY + scrollPanelHeight) {
                 return BasicCodeAreaZone.BOTTOM_LEFT_CORNER;
             } else {
                 return BasicCodeAreaZone.ROW_POSITIONS;
             }
         }
 
-        if (positionX >= dataViewX + scrollPanelWidth && positionY < dataViewY + scrollPanelHeight) {
+        if (positionX >= scrollPanelX + scrollPanelWidth && positionY < scrollPanelY + scrollPanelHeight) {
             return BasicCodeAreaZone.VERTICAL_SCROLLBAR;
         }
 
-        if (positionY >= dataViewY + scrollPanelHeight) {
-            if (positionX >= dataViewX + scrollPanelWidth) {
+        if (positionY >= scrollPanelY + scrollPanelHeight) {
+            if (positionX >= scrollPanelX + scrollPanelWidth) {
                 return BasicCodeAreaZone.SCROLLBAR_CORNER;
             } else {
                 return BasicCodeAreaZone.HORIZONTAL_SCROLLBAR;
@@ -137,20 +140,12 @@ public class BasicCodeAreaDimensions {
         return BasicCodeAreaZone.CODE_AREA;
     }
 
-    public int getDataViewX() {
-        return dataViewX;
+    public int getScrollPanelX() {
+        return scrollPanelX;
     }
 
-    public int getDataViewY() {
-        return dataViewY;
-    }
-
-    public int getVerticalScrollBarSize() {
-        return verticalScrollBarSize;
-    }
-
-    public int getHorizontalScrollBarSize() {
-        return horizontalScrollBarSize;
+    public int getScrollPanelY() {
+        return scrollPanelY;
     }
 
     public int getScrollPanelWidth() {
@@ -159,6 +154,14 @@ public class BasicCodeAreaDimensions {
 
     public int getScrollPanelHeight() {
         return scrollPanelHeight;
+    }
+
+    public int getVerticalScrollBarSize() {
+        return verticalScrollBarSize;
+    }
+
+    public int getHorizontalScrollBarSize() {
+        return horizontalScrollBarSize;
     }
 
     public int getDataViewWidth() {
@@ -219,6 +222,11 @@ public class BasicCodeAreaDimensions {
     @Nonnull
     public Rectangle getDataViewRectangle() {
         return dataViewRectangle;
+    }
+
+    @Nonnull
+    public Rectangle getDataViewInnerRectangle() {
+        return dataViewInnerRectangle;
     }
 
     @Nonnull

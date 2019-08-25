@@ -445,7 +445,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
 
         int characterWidth = metrics.getCharacterWidth();
         int rowHeight = metrics.getRowHeight();
-        int dataViewX = dimensions.getDataViewX();
+        int dataViewX = dimensions.getScrollPanelX();
 
         g.setFont(font);
         g.setColor(colorsProfile.getTextBackground());
@@ -665,8 +665,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         int bytesPerRow = structure.getBytesPerRow();
         int characterWidth = metrics.getCharacterWidth();
         int rowHeight = metrics.getRowHeight();
-        int dataViewX = dimensions.getDataViewX();
-        int dataViewY = dimensions.getDataViewY();
+        int dataViewX = dimensions.getScrollPanelX();
+        int dataViewY = dimensions.getScrollPanelY();
         int rowsPerRect = dimensions.getRowsPerRect();
         CodeAreaScrollPosition scrollPosition = scrolling.getScrollPosition();
         long dataPosition = scrollPosition.getRowPosition() * bytesPerRow;
@@ -1121,8 +1121,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
                 int rowHeight = metrics.getRowHeight();
                 int maxBytesPerChar = metrics.getMaxBytesPerChar();
                 int subFontSpace = metrics.getSubFontSpace();
-                int dataViewX = dimensions.getDataViewX();
-                int dataViewY = dimensions.getDataViewY();
+                int dataViewX = dimensions.getScrollPanelX();
+                int dataViewY = dimensions.getScrollPanelY();
                 int previewRelativeX = visibility.getPreviewRelativeX();
 
                 CodeAreaViewMode viewMode = structure.getViewMode();
@@ -1335,8 +1335,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
 
     @Override
     public int getMouseCursorShape(int positionX, int positionY) {
-        int dataViewX = dimensions.getDataViewX();
-        int dataViewY = dimensions.getDataViewY();
+        int dataViewX = dimensions.getScrollPanelX();
+        int dataViewY = dimensions.getScrollPanelY();
         int scrollPanelWidth = dimensions.getScrollPanelWidth();
         int scrollPanelHeight = dimensions.getScrollPanelHeight();
         if (positionX >= dataViewX && positionX < dataViewX + scrollPanelWidth

@@ -462,7 +462,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
 
         int characterWidth = metrics.getCharacterWidth();
         int rowHeight = metrics.getRowHeight();
-        double dataViewX = dimensions.getDataViewX();
+        double dataViewX = dimensions.getScrollPanelX();
 
         g.setFill(colorsProfile.getTextBackground());
         g.fillRect(headerAreaX, headerAreaY, headerArea.getWidth(), headerArea.getHeight());
@@ -681,8 +681,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         int bytesPerRow = structure.getBytesPerRow();
         int characterWidth = metrics.getCharacterWidth();
         int rowHeight = metrics.getRowHeight();
-        double dataViewX = dimensions.getDataViewX();
-        double dataViewY = dimensions.getDataViewY();
+        double dataViewX = dimensions.getScrollPanelX();
+        double dataViewY = dimensions.getScrollPanelY();
         int rowsPerRect = dimensions.getRowsPerRect();
         CodeAreaScrollPosition scrollPosition = scrolling.getScrollPosition();
         long dataPosition = scrollPosition.getRowPosition() * bytesPerRow;
@@ -1304,8 +1304,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
 
     @Override
     public int getMouseCursorShape(int positionX, int positionY) {
-        double dataViewX = dimensions.getDataViewX();
-        double dataViewY = dimensions.getDataViewY();
+        double dataViewX = dimensions.getScrollPanelX();
+        double dataViewY = dimensions.getScrollPanelY();
         double scrollPanelWidth = dimensions.getScrollPanelWidth();
         double scrollPanelHeight = dimensions.getScrollPanelHeight();
         if (positionX >= dataViewX && positionX < dataViewX + scrollPanelWidth
