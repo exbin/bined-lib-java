@@ -26,17 +26,17 @@ import org.exbin.bined.operation.BinaryDataOperationException;
 import org.exbin.bined.swing.CodeAreaCore;
 
 /**
- * Class for compound command on hexadecimal document.
+ * Class for compound command on binary document.
  *
- * @version 0.1.2 2016/12/20
+ * @version 0.1.2 2019/08/31
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public class HexCompoundCommand extends CodeAreaCommand implements BinaryDataCompoundCommand {
+public class BinaryCompoundCommand extends CodeAreaCommand implements BinaryDataCompoundCommand {
 
     private final List<BinaryDataCommand> commands = new ArrayList<>();
 
-    public HexCompoundCommand(@Nonnull CodeAreaCore codeArea) {
+    public BinaryCompoundCommand(@Nonnull CodeAreaCore codeArea) {
         super(codeArea);
     }
 
@@ -46,10 +46,10 @@ public class HexCompoundCommand extends CodeAreaCommand implements BinaryDataCom
             if (command != null) {
                 if (resultCommand == null) {
                     resultCommand = command;
-                } else if (resultCommand instanceof HexCompoundCommand) {
-                    ((HexCompoundCommand) resultCommand).appendCommand(command);
+                } else if (resultCommand instanceof BinaryCompoundCommand) {
+                    ((BinaryCompoundCommand) resultCommand).appendCommand(command);
                 } else {
-                    HexCompoundCommand compoundCommand = new HexCompoundCommand(codeArea);
+                    BinaryCompoundCommand compoundCommand = new BinaryCompoundCommand(codeArea);
                     compoundCommand.appendCommand(resultCommand);
                     compoundCommand.appendCommand(command);
                     resultCommand = compoundCommand;

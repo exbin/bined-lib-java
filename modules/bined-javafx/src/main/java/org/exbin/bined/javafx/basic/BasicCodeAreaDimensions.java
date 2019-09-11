@@ -59,6 +59,8 @@ public class BasicCodeAreaDimensions {
     private Rectangle2D scrollPanelRectangle = new Rectangle2D(0, 0, 0, 0);
     @Nonnull
     private Rectangle2D dataViewRectangle = new Rectangle2D(0, 0, 0, 0);
+    @Nonnull
+    private Rectangle2D dataViewInnerRectangle = new Rectangle2D(0, 0, 0, 0);
 
     public void recomputeSizes(BasicCodeAreaMetrics metrics, double componentX, double componentY, double componentWidth, double componentHeight, int rowPositionLength, int verticalScrollBarSize, int horizontalScrollBarSize) {
         componentRect = new Rectangle2D(componentX, componentY, componentWidth, componentHeight);
@@ -95,6 +97,7 @@ public class BasicCodeAreaDimensions {
 
         scrollPanelRectangle = new Rectangle2D(scrollPanelX, scrollPanelY, scrollPanelWidth, scrollPanelHeight);
         dataViewRectangle = new Rectangle2D(scrollPanelX, scrollPanelY, dataViewWidth >= 0 ? dataViewWidth : 0, dataViewHeight >= 0 ? dataViewHeight : 0);
+        dataViewInnerRectangle = new Rectangle2D(0, 0, dataViewWidth >= 0 ? dataViewWidth : 0, dataViewHeight >= 0 ? dataViewHeight : 0);
     }
 
     public BasicCodeAreaZone getPositionZone(int positionX, int positionY) {
@@ -211,6 +214,11 @@ public class BasicCodeAreaDimensions {
     @Nonnull
     public Rectangle2D getDataViewRectangle() {
         return dataViewRectangle;
+    }
+
+    @Nonnull
+    public Rectangle2D getDataViewInnerRectangle() {
+        return dataViewInnerRectangle;
     }
 
     @Nonnull

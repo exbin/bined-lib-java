@@ -58,7 +58,7 @@ import org.exbin.bined.operation.swing.command.CodeAreaCommandType;
 import org.exbin.bined.operation.swing.command.EditCharDataCommand;
 import org.exbin.bined.operation.swing.command.EditCodeDataCommand;
 import org.exbin.bined.operation.swing.command.EditDataCommand;
-import org.exbin.bined.operation.swing.command.HexCompoundCommand;
+import org.exbin.bined.operation.swing.command.BinaryCompoundCommand;
 import org.exbin.bined.operation.swing.command.InsertDataCommand;
 import org.exbin.bined.operation.swing.command.ModifyDataCommand;
 import org.exbin.bined.operation.swing.command.RemoveDataCommand;
@@ -358,7 +358,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
                 if (editCommand == null || !(editCommand instanceof EditCodeDataCommand) || editCommand.getCommandType() != EditDataCommand.EditCommandType.OVERWRITE) {
                     editCommand = new EditCodeDataCommand(codeArea, EditCodeDataCommand.EditCommandType.OVERWRITE, dataPosition, codeOffset);
                     if (deleteSelectionCommand != null) {
-                        HexCompoundCommand compoundCommand = new HexCompoundCommand(codeArea);
+                        BinaryCompoundCommand compoundCommand = new BinaryCompoundCommand(codeArea);
                         compoundCommand.appendCommand(deleteSelectionCommand);
                         try {
                             undoHandler.execute(compoundCommand);
@@ -376,7 +376,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
                 if (editCommand == null || !(editCommand instanceof EditCodeDataCommand) || editCommand.getCommandType() != EditCodeDataCommand.EditCommandType.INSERT) {
                     editCommand = new EditCodeDataCommand(codeArea, EditCharDataCommand.EditCommandType.INSERT, dataPosition, codeOffset);
                     if (deleteSelectionCommand != null) {
-                        HexCompoundCommand compoundCommand = new HexCompoundCommand(codeArea);
+                        BinaryCompoundCommand compoundCommand = new BinaryCompoundCommand(codeArea);
                         compoundCommand.appendCommand(deleteSelectionCommand);
                         try {
                             undoHandler.execute(compoundCommand);
@@ -415,7 +415,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
                 if (editCommand == null || !(editCommand instanceof EditCharDataCommand) || editCommand.getCommandType() != EditCodeDataCommand.EditCommandType.OVERWRITE) {
                     editCommand = new EditCharDataCommand(codeArea, EditCodeDataCommand.EditCommandType.OVERWRITE, dataPosition);
                     if (deleteCommand != null) {
-                        HexCompoundCommand compoundCommand = new HexCompoundCommand(codeArea);
+                        BinaryCompoundCommand compoundCommand = new BinaryCompoundCommand(codeArea);
                         compoundCommand.appendCommand(deleteCommand);
                         try {
                             undoHandler.execute(compoundCommand);
@@ -433,7 +433,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
                 if (editCommand == null || !(editCommand instanceof EditCharDataCommand) || editCommand.getCommandType() != EditCodeDataCommand.EditCommandType.INSERT) {
                     editCommand = new EditCharDataCommand(codeArea, EditCodeDataCommand.EditCommandType.INSERT, dataPosition);
                     if (deleteCommand != null) {
-                        HexCompoundCommand compoundCommand = new HexCompoundCommand(codeArea);
+                        BinaryCompoundCommand compoundCommand = new BinaryCompoundCommand(codeArea);
                         compoundCommand.appendCommand(deleteCommand);
                         try {
                             undoHandler.execute(compoundCommand);
@@ -681,7 +681,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
                             insertCommand = new InsertDataCommand(codeArea, insertionPosition, (EditableBinaryData) insertedData);
                         }
 
-                        CodeAreaCommand pasteCommand = HexCompoundCommand.buildCompoundCommand(codeArea, deleteSelectionCommand, modifyCommand, insertCommand);
+                        CodeAreaCommand pasteCommand = BinaryCompoundCommand.buildCompoundCommand(codeArea, deleteSelectionCommand, modifyCommand, insertCommand);
                         if (pasteCommand != null) {
                             try {
                                 if (modifyCommand != null) {
@@ -747,7 +747,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
                         insertCommand = new InsertDataCommand(codeArea, insertionPosition, insertedData);
                     }
 
-                    CodeAreaCommand pasteCommand = HexCompoundCommand.buildCompoundCommand(codeArea, deleteSelectionCommand, modifyCommand, insertCommand);
+                    CodeAreaCommand pasteCommand = BinaryCompoundCommand.buildCompoundCommand(codeArea, deleteSelectionCommand, modifyCommand, insertCommand);
                     try {
                         if (modifyCommand != null) {
                             modifyCommand.execute();
@@ -889,7 +889,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
                         insertCommand = new InsertDataCommand(codeArea, insertionPosition, pastedData);
                     }
 
-                    CodeAreaCommand pasteCommand = HexCompoundCommand.buildCompoundCommand(codeArea, deleteSelectionCommand, modifyCommand, insertCommand);
+                    CodeAreaCommand pasteCommand = BinaryCompoundCommand.buildCompoundCommand(codeArea, deleteSelectionCommand, modifyCommand, insertCommand);
                     try {
                         if (modifyCommand != null) {
                             modifyCommand.execute();

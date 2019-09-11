@@ -122,7 +122,7 @@ public class EditCodeDataCommand extends EditDataCommand {
     }
 
     /**
-     * Appends next hexadecimal value in editing action sequence.
+     * Appends next binary value in editing action sequence.
      *
      * @param value half-byte value (0..15)
      */

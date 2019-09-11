@@ -614,7 +614,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         }
 
 //        Rectangle2D mainAreaRect = dimensions.getMainAreaRect();
-        Rectangle2D dataViewRectangle = dimensions.getDataViewRectangle();
+        Rectangle2D dataViewRectangle = dimensions.getDataViewInnerRectangle();
         CodeAreaScrollPosition scrollPosition = scrolling.getScrollPosition();
         int characterWidth = metrics.getCharacterWidth();
         double previewRelativeX = visibility.getPreviewRelativeX();
@@ -653,7 +653,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         long dataSize = structure.getDataSize();
         int rowHeight = metrics.getRowHeight();
         int rowsPerRect = dimensions.getRowsPerRect();
-        Rectangle2D dataViewRect = dimensions.getDataViewRectangle();
+        Rectangle2D dataViewRect = dimensions.getDataViewInnerRectangle();
         CodeAreaScrollPosition scrollPosition = scrolling.getScrollPosition();
 
         g.setFill(colorsProfile.getTextBackground());
@@ -686,8 +686,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         int rowsPerRect = dimensions.getRowsPerRect();
         CodeAreaScrollPosition scrollPosition = scrolling.getScrollPosition();
         long dataPosition = scrollPosition.getRowPosition() * bytesPerRow;
-        double rowPositionX = dataViewX - scrollPosition.getCharPosition() * characterWidth - scrollPosition.getCharOffset();
-        double rowPositionY = dataViewY - scrollPosition.getRowOffset();
+        double rowPositionX = -scrollPosition.getCharPosition() * characterWidth - scrollPosition.getCharOffset();
+        double rowPositionY = -scrollPosition.getRowOffset();
 
         g.setFill(colorsProfile.getTextColor());
         for (int row = 0; row <= rowsPerRect; row++) {

@@ -19,12 +19,12 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.exbin.bined.swt.basic.CodeArea;
 import org.exbin.bined.swt.example.panel.ModePanel;
+import org.exbin.bined.swt.example.panel.StatePanel;
 
 /**
  * Basic binary component example panel.
@@ -35,6 +35,8 @@ import org.exbin.bined.swt.example.panel.ModePanel;
 public class BinEdExampleBasicPanel extends Composite {
 
     private TabFolder tabFolder;
+    private TabItem modeTabItem;
+    private TabItem stateTabItem;
 
     public BinEdExampleBasicPanel() {
         super(null, SWT.NULL);
@@ -53,14 +55,18 @@ public class BinEdExampleBasicPanel extends Composite {
         tabFolder = new TabFolder(this, SWT.BORDER);
         tabFolder.setLayout(new FillLayout());
 
-        TabItem modeTabItem = new TabItem(tabFolder, SWT.NULL);
+        modeTabItem = new TabItem(tabFolder, SWT.NULL);
         modeTabItem.setText("Mode");
+        stateTabItem = new TabItem(tabFolder, SWT.NULL);
+        stateTabItem.setText("State");
     }
 
     public void setCodeArea(CodeArea codeArea) {
         ScrolledComposite modePanelWrapper = new ScrolledComposite(tabFolder, SWT.V_SCROLL | SWT.H_SCROLL);
         modePanelWrapper.setLayout(new FillLayout());
         modePanelWrapper.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        modeTabItem.setControl(modePanelWrapper);
+
         final ModePanel modePanel = new ModePanel(modePanelWrapper, SWT.NONE);
         modePanel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         modePanelWrapper.setContent(modePanel);
@@ -68,5 +74,18 @@ public class BinEdExampleBasicPanel extends Composite {
         modePanelWrapper.setExpandVertical(true);
         modePanelWrapper.setMinSize(modePanel.computeSize(SWT.DEFAULT, SWT.DEFAULT));
         modePanel.setCodeArea(codeArea);
+
+        ScrolledComposite statePanelWrapper = new ScrolledComposite(tabFolder, SWT.V_SCROLL | SWT.H_SCROLL);
+        statePanelWrapper.setLayout(new FillLayout());
+        statePanelWrapper.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        stateTabItem.setControl(statePanelWrapper);
+
+        final StatePanel statePanel = new StatePanel(statePanelWrapper, SWT.NONE);
+        statePanel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        statePanelWrapper.setContent(statePanel);
+        statePanelWrapper.setExpandHorizontal(true);
+        statePanelWrapper.setExpandVertical(true);
+        statePanelWrapper.setMinSize(statePanel.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+        statePanel.setCodeArea(codeArea);
     }
 }
