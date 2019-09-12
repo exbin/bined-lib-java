@@ -15,6 +15,13 @@
  */
 package org.exbin.bined.swt.example.panel;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
@@ -26,17 +33,24 @@ import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.layout.FillLayout;
 import org.exbin.bined.CodeAreaViewMode;
 import org.exbin.bined.swt.basic.CodeArea;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.swt.widgets.Shell;
+import org.exbin.bined.BasicCodeAreaSection;
+import org.exbin.bined.CodeAreaCaretPosition;
+import org.exbin.bined.CodeAreaUtils;
+import org.exbin.bined.SelectionRange;
+import org.exbin.bined.capability.SelectionCapable;
+import org.exbin.utils.binary_data.EditableBinaryData;
 
 /**
  * Binary editor state options panel.
  *
- * @version 0.2.0 2019/09/11
+ * @version 0.2.0 2019/09/12
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -46,6 +60,11 @@ public class StatePanel extends Composite {
 
     private final Combo activeOperationCombo;
     private final Combo activeSectionCombo;
+    private final Text dataSizeText;
+    private final Text positionText;
+    private final Text codeOffsetText;
+    private final Text selectionStartText;
+    private final Text selectionEndText;
 
     public StatePanel(Composite parent, int style) {
         super(parent, style);
@@ -60,7 +79,7 @@ public class StatePanel extends Composite {
         dataSizeLabel.setLayoutData(fd_dataSizeLabel);
         dataSizeLabel.setText("Data Size");
 
-        Text dataSizeText = new Text(this, SWT.BORDER);
+        dataSizeText = new Text(this, SWT.BORDER);
         dataSizeText.setEditable(false);
         FormData fd_dataSizeText = new FormData();
         fd_dataSizeText.top = new FormAttachment(0, 33);
@@ -74,6 +93,28 @@ public class StatePanel extends Composite {
         fd_loadDataButton.left = new FormAttachment(0, 10);
         loadDataButton.setLayoutData(fd_loadDataButton);
         loadDataButton.setText("Load...");
+        loadDataButton.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent se) {
+                Shell shell = getShell();
+                FileDialog dialog = new FileDialog(shell, SWT.OPEN);
+                dialog.setFilterNames(new String[]{"All Files (*)"});
+                dialog.setFilterExtensions(new String[]{"*"});
+                String fileName = dialog.open();
+                if (fileName != null) {
+                    try {
+                        File selectedFile = new File(fileName);
+                        try (FileInputStream stream = new FileInputStream(selectedFile)) {
+                            CodeAreaUtils.requireNonNull(((EditableBinaryData) codeArea.getContentData())).loadFromStream(stream);
+                            codeArea.notifyDataChanged();
+                            //                    codeArea.resetPosition();
+                        }
+                    } catch (IOException ex) {
+                        Logger.getLogger(StatePanel.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+        });
 
         Button saveDataButton = new Button(this, SWT.NONE);
         FormData fd_saveDataButton = new FormData();
@@ -81,6 +122,26 @@ public class StatePanel extends Composite {
         fd_saveDataButton.left = new FormAttachment(loadDataButton, 10);
         saveDataButton.setLayoutData(fd_saveDataButton);
         saveDataButton.setText("Save...");
+        saveDataButton.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent se) {
+                Shell shell = getShell();
+                FileDialog dialog = new FileDialog(shell, SWT.SAVE);
+                dialog.setFilterNames(new String[]{"All Files (*)"});
+                dialog.setFilterExtensions(new String[]{"*"});
+                String fileName = dialog.open();
+                if (fileName != null) {
+                    try {
+                        File selectedFile = new File(fileName);
+                        try (FileOutputStream stream = new FileOutputStream(selectedFile)) {
+                            CodeAreaUtils.requireNonNull(codeArea.getContentData()).saveToStream(stream);
+                        }
+                    } catch (IOException ex) {
+                        Logger.getLogger(StatePanel.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+        });
 
         Label activeOperationLabel = new Label(this, SWT.NONE);
         FormData fd_activeOperationLabel = new FormData();
@@ -125,7 +186,7 @@ public class StatePanel extends Composite {
         fd_positionLabel.left = new FormAttachment(0, 10);
         positionLabel.setLayoutData(fd_positionLabel);
 
-        Text positionText = new Text(fontGroupComposite, SWT.BORDER);
+        positionText = new Text(fontGroupComposite, SWT.BORDER);
         positionText.setEditable(false);
         FormData fd_positionText = new FormData();
         fd_positionText.top = new FormAttachment(positionLabel, 6);
@@ -141,7 +202,7 @@ public class StatePanel extends Composite {
         fd_codeOffsetLabel.left = new FormAttachment(0, 10);
         codeOffsetLabel.setLayoutData(fd_codeOffsetLabel);
 
-        Text codeOffsetText = new Text(fontGroupComposite, SWT.BORDER);
+        codeOffsetText = new Text(fontGroupComposite, SWT.BORDER);
         codeOffsetText.setEditable(false);
         FormData fd_codeOffsetText = new FormData();
         fd_codeOffsetText.top = new FormAttachment(codeOffsetLabel, 6);
@@ -161,8 +222,7 @@ public class StatePanel extends Composite {
         activeSectionCombo.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                Font codeFont = codeArea.getCodeFont();
-                // TODO
+                codeArea.getCaret().setSection(BasicCodeAreaSection.values()[activeSectionCombo.getSelectionIndex()]);
             }
         });
         activeSectionCombo.setItems(new String[]{"CODE_MATRIX", "TEXT_PREVIEW"});
@@ -172,7 +232,7 @@ public class StatePanel extends Composite {
         fd_activeSectionCombo.top = new FormAttachment(activeSectionLabel, 6);
         fd_activeSectionCombo.left = new FormAttachment(0, 10);
         activeSectionCombo.setLayoutData(fd_activeSectionCombo);
-        
+
         Group selectionGroup = new Group(this, SWT.NONE);
         selectionGroup.setText("Selection");
         selectionGroup.setLayout(new FillLayout());
@@ -182,10 +242,10 @@ public class StatePanel extends Composite {
         fd_selectionGroup.right = new FormAttachment(100, -10);
         fd_selectionGroup.height = 140;
         selectionGroup.setLayoutData(fd_selectionGroup);
-        
+
         Composite composite = new Composite(selectionGroup, SWT.NONE);
         composite.setLayout(new FormLayout());
-        
+
         Label selectionStartLabel = new Label(composite, SWT.NONE);
         selectionStartLabel.setText("Selection Start");
         FormData fd_selectionStartLabel = new FormData();
@@ -194,7 +254,7 @@ public class StatePanel extends Composite {
         fd_selectionStartLabel.left = new FormAttachment(0, 10);
         selectionStartLabel.setLayoutData(fd_selectionStartLabel);
 
-        Text selectionStartText = new Text(composite, SWT.BORDER);
+        selectionStartText = new Text(composite, SWT.BORDER);
         selectionStartText.setEditable(false);
         FormData fd_selectionStartText = new FormData();
         fd_selectionStartText.top = new FormAttachment(selectionStartLabel, 6);
@@ -209,8 +269,8 @@ public class StatePanel extends Composite {
         fd_selectionEndLabel.right = new FormAttachment(0, 370);
         fd_selectionEndLabel.left = new FormAttachment(0, 10);
         selectionEndLabel.setLayoutData(fd_selectionEndLabel);
-        
-        Text selectionEndText = new Text(composite, SWT.BORDER);
+
+        selectionEndText = new Text(composite, SWT.BORDER);
         selectionEndText.setEditable(false);
         FormData fd_selectionEndText = new FormData();
         fd_selectionEndText.top = new FormAttachment(selectionEndLabel, 6);
@@ -222,14 +282,40 @@ public class StatePanel extends Composite {
     public void setCodeArea(CodeArea codeArea) {
         this.codeArea = codeArea;
 
-//        viewModeCombo.select(codeArea.getViewMode().ordinal());
-//        codeTypeCombo.select(codeArea.getCodeType().ordinal());
-//        // antialiasingCombo.select(((AntialiasingCapable) codeArea).getAntialiasingMode().ordinal());
-//        editationModeCombo.select(codeArea.getEditationMode().ordinal());
+        dataSizeText.setText(String.valueOf(codeArea.getDataSize()));
+
+        codeArea.addCaretMovedListener((CodeAreaCaretPosition caretPosition) -> {
+            positionText.setText(String.valueOf(caretPosition.getDataPosition()));
+            codeOffsetText.setText(String.valueOf(caretPosition.getCodeOffset()));
+            activeSectionCombo.select(getSection(caretPosition).ordinal());
+        });
+        ((SelectionCapable) codeArea).addSelectionChangedListener((SelectionRange selection) -> {
+            if (selection != null) {
+                long first = ((SelectionCapable) codeArea).getSelection().getFirst();
+                selectionStartText.setText(String.valueOf(first));
+                long last = ((SelectionCapable) codeArea).getSelection().getLast();
+                selectionEndText.setText(String.valueOf(last));
+            } else {
+                selectionStartText.setText("");
+                selectionEndText.setText("");
+            }
+        });
+        codeArea.addDataChangedListener(() -> {
+            dataSizeText.setText(String.valueOf(codeArea.getDataSize()));
+        });
+        codeArea.addEditationModeChangedListener((editationMode, editationOperation) -> {
+            activeOperationCombo.select(editationOperation.ordinal());
+        });
     }
 
     @Override
     protected void checkSubclass() {
         // Disable the check that prevents subclassing of SWT components
+    }
+
+    @Nonnull
+    private BasicCodeAreaSection getSection(CodeAreaCaretPosition caretPosition) {
+        BasicCodeAreaSection section = (BasicCodeAreaSection) caretPosition.getSection();
+        return section == null ? BasicCodeAreaSection.CODE_MATRIX : section;
     }
 }

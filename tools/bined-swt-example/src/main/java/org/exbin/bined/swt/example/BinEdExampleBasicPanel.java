@@ -25,11 +25,12 @@ import org.eclipse.swt.widgets.TabItem;
 import org.exbin.bined.swt.basic.CodeArea;
 import org.exbin.bined.swt.example.panel.ModePanel;
 import org.exbin.bined.swt.example.panel.StatePanel;
+import org.exbin.bined.swt.example.panel.ThemePanel;
 
 /**
  * Basic binary component example panel.
  *
- * @version 0.2.0 2019/08/24
+ * @version 0.2.0 2019/09/12
  * @author ExBin Project (https://exbin.org)
  */
 public class BinEdExampleBasicPanel extends Composite {
@@ -37,6 +38,7 @@ public class BinEdExampleBasicPanel extends Composite {
     private TabFolder tabFolder;
     private TabItem modeTabItem;
     private TabItem stateTabItem;
+    private TabItem themeTabItem;
 
     public BinEdExampleBasicPanel() {
         super(null, SWT.NULL);
@@ -59,6 +61,8 @@ public class BinEdExampleBasicPanel extends Composite {
         modeTabItem.setText("Mode");
         stateTabItem = new TabItem(tabFolder, SWT.NULL);
         stateTabItem.setText("State");
+        themeTabItem = new TabItem(tabFolder, SWT.NULL);
+        themeTabItem.setText("Theme");
     }
 
     public void setCodeArea(CodeArea codeArea) {
@@ -87,5 +91,18 @@ public class BinEdExampleBasicPanel extends Composite {
         statePanelWrapper.setExpandVertical(true);
         statePanelWrapper.setMinSize(statePanel.computeSize(SWT.DEFAULT, SWT.DEFAULT));
         statePanel.setCodeArea(codeArea);
+
+        ScrolledComposite themePanelWrapper = new ScrolledComposite(tabFolder, SWT.V_SCROLL | SWT.H_SCROLL);
+        themePanelWrapper.setLayout(new FillLayout());
+        themePanelWrapper.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        themeTabItem.setControl(themePanelWrapper);
+
+        final ThemePanel themePanel = new ThemePanel(themePanelWrapper, SWT.NONE);
+        themePanel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        themePanelWrapper.setContent(themePanel);
+        themePanelWrapper.setExpandHorizontal(true);
+        themePanelWrapper.setExpandVertical(true);
+        themePanelWrapper.setMinSize(themePanel.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+        themePanel.setCodeArea(codeArea);
     }
 }
