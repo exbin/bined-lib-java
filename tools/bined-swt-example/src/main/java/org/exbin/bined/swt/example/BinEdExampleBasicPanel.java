@@ -52,16 +52,15 @@ public class BinEdExampleBasicPanel extends Composite {
         initComponents();
     }
 
-    public void initComponents() {
+    private void initComponents() {
         setLayout(new FillLayout());
         tabFolder = new TabFolder(this, SWT.BORDER);
-        tabFolder.setLayout(new FillLayout());
 
-        modeTabItem = new TabItem(tabFolder, SWT.NULL);
+        modeTabItem = new TabItem(tabFolder, SWT.NONE);
         modeTabItem.setText("Mode");
-        stateTabItem = new TabItem(tabFolder, SWT.NULL);
+        stateTabItem = new TabItem(tabFolder, SWT.NONE);
         stateTabItem.setText("State");
-        themeTabItem = new TabItem(tabFolder, SWT.NULL);
+        themeTabItem = new TabItem(tabFolder, SWT.NONE);
         themeTabItem.setText("Theme");
     }
 

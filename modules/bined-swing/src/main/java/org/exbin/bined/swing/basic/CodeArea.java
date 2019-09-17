@@ -87,7 +87,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
     @Nonnull
     private CodeAreaViewMode viewMode = CodeAreaViewMode.DUAL;
     @Nullable
-    private Font font;
+    private Font codeFont;
     @Nonnull
     private BasicBackgroundPaintMode borderPaintMode = BasicBackgroundPaintMode.STRIPED;
     @Nonnull
@@ -643,12 +643,12 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
     @Nullable
     @Override
     public Font getCodeFont() {
-        return font;
+        return codeFont;
     }
 
     @Override
-    public void setCodeFont(@Nullable Font font) {
-        this.font = font;
+    public void setCodeFont(@Nullable Font codeFont) {
+        this.codeFont = codeFont;
         painter.resetFont();
         repaint();
     }

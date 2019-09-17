@@ -167,7 +167,7 @@ public class StatePanel extends Composite {
 
         Group positionGroup = new Group(this, SWT.NONE);
         positionGroup.setText("Position");
-        positionGroup.setLayout(new FillLayout());
+        positionGroup.setLayout(new FillLayout(SWT.VERTICAL | SWT.HORIZONTAL));
         FormData fd_positionGroup = new FormData();
         fd_positionGroup.top = new FormAttachment(activeOperationCombo, 6);
         fd_positionGroup.left = new FormAttachment(0, 10);
@@ -182,39 +182,39 @@ public class StatePanel extends Composite {
         positionLabel.setText("Data Position");
         FormData fd_positionLabel = new FormData();
         fd_positionLabel.top = new FormAttachment(0, 10);
-        fd_positionLabel.right = new FormAttachment(0, 370);
         fd_positionLabel.left = new FormAttachment(0, 10);
+        fd_positionLabel.right = new FormAttachment(100, -10);
         positionLabel.setLayoutData(fd_positionLabel);
 
         positionText = new Text(fontGroupComposite, SWT.BORDER);
         positionText.setEditable(false);
         FormData fd_positionText = new FormData();
         fd_positionText.top = new FormAttachment(positionLabel, 6);
-        fd_positionText.right = new FormAttachment(0, 370);
         fd_positionText.left = new FormAttachment(0, 10);
+        fd_positionText.right = new FormAttachment(100, -10);
         positionText.setLayoutData(fd_positionText);
 
         Label codeOffsetLabel = new Label(fontGroupComposite, SWT.NONE);
         codeOffsetLabel.setText("Code Offset");
         FormData fd_codeOffsetLabel = new FormData();
         fd_codeOffsetLabel.top = new FormAttachment(positionText, 6);
-        fd_codeOffsetLabel.right = new FormAttachment(0, 370);
         fd_codeOffsetLabel.left = new FormAttachment(0, 10);
+        fd_codeOffsetLabel.right = new FormAttachment(100, -10);
         codeOffsetLabel.setLayoutData(fd_codeOffsetLabel);
 
         codeOffsetText = new Text(fontGroupComposite, SWT.BORDER);
         codeOffsetText.setEditable(false);
         FormData fd_codeOffsetText = new FormData();
         fd_codeOffsetText.top = new FormAttachment(codeOffsetLabel, 6);
-        fd_codeOffsetText.right = new FormAttachment(0, 370);
         fd_codeOffsetText.left = new FormAttachment(0, 10);
+        fd_codeOffsetText.right = new FormAttachment(100, -10);
         codeOffsetText.setLayoutData(fd_codeOffsetText);
 
         Label activeSectionLabel = new Label(fontGroupComposite, SWT.NONE);
         FormData fd_activeSectionLabel = new FormData();
         fd_activeSectionLabel.top = new FormAttachment(codeOffsetText, 6);
-        fd_activeSectionLabel.right = new FormAttachment(0, 370);
         fd_activeSectionLabel.left = new FormAttachment(0, 10);
+        fd_activeSectionLabel.right = new FormAttachment(100, -10);
         activeSectionLabel.setLayoutData(fd_activeSectionLabel);
         activeSectionLabel.setText("Active Section");
 
@@ -228,9 +228,9 @@ public class StatePanel extends Composite {
         activeSectionCombo.setItems(new String[]{"CODE_MATRIX", "TEXT_PREVIEW"});
         activeSectionCombo.select(0);
         FormData fd_activeSectionCombo = new FormData();
-        fd_activeSectionCombo.right = new FormAttachment(0, 370);
         fd_activeSectionCombo.top = new FormAttachment(activeSectionLabel, 6);
         fd_activeSectionCombo.left = new FormAttachment(0, 10);
+        fd_activeSectionCombo.right = new FormAttachment(100, -10);
         activeSectionCombo.setLayoutData(fd_activeSectionCombo);
 
         Group selectionGroup = new Group(this, SWT.NONE);
@@ -250,32 +250,32 @@ public class StatePanel extends Composite {
         selectionStartLabel.setText("Selection Start");
         FormData fd_selectionStartLabel = new FormData();
         fd_selectionStartLabel.top = new FormAttachment(0, 10);
-        fd_selectionStartLabel.right = new FormAttachment(0, 370);
         fd_selectionStartLabel.left = new FormAttachment(0, 10);
+        fd_selectionStartLabel.right = new FormAttachment(100, -10);
         selectionStartLabel.setLayoutData(fd_selectionStartLabel);
 
         selectionStartText = new Text(composite, SWT.BORDER);
         selectionStartText.setEditable(false);
         FormData fd_selectionStartText = new FormData();
         fd_selectionStartText.top = new FormAttachment(selectionStartLabel, 6);
-        fd_selectionStartText.right = new FormAttachment(0, 370);
         fd_selectionStartText.left = new FormAttachment(0, 10);
+        fd_selectionStartText.right = new FormAttachment(100, -10);
         selectionStartText.setLayoutData(fd_selectionStartText);
 
         Label selectionEndLabel = new Label(composite, SWT.NONE);
         selectionEndLabel.setText("Selection End");
         FormData fd_selectionEndLabel = new FormData();
         fd_selectionEndLabel.top = new FormAttachment(selectionStartText, 6);
-        fd_selectionEndLabel.right = new FormAttachment(0, 370);
         fd_selectionEndLabel.left = new FormAttachment(0, 10);
+        fd_selectionEndLabel.right = new FormAttachment(100, -10);
         selectionEndLabel.setLayoutData(fd_selectionEndLabel);
 
         selectionEndText = new Text(composite, SWT.BORDER);
         selectionEndText.setEditable(false);
         FormData fd_selectionEndText = new FormData();
         fd_selectionEndText.top = new FormAttachment(selectionEndLabel, 6);
-        fd_selectionEndText.right = new FormAttachment(0, 370);
         fd_selectionEndText.left = new FormAttachment(0, 10);
+        fd_selectionEndText.right = new FormAttachment(100, -10);
         selectionEndText.setLayoutData(fd_selectionEndText);
     }
 

@@ -166,9 +166,9 @@ public class ModePanel extends Composite {
 
         Label fontFamilyLabel = new Label(fontGroupComposite, SWT.NONE);
         FormData fd_fontFamilyLabel = new FormData();
-        fd_fontFamilyLabel.right = new FormAttachment(0, 370);
         fd_fontFamilyLabel.top = new FormAttachment(0, 10);
         fd_fontFamilyLabel.left = new FormAttachment(0, 10);
+        fd_fontFamilyLabel.right = new FormAttachment(100, -10);
         fontFamilyLabel.setLayoutData(fd_fontFamilyLabel);
         fontFamilyLabel.setText("Font Family");
 
@@ -197,9 +197,9 @@ public class ModePanel extends Composite {
         fontFamilyCombo.setItems(new String[]{"DIALOG", "MONOSPACE", "SERIF"});
         fontFamilyCombo.select(0);
         FormData fd_fontFamilyCombo = new FormData();
-        fd_fontFamilyCombo.right = new FormAttachment(0, 370);
         fd_fontFamilyCombo.top = new FormAttachment(fontFamilyLabel, 6);
         fd_fontFamilyCombo.left = new FormAttachment(0, 10);
+        fd_fontFamilyCombo.right = new FormAttachment(100, -10);
         fontFamilyCombo.setLayoutData(fd_fontFamilyCombo);
 
         Label fontSizeLabel = new Label(fontGroupComposite, SWT.NONE);
@@ -221,9 +221,9 @@ public class ModePanel extends Composite {
         fontSizeCombo.setItems(new String[]{"8", "9", "10", "12", "14", "18", "22"});
         fontSizeCombo.select(0);
         FormData fd_fontSizeCombo = new FormData();
-        fd_fontSizeCombo.right = new FormAttachment(0, 370);
         fd_fontSizeCombo.top = new FormAttachment(fontSizeLabel, 6);
         fd_fontSizeCombo.left = new FormAttachment(0, 10);
+        fd_fontSizeCombo.right = new FormAttachment(100, -10);
         fontSizeCombo.setLayoutData(fd_fontSizeCombo);
 
         Label charsetLabel = new Label(this, SWT.NONE);

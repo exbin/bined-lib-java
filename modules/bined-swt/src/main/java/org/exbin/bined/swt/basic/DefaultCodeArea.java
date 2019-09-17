@@ -28,6 +28,7 @@ import org.exbin.bined.capability.ScrollingCapable;
 import org.exbin.bined.capability.SelectionCapable;
 import org.exbin.bined.capability.ViewModeCapable;
 import org.exbin.bined.swt.CodeAreaSwtControl;
+import org.exbin.bined.swt.capability.AntialiasingCapable;
 import org.exbin.bined.swt.capability.BasicColorsCapable;
 import org.exbin.bined.swt.capability.FontCapable;
 
@@ -39,5 +40,5 @@ import org.exbin.bined.swt.capability.FontCapable;
  */
 public interface DefaultCodeArea extends CodeAreaSwtControl, SelectionCapable, CaretCapable, ScrollingCapable, BasicScrollingCapable, ViewModeCapable,
         CodeTypeCapable, EditationModeCapable, CharsetCapable, CodeCharactersCaseCapable, FontCapable,
-        BackgroundPaintCapable, RowWrappingCapable, ClipboardCapable, BasicColorsCapable {
+        BackgroundPaintCapable, RowWrappingCapable, ClipboardCapable, BasicColorsCapable, AntialiasingCapable {
 }
