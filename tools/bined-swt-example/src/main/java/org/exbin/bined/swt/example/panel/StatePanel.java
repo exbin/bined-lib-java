@@ -43,6 +43,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.exbin.bined.BasicCodeAreaSection;
 import org.exbin.bined.CodeAreaCaretPosition;
 import org.exbin.bined.CodeAreaUtils;
+import org.exbin.bined.EditationOperation;
 import org.exbin.bined.SelectionRange;
 import org.exbin.bined.capability.SelectionCapable;
 import org.exbin.utils.binary_data.EditableBinaryData;
@@ -155,7 +156,7 @@ public class StatePanel extends Composite {
         activeOperationCombo.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                codeArea.setViewMode(CodeAreaViewMode.values()[activeOperationCombo.getSelectionIndex()]);
+                codeArea.setEditationOperation(EditationOperation.values()[activeOperationCombo.getSelectionIndex()]);
             }
         });
         activeOperationCombo.setItems(new String[]{"INSERT", "OVERWRITE"});

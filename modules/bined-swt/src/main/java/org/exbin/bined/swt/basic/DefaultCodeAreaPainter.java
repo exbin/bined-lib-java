@@ -81,7 +81,7 @@ import org.exbin.bined.basic.BasicCodeAreaLayout;
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2019/08/25
+ * @version 0.2.0 2019/09/17
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -96,6 +96,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
     private volatile boolean layoutChanged = true;
     private volatile boolean resetColors = true;
     private volatile boolean caretChanged = true;
+    private volatile boolean childPaint = false;
 
     @Nonnull
     private final Composite dataView;
@@ -171,7 +172,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
 //        scrollPanel.setViewportBorder(null);
 //        scrollPanel.getViewport().setOpaque(false);
 
-        dataView = new Composite(scrollPanel, SWT.NONE);
+        dataView = new Composite(scrollPanel, SWT.NO_BACKGROUND | SWT.NO_REDRAW_RESIZE | SWT.NO_MERGE_PAINTS);
         codeAreaPaintListener = (PaintEvent paintEvent) -> {
             GC g = paintEvent.gc;
             if (g == null) {
@@ -179,6 +180,13 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
             }
 
             paintMainArea(g);
+
+            if (childPaint) {
+                childPaint = false;
+            } else {
+                Rectangle codeAreaBounds = codeArea.getBounds();
+                codeArea.redraw(0, 0, codeAreaBounds.width, codeAreaBounds.height, true);
+            }
         };
 //        dataView.setVisible(false);
 //        dataView.setLayout(null);
@@ -418,7 +426,12 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         paintOutsiteArea(g);
         paintHeader(g);
         paintRowPosition(g);
-//        paintMainArea(g);
+
+        Rectangle dataViewBounds = dataView.getBounds();
+        childPaint = true;
+        dataView.redraw(0, 0, dataViewBounds.width, dataViewBounds.height, true);
+//        dataView.get
+//        paintMainArea(dataViewGC);
 //        scrollPanel.paintComponents(g);
         paintCounter++;
     }
