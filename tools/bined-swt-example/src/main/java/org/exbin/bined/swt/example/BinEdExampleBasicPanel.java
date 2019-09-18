@@ -23,14 +23,17 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.exbin.bined.swt.basic.CodeArea;
+import org.exbin.bined.swt.example.panel.CursorPanel;
+import org.exbin.bined.swt.example.panel.LayoutPanel;
 import org.exbin.bined.swt.example.panel.ModePanel;
+import org.exbin.bined.swt.example.panel.ScrollingPanel;
 import org.exbin.bined.swt.example.panel.StatePanel;
 import org.exbin.bined.swt.example.panel.ThemePanel;
 
 /**
  * Basic binary component example panel.
  *
- * @version 0.2.0 2019/09/12
+ * @version 0.2.0 2019/09/18
  * @author ExBin Project (https://exbin.org)
  */
 public class BinEdExampleBasicPanel extends Composite {
@@ -39,6 +42,9 @@ public class BinEdExampleBasicPanel extends Composite {
     private TabItem modeTabItem;
     private TabItem stateTabItem;
     private TabItem themeTabItem;
+    private TabItem layoutTabItem;
+    private TabItem scrollingTabItem;
+    private TabItem cursorTabItem;
 
     public BinEdExampleBasicPanel() {
         super(null, SWT.NULL);
@@ -62,6 +68,12 @@ public class BinEdExampleBasicPanel extends Composite {
         stateTabItem.setText("State");
         themeTabItem = new TabItem(tabFolder, SWT.NONE);
         themeTabItem.setText("Theme");
+        layoutTabItem = new TabItem(tabFolder, SWT.NONE);
+        layoutTabItem.setText("Layout");
+        scrollingTabItem = new TabItem(tabFolder, SWT.NONE);
+        scrollingTabItem.setText("Scrolling");
+        cursorTabItem = new TabItem(tabFolder, SWT.NONE);
+        cursorTabItem.setText("Cursor");
     }
 
     public void setCodeArea(CodeArea codeArea) {
@@ -103,5 +115,44 @@ public class BinEdExampleBasicPanel extends Composite {
         themePanelWrapper.setExpandVertical(true);
         themePanelWrapper.setMinSize(themePanel.computeSize(SWT.DEFAULT, SWT.DEFAULT));
         themePanel.setCodeArea(codeArea);
+
+        ScrolledComposite layoutPanelWrapper = new ScrolledComposite(tabFolder, SWT.V_SCROLL | SWT.H_SCROLL);
+        layoutPanelWrapper.setLayout(new FillLayout());
+        layoutPanelWrapper.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        layoutTabItem.setControl(layoutPanelWrapper);
+
+        final LayoutPanel layoutPanel = new LayoutPanel(layoutPanelWrapper, SWT.NONE);
+        layoutPanel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        layoutPanelWrapper.setContent(layoutPanel);
+        layoutPanelWrapper.setExpandHorizontal(true);
+        layoutPanelWrapper.setExpandVertical(true);
+        layoutPanelWrapper.setMinSize(layoutPanel.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+        layoutPanel.setCodeArea(codeArea);
+
+        ScrolledComposite scrollingPanelWrapper = new ScrolledComposite(tabFolder, SWT.V_SCROLL | SWT.H_SCROLL);
+        scrollingPanelWrapper.setLayout(new FillLayout());
+        scrollingPanelWrapper.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        scrollingTabItem.setControl(scrollingPanelWrapper);
+
+        final ScrollingPanel scrollingPanel = new ScrollingPanel(scrollingPanelWrapper, SWT.NONE);
+        scrollingPanel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        scrollingPanelWrapper.setContent(scrollingPanel);
+        scrollingPanelWrapper.setExpandHorizontal(true);
+        scrollingPanelWrapper.setExpandVertical(true);
+        scrollingPanelWrapper.setMinSize(scrollingPanel.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+        scrollingPanel.setCodeArea(codeArea);
+
+        ScrolledComposite cursorPanelWrapper = new ScrolledComposite(tabFolder, SWT.V_SCROLL | SWT.H_SCROLL);
+        cursorPanelWrapper.setLayout(new FillLayout());
+        cursorPanelWrapper.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        cursorTabItem.setControl(cursorPanelWrapper);
+
+        final CursorPanel cursorPanel = new CursorPanel(cursorPanelWrapper, SWT.NONE);
+        cursorPanel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        cursorPanelWrapper.setContent(cursorPanel);
+        cursorPanelWrapper.setExpandHorizontal(true);
+        cursorPanelWrapper.setExpandVertical(true);
+        cursorPanelWrapper.setMinSize(cursorPanel.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+        cursorPanel.setCodeArea(codeArea);
     }
 }

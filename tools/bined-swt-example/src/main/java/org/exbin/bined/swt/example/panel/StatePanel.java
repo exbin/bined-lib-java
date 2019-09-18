@@ -34,7 +34,6 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FillLayout;
-import org.exbin.bined.CodeAreaViewMode;
 import org.exbin.bined.swt.basic.CodeArea;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Button;

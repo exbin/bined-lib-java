@@ -57,7 +57,7 @@ public class ScrollingPanel extends javax.swing.JPanel {
         horizontalPositionLabel = new javax.swing.JLabel();
         horizontalPositionTextField = new javax.swing.JTextField();
         verticalPanel = new javax.swing.JPanel();
-        verticalScrollBarVisibilityModeLabel = new javax.swing.JLabel();
+        verticalScrollBarVisibilityLabel = new javax.swing.JLabel();
         verticalScrollBarVisibilityComboBox = new javax.swing.JComboBox<>();
         verticalScrollModeLabel = new javax.swing.JLabel();
         verticalScrollModeComboBox = new javax.swing.JComboBox<>();
@@ -130,7 +130,7 @@ public class ScrollingPanel extends javax.swing.JPanel {
 
         verticalPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Vertical"));
 
-        verticalScrollBarVisibilityModeLabel.setText("Vertical Scrollbar");
+        verticalScrollBarVisibilityLabel.setText("Vertical Scrollbar");
 
         verticalScrollBarVisibilityComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "NEVER", "IF_NEEDED", "ALWAYS" }));
         verticalScrollBarVisibilityComboBox.setSelectedIndex(1);
@@ -166,7 +166,7 @@ public class ScrollingPanel extends javax.swing.JPanel {
                     .addComponent(verticalPositionTextField)
                     .addGroup(verticalPanelLayout.createSequentialGroup()
                         .addGroup(verticalPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(verticalScrollBarVisibilityModeLabel)
+                            .addComponent(verticalScrollBarVisibilityLabel)
                             .addComponent(verticalScrollModeLabel)
                             .addComponent(verticalPositionLabel))
                         .addGap(0, 0, Short.MAX_VALUE)))
@@ -176,7 +176,7 @@ public class ScrollingPanel extends javax.swing.JPanel {
             verticalPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(verticalPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(verticalScrollBarVisibilityModeLabel)
+                .addComponent(verticalScrollBarVisibilityLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(verticalScrollBarVisibilityComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -283,7 +283,7 @@ public class ScrollingPanel extends javax.swing.JPanel {
     private javax.swing.JLabel verticalPositionLabel;
     private javax.swing.JTextField verticalPositionTextField;
     private javax.swing.JComboBox<String> verticalScrollBarVisibilityComboBox;
-    private javax.swing.JLabel verticalScrollBarVisibilityModeLabel;
+    private javax.swing.JLabel verticalScrollBarVisibilityLabel;
     private javax.swing.JComboBox<String> verticalScrollModeComboBox;
     private javax.swing.JLabel verticalScrollModeLabel;
     // End of variables declaration//GEN-END:variables

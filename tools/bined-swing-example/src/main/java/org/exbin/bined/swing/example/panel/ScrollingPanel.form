@@ -177,7 +177,7 @@
                       <Component id="verticalPositionTextField" alignment="0" max="32767" attributes="0"/>
                       <Group type="102" alignment="0" attributes="0">
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="verticalScrollBarVisibilityModeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="verticalScrollBarVisibilityLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                               <Component id="verticalScrollModeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                               <Component id="verticalPositionLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                           </Group>
@@ -192,7 +192,7 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="verticalScrollBarVisibilityModeLabel" min="-2" max="-2" attributes="0"/>
+                  <Component id="verticalScrollBarVisibilityLabel" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="verticalScrollBarVisibilityComboBox" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
@@ -209,7 +209,7 @@
         </DimensionLayout>
       </Layout>
       <SubComponents>
-        <Component class="javax.swing.JLabel" name="verticalScrollBarVisibilityModeLabel">
+        <Component class="javax.swing.JLabel" name="verticalScrollBarVisibilityLabel">
           <Properties>
             <Property name="text" type="java.lang.String" value="Vertical Scrollbar"/>
           </Properties>
