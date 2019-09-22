@@ -27,7 +27,6 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.plaf.basic.BasicBorders;
-import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.CodeAreaViewMode;
 import org.exbin.bined.CodeCharactersCase;
 import org.exbin.bined.CodeType;
@@ -165,7 +164,6 @@ public class ModePanelEx extends javax.swing.JPanel {
         fontSizeLabel.setText("Font Size");
 
         fontSizeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "8", "9", "10", "12", "14", "18", "22" }));
-        fontSizeComboBox.setSelectedIndex(3);
         fontSizeComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 fontSizeComboBoxActionPerformed(evt);
@@ -331,7 +329,10 @@ public class ModePanelEx extends javax.swing.JPanel {
 
     private void fontSizeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fontSizeComboBoxActionPerformed
         Font font = codeArea.getCodeFont();
-        Font derivedFont = CodeAreaUtils.requireNonNull(font).deriveFont(Font.PLAIN, Integer.valueOf((String) fontSizeComboBox.getSelectedItem()));
+        if (font == null) {
+            font = codeArea.getFont();
+        }
+        Font derivedFont = font.deriveFont(Font.PLAIN, Integer.valueOf((String) fontSizeComboBox.getSelectedItem()));
         codeArea.setCodeFont(derivedFont);
     }//GEN-LAST:event_fontSizeComboBoxActionPerformed
 

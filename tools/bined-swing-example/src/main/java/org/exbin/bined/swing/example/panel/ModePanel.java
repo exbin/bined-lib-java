@@ -272,6 +272,9 @@ public class ModePanel extends javax.swing.JPanel {
 
     private void fontSizeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fontSizeComboBoxActionPerformed
         Font font = codeArea.getCodeFont();
+        if (font == null) {
+            font = codeArea.getFont();
+        }
         Font derivedFont = font.deriveFont(Font.PLAIN, Integer.valueOf((String) fontSizeComboBox.getSelectedItem()));
         codeArea.setCodeFont(derivedFont);
     }//GEN-LAST:event_fontSizeComboBoxActionPerformed

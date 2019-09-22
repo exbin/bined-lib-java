@@ -7,8 +7,11 @@ buildscript {
     }
     dependencies {
         classpath("at.bxm.gradleplugins:gradle-svntools-plugin:latest.integration")
+        classpath("net.sf.proguard:proguard-gradle:6.1.1")
     }
 }
+
+// apply plugin: 'proguard'
 
 if (!hasProperty('mainClass')) {
     ext.mainClass = 'org.exbin.bined.editor.basic.BinEdEditorBasic'
@@ -70,3 +73,16 @@ jar {
     }
 }
 
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Main-Class': mainClass
+    }
+
+    baseName = 'bined-editor-basic-standalone'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
+// task proguardJar(type: proguard.gradle.ProGuardTask) {
+//     
+// }
