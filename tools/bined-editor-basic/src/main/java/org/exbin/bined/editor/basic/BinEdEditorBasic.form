@@ -68,6 +68,10 @@
         </MenuItem>
       </SubComponents>
     </Container>
+    <Component class="javax.swing.ButtonGroup" name="codeTypeButtonGroup">
+    </Component>
+    <Component class="javax.swing.ButtonGroup" name="hexCharacterCaseButtonGroup">
+    </Component>
     <Menu class="javax.swing.JMenuBar" name="mainMenuBar">
       <SubComponents>
         <Menu class="javax.swing.JMenu" name="fileMenu">
@@ -106,15 +110,6 @@
                 </Property>
                 <Property name="text" type="java.lang.String" value="Save As..."/>
               </Properties>
-            </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="chooseEncodingMenuItem">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Choose Encoding..."/>
-                <Property name="toolTipText" type="java.lang.String" value=""/>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="chooseEncodingMenuItemActionPerformed"/>
-              </Events>
             </MenuItem>
             <MenuItem class="javax.swing.JPopupMenu$Separator" name="jSeparator1">
             </MenuItem>
@@ -190,6 +185,104 @@
                 </Property>
                 <Property name="text" type="java.lang.String" value="Select All"/>
               </Properties>
+            </MenuItem>
+          </SubComponents>
+        </Menu>
+        <Menu class="javax.swing.JMenu" name="viewMenu">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="View"/>
+          </Properties>
+          <SubComponents>
+            <Menu class="javax.swing.JMenu" name="codeTypeMenu">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Code Type"/>
+              </Properties>
+              <SubComponents>
+                <MenuItem class="javax.swing.JRadioButtonMenuItem" name="binaryCodeTypeRadioButtonMenuItem">
+                  <Properties>
+                    <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+                      <ComponentRef name="codeTypeButtonGroup"/>
+                    </Property>
+                    <Property name="text" type="java.lang.String" value="Binary"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="binaryCodeTypeRadioButtonMenuItemActionPerformed"/>
+                  </Events>
+                </MenuItem>
+                <MenuItem class="javax.swing.JRadioButtonMenuItem" name="octalCodeTypeRadioButtonMenuItem">
+                  <Properties>
+                    <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+                      <ComponentRef name="codeTypeButtonGroup"/>
+                    </Property>
+                    <Property name="text" type="java.lang.String" value="Octal"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="octalCodeTypeRadioButtonMenuItemActionPerformed"/>
+                  </Events>
+                </MenuItem>
+                <MenuItem class="javax.swing.JRadioButtonMenuItem" name="decimalCodeTypeRadioButtonMenuItem">
+                  <Properties>
+                    <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+                      <ComponentRef name="codeTypeButtonGroup"/>
+                    </Property>
+                    <Property name="text" type="java.lang.String" value="Decimal"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="decimalCodeTypeRadioButtonMenuItemActionPerformed"/>
+                  </Events>
+                </MenuItem>
+                <MenuItem class="javax.swing.JRadioButtonMenuItem" name="hexadecimalCodeTypeRadioButtonMenuItem3">
+                  <Properties>
+                    <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+                      <ComponentRef name="codeTypeButtonGroup"/>
+                    </Property>
+                    <Property name="selected" type="boolean" value="true"/>
+                    <Property name="text" type="java.lang.String" value="Hexadecimal"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="hexadecimalCodeTypeRadioButtonMenuItem3ActionPerformed"/>
+                  </Events>
+                </MenuItem>
+              </SubComponents>
+            </Menu>
+            <Menu class="javax.swing.JMenu" name="hexCharacterCaseMenu">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Hex Character Case"/>
+              </Properties>
+              <SubComponents>
+                <MenuItem class="javax.swing.JRadioButtonMenuItem" name="upperCaseRadioButtonMenuItem">
+                  <Properties>
+                    <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+                      <ComponentRef name="hexCharacterCaseButtonGroup"/>
+                    </Property>
+                    <Property name="selected" type="boolean" value="true"/>
+                    <Property name="text" type="java.lang.String" value="Upper Case"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="upperCaseRadioButtonMenuItemActionPerformed"/>
+                  </Events>
+                </MenuItem>
+                <MenuItem class="javax.swing.JRadioButtonMenuItem" name="lowerCaseRadioButtonMenuItem">
+                  <Properties>
+                    <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
+                      <ComponentRef name="hexCharacterCaseButtonGroup"/>
+                    </Property>
+                    <Property name="text" type="java.lang.String" value="Lower Case"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="lowerCaseRadioButtonMenuItemActionPerformed"/>
+                  </Events>
+                </MenuItem>
+              </SubComponents>
+            </Menu>
+            <MenuItem class="javax.swing.JMenuItem" name="chooseEncodingMenuItem">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Choose Encoding..."/>
+                <Property name="toolTipText" type="java.lang.String" value=""/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="chooseEncodingMenuItemActionPerformed"/>
+              </Events>
             </MenuItem>
           </SubComponents>
         </Menu>

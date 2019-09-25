@@ -56,11 +56,13 @@ import org.exbin.bined.swing.basic.CodeArea;
 import org.exbin.utils.binary_data.ByteArrayEditableData;
 import org.exbin.utils.binary_data.EditableBinaryData;
 import org.exbin.bined.CodeAreaCaretPosition;
+import org.exbin.bined.CodeCharactersCase;
+import org.exbin.bined.CodeType;
 
 /**
  * Basic single jar swing version of BinEd Hexadecimal editor.
  *
- * @version 0.2.0 2019/09/21
+ * @version 0.2.0 2019/09/25
  * @author ExBin Project (https://exbin.org)
  */
 public class BinEdEditorBasic extends javax.swing.JFrame {
@@ -332,6 +334,8 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
         editPastePopupMenuItem = new javax.swing.JMenuItem();
         editDeletePopupMenuItem = new javax.swing.JMenuItem();
         selectAllPopupMenuItem = new javax.swing.JMenuItem();
+        codeTypeButtonGroup = new javax.swing.ButtonGroup();
+        hexCharacterCaseButtonGroup = new javax.swing.ButtonGroup();
         mainToolBar = new javax.swing.JToolBar();
         newFileButton = new javax.swing.JButton();
         openFileButton = new javax.swing.JButton();
@@ -356,7 +360,6 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
         openFileMenuItem = new javax.swing.JMenuItem();
         saveFileMenuItem = new javax.swing.JMenuItem();
         saveAsFileMenuItem = new javax.swing.JMenuItem();
-        chooseEncodingMenuItem = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
         exitMenuItem = new javax.swing.JMenuItem();
         editMenu = new javax.swing.JMenu();
@@ -368,6 +371,16 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
         editPasteMenuItem = new javax.swing.JMenuItem();
         editDeleteMenuItem = new javax.swing.JMenuItem();
         selectAllMenuItem = new javax.swing.JMenuItem();
+        viewMenu = new javax.swing.JMenu();
+        codeTypeMenu = new javax.swing.JMenu();
+        binaryCodeTypeRadioButtonMenuItem = new javax.swing.JRadioButtonMenuItem();
+        octalCodeTypeRadioButtonMenuItem = new javax.swing.JRadioButtonMenuItem();
+        decimalCodeTypeRadioButtonMenuItem = new javax.swing.JRadioButtonMenuItem();
+        hexadecimalCodeTypeRadioButtonMenuItem3 = new javax.swing.JRadioButtonMenuItem();
+        hexCharacterCaseMenu = new javax.swing.JMenu();
+        upperCaseRadioButtonMenuItem = new javax.swing.JRadioButtonMenuItem();
+        lowerCaseRadioButtonMenuItem = new javax.swing.JRadioButtonMenuItem();
+        chooseEncodingMenuItem = new javax.swing.JMenuItem();
         aboutMenu = new javax.swing.JMenu();
         aboutMenuItem = new javax.swing.JMenuItem();
 
@@ -533,15 +546,6 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
         saveAsFileMenuItem.setAction(saveAsFileAction);
         saveAsFileMenuItem.setText("Save As...");
         fileMenu.add(saveAsFileMenuItem);
-
-        chooseEncodingMenuItem.setText("Choose Encoding...");
-        chooseEncodingMenuItem.setToolTipText("");
-        chooseEncodingMenuItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                chooseEncodingMenuItemActionPerformed(evt);
-            }
-        });
-        fileMenu.add(chooseEncodingMenuItem);
         fileMenu.add(jSeparator1);
 
         exitMenuItem.setAction(exitAction);
@@ -582,6 +586,83 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
         editMenu.add(selectAllMenuItem);
 
         mainMenuBar.add(editMenu);
+
+        viewMenu.setText("View");
+
+        codeTypeMenu.setText("Code Type");
+
+        codeTypeButtonGroup.add(binaryCodeTypeRadioButtonMenuItem);
+        binaryCodeTypeRadioButtonMenuItem.setText("Binary");
+        binaryCodeTypeRadioButtonMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                binaryCodeTypeRadioButtonMenuItemActionPerformed(evt);
+            }
+        });
+        codeTypeMenu.add(binaryCodeTypeRadioButtonMenuItem);
+
+        codeTypeButtonGroup.add(octalCodeTypeRadioButtonMenuItem);
+        octalCodeTypeRadioButtonMenuItem.setText("Octal");
+        octalCodeTypeRadioButtonMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                octalCodeTypeRadioButtonMenuItemActionPerformed(evt);
+            }
+        });
+        codeTypeMenu.add(octalCodeTypeRadioButtonMenuItem);
+
+        codeTypeButtonGroup.add(decimalCodeTypeRadioButtonMenuItem);
+        decimalCodeTypeRadioButtonMenuItem.setText("Decimal");
+        decimalCodeTypeRadioButtonMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                decimalCodeTypeRadioButtonMenuItemActionPerformed(evt);
+            }
+        });
+        codeTypeMenu.add(decimalCodeTypeRadioButtonMenuItem);
+
+        codeTypeButtonGroup.add(hexadecimalCodeTypeRadioButtonMenuItem3);
+        hexadecimalCodeTypeRadioButtonMenuItem3.setSelected(true);
+        hexadecimalCodeTypeRadioButtonMenuItem3.setText("Hexadecimal");
+        hexadecimalCodeTypeRadioButtonMenuItem3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                hexadecimalCodeTypeRadioButtonMenuItem3ActionPerformed(evt);
+            }
+        });
+        codeTypeMenu.add(hexadecimalCodeTypeRadioButtonMenuItem3);
+
+        viewMenu.add(codeTypeMenu);
+
+        hexCharacterCaseMenu.setText("Hex Character Case");
+
+        hexCharacterCaseButtonGroup.add(upperCaseRadioButtonMenuItem);
+        upperCaseRadioButtonMenuItem.setSelected(true);
+        upperCaseRadioButtonMenuItem.setText("Upper Case");
+        upperCaseRadioButtonMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                upperCaseRadioButtonMenuItemActionPerformed(evt);
+            }
+        });
+        hexCharacterCaseMenu.add(upperCaseRadioButtonMenuItem);
+
+        hexCharacterCaseButtonGroup.add(lowerCaseRadioButtonMenuItem);
+        lowerCaseRadioButtonMenuItem.setText("Lower Case");
+        lowerCaseRadioButtonMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                lowerCaseRadioButtonMenuItemActionPerformed(evt);
+            }
+        });
+        hexCharacterCaseMenu.add(lowerCaseRadioButtonMenuItem);
+
+        viewMenu.add(hexCharacterCaseMenu);
+
+        chooseEncodingMenuItem.setText("Choose Encoding...");
+        chooseEncodingMenuItem.setToolTipText("");
+        chooseEncodingMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chooseEncodingMenuItemActionPerformed(evt);
+            }
+        });
+        viewMenu.add(chooseEncodingMenuItem);
+
+        mainMenuBar.add(viewMenu);
 
         aboutMenu.setText("About");
 
@@ -627,6 +708,30 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
     private void chooseEncodingMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chooseEncodingMenuItemActionPerformed
         chooseEncoding();
     }//GEN-LAST:event_chooseEncodingMenuItemActionPerformed
+
+    private void binaryCodeTypeRadioButtonMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_binaryCodeTypeRadioButtonMenuItemActionPerformed
+        codeArea.setCodeType(CodeType.BINARY);
+    }//GEN-LAST:event_binaryCodeTypeRadioButtonMenuItemActionPerformed
+
+    private void octalCodeTypeRadioButtonMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_octalCodeTypeRadioButtonMenuItemActionPerformed
+        codeArea.setCodeType(CodeType.OCTAL);
+    }//GEN-LAST:event_octalCodeTypeRadioButtonMenuItemActionPerformed
+
+    private void decimalCodeTypeRadioButtonMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_decimalCodeTypeRadioButtonMenuItemActionPerformed
+        codeArea.setCodeType(CodeType.DECIMAL);
+    }//GEN-LAST:event_decimalCodeTypeRadioButtonMenuItemActionPerformed
+
+    private void hexadecimalCodeTypeRadioButtonMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hexadecimalCodeTypeRadioButtonMenuItem3ActionPerformed
+        codeArea.setCodeType(CodeType.HEXADECIMAL);
+    }//GEN-LAST:event_hexadecimalCodeTypeRadioButtonMenuItem3ActionPerformed
+
+    private void upperCaseRadioButtonMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_upperCaseRadioButtonMenuItemActionPerformed
+        codeArea.setCodeCharactersCase(CodeCharactersCase.UPPER);
+    }//GEN-LAST:event_upperCaseRadioButtonMenuItemActionPerformed
+
+    private void lowerCaseRadioButtonMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lowerCaseRadioButtonMenuItemActionPerformed
+        codeArea.setCodeCharactersCase(CodeCharactersCase.LOWER);
+    }//GEN-LAST:event_lowerCaseRadioButtonMenuItemActionPerformed
 
     private void newFileActionPerformed() {
         if (!releaseFile()) {
@@ -824,9 +929,13 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu aboutMenu;
     private javax.swing.JMenuItem aboutMenuItem;
+    private javax.swing.JRadioButtonMenuItem binaryCodeTypeRadioButtonMenuItem;
     private javax.swing.JMenuItem chooseEncodingMenuItem;
+    private javax.swing.ButtonGroup codeTypeButtonGroup;
+    private javax.swing.JMenu codeTypeMenu;
     private javax.swing.JButton copyEditButton;
     private javax.swing.JButton cutEditButton;
+    private javax.swing.JRadioButtonMenuItem decimalCodeTypeRadioButtonMenuItem;
     private javax.swing.JButton deleteEditButton;
     private javax.swing.JMenuItem editCopyMenuItem;
     private javax.swing.JMenuItem editCopyPopupMenuItem;
@@ -845,16 +954,21 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
     private javax.swing.JLabel encodingLabel;
     private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JMenu fileMenu;
+    private javax.swing.ButtonGroup hexCharacterCaseButtonGroup;
+    private javax.swing.JMenu hexCharacterCaseMenu;
+    private javax.swing.JRadioButtonMenuItem hexadecimalCodeTypeRadioButtonMenuItem3;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JToolBar.Separator jSeparator3;
     private javax.swing.JToolBar.Separator jSeparator4;
     private javax.swing.JPopupMenu.Separator jSeparator5;
+    private javax.swing.JRadioButtonMenuItem lowerCaseRadioButtonMenuItem;
     private javax.swing.JMenuBar mainMenuBar;
     private javax.swing.JPopupMenu mainPopupMenu;
     private javax.swing.JToolBar mainToolBar;
     private javax.swing.JButton newFileButton;
     private javax.swing.JMenuItem newFileMenuItem;
+    private javax.swing.JRadioButtonMenuItem octalCodeTypeRadioButtonMenuItem;
     private javax.swing.JButton openFileButton;
     private javax.swing.JMenuItem openFileMenuItem;
     private javax.swing.JButton pasteEditButton;
@@ -869,6 +983,8 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
     private javax.swing.JSeparator statusBarSeparator;
     private javax.swing.JPanel textStatusPanel;
     private javax.swing.JButton undoEditButton;
+    private javax.swing.JRadioButtonMenuItem upperCaseRadioButtonMenuItem;
+    private javax.swing.JMenu viewMenu;
     // End of variables declaration//GEN-END:variables
 
 }

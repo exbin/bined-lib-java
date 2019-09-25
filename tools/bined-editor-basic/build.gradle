@@ -11,8 +11,6 @@ buildscript {
     }
 }
 
-// apply plugin: 'proguard'
-
 if (!hasProperty('mainClass')) {
     ext.mainClass = 'org.exbin.bined.editor.basic.BinEdEditorBasic'
     ext.appArgs = '-dev'
@@ -83,6 +81,11 @@ task fatJar(type: Jar) {
     with jar
 }
 
+import proguard.gradle.*
+
 // task proguardJar(type: proguard.gradle.ProGuardTask) {
-//     
+//     libraryjars "${System.properties['java.home']}/jre/lib/rt.jar"
+//     injars "build/libs/bined-editor-basic-standalone-${version}.jar"
+//     outjars "build/libs/bined-editor-basic-proguard-${version}.jar"
 // }
+// proguardJar.dependsOn fatJar
