@@ -319,7 +319,7 @@ public class DeltaDocument implements EditableBinaryData {
         return pointerWindow.getPartCopy(position, length);
     }
 
-    @Nonnull
+    @Nullable
     public FileDataSource getFileSource() {
         return fileSource;
     }
