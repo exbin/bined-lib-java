@@ -48,9 +48,9 @@ public class BasicCodeAreaDimensions {
     private int charactersPerRect;
 
     @Nonnull
-    private final Rectangle componentRect = new Rectangle(0, 0, 0, 0);
+    private final Rectangle componentRectangle = new Rectangle(0, 0, 0, 0);
     @Nonnull
-    private final Rectangle mainAreaRect = new Rectangle(0, 0, 0, 0);
+    private final Rectangle mainAreaRectangle = new Rectangle(0, 0, 0, 0);
     @Nonnull
     private final Rectangle headerAreaRectangle = new Rectangle(0, 0, 0, 0);
     @Nonnull
@@ -63,7 +63,7 @@ public class BasicCodeAreaDimensions {
     private final Rectangle dataViewInnerRectangle = new Rectangle(0, 0, 0, 0);
 
     public void recomputeSizes(BasicCodeAreaMetrics metrics, int componentWidth, int componentHeight, int rowPositionLength, int verticalScrollBarSize, int horizontalScrollBarSize) {
-        modifyRect(componentRect, 0, 0, componentWidth, componentHeight);
+        modifyRect(componentRectangle, 0, 0, componentWidth, componentHeight);
         this.verticalScrollBarSize = verticalScrollBarSize;
         this.horizontalScrollBarSize = horizontalScrollBarSize;
         rowPositionAreaWidth = metrics.getCharacterWidth() * (rowPositionLength + 1);
@@ -86,9 +86,9 @@ public class BasicCodeAreaDimensions {
         boolean availableHeight = scrollPanelY + horizontalScrollBarSize <= componentHeight;
 
         if (availableWidth && availableHeight) {
-            modifyRect(mainAreaRect, rowPositionAreaWidth, scrollPanelY, componentWidth - rowPositionAreaWidth - getVerticalScrollBarSize(), componentHeight - scrollPanelY - getHorizontalScrollBarSize());
+            modifyRect(mainAreaRectangle, rowPositionAreaWidth, scrollPanelY, componentWidth - rowPositionAreaWidth - getVerticalScrollBarSize(), componentHeight - scrollPanelY - getHorizontalScrollBarSize());
         } else {
-            modifyRect(mainAreaRect, 0, 0, 0, 0);
+            modifyRect(mainAreaRectangle, 0, 0, 0, 0);
         }
         if (availableWidth) {
             modifyRect(headerAreaRectangle, rowPositionAreaWidth, 0, componentWidth - rowPositionAreaWidth - getVerticalScrollBarSize(), headerAreaHeight);
@@ -205,13 +205,13 @@ public class BasicCodeAreaDimensions {
     }
 
     @Nonnull
-    public Rectangle getComponentRect() {
-        return componentRect;
+    public Rectangle getComponentRectangle() {
+        return componentRectangle;
     }
 
     @Nonnull
-    public Rectangle getMainAreaRect() {
-        return mainAreaRect;
+    public Rectangle getMainAreaRectangle() {
+        return mainAreaRectangle;
     }
 
     @Nonnull

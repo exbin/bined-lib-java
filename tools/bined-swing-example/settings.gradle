@@ -3,6 +3,7 @@ rootProject.name = 'bined-swing-example'
 if (rootProject.path == ':') {
     include ':modules:bined-core'
     include ':modules:bined-swing'
+    include ':modules:bined-extended'
     include ':modules:bined-swing-extended'
 }
 

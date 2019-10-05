@@ -430,7 +430,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         GraphicsContext gc = topCanvas.getGraphicsContext2D();
         double headerAreaHeight = dimensions.getHeaderAreaHeight();
         double rowPositionAreaWidth = dimensions.getRowPositionAreaWidth();
-        Rectangle2D componentRect = dimensions.getComponentRect();
+        Rectangle2D componentRect = dimensions.getComponentRectangle();
         int characterWidth = metrics.getCharacterWidth();
         gc.setFill(colorsProfile.getTextBackground());
         gc.fillRect(componentRect.getMinX(), componentRect.getMinY(), componentRect.getWidth(), headerAreaHeight);
@@ -1033,7 +1033,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         GraphicsContext g = dataView.getGraphicsContext2D();
 
         int maxBytesPerChar = metrics.getMaxBytesPerChar();
-        Rectangle2D mainAreaRect = dimensions.getMainAreaRect();
+        Rectangle2D mainAreaRect = dimensions.getMainAreaRectangle();
         CodeType codeType = structure.getCodeType();
         CodeAreaViewMode viewMode = structure.getViewMode();
         if (cursorDataCache == null) {

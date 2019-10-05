@@ -48,9 +48,9 @@ public class BasicCodeAreaDimensions {
     private int charactersPerRect;
 
     @Nonnull
-    private Rectangle2D componentRect = new Rectangle2D(0, 0, 0, 0);
+    private Rectangle2D componentRectangle = new Rectangle2D(0, 0, 0, 0);
     @Nonnull
-    private Rectangle2D mainAreaRect = new Rectangle2D(0, 0, 0, 0);
+    private Rectangle2D mainAreaRectangle = new Rectangle2D(0, 0, 0, 0);
     @Nonnull
     private Rectangle2D headerAreaRectangle = new Rectangle2D(0, 0, 0, 0);
     @Nonnull
@@ -63,7 +63,7 @@ public class BasicCodeAreaDimensions {
     private Rectangle2D dataViewInnerRectangle = new Rectangle2D(0, 0, 0, 0);
 
     public void recomputeSizes(BasicCodeAreaMetrics metrics, double componentX, double componentY, double componentWidth, double componentHeight, int rowPositionLength, int verticalScrollBarSize, int horizontalScrollBarSize) {
-        componentRect = new Rectangle2D(componentX, componentY, componentWidth, componentHeight);
+        componentRectangle = new Rectangle2D(componentX, componentY, componentWidth, componentHeight);
         this.verticalScrollBarSize = verticalScrollBarSize;
         this.horizontalScrollBarSize = horizontalScrollBarSize;
         rowPositionAreaWidth = metrics.getCharacterWidth() * (rowPositionLength + 1);
@@ -85,7 +85,7 @@ public class BasicCodeAreaDimensions {
         boolean availableWidth = rowPositionAreaWidth + verticalScrollBarSize <= componentWidth;
         boolean availableHeight = scrollPanelY + horizontalScrollBarSize <= componentHeight;
 
-        mainAreaRect = availableWidth && availableHeight
+        mainAreaRectangle = availableWidth && availableHeight
                 ? new Rectangle2D(rowPositionAreaWidth, scrollPanelY, componentWidth - rowPositionAreaWidth - verticalScrollBarSize, componentHeight - scrollPanelY - horizontalScrollBarSize)
                 : new Rectangle2D(0, 0, 0, 0);
         headerAreaRectangle = availableWidth
@@ -197,13 +197,13 @@ public class BasicCodeAreaDimensions {
     }
 
     @Nonnull
-    public Rectangle2D getComponentRect() {
-        return componentRect;
+    public Rectangle2D getComponentRectangle() {
+        return componentRectangle;
     }
 
     @Nonnull
-    public Rectangle2D getMainAreaRect() {
-        return mainAreaRect;
+    public Rectangle2D getMainAreaRectangle() {
+        return mainAreaRectangle;
     }
 
     @Nonnull

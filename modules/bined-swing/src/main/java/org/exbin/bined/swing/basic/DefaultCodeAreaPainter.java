@@ -420,7 +420,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
     public void paintOutsiteArea(Graphics g) {
         int headerAreaHeight = dimensions.getHeaderAreaHeight();
         int rowPositionAreaWidth = dimensions.getRowPositionAreaWidth();
-        Rectangle componentRect = dimensions.getComponentRect();
+        Rectangle componentRect = dimensions.getComponentRectangle();
         int characterWidth = metrics.getCharacterWidth();
         g.setColor(colorsProfile.getTextBackground());
         g.fillRect(componentRect.x, componentRect.y, componentRect.width, headerAreaHeight);
@@ -591,7 +591,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
             fontChanged = false;
         }
 
-        Rectangle mainAreaRect = dimensions.getMainAreaRect();
+        Rectangle mainAreaRect = dimensions.getMainAreaRectangle();
         Rectangle dataViewRectangle = dimensions.getDataViewRectangle();
         CodeAreaScrollPosition scrollPosition = scrolling.getScrollPosition();
         int characterWidth = metrics.getCharacterWidth();
@@ -1049,7 +1049,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         }
 
         int maxBytesPerChar = metrics.getMaxBytesPerChar();
-        Rectangle mainAreaRect = dimensions.getMainAreaRect();
+        Rectangle mainAreaRect = dimensions.getMainAreaRectangle();
         CodeType codeType = structure.getCodeType();
         CodeAreaViewMode viewMode = structure.getViewMode();
         if (cursorDataCache == null) {
