@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.ListIterator;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * Default implementation of doubly linked list of items.
@@ -29,6 +30,7 @@ import javax.annotation.Nullable;
  * @author ExBin Project (https://exbin.org)
  * @param <T> doubly linked list item
  */
+@ParametersAreNonnullByDefault
 public class DefaultDoublyLinkedList<T extends DoublyLinkedItem<T>> implements DoublyLinkedList<T> {
 
     private T first;
@@ -51,13 +53,13 @@ public class DefaultDoublyLinkedList<T extends DoublyLinkedItem<T>> implements D
 
     @Override
     @Nullable
-    public T nextTo(@Nonnull T item) {
+    public T nextTo(T item) {
         return item.getNext();
     }
 
     @Override
     @Nullable
-    public T prevTo(@Nonnull T item) {
+    public T prevTo(T item) {
         return item.getPrev();
     }
 
@@ -71,8 +73,8 @@ public class DefaultDoublyLinkedList<T extends DoublyLinkedItem<T>> implements D
         return size == 0;
     }
 
-    @Override
     @Nullable
+    @Override
     public T get(int index) {
         T item = first;
         while (index > 0) {
@@ -83,9 +85,9 @@ public class DefaultDoublyLinkedList<T extends DoublyLinkedItem<T>> implements D
         return item;
     }
 
-    @Override
     @Nonnull
-    public T set(int index, @Nonnull T element) {
+    @Override
+    public T set(int index, T element) {
         T item = first;
         while (index > 0) {
             item = nextTo(item);
@@ -148,8 +150,8 @@ public class DefaultDoublyLinkedList<T extends DoublyLinkedItem<T>> implements D
         };
     }
 
-    @Override
     @Nonnull
+    @Override
     public Object[] toArray() {
         if (last == null) {
             return new Object[0];
@@ -182,7 +184,7 @@ public class DefaultDoublyLinkedList<T extends DoublyLinkedItem<T>> implements D
     }
 
     @Override
-    public boolean add(@Nonnull T e) {
+    public boolean add(T e) {
         if (last != null) {
             last.setNext(e);
             e.setPrev(last);
@@ -200,7 +202,7 @@ public class DefaultDoublyLinkedList<T extends DoublyLinkedItem<T>> implements D
     }
 
     @Override
-    public void add(int index, @Nonnull T element) {
+    public void add(int index, T element) {
         if (index == 0 && size == 0) {
             add(element);
             return;
@@ -236,7 +238,7 @@ public class DefaultDoublyLinkedList<T extends DoublyLinkedItem<T>> implements D
         size++;
     }
 
-    public void addAfter(@Nonnull T positionItem, @Nonnull T element) {
+    public void addAfter(T positionItem, T element) {
         T next = positionItem.getNext();
         if (next == null) {
             positionItem.setNext(element);
@@ -252,7 +254,7 @@ public class DefaultDoublyLinkedList<T extends DoublyLinkedItem<T>> implements D
         size++;
     }
 
-    public void addBefore(@Nonnull T positionItem, @Nonnull T element) {
+    public void addBefore(T positionItem, T element) {
         T prev = positionItem.getPrev();
         if (prev == null) {
             positionItem.setPrev(element);
@@ -327,7 +329,7 @@ public class DefaultDoublyLinkedList<T extends DoublyLinkedItem<T>> implements D
         return false;
     }
 
-    private void removeItem(@Nonnull T item) {
+    private void removeItem(T item) {
         if (item == first) {
             first = item.getNext();
             if (first != null) {

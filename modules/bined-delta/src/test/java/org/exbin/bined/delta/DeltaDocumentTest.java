@@ -19,7 +19,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.delta.list.DefaultDoublyLinkedList;
 import org.exbin.utils.binary_data.BinaryData;
 import org.junit.Assert;
@@ -31,6 +32,7 @@ import org.junit.Test;
  * @version 0.2.0 2018/04/27
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public class DeltaDocumentTest {
 
     public static final String SAMPLE_FILES_PATH = "/org/exbin/bined/delta/resources/test/";
@@ -119,7 +121,7 @@ public class DeltaDocumentTest {
         Assert.assertEquals(0, document.getSegments().size());
     }
 
-    @Nullable
+    @Nonnull
     public static DeltaDocument openDeltaDocument() {
         SegmentsRepository segmentsRepository = new SegmentsRepository();
         try {
@@ -127,8 +129,8 @@ public class DeltaDocumentTest {
             return segmentsRepository.createDocument(fileSource);
         } catch (IOException ex) {
             Logger.getLogger(DeltaDocumentTest.class.getName()).log(Level.SEVERE, null, ex);
+            Assert.fail();
+            throw new RuntimeException(ex);
         }
-
-        return null;
     }
 }

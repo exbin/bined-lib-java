@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * Data source for access to file resource locking it for exclusive access.
@@ -31,6 +32,7 @@ import javax.annotation.Nonnull;
  * @version 0.2.0 2018/04/27
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public class FileDataSource {
 
     @Nonnull
@@ -43,13 +45,13 @@ public class FileDataSource {
 
     private final List<CacheClearListener> listeners = new ArrayList<>();
 
-    public FileDataSource(@Nonnull File sourceFile, @Nonnull EditationMode editationMode) throws FileNotFoundException, IOException {
+    public FileDataSource(File sourceFile, EditationMode editationMode) throws FileNotFoundException, IOException {
         file = sourceFile;
         accessFile = new RandomAccessFile(sourceFile, editationMode.getFileAccessMode());
         window = new DeltaDataPageWindow(this);
     }
 
-    public FileDataSource(@Nonnull File sourceFile) throws FileNotFoundException, IOException {
+    public FileDataSource(File sourceFile) throws FileNotFoundException, IOException {
         this(sourceFile, EditationMode.READ_WRITE);
     }
 
@@ -104,11 +106,11 @@ public class FileDataSource {
         }
     }
 
-    public void addCacheClearListener(@Nonnull CacheClearListener listener) {
+    public void addCacheClearListener(CacheClearListener listener) {
         listeners.add(listener);
     }
 
-    public void removeCacheClearListener(@Nonnull CacheClearListener listener) {
+    public void removeCacheClearListener(CacheClearListener listener) {
         listeners.remove(listener);
     }
 
@@ -117,6 +119,7 @@ public class FileDataSource {
         public void clearCache();
     }
 
+    @ParametersAreNonnullByDefault
     public static enum EditationMode {
         READ_WRITE("rw"),
         READ_ONLY("r");
@@ -124,7 +127,7 @@ public class FileDataSource {
         @Nonnull
         private final String fileAccessMode;
 
-        private EditationMode(@Nonnull String fileAccessMode) {
+        private EditationMode(String fileAccessMode) {
             this.fileAccessMode = fileAccessMode;
         }
 

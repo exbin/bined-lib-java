@@ -51,6 +51,10 @@ repositories {
 
 dependencies {
 //    providedCompile files("$javaFxHome/lib/jfxrt.jar")
+    compile group: 'org.openjfx', name: 'javafx-base', version: '11.0.2'
+    compile group: 'org.openjfx', name: 'javafx-controls', version: '11.0.2'
+    compile group: 'org.openjfx', name: 'javafx-graphics', version: '11.0.2'
+    compile group: 'org.openjfx', name: 'javafx-fxml', version: '11.0.2'
     compile moduleDep('BinedJava', 'org.exbin.bined', 'bined-javafx')
 
     testCompile group: 'junit', name: 'junit', version: '4.10'

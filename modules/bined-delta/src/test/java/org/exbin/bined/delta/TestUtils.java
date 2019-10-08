@@ -17,7 +17,7 @@ package org.exbin.bined.delta;
 
 import java.io.IOException;
 import java.io.InputStream;
-import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.junit.Assert;
 
 /**
@@ -26,7 +26,11 @@ import org.junit.Assert;
  * @version 0.2.0 2018/04/27
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public class TestUtils {
+
+    private TestUtils() {
+    }
 
     /**
      * Loads data from two streams and test them for exact match.
@@ -34,7 +38,7 @@ public class TestUtils {
      * @param expectedStream stream to be considered as template
      * @param stream stream for matching
      */
-    public static void assertEqualsInputStream(@Nonnull InputStream expectedStream, @Nonnull InputStream stream) {
+    public static void assertEqualsInputStream(InputStream expectedStream, InputStream stream) {
         try {
             byte[] dataBlob = new byte[2];
             int position = 0;

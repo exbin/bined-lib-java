@@ -20,6 +20,7 @@ import java.io.RandomAccessFile;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * Access window for delta data.
@@ -27,6 +28,7 @@ import javax.annotation.Nonnull;
  * @version 0.2.0 2018/04/27
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public class DeltaDataPageWindow {
 
     public static final int PAGE_SIZE = 1024;
@@ -37,15 +39,12 @@ public class DeltaDataPageWindow {
     private final DataPage[] dataPages = new DataPage[]{new DataPage(), new DataPage()};
     private int activeDataPage = 1;
 
-    public DeltaDataPageWindow(@Nonnull FileDataSource data) {
+    public DeltaDataPageWindow(FileDataSource data) {
         this.data = data;
         dataPages[0].pageIndex = 0;
         loadPage(0);
-        data.addCacheClearListener(new FileDataSource.CacheClearListener() {
-            @Override
-            public void clearCache() {
-                DeltaDataPageWindow.this.clearCache();
-            }
+        data.addCacheClearListener(() -> {
+            DeltaDataPageWindow.this.clearCache();
         });
     }
 

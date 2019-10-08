@@ -17,6 +17,7 @@ package org.exbin.bined.delta;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.delta.list.DoublyLinkedItem;
 
 /**
@@ -25,6 +26,7 @@ import org.exbin.bined.delta.list.DoublyLinkedItem;
  * @version 0.2.0 2018/04/27
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public abstract class DataSegment implements DoublyLinkedItem<DataSegment> {
 
     @Nullable

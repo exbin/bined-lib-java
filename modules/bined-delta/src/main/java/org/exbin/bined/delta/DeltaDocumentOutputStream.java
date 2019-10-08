@@ -18,6 +18,7 @@ package org.exbin.bined.delta;
 import java.io.IOException;
 import java.io.OutputStream;
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.utils.binary_data.FinishableStream;
 import org.exbin.utils.binary_data.SeekableStream;
 
@@ -27,13 +28,14 @@ import org.exbin.utils.binary_data.SeekableStream;
  * @version 0.2.0 2018/04/27
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public class DeltaDocumentOutputStream extends OutputStream implements SeekableStream, FinishableStream {
 
     @Nonnull
     private final DeltaDocumentWindow data;
     private long position = 0;
 
-    public DeltaDocumentOutputStream(@Nonnull DeltaDocument document) {
+    public DeltaDocumentOutputStream(DeltaDocument document) {
         this.data = new DeltaDocumentWindow(document);
     }
 
@@ -48,7 +50,7 @@ public class DeltaDocumentOutputStream extends OutputStream implements SeekableS
     }
 
     @Override
-    public void write(@Nonnull byte[] input, int offset, int length) throws IOException {
+    public void write(byte[] input, int offset, int length) throws IOException {
         if (length == 0) {
             return;
         }

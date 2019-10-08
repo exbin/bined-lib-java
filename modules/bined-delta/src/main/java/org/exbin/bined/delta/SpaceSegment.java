@@ -16,6 +16,7 @@
 package org.exbin.bined.delta;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * Space placeholder segment.
@@ -23,6 +24,7 @@ import javax.annotation.Nonnull;
  * @version 0.2.0 2018/04/27
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public class SpaceSegment extends DataSegment {
 
     private long length;

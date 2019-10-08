@@ -16,6 +16,7 @@
 package org.exbin.bined.delta.list;
 
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * Interface for item of doubly linked list.
@@ -24,6 +25,7 @@ import javax.annotation.Nullable;
  * @author ExBin Project (https://exbin.org)
  * @param <T> instance class
  */
+@ParametersAreNonnullByDefault
 public interface DoublyLinkedItem<T> {
 
     /**
@@ -39,8 +41,7 @@ public interface DoublyLinkedItem<T> {
      *
      * @param next next item
      */
-    @Nullable
-    void setNext(T next);
+    void setNext(@Nullable T next);
 
     /**
      * Returns previous linked item.
@@ -55,6 +56,5 @@ public interface DoublyLinkedItem<T> {
      *
      * @param previous previous item
      */
-    @Nullable
-    void setPrev(T previous);
+    void setPrev(@Nullable T previous);
 }

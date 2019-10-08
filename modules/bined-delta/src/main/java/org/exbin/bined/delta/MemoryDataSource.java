@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.utils.binary_data.BinaryData;
 import org.exbin.utils.binary_data.EditableBinaryData;
 import org.exbin.utils.binary_data.PagedData;
@@ -29,20 +30,21 @@ import org.exbin.utils.binary_data.PagedData;
  * @version 0.2.0 2018/04/27
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public class MemoryDataSource implements EditableBinaryData {
 
     @Nonnull
-    private final PagedData data;
+    private final EditableBinaryData data;
 
     public MemoryDataSource() {
         data = new PagedData();
     }
 
-    public MemoryDataSource(@Nonnull PagedData data) {
+    public MemoryDataSource(EditableBinaryData data) {
         this.data = data;
     }
 
-    public MemoryDataSource(@Nonnull byte[] data) {
+    public MemoryDataSource(byte[] data) {
         this.data = new PagedData();
         this.data.insert(0, data);
     }
@@ -63,12 +65,12 @@ public class MemoryDataSource implements EditableBinaryData {
     }
 
     @Override
-    public void insert(long startFrom, @Nonnull byte[] insertedData) {
+    public void insert(long startFrom, byte[] insertedData) {
         data.insert(startFrom, insertedData);
     }
 
     @Override
-    public void insert(long startFrom, @Nonnull BinaryData insertedData) {
+    public void insert(long startFrom, BinaryData insertedData) {
         data.insert(startFrom, insertedData);
     }
 
@@ -93,7 +95,7 @@ public class MemoryDataSource implements EditableBinaryData {
     }
 
     @Override
-    public void saveToStream(@Nonnull OutputStream outputStream) throws IOException {
+    public void saveToStream(OutputStream outputStream) throws IOException {
         data.saveToStream(outputStream);
     }
 
@@ -115,37 +117,37 @@ public class MemoryDataSource implements EditableBinaryData {
     }
 
     @Override
-    public void insert(long startFrom, @Nonnull byte[] insertedData, int insertedDataOffset, int insertedDataLength) {
+    public void insert(long startFrom, byte[] insertedData, int insertedDataOffset, int insertedDataLength) {
         data.insert(startFrom, insertedData, insertedDataOffset, insertedDataLength);
     }
 
     @Override
-    public void insert(long startFrom, @Nonnull BinaryData insertedData, long insertedDataOffset, long insertedDataLength) {
+    public void insert(long startFrom, BinaryData insertedData, long insertedDataOffset, long insertedDataLength) {
         data.insert(startFrom, insertedData, insertedDataOffset, insertedDataLength);
     }
 
     @Override
-    public long insert(long startFrom, @Nonnull InputStream inputStream, long length) throws IOException {
+    public long insert(long startFrom, InputStream inputStream, long length) throws IOException {
         return data.insert(startFrom, inputStream, length);
     }
 
     @Override
-    public void replace(long targetPosition, @Nonnull BinaryData replacingData) {
+    public void replace(long targetPosition, BinaryData replacingData) {
         data.replace(targetPosition, replacingData);
     }
 
     @Override
-    public void replace(long targetPosition, @Nonnull BinaryData replacingData, long startFrom, long length) {
+    public void replace(long targetPosition, BinaryData replacingData, long startFrom, long length) {
         data.replace(targetPosition, replacingData, startFrom, length);
     }
 
     @Override
-    public void replace(long targetPosition, @Nonnull byte[] replacingData) {
+    public void replace(long targetPosition, byte[] replacingData) {
         data.replace(targetPosition, replacingData);
     }
 
     @Override
-    public void replace(long targetPosition, @Nonnull byte[] replacingData, int replacingDataOffset, int length) {
+    public void replace(long targetPosition, byte[] replacingData, int replacingDataOffset, int length) {
         data.replace(targetPosition, replacingData, replacingDataOffset, length);
     }
 
@@ -165,7 +167,7 @@ public class MemoryDataSource implements EditableBinaryData {
     }
 
     @Override
-    public void loadFromStream(@Nonnull InputStream inputStream) throws IOException {
+    public void loadFromStream(InputStream inputStream) throws IOException {
         data.loadFromStream(inputStream);
     }
 
@@ -176,7 +178,7 @@ public class MemoryDataSource implements EditableBinaryData {
     }
 
     @Override
-    public void copyToArray(long startFrom, @Nonnull byte[] target, int offset, int length) {
+    public void copyToArray(long startFrom, byte[] target, int offset, int length) {
         data.copyToArray(startFrom, target, offset, length);
     }
 

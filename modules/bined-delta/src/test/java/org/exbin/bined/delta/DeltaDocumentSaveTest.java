@@ -20,10 +20,11 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.utils.binary_data.BinaryData;
 import org.exbin.utils.binary_data.EditableBinaryData;
 import org.junit.Assert;
@@ -35,6 +36,7 @@ import org.junit.Test;
  * @version 0.2.0 2018/04/27
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public class DeltaDocumentSaveTest {
 
     public static final String SAMPLE_FILES_PATH = "/org/exbin/bined/delta/resources/test/";
@@ -721,7 +723,7 @@ public class DeltaDocumentSaveTest {
         closeTempDeltaDocument(document);
     }
 
-    @Nullable
+    @Nonnull
     public static DeltaDocument openTempDeltaDocument() {
         SegmentsRepository segmentsRepository = new SegmentsRepository();
 
@@ -745,15 +747,16 @@ public class DeltaDocumentSaveTest {
             return segmentsRepository.createDocument(fileSource);
         } catch (IOException ex) {
             Logger.getLogger(DeltaDocumentSaveTest.class.getName()).log(Level.SEVERE, null, ex);
+            Assert.fail();
+            throw new RuntimeException(ex);
         }
-
-        return null;
     }
 
-    public static void closeTempDeltaDocument(@Nonnull DeltaDocument document) {
+    public static void closeTempDeltaDocument(DeltaDocument document) {
         document.dispose();
-        document.getFileSource().close();
-        File tempFile = document.getFileSource().getFile();
+        FileDataSource fileSource = Objects.requireNonNull(document.getFileSource());
+        fileSource.close();
+        File tempFile = fileSource.getFile();
         tempFile.delete();
     }
 }

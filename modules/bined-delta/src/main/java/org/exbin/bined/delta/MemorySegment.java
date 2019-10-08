@@ -16,6 +16,7 @@
 package org.exbin.bined.delta;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * Data segment pointing to memory block.
@@ -23,6 +24,7 @@ import javax.annotation.Nonnull;
  * @version 0.2.0 2018/04/27
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public class MemorySegment extends DataSegment {
 
     @Nonnull
@@ -30,7 +32,7 @@ public class MemorySegment extends DataSegment {
     private long startPosition;
     private long length;
 
-    public MemorySegment(@Nonnull MemoryDataSource source, long startPosition, long length) {
+    public MemorySegment(MemoryDataSource source, long startPosition, long length) {
         this.source = source;
         this.startPosition = startPosition;
         this.length = length;
@@ -41,7 +43,7 @@ public class MemorySegment extends DataSegment {
         return source;
     }
 
-    public void setSource(@Nonnull MemoryDataSource source) {
+    public void setSource(MemoryDataSource source) {
         this.source = source;
     }
 
