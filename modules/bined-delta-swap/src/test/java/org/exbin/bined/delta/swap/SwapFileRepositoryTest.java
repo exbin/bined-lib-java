@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.delta;
+package org.exbin.bined.delta.swap;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,7 +21,6 @@ import java.nio.file.Files;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.ParametersAreNonnullByDefault;
-import org.exbin.bined.delta.swap.SwapFileRepository;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -34,7 +33,7 @@ import org.junit.Test;
 @ParametersAreNonnullByDefault
 public class SwapFileRepositoryTest {
 
-    public static final String SAMPLE_FILES_PATH = "/org/exbin/bined/delta/resources/test/";
+    public static final String SAMPLE_FILES_PATH = "/org/exbin/bined/delta/swap/resources/test/";
     public static final String SAMPLE_ALLBYTES = SAMPLE_FILES_PATH + "allbytes.dat";
     public static final int SAMPLE_ALLBYTES_SIZE = 256;
 
