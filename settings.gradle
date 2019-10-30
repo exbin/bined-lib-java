@@ -34,7 +34,7 @@ if (!gradle.startParameter.taskNames.contains("clean") || gradle.startParameter.
     File depsDir = file("deps")
     // Include all downloaded dependency modules
     depsDir.listFiles().each() { childFile ->
-        if (childFile.isDirectory()) {
+        if (childFile.isDirectory() && childFile != ".gradle") {
             include ':deps:' + childFile.name
         }
     }
