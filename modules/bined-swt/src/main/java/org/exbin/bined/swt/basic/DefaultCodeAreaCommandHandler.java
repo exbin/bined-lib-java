@@ -62,7 +62,7 @@ import org.exbin.bined.basic.EnterKeyHandlingMode;
 /**
  * Default hexadecimal editor command handler.
  *
- * @version 0.2.0 2019/07/10
+ * @version 0.2.0 2019/11/02
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -286,7 +286,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         if (keyValue == java.awt.event.KeyEvent.CHAR_UNDEFINED) {
             return;
         }
-        if (!((EditationModeCapable) codeArea).isEditable()) {
+        if (!checkEditationAllowed()) {
             return;
         }
 
@@ -408,7 +408,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
     @Override
     public void enterPressed() {
-        if (!((EditationModeCapable) codeArea).isEditable()) {
+        if (!checkEditationAllowed()) {
             return;
         }
 
@@ -426,7 +426,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
     @Override
     public void backSpacePressed() {
-        if (!((EditationModeCapable) codeArea).isEditable()) {
+        if (!checkEditationAllowed()) {
             return;
         }
         BinaryData data = CodeAreaUtils.requireNonNull(codeArea.getContentData(), "Content data is null");
@@ -451,7 +451,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
     @Override
     public void deletePressed() {
-        if (!((EditationModeCapable) codeArea).isEditable()) {
+        if (!checkEditationAllowed()) {
             return;
         }
 
@@ -504,7 +504,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
     @Override
     public void delete() {
-        if (!((EditationModeCapable) codeArea).isEditable()) {
+        if (!checkEditationAllowed()) {
             return;
         }
 
@@ -572,7 +572,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
     @Override
     public void cut() {
-        if (!((EditationModeCapable) codeArea).isEditable()) {
+        if (!checkEditationAllowed()) {
             return;
         }
 
@@ -586,7 +586,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
     @Override
     public void paste() {
-        if (!((EditationModeCapable) codeArea).isEditable()) {
+        if (!checkEditationAllowed()) {
             return;
         }
 
@@ -681,7 +681,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
     @Override
     public void pasteFromCode() {
-        if (!((EditationModeCapable) codeArea).isEditable()) {
+        if (!checkEditationAllowed()) {
             return;
         }
 
@@ -860,5 +860,10 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
     @Override
     public void dispose() {
+    }
+
+    @Override
+    public boolean checkEditationAllowed() {
+        return ((EditationModeCapable) codeArea).isEditable();
     }
 }

@@ -231,7 +231,7 @@
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="decimalCodeTypeRadioButtonMenuItemActionPerformed"/>
                   </Events>
                 </MenuItem>
-                <MenuItem class="javax.swing.JRadioButtonMenuItem" name="hexadecimalCodeTypeRadioButtonMenuItem3">
+                <MenuItem class="javax.swing.JRadioButtonMenuItem" name="hexadecimalCodeTypeRadioButtonMenuItem">
                   <Properties>
                     <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
                       <ComponentRef name="codeTypeButtonGroup"/>
@@ -240,7 +240,7 @@
                     <Property name="text" type="java.lang.String" value="Hexadecimal"/>
                   </Properties>
                   <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="hexadecimalCodeTypeRadioButtonMenuItem3ActionPerformed"/>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="hexadecimalCodeTypeRadioButtonMenuItemActionPerformed"/>
                   </Events>
                 </MenuItem>
               </SubComponents>

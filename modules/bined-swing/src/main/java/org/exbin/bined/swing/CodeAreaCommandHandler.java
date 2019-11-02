@@ -22,7 +22,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 /**
  * Interface for code area data manipulation.
  *
- * @version 0.2.0 2019/07/09
+ * @version 0.2.0 2019/11/02
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -125,6 +125,13 @@ public interface CodeAreaCommandHandler {
      * @param orientation scrollbar orientation
      */
     void wheelScroll(int scrollSize, ScrollbarOrientation orientation);
+
+    /**
+     * Checks whether editation is allowed.
+     *
+     * @return true if allowed
+     */
+    boolean checkEditationAllowed();
 
     enum ScrollbarOrientation {
         HORIZONTAL, VERTICAL

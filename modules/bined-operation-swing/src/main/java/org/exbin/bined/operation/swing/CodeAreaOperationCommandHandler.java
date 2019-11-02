@@ -308,7 +308,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
         if (keyValue == KeyEvent.CHAR_UNDEFINED) {
             return;
         }
-        if (!((EditationModeCapable) codeArea).isEditable()) {
+        if (!checkEditationAllowed()) {
             return;
         }
 
@@ -469,7 +469,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
 
     @Override
     public void enterPressed() {
-        if (!((EditationModeCapable) codeArea).isEditable()) {
+        if (!checkEditationAllowed()) {
             return;
         }
 
@@ -487,7 +487,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
 
     @Override
     public void backSpacePressed() {
-        if (!((EditationModeCapable) codeArea).isEditable()) {
+        if (!checkEditationAllowed()) {
             return;
         }
 
@@ -496,7 +496,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
 
     @Override
     public void deletePressed() {
-        if (!((EditationModeCapable) codeArea).isEditable()) {
+        if (!checkEditationAllowed()) {
             return;
         }
 
@@ -547,7 +547,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
 
     @Override
     public void delete() {
-        if (!((EditationModeCapable) codeArea).isEditable()) {
+        if (!checkEditationAllowed()) {
             return;
         }
 
@@ -610,7 +610,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
 
     @Override
     public void cut() {
-        if (!((EditationModeCapable) codeArea).isEditable()) {
+        if (!checkEditationAllowed()) {
             return;
         }
 
@@ -632,7 +632,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
 
     @Override
     public void paste() {
-        if (!((EditationModeCapable) codeArea).isEditable()) {
+        if (!checkEditationAllowed()) {
             return;
         }
 
@@ -794,7 +794,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
 
     @Override
     public void pasteFromCode() {
-        if (!((EditationModeCapable) codeArea).isEditable()) {
+        if (!checkEditationAllowed()) {
             return;
         }
 
@@ -884,21 +884,19 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
                     pastedData.insert(0, clipData);
                     long pastedDataSize = pastedData.getDataSize();
                     long insertionPosition = dataPosition;
-                    if (((EditationModeCapable) codeArea).isEditable()) {
-                        BinaryData modifiedData = pastedData;
-                        long replacedPartSize = clipDataSize;
-                        if (insertionPosition + replacedPartSize > dataSize) {
-                            replacedPartSize = dataSize - insertionPosition;
-                            modifiedData = pastedData.copy(0, replacedPartSize);
-                        }
-                        if (replacedPartSize > 0) {
-                            modifyCommand = new ModifyDataCommand(codeArea, dataPosition, modifiedData);
-                            if (pastedDataSize > replacedPartSize) {
-                                pastedData = pastedData.copy(replacedPartSize, pastedDataSize - replacedPartSize);
-                                insertionPosition += replacedPartSize;
-                            } else {
-                                pastedData.clear();
-                            }
+                    BinaryData modifiedData = pastedData;
+                    long replacedPartSize = clipDataSize;
+                    if (insertionPosition + replacedPartSize > dataSize) {
+                        replacedPartSize = dataSize - insertionPosition;
+                        modifiedData = pastedData.copy(0, replacedPartSize);
+                    }
+                    if (replacedPartSize > 0) {
+                        modifyCommand = new ModifyDataCommand(codeArea, dataPosition, modifiedData);
+                        if (pastedDataSize > replacedPartSize) {
+                            pastedData = pastedData.copy(replacedPartSize, pastedDataSize - replacedPartSize);
+                            insertionPosition += replacedPartSize;
+                        } else {
+                            pastedData.clear();
                         }
                     }
 
@@ -1104,5 +1102,10 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
 
     private void updateScrollBars() {
         ((ScrollingCapable) codeArea).updateScrollBars();
+    }
+
+    @Override
+    public boolean checkEditationAllowed() {
+        return ((EditationModeCapable) codeArea).isEditable();
     }
 }

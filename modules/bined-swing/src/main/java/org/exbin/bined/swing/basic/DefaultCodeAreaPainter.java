@@ -155,8 +155,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
     private Charset charMappingCharset = null;
     private final char[] charMapping = new char[256];
 
-    // Debuging counter
-//    private long paintCounter = 0;
     public DefaultCodeAreaPainter(CodeAreaCore codeArea) {
         this.codeArea = codeArea;
         codeArea.addDataChangedListener(() -> {
@@ -612,20 +610,24 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         g.setClip(clipBounds);
         paintCursor(g);
 
-//        {
-//            // Display debugging data
-//            int rowHeight = metrics.getRowHeight();
-//            int x = mainAreaRect.x + mainAreaRect.width - 220;
-//            int y = mainAreaRect.y + mainAreaRect.height - 20;
-//            g.setColor(Color.YELLOW);
-//            g.fillRect(x, y, 200, 16);
-//            g.setColor(Color.BLACK);
-//            char[] headerCode = (String.valueOf(scrollPosition.getCharPosition()) + "+" + String.valueOf(scrollPosition.getCharOffset()) + " : " + String.valueOf(scrollPosition.getRowPosition()) + "+" + String.valueOf(scrollPosition.getRowOffset()) + " P: " + String.valueOf(paintCounter)).toCharArray();
-//            g.drawChars(headerCode, 0, headerCode.length, x, y + rowHeight);
-//        }
-//
-//        paintCounter++;
+//        paintDebugInfo(g, mainAreaRect, scrollPosition);
     }
+
+//    // Debuging counter
+//    private long paintDebugCounter = 0;
+//
+//    private void paintDebugInfo(Graphics g, Rectangle mainAreaRect, CodeAreaScrollPosition scrollPosition) {
+//        int rowHeight = metrics.getRowHeight();
+//        int x = mainAreaRect.x + mainAreaRect.width - 220;
+//        int y = mainAreaRect.y + mainAreaRect.height - 20;
+//        g.setColor(Color.YELLOW);
+//        g.fillRect(x, y, 200, 16);
+//        g.setColor(Color.BLACK);
+//        char[] headerCode = (String.valueOf(scrollPosition.getCharPosition()) + "+" + String.valueOf(scrollPosition.getCharOffset()) + " : " + String.valueOf(scrollPosition.getRowPosition()) + "+" + String.valueOf(scrollPosition.getRowOffset()) + " P: " + String.valueOf(paintDebugCounter)).toCharArray();
+//        g.drawChars(headerCode, 0, headerCode.length, x, y + rowHeight);
+//
+//        paintDebugCounter++;
+//    }
 
     /**
      * Paints main area background.

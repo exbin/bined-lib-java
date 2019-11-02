@@ -151,8 +151,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
     @Nullable
     private Charset charMappingCharset = null;
     private final char[] charMapping = new char[256];
-    // Debug
-    private long paintCounter = 0;
 
     public DefaultCodeAreaPainter(CodeAreaCore codeArea) {
         this.codeArea = codeArea;
@@ -651,7 +649,13 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
 //        g.setClipping(clipBounds);
         paintCursor(g);
 
-        // TODO: Remove later
+        paintDebugInfo(g, mainAreaRect, scrollPosition);
+    }
+    
+    // Debug
+    private long paintCounter = 0;
+
+    private void paintDebugInfo(GC g, Rectangle mainAreaRect, CodeAreaScrollPosition scrollPosition) {
         int x = mainAreaRect.x + mainAreaRect.width - 450;
         int y = mainAreaRect.y + mainAreaRect.height - dimensions.getHeaderAreaHeight() - 20;
         Display display = Display.getCurrent();

@@ -145,8 +145,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
     @Nullable
     private Charset charMappingCharset = null;
     private final char[] charMapping = new char[256];
-    // Debug
-    private long paintCounter = 0;
 
     public DefaultCodeAreaPainter(CodeAreaCore codeArea) {
         this.codeArea = codeArea;
@@ -633,7 +631,12 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
 //        g.setClip(clipBounds);
         paintCursor();
 
-        // TODO: Remove later
+//        paintDebugInfo(g);
+    }
+
+//    private long paintDebugCounter = 0;
+//    
+//    private void paintDebugInfo(GraphicsContext g, Rectangle2D dataViewRectangle) {
 //        int x = componentWidth - rowPositionAreaWidth - 220;
 //        int y = componentHeight - headerAreaHeight - 20;
 //        g.setColor(Color.YELLOW);
@@ -641,7 +644,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
 //        g.setColor(Color.BLACK);
 //        char[] headerCode = (String.valueOf(scrollPosition.getScrollCharPosition()) + "+" + String.valueOf(scrollPosition.getScrollCharOffset()) + " : " + String.valueOf(scrollPosition.getScrollRowPosition()) + "+" + String.valueOf(scrollPosition.getScrollRowOffset()) + " P: " + String.valueOf(rowsPerRect)).toCharArray();
 //        g.drawChars(headerCode, 0, headerCode.length, x, y + rowHeight);
-    }
+//    }
 
     /**
      * Paints main area background.

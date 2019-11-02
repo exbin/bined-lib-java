@@ -22,7 +22,7 @@ import org.eclipse.swt.events.KeyEvent;
 /**
  * Interface for code area data manipulation.
  *
- * @version 0.2.0 2019/07/07
+ * @version 0.2.0 2019/11/02
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -127,6 +127,13 @@ public interface CodeAreaCommandHandler {
     void wheelScroll(int scrollSize, ScrollbarOrientation orientation);
 
     void dispose();
+
+    /**
+     * Checks whether editation is allowed.
+     *
+     * @return true if allowed
+     */
+    boolean checkEditationAllowed();
 
     enum ScrollbarOrientation {
         HORIZONTAL, VERTICAL

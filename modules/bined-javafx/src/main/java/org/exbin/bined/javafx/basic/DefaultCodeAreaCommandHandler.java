@@ -798,4 +798,9 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     private void updateScrollBars() {
         ((ScrollingCapable) codeArea).updateScrollBars();
     }
+
+    @Override
+    public boolean checkEditationAllowed() {
+        return ((EditationModeCapable) codeArea).isEditable();
+    }
 }
