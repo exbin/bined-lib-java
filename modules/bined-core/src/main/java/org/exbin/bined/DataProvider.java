@@ -29,5 +29,10 @@ public interface DataProvider {
     @Nullable
     BinaryData getContentData();
 
+    /**
+     * Returns size of data or 0 if no data is present.
+     *
+     * @return size of data
+     */
     long getDataSize();
 }

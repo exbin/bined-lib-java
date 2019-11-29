@@ -28,8 +28,18 @@ import org.exbin.bined.CodeCharactersCase;
 @ParametersAreNonnullByDefault
 public interface CodeCharactersCaseCapable {
 
+    /**
+     * Returns current code characters case.
+     *
+     * @return code characters case
+     */
     @Nonnull
     CodeCharactersCase getCodeCharactersCase();
 
+    /**
+     * Sets current code characters case.
+     *
+     * @param codeCharactersCase code characters case
+     */
     void setCodeCharactersCase(CodeCharactersCase codeCharactersCase);
 }

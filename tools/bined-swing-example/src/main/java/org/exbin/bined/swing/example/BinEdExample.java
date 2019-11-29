@@ -41,6 +41,7 @@ import org.exbin.utils.binary_data.ByteArrayEditableData;
 public class BinEdExample {
 
     private static final String EXAMPLE_FILE_PATH = "/org/exbin/bined/swing/example/resources/lorem_1.txt";
+    private static final String EXAMPLE_DIFF_FILE_PATH = "/org/exbin/bined/swing/example/resources/lorem_2.txt";
 
     public BinEdExample() {
     }
@@ -71,7 +72,7 @@ public class BinEdExample {
         final BinEdExampleDiffPanel diffPanel = new BinEdExampleDiffPanel();
         final ExtCodeAreaDiffPanel diffCodeAreaPanel = new ExtCodeAreaDiffPanel();
         diffCodeAreaPanel.setLeftContentData(getSampleData());
-        diffCodeAreaPanel.setRightContentData(getSampleData());
+        diffCodeAreaPanel.setRightContentData(getSampleDiffData());
         diffPanel.setDiffPanel(diffCodeAreaPanel);
 
         tabbedPane.addTab("Basic", basicPanel);
@@ -113,6 +114,18 @@ public class BinEdExample {
         ByteArrayEditableData data = new ByteArrayEditableData();
         try {
             data.loadFromStream(data.getClass().getResourceAsStream(EXAMPLE_FILE_PATH));
+        } catch (IOException ex) {
+            Logger.getLogger(BinEdExample.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return data;
+    }
+
+    @Nonnull
+    private static ByteArrayEditableData getSampleDiffData() {
+        ByteArrayEditableData data = new ByteArrayEditableData();
+        try {
+            data.loadFromStream(data.getClass().getResourceAsStream(EXAMPLE_DIFF_FILE_PATH));
         } catch (IOException ex) {
             Logger.getLogger(BinEdExample.class.getName()).log(Level.SEVERE, null, ex);
         }

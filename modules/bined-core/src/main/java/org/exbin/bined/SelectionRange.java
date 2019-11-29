@@ -39,8 +39,8 @@ public class SelectionRange {
     }
 
     /**
-     * Creates selection range from start to end including start and not
-     * including end position.
+     * Creates selection range from start to end including the start and not
+     * including the end position.
      *
      * @param start selection start position
      * @param end selection end position without actual end position itself

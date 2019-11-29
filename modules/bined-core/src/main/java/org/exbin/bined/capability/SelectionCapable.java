@@ -29,13 +29,33 @@ import org.exbin.bined.SelectionRange;
 @ParametersAreNonnullByDefault
 public interface SelectionCapable {
 
+    /**
+     * Returns current selection.
+     *
+     * @return selection range or empty selection range
+     */
     @Nonnull
     SelectionRange getSelection();
 
+    /**
+     * Sets curent selection.
+     *
+     * @param selection selection range or empty selection range
+     */
     void setSelection(SelectionRange selection);
 
+    /**
+     * Sets curent selection range from start to end including the start and not
+     * including the end position.
+     *
+     * @param start selection start position
+     * @param end selection end position without actual end position itself
+     */
     void setSelection(long start, long end);
 
+    /**
+     * Clears selection range - sets empty selection.
+     */
     void clearSelection();
 
     /**

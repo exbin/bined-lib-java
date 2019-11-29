@@ -23,7 +23,17 @@ package org.exbin.bined.capability;
  */
 public interface ClipboardCapable {
 
+    /**
+     * Returns true if component should handle default clipboard actions.
+     *
+     * @return clipboard handling flag
+     */
     boolean isHandleClipboard();
 
+    /**
+     * Sets whether component should handle default clipboard actions.
+     *
+     * @param handleClipboard clipboard handling flag
+     */
     void setHandleClipboard(boolean handleClipboard);
 }

@@ -25,7 +25,7 @@ import org.exbin.utils.binary_data.ByteArrayData;
 /**
  * Panel for difference comparision of two code areas.
  *
- * @version 0.2.0 2019/11/27
+ * @version 0.2.0 2019/11/29
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -33,18 +33,24 @@ public class ExtCodeAreaDiffPanel extends javax.swing.JPanel {
 
     private final ExtCodeArea leftCodeArea;
     private final ExtCodeArea rightCodeArea;
+    private final DiffHighlightCodeAreaPainter leftPainter;
+    private final DiffHighlightCodeAreaPainter rightPainter;
 
     public ExtCodeAreaDiffPanel() {
         initComponents();
 
         leftCodeArea = new ExtCodeArea();
         rightCodeArea = new ExtCodeArea();
+        leftPainter = new DiffHighlightCodeAreaPainter(leftCodeArea);
+        rightPainter = new DiffHighlightCodeAreaPainter(rightCodeArea);
         init();
     }
 
     private void init() {
         leftCodeArea.setEditationMode(EditationMode.READ_ONLY);
         rightCodeArea.setEditationMode(EditationMode.READ_ONLY);
+        leftCodeArea.setPainter(leftPainter);
+        rightCodeArea.setPainter(rightPainter);
         leftPanel.add(leftCodeArea, BorderLayout.CENTER);
         rightPanel.add(rightCodeArea, BorderLayout.CENTER);
     }
@@ -95,9 +101,11 @@ public class ExtCodeAreaDiffPanel extends javax.swing.JPanel {
 
     public void setLeftContentData(ByteArrayData contentData) {
         leftCodeArea.setContentData(contentData);
+        rightPainter.setComparedData(contentData);
     }
 
     public void setRightContentData(ByteArrayData contentData) {
         rightCodeArea.setContentData(contentData);
+        leftPainter.setComparedData(contentData);
     }
 }
