@@ -36,6 +36,7 @@ public class DiffHighlightCodeAreaPainter extends ExtendedCodeAreaPainter {
 
     private BinaryData comparedData;
     private Color diffColor;
+    private Color addedColor;
 
     public DiffHighlightCodeAreaPainter(CodeAreaCore codeArea) {
         this(codeArea, null);
@@ -46,6 +47,7 @@ public class DiffHighlightCodeAreaPainter extends ExtendedCodeAreaPainter {
 
         this.comparedData = comparedData;
         diffColor = new Color(255, 180, 180);
+        addedColor = new Color(180, 255, 180);
     }
 
     @Override
@@ -57,7 +59,11 @@ public class DiffHighlightCodeAreaPainter extends ExtendedCodeAreaPainter {
     @Override
     public Color getPositionTextColor(long rowDataPosition, int byteOnRow, int charOnRow, CodeAreaSection section, boolean unprintables) {
         long position = rowDataPosition + byteOnRow;
-        if (comparedData != null && position < comparedData.getDataSize()) {
+        if (comparedData != null && position >= comparedData.getDataSize()) {
+            return addedColor;
+        }
+
+        if (comparedData != null && position < codeArea.getDataSize() && position < comparedData.getDataSize()) {
             byte sourceByte = codeArea.getContentData().getByte(position);
             byte comparedByte = comparedData.getByte(position);
 

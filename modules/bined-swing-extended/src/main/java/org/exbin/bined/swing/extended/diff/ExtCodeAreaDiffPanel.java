@@ -19,13 +19,14 @@ import java.awt.BorderLayout;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.EditationMode;
+import org.exbin.bined.basic.CodeAreaScrollPosition;
 import org.exbin.bined.swing.extended.ExtCodeArea;
 import org.exbin.utils.binary_data.ByteArrayData;
 
 /**
  * Panel for difference comparision of two code areas.
  *
- * @version 0.2.0 2019/11/29
+ * @version 0.2.0 2019/11/30
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -35,6 +36,7 @@ public class ExtCodeAreaDiffPanel extends javax.swing.JPanel {
     private final ExtCodeArea rightCodeArea;
     private final DiffHighlightCodeAreaPainter leftPainter;
     private final DiffHighlightCodeAreaPainter rightPainter;
+    private volatile boolean updatingScrolling = false;
 
     public ExtCodeAreaDiffPanel() {
         initComponents();
@@ -53,6 +55,34 @@ public class ExtCodeAreaDiffPanel extends javax.swing.JPanel {
         rightCodeArea.setPainter(rightPainter);
         leftPanel.add(leftCodeArea, BorderLayout.CENTER);
         rightPanel.add(rightCodeArea, BorderLayout.CENTER);
+
+        leftCodeArea.addScrollingListener(() -> {
+            if (!updatingScrolling) {
+                updatingScrolling = true;
+                CodeAreaScrollPosition scrollPosition = leftCodeArea.getScrollPosition();
+                long maxRowPosition = rightCodeArea.getDataSize() / rightCodeArea.getMaxBytesPerRow();
+                if (scrollPosition.getRowPosition() > maxRowPosition) {
+                    scrollPosition.setRowPosition(maxRowPosition);
+                }
+                rightCodeArea.setScrollPosition(scrollPosition);
+                rightCodeArea.updateScrollBars();
+                updatingScrolling = false;
+            }
+        });
+
+        rightCodeArea.addScrollingListener(() -> {
+            if (!updatingScrolling) {
+                updatingScrolling = true;
+                CodeAreaScrollPosition scrollPosition = rightCodeArea.getScrollPosition();
+                long maxRowPosition = leftCodeArea.getDataSize() / leftCodeArea.getMaxBytesPerRow();
+                if (scrollPosition.getRowPosition() > maxRowPosition) {
+                    scrollPosition.setRowPosition(maxRowPosition);
+                }
+                leftCodeArea.setScrollPosition(scrollPosition);
+                leftCodeArea.updateScrollBars();
+                updatingScrolling = false;
+            }
+        });
     }
 
     /**
