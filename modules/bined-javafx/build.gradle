@@ -40,6 +40,6 @@ dependencies {
     compile group: 'org.openjfx', name: 'javafx-controls', version: '11.0.2'
     compile group: 'org.openjfx', name: 'javafx-graphics', version: '11.0.2'
     compile moduleDep('BinedJava', 'org.exbin.bined', 'bined-core')
-    compile moduleDep('ExbinUtilsJava', 'org.exbin.utils', 'exbin-binary_data')
+    compile moduleDep('ExbinAuxiliaryJava', 'org.exbin.auxiliary', 'exbin-binary_data')
     testCompile group : 'junit', name: 'junit', version: '4.10'
 }

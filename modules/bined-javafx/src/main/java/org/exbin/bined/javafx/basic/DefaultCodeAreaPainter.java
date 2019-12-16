@@ -69,7 +69,7 @@ import org.exbin.bined.javafx.basic.color.BasicCodeAreaColorsProfile;
 import org.exbin.bined.javafx.basic.color.BasicColorsCapableCodeAreaPainter;
 import org.exbin.bined.javafx.capability.BackgroundPaintCapable;
 import org.exbin.bined.javafx.capability.FontCapable;
-import org.exbin.utils.binary_data.BinaryData;
+import org.exbin.auxiliary.binary_data.BinaryData;
 import org.exbin.bined.CodeAreaCaretPosition;
 import org.exbin.bined.basic.BasicCodeAreaLayout;
 

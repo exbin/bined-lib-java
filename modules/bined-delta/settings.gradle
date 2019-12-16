@@ -1,7 +1,0 @@
-rootProject.name = 'bined-delta'
-
-if (rootProject.path == ':') {
-    include ":modules:bined-core"
-}
-
-apply from: '../bined-java-modules-settings.gradle'

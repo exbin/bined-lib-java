@@ -30,7 +30,7 @@ import org.eclipse.swt.graphics.Color;
 import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.CodeCharactersCase;
 import org.exbin.bined.CodeType;
-import org.exbin.utils.binary_data.BinaryData;
+import org.exbin.auxiliary.binary_data.BinaryData;
 
 /**
  * Hexadecimal editor component SWT utilities.

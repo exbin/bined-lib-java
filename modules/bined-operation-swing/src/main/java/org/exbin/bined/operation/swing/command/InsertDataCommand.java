@@ -22,7 +22,7 @@ import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.operation.BinaryDataOperationException;
 import org.exbin.bined.operation.swing.InsertDataOperation;
 import org.exbin.bined.swing.CodeAreaCore;
-import org.exbin.utils.binary_data.EditableBinaryData;
+import org.exbin.auxiliary.binary_data.EditableBinaryData;
 
 /**
  * Command for inserting data.

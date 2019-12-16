@@ -21,7 +21,7 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import org.exbin.utils.binary_data.EditableBinaryData;
+import org.exbin.auxiliary.binary_data.EditableBinaryData;
 
 /**
  * Hexadecimal editor component utilities.

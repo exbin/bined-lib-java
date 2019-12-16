@@ -21,7 +21,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.EditationMode;
 import org.exbin.bined.basic.CodeAreaScrollPosition;
 import org.exbin.bined.swing.extended.ExtCodeArea;
-import org.exbin.utils.binary_data.ByteArrayData;
+import org.exbin.auxiliary.binary_data.ByteArrayData;
 
 /**
  * Panel for difference comparision of two code areas.

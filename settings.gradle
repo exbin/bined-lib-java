@@ -4,8 +4,6 @@ include ":deps"
 
 include ":modules:bined-core"
 include ":modules:bined-extended"
-include ":modules:bined-delta"
-include ":modules:bined-delta-swap"
 include ":modules:bined-swing"
 include ":modules:bined-swing-extended"
 include ":modules:bined-swt"

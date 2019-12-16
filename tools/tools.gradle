@@ -4,9 +4,9 @@ version = '0.2.0-SNAPSHOT'
 def repositoryName = "bined-java"
 def libraryUrl = 'https://bined.exbin.org/library'
 
-ext.depsExbinUtilsJava = [
+ext.depsExbinAuxiliaryJava = [
     githubProfile: 'exbin',
-    githubRepo: 'exbin-utils-java',
+    githubRepo: 'exbin-auxiliary-java',
     version: '0.2.0-SNAPSHOT'
 ]
 

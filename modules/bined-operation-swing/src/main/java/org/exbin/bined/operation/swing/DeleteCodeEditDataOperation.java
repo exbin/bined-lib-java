@@ -21,7 +21,7 @@ import org.exbin.bined.CodeType;
 import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.operation.BinaryDataOperationException;
 import org.exbin.bined.swing.CodeAreaCore;
-import org.exbin.utils.binary_data.EditableBinaryData;
+import org.exbin.auxiliary.binary_data.EditableBinaryData;
 
 /**
  * Operation for editing data in delete mode.

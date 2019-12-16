@@ -31,7 +31,7 @@ import org.exbin.bined.EditationOperation;
 import org.exbin.bined.SelectionRange;
 import org.exbin.bined.capability.SelectionCapable;
 import org.exbin.bined.swing.basic.CodeArea;
-import org.exbin.utils.binary_data.EditableBinaryData;
+import org.exbin.auxiliary.binary_data.EditableBinaryData;
 import org.exbin.bined.CodeAreaCaretPosition;
 import org.exbin.bined.CodeAreaUtils;
 

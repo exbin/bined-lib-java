@@ -53,9 +53,9 @@ import org.exbin.bined.capability.ViewModeCapable;
 import org.exbin.bined.swt.CodeAreaCommandHandler;
 import org.exbin.bined.swt.CodeAreaCore;
 import org.exbin.bined.swt.CodeAreaSwtUtils;
-import org.exbin.utils.binary_data.BinaryData;
-import org.exbin.utils.binary_data.ByteArrayEditableData;
-import org.exbin.utils.binary_data.EditableBinaryData;
+import org.exbin.auxiliary.binary_data.BinaryData;
+import org.exbin.auxiliary.binary_data.ByteArrayEditableData;
+import org.exbin.auxiliary.binary_data.EditableBinaryData;
 import org.exbin.bined.CodeAreaCaretPosition;
 import org.exbin.bined.basic.EnterKeyHandlingMode;
 

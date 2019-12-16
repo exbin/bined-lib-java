@@ -28,7 +28,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.CodeAreaControl;
 import org.exbin.bined.DataChangedListener;
 import org.exbin.bined.capability.SelectionCapable;
-import org.exbin.utils.binary_data.BinaryData;
+import org.exbin.auxiliary.binary_data.BinaryData;
 
 /**
  * Hexadecimal viewer/editor component.

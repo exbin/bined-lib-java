@@ -36,8 +36,8 @@ import org.exbin.bined.EditationMode;
 import org.exbin.bined.SelectionRange;
 import org.exbin.bined.swt.CodeArea;
 import org.exbin.bined.swt.CodeAreaCommandHandler;
-import org.exbin.utils.binary_data.BinaryData;
-import org.exbin.utils.binary_data.EditableBinaryData;
+import org.exbin.auxiliary.binary_data.BinaryData;
+import org.exbin.auxiliary.binary_data.EditableBinaryData;
 
 /**
  * Default hexadecimal editor command handler.

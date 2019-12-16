@@ -20,7 +20,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.operation.swing.ModifyDataOperation;
 import org.exbin.bined.swing.CodeAreaCore;
-import org.exbin.utils.binary_data.BinaryData;
+import org.exbin.auxiliary.binary_data.BinaryData;
 
 /**
  * Command for modifying data.

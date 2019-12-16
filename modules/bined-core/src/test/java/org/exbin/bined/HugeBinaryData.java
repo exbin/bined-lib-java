@@ -19,8 +19,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import javax.annotation.Nonnull;
-import org.exbin.utils.binary_data.BinaryData;
-import org.exbin.utils.binary_data.ByteArrayData;
+import org.exbin.auxiliary.binary_data.BinaryData;
+import org.exbin.auxiliary.binary_data.ByteArrayData;
 
 /**
  * Simulation of huge binary data source.

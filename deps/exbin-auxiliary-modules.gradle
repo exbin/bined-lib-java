@@ -1,30 +1,15 @@
 // Shared modules build
 
 version = '0.2.0-SNAPSHOT'
-def repositoryName = "bined-java"
-def libraryUrl = 'https://bined.exbin.org/library'
+def repositoryName = "exbin-auxiliary-java"
+def libraryUrl = 'https://exbin.org'
 
-ext.depsExbinAuxiliaryJava = [
-    githubProfile: 'exbin',
-    githubRepo: 'exbin-auxiliary-java',
-    version: '0.2.0-SNAPSHOT'
-]
+ext.depsThis = 'ExbinAuxiliaryJava'
 
-ext.depsThis = 'BinedJava'
-
-buildscript {
-    repositories {
-        mavenLocal()
-        jcenter()
-    }
-    dependencies {
-        classpath("at.bxm.gradleplugins:gradle-svntools-plugin:latest.integration")
-    }
-}
-
-['java', 'maven', 'maven-publish', 'signing', 'at.bxm.svntools'].each {
+['java', 'maven', 'maven-publish', 'signing'].each {
     apply plugin: it
 }
+import org.gradle.util.VersionNumber
 
 sourceCompatibility = '1.8'
 
@@ -34,6 +19,14 @@ tasks.withType(JavaCompile) {
     options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
     doFirst {
         options.fork = true
+        if (JavaVersion.current() == JavaVersion.VERSION_1_8) {
+            if (VersionNumber.parse(gradle.gradleVersion) >= VersionNumber.parse('5.0')) {
+                options.bootstrapClasspath = files("${System.properties['java.home']}/lib/rt.jar", "$File.pathSeparator${System.properties['java.home']}/jre/lib/jsse.jar")
+            } else {
+                options.bootClasspath = "${System.properties['java.home']}/lib/rt.jar"
+                options.bootClasspath += "$File.pathSeparator${System.properties['java.home']}/jre/lib/jsse.jar"
+            }
+        }
     }
 }
 
@@ -62,18 +55,14 @@ task sourceJar(type: Jar) {
 }
 
 javadoc {
+    if (JavaVersion.current() != JavaVersion.VERSION_1_8) {
+        options.addBooleanOption('html5', true)
+    }
 }
 
 task javadocJar (type: Jar, dependsOn: javadoc) {
     classifier = 'javadoc'
     from javadoc.destinationDir
-}
-
-def createSvnDownloadTask(def moduleName, def svnUrlValue, def targetDirValue) {
-    return tasks.create("svnDownload${moduleName}", at.bxm.gradleplugins.svntools.tasks.SvnExport) {
-        svnUrl = svnUrlValue
-        targetDir = targetDirValue
-    }
 }
 
 // Module dependency processing

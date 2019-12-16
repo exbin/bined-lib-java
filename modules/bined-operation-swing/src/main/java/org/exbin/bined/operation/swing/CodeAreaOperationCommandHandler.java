@@ -68,11 +68,11 @@ import org.exbin.bined.swing.CodeAreaCore;
 import org.exbin.bined.swing.CodeAreaSwingUtils;
 import org.exbin.bined.swing.basic.DefaultCodeAreaCaret;
 import org.exbin.bined.swing.basic.DefaultCodeAreaCommandHandler;
-import org.exbin.utils.binary_data.BinaryData;
-import org.exbin.utils.binary_data.ByteArrayData;
-import org.exbin.utils.binary_data.ByteArrayEditableData;
-import org.exbin.utils.binary_data.EditableBinaryData;
-import org.exbin.utils.binary_data.PagedData;
+import org.exbin.auxiliary.binary_data.BinaryData;
+import org.exbin.auxiliary.binary_data.ByteArrayData;
+import org.exbin.auxiliary.binary_data.ByteArrayEditableData;
+import org.exbin.auxiliary.binary_data.EditableBinaryData;
+import org.exbin.auxiliary.binary_data.PagedData;
 import org.exbin.bined.CodeAreaCaretPosition;
 import org.exbin.bined.basic.EnterKeyHandlingMode;
 
