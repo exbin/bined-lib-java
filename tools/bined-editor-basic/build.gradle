@@ -62,7 +62,7 @@ jar {
     from configurations.compile.findAll { it.name == 'bined-swing-${version}.jar' }.collect { it.isDirectory() ? it : zipTree(it) }
     from configurations.compile.findAll { it.name == 'bined-operation-swing-${version}.jar' }.collect { it.isDirectory() ? it : zipTree(it) }
     from configurations.compile.findAll { it.name == 'bined-operation-${version}.jar' }.collect { it.isDirectory() ? it : zipTree(it) }
-    from configurations.compile.findAll { it.name.startsWith('exbin-binary_data-${version}') && it.name.endsWith('jar') }.collect { it.isDirectory() ? it : zipTree(it) }
+    from configurations.compile.findAll { it.name.startsWith('paged_data-${version}') && it.name.endsWith('jar') }.collect { it.isDirectory() ? it : zipTree(it) }
     manifest {
         attributes(
             'Main-Class': mainClass,

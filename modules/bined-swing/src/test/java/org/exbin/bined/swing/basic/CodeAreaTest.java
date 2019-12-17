@@ -23,8 +23,8 @@ import javax.annotation.Nonnull;
 import org.exbin.bined.EditationOperation;
 import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.capability.EditationModeCapable;
-import org.exbin.auxiliary.binary_data.ByteArrayEditableData;
-import org.exbin.auxiliary.binary_data.EditableBinaryData;
+import org.exbin.auxiliary.paged_data.ByteArrayEditableData;
+import org.exbin.auxiliary.paged_data.EditableBinaryData;
 import org.junit.Assert;
 import org.junit.Test;
 

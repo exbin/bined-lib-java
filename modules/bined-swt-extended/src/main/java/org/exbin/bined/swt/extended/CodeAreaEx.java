@@ -52,7 +52,7 @@ import org.exbin.bined.Section;
 import org.exbin.bined.SelectionChangedListener;
 import org.exbin.bined.SelectionRange;
 import org.exbin.bined.ViewMode;
-import org.exbin.auxiliary.binary_data.BinaryData;
+import org.exbin.auxiliary.paged_data.BinaryData;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.widgets.Composite;

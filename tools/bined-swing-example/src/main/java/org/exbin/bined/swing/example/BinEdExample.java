@@ -28,8 +28,8 @@ import javax.swing.event.ChangeEvent;
 import org.exbin.bined.swing.basic.CodeArea;
 import org.exbin.bined.swing.extended.ExtCodeArea;
 import org.exbin.bined.swing.extended.diff.ExtCodeAreaDiffPanel;
-import org.exbin.auxiliary.binary_data.BinaryData;
-import org.exbin.auxiliary.binary_data.ByteArrayEditableData;
+import org.exbin.auxiliary.paged_data.BinaryData;
+import org.exbin.auxiliary.paged_data.ByteArrayEditableData;
 
 /**
  * Example Swing GUI demonstration application of the bined component.
