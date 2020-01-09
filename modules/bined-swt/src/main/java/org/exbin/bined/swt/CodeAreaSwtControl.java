@@ -20,7 +20,7 @@ import org.eclipse.swt.graphics.GC;
 import org.exbin.bined.DataProvider;
 
 /**
- * Hexadecimal editor code area interface.
+ * Code area swt control.
  *
  * @version 0.2.0 2018/08/11
  * @author ExBin Project (https://exbin.org)

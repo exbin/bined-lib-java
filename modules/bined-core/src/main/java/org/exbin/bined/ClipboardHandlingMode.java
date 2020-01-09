@@ -13,32 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.capability;
-
-import javax.annotation.Nonnull;
-import org.exbin.bined.ClipboardHandlingMode;
+package org.exbin.bined;
 
 /**
- * Support for clipboard capability.
+ * Enumeration of clipboard handling modes.
  *
- * @version 0.2.0 2019/01/09
+ * Used to specify what to do with basic clipboard actions like cut, copy, paste
+ * and delete.
+ *
+ * @version 0.2.0 2020/01/09
  * @author ExBin Project (https://exbin.org)
  */
-public interface ClipboardCapable {
+public enum ClipboardHandlingMode implements CodeAreaSection {
 
     /**
-     * Returns mode for default clipboard actions like cut, copy, paste, delete.
-     *
-     * @return clipboard handling mode
+     * Ignore clipboard actions.
      */
-    @Nonnull
-    ClipboardHandlingMode getClipboardHandlingMode();
-
+    IGNORE,
     /**
-     * Sets handle mode for default clipboard actions like cut, copy, paste,
-     * delete.
-     *
-     * @param handlingMode clipboard handling mode
+     * Process clipboard actions using default operations.
      */
-    void setClipboardHandlingMode(ClipboardHandlingMode handlingMode);
+    PROCESS;
 }

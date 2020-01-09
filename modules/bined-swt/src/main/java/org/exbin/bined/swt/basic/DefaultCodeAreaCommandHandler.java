@@ -56,6 +56,7 @@ import org.exbin.bined.swt.CodeAreaSwtUtils;
 import org.exbin.auxiliary.paged_data.BinaryData;
 import org.exbin.auxiliary.paged_data.ByteArrayEditableData;
 import org.exbin.auxiliary.paged_data.EditableBinaryData;
+import org.exbin.bined.ClipboardHandlingMode;
 import org.exbin.bined.CodeAreaCaretPosition;
 import org.exbin.bined.basic.EnterKeyHandlingMode;
 
@@ -94,7 +95,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
         int metaMaskInit;
         try {
-            metaMaskInit = java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
+            metaMaskInit = java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx();
         } catch (java.awt.HeadlessException ex) {
             metaMaskInit = SWT.CONTROL;
         }
@@ -255,7 +256,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                 break;
             }
             default: {
-                if (((ClipboardCapable) codeArea).isHandleClipboard()) {
+                if (((ClipboardCapable) codeArea).getClipboardHandlingMode() == ClipboardHandlingMode.PROCESS) {
                     if ((keyEvent.stateMask & metaMask) > 0 && keyEvent.character == 'c') {
                         copy();
                         keyEvent.doit = false;

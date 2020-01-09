@@ -55,6 +55,7 @@ import org.exbin.bined.swing.CodeAreaSwingUtils;
 import org.exbin.auxiliary.paged_data.BinaryData;
 import org.exbin.auxiliary.paged_data.ByteArrayEditableData;
 import org.exbin.auxiliary.paged_data.EditableBinaryData;
+import org.exbin.bined.ClipboardHandlingMode;
 import org.exbin.bined.CodeAreaCaretPosition;
 import org.exbin.bined.basic.EnterKeyHandlingMode;
 
@@ -93,7 +94,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
         int metaMaskInit;
         try {
-            metaMaskInit = java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
+            metaMaskInit = java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx();
         } catch (java.awt.HeadlessException ex) {
             metaMaskInit = java.awt.Event.CTRL_MASK;
         }
@@ -254,20 +255,20 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                 break;
             }
             default: {
-                if (((ClipboardCapable) codeArea).isHandleClipboard()) {
-                    if ((keyEvent.getModifiers() & metaMask) > 0 && keyEvent.getKeyCode() == KeyEvent.VK_C) {
+                if (((ClipboardCapable) codeArea).getClipboardHandlingMode() == ClipboardHandlingMode.PROCESS) {
+                    if ((keyEvent.getModifiersEx() & metaMask) > 0 && keyEvent.getKeyCode() == KeyEvent.VK_C) {
                         copy();
                         keyEvent.consume();
                         break;
-                    } else if ((keyEvent.getModifiers() & metaMask) > 0 && keyEvent.getKeyCode() == KeyEvent.VK_X) {
+                    } else if ((keyEvent.getModifiersEx() & metaMask) > 0 && keyEvent.getKeyCode() == KeyEvent.VK_X) {
                         cut();
                         keyEvent.consume();
                         break;
-                    } else if ((keyEvent.getModifiers() & metaMask) > 0 && keyEvent.getKeyCode() == KeyEvent.VK_V) {
+                    } else if ((keyEvent.getModifiersEx() & metaMask) > 0 && keyEvent.getKeyCode() == KeyEvent.VK_V) {
                         paste();
                         keyEvent.consume();
                         break;
-                    } else if ((keyEvent.getModifiers() & metaMask) > 0 && keyEvent.getKeyCode() == KeyEvent.VK_A) {
+                    } else if ((keyEvent.getModifiersEx() & metaMask) > 0 && keyEvent.getKeyCode() == KeyEvent.VK_A) {
                         codeArea.selectAll();
                         keyEvent.consume();
                         break;

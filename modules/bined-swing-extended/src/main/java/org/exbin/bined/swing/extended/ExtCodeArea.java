@@ -28,6 +28,7 @@ import javax.swing.UIManager;
 import org.exbin.bined.BasicCodeAreaSection;
 import org.exbin.bined.BasicCodeAreaZone;
 import org.exbin.bined.CaretMovedListener;
+import org.exbin.bined.ClipboardHandlingMode;
 import org.exbin.bined.DefaultCodeAreaCaretPosition;
 import org.exbin.bined.CodeAreaSection;
 import org.exbin.bined.CodeAreaUtils;
@@ -86,7 +87,7 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
 
     @Nonnull
     private Charset charset = Charset.defaultCharset();
-    private boolean handleClipboard = true;
+    private ClipboardHandlingMode clipboardHandlingMode = ClipboardHandlingMode.PROCESS;
 
     @Nonnull
     private EditationMode editationMode = EditationMode.EXPANDING;
@@ -646,13 +647,13 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
     }
 
     @Override
-    public boolean isHandleClipboard() {
-        return handleClipboard;
+    public ClipboardHandlingMode getClipboardHandlingMode() {
+        return clipboardHandlingMode;
     }
 
     @Override
-    public void setHandleClipboard(boolean handleClipboard) {
-        this.handleClipboard = handleClipboard;
+    public void setClipboardHandlingMode(ClipboardHandlingMode clipboardHandlingMode) {
+        this.clipboardHandlingMode = clipboardHandlingMode;
     }
 
     @Nullable
