@@ -95,7 +95,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
         int metaMaskInit;
         try {
-            metaMaskInit = java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx();
+            metaMaskInit = java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
         } catch (java.awt.HeadlessException ex) {
             metaMaskInit = SWT.CONTROL;
         }
