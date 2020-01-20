@@ -2,9 +2,9 @@ rootProject.name = 'bined-editor-basic'
 
 if (rootProject.path == ':') {
     include ':modules:bined-core'
-    include ':modules:bined-swing'
     include ':modules:bined-operation'
     include ':modules:bined-operation-swing'
+    include ':modules:bined-swing'
 }
 
 apply from: '../tools-settings.gradle'

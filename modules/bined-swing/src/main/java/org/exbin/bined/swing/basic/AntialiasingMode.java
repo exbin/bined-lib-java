@@ -18,13 +18,15 @@ package org.exbin.bined.swing.basic;
 import java.awt.Graphics2D;
 import java.awt.GraphicsDevice;
 import java.awt.RenderingHints;
+import java.awt.Toolkit;
+import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * Enumeration of supported anti-aliasing modes.
  *
- * @version 0.2.0 2018/11/26
+ * @version 0.2.0 2020/01/16
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -45,7 +47,17 @@ public enum AntialiasingMode {
         Object antialiasingHint;
         switch (this) {
             case AUTO: {
-                // TODO detect if display is LCD?
+                Toolkit tk = Toolkit.getDefaultToolkit();
+                Map map = (Map) (tk.getDesktopProperty("awt.font.desktophints"));
+                if (map != null) {
+                    // Use system one only if it's not default
+                    antialiasingHint = map.get(RenderingHints.KEY_TEXT_ANTIALIASING);
+                    if (antialiasingHint != null && antialiasingHint != RenderingHints.VALUE_TEXT_ANTIALIAS_DEFAULT) {
+                        return antialiasingHint;
+                    }
+                }
+
+                // Basic fallback detection
                 if (g.getDeviceConfiguration().getDevice().getType() == GraphicsDevice.TYPE_RASTER_SCREEN) {
                     antialiasingHint = RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB;
                 } else {

@@ -1,10 +1,9 @@
 rootProject.name = 'bined-operation-swing'
 
 if (rootProject.path == ':') {
-    include ":modules:bined-core"
-    include ":modules:bined-operation"
-    include ":modules:bined-swing"
-    include ":modules:bined-delta"
+    include ':modules:bined-core'
+    include ':modules:bined-operation'
+    include ':modules:bined-swing'
 }
 
 apply from: '../bined-java-modules-settings.gradle'

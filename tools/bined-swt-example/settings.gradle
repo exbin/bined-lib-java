@@ -3,7 +3,8 @@ rootProject.name = 'bined-swt-example'
 if (rootProject.path == ':') {
     include ':modules:bined-core'
     include ':modules:bined-swt'
-//    include ':modules:bined-swt-extended'
 }
+
+//    include ':modules:bined-swt-extended'
 
 apply from: '../tools-settings.gradle'
