@@ -96,6 +96,7 @@ import org.exbin.bined.extended.layout.PositionIterator;
 import org.exbin.bined.extended.layout.ExtendedCodeAreaLayoutProfile;
 import org.exbin.bined.swing.basic.DefaultCodeAreaMouseListener;
 import org.exbin.bined.CodeAreaCaretPosition;
+import org.exbin.bined.DataChangedListener;
 import org.exbin.bined.extended.ExtendedHorizontalScrollUnit;
 import org.exbin.bined.extended.caret.CodeAreaCaretShape;
 import org.exbin.bined.extended.caret.CodeAreaCaretType;
@@ -106,7 +107,7 @@ import org.exbin.bined.swing.extended.caret.CaretsProfileCapableCodeAreaPainter;
 /**
  * Extended code area component default painter.
  *
- * @version 0.2.0 2019/08/05
+ * @version 0.2.0 2020/01/24
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -130,6 +131,8 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
     private final DefaultCodeAreaMouseListener codeAreaMouseListener;
     @Nonnull
     private final ComponentListener codeAreaComponentListener;
+    @Nonnull
+    private final DataChangedListener codeAreaDataChangeListener;
 
     @Nonnull
     private final BasicCodeAreaMetrics metrics = new BasicCodeAreaMetrics();
@@ -189,10 +192,6 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
 //    private long paintCounter = 0;
     public ExtendedCodeAreaPainter(CodeAreaCore codeArea) {
         this.codeArea = codeArea;
-        codeArea.addDataChangedListener(() -> {
-            validateCaret();
-            recomputeLayout();
-        });
 
         dataView = new JPanel();
         dataView.setBorder(null);
@@ -230,6 +229,10 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
                 recomputeLayout();
             }
         };
+        codeAreaDataChangeListener = () -> {
+            validateCaret();
+            recomputeLayout();
+        };
         colorsProfile.reinitialize();
     }
 
@@ -240,6 +243,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         codeArea.addMouseMotionListener(codeAreaMouseListener);
         codeArea.addMouseWheelListener(codeAreaMouseListener);
         codeArea.addComponentListener(codeAreaComponentListener);
+        codeArea.addDataChangedListener(codeAreaDataChangeListener);
     }
 
     @Override
@@ -249,6 +253,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         codeArea.removeMouseMotionListener(codeAreaMouseListener);
         codeArea.removeMouseWheelListener(codeAreaMouseListener);
         codeArea.removeComponentListener(codeAreaComponentListener);
+        codeArea.removeDataChangedListener(codeAreaDataChangeListener);
     }
 
     @Override

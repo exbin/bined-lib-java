@@ -76,6 +76,7 @@ import org.exbin.bined.swt.basic.color.BasicColorsCapableCodeAreaPainter;
 import org.exbin.bined.swt.capability.FontCapable;
 import org.exbin.auxiliary.paged_data.BinaryData;
 import org.exbin.bined.CodeAreaCaretPosition;
+import org.exbin.bined.DataChangedListener;
 import org.exbin.bined.basic.BasicCodeAreaLayout;
 
 /**
@@ -108,6 +109,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
     private final DefaultCodeAreaMouseListener codeAreaMouseListener;
     @Nonnull
     private final ControlListener codeAreaControlListener;
+    @Nonnull
+    private final DataChangedListener codeAreaDataChangeListener;
 
     @Nonnull
     private final BasicCodeAreaMetrics metrics = new BasicCodeAreaMetrics();
@@ -154,10 +157,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
 
     public DefaultCodeAreaPainter(CodeAreaCore codeArea) {
         this.codeArea = codeArea;
-        codeArea.addDataChangedListener(() -> {
-            validateCaret();
-            recomputeLayout();
-        });
 
         codeArea.setLayout(null);
         scrollPanel = new ScrolledComposite(codeArea, SWT.H_SCROLL | SWT.V_SCROLL);
@@ -201,6 +200,10 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
                 }
             }
         };
+        codeAreaDataChangeListener = () -> {
+            validateCaret();
+            recomputeLayout();
+        };
 
 //        dataView.layout();
         codeArea.update();
@@ -219,6 +222,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         codeArea.addMouseWheelListener(codeAreaMouseListener);
         codeArea.addMouseTrackListener(codeAreaMouseListener);
         codeArea.addControlListener(codeAreaControlListener);
+        codeArea.addDataChangedListener(codeAreaDataChangeListener);
         scrollPanel.setContent(dataView);
         codeArea.update();
     }
@@ -236,6 +240,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         codeArea.removeMouseWheelListener(codeAreaMouseListener);
         codeArea.removeMouseTrackListener(codeAreaMouseListener);
         codeArea.removeControlListener(codeAreaControlListener);
+        codeArea.removeDataChangedListener(codeAreaDataChangeListener);
     }
 
     @Override

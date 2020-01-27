@@ -71,6 +71,7 @@ import org.exbin.bined.javafx.capability.BackgroundPaintCapable;
 import org.exbin.bined.javafx.capability.FontCapable;
 import org.exbin.auxiliary.paged_data.BinaryData;
 import org.exbin.bined.CodeAreaCaretPosition;
+import org.exbin.bined.DataChangedListener;
 import org.exbin.bined.basic.BasicCodeAreaLayout;
 
 /**
@@ -102,6 +103,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
     private final Canvas dataView;
     @Nonnull
     private final ScrollPane scrollPanel;
+    @Nonnull
+    private final DataChangedListener codeAreaDataChangeListener;
 
     @Nonnull
     private final BasicCodeAreaMetrics metrics = new BasicCodeAreaMetrics();
@@ -148,10 +151,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
 
     public DefaultCodeAreaPainter(CodeAreaCore codeArea) {
         this.codeArea = codeArea;
-        codeArea.addDataChangedListener(() -> {
-            validateCaret();
-            recomputeLayout();
-        });
 
         topCanvas = new Canvas();
         headerCanvas = new Canvas();
@@ -181,6 +180,10 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
 
 //        codeArea.getChildren().add(dataView);
 //
+        codeAreaDataChangeListener = () -> {
+            validateCaret();
+            recomputeLayout();
+        };
 //        DefaultCodeAreaMouseListener codeAreaMouseListener = new DefaultCodeAreaMouseListener(codeArea, scrollPanel);
 //        codeArea.addMouseListener(codeAreaMouseListener);
 //        codeArea.addMouseMotionListener(codeAreaMouseListener);
@@ -197,6 +200,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         children.add(headerCanvas);
         children.add(rowPositionCanvas);
         children.add(scrollPanel);
+        codeArea.addDataChangedListener(codeAreaDataChangeListener);
         onResize();
     }
 
@@ -207,6 +211,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         children.remove(headerCanvas);
         children.remove(rowPositionCanvas);
         children.remove(scrollPanel);
+        codeArea.removeDataChangedListener(codeAreaDataChangeListener);
     }
 
     @Override

@@ -80,6 +80,7 @@ import org.exbin.bined.swing.capability.AntialiasingCapable;
 import org.exbin.bined.swing.capability.FontCapable;
 import org.exbin.auxiliary.paged_data.BinaryData;
 import org.exbin.bined.CodeAreaCaretPosition;
+import org.exbin.bined.DataChangedListener;
 import org.exbin.bined.basic.BasicCodeAreaLayout;
 
 /**
@@ -109,6 +110,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
     private final DefaultCodeAreaMouseListener codeAreaMouseListener;
     @Nonnull
     private final ComponentListener codeAreaComponentListener;
+    @Nonnull
+    private final DataChangedListener codeAreaDataChangeListener;
 
     @Nonnull
     private final BasicCodeAreaMetrics metrics = new BasicCodeAreaMetrics();
@@ -157,10 +160,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
 
     public DefaultCodeAreaPainter(CodeAreaCore codeArea) {
         this.codeArea = codeArea;
-        codeArea.addDataChangedListener(() -> {
-            validateCaret();
-            recomputeLayout();
-        });
 
         dataView = new JPanel();
         dataView.setBorder(null);
@@ -198,6 +197,10 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
                 recomputeLayout();
             }
         };
+        codeAreaDataChangeListener = () -> {
+            validateCaret();
+            recomputeLayout();
+        };
         colorsProfile.reinitialize();
     }
 
@@ -208,6 +211,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         codeArea.addMouseMotionListener(codeAreaMouseListener);
         codeArea.addMouseWheelListener(codeAreaMouseListener);
         codeArea.addComponentListener(codeAreaComponentListener);
+        codeArea.addDataChangedListener(codeAreaDataChangeListener);
     }
 
     @Override
@@ -217,6 +221,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         codeArea.removeMouseMotionListener(codeAreaMouseListener);
         codeArea.removeMouseWheelListener(codeAreaMouseListener);
         codeArea.removeComponentListener(codeAreaComponentListener);
+        codeArea.removeDataChangedListener(codeAreaDataChangeListener);
     }
 
     @Override
