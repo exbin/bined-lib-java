@@ -225,4 +225,6 @@ public abstract class CodeAreaCore extends Composite implements CodeAreaControl 
     public abstract void resetPainter();
 
     public abstract void updateLayout();
+
+    public abstract void repaint();
 }

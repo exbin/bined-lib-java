@@ -448,8 +448,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
 
     @Override
     public void repaint() {
-        scrollPanel.redraw();
-        dataView.redraw();
+        scrollPanel.layout(true);
+        dataView.layout(true);
     }
 
     public void paintOutsiteArea(GC g) {

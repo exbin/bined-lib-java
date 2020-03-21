@@ -299,7 +299,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                 pressedCharInPreview(keyValue);
             }
         }
-        codeArea.redraw();
+        codeArea.repaint();
     }
 
     private void pressedCharAsCode(char keyChar) {
@@ -790,7 +790,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
             notifyCaretMoved();
             undoSequenceBreak();
-            codeArea.redraw();
+            codeArea.repaint();
         }
     }
 
@@ -800,7 +800,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         CodeAreaCaretPosition movePosition = ((CaretCapable) codeArea).computeMovePosition(caretPosition, direction);
         if (!caretPosition.equals(movePosition)) {
             caret.setCaretPosition(movePosition);
-            updateSelection((modifiers & java.awt.event.KeyEvent.SHIFT_DOWN_MASK) > 0 ? SelectingMode.SELECTING : SelectingMode.NONE, movePosition);
+            updateSelection((modifiers & SWT.SHIFT) > 0 ? SelectingMode.SELECTING : SelectingMode.NONE, movePosition);
             notifyCaretMoved();
         }
     }
@@ -844,7 +844,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
     private void revealCursor() {
         ((ScrollingCapable) codeArea).revealCursor();
-        codeArea.redraw();
+        codeArea.repaint();
     }
 
     private void notifyCaretMoved() {

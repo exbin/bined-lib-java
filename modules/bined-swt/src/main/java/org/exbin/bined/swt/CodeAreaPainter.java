@@ -179,7 +179,7 @@ public interface CodeAreaPainter {
     @Nonnull
     CodeAreaScrollPosition computeScrolling(CodeAreaScrollPosition startPosition, ScrollingDirection direction);
 
-    public void repaint();
+    void repaint();
 
-    public void dispose();
+    void dispose();
 }
