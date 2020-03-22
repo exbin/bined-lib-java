@@ -62,7 +62,7 @@ import org.exbin.bined.basic.EnterKeyHandlingMode;
 /**
  * Default binary editor command handler.
  *
- * @version 0.2.0 2019/11/02
+ * @version 0.2.0 2020/03/22
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -358,7 +358,9 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                 if (editationMode == EditationMode.EXPANDING && editationOperation == EditationOperation.OVERWRITE && dataPosition == codeArea.getDataSize()) {
                     ((EditableBinaryData) data).insert(dataPosition, 1);
                 }
-                setCodeValue(value);
+                if (editationMode != EditationMode.INPLACE || dataPosition < codeArea.getDataSize()) {
+                    setCodeValue(value);
+                }
             }
             codeArea.notifyDataChanged();
             move(NO_MODIFIER, MovementDirection.RIGHT);
