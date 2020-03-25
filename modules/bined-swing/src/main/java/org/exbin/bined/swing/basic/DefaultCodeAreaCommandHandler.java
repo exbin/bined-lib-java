@@ -73,7 +73,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     public static final int LAST_CONTROL_CODE = 31;
     private static final char DELETE_CHAR = (char) 0x7f;
 
-    private final int metaMask;
+    private final int metaMask = CodeAreaSwingUtils.getMetaMaskDown();
 
     @Nonnull
     private final CodeAreaCore codeArea;
@@ -91,14 +91,6 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         this.codeArea = codeArea;
         codeTypeSupported = codeArea instanceof CodeTypeCapable;
         viewModeSupported = codeArea instanceof ViewModeCapable;
-
-        int metaMaskInit;
-        try {
-            metaMaskInit = java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
-        } catch (java.awt.HeadlessException ex) {
-            metaMaskInit = java.awt.Event.CTRL_MASK;
-        }
-        this.metaMask = metaMaskInit;
 
         try {
             clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
@@ -169,7 +161,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                 break;
             }
             case KeyEvent.VK_HOME: {
-                if ((keyEvent.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) > 0) {
+                if ((keyEvent.getModifiersEx() & metaMask) > 0) {
                     move(keyEvent.getModifiersEx(), MovementDirection.DOC_START);
                 } else {
                     move(keyEvent.getModifiersEx(), MovementDirection.ROW_START);
@@ -180,7 +172,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                 break;
             }
             case KeyEvent.VK_END: {
-                if ((keyEvent.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK) > 0) {
+                if ((keyEvent.getModifiersEx() & metaMask) > 0) {
                     move(keyEvent.getModifiersEx(), MovementDirection.DOC_END);
                 } else {
                     move(keyEvent.getModifiersEx(), MovementDirection.ROW_END);

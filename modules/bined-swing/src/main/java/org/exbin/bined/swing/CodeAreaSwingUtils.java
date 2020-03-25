@@ -16,11 +16,13 @@
 package org.exbin.bined.swing;
 
 import java.awt.Color;
+import java.awt.Event;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.ClipboardOwner;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.event.KeyEvent;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
@@ -116,6 +118,25 @@ public class CodeAreaSwingUtils {
             return clipboard.isDataFlavorAvailable(binaryDataFlavor) || clipboard.isDataFlavorAvailable(DataFlavor.stringFlavor);
         } catch (IllegalStateException ex) {
             return false;
+        }
+    }
+
+    public static int getMetaMaskDown() {
+        try {
+            switch (java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()) {
+                case Event.CTRL_MASK:
+                    return KeyEvent.CTRL_DOWN_MASK;
+                case Event.META_MASK:
+                    return KeyEvent.META_DOWN_MASK;
+                case Event.SHIFT_MASK:
+                    return KeyEvent.SHIFT_DOWN_MASK;
+                case Event.ALT_MASK:
+                    return KeyEvent.ALT_DOWN_MASK;
+                default:
+                    return KeyEvent.CTRL_DOWN_MASK;
+            }
+        } catch (java.awt.HeadlessException ex) {
+            return KeyEvent.CTRL_DOWN_MASK;
         }
     }
 
