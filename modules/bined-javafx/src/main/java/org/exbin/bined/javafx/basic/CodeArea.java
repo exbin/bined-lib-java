@@ -24,14 +24,14 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.swing.UIManager;
-import org.exbin.bined.BasicCodeAreaSection;
-import org.exbin.bined.BasicCodeAreaZone;
+import org.exbin.bined.basic.BasicCodeAreaSection;
+import org.exbin.bined.basic.BasicCodeAreaZone;
 import org.exbin.bined.CaretMovedListener;
 import org.exbin.bined.ClipboardHandlingMode;
 import org.exbin.bined.DefaultCodeAreaCaretPosition;
 import org.exbin.bined.CodeAreaSection;
 import org.exbin.bined.CodeAreaUtils;
-import org.exbin.bined.CodeAreaViewMode;
+import org.exbin.bined.basic.CodeAreaViewMode;
 import org.exbin.bined.CodeCharactersCase;
 import org.exbin.bined.CodeType;
 import org.exbin.bined.EditationMode;
@@ -56,6 +56,7 @@ import org.exbin.bined.javafx.basic.color.BasicCodeAreaColorsProfile;
 import org.exbin.bined.javafx.basic.color.BasicColorsCapableCodeAreaPainter;
 import org.exbin.bined.javafx.capability.FontCapable;
 import org.exbin.bined.CodeAreaCaretPosition;
+import org.exbin.bined.RowWrappingMode;
 
 /**
  * Code area component default code area.

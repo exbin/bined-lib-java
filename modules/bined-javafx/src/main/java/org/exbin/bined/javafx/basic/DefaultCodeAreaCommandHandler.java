@@ -15,7 +15,6 @@
  */
 package org.exbin.bined.javafx.basic;
 
-import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.FlavorEvent;
@@ -63,12 +62,10 @@ import org.exbin.bined.basic.EnterKeyHandlingMode;
 public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
     public static final int NO_MODIFIER = 0;
-    public static final String FALLBACK_CLIPBOARD = "clipboard";
     public static final int LAST_CONTROL_CODE = 31;
     private static final char DELETE_CHAR = (char) 0x7f;
 
-    private final int metaMask;
-
+//    private final int metaMask;
     @Nonnull
     private final CodeAreaCore codeArea;
     @Nonnull
@@ -86,20 +83,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         codeTypeSupported = codeArea instanceof CodeTypeCapable;
         viewModeSupported = codeArea instanceof ViewModeCapable;
 
-        int metaMaskInit;
-        try {
-            metaMaskInit = java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
-        } catch (java.awt.HeadlessException ex) {
-            metaMaskInit = java.awt.Event.CTRL_MASK;
-        }
-        this.metaMask = metaMaskInit;
-
-        try {
-            clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-        } catch (java.awt.HeadlessException ex) {
-            // Create clipboard if system one not available
-            clipboard = new Clipboard(FALLBACK_CLIPBOARD);
-        }
+        clipboard = CodeAreaJavaFxUtils.getClipboard();
         try {
             clipboard.addFlavorListener((FlavorEvent e) -> {
                 updateCanPaste();

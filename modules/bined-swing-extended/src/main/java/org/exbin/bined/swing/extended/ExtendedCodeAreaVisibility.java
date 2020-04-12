@@ -17,8 +17,8 @@ package org.exbin.bined.swing.extended;
 
 import org.exbin.bined.extended.ExtendedCodeAreaStructure;
 import javax.annotation.ParametersAreNonnullByDefault;
-import org.exbin.bined.BasicCodeAreaSection;
-import org.exbin.bined.CodeAreaViewMode;
+import org.exbin.bined.basic.BasicCodeAreaSection;
+import org.exbin.bined.basic.CodeAreaViewMode;
 import org.exbin.bined.swing.basic.BasicCodeAreaMetrics;
 import org.exbin.bined.extended.layout.ExtendedCodeAreaLayoutProfile;
 import org.exbin.bined.extended.layout.PositionIterator;

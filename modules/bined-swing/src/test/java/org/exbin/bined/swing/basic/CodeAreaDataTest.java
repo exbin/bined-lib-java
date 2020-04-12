@@ -13,23 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined;
+package org.exbin.bined.swing.basic;
+
+import org.exbin.bined.CodeAreaTest;
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
- * Enumeration of basic code area zones.
+ * Tests for codeArea component.
  *
- * @version 0.2.0 2018/04/22
+ * @version 0.2.0 2020/04/12
  * @author ExBin Project (https://exbin.org)
  */
-public enum BasicCodeAreaZone {
+public class CodeAreaDataTest {
 
-    UNKNOWN,
-    HEADER,
-    ROW_POSITIONS,
-    CODE_AREA,
-    HORIZONTAL_SCROLLBAR,
-    VERTICAL_SCROLLBAR,
-    SCROLLBAR_CORNER,
-    TOP_LEFT_CORNER,
-    BOTTOM_LEFT_CORNER
+    public CodeAreaDataTest() {
+    }
+
+    @Test
+    public void testContentData() {
+        CodeArea codeArea = new CodeArea();
+        codeArea.setContentData(CodeAreaTest.getSampleData(CodeAreaTest.SAMPLE_ALLBYTES));
+
+        Assert.assertTrue(codeArea.getDataSize() == 256);
+    }
 }

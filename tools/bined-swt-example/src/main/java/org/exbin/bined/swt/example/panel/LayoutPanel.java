@@ -26,7 +26,7 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Spinner;
-import org.exbin.bined.capability.RowWrappingCapable.RowWrappingMode;
+import org.exbin.bined.RowWrappingMode;
 import org.exbin.bined.swt.basic.CodeArea;
 
 /**

@@ -19,7 +19,7 @@ import java.awt.Rectangle;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import org.exbin.bined.BasicCodeAreaZone;
+import org.exbin.bined.basic.BasicCodeAreaZone;
 import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.swing.basic.BasicCodeAreaMetrics;
 import org.exbin.bined.extended.layout.ExtendedCodeAreaLayoutProfile;

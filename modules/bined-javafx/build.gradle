@@ -1,3 +1,23 @@
+buildscript {
+    repositories {
+        mavenLocal()
+        jcenter()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }    
+    }
+    dependencies {
+        classpath("at.bxm.gradleplugins:gradle-svntools-plugin:latest.integration")
+        if (JavaVersion.current() != JavaVersion.VERSION_1_8) {
+            classpath("org.openjfx:javafx-plugin:0.0.8")
+        }
+    }
+}
+
+if (JavaVersion.current() != JavaVersion.VERSION_1_8) {
+    apply plugin: "org.openjfx.javafxplugin"
+}
+
 group = 'org.exbin.bined'
 ext.libraryName = 'BinEd JavaFX Library'
 ext.libraryDescription = 'Library for BinEd editor component'
@@ -7,16 +27,6 @@ apply from: '../bined-java-modules.gradle'
 //def javaFxHome = "${System.properties['java.home']}"
 
 sourceCompatibility = '1.8'
-
-buildscript {
-    repositories {
-        mavenLocal()
-        jcenter()
-    }
-    dependencies {
-        classpath("at.bxm.gradleplugins:gradle-svntools-plugin:latest.integration")
-    }
-}
 
 //if (!project.plugins.findPlugin(org.bitbucket.shemnon.javafxplugin.JavaFXPlugin)) {
 //    project.apply(plugin: org.bitbucket.shemnon.javafxplugin.JavaFXPlugin)
@@ -34,11 +44,20 @@ repositories {
     mavenCentral()
 }
 
+if (JavaVersion.current() != JavaVersion.VERSION_1_8) {
+    javafx {
+        version = "14"
+        modules = [ 'javafx.controls', 'javafx.graphics' ]
+    }
+}
+
 dependencies {
     //    providedCompile files("$javaFxHome/lib/jfxrt.jar")
-    compile group: 'org.openjfx', name: 'javafx-base', version: '11.0.2'
-    compile group: 'org.openjfx', name: 'javafx-controls', version: '11.0.2'
-    compile group: 'org.openjfx', name: 'javafx-graphics', version: '11.0.2'
+    if (JavaVersion.current() == JavaVersion.VERSION_1_8) {
+        compile group: 'org.openjfx', name: 'javafx-base', version: '11.0.2'
+        compile group: 'org.openjfx', name: 'javafx-controls', version: '11.0.2'
+        compile group: 'org.openjfx', name: 'javafx-graphics', version: '11.0.2'
+    }
     compile moduleDep('BinedJava', 'org.exbin.bined', 'bined-core')
     compile moduleDep('ExbinAuxiliaryJava', 'org.exbin.auxiliary', 'paged_data')
     testCompile group : 'junit', name: 'junit', version: '4.10'

@@ -18,7 +18,7 @@ package org.exbin.bined.javafx.basic;
 import javafx.geometry.Rectangle2D;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import org.exbin.bined.BasicCodeAreaZone;
+import org.exbin.bined.basic.BasicCodeAreaZone;
 
 /**
  * Basic code area component dimensions.

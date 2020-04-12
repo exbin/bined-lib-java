@@ -17,7 +17,7 @@ package org.exbin.bined.capability;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import org.exbin.bined.CodeAreaViewMode;
+import org.exbin.bined.basic.CodeAreaViewMode;
 
 /**
  * Support for view mode capability.

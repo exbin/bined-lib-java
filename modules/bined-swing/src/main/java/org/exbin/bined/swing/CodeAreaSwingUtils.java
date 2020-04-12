@@ -16,7 +16,7 @@
 package org.exbin.bined.swing;
 
 import java.awt.Color;
-import java.awt.Event;
+import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.ClipboardOwner;
 import java.awt.datatransfer.DataFlavor;
@@ -53,6 +53,9 @@ public class CodeAreaSwingUtils {
 
     public static int MAX_COMPONENT_VALUE = 255;
     public static final String DEFAULT_ENCODING = "UTF-8";
+
+    public static final String FALLBACK_CLIPBOARD = "clipboard";
+    private static Clipboard clipboard = null;
 
     private CodeAreaSwingUtils() {
     }
@@ -121,16 +124,18 @@ public class CodeAreaSwingUtils {
         }
     }
 
+    @SuppressWarnings("deprecation")
     public static int getMetaMaskDown() {
+        // TODO: Replace with getMenuShortcutKeyMaskEx when switching to java 10 or later
         try {
             switch (java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()) {
-                case Event.CTRL_MASK:
+                case java.awt.Event.CTRL_MASK:
                     return KeyEvent.CTRL_DOWN_MASK;
-                case Event.META_MASK:
+                case java.awt.Event.META_MASK:
                     return KeyEvent.META_DOWN_MASK;
-                case Event.SHIFT_MASK:
+                case java.awt.Event.SHIFT_MASK:
                     return KeyEvent.SHIFT_DOWN_MASK;
-                case Event.ALT_MASK:
+                case java.awt.Event.ALT_MASK:
                     return KeyEvent.ALT_DOWN_MASK;
                 default:
                     return KeyEvent.CTRL_DOWN_MASK;
@@ -138,6 +143,24 @@ public class CodeAreaSwingUtils {
         } catch (java.awt.HeadlessException ex) {
             return KeyEvent.CTRL_DOWN_MASK;
         }
+    }
+
+    /**
+     * A shared {@code Clipboard}.
+     *
+     * @return clipboard clipboard instance
+     */
+    @Nonnull
+    public static Clipboard getClipboard() {
+        if (clipboard == null) {
+            try {
+                clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+            } catch (SecurityException e) {
+                clipboard = new Clipboard(FALLBACK_CLIPBOARD);
+            }
+        }
+
+        return clipboard;
     }
 
     @ParametersAreNonnullByDefault

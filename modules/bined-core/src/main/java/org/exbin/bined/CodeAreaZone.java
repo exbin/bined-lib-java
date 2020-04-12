@@ -16,22 +16,10 @@
 package org.exbin.bined;
 
 /**
- * Enumeration of clipboard handling modes.
+ * Code area section zone.
  *
- * Used to specify what to do with basic clipboard actions like cut, copy, paste
- * and delete.
- *
- * @version 0.2.0 2020/01/09
+ * @version 0.2.0 2020/04/11
  * @author ExBin Project (https://exbin.org)
  */
-public enum ClipboardHandlingMode {
-
-    /**
-     * Ignore clipboard actions.
-     */
-    IGNORE,
-    /**
-     * Process clipboard actions using default operations.
-     */
-    PROCESS;
+public interface CodeAreaZone {
 }

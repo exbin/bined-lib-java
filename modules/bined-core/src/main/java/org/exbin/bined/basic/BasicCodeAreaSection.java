@@ -13,25 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined;
+package org.exbin.bined.basic;
+
+import org.exbin.bined.CodeAreaSection;
 
 /**
- * Enumeration of clipboard handling modes.
+ * Enumeration of basic cursor position section.
  *
- * Used to specify what to do with basic clipboard actions like cut, copy, paste
- * and delete.
- *
- * @version 0.2.0 2020/01/09
+ * @version 0.2.0 2018/10/24
  * @author ExBin Project (https://exbin.org)
  */
-public enum ClipboardHandlingMode {
+public enum BasicCodeAreaSection implements CodeAreaSection {
 
     /**
-     * Ignore clipboard actions.
+     * Section of code area with codes for binary data representation.
      */
-    IGNORE,
+    CODE_MATRIX,
     /**
-     * Process clipboard actions using default operations.
+     * Section of code area with textual preview characters.
      */
-    PROCESS;
+    TEXT_PREVIEW;
 }

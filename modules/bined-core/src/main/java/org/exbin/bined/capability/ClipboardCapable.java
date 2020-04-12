@@ -16,6 +16,7 @@
 package org.exbin.bined.capability;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.ClipboardHandlingMode;
 
 /**
@@ -24,6 +25,7 @@ import org.exbin.bined.ClipboardHandlingMode;
  * @version 0.2.0 2019/01/09
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public interface ClipboardCapable {
 
     /**

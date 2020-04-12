@@ -17,18 +17,18 @@ package org.exbin.bined.swing.extended.layout;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import org.exbin.bined.BasicCodeAreaSection;
+import org.exbin.bined.basic.BasicCodeAreaSection;
 import org.exbin.bined.DefaultCodeAreaCaretPosition;
 import org.exbin.bined.CodeAreaSection;
-import org.exbin.bined.CodeAreaViewMode;
+import org.exbin.bined.basic.CodeAreaViewMode;
 import org.exbin.bined.CodeType;
 import org.exbin.bined.basic.MovementDirection;
-import org.exbin.bined.capability.RowWrappingCapable;
 import org.exbin.bined.extended.layout.SpaceType;
 import org.exbin.bined.extended.ExtendedCodeAreaStructure;
 import org.exbin.bined.extended.layout.PositionIterator;
 import org.exbin.bined.extended.layout.ExtendedCodeAreaLayoutProfile;
 import org.exbin.bined.CodeAreaCaretPosition;
+import org.exbin.bined.RowWrappingMode;
 
 /**
  * Layout profile for extended code area.
@@ -94,10 +94,10 @@ public class DefaultExtendedCodeAreaLayoutProfile implements ExtendedCodeAreaLay
         CodeAreaViewMode viewMode = structure.getViewMode();
         CodeType codeType = structure.getCodeType();
         int maxBytesPerLine = structure.getMaxBytesPerLine();
-        RowWrappingCapable.RowWrappingMode rowWrapping = structure.getRowWrapping();
+        RowWrappingMode rowWrapping = structure.getRowWrapping();
         int wrappingBytesGroupSize = structure.getWrappingBytesGroupSize();
         int computedBytesPerRow = 0;
-        if (rowWrapping == RowWrappingCapable.RowWrappingMode.WRAPPING) {
+        if (rowWrapping == RowWrappingMode.WRAPPING) {
             if (viewMode == CodeAreaViewMode.TEXT_PREVIEW) {
                 computedBytesPerRow = halfCharsPerPage >> 1;
             } else {

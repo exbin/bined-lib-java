@@ -15,7 +15,6 @@
  */
 package org.exbin.bined.swt.basic;
 
-import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.FlavorEvent;
@@ -29,9 +28,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
-import org.exbin.bined.BasicCodeAreaSection;
+import org.exbin.bined.basic.BasicCodeAreaSection;
 import org.exbin.bined.CodeAreaUtils;
-import org.exbin.bined.CodeAreaViewMode;
+import org.exbin.bined.basic.CodeAreaViewMode;
 import org.exbin.bined.CodeCharactersCase;
 import org.exbin.bined.CodeType;
 import org.exbin.bined.EditationMode;
@@ -63,14 +62,13 @@ import org.exbin.bined.basic.EnterKeyHandlingMode;
 /**
  * Default hexadecimal editor command handler.
  *
- * @version 0.2.0 2019/11/02
+ * @version 0.2.0 2020/04/12
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
     public static final int NO_MODIFIER = 0;
-    public static final String FALLBACK_CLIPBOARD = "clipboard";
     public static final int LAST_CONTROL_CODE = 31;
     private static final char DELETE_CHAR = (char) 0x7f;
 
@@ -93,23 +91,9 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         codeTypeSupported = codeArea instanceof CodeTypeCapable;
         viewModeSupported = codeArea instanceof ViewModeCapable;
 
-        int metaMaskInit;
-        try {
-            metaMaskInit = java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
-        } catch (java.awt.HeadlessException ex) {
-            metaMaskInit = SWT.CONTROL;
-        }
-        this.metaMask = metaMaskInit;
+        this.metaMask = CodeAreaSwtUtils.getMetaMask();
 
-        try {
-            clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-        } catch (java.awt.HeadlessException ex) {
-            // Create clipboard if system one not available
-            clipboard = new Clipboard("clipboard");
-        }
-        clipboard.addFlavorListener((FlavorEvent e) -> {
-            updateCanPaste();
-        });
+        clipboard = CodeAreaSwtUtils.getClipboard();
         try {
             clipboard.addFlavorListener((FlavorEvent e) -> {
                 updateCanPaste();
@@ -176,7 +160,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                 break;
             }
             case SWT.HOME: {
-                if ((keyEvent.stateMask & SWT.CONTROL) > 0) {
+                if ((keyEvent.stateMask & metaMask) > 0) {
                     move(keyEvent.stateMask, MovementDirection.DOC_START);
                 } else {
                     move(keyEvent.stateMask, MovementDirection.ROW_START);
@@ -187,7 +171,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                 break;
             }
             case SWT.END: {
-                if ((keyEvent.stateMask & SWT.CONTROL) > 0) {
+                if ((keyEvent.stateMask & metaMask) > 0) {
                     move(keyEvent.stateMask, MovementDirection.DOC_END);
                 } else {
                     move(keyEvent.stateMask, MovementDirection.ROW_END);

@@ -15,6 +15,7 @@
  */
 package org.exbin.bined.extended.color;
 
+import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -50,9 +51,9 @@ public enum CodeAreaUnprintablesColorType implements CodeAreaColorType {
         return typeId;
     }
 
-    @Nullable
+    @Nonnull
     @Override
-    public CodeAreaColorGroup getGroup() {
-        return group;
+    public Optional<CodeAreaColorGroup> getGroup() {
+        return Optional.ofNullable(group);
     }
 }

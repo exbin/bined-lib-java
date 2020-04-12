@@ -22,7 +22,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.swing.Timer;
-import org.exbin.bined.BasicCodeAreaSection;
+import org.exbin.bined.basic.BasicCodeAreaSection;
 import org.exbin.bined.CodeAreaCaret;
 import org.exbin.bined.DefaultCodeAreaCaretPosition;
 import org.exbin.bined.CodeAreaSection;

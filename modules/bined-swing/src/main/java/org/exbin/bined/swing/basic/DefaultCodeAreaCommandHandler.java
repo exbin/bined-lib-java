@@ -28,9 +28,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import org.exbin.bined.BasicCodeAreaSection;
+import org.exbin.bined.basic.BasicCodeAreaSection;
 import org.exbin.bined.CodeAreaUtils;
-import org.exbin.bined.CodeAreaViewMode;
+import org.exbin.bined.basic.CodeAreaViewMode;
 import org.exbin.bined.CodeCharactersCase;
 import org.exbin.bined.CodeType;
 import org.exbin.bined.EditationMode;
@@ -69,7 +69,6 @@ import org.exbin.bined.basic.EnterKeyHandlingMode;
 public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
     public static final int NO_MODIFIER = 0;
-    public static final String FALLBACK_CLIPBOARD = "clipboard";
     public static final int LAST_CONTROL_CODE = 31;
     private static final char DELETE_CHAR = (char) 0x7f;
 
@@ -92,12 +91,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         codeTypeSupported = codeArea instanceof CodeTypeCapable;
         viewModeSupported = codeArea instanceof ViewModeCapable;
 
-        try {
-            clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-        } catch (java.awt.HeadlessException ex) {
-            // Create clipboard if system one not available
-            clipboard = new Clipboard(FALLBACK_CLIPBOARD);
-        }
+        clipboard = CodeAreaSwingUtils.getClipboard();
         try {
             clipboard.addFlavorListener((FlavorEvent e) -> {
                 updateCanPaste();

@@ -16,19 +16,19 @@
 package org.exbin.bined;
 
 /**
- * Enumeration of basic cursor position section.
+ * Row wrapping mode.
  *
- * @version 0.2.0 2018/10/24
+ * @version 0.2.0 2020/04/11
  * @author ExBin Project (https://exbin.org)
  */
-public enum BasicCodeAreaSection implements CodeAreaSection {
+public enum RowWrappingMode {
 
     /**
-     * Section of code area with codes for binary data representation.
+     * Rows are not wrapped to visible area.
      */
-    CODE_MATRIX,
+    NO_WRAPPING,
     /**
-     * Section of code area with textual preview characters.
+     * Rows are wrapped to visible area.
      */
-    TEXT_PREVIEW;
+    WRAPPING;
 }

@@ -15,6 +15,7 @@
  */
 package org.exbin.bined.swt;
 
+import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.ClipboardOwner;
 import java.awt.datatransfer.DataFlavor;
@@ -26,6 +27,7 @@ import java.util.Arrays;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.CodeCharactersCase;
@@ -49,6 +51,9 @@ public class CodeAreaSwtUtils {
 
     public static int MAX_COMPONENT_VALUE = 255;
     public static final String DEFAULT_ENCODING = "UTF-8";
+
+    public static final String FALLBACK_CLIPBOARD = "clipboard";
+    private static Clipboard clipboard = null;
 
     private CodeAreaSwtUtils() {
     }
@@ -89,6 +94,28 @@ public class CodeAreaSwtUtils {
         } catch (IllegalStateException ex) {
             return false;
         }
+    }
+
+    public static int getMetaMask() {
+        return SWT.CTRL | SWT.COMMAND;
+    }
+
+    /**
+     * A shared {@code Clipboard}.
+     *
+     * @return clipboard clipboard instance
+     */
+    @Nonnull
+    public static Clipboard getClipboard() {
+        if (clipboard == null) {
+            try {
+                clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+            } catch (SecurityException e) {
+                clipboard = new Clipboard(FALLBACK_CLIPBOARD);
+            }
+        }
+
+        return clipboard;
     }
 
     @ParametersAreNonnullByDefault

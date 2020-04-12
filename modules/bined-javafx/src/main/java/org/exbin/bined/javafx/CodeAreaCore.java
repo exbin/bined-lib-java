@@ -96,7 +96,6 @@ public abstract class CodeAreaCore extends Pane implements CodeAreaControl {
         commandHandler.copy();
     }
 
-    @Override
     public void copyAsCode() {
         commandHandler.copyAsCode();
     }
@@ -111,7 +110,6 @@ public abstract class CodeAreaCore extends Pane implements CodeAreaControl {
         commandHandler.paste();
     }
 
-    @Override
     public void pasteFromCode() {
         commandHandler.pasteFromCode();
     }

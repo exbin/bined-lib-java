@@ -13,25 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined;
+package org.exbin.bined.basic;
+
+import org.exbin.bined.CodeAreaZone;
 
 /**
- * Enumeration of clipboard handling modes.
+ * Enumeration of basic code area zones.
  *
- * Used to specify what to do with basic clipboard actions like cut, copy, paste
- * and delete.
- *
- * @version 0.2.0 2020/01/09
+ * @version 0.2.0 2020/04/11
  * @author ExBin Project (https://exbin.org)
  */
-public enum ClipboardHandlingMode {
+public enum BasicCodeAreaZone implements CodeAreaZone {
 
-    /**
-     * Ignore clipboard actions.
-     */
-    IGNORE,
-    /**
-     * Process clipboard actions using default operations.
-     */
-    PROCESS;
+    UNKNOWN,
+    HEADER,
+    ROW_POSITIONS,
+    CODE_AREA,
+    HORIZONTAL_SCROLLBAR,
+    VERTICAL_SCROLLBAR,
+    SCROLLBAR_CORNER,
+    TOP_LEFT_CORNER,
+    BOTTOM_LEFT_CORNER
 }

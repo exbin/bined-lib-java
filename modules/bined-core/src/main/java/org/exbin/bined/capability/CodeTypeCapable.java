@@ -16,6 +16,7 @@
 package org.exbin.bined.capability;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.CodeType;
 
 /**
@@ -24,10 +25,11 @@ import org.exbin.bined.CodeType;
  * @version 0.2.0 2017/11/05
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public interface CodeTypeCapable {
 
     @Nonnull
     CodeType getCodeType();
 
-    void setCodeType(@Nonnull CodeType codeType);
+    void setCodeType(CodeType codeType);
 }

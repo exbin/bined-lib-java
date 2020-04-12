@@ -15,8 +15,8 @@
  */
 package org.exbin.bined.color;
 
+import java.util.Optional;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 /**
  * Interface for code area color type.
@@ -38,10 +38,10 @@ public interface CodeAreaColorType {
     String getId();
 
     /**
-     * Returns group which this color belongs to or null.
+     * Returns group which this color belongs to or empty.
      *
      * @return group
      */
-    @Nullable
-    CodeAreaColorGroup getGroup();
+    @Nonnull
+    Optional<CodeAreaColorGroup> getGroup();
 }

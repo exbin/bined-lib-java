@@ -15,52 +15,15 @@
  */
 package org.exbin.bined.javafx.example;
 
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
-import org.exbin.bined.javafx.basic.CodeArea;
-import org.exbin.auxiliary.paged_data.ByteArrayEditableData;
-
 /**
  * Hexadecimal editor JavaFX examples.
  *
- * @version 0.2.0 2018/08/12
+ * @version 0.2.0 2020/04/12
  * @author ExBin Project (https://exbin.org)
  */
-public class BinEdExample extends Application {
-
-    private void init(Stage stage) {
-        final CodeArea codeArea = new CodeArea();
-        ByteArrayEditableData data = new ByteArrayEditableData();
-        try {
-            data.loadFromStream(codeArea.getClass().getResourceAsStream("/org/exbin/bined/javafx/example/resources/lorem_1.txt"));
-        } catch (IOException ex) {
-            Logger.getLogger(BinEdExample.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        codeArea.setContentData(data);
-
-        stage.setTitle("BinEd Library JavaFX Example");
-        stage.setOnCloseRequest((WindowEvent e) -> {
-            Platform.exit();
-            System.exit(0);
-        });
-
-        Scene scene = new Scene(codeArea, 600, 480);
-        stage.setScene(scene);
-    }
-
-    @Override
-    public void start(Stage stage) throws Exception {
-        init(stage);
-        stage.show();
-    }
+public class BinEdExample {
 
     public static void main(String[] args) {
-        launch(args);
+        BinEdExampleApplication.main(args);
     }
 }

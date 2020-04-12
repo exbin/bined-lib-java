@@ -18,9 +18,9 @@ package org.exbin.bined.extended;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import org.exbin.bined.BasicCodeAreaSection;
+import org.exbin.bined.basic.BasicCodeAreaSection;
 import org.exbin.bined.CodeAreaSection;
-import org.exbin.bined.CodeAreaViewMode;
+import org.exbin.bined.basic.CodeAreaViewMode;
 import org.exbin.bined.CodeType;
 import org.exbin.bined.DataProvider;
 import org.exbin.bined.PositionCodeType;
@@ -28,12 +28,12 @@ import org.exbin.bined.SelectionRange;
 import org.exbin.bined.basic.MovementDirection;
 import org.exbin.bined.capability.CodeTypeCapable;
 import org.exbin.bined.capability.RowWrappingCapable;
-import org.exbin.bined.capability.RowWrappingCapable.RowWrappingMode;
 import org.exbin.bined.capability.SelectionCapable;
 import org.exbin.bined.capability.ViewModeCapable;
 import org.exbin.bined.extended.capability.PositionCodeTypeCapable;
 import org.exbin.bined.extended.layout.ExtendedCodeAreaLayoutProfile;
 import org.exbin.bined.CodeAreaCaretPosition;
+import org.exbin.bined.RowWrappingMode;
 
 /**
  * Code area data representation structure for extended variant.

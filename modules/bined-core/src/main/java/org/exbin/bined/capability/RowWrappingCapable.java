@@ -17,6 +17,7 @@ package org.exbin.bined.capability;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import org.exbin.bined.RowWrappingMode;
 
 /**
  * Row wrapping capability interface.
@@ -47,8 +48,4 @@ public interface RowWrappingCapable {
     int getMaxRowPositionLength();
 
     void setMaxRowPositionLength(int maxRowPositionLength);
-
-    public enum RowWrappingMode {
-        NO_WRAPPING, WRAPPING
-    };
 }

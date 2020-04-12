@@ -17,7 +17,7 @@ package org.exbin.bined.swing.example.panel;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.swing.JFrame;
-import org.exbin.bined.capability.RowWrappingCapable.RowWrappingMode;
+import org.exbin.bined.RowWrappingMode;
 import org.exbin.bined.swing.basic.CodeArea;
 
 /**

@@ -17,12 +17,11 @@ package org.exbin.bined.basic;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import org.exbin.bined.BasicCodeAreaSection;
 import org.exbin.bined.CodeAreaCaretPosition;
 import org.exbin.bined.CodeAreaSection;
-import org.exbin.bined.CodeAreaViewMode;
 import org.exbin.bined.CodeType;
 import org.exbin.bined.DefaultCodeAreaCaretPosition;
+import org.exbin.bined.RowWrappingMode;
 import org.exbin.bined.capability.RowWrappingCapable;
 
 /**
@@ -42,9 +41,9 @@ public class BasicCodeAreaLayout {
         CodeType codeType = structure.getCodeType();
         int maxBytesPerLine = structure.getMaxBytesPerLine();
         int wrappingBytesGroupSize = structure.getWrappingBytesGroupSize();
-        RowWrappingCapable.RowWrappingMode rowWrapping = structure.getRowWrapping();
+        RowWrappingMode rowWrapping = structure.getRowWrapping();
         int computedBytesPerRow;
-        if (rowWrapping == RowWrappingCapable.RowWrappingMode.WRAPPING) {
+        if (rowWrapping == RowWrappingMode.WRAPPING) {
             int charactersPerByte = 0;
             if (viewMode != CodeAreaViewMode.TEXT_PREVIEW) {
                 charactersPerByte += codeType.getMaxDigitsForByte() + 1;

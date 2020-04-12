@@ -1,19 +1,30 @@
+buildscript {
+    repositories {
+        mavenLocal()
+        jcenter()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }    
+    }
+    dependencies {
+        classpath("at.bxm.gradleplugins:gradle-svntools-plugin:latest.integration")
+        if (JavaVersion.current() != JavaVersion.VERSION_1_8) {
+            classpath("org.openjfx:javafx-plugin:0.0.8")
+        } else {
+            classpath "org.bitbucket.shemnon.javafxplugin:gradle-javafx-plugin:8.1.1"
+        }
+    }
+}
+
+if (JavaVersion.current() != JavaVersion.VERSION_1_8) {
+    apply plugin: "org.openjfx.javafxplugin"
+}
+
 apply from: '../tools.gradle'
 
 sourceCompatibility = '1.8'
 
 def javaFxHome = "${System.properties['java.home']}";
-
-buildscript {
-    repositories {
-        mavenLocal()
-        jcenter()
-    }
-    dependencies {
-        classpath("at.bxm.gradleplugins:gradle-svntools-plugin:latest.integration")
-        classpath "org.bitbucket.shemnon.javafxplugin:gradle-javafx-plugin:8.1.1"
-    }
-}
 
 if (!hasProperty('mainClass')) {
     ext.mainClass = 'org.exbin.bined.javafx.example.BinEdExample'
@@ -49,12 +60,21 @@ repositories {
     mavenCentral()
 }
 
+if (JavaVersion.current() != JavaVersion.VERSION_1_8) {
+    javafx {
+        version = "14"
+        modules = [ 'javafx.controls', 'javafx.graphics', 'javafx.fxml' ]
+    }
+}
+
 dependencies {
 //    providedCompile files("$javaFxHome/lib/jfxrt.jar")
-    compile group: 'org.openjfx', name: 'javafx-base', version: '11.0.2'
-    compile group: 'org.openjfx', name: 'javafx-controls', version: '11.0.2'
-    compile group: 'org.openjfx', name: 'javafx-graphics', version: '11.0.2'
-    compile group: 'org.openjfx', name: 'javafx-fxml', version: '11.0.2'
+    if (JavaVersion.current() == JavaVersion.VERSION_1_8) {
+        compile group: 'org.openjfx', name: 'javafx-base', version: '11.0.2'
+        compile group: 'org.openjfx', name: 'javafx-controls', version: '11.0.2'
+        compile group: 'org.openjfx', name: 'javafx-graphics', version: '11.0.2'
+        compile group: 'org.openjfx', name: 'javafx-fxml', version: '11.0.2'
+    }
     compile moduleDep('BinedJava', 'org.exbin.bined', 'bined-javafx')
 
     testCompile group: 'junit', name: 'junit', version: '4.10'

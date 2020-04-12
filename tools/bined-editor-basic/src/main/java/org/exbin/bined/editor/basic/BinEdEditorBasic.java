@@ -58,6 +58,7 @@ import org.exbin.auxiliary.paged_data.EditableBinaryData;
 import org.exbin.bined.CodeAreaCaretPosition;
 import org.exbin.bined.CodeCharactersCase;
 import org.exbin.bined.CodeType;
+import org.exbin.bined.swing.CodeAreaSwingUtils;
 
 /**
  * Basic single jar swing version of BinEd Hexadecimal editor.
@@ -131,6 +132,7 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
     }
 
     private void initActions() {
+        int metaMask = CodeAreaSwingUtils.getMetaMaskDown();
         newFileAction = new AbstractAction(
                 "New",
                 new javax.swing.ImageIcon(getClass().getResource(ICON_FILE_NEW))
@@ -140,7 +142,7 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
                 newFileActionPerformed();
             }
         };
-        newFileAction.putValue(Action.ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
+        newFileAction.putValue(Action.ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, metaMask));
 
         openFileAction = new AbstractAction(
                 "Open...",
@@ -151,7 +153,7 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
                 openFileActionPerformed();
             }
         };
-        openFileAction.putValue(Action.ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
+        openFileAction.putValue(Action.ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, metaMask));
 
         saveFileAction = new AbstractAction(
                 "Save",
@@ -172,7 +174,7 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
                 saveAsFileActionPerformed();
             }
         };
-        saveAsFileAction.putValue(Action.ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+        saveAsFileAction.putValue(Action.ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.SHIFT_DOWN_MASK | metaMask));
 
         exitAction = new AbstractAction(
                 "Exit",
@@ -183,7 +185,7 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
                 exitActionPerformed();
             }
         };
-        exitAction.putValue(Action.ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F4, java.awt.event.InputEvent.ALT_MASK));
+        exitAction.putValue(Action.ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F4, java.awt.event.InputEvent.ALT_DOWN_MASK));
 
         undoEditAction = new AbstractAction(
                 "Undo",
@@ -198,7 +200,7 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
                 }
             }
         };
-        undoEditAction.putValue(Action.ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Z, java.awt.event.InputEvent.CTRL_MASK));
+        undoEditAction.putValue(Action.ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Z, metaMask));
 
         redoEditAction = new AbstractAction(
                 "Redo",
@@ -213,7 +215,7 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
                 }
             }
         };
-        redoEditAction.putValue(Action.ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Y, java.awt.event.InputEvent.CTRL_MASK));
+        redoEditAction.putValue(Action.ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Y, metaMask));
 
         cutEditAction = new AbstractAction(
                 "Cut",
@@ -224,7 +226,7 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
                 codeArea.cut();
             }
         };
-        cutEditAction.putValue(Action.ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_X, java.awt.event.InputEvent.CTRL_MASK));
+        cutEditAction.putValue(Action.ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_X, metaMask));
 
         copyEditAction = new AbstractAction(
                 "copy",
@@ -235,7 +237,7 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
                 codeArea.copy();
             }
         };
-        copyEditAction.putValue(Action.ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.CTRL_MASK));
+        copyEditAction.putValue(Action.ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, metaMask));
 
         pasteEditAction = new AbstractAction(
                 "Paste",
@@ -245,7 +247,7 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
                 codeArea.paste();
             }
         };
-        pasteEditAction.putValue(Action.ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_V, java.awt.event.InputEvent.CTRL_MASK));
+        pasteEditAction.putValue(Action.ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_V, metaMask));
 
         deleteEditAction = new AbstractAction(
                 "Delete",
@@ -267,7 +269,7 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
                 codeArea.selectAll();
             }
         };
-        selectAllAction.putValue(Action.ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, java.awt.event.InputEvent.CTRL_MASK));
+        selectAllAction.putValue(Action.ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, metaMask));
     }
 
     private void postInit() {

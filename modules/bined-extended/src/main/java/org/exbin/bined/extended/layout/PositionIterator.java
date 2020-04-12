@@ -17,7 +17,7 @@ package org.exbin.bined.extended.layout;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import org.exbin.bined.BasicCodeAreaSection;
+import org.exbin.bined.basic.BasicCodeAreaSection;
 
 /**
  * Iterator for layout character position iteration.

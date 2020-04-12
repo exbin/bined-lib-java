@@ -18,7 +18,7 @@ package org.exbin.bined;
 /**
  * Code Area control interface.
  *
- * @version 0.2.0 2018/08/11
+ * @version 0.2.0 2020/04/11
  * @author ExBin Project (https://exbin.org)
  */
 public interface CodeAreaControl extends DataProvider {
@@ -29,11 +29,6 @@ public interface CodeAreaControl extends DataProvider {
     void copy();
 
     /**
-     * Copies selection to clipboard in the form of textual codes.
-     */
-    void copyAsCode();
-
-    /**
      * Cuts selection to clipboard.
      */
     void cut();
@@ -42,11 +37,6 @@ public interface CodeAreaControl extends DataProvider {
      * Pastes content of the clipboard.
      */
     void paste();
-
-    /**
-     * Pastes content of the clipboard in the form of textual codes
-     */
-    void pasteFromCode();
 
     /**
      * Deletes selected section.

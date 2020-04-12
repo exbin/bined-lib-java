@@ -15,7 +15,7 @@
  */
 package org.exbin.bined.swing.extended;
 
-import org.exbin.bined.CodeAreaViewMode;
+import org.exbin.bined.basic.CodeAreaViewMode;
 import org.exbin.bined.CodeType;
 import org.exbin.bined.extended.layout.SpaceType;
 import org.exbin.bined.swing.extended.layout.DefaultExtendedCodeAreaLayoutProfile;

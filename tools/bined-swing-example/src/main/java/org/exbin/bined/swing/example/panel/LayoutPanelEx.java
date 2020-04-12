@@ -19,6 +19,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.swing.JFrame;
 import org.exbin.bined.CodeAreaUtils;
+import org.exbin.bined.RowWrappingMode;
 import org.exbin.bined.capability.RowWrappingCapable;
 import org.exbin.bined.swing.extended.ExtCodeArea;
 import org.exbin.bined.swing.extended.layout.DefaultExtendedCodeAreaLayoutProfile;
@@ -370,7 +371,7 @@ public class LayoutPanelEx extends javax.swing.JPanel {
     }//GEN-LAST:event_spaceGroupSizeSpinnerStateChanged
 
     private void rowWrappingModeCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_rowWrappingModeCheckBoxItemStateChanged
-        codeArea.setRowWrapping(rowWrappingModeCheckBox.isSelected() ? RowWrappingCapable.RowWrappingMode.WRAPPING : RowWrappingCapable.RowWrappingMode.NO_WRAPPING);
+        codeArea.setRowWrapping(rowWrappingModeCheckBox.isSelected() ? RowWrappingMode.WRAPPING : RowWrappingMode.NO_WRAPPING);
     }//GEN-LAST:event_rowWrappingModeCheckBoxItemStateChanged
 
     private void maxRowPositionLengthSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_maxRowPositionLengthSpinnerStateChanged
@@ -404,7 +405,7 @@ public class LayoutPanelEx extends javax.swing.JPanel {
         this.codeArea = codeArea;
 
         DefaultExtendedCodeAreaLayoutProfile layoutProfile = getLayoutProfile();
-        rowWrappingModeCheckBox.setSelected(codeArea.getRowWrapping() == RowWrappingCapable.RowWrappingMode.WRAPPING);
+        rowWrappingModeCheckBox.setSelected(codeArea.getRowWrapping() == RowWrappingMode.WRAPPING);
         maxBytesPerRowSpinner.setValue(codeArea.getMaxBytesPerRow());
         minRowPositionLengthSpinner.setValue(codeArea.getMinRowPositionLength());
         maxRowPositionLengthSpinner.setValue(codeArea.getMaxRowPositionLength());

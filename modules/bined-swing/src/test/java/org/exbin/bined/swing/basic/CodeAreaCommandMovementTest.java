@@ -13,26 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined;
+package org.exbin.bined.swing.basic;
 
 /**
- * Enumeration of supported view modes.
+ * Tests for codeArea component.
  *
- * @version 0.1.1 2016/08/31
+ * @version 0.2.0 2017/11/14
  * @author ExBin Project (https://exbin.org)
  */
-public enum CodeAreaViewMode {
+public class CodeAreaCommandMovementTest {
 
-    /**
-     * Show both numerical codes and textual preview.
-     */
-    DUAL,
-    /**
-     * Show numerical codes only.
-     */
-    CODE_MATRIX,
-    /**
-     * Show textual preview only.
-     */
-    TEXT_PREVIEW;
+    public CodeAreaCommandMovementTest() {
+    }
+
 }

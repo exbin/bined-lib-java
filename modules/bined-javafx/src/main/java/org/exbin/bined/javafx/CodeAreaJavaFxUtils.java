@@ -15,6 +15,7 @@
  */
 package org.exbin.bined.javafx;
 
+import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.ClipboardOwner;
 import java.awt.datatransfer.DataFlavor;
@@ -51,6 +52,9 @@ public class CodeAreaJavaFxUtils {
 
     public static double MAX_COMPONENT_VALUE = 1;
     public static final String DEFAULT_ENCODING = "UTF-8";
+
+    public static final String FALLBACK_CLIPBOARD = "clipboard";
+    private static Clipboard clipboard = null;
 
     private CodeAreaJavaFxUtils() {
     }
@@ -119,6 +123,24 @@ public class CodeAreaJavaFxUtils {
         } catch (IllegalStateException ex) {
             return false;
         }
+    }
+
+    /**
+     * A shared {@code Clipboard}.
+     *
+     * @return clipboard clipboard instance
+     */
+    @Nonnull
+    public static Clipboard getClipboard() {
+        if (clipboard == null) {
+            try {
+                clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+            } catch (SecurityException e) {
+                clipboard = new Clipboard(FALLBACK_CLIPBOARD);
+            }
+        }
+
+        return clipboard;
     }
 
     @ParametersAreNonnullByDefault
