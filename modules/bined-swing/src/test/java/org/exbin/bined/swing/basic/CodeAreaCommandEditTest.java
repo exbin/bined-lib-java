@@ -15,6 +15,9 @@
  */
 package org.exbin.bined.swing.basic;
 
+import java.awt.Component;
+import java.awt.event.KeyEvent;
+
 /**
  * Tests for codeArea component.
  *
@@ -26,4 +29,7 @@ public class CodeAreaCommandEditTest {
     public CodeAreaCommandEditTest() {
     }
 
+    private void emulateKeyTyped(Component component, int keyEvent, char keyChar) {
+        component.dispatchEvent(new KeyEvent(component, KeyEvent.KEY_TYPED, System.currentTimeMillis(), 0, keyEvent, keyChar));
+    }
 }

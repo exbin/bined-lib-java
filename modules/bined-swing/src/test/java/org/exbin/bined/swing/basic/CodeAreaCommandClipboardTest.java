@@ -18,9 +18,9 @@ package org.exbin.bined.swing.basic;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
-import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.exbin.auxiliary.paged_data.BinaryData;
 import org.exbin.bined.EditationOperation;
 import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.capability.EditationModeCapable;
@@ -49,7 +49,7 @@ public class CodeAreaCommandClipboardTest {
         codeArea.selectAll();
         codeArea.delete();
 
-        Assert.assertTrue(codeArea.getDataSize() == 0);
+        Assert.assertEquals(0, codeArea.getDataSize());
     }
 
     @Test
@@ -183,9 +183,7 @@ public class CodeAreaCommandClipboardTest {
         codeArea.paste();
 
         Assert.assertTrue(codeArea.getDataSize() == expectedSize);
-        byte[] resultData = new byte[expectedSize];
-        Objects.requireNonNull(codeArea.getContentData()).copyToArray(0, resultData, 0, expectedSize);
-        Assert.assertArrayEquals(expectedData, resultData);
+        checkResultData(expectedData, codeArea.getContentData());
     }
 
     @Test
@@ -209,9 +207,7 @@ public class CodeAreaCommandClipboardTest {
         codeArea.paste();
 
         Assert.assertTrue(codeArea.getDataSize() == expectedSize);
-        byte[] resultData = new byte[expectedSize];
-        Objects.requireNonNull(codeArea.getContentData()).copyToArray(0, resultData, 0, expectedSize);
-        Assert.assertArrayEquals(expectedData, resultData);
+        checkResultData(expectedData, codeArea.getContentData());
     }
 
     @Test
@@ -233,8 +229,13 @@ public class CodeAreaCommandClipboardTest {
         codeArea.paste();
 
         Assert.assertTrue(codeArea.getDataSize() == expectedSize);
-        byte[] resultData = new byte[expectedSize];
-        Objects.requireNonNull(codeArea.getContentData()).copyToArray(0, resultData, 0, expectedSize);
+        checkResultData(expectedData, codeArea.getContentData());
+    }
+    
+    public void checkResultData(byte[] expectedData, BinaryData data) {
+        Assert.assertEquals(expectedData.length, data.getDataSize());
+        byte[] resultData = new byte[expectedData.length];
+        data.copyToArray(0, resultData, 0, expectedData.length);
         Assert.assertArrayEquals(expectedData, resultData);
     }
 }
