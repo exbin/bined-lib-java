@@ -17,6 +17,14 @@ package org.exbin.bined.swing.basic;
 
 import java.awt.Component;
 import java.awt.event.KeyEvent;
+import javax.swing.JFrame;
+import org.exbin.auxiliary.paged_data.BinaryData;
+import org.exbin.auxiliary.paged_data.EditableBinaryData;
+import org.exbin.bined.CodeAreaCaretPosition;
+import org.exbin.bined.CodeAreaTest;
+import org.exbin.bined.EditationOperation;
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * Tests for codeArea component.
@@ -29,7 +37,110 @@ public class CodeAreaCommandEditTest {
     public CodeAreaCommandEditTest() {
     }
 
+    @Test
+    public void testOverwriteCodeBegin() {
+        CodeArea codeArea = new CodeArea();
+        JFrame frame = new JFrame();
+        frame.add(codeArea);
+        frame.setVisible(true);
+        EditableBinaryData sampleData = CodeAreaTest.getSampleData(CodeAreaTest.SAMPLE_ALLBYTES);
+        int dataSize = (int) sampleData.getDataSize();
+        int expectedSize = dataSize;
+        byte[] expectedData = new byte[expectedSize];
+        expectedData[0] = (byte) 0xa0;
+        sampleData.copyToArray(1, expectedData, 1, dataSize - 1);
+
+        codeArea.setContentData(sampleData);
+        
+        emulateKeyTyped(codeArea, KeyEvent.VK_UNDEFINED, 'a');
+
+        CodeAreaCaretPosition caretPosition = codeArea.getCaretPosition();
+        Assert.assertEquals(1, caretPosition.getCodeOffset());
+        Assert.assertEquals(0, caretPosition.getDataPosition());
+        checkResultData(expectedData, codeArea.getContentData());
+    }
+
+    @Test
+    public void testInsertCodeBegin() {
+        CodeArea codeArea = new CodeArea();
+        JFrame frame = new JFrame();
+        frame.add(codeArea);
+        frame.setVisible(true);
+        EditableBinaryData sampleData = CodeAreaTest.getSampleData(CodeAreaTest.SAMPLE_ALLBYTES);
+        int dataSize = (int) sampleData.getDataSize();
+        int expectedSize = dataSize + 1;
+        byte[] expectedData = new byte[expectedSize];
+        expectedData[0] = (byte) 0xa0;
+        sampleData.copyToArray(0, expectedData, 1, dataSize);
+        codeArea.setEditationOperation(EditationOperation.INSERT);
+
+        codeArea.setContentData(sampleData);
+        
+        emulateKeyTyped(codeArea, KeyEvent.VK_UNDEFINED, 'a');
+
+        CodeAreaCaretPosition caretPosition = codeArea.getCaretPosition();
+        Assert.assertEquals(1, caretPosition.getCodeOffset());
+        Assert.assertEquals(0, caretPosition.getDataPosition());
+        checkResultData(expectedData, codeArea.getContentData());
+    }
+
+    @Test
+    public void testOverwriteCodeEnd() {
+        CodeArea codeArea = new CodeArea();
+        JFrame frame = new JFrame();
+        frame.add(codeArea);
+        frame.setVisible(true);
+        EditableBinaryData sampleData = CodeAreaTest.getSampleData(CodeAreaTest.SAMPLE_ALLBYTES);
+        int dataSize = (int) sampleData.getDataSize();
+        int expectedSize = dataSize + 1;
+        byte[] expectedData = new byte[expectedSize];
+        expectedData[256] = (byte) 0xa0;
+        sampleData.copyToArray(0, expectedData, 0, dataSize);
+
+        codeArea.setContentData(sampleData);
+        codeArea.setCaretPosition(256);
+        
+        emulateKeyTyped(codeArea, KeyEvent.VK_UNDEFINED, 'a');
+
+        CodeAreaCaretPosition caretPosition = codeArea.getCaretPosition();
+        Assert.assertEquals(1, caretPosition.getCodeOffset());
+        Assert.assertEquals(256, caretPosition.getDataPosition());
+        checkResultData(expectedData, codeArea.getContentData());
+    }
+
+    @Test
+    public void testInsertCodeEnd() {
+        CodeArea codeArea = new CodeArea();
+        JFrame frame = new JFrame();
+        frame.add(codeArea);
+        frame.setVisible(true);
+        EditableBinaryData sampleData = CodeAreaTest.getSampleData(CodeAreaTest.SAMPLE_ALLBYTES);
+        int dataSize = (int) sampleData.getDataSize();
+        int expectedSize = dataSize + 1;
+        byte[] expectedData = new byte[expectedSize];
+        expectedData[256] = (byte) 0xa0;
+        sampleData.copyToArray(0, expectedData, 0, dataSize);
+        codeArea.setEditationOperation(EditationOperation.INSERT);
+
+        codeArea.setContentData(sampleData);
+        codeArea.setCaretPosition(256);
+        
+        emulateKeyTyped(codeArea, KeyEvent.VK_UNDEFINED, 'a');
+
+        CodeAreaCaretPosition caretPosition = codeArea.getCaretPosition();
+        Assert.assertEquals(1, caretPosition.getCodeOffset());
+        Assert.assertEquals(256, caretPosition.getDataPosition());
+        checkResultData(expectedData, codeArea.getContentData());
+    }
+
     private void emulateKeyTyped(Component component, int keyEvent, char keyChar) {
         component.dispatchEvent(new KeyEvent(component, KeyEvent.KEY_TYPED, System.currentTimeMillis(), 0, keyEvent, keyChar));
+    }
+
+    public void checkResultData(byte[] expectedData, BinaryData data) {
+        Assert.assertEquals(expectedData.length, data.getDataSize());
+        byte[] resultData = new byte[expectedData.length];
+        data.copyToArray(0, resultData, 0, expectedData.length);
+        Assert.assertArrayEquals(expectedData, resultData);
     }
 }
