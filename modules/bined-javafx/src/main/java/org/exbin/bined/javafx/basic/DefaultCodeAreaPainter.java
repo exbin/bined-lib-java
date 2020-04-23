@@ -21,6 +21,7 @@ import java.awt.Cursor;
 import java.awt.Stroke;
 import java.nio.charset.Charset;
 import java.util.Arrays;
+import java.util.Optional;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
@@ -46,7 +47,7 @@ import org.exbin.bined.CodeCharactersCase;
 import org.exbin.bined.CodeType;
 import org.exbin.bined.EditationOperation;
 import org.exbin.bined.PositionCodeType;
-import org.exbin.bined.PositionOverflowMode;
+import org.exbin.bined.CaretOverlapMode;
 import org.exbin.bined.SelectionRange;
 import org.exbin.bined.basic.BasicBackgroundPaintMode;
 import org.exbin.bined.basic.BasicCodeAreaScrolling;
@@ -874,9 +875,9 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         return null;
     }
 
-    @Nullable
+    @Nonnull
     @Override
-    public CodeAreaScrollPosition computeRevealScrollPosition(CodeAreaCaretPosition caretPosition) {
+    public Optional<CodeAreaScrollPosition> computeRevealScrollPosition(CodeAreaCaretPosition caretPosition) {
         int bytesPerRow = structure.getBytesPerRow();
         int previewCharPos = visibility.getPreviewCharPos();
         int characterWidth = metrics.getCharacterWidth();
@@ -890,7 +891,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         long rowPosition = shiftedPosition / bytesPerRow;
         int byteOffset = (int) (shiftedPosition % bytesPerRow);
         int charPosition;
-        if (caretPosition.getSection() == BasicCodeAreaSection.TEXT_PREVIEW) {
+        CodeAreaSection section = caretPosition.getSection().orElse(BasicCodeAreaSection.CODE_MATRIX);
+        if (section == BasicCodeAreaSection.TEXT_PREVIEW) {
             charPosition = previewCharPos + byteOffset;
         } else {
             charPosition = structure.computeFirstCodeCharacterPos(byteOffset) + caretPosition.getCodeOffset();
@@ -899,8 +901,9 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         return scrolling.computeRevealScrollPosition(rowPosition, charPosition, bytesPerRow, rowsPerPage, charactersPerPage, (int) dataViewWidth % characterWidth, (int) dataViewHeight % rowHeight, characterWidth, rowHeight);
     }
 
+    @Nonnull
     @Override
-    public CodeAreaScrollPosition computeCenterOnScrollPosition(CodeAreaCaretPosition caretPosition) {
+    public Optional<CodeAreaScrollPosition> computeCenterOnScrollPosition(CodeAreaCaretPosition caretPosition) {
         int bytesPerRow = structure.getBytesPerRow();
         int previewCharPos = visibility.getPreviewCharPos();
         int characterWidth = metrics.getCharacterWidth();
@@ -914,7 +917,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         long rowPosition = shiftedPosition / bytesPerRow;
         int byteOffset = (int) (shiftedPosition % bytesPerRow);
         int charPosition;
-        if (caretPosition.getSection() == BasicCodeAreaSection.TEXT_PREVIEW) {
+        CodeAreaSection section = caretPosition.getSection().orElse(BasicCodeAreaSection.CODE_MATRIX);
+        if (section == BasicCodeAreaSection.TEXT_PREVIEW) {
             charPosition = previewCharPos + byteOffset;
         } else {
             charPosition = structure.computeFirstCodeCharacterPos(byteOffset) + caretPosition.getCodeOffset();
@@ -1169,7 +1173,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
 
     @Nonnull
     @Override
-    public CodeAreaCaretPosition mousePositionToClosestCaretPosition(int positionX, int positionY, PositionOverflowMode overflowMode) {
+    public CodeAreaCaretPosition mousePositionToClosestCaretPosition(int positionX, int positionY, CaretOverlapMode overflowMode) {
         DefaultCodeAreaCaretPosition caret = new DefaultCodeAreaCaretPosition();
         CodeAreaScrollPosition scrollPosition = scrolling.getScrollPosition();
         int characterWidth = metrics.getCharacterWidth();
@@ -1179,7 +1183,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
 
         int diffX = 0;
         if (positionX < rowPositionAreaWidth) {
-            if (overflowMode == PositionOverflowMode.OVERFLOW) {
+            if (overflowMode == CaretOverlapMode.PARTIAL_OVERLAP) {
                 diffX = 1;
             }
             positionX = (int) rowPositionAreaWidth;
@@ -1191,7 +1195,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
 
         int diffY = 0;
         if (positionY < headerAreaHeight) {
-            if (overflowMode == PositionOverflowMode.OVERFLOW) {
+            if (overflowMode == CaretOverlapMode.PARTIAL_OVERLAP) {
                 diffY = 1;
             }
             positionY = (int) headerAreaHeight;

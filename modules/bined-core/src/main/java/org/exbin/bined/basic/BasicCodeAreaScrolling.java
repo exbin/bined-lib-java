@@ -15,8 +15,8 @@
  */
 package org.exbin.bined.basic;
 
+import java.util.Optional;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.Immutable;
 import org.exbin.bined.DataProvider;
@@ -378,8 +378,8 @@ public class BasicCodeAreaScrolling {
         return partial ? PositionScrollVisibility.PARTIAL : PositionScrollVisibility.VISIBLE;
     }
 
-    @Nullable
-    public CodeAreaScrollPosition computeRevealScrollPosition(long rowPosition, int charsPosition, int bytesPerRow, int rowsPerPage, int charsPerPage, int charOffset, int rowOffset, int characterWidth, int rowHeight) {
+    @Nonnull
+    public Optional<CodeAreaScrollPosition> computeRevealScrollPosition(long rowPosition, int charsPosition, int bytesPerRow, int rowsPerPage, int charsPerPage, int charOffset, int rowOffset, int characterWidth, int rowHeight) {
         CodeAreaScrollPosition targetScrollPosition = new CodeAreaScrollPosition();
         targetScrollPosition.setScrollPosition(scrollPosition);
 
@@ -433,7 +433,7 @@ public class BasicCodeAreaScrolling {
             scrolled = true;
         }
 
-        return scrolled ? targetScrollPosition : null;
+        return scrolled ? Optional.of(targetScrollPosition) : Optional.empty();
     }
 
     @Nonnull
@@ -513,7 +513,8 @@ public class BasicCodeAreaScrolling {
         return PositionScrollVisibility.NOT_VISIBLE;
     }
 
-    public CodeAreaScrollPosition computeCenterOnScrollPosition(long rowPosition, int charPosition, int bytesPerRow, int rowsPerRect, int charactersPerRect, int dataViewWidth, int dataViewHeight, int characterWidth, int rowHeight) {
+    @Nonnull
+    public Optional<CodeAreaScrollPosition> computeCenterOnScrollPosition(long rowPosition, int charPosition, int bytesPerRow, int rowsPerRect, int charactersPerRect, int dataViewWidth, int dataViewHeight, int characterWidth, int rowHeight) {
         CodeAreaScrollPosition targetScrollPosition = new CodeAreaScrollPosition();
         targetScrollPosition.setScrollPosition(scrollPosition);
 
@@ -562,7 +563,7 @@ public class BasicCodeAreaScrolling {
         }
         targetScrollPosition.setCharPosition(centerCharPosition);
         targetScrollPosition.setCharOffset(charOffset);
-        return targetScrollPosition;
+        return Optional.of(targetScrollPosition);
     }
 
     @Nonnull

@@ -68,7 +68,7 @@ import org.exbin.bined.swing.CodeAreaSwingUtils;
  */
 public class BinEdEditorBasic extends javax.swing.JFrame {
 
-    private static final String APPLICATION_VERSION = "0.2.0 DEV";
+    private static final String APPLICATION_VERSION = "0.2.1 DEV";
     private static final String APPLICATION_NAME = "BinEd";
     private static final String APPLICATION_DEFAULT_TITLE = APPLICATION_NAME + " Basic Editor";
 
@@ -229,7 +229,7 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
         cutEditAction.putValue(Action.ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_X, metaMask));
 
         copyEditAction = new AbstractAction(
-                "copy",
+                "Copy",
                 new javax.swing.ImageIcon(getClass().getResource(ICON_EDIT_COPY))
         ) {
             @Override

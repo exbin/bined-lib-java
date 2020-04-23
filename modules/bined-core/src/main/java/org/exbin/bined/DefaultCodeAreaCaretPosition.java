@@ -16,6 +16,8 @@
 package org.exbin.bined;
 
 import java.util.Objects;
+import java.util.Optional;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -61,10 +63,10 @@ public class DefaultCodeAreaCaretPosition implements CodeAreaCaretPosition {
         this.codeOffset = codeOffset;
     }
 
-    @Nullable
+    @Nonnull
     @Override
-    public CodeAreaSection getSection() {
-        return section;
+    public Optional<CodeAreaSection> getSection() {
+        return Optional.ofNullable(section);
     }
 
     public void setSection(@Nullable CodeAreaSection section) {
@@ -79,7 +81,7 @@ public class DefaultCodeAreaCaretPosition implements CodeAreaCaretPosition {
     public void setPosition(CodeAreaCaretPosition position) {
         dataPosition = position.getDataPosition();
         codeOffset = position.getCodeOffset();
-        section = position.getSection();
+        section = position.getSection().orElse(null);
     }
 
     @Override

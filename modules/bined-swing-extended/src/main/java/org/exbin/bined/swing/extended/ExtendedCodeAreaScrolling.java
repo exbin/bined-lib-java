@@ -16,8 +16,8 @@
 package org.exbin.bined.swing.extended;
 
 import java.awt.Dimension;
+import java.util.Optional;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.DataProvider;
 import org.exbin.bined.ScrollBarVisibility;
@@ -396,8 +396,8 @@ public class ExtendedCodeAreaScrolling {
         return partial ? PositionScrollVisibility.PARTIAL : PositionScrollVisibility.VISIBLE;
     }
 
-    @Nullable
-    public CodeAreaScrollPosition computeRevealScrollPosition(long rowPosition, int halfCharsPosition, int bytesPerRow, int rowsPerPage, int halfCharsPerPage, int halfCharOffset, int rowOffset, int characterWidth, int rowHeight) {
+    @Nonnull
+    public Optional<CodeAreaScrollPosition> computeRevealScrollPosition(long rowPosition, int halfCharsPosition, int bytesPerRow, int rowsPerPage, int halfCharsPerPage, int halfCharOffset, int rowOffset, int characterWidth, int rowHeight) {
         CodeAreaScrollPosition targetScrollPosition = new CodeAreaScrollPosition();
         targetScrollPosition.setScrollPosition(scrollPosition);
 
@@ -451,7 +451,7 @@ public class ExtendedCodeAreaScrolling {
             scrolled = true;
         }
 
-        return scrolled ? targetScrollPosition : null;
+        return scrolled ? Optional.of(targetScrollPosition) : Optional.empty();
     }
 
     @Nonnull
@@ -532,7 +532,7 @@ public class ExtendedCodeAreaScrolling {
     }
 
     @Nonnull
-    public CodeAreaScrollPosition computeCenterOnScrollPosition(long rowPosition, int halfCharsPosition, int bytesPerRow, int rowsPerRect, int halfCharsPerRect, int dataViewWidth, int dataViewHeight, int rowOffset, int characterWidth, int rowHeight) {
+    public Optional<CodeAreaScrollPosition> computeCenterOnScrollPosition(long rowPosition, int halfCharsPosition, int bytesPerRow, int rowsPerRect, int halfCharsPerRect, int dataViewWidth, int dataViewHeight, int rowOffset, int characterWidth, int rowHeight) {
         CodeAreaScrollPosition targetScrollPosition = new CodeAreaScrollPosition();
         targetScrollPosition.setScrollPosition(scrollPosition);
 
@@ -608,7 +608,7 @@ public class ExtendedCodeAreaScrolling {
             }
         }
         setHorizontalScrollPosition(targetScrollPosition, centerHalfCharPosition, charOffset, characterWidth);
-        return targetScrollPosition;
+        return Optional.of(targetScrollPosition);
     }
 
     @Nonnull

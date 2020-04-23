@@ -21,6 +21,7 @@ import java.beans.PropertyChangeEvent;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -38,7 +39,7 @@ import org.exbin.bined.CodeType;
 import org.exbin.bined.EditationMode;
 import org.exbin.bined.EditationModeChangedListener;
 import org.exbin.bined.EditationOperation;
-import org.exbin.bined.PositionOverflowMode;
+import org.exbin.bined.CaretOverlapMode;
 import org.exbin.bined.ScrollBarVisibility;
 import org.exbin.bined.ScrollingListener;
 import org.exbin.bined.SelectionChangedListener;
@@ -337,9 +338,9 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
             return;
         }
 
-        CodeAreaScrollPosition revealScrollPosition = painter.computeRevealScrollPosition(caretPosition);
-        if (revealScrollPosition != null) {
-            setScrollPosition(revealScrollPosition);
+        Optional<CodeAreaScrollPosition> revealScrollPosition = painter.computeRevealScrollPosition(caretPosition);
+        if (revealScrollPosition.isPresent()) {
+            setScrollPosition(revealScrollPosition.get());
             resetPainter();
             updateScrollBars();
             notifyScrolled();
@@ -362,9 +363,9 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
             return;
         }
 
-        CodeAreaScrollPosition centerOnScrollPosition = painter.computeCenterOnScrollPosition(caretPosition);
-        if (centerOnScrollPosition != null) {
-            setScrollPosition(centerOnScrollPosition);
+        Optional<CodeAreaScrollPosition> centerOnScrollPosition = painter.computeCenterOnScrollPosition(caretPosition);
+        if (centerOnScrollPosition.isPresent()) {
+            setScrollPosition(centerOnScrollPosition.get());
             resetPainter();
             updateScrollBars();
             notifyScrolled();
@@ -377,7 +378,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
 
     @Nullable
     @Override
-    public CodeAreaCaretPosition mousePositionToClosestCaretPosition(int positionX, int positionY, PositionOverflowMode overflowMode) {
+    public CodeAreaCaretPosition mousePositionToClosestCaretPosition(int positionX, int positionY, CaretOverlapMode overflowMode) {
         return painter.mousePositionToClosestCaretPosition(positionX, positionY, overflowMode);
     }
 

@@ -16,11 +16,12 @@
 package org.exbin.bined.swing;
 
 import java.awt.Graphics;
+import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.basic.BasicCodeAreaZone;
-import org.exbin.bined.PositionOverflowMode;
+import org.exbin.bined.CaretOverlapMode;
 import org.exbin.bined.basic.CodeAreaScrollPosition;
 import org.exbin.bined.basic.MovementDirection;
 import org.exbin.bined.basic.PositionScrollVisibility;
@@ -133,7 +134,7 @@ public interface CodeAreaPainter {
      * @return closest caret position
      */
     @Nonnull
-    CodeAreaCaretPosition mousePositionToClosestCaretPosition(int positionX, int positionY, PositionOverflowMode overflowMode);
+    CodeAreaCaretPosition mousePositionToClosestCaretPosition(int positionX, int positionY, CaretOverlapMode overflowMode);
 
     void updateScrollBars();
 
@@ -152,8 +153,8 @@ public interface CodeAreaPainter {
      * @return scroll position or null if caret position is already visible /
      * scrolled to the best fit
      */
-    @Nullable
-    CodeAreaScrollPosition computeRevealScrollPosition(CodeAreaCaretPosition caretPosition);
+    @Nonnull
+    Optional<CodeAreaScrollPosition> computeRevealScrollPosition(CodeAreaCaretPosition caretPosition);
 
     /**
      * Returns scroll position so that provided caret position is visible in the
@@ -165,8 +166,8 @@ public interface CodeAreaPainter {
      * @return scroll position or null if desired scroll position is the same as
      * current scroll position.
      */
-    @Nullable
-    CodeAreaScrollPosition computeCenterOnScrollPosition(CodeAreaCaretPosition caretPosition);
+    @Nonnull
+    Optional<CodeAreaScrollPosition> computeCenterOnScrollPosition(CodeAreaCaretPosition caretPosition);
 
     /**
      * Computes position for movement action.

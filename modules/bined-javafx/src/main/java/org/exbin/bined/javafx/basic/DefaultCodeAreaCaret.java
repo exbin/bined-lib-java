@@ -18,6 +18,7 @@ package org.exbin.bined.javafx.basic;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Objects;
+import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -141,8 +142,8 @@ public class DefaultCodeAreaCaret implements CodeAreaCaret {
     @Nonnull
     @Override
     public CodeAreaSection getSection() {
-        CodeAreaSection section = caretPosition.getSection();
-        return section == null ? BasicCodeAreaSection.CODE_MATRIX : section;
+        Optional<CodeAreaSection> section = caretPosition.getSection();
+        return section.orElse(BasicCodeAreaSection.CODE_MATRIX);
     }
 
     public void setSection(CodeAreaSection section) {

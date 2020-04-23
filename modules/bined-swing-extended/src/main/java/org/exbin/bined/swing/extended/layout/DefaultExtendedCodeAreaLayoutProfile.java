@@ -194,10 +194,11 @@ public class DefaultExtendedCodeAreaLayoutProfile implements ExtendedCodeAreaLay
         CodeType codeType = structure.getCodeType();
         long dataSize = structure.getDataSize();
         int bytesPerRow = structure.getBytesPerRow();
-        DefaultCodeAreaCaretPosition target = new DefaultCodeAreaCaretPosition(position.getDataPosition(), position.getCodeOffset(), position.getSection());
+        CodeAreaSection section = position.getSection().orElse(BasicCodeAreaSection.CODE_MATRIX);
+        DefaultCodeAreaCaretPosition target = new DefaultCodeAreaCaretPosition(position.getDataPosition(), position.getCodeOffset(), section);
         switch (direction) {
             case LEFT: {
-                if (position.getSection() != BasicCodeAreaSection.TEXT_PREVIEW) {
+                if (section != BasicCodeAreaSection.TEXT_PREVIEW) {
                     int codeOffset = position.getCodeOffset();
                     if (codeOffset > 0) {
                         target.setCodeOffset(codeOffset - 1);
@@ -211,7 +212,7 @@ public class DefaultExtendedCodeAreaLayoutProfile implements ExtendedCodeAreaLay
                 break;
             }
             case RIGHT: {
-                if (position.getSection() != BasicCodeAreaSection.TEXT_PREVIEW) {
+                if (section != BasicCodeAreaSection.TEXT_PREVIEW) {
                     int codeOffset = position.getCodeOffset();
                     if (position.getDataPosition() < dataSize && codeOffset < codeType.getMaxDigitsForByte() - 1) {
                         target.setCodeOffset(codeOffset + 1);
@@ -251,7 +252,7 @@ public class DefaultExtendedCodeAreaLayoutProfile implements ExtendedCodeAreaLay
                 } else {
                     target.setDataPosition(dataPosition + increment);
                 }
-                if (position.getSection() != BasicCodeAreaSection.TEXT_PREVIEW) {
+                if (section != BasicCodeAreaSection.TEXT_PREVIEW) {
                     if (target.getDataPosition() == dataSize) {
                         target.setCodeOffset(0);
                     } else {
@@ -303,7 +304,7 @@ public class DefaultExtendedCodeAreaLayoutProfile implements ExtendedCodeAreaLay
                 break;
             }
             case SWITCH_SECTION: {
-                CodeAreaSection activeSection = position.getSection() == BasicCodeAreaSection.TEXT_PREVIEW ? BasicCodeAreaSection.CODE_MATRIX : BasicCodeAreaSection.TEXT_PREVIEW;
+                CodeAreaSection activeSection = section == BasicCodeAreaSection.TEXT_PREVIEW ? BasicCodeAreaSection.CODE_MATRIX : BasicCodeAreaSection.TEXT_PREVIEW;
                 if (activeSection == BasicCodeAreaSection.TEXT_PREVIEW) {
                     target.setCodeOffset(0);
                 }

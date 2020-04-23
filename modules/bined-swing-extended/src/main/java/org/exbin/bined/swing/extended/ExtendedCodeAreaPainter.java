@@ -37,6 +37,7 @@ import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -57,7 +58,7 @@ import org.exbin.bined.CodeCharactersCase;
 import org.exbin.bined.CodeType;
 import org.exbin.bined.EditationOperation;
 import org.exbin.bined.PositionCodeType;
-import org.exbin.bined.PositionOverflowMode;
+import org.exbin.bined.CaretOverlapMode;
 import org.exbin.bined.SelectionRange;
 import org.exbin.bined.basic.CodeAreaScrollPosition;
 import org.exbin.bined.basic.MovementDirection;
@@ -1186,9 +1187,9 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         return scrolling.computePositionScrollVisibility(rowPosition, halfCharPosition, bytesPerRow, rowsPerPage, charactersPerPage, dataViewWidth, rowOffset, characterWidth, rowHeight);
     }
 
-    @Nullable
+    @Nonnull
     @Override
-    public CodeAreaScrollPosition computeRevealScrollPosition(CodeAreaCaretPosition caretPosition) {
+    public Optional<CodeAreaScrollPosition> computeRevealScrollPosition(CodeAreaCaretPosition caretPosition) {
         int bytesPerRow = structure.getBytesPerRow();
         int characterWidth = metrics.getCharacterWidth();
         int rowHeight = metrics.getRowHeight();
@@ -1208,7 +1209,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
 
     @Nonnull
     @Override
-    public CodeAreaScrollPosition computeCenterOnScrollPosition(CodeAreaCaretPosition caretPosition) {
+    public Optional<CodeAreaScrollPosition> computeCenterOnScrollPosition(CodeAreaCaretPosition caretPosition) {
         int bytesPerRow = structure.getBytesPerRow();
         int characterWidth = metrics.getCharacterWidth();
         int rowHeight = metrics.getRowHeight();
@@ -1587,7 +1588,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
 
     @Nonnull
     @Override
-    public CodeAreaCaretPosition mousePositionToClosestCaretPosition(int positionX, int positionY, PositionOverflowMode overflowMode) {
+    public CodeAreaCaretPosition mousePositionToClosestCaretPosition(int positionX, int positionY, CaretOverlapMode overflowMode) {
         DefaultCodeAreaCaretPosition caret = new DefaultCodeAreaCaretPosition();
         CodeAreaScrollPosition scrollPosition = scrolling.getScrollPosition();
         int characterWidth = metrics.getCharacterWidth();
@@ -1598,7 +1599,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
 
         int diffX = 0;
         if (positionX < rowPositionAreaWidth) {
-            if (overflowMode == PositionOverflowMode.OVERFLOW) {
+            if (overflowMode == CaretOverlapMode.PARTIAL_OVERLAP) {
                 diffX = characterWidth;
             }
             positionX = rowPositionAreaWidth;
@@ -1623,7 +1624,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
 
         int diffY = 0;
         if (positionY < headerAreaHeight) {
-            if (overflowMode == PositionOverflowMode.OVERFLOW) {
+            if (overflowMode == CaretOverlapMode.PARTIAL_OVERLAP) {
                 diffY = 1;
             }
             positionY = headerAreaHeight;
@@ -1985,8 +1986,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
 
     @Nonnull
     private CodeAreaSection getSection(CodeAreaCaretPosition caretPosition) {
-        CodeAreaSection section = caretPosition.getSection();
-        return section == null ? BasicCodeAreaSection.CODE_MATRIX : section;
+        return caretPosition.getSection().orElse(BasicCodeAreaSection.CODE_MATRIX);
     }
 
     private class VerticalScrollBarModel extends DefaultBoundedRangeModel {

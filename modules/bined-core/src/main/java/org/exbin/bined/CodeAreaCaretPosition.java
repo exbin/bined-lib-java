@@ -15,7 +15,8 @@
  */
 package org.exbin.bined;
 
-import javax.annotation.Nullable;
+import java.util.Optional;
+import javax.annotation.Nonnull;
 
 /**
  * Specifies caret position as combination of data position, section and code
@@ -46,8 +47,8 @@ public interface CodeAreaCaretPosition {
      *
      * @return section
      */
-    @Nullable
-    CodeAreaSection getSection();
+    @Nonnull
+    Optional<CodeAreaSection> getSection();
 
     /**
      * Resets caret position.

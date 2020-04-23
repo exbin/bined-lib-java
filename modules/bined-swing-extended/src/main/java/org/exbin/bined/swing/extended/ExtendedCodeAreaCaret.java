@@ -159,8 +159,7 @@ public class ExtendedCodeAreaCaret implements CodeAreaCaret {
     @Nonnull
     @Override
     public CodeAreaSection getSection() {
-        CodeAreaSection section = caretPosition.getSection();
-        return section == null ? BasicCodeAreaSection.CODE_MATRIX : section;
+        return caretPosition.getSection().orElse(BasicCodeAreaSection.CODE_MATRIX);
     }
 
     public void setSection(CodeAreaSection section) {

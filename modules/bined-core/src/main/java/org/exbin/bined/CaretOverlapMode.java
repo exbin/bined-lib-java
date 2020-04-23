@@ -16,18 +16,18 @@
 package org.exbin.bined;
 
 /**
- * Enumeration of caret position overflow modes.
+ * Enumeration of cursor caret overlapping modes.
  *
- * @version 0.2.0 2018/12/08
+ * @version 0.2.1 2020/04/23
  * @author ExBin Project (https://exbin.org)
  */
-public enum PositionOverflowMode {
+public enum CaretOverlapMode {
     /**
-     * Cursor must be fully visible in visible area.
+     * Caret must be fully visible in visible area.
      */
-    NO_OVERFLOW,
+    FULLY_VISIBLE,
     /**
-     * Cursor can be partially visible in visible area.
+     * Caret can be partially visible in visible area.
      */
-    OVERFLOW
+    PARTIAL_OVERLAP
 }

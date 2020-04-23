@@ -315,7 +315,6 @@ public class StatePanel extends Composite {
 
     @Nonnull
     private BasicCodeAreaSection getSection(CodeAreaCaretPosition caretPosition) {
-        BasicCodeAreaSection section = (BasicCodeAreaSection) caretPosition.getSection();
-        return section == null ? BasicCodeAreaSection.CODE_MATRIX : section;
+        return (BasicCodeAreaSection) caretPosition.getSection().orElse(BasicCodeAreaSection.CODE_MATRIX);
     }
 }

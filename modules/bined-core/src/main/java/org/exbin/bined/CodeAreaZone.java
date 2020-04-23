@@ -16,7 +16,7 @@
 package org.exbin.bined;
 
 /**
- * Code area section zone.
+ * Code area zone identifier.
  *
  * @version 0.2.0 2020/04/11
  * @author ExBin Project (https://exbin.org)
