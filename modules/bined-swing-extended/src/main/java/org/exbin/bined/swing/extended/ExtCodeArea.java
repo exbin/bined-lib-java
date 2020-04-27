@@ -514,7 +514,9 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
 
     @Override
     public void notifyCaretChanged() {
-        painter.resetCaret();
+        if (painter != null) {
+            painter.resetCaret();
+        }
         repaint();
     }
 

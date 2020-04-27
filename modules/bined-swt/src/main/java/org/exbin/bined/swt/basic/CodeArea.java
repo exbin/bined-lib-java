@@ -514,7 +514,9 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
 
     @Override
     public void notifyCaretChanged() {
-        painter.resetCaret();
+        if (painter != null) {
+            painter.resetCaret();
+        }
         repaint();
     }
 

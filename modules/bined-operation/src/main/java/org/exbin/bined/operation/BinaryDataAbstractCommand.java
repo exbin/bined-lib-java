@@ -16,6 +16,8 @@
 package org.exbin.bined.operation;
 
 import java.util.Date;
+import java.util.Optional;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
@@ -60,9 +62,9 @@ public abstract class BinaryDataAbstractCommand implements BinaryDataCommand {
     public void dispose() throws BinaryDataOperationException {
     }
 
-    @Nullable
+    @Nonnull
     @Override
-    public Date getExecutionTime() {
-        return executionTime;
+    public Optional<Date> getExecutionTime() {
+        return Optional.ofNullable(executionTime);
     }
 }

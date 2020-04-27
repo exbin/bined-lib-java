@@ -274,7 +274,9 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaJ
 
     @Override
     public void resetColors() {
-        painter.resetColors();
+        if (painter != null) {
+            painter.resetCaret();
+        }
         repaint();
     }
 

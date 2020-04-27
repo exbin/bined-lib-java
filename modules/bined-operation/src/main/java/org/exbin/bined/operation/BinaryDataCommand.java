@@ -16,8 +16,8 @@
 package org.exbin.bined.operation;
 
 import java.util.Date;
+import java.util.Optional;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 /**
  * Interface for code area command.
@@ -80,6 +80,6 @@ public interface BinaryDataCommand {
      *
      * @return time
      */
-    @Nullable
-    Date getExecutionTime();
+    @Nonnull
+    Optional<Date> getExecutionTime();
 }
