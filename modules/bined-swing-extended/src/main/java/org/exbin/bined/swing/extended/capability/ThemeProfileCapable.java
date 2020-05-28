@@ -15,8 +15,8 @@
  */
 package org.exbin.bined.swing.extended.capability;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.swing.extended.theme.ExtendedCodeAreaThemeProfile;
 
 /**
@@ -25,10 +25,11 @@ import org.exbin.bined.swing.extended.theme.ExtendedCodeAreaThemeProfile;
  * @version 0.2.0 2018/12/10
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public interface ThemeProfileCapable {
 
     @Nullable
     ExtendedCodeAreaThemeProfile getThemeProfile();
 
-    void setThemeProfile(@Nonnull ExtendedCodeAreaThemeProfile themeProfile);
+    void setThemeProfile(ExtendedCodeAreaThemeProfile themeProfile);
 }

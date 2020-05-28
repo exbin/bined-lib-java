@@ -15,8 +15,8 @@
  */
 package org.exbin.bined.swing.extended.capability;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.swing.basic.color.CodeAreaColorsProfile;
 
 /**
@@ -25,10 +25,11 @@ import org.exbin.bined.swing.basic.color.CodeAreaColorsProfile;
  * @version 0.2.0 2018/11/28
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public interface ColorsProfileCapable {
 
     @Nullable
     CodeAreaColorsProfile getColorsProfile();
 
-    void setColorsProfile(@Nonnull CodeAreaColorsProfile colorsProfile);
+    void setColorsProfile(CodeAreaColorsProfile colorsProfile);
 }

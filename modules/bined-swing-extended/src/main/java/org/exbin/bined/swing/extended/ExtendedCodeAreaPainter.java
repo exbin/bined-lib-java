@@ -2029,7 +2029,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         }
 
         @Override
-        public void adjustmentValueChanged(AdjustmentEvent e) {
+        public void adjustmentValueChanged(@Nullable AdjustmentEvent e) {
             if (e == null || adjusting) {
                 return;
             }

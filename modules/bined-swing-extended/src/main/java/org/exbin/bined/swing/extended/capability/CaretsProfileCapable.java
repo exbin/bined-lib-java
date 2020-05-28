@@ -15,8 +15,8 @@
  */
 package org.exbin.bined.swing.extended.capability;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.swing.extended.caret.ExtendedCodeAreaCaretsProfile;
 
 /**
@@ -25,10 +25,11 @@ import org.exbin.bined.swing.extended.caret.ExtendedCodeAreaCaretsProfile;
  * @version 0.2.0 2019/08/08
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public interface CaretsProfileCapable {
 
     @Nullable
     ExtendedCodeAreaCaretsProfile getCaretsProfile();
 
-    void setCaretsProfile(@Nonnull ExtendedCodeAreaCaretsProfile caretsProfile);
+    void setCaretsProfile(ExtendedCodeAreaCaretsProfile caretsProfile);
 }

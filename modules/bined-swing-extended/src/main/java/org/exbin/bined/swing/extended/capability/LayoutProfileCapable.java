@@ -15,8 +15,8 @@
  */
 package org.exbin.bined.swing.extended.capability;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.extended.layout.ExtendedCodeAreaLayoutProfile;
 
 /**
@@ -25,10 +25,11 @@ import org.exbin.bined.extended.layout.ExtendedCodeAreaLayoutProfile;
  * @version 0.2.0 2018/12/03
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public interface LayoutProfileCapable {
 
     @Nullable
     ExtendedCodeAreaLayoutProfile getLayoutProfile();
 
-    void setLayoutProfile(@Nonnull ExtendedCodeAreaLayoutProfile layoutProfile);
+    void setLayoutProfile(ExtendedCodeAreaLayoutProfile layoutProfile);
 }
