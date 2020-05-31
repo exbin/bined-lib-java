@@ -25,7 +25,10 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import javax.swing.JTextArea;
 import javax.swing.UIManager;
+import javax.swing.border.Border;
+import javax.swing.border.EtchedBorder;
 import org.exbin.bined.basic.BasicCodeAreaSection;
 import org.exbin.bined.basic.BasicCodeAreaZone;
 import org.exbin.bined.CaretMovedListener;
@@ -135,6 +138,8 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
      */
     public ExtCodeArea() {
         super(DefaultCodeAreaCommandHandler.createDefaultCodeAreaCommandHandlerFactory());
+        new JTextArea().getBorder();
+        super.setBorder(UIManager.getLookAndFeel().getDefaults().getBorder("TextField.border"));
 
         caret = new DefaultCodeAreaCaret(this);
         painter = new ExtendedCodeAreaPainter(this);
@@ -191,6 +196,12 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
     public void updateUI() {
         super.updateUI();
         painter.rebuildColors();
+    }
+
+    @Override
+    public void setBorder(@Nullable Border border) {
+        super.setBorder(border);
+        updateLayout();
     }
 
     @Nonnull

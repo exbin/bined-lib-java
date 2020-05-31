@@ -20,6 +20,7 @@ import java.awt.Stroke;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -142,6 +143,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
     private int maxRowPositionLength;
     private int rowPositionLength;
 
+    private AtomicBoolean repaintRequest = new AtomicBoolean();
+
     @Nullable
     private Font font;
     @Nonnull
@@ -176,6 +179,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
             if (g == null) {
                 return;
             }
+
+            repaintRequest.set(false);
 
             paintMainArea(g);
 
@@ -400,7 +405,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
 //            dataView.setSize(documentDataWidth, documentDataHeight);
         // TODO on resize only
         scrollPanel.setBounds(dimensions.getScrollPanelRectangle());
-        scrollPanel.redraw();
+        scrollPanel.layout(true);
+//        scrollPanel.redraw();
     }
 
     @Override
@@ -449,8 +455,13 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
 
     @Override
     public void repaint() {
-        scrollPanel.layout(true);
-        dataView.layout(true);
+        if (!repaintRequest.getAndSet(true)) {
+//            scrollPanel.layout(true);
+//            dataView.layout(true);
+            Display.getDefault().syncExec(() -> {
+                codeArea.redraw();
+            });
+        }
     }
 
     public void paintOutsiteArea(GC g) {
@@ -670,8 +681,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         g.setForeground(display.getSystemColor(SWT.COLOR_BLACK));
         char[] headerCode = (String.valueOf(scrollPosition.getCharPosition()) + "+" + String.valueOf(scrollPosition.getCharOffset()) + " : " + String.valueOf(scrollPosition.getRowPosition()) + "+" + String.valueOf(scrollPosition.getRowOffset()) + " P: " + String.valueOf(paintCounter)).toCharArray();
         g.drawString(String.valueOf(headerCode), x, y, true);
-
-        paintCounter++;
     }
 
     public void paintBackground(GC g) {

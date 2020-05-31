@@ -26,6 +26,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.swing.UIManager;
+import javax.swing.border.Border;
 import org.exbin.bined.basic.BasicCodeAreaSection;
 import org.exbin.bined.basic.BasicCodeAreaZone;
 import org.exbin.bined.CaretMovedListener;
@@ -63,7 +64,7 @@ import org.exbin.bined.RowWrappingMode;
 /**
  * Code area component.
  *
- * @version 0.2.0 2019/07/07
+ * @version 0.2.0 2020/05/31
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -178,6 +179,12 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
     public void updateUI() {
         super.updateUI();
         painter.rebuildColors();
+    }
+
+    @Override
+    public void setBorder(@Nullable Border border) {
+        super.setBorder(border);
+        updateLayout();
     }
 
     @Nonnull
@@ -376,7 +383,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
         centerOnPosition(new DefaultCodeAreaCaretPosition(dataPosition, dataOffset, section));
     }
 
-    @Nullable
+    @Nonnull
     @Override
     public CodeAreaCaretPosition mousePositionToClosestCaretPosition(int positionX, int positionY, CaretOverlapMode overflowMode) {
         return painter.mousePositionToClosestCaretPosition(positionX, positionY, overflowMode);
@@ -598,6 +605,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
         }
     }
 
+    @Nonnull
     @Override
     public EditationOperation getActiveOperation() {
         switch (editationMode) {
@@ -646,14 +654,14 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
         this.clipboardHandlingMode = clipboardHandlingMode;
     }
 
-    @Nullable
+    @Nonnull
     @Override
     public Font getCodeFont() {
-        return codeFont;
+        return codeFont == null ? super.getFont() : codeFont;
     }
 
     @Override
-    public void setCodeFont(@Nullable Font codeFont) {
+    public void setCodeFont(Font codeFont) {
         this.codeFont = codeFont;
         painter.resetFont();
         repaint();
@@ -705,13 +713,13 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
         updateLayout();
     }
 
-    @Nullable
+    @Nonnull
     @Override
-    public BasicCodeAreaColorsProfile getBasicColors() {
+    public Optional<BasicCodeAreaColorsProfile> getBasicColors() {
         if (painter instanceof BasicColorsCapableCodeAreaPainter) {
-            return ((BasicColorsCapableCodeAreaPainter) painter).getBasicColors();
+            return Optional.of(((BasicColorsCapableCodeAreaPainter) painter).getBasicColors());
         }
-        return null;
+        return Optional.empty();
     }
 
     @Override

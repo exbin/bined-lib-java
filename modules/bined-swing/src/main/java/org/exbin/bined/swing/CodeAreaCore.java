@@ -27,6 +27,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.swing.JComponent;
+import javax.swing.UIManager;
 import org.exbin.bined.CodeAreaControl;
 import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.DataChangedListener;
@@ -36,7 +37,7 @@ import org.exbin.auxiliary.paged_data.BinaryData;
 /**
  * Hexadecimal viewer/editor component.
  *
- * @version 0.2.0 2018/08/11
+ * @version 0.2.0 2020/05/31
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -57,6 +58,7 @@ public abstract class CodeAreaCore extends JComponent implements CodeAreaControl
      */
     public CodeAreaCore(CodeAreaCommandHandler.CodeAreaCommandHandlerFactory commandHandlerFactory) {
         super();
+        super.setBorder(UIManager.getLookAndFeel().getDefaults().getBorder("TextField.border"));
         this.commandHandler = createCommandHandler(CodeAreaUtils.requireNonNull(commandHandlerFactory));
         init();
     }

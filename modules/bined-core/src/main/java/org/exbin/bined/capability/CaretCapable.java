@@ -60,7 +60,7 @@ public interface CaretCapable {
      * @param overflowMode overflow mode
      * @return mouse position
      */
-    @Nullable
+    @Nonnull
     CodeAreaCaretPosition mousePositionToClosestCaretPosition(int positionX, int positionY, CaretOverlapMode overflowMode);
 
     /**
