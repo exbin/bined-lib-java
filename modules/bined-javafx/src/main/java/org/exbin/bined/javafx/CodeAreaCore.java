@@ -29,9 +29,10 @@ import org.exbin.bined.CodeAreaControl;
 import org.exbin.bined.DataChangedListener;
 import org.exbin.bined.capability.SelectionCapable;
 import org.exbin.auxiliary.paged_data.BinaryData;
+import org.exbin.bined.CodeAreaUtils;
 
 /**
- * Hexadecimal viewer/editor component.
+ * Binary viewer/editor component.
  *
  * @version 0.2.0 2018/12/25
  * @author ExBin Project (https://exbin.org)
@@ -54,7 +55,7 @@ public abstract class CodeAreaCore extends Pane implements CodeAreaControl {
      */
     public CodeAreaCore(CodeAreaCommandHandler.CodeAreaCommandHandlerFactory commandHandlerFactory) {
         super();
-        this.commandHandler = commandHandlerFactory.createCommandHandler(this);
+        this.commandHandler = createCommandHandler(CodeAreaUtils.requireNonNull(commandHandlerFactory));
         init();
     }
 
@@ -63,6 +64,11 @@ public abstract class CodeAreaCore extends Pane implements CodeAreaControl {
         setBackground(Background.EMPTY);
         setFocusTraversable(true);
         registerControlListeners();
+    }
+
+    @Nonnull
+    private CodeAreaCommandHandler createCommandHandler(CodeAreaCommandHandler.CodeAreaCommandHandlerFactory commandHandlerFactory) {
+        return commandHandlerFactory.createCommandHandler(this);
     }
 
     private void registerControlListeners() {
@@ -78,7 +84,7 @@ public abstract class CodeAreaCore extends Pane implements CodeAreaControl {
         });
 
         focusedProperty().addListener((ObservableValue<? extends Boolean> ov, Boolean t, Boolean t1) -> {
-            requestLayout();
+            repaint();
         });
     }
 
@@ -152,7 +158,7 @@ public abstract class CodeAreaCore extends Pane implements CodeAreaControl {
     public void setContentData(@Nullable BinaryData contentData) {
         this.contentData = contentData;
         notifyDataChanged();
-        requestLayout();
+        repaint();
     }
 
     @Override
@@ -164,11 +170,7 @@ public abstract class CodeAreaCore extends Pane implements CodeAreaControl {
      * Notifies component, that internal data was changed.
      */
     public void notifyDataChanged() {
-        updateLayout();
-        dataChangedListeners.forEach((listener) -> {
-            listener.dataChanged();
-        });
-        resetPainter();
+        dataChangedListeners.forEach(DataChangedListener::dataChanged);
     }
 
     public void addDataChangedListener(DataChangedListener dataChangedListener) {
@@ -182,4 +184,6 @@ public abstract class CodeAreaCore extends Pane implements CodeAreaControl {
     public abstract void resetPainter();
 
     public abstract void updateLayout();
+
+    public abstract void repaint();
 }

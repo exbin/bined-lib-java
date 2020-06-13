@@ -18,7 +18,6 @@ package org.exbin.bined.swing;
 import java.awt.Graphics;
 import java.util.Optional;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.basic.BasicCodeAreaZone;
 import org.exbin.bined.CaretOverlapMode;
@@ -138,6 +137,13 @@ public interface CodeAreaPainter {
 
     void updateScrollBars();
 
+    /**
+     * Returns state of the visibility of given caret position within current
+     * scrolling window.
+     *
+     * @param caretPosition caret position
+     * @return visibility state
+     */
     @Nonnull
     PositionScrollVisibility computePositionScrollVisibility(CodeAreaCaretPosition caretPosition);
 

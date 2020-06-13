@@ -492,7 +492,8 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaJ
         painter.paintComponent();
     }
 
-    private void repaint() {
+    @Override
+    public void repaint() {
         requestLayout();
     }
 

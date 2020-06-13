@@ -15,117 +15,108 @@
  */
 package org.exbin.bined.javafx.basic;
 
-import java.awt.Cursor;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionListener;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
+import javafx.scene.Cursor;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javax.annotation.ParametersAreNonnullByDefault;
-import javax.swing.JScrollPane;
-import org.exbin.bined.javafx.CodeAreaCommandHandler;
-import org.exbin.bined.javafx.CodeAreaCommandHandler.ScrollbarOrientation;
+import org.exbin.bined.capability.CaretCapable;
+import org.exbin.bined.capability.ScrollingCapable;
+import org.exbin.bined.javafx.CodeAreaCommandHandler.SelectingMode;
 import org.exbin.bined.javafx.CodeAreaCore;
 
 /**
  * Code Area component mouse listener.
  *
- * @version 0.2.0 2018/12/25
+ * @version 0.2.0 2020/06/13
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public class DefaultCodeAreaMouseListener extends MouseAdapter implements MouseMotionListener, MouseWheelListener {
+public class DefaultCodeAreaMouseListener {
 
     public static final int MOUSE_SCROLL_LINES = 3;
 
     private final CodeAreaCore codeArea;
-    private final JScrollPane view;
+    private final ScrollPane view;
 
-    private final Cursor defaultCursor = Cursor.getDefaultCursor();
-    private final Cursor textCursor = Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR);
+    private final Cursor defaultCursor = Cursor.DEFAULT;
+    private final Cursor textCursor = Cursor.TEXT;
     private Cursor currentCursor;
     private boolean mouseDown = false;
 
-    public DefaultCodeAreaMouseListener(CodeAreaCore codeArea, JScrollPane view) {
+    public DefaultCodeAreaMouseListener(CodeAreaCore codeArea, ScrollPane view) {
         this.codeArea = codeArea;
         this.view = view;
 //        currentCursor = codeArea.getCursor();
     }
 
-    @Override
     public void mousePressed(MouseEvent me) {
-//        codeArea.requestFocus();
-//        if (codeArea.isEnabled() && me.getButton() == MouseEvent.BUTTON1) {
-//            moveCaret(me);
-//            mouseDown = true;
-//        }
+        codeArea.requestFocus();
+        if (!codeArea.isDisabled() && me.getButton() == MouseButton.PRIMARY) {
+            moveCaret(me);
+            mouseDown = true;
+        }
     }
 
     private void moveCaret(MouseEvent me) {
-//        boolean selecting = (me.getModifiersEx() & KeyEvent.SHIFT_DOWN_MASK) > 0;
-//        codeArea.getCommandHandler().moveCaret(computeRelativeX(me), computeRelativeY(me), selecting);
-//        ((CaretCapable) codeArea).revealCursor();
+        SelectingMode selecting = me.isShiftDown() ? SelectingMode.SELECTING : SelectingMode.NONE;
+        codeArea.getCommandHandler().moveCaret(computeRelativeX(me), computeRelativeY(me), selecting);
+        ((ScrollingCapable) codeArea).revealCursor();
     }
 
-    @Override
     public void mouseReleased(MouseEvent me) {
         mouseDown = false;
     }
 
-    @Override
     public void mouseExited(MouseEvent me) {
         currentCursor = defaultCursor;
-//        codeArea.setCursor(defaultCursor);
+        codeArea.setCursor(defaultCursor);
     }
 
-    @Override
     public void mouseEntered(MouseEvent me) {
         updateMouseCursor(me);
     }
 
-    @Override
     public void mouseMoved(MouseEvent me) {
         updateMouseCursor(me);
     }
 
     private void updateMouseCursor(MouseEvent me) {
-//        int cursorShape = ((CaretCapable) codeArea).getMouseCursorShape(computeRelativeX(me), computeRelativeY(me));
-//
-//        // Reuse current cursor if unchanged
-//        Cursor newCursor = cursorShape == 0 ? defaultCursor : textCursor;
-//        if (newCursor != currentCursor) {
-//            currentCursor = newCursor;
-//            codeArea.setCursor(newCursor);
-//        }
+        int cursorShape = ((CaretCapable) codeArea).getMouseCursorShape((int) computeRelativeX(me), (int) computeRelativeY(me));
+
+        // Reuse current cursor if unchanged
+        Cursor newCursor = cursorShape == 0 ? defaultCursor : textCursor;
+        if (newCursor != currentCursor) {
+            currentCursor = newCursor;
+            codeArea.setCursor(newCursor);
+        }
     }
 
-    @Override
     public void mouseDragged(MouseEvent me) {
-//        updateMouseCursor(me);
-//        if (codeArea.isEnabled() && mouseDown) {
-//            codeArea.getCommandHandler().moveCaret(computeRelativeX(me), computeRelativeY(me), true);
-//            ((CaretCapable) codeArea).revealCursor();
-//        }
+        updateMouseCursor(me);
+        if (!codeArea.isDisabled() && mouseDown) {
+            codeArea.getCommandHandler().moveCaret(computeRelativeX(me), computeRelativeY(me), SelectingMode.SELECTING);
+            ((ScrollingCapable) codeArea).revealCursor();
+        }
     }
 
-    private int computeRelativeX(MouseEvent me) {
+    private double computeRelativeX(MouseEvent me) {
         boolean isDataView = me.getSource() != codeArea;
-        return isDataView ? me.getX() + view.getX() : me.getX();
+        return isDataView ? me.getSceneX() + view.getScene().getX() : me.getSceneX();
     }
 
-    private int computeRelativeY(MouseEvent me) {
+    private double computeRelativeY(MouseEvent me) {
         boolean isDataView = me.getSource() != codeArea;
-        return isDataView ? me.getY() + view.getY() : me.getY();
+        return isDataView ? me.getSceneY() + view.getScene().getY() : me.getSceneY();
     }
 
-    @Override
-    public void mouseWheelMoved(MouseWheelEvent me) {
+    public void mouseWheelMoved(MouseEvent me) {
 //        if (!codeArea.isEnabled() || me.getWheelRotation() == 0) {
 //            return;
 //        }
 
-        ScrollbarOrientation orientation = me.isShiftDown() ? CodeAreaCommandHandler.ScrollbarOrientation.HORIZONTAL : CodeAreaCommandHandler.ScrollbarOrientation.VERTICAL;
-        int scrollAmount = me.getWheelRotation() > 0 ? MOUSE_SCROLL_LINES : -MOUSE_SCROLL_LINES;
-        codeArea.getCommandHandler().wheelScroll(scrollAmount, orientation);
+//        ScrollbarOrientation orientation = me.isShiftDown() ? CodeAreaCommandHandler.ScrollbarOrientation.HORIZONTAL : CodeAreaCommandHandler.ScrollbarOrientation.VERTICAL;
+//        int scrollAmount = me.getWheelRotation() > 0 ? MOUSE_SCROLL_LINES : -MOUSE_SCROLL_LINES;
+//        codeArea.getCommandHandler().wheelScroll(scrollAmount, orientation);
     }
 }

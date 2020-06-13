@@ -80,6 +80,7 @@ import org.exbin.auxiliary.paged_data.BinaryData;
 import org.exbin.bined.CodeAreaCaretPosition;
 import org.exbin.bined.DataChangedListener;
 import org.exbin.bined.basic.BasicCodeAreaLayout;
+import org.exbin.bined.basic.PositionScrollVisibility;
 
 /**
  * Code area component default painter.
@@ -898,6 +899,32 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         }
 
         return null;
+    }
+
+    @Nonnull
+    @Override
+    public PositionScrollVisibility computePositionScrollVisibility(CodeAreaCaretPosition caretPosition) {
+        int bytesPerRow = structure.getBytesPerRow();
+        int previewCharPos = visibility.getPreviewCharPos();
+        int characterWidth = metrics.getCharacterWidth();
+        int rowHeight = metrics.getRowHeight();
+        int dataViewWidth = dimensions.getDataViewWidth();
+        int dataViewHeight = dimensions.getDataViewHeight();
+        int rowsPerPage = dimensions.getRowsPerPage();
+        int charactersPerPage = dimensions.getCharactersPerPage();
+
+        long shiftedPosition = caretPosition.getDataPosition();
+        long rowPosition = shiftedPosition / bytesPerRow;
+        int byteOffset = (int) (shiftedPosition % bytesPerRow);
+        int charPosition;
+        CodeAreaSection section = caretPosition.getSection().orElse(BasicCodeAreaSection.CODE_MATRIX);
+        if (section == BasicCodeAreaSection.TEXT_PREVIEW) {
+            charPosition = previewCharPos + byteOffset;
+        } else {
+            charPosition = structure.computeFirstCodeCharacterPos(byteOffset) + caretPosition.getCodeOffset();
+        }
+
+        return scrolling.computePositionScrollVisibility(rowPosition, charPosition, bytesPerRow, rowsPerPage, charactersPerPage, dataViewWidth, dataViewHeight, characterWidth, rowHeight);
     }
 
     @Nonnull

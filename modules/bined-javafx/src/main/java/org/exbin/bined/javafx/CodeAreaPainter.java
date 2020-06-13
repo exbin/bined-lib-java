@@ -24,11 +24,12 @@ import org.exbin.bined.basic.CodeAreaScrollPosition;
 import org.exbin.bined.basic.MovementDirection;
 import org.exbin.bined.basic.ScrollingDirection;
 import org.exbin.bined.CodeAreaCaretPosition;
+import org.exbin.bined.basic.PositionScrollVisibility;
 
 /**
  * Binary editor painter interface.
  *
- * @version 0.2.0 2019/08/02
+ * @version 0.2.0 2019/06/13
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -123,6 +124,16 @@ public interface CodeAreaPainter {
     CodeAreaCaretPosition mousePositionToClosestCaretPosition(int positionX, int positionY, CaretOverlapMode overflowMode);
 
     void updateScrollBars();
+
+    /**
+     * Returns state of the visibility of given caret position within current
+     * scrolling window.
+     *
+     * @param caretPosition caret position
+     * @return visibility state
+     */
+    @Nonnull
+    PositionScrollVisibility computePositionScrollVisibility(CodeAreaCaretPosition caretPosition);
 
     /**
      * Returns scroll position so that provided caret position is visible in

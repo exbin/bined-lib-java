@@ -689,8 +689,8 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     }
 
     @Override
-    public void moveCaret(int positionX, int positionY, @Nonnull SelectingMode selecting) {
-        CodeAreaCaretPosition caretPosition = ((CaretCapable) codeArea).mousePositionToClosestCaretPosition(positionX, positionY, CaretOverlapMode.PARTIAL_OVERLAP);
+    public void moveCaret(double positionX, double positionY, @Nonnull SelectingMode selecting) {
+        CodeAreaCaretPosition caretPosition = ((CaretCapable) codeArea).mousePositionToClosestCaretPosition((int) positionX, (int) positionY, CaretOverlapMode.PARTIAL_OVERLAP);
         if (caretPosition != null) {
             ((CaretCapable) codeArea).getCaret().setCaretPosition(caretPosition);
             updateSelection(selecting, caretPosition);

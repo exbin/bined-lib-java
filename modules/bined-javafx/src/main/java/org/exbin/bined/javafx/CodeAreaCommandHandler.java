@@ -111,7 +111,7 @@ public interface CodeAreaCommandHandler {
      * @param positionY relative position Y
      * @param selecting selection selecting
      */
-    void moveCaret(int positionX, int positionY, SelectingMode selecting);
+    void moveCaret(double positionX, double positionY, SelectingMode selecting);
 
     /**
      * Performs scrolling.

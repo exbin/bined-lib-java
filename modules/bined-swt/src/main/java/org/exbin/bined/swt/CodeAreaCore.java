@@ -32,9 +32,10 @@ import org.exbin.bined.CodeAreaControl;
 import org.exbin.bined.DataChangedListener;
 import org.exbin.bined.capability.SelectionCapable;
 import org.exbin.auxiliary.paged_data.BinaryData;
+import org.exbin.bined.CodeAreaUtils;
 
 /**
- * Hexadecimal viewer/editor component.
+ * Binary viewer/editor component.
  *
  * @version 0.2.0 2018/08/11
  * @author ExBin Project (https://exbin.org)
@@ -60,7 +61,7 @@ public abstract class CodeAreaCore extends Composite implements CodeAreaControl 
      */
     public CodeAreaCore(@Nullable Composite parent, int style, CodeAreaCommandHandler.CodeAreaCommandHandlerFactory commandHandlerFactory) {
         super(parent, style);
-        this.commandHandler = commandHandlerFactory.createCommandHandler(this);
+        this.commandHandler = createCommandHandler(CodeAreaUtils.requireNonNull(commandHandlerFactory));
         init();
     }
 
@@ -71,6 +72,11 @@ public abstract class CodeAreaCore extends Composite implements CodeAreaControl 
 //        setFocusTraversalKeysEnabled(false);
         forceFocus();
         registerControlListeners();
+    }
+
+    @Nonnull
+    private CodeAreaCommandHandler createCommandHandler(CodeAreaCommandHandler.CodeAreaCommandHandlerFactory commandHandlerFactory) {
+        return commandHandlerFactory.createCommandHandler(this);
     }
 
     private void registerControlListeners() {
@@ -100,12 +106,12 @@ public abstract class CodeAreaCore extends Composite implements CodeAreaControl 
         addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent fe) {
-                redraw();
+                repaint();
             }
 
             @Override
             public void focusLost(FocusEvent fe) {
-                redraw();
+                repaint();
             }
         });
 //          UIManager.addPropertyChangeListener((@Nonnull PropertyChangeEvent evt) -> {
@@ -193,7 +199,7 @@ public abstract class CodeAreaCore extends Composite implements CodeAreaControl 
     public void setContentData(@Nullable BinaryData contentData) {
         this.contentData = contentData;
         notifyDataChanged();
-        redraw();
+        repaint();
     }
 
     @Override
@@ -205,11 +211,7 @@ public abstract class CodeAreaCore extends Composite implements CodeAreaControl 
      * Notifies component, that internal contentData was changed.
      */
     public void notifyDataChanged() {
-        updateLayout();
-        dataChangedListeners.forEach((listener) -> {
-            listener.dataChanged();
-        });
-        resetPainter();
+        dataChangedListeners.forEach(DataChangedListener::dataChanged);
     }
 
     public void addDataChangedListener(DataChangedListener dataChangedListener) {

@@ -35,7 +35,7 @@ import org.exbin.bined.capability.SelectionCapable;
 import org.exbin.auxiliary.paged_data.BinaryData;
 
 /**
- * Hexadecimal viewer/editor component.
+ * Binary viewer/editor component.
  *
  * @version 0.2.0 2020/05/31
  * @author ExBin Project (https://exbin.org)
@@ -69,6 +69,7 @@ public abstract class CodeAreaCore extends JComponent implements CodeAreaControl
         registerControlListeners();
     }
 
+    @Nonnull
     private CodeAreaCommandHandler createCommandHandler(CodeAreaCommandHandler.CodeAreaCommandHandlerFactory commandHandlerFactory) {
         return commandHandlerFactory.createCommandHandler(this);
     }
