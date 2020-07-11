@@ -42,27 +42,30 @@ repositories {
 }
 
 dependencies {
-    compile moduleDep('BinedJava', 'org.exbin.bined', 'bined-swing')
-    compile moduleDep('BinedJava', 'org.exbin.bined', 'bined-operation')
-    compile moduleDep('BinedJava', 'org.exbin.bined', 'bined-operation-swing')
+    implementation moduleDep('BinedJava', 'org.exbin.bined', 'bined-core')
+    implementation moduleDep('BinedJava', 'org.exbin.bined', 'bined-swing')
+    implementation moduleDep('BinedJava', 'org.exbin.bined', 'bined-operation')
+    implementation moduleDep('BinedJava', 'org.exbin.bined', 'bined-operation-swing')
+    implementation moduleDep('ExbinAuxiliaryJava', 'org.exbin.auxiliary', 'paged_data')
+    compileOnly group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.2'
 
-    testCompile group: 'junit', name: 'junit', version: '4.10'
+    testImplementation group: 'junit', name: 'junit', version: '4.10'
 }
 
 def manifestClassPath() {
     try {
-        return (configurations.runtime.collect { it.getName() }).join(' ')
+        return (configurations.runtimeClasspath.collect { it.getName() }).join(' ')
     } catch (Exception) {
         return ""
     }
 }
 
 jar {
-    from configurations.compile.findAll { it.name == 'bined-core-${version}.jar' }.collect { it.isDirectory() ? it : zipTree(it) }
-    from configurations.compile.findAll { it.name == 'bined-swing-${version}.jar' }.collect { it.isDirectory() ? it : zipTree(it) }
-    from configurations.compile.findAll { it.name == 'bined-operation-swing-${version}.jar' }.collect { it.isDirectory() ? it : zipTree(it) }
-    from configurations.compile.findAll { it.name == 'bined-operation-${version}.jar' }.collect { it.isDirectory() ? it : zipTree(it) }
-    from configurations.compile.findAll { it.name.startsWith('paged_data-${version}') && it.name.endsWith('jar') }.collect { it.isDirectory() ? it : zipTree(it) }
+    from configurations.compileClasspath.findAll { it.name == 'bined-core-${version}.jar' }.collect { it.isDirectory() ? it : zipTree(it) }
+    from configurations.compileClasspath.findAll { it.name == 'bined-swing-${version}.jar' }.collect { it.isDirectory() ? it : zipTree(it) }
+    from configurations.compileClasspath.findAll { it.name == 'bined-operation-swing-${version}.jar' }.collect { it.isDirectory() ? it : zipTree(it) }
+    from configurations.compileClasspath.findAll { it.name == 'bined-operation-${version}.jar' }.collect { it.isDirectory() ? it : zipTree(it) }
+    from configurations.compileClasspath.findAll { it.name.startsWith('paged_data-${version}') && it.name.endsWith('jar') }.collect { it.isDirectory() ? it : zipTree(it) }
     manifest {
         attributes(
             'Main-Class': mainClass,
@@ -76,7 +79,7 @@ task fatJar(type: Jar) {
         attributes 'Main-Class': mainClass
     }
 
-    baseName = 'bined-editor-basic-standalone'
+    archiveBaseName = 'bined-editor-basic-standalone'
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
     with jar
 }

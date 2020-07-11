@@ -108,7 +108,7 @@ if (!project.gradle.startParameter.projectProperties.containsKey("moduleDep")) {
                             rename { filename -> p.name + ".jar" }
                         }
                         into('') {
-                            from p.configurations.runtime
+                            from p.configurations.runtimeClasspath
                             include '*'
                             from p.sourceJar
                             include '*'

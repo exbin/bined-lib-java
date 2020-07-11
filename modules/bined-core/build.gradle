@@ -27,7 +27,8 @@ repositories {
 }
 
 dependencies {
-    compile moduleDep('ExbinAuxiliaryJava', 'org.exbin.auxiliary', 'paged_data')
-    compile group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.2'
-    testCompile group : 'junit', name: 'junit', version: '4.10'
+    implementation moduleDep('ExbinAuxiliaryJava', 'org.exbin.auxiliary', 'paged_data')
+    compileOnly group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.2'
+    testImplementation group : 'junit', name: 'junit', version: '4.10'
+    testCompileOnly group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.2'
 }
