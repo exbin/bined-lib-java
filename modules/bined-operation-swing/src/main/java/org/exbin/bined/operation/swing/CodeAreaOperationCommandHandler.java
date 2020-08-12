@@ -118,7 +118,6 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
         codeTypeSupported = codeArea instanceof CodeTypeCapable;
         viewModeSupported = codeArea instanceof ViewModeCapable;
 
-
         try {
             clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
             clipboard.addFlavorListener((FlavorEvent e) -> {
@@ -135,7 +134,6 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
                 Logger.getLogger(CodeAreaOperationCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
             }
             updateCanPaste();
-            canPaste = clipboard.isDataFlavorAvailable(binedDataFlavor) || clipboard.isDataFlavorAvailable(DataFlavor.stringFlavor);
         } catch (IllegalStateException ex) {
             canPaste = false;
         } catch (java.awt.HeadlessException ex) {
@@ -145,7 +143,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
 
     @Nonnull
     public static CodeAreaCommandHandler.CodeAreaCommandHandlerFactory createDefaultCodeAreaCommandHandlerFactory() {
-        return (CodeAreaCore codeArea1) -> new CodeAreaOperationCommandHandler(codeArea1, new CodeAreaUndoHandler(codeArea1));
+        return (CodeAreaCore codeAreaCore) -> new CodeAreaOperationCommandHandler(codeAreaCore, new CodeAreaUndoHandler(codeAreaCore));
     }
 
     private void updateCanPaste() {
@@ -958,14 +956,12 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
     @Override
     public void moveCaret(int positionX, int positionY, SelectingMode selecting) {
         CodeAreaCaretPosition caretPosition = ((CaretCapable) codeArea).mousePositionToClosestCaretPosition(positionX, positionY, CaretOverlapMode.PARTIAL_OVERLAP);
-        if (caretPosition != null) {
-            ((CaretCapable) codeArea).getCaret().setCaretPosition(caretPosition);
-            updateSelection(selecting, caretPosition);
+        ((CaretCapable) codeArea).getCaret().setCaretPosition(caretPosition);
+        updateSelection(selecting, caretPosition);
 
-            notifyCaretMoved();
-            undoSequenceBreak();
-            codeArea.repaint();
-        }
+        notifyCaretMoved();
+        undoSequenceBreak();
+        codeArea.repaint();
     }
 
     public void move(int modifiers, MovementDirection direction) {
@@ -1007,6 +1003,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
         return undoHandler.getCommandPosition() != undoHandler.getSyncPoint();
     }
 
+    @ParametersAreNonnullByDefault
     private static class DeleteSelectionCommand extends CodeAreaCommand {
 
         private final RemoveDataCommand removeCommand;
