@@ -618,13 +618,6 @@ public class BasicCodeAreaScrolling {
     }
 
     @Nonnull
-    private CodeAreaScrollPosition createScrollPosition(int charPos, int pixelOffset, int characterWidth) {
-        CodeAreaScrollPosition targetScrollPosition = new CodeAreaScrollPosition();
-        setHorizontalScrollPosition(targetScrollPosition, charPos, pixelOffset, characterWidth);
-        return targetScrollPosition;
-    }
-
-    @Nonnull
     public CodeAreaScrollPosition getScrollPosition() {
         return scrollPosition;
     }
