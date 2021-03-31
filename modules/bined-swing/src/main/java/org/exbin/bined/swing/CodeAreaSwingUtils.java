@@ -25,6 +25,7 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.KeyEvent;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -39,7 +40,7 @@ import org.exbin.auxiliary.paged_data.BinaryData;
 /**
  * Hexadecimal editor component swing utilities.
  *
- * @version 0.2.0 2018/12/24
+ * @version 0.2.0 2021/03/31
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -51,7 +52,7 @@ public class CodeAreaSwingUtils {
     public static final int EXCEPTION1_CODE_POINT = 0x8e;
     public static final int EXCEPTION2_CODE_POINT = 0x9e;
 
-    public static int MAX_COMPONENT_VALUE = 255;
+    public static int MAX_COLOR_COMPONENT_VALUE = 255;
     public static final String DEFAULT_ENCODING = "UTF-8";
 
     public static final String FALLBACK_CLIPBOARD = "clipboard";
@@ -79,9 +80,9 @@ public class CodeAreaSwingUtils {
     @Nonnull
     public static Color createNegativeColor(Color color) {
         return new Color(
-                MAX_COMPONENT_VALUE - color.getRed(),
-                MAX_COMPONENT_VALUE - color.getGreen(),
-                MAX_COMPONENT_VALUE - color.getBlue());
+                MAX_COLOR_COMPONENT_VALUE - color.getRed(),
+                MAX_COLOR_COMPONENT_VALUE - color.getGreen(),
+                MAX_COLOR_COMPONENT_VALUE - color.getBlue());
     }
 
     @Nonnull
@@ -168,10 +169,17 @@ public class CodeAreaSwingUtils {
 
         private final BinaryData data;
         private final DataFlavor binaryDataFlavor;
+        @Nullable
+        private final Charset charset;
 
-        public BinaryDataClipboardData(BinaryData data, DataFlavor binaryDataFlavor) {
+        public BinaryDataClipboardData(BinaryData data, DataFlavor binaryDataFlavor, @Nullable Charset charset) {
             this.data = data;
             this.binaryDataFlavor = binaryDataFlavor;
+            this.charset = charset;
+        }
+
+        public BinaryDataClipboardData(BinaryData data, DataFlavor binaryDataFlavor) {
+            this(data, binaryDataFlavor, null);
         }
 
         @Nonnull
@@ -193,7 +201,7 @@ public class CodeAreaSwingUtils {
             } else {
                 ByteArrayOutputStream byteArrayStream = new ByteArrayOutputStream();
                 data.saveToStream(byteArrayStream);
-                return byteArrayStream.toString(DEFAULT_ENCODING);
+                return charset == null ? byteArrayStream.toString(DEFAULT_ENCODING) : byteArrayStream.toString(charset);
             }
         }
 
@@ -252,7 +260,6 @@ public class CodeAreaSwingUtils {
                     CodeAreaUtils.byteToCharsCode(data.getByte(i), codeType, targetData, i * charsPerByte, charactersCase);
                 }
                 return new String(targetData);
-//                return new ByteArrayInputStream(new String(dataTarget).getBytes(textPlainUnicodeFlavor.getParameter(MIME_CHARSET)));
             }
         }
 

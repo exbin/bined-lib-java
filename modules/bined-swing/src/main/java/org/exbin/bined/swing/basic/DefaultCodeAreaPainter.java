@@ -317,7 +317,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
             rowDataCache = new RowDataCache();
         }
 
-        int maxRowDataChars = visibility.getMaxRowDataChars();
         rowDataCache.headerChars = new char[visibility.getCharactersPerCodeSection()];
         rowDataCache.rowData = new byte[structure.getBytesPerRow() + metrics.getMaxBytesPerChar() - 1];
         rowDataCache.rowPositionCode = new char[rowPositionLength];

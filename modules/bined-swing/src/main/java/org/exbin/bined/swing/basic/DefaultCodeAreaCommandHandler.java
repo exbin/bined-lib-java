@@ -528,7 +528,8 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
             BinaryData copy = data.copy(first, last - first + 1);
 
-            CodeAreaSwingUtils.BinaryDataClipboardData binaryData = new CodeAreaSwingUtils.BinaryDataClipboardData(copy, binaryDataFlavor);
+            Charset charset = codeArea instanceof CharsetCapable ? ((CharsetCapable) codeArea).getCharset() : null;
+            CodeAreaSwingUtils.BinaryDataClipboardData binaryData = new CodeAreaSwingUtils.BinaryDataClipboardData(copy, binaryDataFlavor, charset);
             setClipboardContent(binaryData);
         }
     }
@@ -804,14 +805,12 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     @Override
     public void moveCaret(int positionX, int positionY, SelectingMode selecting) {
         CodeAreaCaretPosition caretPosition = ((CaretCapable) codeArea).mousePositionToClosestCaretPosition(positionX, positionY, CaretOverlapMode.PARTIAL_OVERLAP);
-        if (caretPosition != null) {
-            ((CaretCapable) codeArea).getCaret().setCaretPosition(caretPosition);
-            updateSelection(selecting, caretPosition);
+        ((CaretCapable) codeArea).getCaret().setCaretPosition(caretPosition);
+        updateSelection(selecting, caretPosition);
 
-            notifyCaretMoved();
-            undoSequenceBreak();
-            codeArea.repaint();
-        }
+        notifyCaretMoved();
+        undoSequenceBreak();
+        codeArea.repaint();
     }
 
     public void move(int modifiers, MovementDirection direction) {
