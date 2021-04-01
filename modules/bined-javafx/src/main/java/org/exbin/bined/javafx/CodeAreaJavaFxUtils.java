@@ -23,6 +23,7 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.paint.Color;
@@ -50,7 +51,7 @@ public class CodeAreaJavaFxUtils {
     public static final int EXCEPTION1_CODE_POINT = 0x8e;
     public static final int EXCEPTION2_CODE_POINT = 0x9e;
 
-    public static double MAX_COMPONENT_VALUE = 1;
+    public static double MAX_COLOR_COMPONENT_VALUE = 1;
     public static final String DEFAULT_ENCODING = "UTF-8";
 
     public static final String FALLBACK_CLIPBOARD = "clipboard";
@@ -77,10 +78,9 @@ public class CodeAreaJavaFxUtils {
 
     @Nonnull
     public static Color createNegativeColor(Color color) {
-        return Color.color(
-                MAX_COMPONENT_VALUE - color.getRed(),
-                MAX_COMPONENT_VALUE - color.getGreen(),
-                MAX_COMPONENT_VALUE - color.getBlue());
+        return Color.color(MAX_COLOR_COMPONENT_VALUE - color.getRed(),
+                MAX_COLOR_COMPONENT_VALUE - color.getGreen(),
+                MAX_COLOR_COMPONENT_VALUE - color.getBlue());
     }
 
     @Nonnull
@@ -148,10 +148,17 @@ public class CodeAreaJavaFxUtils {
 
         private final BinaryData data;
         private final DataFlavor binaryDataFlavor;
+        @Nullable
+        private final Charset charset;
 
-        public BinaryDataClipboardData(BinaryData data, DataFlavor binaryDataFlavor) {
+        public BinaryDataClipboardData(BinaryData data, DataFlavor binaryDataFlavor, @Nullable Charset charset) {
             this.data = data;
             this.binaryDataFlavor = binaryDataFlavor;
+            this.charset = charset;
+        }
+
+        public BinaryDataClipboardData(BinaryData data, DataFlavor binaryDataFlavor) {
+            this(data, binaryDataFlavor, null);
         }
 
         @Nonnull
@@ -173,7 +180,7 @@ public class CodeAreaJavaFxUtils {
             } else {
                 ByteArrayOutputStream byteArrayStream = new ByteArrayOutputStream();
                 data.saveToStream(byteArrayStream);
-                return byteArrayStream.toString(DEFAULT_ENCODING);
+                return charset == null ? byteArrayStream.toString(DEFAULT_ENCODING) : byteArrayStream.toString(charset);
             }
         }
 
@@ -232,7 +239,6 @@ public class CodeAreaJavaFxUtils {
                     CodeAreaUtils.byteToCharsCode(data.getByte(i), codeType, targetData, i * charsPerByte, charactersCase);
                 }
                 return new String(targetData);
-//                return new ByteArrayInputStream(new String(dataTarget).getBytes(textPlainUnicodeFlavor.getParameter(MIME_CHARSET)));
             }
         }
 

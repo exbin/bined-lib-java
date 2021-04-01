@@ -63,7 +63,7 @@ import org.exbin.bined.RowWrappingMode;
 /**
  * Code area component default code area.
  *
- * @version 0.2.0 2019/07/07
+ * @version 0.2.0 2021/04/01
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -380,7 +380,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
         centerOnPosition(new DefaultCodeAreaCaretPosition(dataPosition, dataOffset, section));
     }
 
-    @Nullable
+    @Nonnull
     @Override
     public CodeAreaCaretPosition mousePositionToClosestCaretPosition(int positionX, int positionY, CaretOverlapMode overflowMode) {
         return painter.mousePositionToClosestCaretPosition(positionX, positionY, overflowMode);
@@ -498,7 +498,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
 
     @Override
     public void repaint() {
-            painter.repaint();
+        painter.repaint();
 //      Display.getDefault().asyncExec(() -> {
 //            layout(true, true);
 //            resetPainter();
@@ -614,6 +614,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
         }
     }
 
+    @Nonnull
     @Override
     public EditationOperation getActiveOperation() {
         switch (editationMode) {
