@@ -60,15 +60,14 @@ import org.exbin.bined.CodeAreaCaretPosition;
 import org.exbin.bined.basic.EnterKeyHandlingMode;
 
 /**
- * Default hexadecimal editor command handler.
+ * Default binary editor command handler.
  *
- * @version 0.2.0 2020/04/12
+ * @version 0.2.0 2021/04/02
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
-    public static final int NO_MODIFIER = 0;
     public static final int LAST_CONTROL_CODE = 31;
     private static final char DELETE_CHAR = (char) 0x7f;
 
@@ -132,28 +131,28 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     public void keyTyped(KeyEvent keyEvent) {
         switch (keyEvent.keyCode) {
             case SWT.ARROW_LEFT: {
-                move(keyEvent.stateMask, MovementDirection.LEFT);
+                move(isSelectingMode(keyEvent), MovementDirection.LEFT);
                 undoSequenceBreak();
                 revealCursor();
                 keyEvent.doit = false;
                 break;
             }
             case SWT.ARROW_RIGHT: {
-                move(keyEvent.stateMask, MovementDirection.RIGHT);
+                move(isSelectingMode(keyEvent), MovementDirection.RIGHT);
                 undoSequenceBreak();
                 revealCursor();
                 keyEvent.doit = false;
                 break;
             }
             case SWT.ARROW_UP: {
-                move(keyEvent.stateMask, MovementDirection.UP);
+                move(isSelectingMode(keyEvent), MovementDirection.UP);
                 undoSequenceBreak();
                 revealCursor();
                 keyEvent.doit = false;
                 break;
             }
             case SWT.ARROW_DOWN: {
-                move(keyEvent.stateMask, MovementDirection.DOWN);
+                move(isSelectingMode(keyEvent), MovementDirection.DOWN);
                 undoSequenceBreak();
                 revealCursor();
                 keyEvent.doit = false;
@@ -161,9 +160,9 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             }
             case SWT.HOME: {
                 if ((keyEvent.stateMask & metaMask) > 0) {
-                    move(keyEvent.stateMask, MovementDirection.DOC_START);
+                    move(isSelectingMode(keyEvent), MovementDirection.DOC_START);
                 } else {
-                    move(keyEvent.stateMask, MovementDirection.ROW_START);
+                    move(isSelectingMode(keyEvent), MovementDirection.ROW_START);
                 }
                 undoSequenceBreak();
                 revealCursor();
@@ -172,9 +171,9 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             }
             case SWT.END: {
                 if ((keyEvent.stateMask & metaMask) > 0) {
-                    move(keyEvent.stateMask, MovementDirection.DOC_END);
+                    move(isSelectingMode(keyEvent), MovementDirection.DOC_END);
                 } else {
-                    move(keyEvent.stateMask, MovementDirection.ROW_END);
+                    move(isSelectingMode(keyEvent), MovementDirection.ROW_END);
                 }
                 undoSequenceBreak();
                 revealCursor();
@@ -183,7 +182,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             }
             case SWT.PAGE_UP: {
                 scroll(ScrollingDirection.PAGE_UP);
-                move(keyEvent.stateMask, MovementDirection.PAGE_UP);
+                move(isSelectingMode(keyEvent), MovementDirection.PAGE_UP);
                 undoSequenceBreak();
                 revealCursor();
                 keyEvent.doit = false;
@@ -191,7 +190,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             }
             case SWT.PAGE_DOWN: {
                 scroll(ScrollingDirection.PAGE_DOWN);
-                move(keyEvent.stateMask, MovementDirection.PAGE_DOWN);
+                move(isSelectingMode(keyEvent), MovementDirection.PAGE_DOWN);
                 undoSequenceBreak();
                 keyEvent.doit = false;
                 break;
@@ -217,7 +216,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             }
             case SWT.TAB: {
                 if (viewModeSupported && ((ViewModeCapable) codeArea).getViewMode() == CodeAreaViewMode.DUAL) {
-                    move(keyEvent.stateMask, MovementDirection.SWITCH_SECTION);
+                    move(isSelectingMode(keyEvent), MovementDirection.SWITCH_SECTION);
                     undoSequenceBreak();
                     revealCursor();
                     keyEvent.doit = false;
@@ -347,7 +346,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                 setCodeValue(value);
             }
             codeArea.notifyDataChanged();
-            move(NO_MODIFIER, MovementDirection.RIGHT);
+            move(SelectingMode.NONE, MovementDirection.RIGHT);
             revealCursor();
         }
     }
@@ -375,7 +374,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             ((EditableBinaryData) data).insert(dataPosition, bytes);
             codeArea.notifyDataChanged();
             ((CaretCapable) codeArea).getCaret().setCaretPosition(dataPosition + bytes.length - 1);
-            move(NO_MODIFIER, MovementDirection.RIGHT);
+            move(SelectingMode.NONE, MovementDirection.RIGHT);
             revealCursor();
         }
     }
@@ -424,7 +423,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             long dataPosition = caret.getDataPosition();
             if (dataPosition > 0 && dataPosition <= codeArea.getDataSize()) {
                 caret.setCodeOffset(0);
-                move(NO_MODIFIER, MovementDirection.LEFT);
+                move(SelectingMode.NONE, MovementDirection.LEFT);
                 caret.setCodeOffset(0);
                 ((EditableBinaryData) data).remove(dataPosition - 1, 1);
                 codeArea.notifyDataChanged();
@@ -768,23 +767,21 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     @Override
     public void moveCaret(int positionX, int positionY, SelectingMode selecting) {
         CodeAreaCaretPosition caretPosition = ((CaretCapable) codeArea).mousePositionToClosestCaretPosition(positionX, positionY, CaretOverlapMode.PARTIAL_OVERLAP);
-        if (caretPosition != null) {
-            ((CaretCapable) codeArea).getCaret().setCaretPosition(caretPosition);
-            updateSelection(selecting, caretPosition);
+        ((CaretCapable) codeArea).getCaret().setCaretPosition(caretPosition);
+        updateSelection(selecting, caretPosition);
 
-            notifyCaretMoved();
-            undoSequenceBreak();
-            codeArea.repaint();
-        }
+        notifyCaretMoved();
+        undoSequenceBreak();
+        codeArea.repaint();
     }
 
-    public void move(int modifiers, MovementDirection direction) {
+    public void move(SelectingMode selectingMode, MovementDirection direction) {
         DefaultCodeAreaCaret caret = (DefaultCodeAreaCaret) ((CaretCapable) codeArea).getCaret();
         CodeAreaCaretPosition caretPosition = caret.getCaretPosition();
         CodeAreaCaretPosition movePosition = ((CaretCapable) codeArea).computeMovePosition(caretPosition, direction);
         if (!caretPosition.equals(movePosition)) {
             caret.setCaretPosition(movePosition);
-            updateSelection((modifiers & SWT.SHIFT) > 0 ? SelectingMode.SELECTING : SelectingMode.NONE, movePosition);
+            updateSelection(selectingMode, movePosition);
             notifyCaretMoved();
         }
     }
@@ -850,5 +847,10 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     @Override
     public boolean checkEditationAllowed() {
         return ((EditationModeCapable) codeArea).isEditable();
+    }
+
+    @Nonnull
+    private static SelectingMode isSelectingMode(KeyEvent keyEvent) {
+        return (keyEvent.stateMask & SWT.SHIFT) > 0 ? SelectingMode.SELECTING : SelectingMode.NONE;
     }
 }

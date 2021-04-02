@@ -140,6 +140,26 @@ public class BasicCodeAreaDimensions {
         return BasicCodeAreaZone.CODE_AREA;
     }
 
+    private int computeCharactersPerRectangle(BasicCodeAreaMetrics metrics) {
+        int characterWidth = metrics.getCharacterWidth();
+        return characterWidth == 0 ? 0 : (dataViewWidth + characterWidth - 1) / characterWidth;
+    }
+
+    private int computeCharactersPerPage(BasicCodeAreaMetrics metrics) {
+        int characterWidth = metrics.getCharacterWidth();
+        return characterWidth == 0 ? 0 : dataViewWidth / characterWidth;
+    }
+
+    private int computeRowsPerRectangle(BasicCodeAreaMetrics metrics) {
+        int rowHeight = metrics.getRowHeight();
+        return rowHeight == 0 ? 0 : (dataViewHeight + rowHeight - 1) / rowHeight;
+    }
+
+    private int computeRowsPerPage(BasicCodeAreaMetrics metrics) {
+        int rowHeight = metrics.getRowHeight();
+        return rowHeight == 0 ? 0 : dataViewHeight / rowHeight;
+    }
+
     public int getScrollPanelX() {
         return scrollPanelX;
     }
@@ -237,26 +257,6 @@ public class BasicCodeAreaDimensions {
     @Nonnull
     public Rectangle getRowPositionAreaRectangle() {
         return rowPositionAreaRectangle;
-    }
-
-    private int computeCharactersPerRectangle(BasicCodeAreaMetrics metrics) {
-        int characterWidth = metrics.getCharacterWidth();
-        return characterWidth == 0 ? 0 : (dataViewWidth + characterWidth - 1) / characterWidth;
-    }
-
-    private int computeCharactersPerPage(BasicCodeAreaMetrics metrics) {
-        int characterWidth = metrics.getCharacterWidth();
-        return characterWidth == 0 ? 0 : dataViewWidth / characterWidth;
-    }
-
-    private int computeRowsPerRectangle(BasicCodeAreaMetrics metrics) {
-        int rowHeight = metrics.getRowHeight();
-        return rowHeight == 0 ? 0 : (dataViewHeight + rowHeight - 1) / rowHeight;
-    }
-
-    private int computeRowsPerPage(BasicCodeAreaMetrics metrics) {
-        int rowHeight = metrics.getRowHeight();
-        return rowHeight == 0 ? 0 : dataViewHeight / rowHeight;
     }
 
     private static void modifyRect(Rectangle rect, int x, int y, int width, int height) {

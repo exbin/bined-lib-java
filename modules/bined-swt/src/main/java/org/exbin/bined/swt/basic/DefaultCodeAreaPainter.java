@@ -85,7 +85,7 @@ import org.exbin.bined.basic.PositionScrollVisibility;
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2019/09/17
+ * @version 0.2.0 2021/04/02
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -139,6 +139,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
     @Nullable
     private BasicBackgroundPaintMode backgroundPaintMode;
     private boolean showMirrorCursor;
+    @Nonnull
+    private AntialiasingMode antialiasingMode = AntialiasingMode.AUTO;
 
     private int minRowPositionLength;
     private int maxRowPositionLength;

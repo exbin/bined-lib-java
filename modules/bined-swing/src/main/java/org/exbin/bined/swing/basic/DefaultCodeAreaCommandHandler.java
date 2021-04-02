@@ -15,7 +15,6 @@
  */
 package org.exbin.bined.swing.basic;
 
-import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.FlavorEvent;
@@ -62,13 +61,12 @@ import org.exbin.bined.basic.EnterKeyHandlingMode;
 /**
  * Default binary editor command handler.
  *
- * @version 0.2.0 2020/03/22
+ * @version 0.2.0 2021/04/02
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
-    public static final int NO_MODIFIER = 0;
     public static final int LAST_CONTROL_CODE = 31;
     private static final char DELETE_CHAR = (char) 0x7f;
 
@@ -127,28 +125,28 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
         switch (keyEvent.getKeyCode()) {
             case KeyEvent.VK_LEFT: {
-                move(keyEvent.getModifiersEx(), MovementDirection.LEFT);
+                move(isSelectingMode(keyEvent), MovementDirection.LEFT);
                 undoSequenceBreak();
                 revealCursor();
                 keyEvent.consume();
                 break;
             }
             case KeyEvent.VK_RIGHT: {
-                move(keyEvent.getModifiersEx(), MovementDirection.RIGHT);
+                move(isSelectingMode(keyEvent), MovementDirection.RIGHT);
                 undoSequenceBreak();
                 revealCursor();
                 keyEvent.consume();
                 break;
             }
             case KeyEvent.VK_UP: {
-                move(keyEvent.getModifiersEx(), MovementDirection.UP);
+                move(isSelectingMode(keyEvent), MovementDirection.UP);
                 undoSequenceBreak();
                 revealCursor();
                 keyEvent.consume();
                 break;
             }
             case KeyEvent.VK_DOWN: {
-                move(keyEvent.getModifiersEx(), MovementDirection.DOWN);
+                move(isSelectingMode(keyEvent), MovementDirection.DOWN);
                 undoSequenceBreak();
                 revealCursor();
                 keyEvent.consume();
@@ -156,9 +154,9 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             }
             case KeyEvent.VK_HOME: {
                 if ((keyEvent.getModifiersEx() & metaMask) > 0) {
-                    move(keyEvent.getModifiersEx(), MovementDirection.DOC_START);
+                    move(isSelectingMode(keyEvent), MovementDirection.DOC_START);
                 } else {
-                    move(keyEvent.getModifiersEx(), MovementDirection.ROW_START);
+                    move(isSelectingMode(keyEvent), MovementDirection.ROW_START);
                 }
                 undoSequenceBreak();
                 revealCursor();
@@ -167,9 +165,9 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             }
             case KeyEvent.VK_END: {
                 if ((keyEvent.getModifiersEx() & metaMask) > 0) {
-                    move(keyEvent.getModifiersEx(), MovementDirection.DOC_END);
+                    move(isSelectingMode(keyEvent), MovementDirection.DOC_END);
                 } else {
-                    move(keyEvent.getModifiersEx(), MovementDirection.ROW_END);
+                    move(isSelectingMode(keyEvent), MovementDirection.ROW_END);
                 }
                 undoSequenceBreak();
                 revealCursor();
@@ -178,7 +176,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             }
             case KeyEvent.VK_PAGE_UP: {
                 scroll(ScrollingDirection.PAGE_UP);
-                move(keyEvent.getModifiersEx(), MovementDirection.PAGE_UP);
+                move(isSelectingMode(keyEvent), MovementDirection.PAGE_UP);
                 undoSequenceBreak();
                 revealCursor();
                 keyEvent.consume();
@@ -186,7 +184,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             }
             case KeyEvent.VK_PAGE_DOWN: {
                 scroll(ScrollingDirection.PAGE_DOWN);
-                move(keyEvent.getModifiersEx(), MovementDirection.PAGE_DOWN);
+                move(isSelectingMode(keyEvent), MovementDirection.PAGE_DOWN);
                 undoSequenceBreak();
                 keyEvent.consume();
                 break;
@@ -212,7 +210,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             }
             case KeyEvent.VK_TAB: {
                 if (viewModeSupported && ((ViewModeCapable) codeArea).getViewMode() == CodeAreaViewMode.DUAL) {
-                    move(keyEvent.getModifiersEx(), MovementDirection.SWITCH_SECTION);
+                    move(isSelectingMode(keyEvent), MovementDirection.SWITCH_SECTION);
                     undoSequenceBreak();
                     revealCursor();
                     keyEvent.consume();
@@ -349,7 +347,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                 }
             }
             codeArea.notifyDataChanged();
-            move(NO_MODIFIER, MovementDirection.RIGHT);
+            move(SelectingMode.NONE, MovementDirection.RIGHT);
             revealCursor();
         }
     }
@@ -386,7 +384,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             ((EditableBinaryData) data).insert(dataPosition, bytes);
             codeArea.notifyDataChanged();
             ((CaretCapable) codeArea).getCaret().setCaretPosition(dataPosition + bytes.length - 1);
-            move(NO_MODIFIER, MovementDirection.RIGHT);
+            move(SelectingMode.NONE, MovementDirection.RIGHT);
             revealCursor();
         }
     }
@@ -435,7 +433,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             long dataPosition = caret.getDataPosition();
             if (dataPosition > 0 && dataPosition <= codeArea.getDataSize()) {
                 caret.setCodeOffset(0);
-                move(NO_MODIFIER, MovementDirection.LEFT);
+                move(SelectingMode.NONE, MovementDirection.LEFT);
                 caret.setCodeOffset(0);
                 ((EditableBinaryData) data).remove(dataPosition - 1, 1);
                 codeArea.notifyDataChanged();
@@ -813,13 +811,13 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         codeArea.repaint();
     }
 
-    public void move(int modifiers, MovementDirection direction) {
+    public void move(SelectingMode selectingMode, MovementDirection direction) {
         DefaultCodeAreaCaret caret = (DefaultCodeAreaCaret) ((CaretCapable) codeArea).getCaret();
         CodeAreaCaretPosition caretPosition = caret.getCaretPosition();
         CodeAreaCaretPosition movePosition = ((CaretCapable) codeArea).computeMovePosition(caretPosition, direction);
         if (!caretPosition.equals(movePosition)) {
             caret.setCaretPosition(movePosition);
-            updateSelection((modifiers & KeyEvent.SHIFT_DOWN_MASK) > 0 ? SelectingMode.SELECTING : SelectingMode.NONE, movePosition);
+            updateSelection(selectingMode, movePosition);
             notifyCaretMoved();
         }
     }
@@ -899,5 +897,10 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     @Override
     public boolean checkEditationAllowed() {
         return ((EditationModeCapable) codeArea).isEditable();
+    }
+
+    @Nonnull    
+    private static SelectingMode isSelectingMode(KeyEvent keyEvent) {
+        return (keyEvent.getModifiersEx() & KeyEvent.SHIFT_DOWN_MASK) > 0 ? SelectingMode.SELECTING : SelectingMode.NONE;
     }
 }
