@@ -37,7 +37,7 @@ import org.exbin.auxiliary.paged_data.BinaryData;
 /**
  * Binary viewer/editor component.
  *
- * @version 0.2.0 2020/05/31
+ * @version 0.2.0 2021/04/11
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -58,7 +58,6 @@ public abstract class CodeAreaCore extends JComponent implements CodeAreaControl
      */
     public CodeAreaCore(CodeAreaCommandHandler.CodeAreaCommandHandlerFactory commandHandlerFactory) {
         super();
-        super.setBorder(UIManager.getLookAndFeel().getDefaults().getBorder("TextField.border"));
         this.commandHandler = createCommandHandler(CodeAreaUtils.requireNonNull(commandHandlerFactory));
         init();
     }
@@ -203,4 +202,10 @@ public abstract class CodeAreaCore extends JComponent implements CodeAreaControl
     public abstract void resetPainter();
 
     public abstract void updateLayout();
+
+    @Override
+    public void updateUI() {
+        super.updateUI();
+        super.setBorder(UIManager.getLookAndFeel().getDefaults().getBorder("TextField.border"));
+    }
 }

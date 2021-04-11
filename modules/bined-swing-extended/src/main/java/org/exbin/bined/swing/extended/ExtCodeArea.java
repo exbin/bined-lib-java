@@ -25,7 +25,6 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import javax.swing.JTextArea;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
 import org.exbin.bined.basic.BasicCodeAreaSection;
@@ -73,7 +72,7 @@ import org.exbin.bined.swing.extended.caret.CaretsProfileCapableCodeAreaPainter;
 /**
  * Code area component extended code area.
  *
- * @version 0.2.0 2019/07/07
+ * @version 0.2.0 2021/04/11
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -137,8 +136,6 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
      */
     public ExtCodeArea() {
         super(DefaultCodeAreaCommandHandler.createDefaultCodeAreaCommandHandlerFactory());
-        new JTextArea().getBorder();
-        super.setBorder(UIManager.getLookAndFeel().getDefaults().getBorder("TextField.border"));
 
         caret = new DefaultCodeAreaCaret(this);
         painter = new ExtendedCodeAreaPainter(this);
@@ -194,6 +191,7 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
     @Override
     public void updateUI() {
         super.updateUI();
+        super.setBorder(UIManager.getLookAndFeel().getDefaults().getBorder("TextField.border"));
         painter.rebuildColors();
     }
 
@@ -345,7 +343,7 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
             caret.setCodeOffset(codeType.getMaxDigitsForByte() - 1);
             moved = true;
         }
-        
+
         if (moved) {
             notifyCaretMoved();
         }
