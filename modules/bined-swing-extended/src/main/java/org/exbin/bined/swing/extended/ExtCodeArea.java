@@ -191,7 +191,9 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
     @Override
     public void updateUI() {
         super.updateUI();
-        super.setBorder(UIManager.getLookAndFeel().getDefaults().getBorder("TextField.border"));
+        if (getBorder() == null) {
+            super.setBorder(UIManager.getLookAndFeel().getDefaults().getBorder("TextAreaUI.border"));
+        }
         painter.rebuildColors();
     }
 

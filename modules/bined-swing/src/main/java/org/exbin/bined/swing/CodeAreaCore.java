@@ -27,7 +27,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.swing.JComponent;
-import javax.swing.UIManager;
 import org.exbin.bined.CodeAreaControl;
 import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.DataChangedListener;
@@ -202,10 +201,4 @@ public abstract class CodeAreaCore extends JComponent implements CodeAreaControl
     public abstract void resetPainter();
 
     public abstract void updateLayout();
-
-    @Override
-    public void updateUI() {
-        super.updateUI();
-        super.setBorder(UIManager.getLookAndFeel().getDefaults().getBorder("TextField.border"));
-    }
 }

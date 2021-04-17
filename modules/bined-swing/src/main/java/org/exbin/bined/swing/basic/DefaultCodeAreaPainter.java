@@ -1284,6 +1284,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         return caret;
     }
 
+    @Nonnull
     @Override
     public CodeAreaCaretPosition computeMovePosition(CodeAreaCaretPosition position, MovementDirection direction) {
         return structure.computeMovePosition(position, direction, dimensions.getRowsPerPage());

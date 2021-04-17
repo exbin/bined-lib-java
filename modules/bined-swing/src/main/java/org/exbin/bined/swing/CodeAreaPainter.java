@@ -135,6 +135,9 @@ public interface CodeAreaPainter {
     @Nonnull
     CodeAreaCaretPosition mousePositionToClosestCaretPosition(int positionX, int positionY, CaretOverlapMode overflowMode);
 
+    /**
+     * Performs update of scrollbars after change in data size or position.
+     */
     void updateScrollBars();
 
     /**

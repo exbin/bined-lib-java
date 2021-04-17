@@ -64,7 +64,7 @@ import org.exbin.bined.RowWrappingMode;
 /**
  * Code area component.
  *
- * @version 0.2.0 2020/05/31
+ * @version 0.2.0 2021/04/11
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -178,6 +178,9 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
     @Override
     public void updateUI() {
         super.updateUI();
+        if (getBorder() == null) {
+            super.setBorder(UIManager.getLookAndFeel().getDefaults().getBorder("TextAreaUI.border"));
+        }
         painter.rebuildColors();
     }
 
