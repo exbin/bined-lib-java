@@ -318,7 +318,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
     }
 
     private void updateCaret() {
-        editationOperation = ((EditationModeCapable) codeArea).getEditationOperation();
+        editationOperation = ((EditationModeCapable) codeArea).getActiveOperation();
         showMirrorCursor = ((CaretCapable) codeArea).isShowMirrorCursor();
 
         caretChanged = false;
@@ -452,6 +452,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         }
         if (layoutChanged) {
             recomputeLayout();
+            recomputeCharPositions();
         }
 
         paintOutsiteArea(g);

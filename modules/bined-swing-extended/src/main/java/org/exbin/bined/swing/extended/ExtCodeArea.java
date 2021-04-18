@@ -99,7 +99,7 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
     @Nonnull
     private CodeAreaViewMode viewMode = CodeAreaViewMode.DUAL;
     @Nullable
-    private Font font;
+    private Font codeFont;
     @Nonnull
     private AntialiasingMode antialiasingMode = AntialiasingMode.AUTO;
     @Nonnull
@@ -459,12 +459,12 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
     @Override
     public void setVerticalScrollUnit(VerticalScrollUnit verticalScrollUnit) {
         this.verticalScrollUnit = verticalScrollUnit;
-        long linePosition = scrollPosition.getRowPosition();
+        long rowPosition = scrollPosition.getRowPosition();
         if (verticalScrollUnit == VerticalScrollUnit.ROW) {
             scrollPosition.setRowOffset(0);
         }
         resetPainter();
-        scrollPosition.setRowPosition(linePosition);
+        scrollPosition.setRowPosition(rowPosition);
         updateScrollBars();
         notifyScrolled();
     }
@@ -491,12 +491,12 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
     @Override
     public void setHorizontalScrollUnit(ExtendedHorizontalScrollUnit horizontalScrollUnit) {
         this.horizontalScrollUnit = horizontalScrollUnit;
-        int bytePosition = scrollPosition.getCharPosition();
+        int charPosition = scrollPosition.getCharPosition();
         if (horizontalScrollUnit == ExtendedHorizontalScrollUnit.CHARACTER) {
             scrollPosition.setCharOffset(0);
         }
         resetPainter();
-        scrollPosition.setCharPosition(bytePosition);
+        scrollPosition.setCharPosition(charPosition);
         updateScrollBars();
         notifyScrolled();
     }
@@ -660,6 +660,7 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
         }
     }
 
+    @Nonnull
     @Override
     public ClipboardHandlingMode getClipboardHandlingMode() {
         return clipboardHandlingMode;
@@ -670,15 +671,15 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
         this.clipboardHandlingMode = clipboardHandlingMode;
     }
 
-    @Nullable
+    @Nonnull
     @Override
     public Font getCodeFont() {
-        return font;
+        return codeFont;
     }
 
     @Override
-    public void setCodeFont(@Nullable Font font) {
-        this.font = font;
+    public void setCodeFont(@Nullable Font codeFont) {
+        this.codeFont = codeFont;
         painter.resetFont();
         repaint();
     }
@@ -763,6 +764,7 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
         }
     }
 
+    @Nullable
     @Override
     public ExtendedCodeAreaThemeProfile getThemeProfile() {
         if (painter instanceof ThemeProfileCapableCodeAreaPainter) {

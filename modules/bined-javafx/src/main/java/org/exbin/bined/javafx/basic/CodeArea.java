@@ -429,12 +429,12 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaJ
     @Override
     public void setVerticalScrollUnit(VerticalScrollUnit verticalScrollUnit) {
         this.verticalScrollUnit = verticalScrollUnit;
-        long linePosition = scrollPosition.getRowPosition();
+        long rowPosition = scrollPosition.getRowPosition();
         if (verticalScrollUnit == VerticalScrollUnit.ROW) {
             scrollPosition.setRowOffset(0);
         }
         resetPainter();
-        scrollPosition.setRowPosition(linePosition);
+        scrollPosition.setRowPosition(rowPosition);
         updateScrollBars();
         notifyScrolled();
     }
@@ -461,12 +461,12 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaJ
     @Override
     public void setHorizontalScrollUnit(HorizontalScrollUnit horizontalScrollUnit) {
         this.horizontalScrollUnit = horizontalScrollUnit;
-        int bytePosition = scrollPosition.getCharPosition();
+        int charPosition = scrollPosition.getCharPosition();
         if (horizontalScrollUnit == HorizontalScrollUnit.CHARACTER) {
             scrollPosition.setCharOffset(0);
         }
         resetPainter();
-        scrollPosition.setCharPosition(bytePosition);
+        scrollPosition.setCharPosition(charPosition);
         updateScrollBars();
         notifyScrolled();
     }

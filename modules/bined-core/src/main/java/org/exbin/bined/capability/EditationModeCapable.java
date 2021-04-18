@@ -46,6 +46,11 @@ public interface EditationModeCapable {
     @Nonnull
     EditationOperation getActiveOperation();
 
+    /**
+     * Returns currently enforced editation operation.
+     *
+     * @return editation operation
+     */
     @Nonnull
     EditationOperation getEditationOperation();
 

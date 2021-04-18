@@ -434,6 +434,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         }
         if (layoutChanged) {
             recomputeLayout();
+            recomputeCharPositions();
         }
 
         paintOutsiteArea(g);
