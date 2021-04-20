@@ -19,9 +19,10 @@
           <Group type="102" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="dataSizeTextField" alignment="0" max="32767" attributes="0"/>
+                  <Component id="templateDataComboBox" alignment="0" max="32767" attributes="0"/>
                   <Component id="selectionPanel" alignment="1" max="32767" attributes="0"/>
                   <Component id="positionPanel" alignment="0" max="32767" attributes="0"/>
-                  <Component id="dataSizeTextField" alignment="0" max="32767" attributes="0"/>
                   <Component id="activeOperationComboBox" alignment="0" max="32767" attributes="0"/>
                   <Group type="102" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
@@ -53,6 +54,8 @@
                   <Component id="saveDataButton" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
+              <Component id="templateDataComboBox" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
               <Component id="activeOperationLabel" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="activeOperationComboBox" min="-2" max="-2" attributes="0"/>
@@ -66,6 +69,25 @@
     </DimensionLayout>
   </Layout>
   <SubComponents>
+    <Component class="javax.swing.JLabel" name="dataSizeLabel">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Data Size"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JTextField" name="dataSizeTextField">
+      <Properties>
+        <Property name="editable" type="boolean" value="false"/>
+        <Property name="text" type="java.lang.String" value="0"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="loadDataButton">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Load..."/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="loadDataButtonActionPerformed"/>
+      </Events>
+    </Component>
     <Component class="javax.swing.JButton" name="saveDataButton">
       <Properties>
         <Property name="text" type="java.lang.String" value="Save..."/>
@@ -73,6 +95,43 @@
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="saveDataButtonActionPerformed"/>
       </Events>
+    </Component>
+    <Component class="javax.swing.JComboBox" name="templateDataComboBox">
+      <Properties>
+        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+          <StringArray count="4">
+            <StringItem index="0" value="Test Data"/>
+            <StringItem index="1" value="Max Scroll Data"/>
+            <StringItem index="2" value="Min NonScroll Data"/>
+            <StringItem index="3" value="Max Data"/>
+          </StringArray>
+        </Property>
+      </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+      </AuxValues>
+    </Component>
+    <Component class="javax.swing.JLabel" name="activeOperationLabel">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Active Editation Operation"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JComboBox" name="activeOperationComboBox">
+      <Properties>
+        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+          <StringArray count="2">
+            <StringItem index="0" value="INSERT"/>
+            <StringItem index="1" value="OVERWRITE"/>
+          </StringArray>
+        </Property>
+        <Property name="selectedIndex" type="int" value="1"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="activeOperationComboBoxActionPerformed"/>
+      </Events>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+      </AuxValues>
     </Component>
     <Container class="javax.swing.JPanel" name="positionPanel">
       <Properties>
@@ -169,11 +228,6 @@
         </Component>
       </SubComponents>
     </Container>
-    <Component class="javax.swing.JLabel" name="dataSizeLabel">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Data Size"/>
-      </Properties>
-    </Component>
     <Container class="javax.swing.JPanel" name="selectionPanel">
       <Properties>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
@@ -242,41 +296,5 @@
         </Component>
       </SubComponents>
     </Container>
-    <Component class="javax.swing.JTextField" name="dataSizeTextField">
-      <Properties>
-        <Property name="editable" type="boolean" value="false"/>
-        <Property name="text" type="java.lang.String" value="0"/>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JButton" name="loadDataButton">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Load..."/>
-      </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="loadDataButtonActionPerformed"/>
-      </Events>
-    </Component>
-    <Component class="javax.swing.JLabel" name="activeOperationLabel">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Active Editation Operation"/>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JComboBox" name="activeOperationComboBox">
-      <Properties>
-        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-          <StringArray count="2">
-            <StringItem index="0" value="INSERT"/>
-            <StringItem index="1" value="OVERWRITE"/>
-          </StringArray>
-        </Property>
-        <Property name="selectedIndex" type="int" value="1"/>
-      </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="activeOperationComboBoxActionPerformed"/>
-      </Events>
-      <AuxValues>
-        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
-      </AuxValues>
-    </Component>
   </SubComponents>
 </Form>

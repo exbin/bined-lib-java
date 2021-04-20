@@ -39,7 +39,7 @@ import org.exbin.bined.CodeAreaUtils;
 /**
  * Binary editor state panel.
  *
- * @version 0.2.0 2019/07/07
+ * @version 0.2.0 2021/04/20
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -60,7 +60,13 @@ public class StatePanelEx extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        dataSizeLabel = new javax.swing.JLabel();
+        dataSizeTextField = new javax.swing.JTextField();
+        loadDataButton = new javax.swing.JButton();
         saveDataButton = new javax.swing.JButton();
+        templateDataComboBox = new javax.swing.JComboBox<>();
+        activeOperationLabel = new javax.swing.JLabel();
+        activeOperationComboBox = new javax.swing.JComboBox<>();
         positionPanel = new javax.swing.JPanel();
         positionLabel = new javax.swing.JLabel();
         positionTextField = new javax.swing.JTextField();
@@ -68,21 +74,40 @@ public class StatePanelEx extends javax.swing.JPanel {
         codeOffsetTextField = new javax.swing.JTextField();
         activeSectionLabel = new javax.swing.JLabel();
         activeSectionComboBox = new javax.swing.JComboBox<>();
-        dataSizeLabel = new javax.swing.JLabel();
         selectionPanel = new javax.swing.JPanel();
         selectionStartLabel = new javax.swing.JLabel();
         selectionStartTextField = new javax.swing.JTextField();
         selectionEndLabel = new javax.swing.JLabel();
         selectionEndTextField = new javax.swing.JTextField();
-        dataSizeTextField = new javax.swing.JTextField();
-        loadDataButton = new javax.swing.JButton();
-        activeOperationLabel = new javax.swing.JLabel();
-        activeOperationComboBox = new javax.swing.JComboBox<>();
+
+        dataSizeLabel.setText("Data Size");
+
+        dataSizeTextField.setEditable(false);
+        dataSizeTextField.setText("0");
+
+        loadDataButton.setText("Load...");
+        loadDataButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                loadDataButtonActionPerformed(evt);
+            }
+        });
 
         saveDataButton.setText("Save...");
         saveDataButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 saveDataButtonActionPerformed(evt);
+            }
+        });
+
+        templateDataComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Test Data", "Max Scroll Data", "Min NonScroll Data", "Max Data" }));
+
+        activeOperationLabel.setText("Active Editation Operation");
+
+        activeOperationComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "INSERT", "OVERWRITE" }));
+        activeOperationComboBox.setSelectedIndex(1);
+        activeOperationComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                activeOperationComboBoxActionPerformed(evt);
             }
         });
 
@@ -141,8 +166,6 @@ public class StatePanelEx extends javax.swing.JPanel {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        dataSizeLabel.setText("Data Size");
-
         selectionPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Selection"));
 
         selectionStartLabel.setText("Selection Start");
@@ -183,26 +206,6 @@ public class StatePanelEx extends javax.swing.JPanel {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        dataSizeTextField.setEditable(false);
-        dataSizeTextField.setText("0");
-
-        loadDataButton.setText("Load...");
-        loadDataButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                loadDataButtonActionPerformed(evt);
-            }
-        });
-
-        activeOperationLabel.setText("Active Editation Operation");
-
-        activeOperationComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "INSERT", "OVERWRITE" }));
-        activeOperationComboBox.setSelectedIndex(1);
-        activeOperationComboBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                activeOperationComboBoxActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -210,9 +213,10 @@ public class StatePanelEx extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(dataSizeTextField)
+                    .addComponent(templateDataComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(selectionPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(positionPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(dataSizeTextField)
                     .addComponent(activeOperationComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -236,6 +240,8 @@ public class StatePanelEx extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(loadDataButton)
                     .addComponent(saveDataButton))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(templateDataComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(activeOperationLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -371,6 +377,7 @@ public class StatePanelEx extends javax.swing.JPanel {
     private javax.swing.JPanel selectionPanel;
     private javax.swing.JLabel selectionStartLabel;
     private javax.swing.JTextField selectionStartTextField;
+    private javax.swing.JComboBox<String> templateDataComboBox;
     // End of variables declaration//GEN-END:variables
 
     @Nonnull

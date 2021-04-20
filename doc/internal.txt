@@ -1,0 +1,21 @@
+
+Reset:
+- color: 
+- layout: 
+	- depends on: rowPositionLength (+ minRowPositionLength, maxRowPositionLength, dataSize, positionCodeType)
+	- dimensions:
+	  - depends on: componentWidth, componentHeight, verticalScrollBarSize, horizontalScrollBarSize, metrics
+	  - computes: scrollPanelX, scrollPanelY, scrollPanelWidth, scrollPanelHeight, dataViewWidth, dataViewHeight, charactersPerRect, charactersPerPage,
+	              rowsPerRect, rowsPerPage, lastCharOffset, lastRowOffset
+	- metrics:
+	  - depends on: rowHeight, characterWidth, fontHeight, maxBytesPerChar, subFontSpace (+ font, charset)
+	- structure:
+	  - depends on: dimensions (charactersPerPage), viewMode, codeType, selectionRange, dataSize, rowWrapping, maxBytesPerLine, wrappingBytesGroupSize
+	  - computes: maxBytesPerLine, rowsPerDocument, bytesPerRow, charactersPerRow
+	- scrolling:
+	  - depends on: structure (+ metrics, dimensions)
+	- visibility:
+	  - depends on: scrolling, structure, dimensions, metrics, layout
+	  - computes: 
+- font: 
+- caret: 
