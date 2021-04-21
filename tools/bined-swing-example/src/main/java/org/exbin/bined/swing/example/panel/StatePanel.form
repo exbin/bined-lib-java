@@ -99,14 +99,18 @@
     <Component class="javax.swing.JComboBox" name="templateDataComboBox">
       <Properties>
         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-          <StringArray count="4">
-            <StringItem index="0" value="Test Data"/>
+          <StringArray count="5">
+            <StringItem index="0" value="Load Test Data &gt;&gt;"/>
             <StringItem index="1" value="Max Scroll Data"/>
             <StringItem index="2" value="Min NonScroll Data"/>
-            <StringItem index="3" value="Max Data"/>
+            <StringItem index="3" value="Half Max Data"/>
+            <StringItem index="4" value="Max Data"/>
           </StringArray>
         </Property>
       </Properties>
+      <Events>
+        <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="templateDataComboBoxItemStateChanged"/>
+      </Events>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
       </AuxValues>

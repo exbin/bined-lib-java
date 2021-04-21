@@ -134,12 +134,7 @@ public class BinEdExample {
     }
 
     @Nonnull
-    private static BinaryData getBigSampleData() {
-        return getBigSampleData(0, Integer.MAX_VALUE / 2);
-    }
-
-    @Nonnull
-    private static BinaryData getBigSampleData(int offset, long size) {
+    public static BinaryData getBigSampleData(int offset, long size) {
         BinaryData data = new BinaryData() {
             @Override
             public boolean isEmpty() {

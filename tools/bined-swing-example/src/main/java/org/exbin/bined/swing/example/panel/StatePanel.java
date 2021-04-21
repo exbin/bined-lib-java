@@ -34,6 +34,7 @@ import org.exbin.bined.swing.basic.CodeArea;
 import org.exbin.auxiliary.paged_data.EditableBinaryData;
 import org.exbin.bined.CodeAreaCaretPosition;
 import org.exbin.bined.CodeAreaUtils;
+import org.exbin.bined.swing.example.BinEdExample;
 
 /**
  * Binary editor state panel.
@@ -98,7 +99,12 @@ public class StatePanel extends javax.swing.JPanel {
             }
         });
 
-        templateDataComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Test Data", "Max Scroll Data", "Min NonScroll Data", "Max Data" }));
+        templateDataComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Load Test Data >>", "Max Scroll Data", "Min NonScroll Data", "Half Max Data", "Max Data" }));
+        templateDataComboBox.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                templateDataComboBoxItemStateChanged(evt);
+            }
+        });
 
         activeOperationLabel.setText("Active Editation Operation");
 
@@ -314,6 +320,29 @@ public class StatePanel extends javax.swing.JPanel {
     private void activeOperationComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_activeOperationComboBoxActionPerformed
         codeArea.setEditationOperation(EditationOperation.values()[activeOperationComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_activeOperationComboBoxActionPerformed
+
+    private void templateDataComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_templateDataComboBoxItemStateChanged
+        int selectedIndex = templateDataComboBox.getSelectedIndex();
+        if (selectedIndex > 0) {
+            switch (selectedIndex) {
+                case 1: {
+                    break;
+                }
+                case 2: {
+                    break;
+                }
+                case 3: {
+                    codeArea.setContentData(BinEdExample.getBigSampleData(0, Integer.MAX_VALUE / 2));
+                    break;
+                }
+                case 4: {
+                    codeArea.setContentData(BinEdExample.getBigSampleData(0, Integer.MAX_VALUE - 1));
+                    break;
+                }
+            }
+            templateDataComboBox.setSelectedIndex(0);
+        }
+    }//GEN-LAST:event_templateDataComboBoxItemStateChanged
 
     public void setCodeArea(CodeArea codeArea) {
         this.codeArea = codeArea;

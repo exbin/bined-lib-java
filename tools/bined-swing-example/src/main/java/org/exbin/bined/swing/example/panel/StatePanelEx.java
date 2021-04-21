@@ -99,7 +99,12 @@ public class StatePanelEx extends javax.swing.JPanel {
             }
         });
 
-        templateDataComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Test Data", "Max Scroll Data", "Min NonScroll Data", "Max Data" }));
+        templateDataComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Load Test Data >>", "Max Scroll Data", "Min NonScroll Data", "Half Max Data", "Max Data" }));
+        templateDataComboBox.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                templateDataComboBoxItemStateChanged(evt);
+            }
+        });
 
         activeOperationLabel.setText("Active Editation Operation");
 
@@ -315,6 +320,12 @@ public class StatePanelEx extends javax.swing.JPanel {
     private void activeOperationComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_activeOperationComboBoxActionPerformed
         codeArea.setEditationOperation(EditationOperation.values()[activeOperationComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_activeOperationComboBoxActionPerformed
+
+    private void templateDataComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_templateDataComboBoxItemStateChanged
+        if (templateDataComboBox.getSelectedIndex() > 0) {
+            templateDataComboBox.setSelectedIndex(0);
+        }
+    }//GEN-LAST:event_templateDataComboBoxItemStateChanged
 
     public void setCodeArea(ExtCodeArea codeArea) {
         this.codeArea = codeArea;
