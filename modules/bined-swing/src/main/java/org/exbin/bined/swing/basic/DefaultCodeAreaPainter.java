@@ -1533,6 +1533,14 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         return structure.getCharactersPerRow();
     }
 
+    public int getBytesPerRow() {
+        return structure.getBytesPerRow();
+    }
+
+    public int getRowHeight() {
+        return metrics.getRowHeight();
+    }
+    
     private int getHorizontalScrollBarSize() {
         JScrollBar horizontalScrollBar = scrollPanel.getHorizontalScrollBar();
         int size;

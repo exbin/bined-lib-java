@@ -1961,6 +1961,14 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         return structure.getHalfCharsPerRow();
     }
 
+    public int getBytesPerRow() {
+        return structure.getBytesPerRow();
+    }
+
+    public int getRowHeight() {
+        return metrics.getRowHeight();
+    }
+    
     private int getHorizontalScrollBarSize() {
         JScrollBar horizontalScrollBar = scrollPanel.getHorizontalScrollBar();
         int size;

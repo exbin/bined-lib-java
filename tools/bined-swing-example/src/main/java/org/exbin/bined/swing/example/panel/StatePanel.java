@@ -34,12 +34,14 @@ import org.exbin.bined.swing.basic.CodeArea;
 import org.exbin.auxiliary.paged_data.EditableBinaryData;
 import org.exbin.bined.CodeAreaCaretPosition;
 import org.exbin.bined.CodeAreaUtils;
+import org.exbin.bined.EditationMode;
+import org.exbin.bined.swing.basic.DefaultCodeAreaPainter;
 import org.exbin.bined.swing.example.BinEdExample;
 
 /**
  * Binary editor state panel.
  *
- * @version 0.2.0 2021/04/20
+ * @version 0.2.0 2021/04/23
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -324,22 +326,50 @@ public class StatePanel extends javax.swing.JPanel {
     private void templateDataComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_templateDataComboBoxItemStateChanged
         int selectedIndex = templateDataComboBox.getSelectedIndex();
         if (selectedIndex > 0) {
+            DefaultCodeAreaPainter painter = (DefaultCodeAreaPainter) codeArea.getPainter();
+            int rowHeight = painter.getRowHeight();
+            long bytesPerRow = painter.getBytesPerRow();
             switch (selectedIndex) {
                 case 1: {
+                    switch (codeArea.getVerticalScrollUnit()) {
+                        case PIXEL: {
+                            long dataSize = ((Integer.MAX_VALUE / rowHeight) - 1) * bytesPerRow;
+                            codeArea.setContentData(BinEdExample.getBigSampleData(0, dataSize));
+                            break;
+                        }
+                        case ROW: {
+                            long dataSize = ((Integer.MAX_VALUE) - 1) * bytesPerRow;
+                            codeArea.setContentData(BinEdExample.getBigSampleData(0, dataSize));
+                            break;
+                        }
+                    }
                     break;
                 }
                 case 2: {
+                    switch (codeArea.getVerticalScrollUnit()) {
+                        case PIXEL: {
+                            long dataSize = ((Integer.MAX_VALUE / rowHeight) + 1) * bytesPerRow;
+                            codeArea.setContentData(BinEdExample.getBigSampleData(0, dataSize));
+                            break;
+                        }
+                        case ROW: {
+                            long dataSize = ((Integer.MAX_VALUE) + 1) * bytesPerRow;
+                            codeArea.setContentData(BinEdExample.getBigSampleData(0, dataSize));
+                            break;
+                        }
+                    }
                     break;
                 }
                 case 3: {
-                    codeArea.setContentData(BinEdExample.getBigSampleData(0, Integer.MAX_VALUE / 2));
+                    codeArea.setContentData(BinEdExample.getBigSampleData(0, Long.MAX_VALUE / 2));
                     break;
                 }
                 case 4: {
-                    codeArea.setContentData(BinEdExample.getBigSampleData(0, Integer.MAX_VALUE - 1));
+                    codeArea.setContentData(BinEdExample.getBigSampleData(0, Long.MAX_VALUE - 1));
                     break;
                 }
             }
+            codeArea.setEditationMode(EditationMode.READ_ONLY);
             templateDataComboBox.setSelectedIndex(0);
         }
     }//GEN-LAST:event_templateDataComboBoxItemStateChanged
