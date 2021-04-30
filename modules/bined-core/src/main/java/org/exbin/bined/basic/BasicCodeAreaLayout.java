@@ -92,7 +92,7 @@ public class BasicCodeAreaLayout {
     public long computeRowsPerDocument(BasicCodeAreaStructure structure) {
         long dataSize = structure.getDataSize();
         int bytesPerRow = structure.getBytesPerRow();
-        return dataSize / bytesPerRow + (dataSize % bytesPerRow > 0 ? 1 : 0);
+        return dataSize / bytesPerRow + 1;
     }
 
     public int computePositionByte(BasicCodeAreaStructure structure, int rowCharPosition) {

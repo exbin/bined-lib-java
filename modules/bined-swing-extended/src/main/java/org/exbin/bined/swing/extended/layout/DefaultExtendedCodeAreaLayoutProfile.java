@@ -142,7 +142,7 @@ public class DefaultExtendedCodeAreaLayoutProfile implements ExtendedCodeAreaLay
     public long computeRowsPerDocument(ExtendedCodeAreaStructure structure) {
         long dataSize = structure.getDataSize();
         int bytesPerRow = structure.getBytesPerRow();
-        return dataSize / bytesPerRow + (dataSize % bytesPerRow > 0 ? 1 : 0);
+        return dataSize / bytesPerRow + 1;
     }
 
     @Override

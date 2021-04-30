@@ -177,11 +177,13 @@ public class CodeAreaJavaFxUtils {
         public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
             if (flavor.equals(binaryDataFlavor)) {
                 return data;
-            } else {
+            } else if (flavor.equals(DataFlavor.stringFlavor)) {
                 ByteArrayOutputStream byteArrayStream = new ByteArrayOutputStream();
                 data.saveToStream(byteArrayStream);
-                return charset == null ? byteArrayStream.toString(DEFAULT_ENCODING) : byteArrayStream.toString(charset);
+                return charset == null ? byteArrayStream.toString(DEFAULT_ENCODING) : byteArrayStream.toString(charset.name());
             }
+
+            throw new UnsupportedFlavorException(flavor);
         }
 
         @Override
