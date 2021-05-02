@@ -153,7 +153,7 @@ public class BasicCodeAreaLayout {
                 break;
             }
             case DOWN: {
-                if (position.getDataPosition() + bytesPerRow < dataSize || (position.getDataPosition() + bytesPerRow == dataSize && position.getCodeOffset() == 0)) {
+                if (position.getDataPosition() < dataSize - bytesPerRow || (position.getDataPosition() == dataSize - bytesPerRow && position.getCodeOffset() == 0)) {
                     target.setDataPosition(position.getDataPosition() + bytesPerRow);
                 }
                 break;

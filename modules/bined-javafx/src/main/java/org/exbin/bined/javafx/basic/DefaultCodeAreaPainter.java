@@ -731,7 +731,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         int rowStart = 0;
         if (dataPosition < dataSize) {
             int rowDataSize = bytesPerRow + maxBytesPerChar - 1;
-            if (dataPosition + rowDataSize > dataSize) {
+            if (dataSize - dataPosition < rowDataSize) {
                 rowDataSize = (int) (dataSize - dataPosition);
             }
             if (dataPosition < 0) {
@@ -742,7 +742,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
                 throw new IllegalStateException("Missing data on nonzero data size");
             }
             data.copyToArray(dataPosition + rowStart, rowDataCache.rowData, rowStart, rowDataSize - rowStart);
-            if (dataPosition + rowBytesLimit > dataSize) {
+            if (dataSize - dataPosition < rowBytesLimit) {
                 rowBytesLimit = (int) (dataSize - dataPosition);
             }
         } else {

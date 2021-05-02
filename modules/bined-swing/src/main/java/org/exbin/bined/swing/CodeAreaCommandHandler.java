@@ -110,7 +110,7 @@ public interface CodeAreaCommandHandler {
     boolean canPaste();
 
     /**
-     * Move caret with mouse event.
+     * Moves caret with mouse event.
      *
      * @param positionX relative position X
      * @param positionY relative position Y

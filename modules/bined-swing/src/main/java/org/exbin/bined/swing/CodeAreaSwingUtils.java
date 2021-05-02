@@ -38,7 +38,7 @@ import org.exbin.bined.ScrollBarVisibility;
 import org.exbin.auxiliary.paged_data.BinaryData;
 
 /**
- * Hexadecimal editor component swing utilities.
+ * Binary editor component swing utilities.
  *
  * @version 0.2.0 2021/03/31
  * @author ExBin Project (https://exbin.org)
