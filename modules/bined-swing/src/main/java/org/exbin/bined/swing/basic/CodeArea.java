@@ -28,7 +28,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
 import org.exbin.bined.basic.BasicCodeAreaSection;
-import org.exbin.bined.basic.BasicCodeAreaZone;
 import org.exbin.bined.CaretMovedListener;
 import org.exbin.bined.ClipboardHandlingMode;
 import org.exbin.bined.DefaultCodeAreaCaretPosition;
@@ -269,12 +268,6 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
     @Override
     public int getMouseCursorShape(int positionX, int positionY) {
         return painter.getMouseCursorShape(positionX, positionY);
-    }
-
-    @Nonnull
-    @Override
-    public BasicCodeAreaZone getPositionZone(int positionX, int positionY) {
-        return painter.getPositionZone(positionX, positionY);
     }
 
     @Nonnull

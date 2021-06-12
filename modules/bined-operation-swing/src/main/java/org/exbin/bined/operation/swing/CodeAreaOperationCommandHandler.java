@@ -916,7 +916,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
                     updateScrollBars();
                     revealCursor();
                     codeArea.repaint();
-                } catch (UnsupportedFlavorException | IOException ex) {
+                } catch (UnsupportedFlavorException | IllegalStateException | IOException ex) {
                     Logger.getLogger(CodeAreaOperationCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
@@ -1101,7 +1101,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
         return ((EditationModeCapable) codeArea).isEditable();
     }
 
-    @Nonnull    
+    @Nonnull
     private static SelectingMode isSelectingMode(KeyEvent keyEvent) {
         return (keyEvent.getModifiersEx() & KeyEvent.SHIFT_DOWN_MASK) > 0 ? SelectingMode.SELECTING : SelectingMode.NONE;
     }

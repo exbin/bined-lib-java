@@ -26,7 +26,6 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.swing.UIManager;
 import org.exbin.bined.basic.BasicCodeAreaSection;
-import org.exbin.bined.basic.BasicCodeAreaZone;
 import org.exbin.bined.CaretMovedListener;
 import org.exbin.bined.ClipboardHandlingMode;
 import org.exbin.bined.DefaultCodeAreaCaretPosition;
@@ -255,11 +254,6 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaJ
         return painter.getMouseCursorShape(positionX, positionY);
     }
 
-    @Override
-    public BasicCodeAreaZone getPositionZone(int positionX, int positionY) {
-        return painter.getPositionZone(positionX, positionY);
-    }
-
     @Nonnull
     @Override
     public CodeCharactersCase getCodeCharactersCase() {
@@ -309,8 +303,8 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaJ
         }
     }
 
-    @Override
     @Nonnull
+    @Override
     public CodeType getCodeType() {
         return codeType;
     }
@@ -371,7 +365,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaJ
         centerOnPosition(new DefaultCodeAreaCaretPosition(dataPosition, dataOffset, section));
     }
 
-    @Nullable
+    @Nonnull
     @Override
     public CodeAreaCaretPosition mousePositionToClosestCaretPosition(int positionX, int positionY, CaretOverlapMode overflowMode) {
         return painter.mousePositionToClosestCaretPosition(positionX, positionY, overflowMode);
@@ -588,6 +582,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaJ
         }
     }
 
+    @Nonnull
     @Override
     public EditationOperation getActiveOperation() {
         switch (editationMode) {
@@ -603,6 +598,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaJ
         }
     }
 
+    @Nonnull
     @Override
     public EditationOperation getEditationOperation() {
         return editationOperation;
@@ -624,6 +620,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaJ
         }
     }
 
+    @Nonnull
     @Override
     public ClipboardHandlingMode getClipboardHandlingMode() {
         return clipboardHandlingMode;
@@ -634,7 +631,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaJ
         this.clipboardHandlingMode = clipboardHandlingMode;
     }
 
-    @Nullable
+    @Nonnull
     @Override
     public Font getCodeFont() {
         return codeFont;
@@ -659,6 +656,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaJ
         repaint();
     }
 
+    @Nonnull
     @Override
     public RowWrappingMode getRowWrapping() {
         return rowWrapping;

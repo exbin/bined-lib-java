@@ -33,7 +33,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * Input stream translation class which converts from input charset to target
  * charset.
  *
- * @version 0.2.0 2018/12/08
+ * @version 0.2.0 2021/06/12
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -63,8 +63,10 @@ public class CharsetStreamTranslator extends InputStream {
         this.source = source;
         decoder = inputCharset.newDecoder();
         decoder.onUnmappableCharacter(CodingErrorAction.REPLACE);
+        decoder.onMalformedInput(CodingErrorAction.REPLACE);
         encoder = outputCharset.newEncoder();
         encoder.onUnmappableCharacter(CodingErrorAction.REPLACE);
+        encoder.onMalformedInput(CodingErrorAction.REPLACE);
         maxInputCharSize = (int) decoder.maxCharsPerByte();
         if (maxInputCharSize < 0) {
             maxInputCharSize = 1;
@@ -145,18 +147,18 @@ public class CharsetStreamTranslator extends InputStream {
 
             decoder.reset();
             CoderResult decodeResult = decoder.decode(inputBuffer, charBuffer, endOfInput);
-            // TODO process errors?
             if (decodeResult.isOverflow()) {
-                throw new UnsupportedOperationException("Not supported yet.");
+                // Can't fix partial character on the end of the stream -> ignore
+                break;
             } else if (decodeResult.isError()) {
-                // Skip byte
+                // Skip byte or ignore
                 if (charBuffer.position() == 0 && inputBuffer.remaining() > 0) {
                     inputBuffer.position(inputBuffer.position() + 1);
                 }
             } else if (decodeResult.isUnmappable()) {
                 throw new IllegalStateException("Unmappable character should be handled automatically");
             } else if (decodeResult.isMalformed()) {
-                throw new UnsupportedOperationException("Not supported yet.");
+                throw new IllegalStateException("Mallformed character should be handled automatically");
             }
         } while (charBuffer.position() == 0);
 
@@ -170,13 +172,13 @@ public class CharsetStreamTranslator extends InputStream {
             encoder.reset();
             CoderResult encodeResult = encoder.encode(charBuffer, outputBuffer, endOfInput);
             if (encodeResult.isOverflow()) {
-                throw new UnsupportedOperationException("Not supported yet.");
+                throw new IllegalStateException("Unexpected overflow character");
+            } else if (encodeResult.isError()) {
+                throw new IllegalStateException("Unexpected error character");
             } else if (encodeResult.isUnmappable()) {
                 throw new IllegalStateException("Unmappable character should be handled automatically");
-            } else if (encodeResult.isError()) {
-                throw new UnsupportedOperationException("Not supported yet.");
             } else if (encodeResult.isMalformed()) {
-                throw new UnsupportedOperationException("Not supported yet.");
+                throw new IllegalStateException("Mallformed character should be handled automatically");
             }
         }
 

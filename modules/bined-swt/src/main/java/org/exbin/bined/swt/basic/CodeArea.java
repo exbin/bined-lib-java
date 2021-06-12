@@ -28,7 +28,6 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.exbin.bined.basic.BasicCodeAreaSection;
-import org.exbin.bined.basic.BasicCodeAreaZone;
 import org.exbin.bined.CaretMovedListener;
 import org.exbin.bined.ClipboardHandlingMode;
 import org.exbin.bined.DefaultCodeAreaCaretPosition;
@@ -63,7 +62,7 @@ import org.exbin.bined.RowWrappingMode;
 /**
  * Code area component default code area.
  *
- * @version 0.2.0 2021/04/01
+ * @version 0.2.0 2021/06/12
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -263,12 +262,6 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
     @Override
     public int getMouseCursorShape(int positionX, int positionY) {
         return painter.getMouseCursorShape(positionX, positionY);
-    }
-
-    @Nonnull
-    @Override
-    public BasicCodeAreaZone getPositionZone(int positionX, int positionY) {
-        return painter.getPositionZone(positionX, positionY);
     }
 
     @Nonnull

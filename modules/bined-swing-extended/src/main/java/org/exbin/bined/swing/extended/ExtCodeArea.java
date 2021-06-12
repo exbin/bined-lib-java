@@ -28,7 +28,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
 import org.exbin.bined.basic.BasicCodeAreaSection;
-import org.exbin.bined.basic.BasicCodeAreaZone;
 import org.exbin.bined.CaretMovedListener;
 import org.exbin.bined.ClipboardHandlingMode;
 import org.exbin.bined.DefaultCodeAreaCaretPosition;
@@ -280,11 +279,6 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
         return painter.getMouseCursorShape(positionX, positionY);
     }
 
-    @Override
-    public BasicCodeAreaZone getPositionZone(int positionX, int positionY) {
-        return painter.getPositionZone(positionX, positionY);
-    }
-
     @Nonnull
     @Override
     public CodeCharactersCase getCodeCharactersCase() {
@@ -322,8 +316,8 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
         updateLayout();
     }
 
-    @Override
     @Nonnull
+    @Override
     public CodeType getCodeType() {
         return codeType;
     }
@@ -401,7 +395,7 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
         centerOnPosition(new DefaultCodeAreaCaretPosition(dataPosition, dataOffset, section));
     }
 
-    @Nullable
+    @Nonnull
     @Override
     public CodeAreaCaretPosition mousePositionToClosestCaretPosition(int positionX, int positionY, CaretOverlapMode overflowMode) {
         return painter.mousePositionToClosestCaretPosition(positionX, positionY, overflowMode);

@@ -17,7 +17,6 @@ package org.exbin.bined.capability;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import org.exbin.bined.basic.BasicCodeAreaZone;
 import org.exbin.bined.CaretMovedListener;
 import org.exbin.bined.CodeAreaCaret;
 import org.exbin.bined.CodeAreaCaretPosition;
@@ -27,7 +26,7 @@ import org.exbin.bined.basic.MovementDirection;
 /**
  * Support for caret / cursor capability.
  *
- * @version 0.2.0 2019/07/07
+ * @version 0.2.0 2021/06/12
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -89,27 +88,23 @@ public interface CaretCapable {
     /**
      * Returns cursor shape type for given position.
      *
-     * TODO: Not part of caret?
-     *
-     * @param x x-coordinate
-     * @param y y-coordinate
-     * @return cursor type from java.awt.Cursor
-     */
-    int getMouseCursorShape(int x, int y);
-
-    /**
-     * Returns zone type for given position.
-     *
-     * TODO: Not part of caret?
-     *
      * @param positionX x-coordinate
      * @param positionY y-coordinate
-     * @return specific zone in component
+     * @return cursor type from java.awt.Cursor
      */
-    @Nonnull
-    BasicCodeAreaZone getPositionZone(int positionX, int positionY);
+    int getMouseCursorShape(int positionX, int positionY);
 
+    /**
+     * Adds caret moving listener.
+     *
+     * @param caretMovedListener listener
+     */
     void addCaretMovedListener(CaretMovedListener caretMovedListener);
 
+    /**
+     * Removes caret moving listener.
+     *
+     * @param caretMovedListener listener
+     */
     void removeCaretMovedListener(CaretMovedListener caretMovedListener);
 }
