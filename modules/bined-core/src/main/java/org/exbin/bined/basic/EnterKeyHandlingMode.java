@@ -39,7 +39,7 @@ public enum EnterKeyHandlingMode {
      */
     LF("\n"),
     /**
-     * Tho characters 13 10 (0d0a).
+     * Two characters 13 10 (0d0a).
      */
     CRLF("\r\n"),
     /**

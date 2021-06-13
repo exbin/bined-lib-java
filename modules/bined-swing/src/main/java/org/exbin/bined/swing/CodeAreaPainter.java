@@ -61,7 +61,7 @@ public interface CodeAreaPainter {
     void paintComponent(Graphics g);
 
     /**
-     * Paints main hexadecimal data section of the component.
+     * Paints main data section of the component.
      *
      * @param g graphics
      */
