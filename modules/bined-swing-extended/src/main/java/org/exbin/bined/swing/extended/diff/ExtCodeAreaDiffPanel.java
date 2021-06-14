@@ -24,7 +24,7 @@ import org.exbin.bined.swing.extended.ExtCodeArea;
 import org.exbin.auxiliary.paged_data.ByteArrayData;
 
 /**
- * Panel for difference comparision of two code areas.
+ * Panel for difference comparison of two code areas.
  *
  * @version 0.2.0 2019/11/30
  * @author ExBin Project (https://exbin.org)

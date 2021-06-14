@@ -109,7 +109,7 @@ public class ExtendedCodeAreaDimensions {
         }
 
         scrollPanelRectangle.setBounds(dataViewX, dataViewY, scrollPanelWidth, scrollPanelHeight);
-        dataViewRectangle.setBounds(dataViewX, dataViewY, dataViewWidth >= 0 ? dataViewWidth : 0, dataViewHeight >= 0 ? dataViewHeight : 0);
+        dataViewRectangle.setBounds(dataViewX, dataViewY, Math.max(dataViewWidth, 0), Math.max(dataViewHeight, 0));
     }
 
     @Nonnull

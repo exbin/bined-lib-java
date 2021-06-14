@@ -68,6 +68,7 @@ public class InsertCodeEditDataOperation extends CodeEditDataOperation {
         return execute(true);
     }
 
+    @Nonnull
     @Override
     public CodeType getCodeType() {
         return codeType;

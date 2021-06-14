@@ -261,7 +261,7 @@ public class ScrollingPanelEx extends javax.swing.JPanel {
      *
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
+    public static void main(String[] args) {
         final JFrame frame = new JFrame("Panel");
         frame.setSize(1000, 600);
         frame.add(new ScrollingPanelEx());

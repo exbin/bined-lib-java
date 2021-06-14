@@ -39,6 +39,7 @@ public enum ExtendedDecorationType implements CodeAreaDecorationType {
     @Nonnull
     private final String id;
 
+    @Nonnull
     @Override
     public String getId() {
         return id;

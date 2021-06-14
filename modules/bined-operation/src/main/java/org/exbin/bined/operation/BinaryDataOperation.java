@@ -16,6 +16,7 @@
 package org.exbin.bined.operation;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * Interface for binary data operation.
@@ -46,7 +47,7 @@ public interface BinaryDataOperation {
      * @return undo operation or null if not available
      * @throws BinaryDataOperationException for operation handling issues
      */
-    @Nonnull
+    @Nullable
     BinaryDataOperation executeWithUndo() throws BinaryDataOperationException;
 
     /**

@@ -65,7 +65,7 @@ import org.eclipse.swt.graphics.Point;
 import org.exbin.bined.CodeAreaControl;
 
 /**
- * Hexadecimal viewer/editor component.
+ * Binary viewer/editor component.
  *
  * @version 0.2.0 2018/04/22
  * @author ExBin Project (https://exbin.org)

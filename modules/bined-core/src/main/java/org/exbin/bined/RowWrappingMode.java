@@ -30,5 +30,5 @@ public enum RowWrappingMode {
     /**
      * Rows are wrapped to visible area.
      */
-    WRAPPING;
+    WRAPPING
 }

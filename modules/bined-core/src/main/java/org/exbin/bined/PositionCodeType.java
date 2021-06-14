@@ -46,7 +46,7 @@ public enum PositionCodeType {
     private final double baseLog;
     private final int maxDigitsForByte;
 
-    private PositionCodeType(int base, int maxDigitsForByte) {
+    PositionCodeType(int base, int maxDigitsForByte) {
         this.base = base;
         baseLog = Math.log(base);
         this.maxDigitsForByte = maxDigitsForByte;

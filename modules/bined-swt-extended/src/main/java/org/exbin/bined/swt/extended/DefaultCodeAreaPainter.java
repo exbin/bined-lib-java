@@ -33,6 +33,7 @@ import org.exbin.bined.HexCharactersCase;
 import org.exbin.bined.Section;
 import org.exbin.bined.SelectionRange;
 import org.exbin.bined.ViewMode;
+import org.exbin.bined.swing.CodeAreaSwingUtils;
 import org.exbin.bined.swt.CodeArea;
 import org.exbin.bined.swt.CodeAreaPainter;
 import org.exbin.bined.swt.ColorsGroup;
@@ -44,12 +45,6 @@ import org.exbin.bined.swt.ColorsGroup;
  * @author ExBin Project (https://exbin.org)
  */
 public class DefaultCodeAreaPainter implements CodeAreaPainter {
-
-    public static final int MIN_MONOSPACE_CODE_POINT = 0x19;
-    public static final int MAX_MONOSPACE_CODE_POINT = 0x1C3;
-    public static final int INV_SPACE_CODE_POINT = 0x7f;
-    public static final int EXCEPTION1_CODE_POINT = 0x8e;
-    public static final int EXCEPTION2_CODE_POINT = 0x9e;
 
     protected final CodeArea codeArea;
 
@@ -164,9 +159,9 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                     }
                     if (charRenderingMode == CodeArea.CharRenderingMode.AUTO && monospaceFont) {
                         // Detect if character is in unicode range covered by monospace fonts
-                        if (currentChar > MIN_MONOSPACE_CODE_POINT && (int) currentChar < MAX_MONOSPACE_CODE_POINT
-                                && currentChar != INV_SPACE_CODE_POINT
-                                && currentChar != EXCEPTION1_CODE_POINT && currentChar != EXCEPTION2_CODE_POINT) {
+                        if (currentChar > CodeAreaSwingUtils.MIN_MONOSPACE_CODE_POINT && (int) currentChar < CodeAreaSwingUtils.MAX_MONOSPACE_CODE_POINT
+                                && currentChar != CodeAreaSwingUtils.INV_SPACE_CODE_POINT
+                                && currentChar != CodeAreaSwingUtils.EXCEPTION1_CODE_POINT && currentChar != CodeAreaSwingUtils.EXCEPTION2_CODE_POINT) {
                             currentCharWidth = charWidth;
                         }
                     }

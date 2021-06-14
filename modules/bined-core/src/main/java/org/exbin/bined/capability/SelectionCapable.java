@@ -38,14 +38,14 @@ public interface SelectionCapable {
     SelectionRange getSelection();
 
     /**
-     * Sets curent selection.
+     * Sets current selection.
      *
      * @param selection selection range or empty selection range
      */
     void setSelection(SelectionRange selection);
 
     /**
-     * Sets curent selection range from start to end including the start and not
+     * Sets current selection range from start to end including the start and not
      * including the end position.
      *
      * @param start selection start position

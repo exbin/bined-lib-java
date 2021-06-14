@@ -34,5 +34,5 @@ public enum ScrollBarVisibility {
     /**
      * Always show scrollbar regardless of the available space.
      */
-    ALWAYS;
+    ALWAYS
 }

@@ -42,7 +42,7 @@ public abstract class CodeEditDataOperation extends CodeAreaOperation {
     public abstract CodeType getCodeType();
 
     /**
-     * Appends next hexadecimal value in editing action sequence.
+     * Appends next binary value in editing action sequence.
      *
      * @param value half-byte value (0..15)
      */
@@ -51,7 +51,7 @@ public abstract class CodeEditDataOperation extends CodeAreaOperation {
     /**
      * Generates undo operation for combined editing action.
      *
-     * @return hexadecimal operation
+     * @return binary operation
      */
     public abstract CodeAreaOperation[] generateUndo();
 }

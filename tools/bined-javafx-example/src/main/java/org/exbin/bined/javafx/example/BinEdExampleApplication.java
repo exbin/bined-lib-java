@@ -27,7 +27,7 @@ import org.exbin.bined.javafx.basic.CodeArea;
 import org.exbin.auxiliary.paged_data.ByteArrayEditableData;
 
 /**
- * Hexadecimal editor JavaFX examples.
+ * Binary editor JavaFX examples.
  *
  * @version 0.2.0 2018/08/12
  * @author ExBin Project (https://exbin.org)

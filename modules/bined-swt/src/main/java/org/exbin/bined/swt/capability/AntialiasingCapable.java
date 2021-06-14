@@ -31,5 +31,5 @@ public interface AntialiasingCapable {
     @Nonnull
     AntialiasingMode getAntialiasingMode();
 
-    void setAntialiasingMode(AntialiasingMode antialisingMode);
+    void setAntialiasingMode(AntialiasingMode antialiasingMode);
 }

@@ -19,6 +19,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+
+import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.operation.BinaryDataOperationException;
 import org.exbin.bined.operation.BinaryDataOperationListener;
 import org.exbin.bined.operation.swing.CodeAreaOperation;
@@ -67,7 +69,7 @@ public abstract class OpCodeAreaCommand extends CodeAreaCommand {
     @Override
     public void undo() throws BinaryDataOperationException {
         if (operationPerformed) {
-            CodeAreaOperation redoOperation = operation.executeWithUndo();
+            CodeAreaOperation redoOperation = CodeAreaUtils.requireNonNull(operation).executeWithUndo();
             operation.dispose();
             if (codeArea instanceof BinaryDataOperationListener) {
                 ((CodeAreaOperationListener) codeArea).notifyChange(new CodeAreaOperationEvent(operation));
@@ -83,7 +85,7 @@ public abstract class OpCodeAreaCommand extends CodeAreaCommand {
     @Override
     public void redo() throws BinaryDataOperationException {
         if (!operationPerformed) {
-            CodeAreaOperation undoOperation = operation.executeWithUndo();
+            CodeAreaOperation undoOperation = CodeAreaUtils.requireNonNull(operation).executeWithUndo();
             operation.dispose();
             if (codeArea instanceof BinaryDataOperationListener) {
                 ((CodeAreaOperationListener) codeArea).notifyChange(new CodeAreaOperationEvent(operation));

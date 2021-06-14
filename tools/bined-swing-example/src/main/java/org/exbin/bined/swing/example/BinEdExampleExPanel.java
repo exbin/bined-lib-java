@@ -116,7 +116,7 @@ public class BinEdExampleExPanel extends javax.swing.JPanel {
         Component tab = tabbedPane.getSelectedComponent();
         if (tab != null && tab != activeTab && !tabMap.isEmpty()) {
             if (activeTab != null) {
-                ((JScrollPane) activeTab).remove(tabMap.get(activeTab));
+                activeTab.remove(tabMap.get(activeTab));
             }
 
             JPanel tabPanel = tabMap.get((JScrollPane) tab);

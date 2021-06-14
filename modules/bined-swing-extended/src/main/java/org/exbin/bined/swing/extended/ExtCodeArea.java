@@ -530,6 +530,7 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
         updateLayout();
     }
 
+    @Nonnull
     @Override
     public AntialiasingMode getAntialiasingMode() {
         return antialiasingMode;

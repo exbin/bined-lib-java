@@ -108,9 +108,10 @@ public class BinaryCompoundCommand extends CodeAreaCommand implements BinaryData
 
     @Override
     public void appendCommands(Collection<BinaryDataCommand> commands) {
-        commands.addAll(commands);
+        this.commands.addAll(commands);
     }
 
+    @Nonnull
     @Override
     public List<BinaryDataCommand> getCommands() {
         return commands;

@@ -36,7 +36,7 @@ public enum BasicCodeAreaDecorationColorType implements CodeAreaColorType {
     @Nullable
     private final CodeAreaColorGroup group;
 
-    private BasicCodeAreaDecorationColorType(String typeId, @Nullable CodeAreaColorGroup group) {
+    BasicCodeAreaDecorationColorType(String typeId, @Nullable CodeAreaColorGroup group) {
         this.typeId = typeId;
         this.group = group;
     }

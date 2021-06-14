@@ -30,5 +30,5 @@ public enum CodeCharactersCase {
     /**
      * Upper case, eg. A, B, C, D, E, F.
      */
-    UPPER;
+    UPPER
 }

@@ -437,7 +437,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
             recomputeCharPositions();
         }
 
-        paintOutsiteArea(g);
+        paintOutsideArea(g);
         paintHeader(g);
         paintRowPosition(g);
 
@@ -468,7 +468,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         }
     }
 
-    public void paintOutsiteArea(GC g) {
+    public void paintOutsideArea(GC g) {
         int headerAreaHeight = dimensions.getHeaderAreaHeight();
         int rowPositionAreaWidth = dimensions.getRowPositionAreaWidth();
         Rectangle componentRect = dimensions.getComponentRectangle();
@@ -1450,7 +1450,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
      * @param g graphics
      * @param drawnChars array of chars
      * @param charOffset index of target character in array
-     * @param length number of charaters to draw
+     * @param length number of characters to draw
      * @param cellWidth width of cell to center into
      * @param positionX X position of drawing area start
      * @param positionY Y position of drawing area start

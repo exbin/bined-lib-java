@@ -147,7 +147,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
 
     @Nullable
     private Font font;
-    @Nonnull
+    @Nullable
     private Charset charset;
 
     @Nullable
@@ -408,7 +408,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
             recomputeCharPositions();
         }
 
-        paintOutsiteArea(g);
+        paintOutsideArea(g);
         paintHeader(g);
         paintRowPosition(g);
         paintMainArea(g);
@@ -421,7 +421,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         }
     }
 
-    public void paintOutsiteArea(Graphics g) {
+    public void paintOutsideArea(Graphics g) {
         int headerAreaHeight = dimensions.getHeaderAreaHeight();
         int rowPositionAreaWidth = dimensions.getRowPositionAreaWidth();
         Rectangle componentRect = dimensions.getComponentRectangle();
@@ -619,7 +619,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
 //        paintDebugInfo(g, mainAreaRect, scrollPosition);
     }
 
-//    // Debuging counter
+//    // Debugging counter
 //    private long paintDebugCounter = 0;
 //
 //    private void paintDebugInfo(Graphics g, Rectangle mainAreaRect, CodeAreaScrollPosition scrollPosition) {
@@ -1382,7 +1382,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
      * @param g graphics
      * @param drawnChars array of chars
      * @param charOffset index of target character in array
-     * @param length number of charaters to draw
+     * @param length number of characters to draw
      * @param cellWidth width of cell to center into
      * @param positionX X position of drawing area start
      * @param positionY Y position of drawing area start
@@ -1437,7 +1437,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
     /**
      * Precomputes widths for basic ascii characters.
      *
-     * @param charset
+     * @param charset character set
      */
     private void buildCharMapping(Charset charset) {
         for (int i = 0; i < 256; i++) {

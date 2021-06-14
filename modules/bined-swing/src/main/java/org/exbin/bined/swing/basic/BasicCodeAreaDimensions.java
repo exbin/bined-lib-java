@@ -100,7 +100,7 @@ public class BasicCodeAreaDimensions {
         }
 
         scrollPanelRectangle.setBounds(scrollPanelX, scrollPanelY, scrollPanelWidth, scrollPanelHeight);
-        dataViewRectangle.setBounds(scrollPanelX, scrollPanelY, dataViewWidth >= 0 ? dataViewWidth : 0, dataViewHeight >= 0 ? dataViewHeight : 0);
+        dataViewRectangle.setBounds(scrollPanelX, scrollPanelY, Math.max(dataViewWidth, 0), Math.max(dataViewHeight, 0));
     }
 
     @Nonnull

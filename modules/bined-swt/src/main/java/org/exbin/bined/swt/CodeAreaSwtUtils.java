@@ -231,7 +231,7 @@ public class CodeAreaSwtUtils {
         }
     }
 
-    public static interface ClipboardData extends Transferable, ClipboardOwner {
+    public interface ClipboardData extends Transferable, ClipboardOwner {
 
         void dispose();
     }

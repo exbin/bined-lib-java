@@ -292,7 +292,7 @@ public class ExtendedCodeAreaCaret implements CodeAreaCaret {
 
         private final CursorShapeWidth width;
 
-        private CursorShape(CursorShapeWidth width) {
+        CursorShape(CursorShapeWidth width) {
             this.width = width;
         }
 
@@ -305,7 +305,7 @@ public class ExtendedCodeAreaCaret implements CodeAreaCaret {
     /**
      * Width of the cursor paint object.
      */
-    public static enum CursorShapeWidth {
+    public enum CursorShapeWidth {
         /**
          * Single pixel width line.
          */
@@ -331,7 +331,7 @@ public class ExtendedCodeAreaCaret implements CodeAreaCaret {
     /**
      * Method for rendering cursor into CodeArea component.
      */
-    public static enum CursorRenderingMode {
+    public enum CursorRenderingMode {
         /**
          * Cursor is just painted.
          */

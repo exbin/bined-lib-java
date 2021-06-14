@@ -184,7 +184,7 @@ public class BasicCodeAreaLayout {
             }
             case PAGE_UP: {
                 long dataPosition = position.getDataPosition();
-                long increment = bytesPerRow * rowsPerPage;
+                long increment = (long) bytesPerRow * rowsPerPage;
                 if (dataPosition < increment) {
                     target.setDataPosition(dataPosition % bytesPerRow);
                 } else {
@@ -194,7 +194,7 @@ public class BasicCodeAreaLayout {
             }
             case PAGE_DOWN: {
                 long dataPosition = position.getDataPosition();
-                long increment = bytesPerRow * rowsPerPage;
+                long increment = (long) bytesPerRow * rowsPerPage;
                 if (dataPosition > dataSize - increment) {
                     long positionOnRow = dataPosition % bytesPerRow;
                     long lastRowDataStart = dataSize - (dataSize % bytesPerRow);

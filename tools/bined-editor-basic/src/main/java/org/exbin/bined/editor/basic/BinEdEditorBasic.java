@@ -806,7 +806,7 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
 
         int result = JOptionPane.showOptionDialog(
                 this,
-                "This file aready exists! Do you wish to overwrite it?",
+                "This file already exists! Do you wish to overwrite it?",
                 "Overwrite File?",
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE,
@@ -896,7 +896,7 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
+    public static void main(String[] args) {
         switchLookAndFeel();
 
         /* Create and display the form */

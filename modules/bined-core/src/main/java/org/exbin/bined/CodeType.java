@@ -51,7 +51,7 @@ public enum CodeType {
     private final int base;
     private final int maxDigitsForByte;
 
-    private CodeType(int base, int maxDigitsForByte) {
+    CodeType(int base, int maxDigitsForByte) {
         this.base = base;
         this.maxDigitsForByte = maxDigitsForByte;
     }

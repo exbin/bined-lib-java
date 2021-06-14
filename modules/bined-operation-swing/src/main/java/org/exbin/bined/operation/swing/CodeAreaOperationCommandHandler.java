@@ -1046,6 +1046,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
             ((ScrollingCapable) codeArea).updateScrollBars();
         }
 
+        @Nonnull
         @Override
         public CodeAreaCommandType getType() {
             return CodeAreaCommandType.DATA_REMOVED;

@@ -16,7 +16,7 @@
 package org.exbin.bined.javafx.example;
 
 /**
- * Hexadecimal editor JavaFX examples.
+ * Binary editor JavaFX examples.
  *
  * @version 0.2.0 2020/04/12
  * @author ExBin Project (https://exbin.org)

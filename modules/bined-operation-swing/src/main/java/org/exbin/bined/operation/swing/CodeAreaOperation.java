@@ -70,7 +70,8 @@ public abstract class CodeAreaOperation implements BinaryDataOperation {
     @Nonnull
     @Override
     public String getCaption() {
-        return getType().getCaption();
+        String caption = getType().getCaption();
+        return caption == null ? "" : caption;
     }
 
     @Nonnull
@@ -128,5 +129,5 @@ public abstract class CodeAreaOperation implements BinaryDataOperation {
 
     public enum ExecutionType {
         NORMAL, WITH_UNDO
-    };
+    }
 }

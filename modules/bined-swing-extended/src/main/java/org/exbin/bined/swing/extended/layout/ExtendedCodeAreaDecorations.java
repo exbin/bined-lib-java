@@ -37,7 +37,7 @@ public enum ExtendedCodeAreaDecorations implements CodeAreaDecorationType {
     @Nonnull
     private final String id;
 
-    private ExtendedCodeAreaDecorations(String id) {
+    ExtendedCodeAreaDecorations(String id) {
         this.id = id;
     }
 

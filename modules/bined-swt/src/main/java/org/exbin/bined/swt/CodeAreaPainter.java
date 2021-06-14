@@ -124,11 +124,11 @@ public interface CodeAreaPainter {
      *
      * @param positionX component relative position X
      * @param positionY component relative position Y
-     * @param overlowMode overflow mode
+     * @param overflowMode overflow mode
      * @return closest caret position
      */
     @Nonnull
-    CodeAreaCaretPosition mousePositionToClosestCaretPosition(int positionX, int positionY, CaretOverlapMode overlowMode);
+    CodeAreaCaretPosition mousePositionToClosestCaretPosition(int positionX, int positionY, CaretOverlapMode overflowMode);
 
     void updateScrollBars();
 

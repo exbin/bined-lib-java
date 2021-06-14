@@ -103,8 +103,7 @@ public class CharsetStreamTranslator extends InputStream {
             }
         }
 
-        byte byteData = outputBuffer.get();
-        return byteData;
+        return outputBuffer.get();
     }
 
     @Override
@@ -125,7 +124,7 @@ public class CharsetStreamTranslator extends InputStream {
                 }
             }
 
-            int toProcess = length > remaining ? remaining : length;
+            int toProcess = Math.min(length, remaining);
             outputBuffer.get(buffer, offset, toProcess);
             offset += toProcess;
             length -= toProcess;
@@ -158,7 +157,7 @@ public class CharsetStreamTranslator extends InputStream {
             } else if (decodeResult.isUnmappable()) {
                 throw new IllegalStateException("Unmappable character should be handled automatically");
             } else if (decodeResult.isMalformed()) {
-                throw new IllegalStateException("Mallformed character should be handled automatically");
+                throw new IllegalStateException("Malformed character should be handled automatically");
             }
         } while (charBuffer.position() == 0);
 
@@ -178,7 +177,7 @@ public class CharsetStreamTranslator extends InputStream {
             } else if (encodeResult.isUnmappable()) {
                 throw new IllegalStateException("Unmappable character should be handled automatically");
             } else if (encodeResult.isMalformed()) {
-                throw new IllegalStateException("Mallformed character should be handled automatically");
+                throw new IllegalStateException("Malformed character should be handled automatically");
             }
         }
 

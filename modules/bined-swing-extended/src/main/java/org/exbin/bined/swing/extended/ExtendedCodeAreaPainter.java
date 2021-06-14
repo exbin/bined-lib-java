@@ -173,7 +173,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
 
     @Nullable
     private Font font;
-    @Nonnull
+    @Nullable
     private Charset charset;
 
     @Nullable
@@ -189,7 +189,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
 
     protected Map<Character, Character> unprintableCharactersMapping = null;
 
-    // Debuging counter
+    // Debugging counter
 //    private long paintCounter = 0;
     public ExtendedCodeAreaPainter(CodeAreaCore codeArea) {
         this.codeArea = codeArea;
@@ -455,7 +455,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
             recomputeCharPositions();
         }
 
-        paintOutsiteArea(g);
+        paintOutsideArea(g);
         paintHeader(g);
         paintRowPosition(g);
         paintMainArea(g);
@@ -468,7 +468,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         }
     }
 
-    public void paintOutsiteArea(Graphics g) {
+    public void paintOutsideArea(Graphics g) {
         int headerAreaHeight = dimensions.getHeaderAreaHeight();
         int rowPositionAreaWidth = dimensions.getRowPositionAreaWidth();
         Rectangle componentRect = dimensions.getComponentRect();
@@ -1170,7 +1170,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         return null;
     }
 
-    @Nullable
+    @Nonnull
     @Override
     public PositionScrollVisibility computePositionScrollVisibility(CodeAreaCaretPosition caretPosition) {
         int bytesPerRow = structure.getBytesPerRow();
@@ -1770,6 +1770,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         codeArea.repaint();
     }
 
+    @Nonnull
     @Override
     public ExtendedCodeAreaCaretsProfile getCaretsProfile() {
         return caretsProfile;
@@ -1787,7 +1788,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
      * @param g graphics
      * @param drawnChars array of chars
      * @param charOffset index of target character in array
-     * @param length number of charaters to draw
+     * @param length number of characters to draw
      * @param cellWidth width of cell to center into
      * @param positionX X position of drawing area start
      * @param positionY Y position of drawing area start
@@ -1842,7 +1843,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
     /**
      * Precomputes widths for basic ascii characters.
      *
-     * @param charset
+     * @param charset character set
      */
     private void buildCharMapping(Charset charset) {
         for (int i = 0; i < 256; i++) {

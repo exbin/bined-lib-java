@@ -49,7 +49,7 @@ public enum CodeAreaOperationType {
     @Nullable
     private final String caption;
 
-    private CodeAreaOperationType(@Nullable String caption) {
+    CodeAreaOperationType(@Nullable String caption) {
         this.caption = caption;
     }
 

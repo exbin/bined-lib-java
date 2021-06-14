@@ -33,7 +33,7 @@ public enum BasicCodeAreaColorGroup implements CodeAreaColorGroup {
     @Nonnull
     private final String groupId;
 
-    private BasicCodeAreaColorGroup(String groupId) {
+    BasicCodeAreaColorGroup(String groupId) {
         this.groupId = groupId;
     }
 

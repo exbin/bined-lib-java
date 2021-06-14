@@ -35,7 +35,7 @@ public enum ExtendedCodeAreaColorsGroup implements CodeAreaColorGroup {
     @Nonnull
     private final String groupId;
 
-    private ExtendedCodeAreaColorsGroup(String groupId) {
+    ExtendedCodeAreaColorsGroup(String groupId) {
         this.groupId = groupId;
     }
 

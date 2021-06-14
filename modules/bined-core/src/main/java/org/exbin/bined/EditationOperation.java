@@ -38,5 +38,5 @@ public enum EditationOperation {
      * in "overwrite only" mode, document is extended so that inserted data will
      * fit in.
      */
-    OVERWRITE;
+    OVERWRITE
 }

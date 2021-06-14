@@ -54,7 +54,7 @@ public enum CodeAreaCommandType {
 
     private final String caption;
 
-    private CodeAreaCommandType(String caption) {
+    CodeAreaCommandType(String caption) {
         this.caption = caption;
     }
 

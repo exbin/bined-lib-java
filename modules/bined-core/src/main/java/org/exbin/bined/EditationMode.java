@@ -43,5 +43,5 @@ public enum EditationMode {
      * Only overwrite editation mode is allowed and size of document cannot be
      * changed.
      */
-    INPLACE;
+    INPLACE
 }

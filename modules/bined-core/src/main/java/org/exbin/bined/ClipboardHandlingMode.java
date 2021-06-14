@@ -33,5 +33,5 @@ public enum ClipboardHandlingMode {
     /**
      * Process clipboard actions using default operations.
      */
-    PROCESS;
+    PROCESS
 }

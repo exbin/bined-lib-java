@@ -398,7 +398,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
 //        gc.setFill(Color.GREEN);
 //        gc.setStroke(Color.BLUE);
 //        gc.fillRect(0, 0, 50, 50);
-        paintOutsiteArea();
+        paintOutsideArea();
         paintHeader();
         paintRowPosition();
         paintMainArea();
@@ -439,7 +439,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         }
     }
 
-    public void paintOutsiteArea() {
+    public void paintOutsideArea() {
         GraphicsContext gc = topCanvas.getGraphicsContext2D();
         double headerAreaHeight = dimensions.getHeaderAreaHeight();
         double rowPositionAreaWidth = dimensions.getRowPositionAreaWidth();
@@ -1385,7 +1385,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
      * @param g graphics
      * @param drawnChars array of chars
      * @param charOffset index of target character in array
-     * @param length number of charaters to draw
+     * @param length number of characters to draw
      * @param cellWidth width of cell to center into
      * @param positionX X position of drawing area start
      * @param positionY Y position of drawing area start

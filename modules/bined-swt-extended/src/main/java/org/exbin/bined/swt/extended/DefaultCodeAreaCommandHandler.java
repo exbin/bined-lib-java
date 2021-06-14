@@ -40,7 +40,7 @@ import org.exbin.auxiliary.paged_data.BinaryData;
 import org.exbin.auxiliary.paged_data.EditableBinaryData;
 
 /**
- * Default hexadecimal editor command handler.
+ * Default binary editor command handler.
  *
  * @version 0.1.1 2016/10/05
  * @author ExBin Project (https://exbin.org)

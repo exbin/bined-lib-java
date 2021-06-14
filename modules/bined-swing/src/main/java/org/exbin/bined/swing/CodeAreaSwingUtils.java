@@ -276,7 +276,7 @@ public class CodeAreaSwingUtils {
         }
     }
 
-    public static interface ClipboardData extends Transferable, ClipboardOwner {
+    public interface ClipboardData extends Transferable, ClipboardOwner {
 
         void dispose();
     }

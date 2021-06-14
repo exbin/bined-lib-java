@@ -65,7 +65,7 @@ public class OverwriteCharEditDataOperation extends CharEditDataOperation {
 
     @Override
     public void appendEdit(char value) {
-        EditableBinaryData data = (EditableBinaryData) codeArea.getContentData();
+        EditableBinaryData data = (EditableBinaryData) CodeAreaUtils.requireNonNull(codeArea.getContentData());
         long editedDataPosition = startPosition + length;
 
         Charset charset = ((CharsetCapable) codeArea).getCharset();

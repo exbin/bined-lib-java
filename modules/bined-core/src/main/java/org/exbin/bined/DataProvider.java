@@ -26,6 +26,11 @@ import org.exbin.auxiliary.paged_data.BinaryData;
  */
 public interface DataProvider {
 
+    /**
+     * Returns data or null.
+     *
+     * @return binary data
+     */
     @Nullable
     BinaryData getContentData();
 

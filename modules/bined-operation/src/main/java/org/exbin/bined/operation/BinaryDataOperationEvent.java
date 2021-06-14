@@ -39,7 +39,6 @@ public class BinaryDataOperationEvent {
         return operation;
     }
 
-    @Nonnull
     public void setOperation(BinaryDataOperation operation) {
         this.operation = operation;
     }

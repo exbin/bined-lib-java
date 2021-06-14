@@ -16,9 +16,11 @@
 package org.exbin.bined.operation.swing;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.CodeType;
 import org.exbin.bined.capability.CaretCapable;
+import org.exbin.bined.capability.CodeTypeCapable;
 import org.exbin.bined.operation.BinaryDataOperationException;
 import org.exbin.bined.swing.CodeAreaCore;
 import org.exbin.auxiliary.paged_data.EditableBinaryData;
@@ -26,7 +28,7 @@ import org.exbin.auxiliary.paged_data.EditableBinaryData;
 /**
  * Operation for editing data in delete mode.
  *
- * @version 0.1.2 2017/01/02
+ * @version 0.2.0 2021/06/14
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -34,12 +36,14 @@ public class DeleteCodeEditDataOperation extends CodeEditDataOperation {
 
     private static final char BACKSPACE_CHAR = '\b';
     private static final char DELETE_CHAR = (char) 0x7f;
+    private final CodeType codeType;
 
     private long position;
     private EditableBinaryData undoData = null;
 
     public DeleteCodeEditDataOperation(CodeAreaCore codeArea, long startPosition) {
         super(codeArea);
+        codeType = ((CodeTypeCapable) codeArea).getCodeType();
         this.position = startPosition;
     }
 
@@ -54,14 +58,16 @@ public class DeleteCodeEditDataOperation extends CodeEditDataOperation {
         execute(false);
     }
 
+    @Nullable
     @Override
     public CodeAreaOperation executeWithUndo() throws BinaryDataOperationException {
         return execute(true);
     }
 
+    @Nonnull
     @Override
     public CodeType getCodeType() {
-        return null;
+        return codeType;
     }
 
     private CodeAreaOperation execute(boolean withUndo) {

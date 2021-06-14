@@ -38,6 +38,7 @@ import org.exbin.bined.swing.CodeAreaCore;
 @ParametersAreNonnullByDefault
 public class EditCharDataCommand extends EditDataCommand {
 
+    @Nonnull
     private final EditCommandType commandType;
     protected boolean operationPerformed = false;
     private CodeAreaOperation[] operations = null;

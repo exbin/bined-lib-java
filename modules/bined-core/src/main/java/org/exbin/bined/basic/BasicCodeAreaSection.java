@@ -32,5 +32,5 @@ public enum BasicCodeAreaSection implements CodeAreaSection {
     /**
      * Section of code area with textual preview characters.
      */
-    TEXT_PREVIEW;
+    TEXT_PREVIEW
 }

@@ -29,5 +29,5 @@ public enum AntialiasingMode {
     OFF,
     AUTO,
     DEFAULT,
-    BASIC;
+    BASIC
 }

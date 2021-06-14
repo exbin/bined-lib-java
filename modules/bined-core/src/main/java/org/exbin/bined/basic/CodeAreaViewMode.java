@@ -34,5 +34,5 @@ public enum CodeAreaViewMode {
     /**
      * Show textual preview only.
      */
-    TEXT_PREVIEW;
+    TEXT_PREVIEW
 }

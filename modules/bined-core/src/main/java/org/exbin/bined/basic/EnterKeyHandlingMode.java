@@ -49,7 +49,7 @@ public enum EnterKeyHandlingMode {
 
     private final String sequence;
 
-    private EnterKeyHandlingMode(String sequence) {
+    EnterKeyHandlingMode(String sequence) {
         this.sequence = sequence;
     }
 

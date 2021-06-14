@@ -102,7 +102,7 @@ public class SelectionRange {
      * @return data position
      */
     public long getFirst() {
-        return start < end ? start : end;
+        return Math.min(start, end);
     }
 
     /**
