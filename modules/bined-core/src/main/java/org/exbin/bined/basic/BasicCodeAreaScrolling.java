@@ -26,7 +26,7 @@ import org.exbin.bined.capability.BasicScrollingCapable;
 /**
  * Code area scrolling.
  *
- * @version 0.2.0 2019/08/18
+ * @version 0.2.0 2021/06/19
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -53,6 +53,8 @@ public class BasicCodeAreaScrolling {
     private ScrollBarVisibility horizontalScrollBarVisibility = ScrollBarVisibility.IF_NEEDED;
     @Nonnull
     private final CodeAreaScrollPosition maximumScrollPosition = new CodeAreaScrollPosition();
+    
+    private static final long ROW_POSITION_LIMIT = Long.MAX_VALUE / Integer.MAX_VALUE;
 
     public BasicCodeAreaScrolling() {
     }
@@ -250,7 +252,7 @@ public class BasicCodeAreaScrolling {
             case PIXEL: {
                 if (scrollBarVerticalScale == ScrollBarVerticalScale.SCALED) {
                     int scrollValue;
-                    if (scrollPosition.getCharPosition() < Long.MAX_VALUE / Integer.MAX_VALUE) {
+                    if (scrollPosition.getRowPosition() < ROW_POSITION_LIMIT) {
                         scrollValue = (int) ((scrollPosition.getRowPosition() * Integer.MAX_VALUE) / rowsPerDocument);
                     } else {
                         scrollValue = (int) (scrollPosition.getRowPosition() / (rowsPerDocument / Integer.MAX_VALUE));
@@ -262,7 +264,7 @@ public class BasicCodeAreaScrolling {
             case ROW: {
                 if (scrollBarVerticalScale == ScrollBarVerticalScale.SCALED) {
                     int scrollValue;
-                    if (scrollPosition.getCharPosition() < Long.MAX_VALUE / Integer.MAX_VALUE) {
+                    if (scrollPosition.getRowPosition() < ROW_POSITION_LIMIT) {
                         scrollValue = (int) ((scrollPosition.getRowPosition() * Integer.MAX_VALUE) / rowsPerDocument);
                     } else {
                         scrollValue = (int) (scrollPosition.getRowPosition() / (rowsPerDocument / Integer.MAX_VALUE));
@@ -278,10 +280,10 @@ public class BasicCodeAreaScrolling {
 
     public int getHorizontalScrollValue(int characterWidth) {
         switch (horizontalScrollUnit) {
-            case CHARACTER:
-                return scrollPosition.getCharPosition() * characterWidth;
             case PIXEL:
                 return scrollPosition.getCharPosition() * characterWidth + scrollPosition.getCharOffset();
+            case CHARACTER:
+                return scrollPosition.getCharPosition() * characterWidth;
             default:
                 throw new IllegalStateException("Unexpected horizontal scroll unit: " + horizontalScrollUnit.name());
         }

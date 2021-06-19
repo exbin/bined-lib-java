@@ -935,7 +935,11 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
             paintRowText(g, dataPosition, rowPositionX, rowPositionY);
 
             rowPositionY += rowHeight;
-            dataPosition += bytesPerRow;
+            if (Long.MAX_VALUE - dataPosition < bytesPerRow) {
+                dataPosition = Long.MAX_VALUE;
+            } else {
+                dataPosition += bytesPerRow;
+            }
         }
     }
 

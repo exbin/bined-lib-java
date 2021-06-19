@@ -34,7 +34,7 @@ import org.exbin.bined.extended.layout.ExtendedCodeAreaLayoutProfile;
 /**
  * Code area scrolling for extended core area.
  *
- * @version 0.2.0 2019/03/26
+ * @version 0.2.0 2021/06/19
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -61,6 +61,11 @@ public class ExtendedCodeAreaScrolling {
     private ScrollBarVisibility horizontalScrollBarVisibility = ScrollBarVisibility.IF_NEEDED;
     @Nonnull
     private final CodeAreaScrollPosition maximumScrollPosition = new CodeAreaScrollPosition();
+
+    private static final long ROW_POSITION_LIMIT = Long.MAX_VALUE / Integer.MAX_VALUE;
+
+    public ExtendedCodeAreaScrolling() {
+    }
 
     public void updateCache(DataProvider codeArea, int horizontalScrollbarHeight, int verticalScrollbarWidth) {
         verticalScrollUnit = ((ExtendedScrollingCapable) codeArea).getVerticalScrollUnit();
@@ -266,7 +271,7 @@ public class ExtendedCodeAreaScrolling {
             case PIXEL: {
                 if (scrollBarVerticalScale == ScrollBarVerticalScale.SCALED) {
                     int scrollValue;
-                    if (scrollPosition.getCharPosition() < Long.MAX_VALUE / Integer.MAX_VALUE) {
+                    if (scrollPosition.getRowPosition() < ROW_POSITION_LIMIT) {
                         scrollValue = (int) ((scrollPosition.getRowPosition() * Integer.MAX_VALUE) / rowsPerDocument);
                     } else {
                         scrollValue = (int) (scrollPosition.getRowPosition() / (rowsPerDocument / Integer.MAX_VALUE));
@@ -278,7 +283,7 @@ public class ExtendedCodeAreaScrolling {
             case ROW: {
                 if (scrollBarVerticalScale == ScrollBarVerticalScale.SCALED) {
                     int scrollValue;
-                    if (scrollPosition.getCharPosition() < Long.MAX_VALUE / Integer.MAX_VALUE) {
+                    if (scrollPosition.getRowPosition() < ROW_POSITION_LIMIT) {
                         scrollValue = (int) ((scrollPosition.getRowPosition() * Integer.MAX_VALUE) / rowsPerDocument);
                     } else {
                         scrollValue = (int) (scrollPosition.getRowPosition() / (rowsPerDocument / Integer.MAX_VALUE));
@@ -294,12 +299,12 @@ public class ExtendedCodeAreaScrolling {
 
     public int getHorizontalScrollValue(int characterWidth) {
         switch (horizontalScrollUnit) {
+            case PIXEL:
+                return scrollPosition.getCharPosition() * characterWidth + scrollPosition.getCharOffset();
             case CHARACTER:
                 return scrollPosition.getCharPosition() * characterWidth;
             case HALF_CHARACTER:
                 return (scrollPosition.getCharPosition() / 2) * characterWidth + (scrollPosition.getCharPosition() & 1) * (characterWidth / 2);
-            case PIXEL:
-                return scrollPosition.getCharPosition() * characterWidth + scrollPosition.getCharOffset();
             default:
                 throw new IllegalStateException("Unexpected horizontal scroll unit: " + horizontalScrollUnit.name());
         }
