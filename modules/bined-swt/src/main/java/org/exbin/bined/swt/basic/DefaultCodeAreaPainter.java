@@ -1600,6 +1600,11 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         adjusting = false;
     }
 
+    @Override
+    public void scrollPositionModified() {
+        scrolling.clearLastVerticalScrollingValue();
+    }
+
     private int getHorizontalScrollBarSize() {
         ScrollBar horizontalScrollBar = scrollPanel.getHorizontalBar();
         int size;

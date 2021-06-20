@@ -63,7 +63,7 @@ import org.exbin.bined.RowWrappingMode;
 /**
  * Code area component.
  *
- * @version 0.2.0 2021/04/11
+ * @version 0.2.0 2021/06/20
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -400,6 +400,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
     @Override
     public void updateScrollBars() {
         painter.updateScrollBars();
+        painter.scrollPositionModified();
         repaint();
     }
 
@@ -412,6 +413,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
     @Override
     public void setScrollPosition(CodeAreaScrollPosition scrollPosition) {
         this.scrollPosition.setScrollPosition(scrollPosition);
+        painter.scrollPositionModified();
         notifyScrolled();
     }
 

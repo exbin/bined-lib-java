@@ -67,7 +67,7 @@ public class StatePanelEx extends javax.swing.JPanel {
         dataSizeTextField = new javax.swing.JTextField();
         loadDataButton = new javax.swing.JButton();
         saveDataButton = new javax.swing.JButton();
-        templateDataComboBox = new javax.swing.JComboBox<>();
+        testDataComboBox = new javax.swing.JComboBox<>();
         activeOperationLabel = new javax.swing.JLabel();
         activeOperationComboBox = new javax.swing.JComboBox<>();
         positionPanel = new javax.swing.JPanel();
@@ -102,10 +102,10 @@ public class StatePanelEx extends javax.swing.JPanel {
             }
         });
 
-        templateDataComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Load Test Data >>", "Max Scroll Data", "Min NonScroll Data", "Half Max Data", "Max Data" }));
-        templateDataComboBox.addItemListener(new java.awt.event.ItemListener() {
+        testDataComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Load Test Data >>", "Max Scroll Data", "Min NonScroll Data", "Half Max Data", "Max Data" }));
+        testDataComboBox.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                templateDataComboBoxItemStateChanged(evt);
+                testDataComboBoxItemStateChanged(evt);
             }
         });
 
@@ -222,7 +222,7 @@ public class StatePanelEx extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(dataSizeTextField)
-                    .addComponent(templateDataComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(testDataComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(selectionPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(positionPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(activeOperationComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -249,7 +249,7 @@ public class StatePanelEx extends javax.swing.JPanel {
                     .addComponent(loadDataButton)
                     .addComponent(saveDataButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(templateDataComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(testDataComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(activeOperationLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -324,8 +324,8 @@ public class StatePanelEx extends javax.swing.JPanel {
         codeArea.setEditationOperation(EditationOperation.values()[activeOperationComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_activeOperationComboBoxActionPerformed
 
-    private void templateDataComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_templateDataComboBoxItemStateChanged
-        int selectedIndex = templateDataComboBox.getSelectedIndex();
+    private void testDataComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_testDataComboBoxItemStateChanged
+        int selectedIndex = testDataComboBox.getSelectedIndex();
         if (selectedIndex > 0) {
             ExtendedCodeAreaPainter painter = (ExtendedCodeAreaPainter) codeArea.getPainter();
             int rowHeight = painter.getRowHeight();
@@ -349,12 +349,12 @@ public class StatePanelEx extends javax.swing.JPanel {
                 case 2: {
                     switch (codeArea.getVerticalScrollUnit()) {
                         case PIXEL: {
-                            long dataSize = ((Integer.MAX_VALUE / rowHeight) + 1) * bytesPerRow;
+                            long dataSize = ((long) (Integer.MAX_VALUE / rowHeight) + 1) * bytesPerRow;
                             codeArea.setContentData(BinEdExample.getBigSampleData(0, dataSize));
                             break;
                         }
                         case ROW: {
-                            long dataSize = ((Integer.MAX_VALUE) + 1) * bytesPerRow;
+                            long dataSize = ((long) (Integer.MAX_VALUE) + 1) * bytesPerRow;
                             codeArea.setContentData(BinEdExample.getBigSampleData(0, dataSize));
                             break;
                         }
@@ -371,9 +371,9 @@ public class StatePanelEx extends javax.swing.JPanel {
                 }
             }
             codeArea.setEditationMode(EditationMode.READ_ONLY);
-            templateDataComboBox.setSelectedIndex(0);
+            testDataComboBox.setSelectedIndex(0);
         }
-    }//GEN-LAST:event_templateDataComboBoxItemStateChanged
+    }//GEN-LAST:event_testDataComboBoxItemStateChanged
 
     public void setCodeArea(ExtCodeArea codeArea) {
         this.codeArea = codeArea;
@@ -436,7 +436,7 @@ public class StatePanelEx extends javax.swing.JPanel {
     private javax.swing.JPanel selectionPanel;
     private javax.swing.JLabel selectionStartLabel;
     private javax.swing.JTextField selectionStartTextField;
-    private javax.swing.JComboBox<String> templateDataComboBox;
+    private javax.swing.JComboBox<String> testDataComboBox;
     // End of variables declaration//GEN-END:variables
 
     @Nonnull

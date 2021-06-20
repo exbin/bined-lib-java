@@ -30,7 +30,7 @@ import org.exbin.bined.CodeAreaCaretPosition;
 /**
  * Binary editor painter interface.
  *
- * @version 0.2.0 2019/07/07
+ * @version 0.2.0 2021/06/20
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -197,4 +197,12 @@ public interface CodeAreaPainter {
      */
     @Nonnull
     CodeAreaScrollPosition computeScrolling(CodeAreaScrollPosition startPosition, ScrollingDirection direction);
+
+    /**
+     * Notify scroll position was modified.
+     *
+     * This is to assist detection of scrolling from outside compare to
+     * scrolling by scrollbar controls.
+     */
+    void scrollPositionModified();
 }

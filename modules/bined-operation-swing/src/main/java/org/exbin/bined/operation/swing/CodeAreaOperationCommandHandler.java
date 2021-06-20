@@ -944,10 +944,10 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
         ((SelectionCapable) codeArea).setSelection(selection.getStart(), selection.getStart());
     }
 
-    public void updateSelection(SelectingMode selecting, CodeAreaCaretPosition caretPosition) {
+    public void updateSelection(SelectingMode selectingMode, CodeAreaCaretPosition caretPosition) {
         DefaultCodeAreaCaret caret = (DefaultCodeAreaCaret) ((CaretCapable) codeArea).getCaret();
         SelectionRange selection = ((SelectionCapable) codeArea).getSelection();
-        if (selecting == SelectingMode.SELECTING) {
+        if (selectingMode == SelectingMode.SELECTING) {
             ((SelectionCapable) codeArea).setSelection(selection.getStart(), caret.getDataPosition());
         } else {
             ((SelectionCapable) codeArea).setSelection(caret.getDataPosition(), caret.getDataPosition());

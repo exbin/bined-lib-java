@@ -34,7 +34,7 @@ import org.exbin.bined.extended.layout.ExtendedCodeAreaLayoutProfile;
 /**
  * Code area scrolling for extended core area.
  *
- * @version 0.2.0 2021/06/19
+ * @version 0.2.0 2021/06/20
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -50,6 +50,8 @@ public class ExtendedCodeAreaScrolling {
     private int verticalExtentDifference;
     private int horizontalScrollbarHeight;
     private int verticalScrollbarWidth;
+
+    private int lastVerticalScrollingValue = -1;
 
     @Nonnull
     private VerticalScrollUnit verticalScrollUnit = VerticalScrollUnit.ROW;
@@ -368,6 +370,10 @@ public class ExtendedCodeAreaScrolling {
         }
 
         return targetPosition;
+    }
+
+    public void performScrolling(ScrollingDirection direction, int rowsPerPage, long rowsPerDocument) {
+        setScrollPosition(computeScrolling(scrollPosition, direction, rowsPerPage, rowsPerDocument));
     }
 
     @Nonnull
@@ -766,5 +772,17 @@ public class ExtendedCodeAreaScrolling {
     @Nonnull
     public CodeAreaScrollPosition getMaximumScrollPosition() {
         return maximumScrollPosition;
+    }
+
+    public void setLastVerticalScrollingValue(int value) {
+        lastVerticalScrollingValue = value;
+    }
+
+    public int getLastVerticalScrollingValue() {
+        return lastVerticalScrollingValue;
+    }
+    
+    public void clearLastVerticalScrollingValue() {
+        lastVerticalScrollingValue = -1;
     }
 }

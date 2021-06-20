@@ -20,7 +20,7 @@
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="dataSizeTextField" alignment="0" max="32767" attributes="0"/>
-                  <Component id="templateDataComboBox" alignment="0" max="32767" attributes="0"/>
+                  <Component id="testDataComboBox" alignment="0" max="32767" attributes="0"/>
                   <Component id="selectionPanel" alignment="1" max="32767" attributes="0"/>
                   <Component id="positionPanel" alignment="0" max="32767" attributes="0"/>
                   <Component id="activeOperationComboBox" alignment="0" max="32767" attributes="0"/>
@@ -54,7 +54,7 @@
                   <Component id="saveDataButton" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="templateDataComboBox" min="-2" max="-2" attributes="0"/>
+              <Component id="testDataComboBox" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="activeOperationLabel" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
@@ -96,7 +96,7 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="saveDataButtonActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JComboBox" name="templateDataComboBox">
+    <Component class="javax.swing.JComboBox" name="testDataComboBox">
       <Properties>
         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
           <StringArray count="5">
@@ -109,7 +109,7 @@
         </Property>
       </Properties>
       <Events>
-        <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="templateDataComboBoxItemStateChanged"/>
+        <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="testDataComboBoxItemStateChanged"/>
       </Events>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>

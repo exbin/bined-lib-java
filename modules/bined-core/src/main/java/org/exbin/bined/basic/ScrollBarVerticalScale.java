@@ -27,7 +27,8 @@ public enum ScrollBarVerticalScale {
      */
     NORMAL,
     /**
-     * Height is more than available range and scaled.
+     * Height is more than available range/precission of the scrollbar and must
+     * be scaled.
      */
     SCALED
 }
