@@ -188,12 +188,24 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
             recomputeLayout();
         };
         DefaultCodeAreaMouseListener codeAreaMouseListener = new DefaultCodeAreaMouseListener(codeArea, scrollPanel);
-        codeArea.addEventFilter(MouseEvent.MOUSE_PRESSED, (event) -> { codeAreaMouseListener.mousePressed(event); });
-        codeArea.addEventFilter(MouseEvent.MOUSE_RELEASED, (event) -> { codeAreaMouseListener.mouseReleased(event); });
-        codeArea.addEventFilter(MouseEvent.MOUSE_DRAGGED, (event) -> { codeAreaMouseListener.mouseDragged(event); });
-        codeArea.addEventFilter(MouseEvent.MOUSE_MOVED, (event) -> { codeAreaMouseListener.mouseMoved(event); });
-        codeArea.addEventFilter(MouseEvent.MOUSE_ENTERED, (event) -> { codeAreaMouseListener.mouseEntered(event); });
-        codeArea.addEventFilter(MouseEvent.MOUSE_EXITED, (event) -> { codeAreaMouseListener.mouseExited(event); });
+        codeArea.addEventFilter(MouseEvent.MOUSE_PRESSED, (event) -> {
+            codeAreaMouseListener.mousePressed(event);
+        });
+        codeArea.addEventFilter(MouseEvent.MOUSE_RELEASED, (event) -> {
+            codeAreaMouseListener.mouseReleased(event);
+        });
+        codeArea.addEventFilter(MouseEvent.MOUSE_DRAGGED, (event) -> {
+            codeAreaMouseListener.mouseDragged(event);
+        });
+        codeArea.addEventFilter(MouseEvent.MOUSE_MOVED, (event) -> {
+            codeAreaMouseListener.mouseMoved(event);
+        });
+        codeArea.addEventFilter(MouseEvent.MOUSE_ENTERED, (event) -> {
+            codeAreaMouseListener.mouseEntered(event);
+        });
+        codeArea.addEventFilter(MouseEvent.MOUSE_EXITED, (event) -> {
+            codeAreaMouseListener.mouseExited(event);
+        });
 //        codeArea.addMouseListener(codeAreaMouseListener);
 //        codeArea.addMouseMotionListener(codeAreaMouseListener);
 //        codeArea.addMouseWheelListener(codeAreaMouseListener);
@@ -660,7 +672,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
 //        char[] headerCode = (String.valueOf(scrollPosition.getScrollCharPosition()) + "+" + String.valueOf(scrollPosition.getScrollCharOffset()) + " : " + String.valueOf(scrollPosition.getScrollRowPosition()) + "+" + String.valueOf(scrollPosition.getScrollRowOffset()) + " P: " + String.valueOf(rowsPerRect)).toCharArray();
 //        g.drawChars(headerCode, 0, headerCode.length, x, y + rowHeight);
 //    }
-
     /**
      * Paints main area background.
      *
@@ -1524,6 +1535,11 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         scrollPanel.setVvalue(horizontalScrollValue);
 
         adjusting = false;
+    }
+
+    @Override
+    public void scrollPositionModified() {
+        scrolling.clearLastVerticalScrollingValue();
     }
 
     private int getHorizontalScrollBarSize() {

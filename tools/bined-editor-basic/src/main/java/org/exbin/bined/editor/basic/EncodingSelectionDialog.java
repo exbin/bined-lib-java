@@ -25,6 +25,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.InputMap;
 import javax.swing.JComponent;
 import javax.swing.KeyStroke;
+import org.exbin.bined.swing.CodeAreaSwingUtils;
 
 /**
  * Basic encoding selection dialog.
@@ -34,7 +35,7 @@ import javax.swing.KeyStroke;
  */
 public class EncodingSelectionDialog extends javax.swing.JDialog {
 
-    private static final String UTF8_CHARSET = "UTF-8";
+    private ReturnStatus returnStatus = ReturnStatus.CANCEL;
 
     public EncodingSelectionDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
@@ -57,7 +58,7 @@ public class EncodingSelectionDialog extends javax.swing.JDialog {
 
         DefaultComboBoxModel<String> comboBoxModel = (DefaultComboBoxModel<String>) encodingComboBox.getModel();
         for (Map.Entry<String, Charset> entry : Charset.availableCharsets().entrySet()) {
-            if (!UTF8_CHARSET.equals(entry.getKey())) {
+            if (!CodeAreaSwingUtils.DEFAULT_ENCODING.equals(entry.getKey())) {
                 comboBoxModel.addElement(entry.getValue().name());
             }
         }
@@ -218,8 +219,6 @@ public class EncodingSelectionDialog extends javax.swing.JDialog {
     private javax.swing.JLabel encodingLabel;
     private javax.swing.JButton okButton;
     // End of variables declaration//GEN-END:variables
-
-    private ReturnStatus returnStatus = ReturnStatus.CANCEL;
 
     public enum ReturnStatus {
         CANCEL, OK

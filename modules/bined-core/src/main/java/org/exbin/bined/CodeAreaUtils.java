@@ -24,7 +24,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.auxiliary.paged_data.EditableBinaryData;
 
 /**
- * Hexadecimal editor component utilities.
+ * Binary editor component utilities.
  *
  * @version 0.2.0 2019/06/20
  * @author ExBin Project (https://exbin.org)

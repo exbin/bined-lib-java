@@ -134,6 +134,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
 
     @Nonnull
     private final BasicCodeAreaLayout layout = new BasicCodeAreaLayout();
+    @Nonnull
     private BasicCodeAreaColorsProfile colorsProfile = new BasicCodeAreaColorsProfile();
 
     @Nullable
@@ -162,6 +163,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
 
     @Nullable
     private Charset charMappingCharset = null;
+    @Nonnull
     private final char[] charMapping = new char[256];
 
     public DefaultCodeAreaPainter(CodeAreaCore codeArea) {
@@ -1376,6 +1378,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         return Cursor.DEFAULT_CURSOR;
     }
 
+    @Nonnull
     @Override
     public BasicCodeAreaZone getPositionZone(int positionX, int positionY) {
         return dimensions.getPositionZone(positionX, positionY);
@@ -1564,26 +1567,12 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
 
     private int getHorizontalScrollBarSize() {
         JScrollBar horizontalScrollBar = scrollPanel.getHorizontalScrollBar();
-        int size;
-        if (horizontalScrollBar.isVisible()) {
-            size = horizontalScrollBar.getHeight();
-        } else {
-            size = 0;
-        }
-
-        return size;
+        return horizontalScrollBar.isVisible() ? horizontalScrollBar.getHeight() : 0;
     }
 
     private int getVerticalScrollBarSize() {
         JScrollBar verticalScrollBar = scrollPanel.getVerticalScrollBar();
-        int size;
-        if (verticalScrollBar.isVisible()) {
-            size = verticalScrollBar.getWidth();
-        } else {
-            size = 0;
-        }
-
-        return size;
+        return verticalScrollBar.isVisible() ? verticalScrollBar.getWidth() : 0;
     }
 
     private class VerticalScrollBarModel extends DefaultBoundedRangeModel {

@@ -190,6 +190,14 @@ public interface CodeAreaPainter {
     @Nonnull
     CodeAreaScrollPosition computeScrolling(CodeAreaScrollPosition startPosition, ScrollingDirection direction);
 
+    /**
+     * Notify scroll position was modified.
+     *
+     * This is to assist detection of scrolling from outside compare to
+     * scrolling by scrollbar controls.
+     */
+    void scrollPositionModified();
+
     void repaint();
 
     void dispose();

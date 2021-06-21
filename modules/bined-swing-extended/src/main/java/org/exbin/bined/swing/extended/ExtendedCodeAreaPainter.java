@@ -166,6 +166,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
     private CodeCharactersCase codeCharactersCase;
     @Nullable
     private EditationOperation editationOperation;
+    @Nullable
     private PositionIterator positionIterator;
     private boolean showMirrorCursor;
     private boolean showUnprintables;
@@ -188,10 +189,12 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
 
     @Nullable
     private Charset charMappingCharset = null;
+    @Nonnull
     private final char[] charMapping = new char[256];
 
     private static final char SPACE_CHAR = ' '; //\u2003
 
+    @Nullable
     protected Map<Character, Character> unprintableCharactersMapping = null;
 
     // Debugging counter

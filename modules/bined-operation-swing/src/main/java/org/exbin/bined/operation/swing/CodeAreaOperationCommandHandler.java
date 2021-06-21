@@ -87,7 +87,6 @@ import org.exbin.bined.basic.EnterKeyHandlingMode;
 public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
 
     public static final String BINED_CLIPBOARD_MIME = "application/x-bined";
-    public static final String MIME_CLIPBOARD_BINARY = "application/octet-stream";
     public static final String MIME_CHARSET = "charset";
     private static final int CODE_BUFFER_LENGTH = 16;
     private static final char BACKSPACE_CHAR = '\b';

@@ -25,16 +25,15 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Nonnull;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
@@ -56,14 +55,15 @@ import org.exbin.bined.swing.basic.CodeArea;
 import org.exbin.auxiliary.paged_data.ByteArrayEditableData;
 import org.exbin.auxiliary.paged_data.EditableBinaryData;
 import org.exbin.bined.CodeAreaCaretPosition;
+import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.CodeCharactersCase;
 import org.exbin.bined.CodeType;
 import org.exbin.bined.swing.CodeAreaSwingUtils;
 
 /**
- * Basic single jar swing version of BinEd Hexadecimal editor.
+ * Basic single jar swing version of BinEd binary/hexadecimal editor.
  *
- * @version 0.2.0 2019/09/25
+ * @version 0.2.0 2021/06/21
  * @author ExBin Project (https://exbin.org)
  */
 public class BinEdEditorBasic extends javax.swing.JFrame {
@@ -73,18 +73,18 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
     private static final String APPLICATION_DEFAULT_TITLE = APPLICATION_NAME + " Basic Editor";
 
     private static final String ICONS_DIRECTORY = "/org/exbin/bined/editor/basic/resources/icons/";
-    private static final String ICON_APP = ICONS_DIRECTORY + "icon.png";
-    private static final String ICON_FILE_NEW = ICONS_DIRECTORY + "document-new.png";
-    private static final String ICON_FILE_OPEN = ICONS_DIRECTORY + "document-open.png";
-    private static final String ICON_FILE_SAVE = ICONS_DIRECTORY + "document-save.png";
-    private static final String ICON_FILE_SAVE_AS = ICONS_DIRECTORY + "document-save-as.png";
-    private static final String ICON_EDIT_UNDO = ICONS_DIRECTORY + "edit-undo.png";
-    private static final String ICON_EDIT_REDO = ICONS_DIRECTORY + "edit-redo.png";
-    private static final String ICON_EDIT_CUT = ICONS_DIRECTORY + "edit-cut.png";
-    private static final String ICON_EDIT_COPY = ICONS_DIRECTORY + "edit-copy.png";
-    private static final String ICON_EDIT_PASTE = ICONS_DIRECTORY + "edit-paste.png";
-    private static final String ICON_EDIT_DELETE = ICONS_DIRECTORY + "edit-delete.png";
-    private static final String ICON_EDIT_SELECT_ALL = ICONS_DIRECTORY + "edit-select-all.png";
+    private static final String ICON_APP = "icon.png";
+    private static final String ICON_FILE_NEW = "document-new.png";
+    private static final String ICON_FILE_OPEN = "document-open.png";
+    private static final String ICON_FILE_SAVE = "document-save.png";
+    private static final String ICON_FILE_SAVE_AS = "document-save-as.png";
+    private static final String ICON_EDIT_UNDO = "edit-undo.png";
+    private static final String ICON_EDIT_REDO = "edit-redo.png";
+    private static final String ICON_EDIT_CUT = "edit-cut.png";
+    private static final String ICON_EDIT_COPY = "edit-copy.png";
+    private static final String ICON_EDIT_PASTE = "edit-paste.png";
+    private static final String ICON_EDIT_DELETE = "edit-delete.png";
+    private static final String ICON_EDIT_SELECT_ALL = "edit-select-all.png";
 
     private File file = null;
     private CodeArea codeArea;
@@ -134,8 +134,7 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
     private void initActions() {
         int metaMask = CodeAreaSwingUtils.getMetaMaskDown();
         newFileAction = new AbstractAction(
-                "New",
-                new javax.swing.ImageIcon(getClass().getResource(ICON_FILE_NEW))
+                "New", getIconResource(ICON_FILE_NEW)
         ) {
             @Override
             public void actionPerformed(ActionEvent evt) {
@@ -145,8 +144,7 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
         newFileAction.putValue(Action.ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, metaMask));
 
         openFileAction = new AbstractAction(
-                "Open...",
-                new javax.swing.ImageIcon(getClass().getResource(ICON_FILE_OPEN))
+                "Open...", getIconResource(ICON_FILE_OPEN)
         ) {
             @Override
             public void actionPerformed(ActionEvent evt) {
@@ -156,8 +154,7 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
         openFileAction.putValue(Action.ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, metaMask));
 
         saveFileAction = new AbstractAction(
-                "Save",
-                new javax.swing.ImageIcon(getClass().getResource(ICON_FILE_SAVE))
+                "Save", getIconResource(ICON_FILE_SAVE)
         ) {
             @Override
             public void actionPerformed(ActionEvent evt) {
@@ -166,8 +163,7 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
         };
 
         saveAsFileAction = new AbstractAction(
-                "Save As...",
-                new javax.swing.ImageIcon(getClass().getResource(ICON_FILE_SAVE_AS))
+                "Save As...", getIconResource(ICON_FILE_SAVE_AS)
         ) {
             @Override
             public void actionPerformed(ActionEvent evt) {
@@ -177,8 +173,7 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
         saveAsFileAction.putValue(Action.ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.SHIFT_DOWN_MASK | metaMask));
 
         exitAction = new AbstractAction(
-                "Exit",
-                null
+                "Exit", null
         ) {
             @Override
             public void actionPerformed(ActionEvent evt) {
@@ -188,8 +183,7 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
         exitAction.putValue(Action.ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F4, java.awt.event.InputEvent.ALT_DOWN_MASK));
 
         undoEditAction = new AbstractAction(
-                "Undo",
-                new javax.swing.ImageIcon(getClass().getResource(ICON_EDIT_UNDO))
+                "Undo", getIconResource(ICON_EDIT_UNDO)
         ) {
             @Override
             public void actionPerformed(ActionEvent evt) {
@@ -203,8 +197,7 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
         undoEditAction.putValue(Action.ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Z, metaMask));
 
         redoEditAction = new AbstractAction(
-                "Redo",
-                new javax.swing.ImageIcon(getClass().getResource(ICON_EDIT_REDO))
+                "Redo", getIconResource(ICON_EDIT_REDO)
         ) {
             @Override
             public void actionPerformed(ActionEvent evt) {
@@ -218,8 +211,7 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
         redoEditAction.putValue(Action.ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Y, metaMask));
 
         cutEditAction = new AbstractAction(
-                "Cut",
-                new javax.swing.ImageIcon(getClass().getResource(ICON_EDIT_CUT))
+                "Cut", getIconResource(ICON_EDIT_CUT)
         ) {
             @Override
             public void actionPerformed(ActionEvent evt) {
@@ -229,8 +221,7 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
         cutEditAction.putValue(Action.ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_X, metaMask));
 
         copyEditAction = new AbstractAction(
-                "Copy",
-                new javax.swing.ImageIcon(getClass().getResource(ICON_EDIT_COPY))
+                "Copy", getIconResource(ICON_EDIT_COPY)
         ) {
             @Override
             public void actionPerformed(ActionEvent evt) {
@@ -240,8 +231,8 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
         copyEditAction.putValue(Action.ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, metaMask));
 
         pasteEditAction = new AbstractAction(
-                "Paste",
-                new javax.swing.ImageIcon(getClass().getResource(ICON_EDIT_PASTE))) {
+                "Paste", getIconResource(ICON_EDIT_PASTE)
+        ) {
             @Override
             public void actionPerformed(ActionEvent evt) {
                 codeArea.paste();
@@ -250,8 +241,7 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
         pasteEditAction.putValue(Action.ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_V, metaMask));
 
         deleteEditAction = new AbstractAction(
-                "Delete",
-                new javax.swing.ImageIcon(getClass().getResource(ICON_EDIT_DELETE))
+                "Delete", getIconResource(ICON_EDIT_DELETE)
         ) {
             @Override
             public void actionPerformed(ActionEvent evt) {
@@ -261,8 +251,7 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
         deleteEditAction.putValue(Action.ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_DELETE, 0));
 
         selectAllAction = new AbstractAction(
-                "Select All",
-                new javax.swing.ImageIcon(getClass().getResource(ICON_EDIT_SELECT_ALL))
+                "Select All", getIconResource(ICON_EDIT_SELECT_ALL)
         ) {
             @Override
             public void actionPerformed(ActionEvent evt) {
@@ -274,7 +263,7 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
 
     private void postInit() {
         codeArea.setComponentPopupMenu(mainPopupMenu);
-        setIconImage(new javax.swing.ImageIcon(getClass().getResource(ICON_APP)).getImage());
+        setIconImage(getIconResource(ICON_APP).getImage());
         undoHandler.addUndoUpdateListener(new BinaryDataUndoUpdateListener() {
             @Override
             public void undoCommandPositionChanged() {
@@ -686,7 +675,7 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
 
     private void aboutMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aboutMenuItemActionPerformed
         JOptionPane.showMessageDialog(this,
-                APPLICATION_NAME + " Hexadecimal Editor - Basic Editor\nVersion " + APPLICATION_VERSION + "\nhttp://bined.exbin.org",
+                APPLICATION_NAME + " Binary Editor - Basic Editor\nVersion " + APPLICATION_VERSION + "\nhttps://bined.exbin.org",
                 "About application",
                 JOptionPane.PLAIN_MESSAGE);
     }//GEN-LAST:event_aboutMenuItemActionPerformed
@@ -740,7 +729,7 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
             return;
         }
 
-        Objects.requireNonNull((EditableBinaryData) codeArea.getContentData()).clear();
+        CodeAreaUtils.requireNonNull((EditableBinaryData) codeArea.getContentData()).clear();
         codeArea.notifyDataChanged();
         codeArea.repaint();
         undoHandler.clear();
@@ -757,15 +746,13 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
             if (chooserResult == JFileChooser.APPROVE_OPTION) {
                 file = fileChooser.getSelectedFile();
                 try (FileInputStream stream = new FileInputStream(file)) {
-                    Objects.requireNonNull((EditableBinaryData) codeArea.getContentData()).loadFromStream(stream);
+                    CodeAreaUtils.requireNonNull((EditableBinaryData) codeArea.getContentData()).loadFromStream(stream);
                     codeArea.notifyDataChanged();
                     codeArea.repaint();
                     undoHandler.clear();
                     updateUndoState();
                     updateClipboardState();
                     updateTitle();
-                } catch (FileNotFoundException ex) {
-                    Logger.getLogger(BinEdEditorBasic.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (IOException ex) {
                     Logger.getLogger(BinEdEditorBasic.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -830,11 +817,9 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
             saveAsFileActionPerformed();
         } else {
             try (FileOutputStream stream = new FileOutputStream(file)) {
-                Objects.requireNonNull((EditableBinaryData) codeArea.getContentData()).saveToStream(stream);
+                CodeAreaUtils.requireNonNull((EditableBinaryData) codeArea.getContentData()).saveToStream(stream);
                 undoHandler.setSyncPoint();
                 updateTitle();
-            } catch (FileNotFoundException ex) {
-                Logger.getLogger(BinEdEditorBasic.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IOException ex) {
                 Logger.getLogger(BinEdEditorBasic.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -989,4 +974,7 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
     private javax.swing.JMenu viewMenu;
     // End of variables declaration//GEN-END:variables
 
+    private ImageIcon getIconResource(String iconFileName) {
+        return new ImageIcon(getClass().getResource(ICONS_DIRECTORY + iconFileName));
+    }
 }
