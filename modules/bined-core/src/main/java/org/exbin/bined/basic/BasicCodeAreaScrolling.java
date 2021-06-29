@@ -17,6 +17,7 @@ package org.exbin.bined.basic;
 
 import java.util.Optional;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.Immutable;
 import org.exbin.bined.DataProvider;
@@ -26,7 +27,7 @@ import org.exbin.bined.capability.BasicScrollingCapable;
 /**
  * Code area scrolling.
  *
- * @version 0.2.0 2021/06/20
+ * @version 0.2.0 2021/06/22
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -42,7 +43,7 @@ public class BasicCodeAreaScrolling {
     private int verticalExtentDifference;
     private int horizontalScrollbarHeight;
     private int verticalScrollbarWidth;
-    
+
     private int lastVerticalScrollingValue = -1;
 
     @Nonnull
@@ -55,8 +56,13 @@ public class BasicCodeAreaScrolling {
     private ScrollBarVisibility horizontalScrollBarVisibility = ScrollBarVisibility.IF_NEEDED;
     @Nonnull
     private final CodeAreaScrollPosition maximumScrollPosition = new CodeAreaScrollPosition();
-    
+
     private static final long ROW_POSITION_LIMIT = Long.MAX_VALUE / Integer.MAX_VALUE;
+
+    @Nullable
+    private Runnable verticalExtentChangeListener = null;
+    @Nullable
+    private Runnable horizontalExtentChangeListener = null;
 
     public BasicCodeAreaScrolling() {
     }
@@ -88,14 +94,14 @@ public class BasicCodeAreaScrolling {
 
         if (fitsHorizontally) {
             scrollViewDimension.width = dataWidth;
-            verticalExtentDifference = 0;
+            changeVerticalExtentDifference(0);
         } else {
             scrollViewDimension.width = recomputeScrollViewWidth(dataViewWidth, characterWidth, dataWidth, charsPerRow);
         }
 
         if (fitsVertically) {
             scrollViewDimension.height = (int) (rowsPerData * rowHeight);
-            horizontalExtentDifference = 0;
+            changeHorizontalExtentDifference(0);
         } else {
             scrollViewDimension.height = recomputeScrollViewHeight(dataViewHeight, rowHeight, rowsPerData);
         }
@@ -121,13 +127,13 @@ public class BasicCodeAreaScrolling {
         switch (horizontalScrollUnit) {
             case PIXEL: {
                 scrollViewWidth = dataWidth;
-                horizontalExtentDifference = 0;
+                changeHorizontalExtentDifference(0);
                 break;
             }
             case CHARACTER: {
                 int charsPerDataView = dataViewWidth / characterWidth;
                 scrollViewWidth = dataViewWidth + (charsPerRow - charsPerDataView);
-                horizontalExtentDifference = dataViewWidth - charsPerDataView;
+                changeHorizontalExtentDifference(dataViewWidth - charsPerDataView);
                 break;
             }
             default:
@@ -144,11 +150,11 @@ public class BasicCodeAreaScrolling {
                 if (rowsPerData > Integer.MAX_VALUE / rowHeight) {
                     scrollBarVerticalScale = ScrollBarVerticalScale.SCALED;
                     scrollViewHeight = Integer.MAX_VALUE;
-                    verticalExtentDifference = 0;
+                    changeVerticalExtentDifference(0);
                 } else {
                     scrollBarVerticalScale = ScrollBarVerticalScale.NORMAL;
                     scrollViewHeight = (int) (rowsPerData * rowHeight) - dataViewHeight;
-                    verticalExtentDifference = 0;
+                    changeVerticalExtentDifference(0);
                 }
                 break;
             }
@@ -156,12 +162,12 @@ public class BasicCodeAreaScrolling {
                 if (rowsPerData > (Integer.MAX_VALUE - dataViewHeight)) {
                     scrollBarVerticalScale = ScrollBarVerticalScale.SCALED;
                     scrollViewHeight = Integer.MAX_VALUE;
-                    verticalExtentDifference = 0;
+                    changeVerticalExtentDifference(0);
                 } else {
                     scrollBarVerticalScale = ScrollBarVerticalScale.NORMAL;
                     int rowsPerDataView = dataViewHeight / rowHeight;
                     scrollViewHeight = (int) (dataViewHeight + (rowsPerData - rowsPerDataView));
-                    verticalExtentDifference = dataViewHeight - rowsPerDataView;
+                    changeVerticalExtentDifference(dataViewHeight - rowsPerDataView);
                 }
                 break;
             }
@@ -291,6 +297,14 @@ public class BasicCodeAreaScrolling {
         }
     }
 
+    public void setVerticalExtentChangeListener(Runnable verticalExtentChangeListener) {
+        this.verticalExtentChangeListener = verticalExtentChangeListener;
+    }
+
+    public void setHorizontalExtentChangeListener(Runnable horizontalExtentChangeListener) {
+        this.horizontalExtentChangeListener = horizontalExtentChangeListener;
+    }
+
     @Nonnull
     public CodeAreaScrollPosition computeScrolling(CodeAreaScrollPosition startPosition, ScrollingDirection direction, int rowsPerPage, long rowsPerDocument) {
         CodeAreaScrollPosition targetPosition = new CodeAreaScrollPosition();
@@ -350,7 +364,7 @@ public class BasicCodeAreaScrolling {
 
         return targetPosition;
     }
-    
+
     public void performScrolling(ScrollingDirection direction, int rowsPerPage, long rowsPerDocument) {
         setScrollPosition(computeScrolling(scrollPosition, direction, rowsPerPage, rowsPerDocument));
     }
@@ -683,11 +697,29 @@ public class BasicCodeAreaScrolling {
     public int getLastVerticalScrollingValue() {
         return lastVerticalScrollingValue;
     }
-    
+
     public void clearLastVerticalScrollingValue() {
         lastVerticalScrollingValue = -1;
     }
-    
+
+    private void changeVerticalExtentDifference(int newDifference) {
+        if (verticalExtentDifference != newDifference) {
+            verticalExtentDifference = newDifference;
+            if (verticalExtentChangeListener != null) {
+                verticalExtentChangeListener.run();
+            }
+        }
+    }
+
+    private void changeHorizontalExtentDifference(int newDifference) {
+        if (horizontalExtentDifference != newDifference) {
+            horizontalExtentDifference = newDifference;
+            if (horizontalExtentChangeListener != null) {
+                horizontalExtentChangeListener.run();
+            }
+        }
+    }
+
     @Immutable
     public static final class ScrollViewDimension {
 

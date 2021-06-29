@@ -196,6 +196,16 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         scrollPanel.setViewportView(dataView);
         JViewport viewport = scrollPanel.getViewport();
         viewport.setOpaque(false);
+        scrolling.setHorizontalExtentChangeListener(() -> {
+            adjusting = true;
+            horizontalScrollBarModel.notifyChanged();
+            adjusting = false;
+        });
+        scrolling.setVerticalExtentChangeListener(() -> {
+            adjusting = true;
+            verticalScrollBarModel.notifyChanged();
+            adjusting = false;
+        });
 
         codeAreaMouseListener = new DefaultCodeAreaMouseListener(codeArea, scrollPanel);
         viewport.addMouseListener(codeAreaMouseListener);
@@ -290,10 +300,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         }
 
         recomputeScrollState();
-
-        // Notify extent/maximum change
-        verticalScrollBarModel.notifyChanged();
-        horizontalScrollBarModel.notifyChanged();
 
         layoutChanged = false;
     }
