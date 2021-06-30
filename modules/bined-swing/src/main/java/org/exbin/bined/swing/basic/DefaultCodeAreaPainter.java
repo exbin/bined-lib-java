@@ -592,6 +592,9 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
 
             positionY += rowHeight;
             dataPosition += bytesPerRow;
+            if (dataPosition < 0) {
+                break;
+            }
         }
 
         // Decoration lines
@@ -1600,7 +1603,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         @Override
         public void setRangeProperties(int newValue, int newExtent, int newMin, int newMax, boolean adjusting) {
             super.setRangeProperties(newValue, newExtent, newMin, newMax, adjusting);
-            if (newValue == scrolling.getLastVerticalScrollingValue() && (newValue == newMin || newValue == newMax)) {
+            if (newValue == scrolling.getLastVerticalScrollingValue() && (newValue <= newMin || newValue >= newMax - newExtent)) {
                 // We still want to report change when scrolling up on corners for big files
                 fireStateChanged();
             }
@@ -1667,7 +1670,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
                                 ((ScrollingCapable) codeArea).setScrollPosition(scrolling.getScrollPosition());
                             }
 
-                            if (e.getValue() == lastValue + 1 || (lastValue == verticalScrollBarModel.getMaximum() && e.getValue() == verticalScrollBarModel.getMaximum())) {
+                            int maxScroll = verticalScrollBarModel.getMaximum() - verticalScrollBarModel.getExtent();
+                            if (e.getValue() == lastValue + 1 || (lastValue == maxScroll && e.getValue() == maxScroll)) {
                                 scrolling.performScrolling(ScrollingDirection.DOWN, dimensions.getRowsPerPage(), structure.getRowsPerDocument());
                                 ((ScrollingCapable) codeArea).setScrollPosition(scrolling.getScrollPosition());
                             }

@@ -27,7 +27,7 @@ import org.exbin.bined.capability.BasicScrollingCapable;
 /**
  * Code area scrolling.
  *
- * @version 0.2.0 2021/06/22
+ * @version 0.2.0 2021/06/30
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -209,15 +209,20 @@ public class BasicCodeAreaScrolling {
         switch (verticalScrollUnit) {
             case PIXEL: {
                 if (scrollBarVerticalScale == ScrollBarVerticalScale.SCALED) {
-                    long targetRow;
-                    if (scrollBarValue > 0 && rowsPerDocumentToLastPage > maxValue / scrollBarValue) {
-                        targetRow = scrollBarValue * (rowsPerDocumentToLastPage / maxValue);
-                        long rest = rowsPerDocumentToLastPage % maxValue;
-                        targetRow += (rest * scrollBarValue) / maxValue;
+                    if (scrollBarValue == maxValue) {
+                        scrollPosition.setRowPosition(maximumScrollPosition.getRowPosition());
+                        scrollPosition.setRowOffset(maximumScrollPosition.getRowOffset());
                     } else {
-                        targetRow = (scrollBarValue * rowsPerDocumentToLastPage) / Integer.MAX_VALUE;
+                        long targetRow;
+                        if (scrollBarValue > 0 && rowsPerDocumentToLastPage > maxValue / scrollBarValue) {
+                            targetRow = scrollBarValue * (rowsPerDocumentToLastPage / maxValue);
+                            long rest = rowsPerDocumentToLastPage % maxValue;
+                            targetRow += (rest * scrollBarValue) / maxValue;
+                        } else {
+                            targetRow = (scrollBarValue * rowsPerDocumentToLastPage) / Integer.MAX_VALUE;
+                        }
+                        scrollPosition.setRowPosition(targetRow);
                     }
-                    scrollPosition.setRowPosition(targetRow);
                     if (verticalScrollUnit != VerticalScrollUnit.ROW) {
                         scrollPosition.setRowOffset(0);
                     }
@@ -230,15 +235,20 @@ public class BasicCodeAreaScrolling {
             }
             case ROW: {
                 if (scrollBarVerticalScale == ScrollBarVerticalScale.SCALED) {
-                    long targetRow;
-                    if (scrollBarValue > 0 && rowsPerDocumentToLastPage > maxValue / scrollBarValue) {
-                        targetRow = scrollBarValue * (rowsPerDocumentToLastPage / maxValue);
-                        long rest = rowsPerDocumentToLastPage % maxValue;
-                        targetRow += (rest * scrollBarValue) / maxValue;
+                    if (scrollBarValue == maxValue) {
+                        scrollPosition.setRowPosition(maximumScrollPosition.getRowPosition());
+                        scrollPosition.setRowOffset(maximumScrollPosition.getRowOffset());
                     } else {
-                        targetRow = (scrollBarValue * rowsPerDocumentToLastPage) / Integer.MAX_VALUE;
+                        long targetRow;
+                        if (scrollBarValue > 0 && rowsPerDocumentToLastPage > maxValue / scrollBarValue) {
+                            targetRow = scrollBarValue * (rowsPerDocumentToLastPage / maxValue);
+                            long rest = rowsPerDocumentToLastPage % maxValue;
+                            targetRow += (rest * scrollBarValue) / maxValue;
+                        } else {
+                            targetRow = (scrollBarValue * rowsPerDocumentToLastPage) / Integer.MAX_VALUE;
+                        }
+                        scrollPosition.setRowPosition(targetRow);
                     }
-                    scrollPosition.setRowPosition(targetRow);
                     if (verticalScrollUnit != VerticalScrollUnit.ROW) {
                         scrollPosition.setRowOffset(0);
                     }
@@ -385,7 +395,7 @@ public class BasicCodeAreaScrolling {
         }
         partial |= bottomVisibility == PositionScrollVisibility.PARTIAL;
 
-        PositionScrollVisibility leftVisibility = checkLeftScrollVisibility(charPosition, characterWidth);
+        PositionScrollVisibility leftVisibility = checkLeftScrollVisibility(charPosition);
         if (leftVisibility == PositionScrollVisibility.NOT_VISIBLE) {
             return PositionScrollVisibility.NOT_VISIBLE;
         }
@@ -450,7 +460,7 @@ public class BasicCodeAreaScrolling {
             scrolled = true;
         }
 
-        if (checkLeftScrollVisibility(charsPosition, characterWidth) != PositionScrollVisibility.VISIBLE) {
+        if (checkLeftScrollVisibility(charsPosition) != PositionScrollVisibility.VISIBLE) {
             setHorizontalScrollPosition(targetScrollPosition, charsPosition, 0, characterWidth);
             scrolled = true;
         }
@@ -497,7 +507,7 @@ public class BasicCodeAreaScrolling {
     }
 
     @Nonnull
-    private PositionScrollVisibility checkLeftScrollVisibility(int charsPosition, int characterWidth) {
+    private PositionScrollVisibility checkLeftScrollVisibility(int charsPosition) {
         int charPos = scrollPosition.getCharPosition();
         if (horizontalScrollUnit != HorizontalScrollUnit.PIXEL) {
             return charsPosition < charPos ? PositionScrollVisibility.NOT_VISIBLE : PositionScrollVisibility.VISIBLE;

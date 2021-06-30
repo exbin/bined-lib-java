@@ -34,7 +34,7 @@ import org.exbin.bined.extended.layout.ExtendedCodeAreaLayoutProfile;
 /**
  * Code area scrolling for extended core area.
  *
- * @version 0.2.0 2021/06/20
+ * @version 0.2.0 2021/06/30
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -222,15 +222,19 @@ public class ExtendedCodeAreaScrolling {
         switch (verticalScrollUnit) {
             case PIXEL: {
                 if (scrollBarVerticalScale == ScrollBarVerticalScale.SCALED) {
-                    long targetRow;
-                    if (scrollBarValue > 0 && rowsPerDocumentToLastPage > maxValue / scrollBarValue) {
-                        targetRow = scrollBarValue * (rowsPerDocumentToLastPage / maxValue);
-                        long rest = rowsPerDocumentToLastPage % maxValue;
-                        targetRow += (rest * scrollBarValue) / maxValue;
+                    if (scrollBarValue == maxValue) {
+                        scrollPosition.setScrollPosition(maximumScrollPosition);
                     } else {
-                        targetRow = (scrollBarValue * rowsPerDocumentToLastPage) / Integer.MAX_VALUE;
+                        long targetRow;
+                        if (scrollBarValue > 0 && rowsPerDocumentToLastPage > maxValue / scrollBarValue) {
+                            targetRow = scrollBarValue * (rowsPerDocumentToLastPage / maxValue);
+                            long rest = rowsPerDocumentToLastPage % maxValue;
+                            targetRow += (rest * scrollBarValue) / maxValue;
+                        } else {
+                            targetRow = (scrollBarValue * rowsPerDocumentToLastPage) / Integer.MAX_VALUE;
+                        }
+                        scrollPosition.setRowPosition(targetRow);
                     }
-                    scrollPosition.setRowPosition(targetRow);
                     if (verticalScrollUnit != VerticalScrollUnit.ROW) {
                         scrollPosition.setRowOffset(0);
                     }
@@ -243,15 +247,19 @@ public class ExtendedCodeAreaScrolling {
             }
             case ROW: {
                 if (scrollBarVerticalScale == ScrollBarVerticalScale.SCALED) {
-                    long targetRow;
-                    if (scrollBarValue > 0 && rowsPerDocumentToLastPage > maxValue / scrollBarValue) {
-                        targetRow = scrollBarValue * (rowsPerDocumentToLastPage / maxValue);
-                        long rest = rowsPerDocumentToLastPage % maxValue;
-                        targetRow += (rest * scrollBarValue) / maxValue;
+                    if (scrollBarValue == maxValue) {
+                        scrollPosition.setScrollPosition(maximumScrollPosition);
                     } else {
-                        targetRow = (scrollBarValue * rowsPerDocumentToLastPage) / Integer.MAX_VALUE;
+                        long targetRow;
+                        if (scrollBarValue > 0 && rowsPerDocumentToLastPage > maxValue / scrollBarValue) {
+                            targetRow = scrollBarValue * (rowsPerDocumentToLastPage / maxValue);
+                            long rest = rowsPerDocumentToLastPage % maxValue;
+                            targetRow += (rest * scrollBarValue) / maxValue;
+                        } else {
+                            targetRow = (scrollBarValue * rowsPerDocumentToLastPage) / Integer.MAX_VALUE;
+                        }
+                        scrollPosition.setRowPosition(targetRow);
                     }
-                    scrollPosition.setRowPosition(targetRow);
                     if (verticalScrollUnit != VerticalScrollUnit.ROW) {
                         scrollPosition.setRowOffset(0);
                     }
@@ -781,7 +789,7 @@ public class ExtendedCodeAreaScrolling {
     public int getLastVerticalScrollingValue() {
         return lastVerticalScrollingValue;
     }
-    
+
     public void clearLastVerticalScrollingValue() {
         lastVerticalScrollingValue = -1;
     }
