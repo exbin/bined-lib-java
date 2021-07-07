@@ -428,6 +428,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
             JViewport viewport = scrollPanel.getViewport();
             Dimension viewDimension = scrolling.computeViewDimension(viewport.getWidth(), viewport.getHeight(), layoutProfile, structure, characterWidth, rowHeight);
             dataView.setPreferredSize(viewDimension);
+            dataView.setSize(viewDimension);
 
             // TODO on resize only
             recomputeDimensions();

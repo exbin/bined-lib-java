@@ -41,8 +41,8 @@ public class BasicCodeAreaScrolling {
     private final ScrollViewDimension scrollViewDimension = new ScrollViewDimension(0, 0);
     private int horizontalExtentDifference;
     private int verticalExtentDifference;
-    private int horizontalScrollbarHeight;
-    private int verticalScrollbarWidth;
+    private int horizontalScrollBarHeight;
+    private int verticalScrollBarWidth;
 
     private int lastVerticalScrollingValue = -1;
 
@@ -67,13 +67,13 @@ public class BasicCodeAreaScrolling {
     public BasicCodeAreaScrolling() {
     }
 
-    public void updateCache(DataProvider codeArea, int horizontalScrollbarHeight, int verticalScrollbarWidth) {
+    public void updateCache(DataProvider codeArea, int horizontalScrollBarHeight, int verticalScrollBarWidth) {
         verticalScrollUnit = ((BasicScrollingCapable) codeArea).getVerticalScrollUnit();
         verticalScrollBarVisibility = ((BasicScrollingCapable) codeArea).getVerticalScrollBarVisibility();
         horizontalScrollUnit = ((BasicScrollingCapable) codeArea).getHorizontalScrollUnit();
         horizontalScrollBarVisibility = ((BasicScrollingCapable) codeArea).getHorizontalScrollBarVisibility();
-        this.horizontalScrollbarHeight = horizontalScrollbarHeight;
-        this.verticalScrollbarWidth = verticalScrollbarWidth;
+        this.horizontalScrollBarHeight = horizontalScrollBarHeight;
+        this.verticalScrollBarWidth = verticalScrollBarWidth;
     }
 
     @Nonnull
@@ -86,10 +86,10 @@ public class BasicCodeAreaScrolling {
         boolean fitsVertically = computeFitsVertically(dataViewHeight, rowsPerData, rowHeight);
 
         if (!fitsVertically) {
-            fitsHorizontally = computeFitsHorizontally(dataViewWidth - verticalScrollbarWidth, dataWidth);
+            fitsHorizontally = computeFitsHorizontally(dataViewWidth - verticalScrollBarWidth, dataWidth);
         }
         if (!fitsHorizontally) {
-            fitsVertically = computeFitsVertically(dataViewHeight - horizontalScrollbarHeight, rowsPerData, rowHeight);
+            fitsVertically = computeFitsVertically(dataViewHeight - horizontalScrollBarHeight, rowsPerData, rowHeight);
         }
 
         if (fitsHorizontally) {

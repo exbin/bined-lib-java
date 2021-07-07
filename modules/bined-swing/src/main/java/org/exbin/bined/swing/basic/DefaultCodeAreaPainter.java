@@ -385,7 +385,9 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
             scrolling.updateCache(codeArea, getHorizontalScrollBarSize(), getVerticalScrollBarSize());
             JViewport viewport = scrollPanel.getViewport();
             BasicCodeAreaScrolling.ScrollViewDimension viewDimension = scrolling.computeViewDimension(viewport.getWidth(), viewport.getHeight(), layout, structure, characterWidth, rowHeight);
-            dataView.setPreferredSize(new Dimension(viewDimension.getWidth(), viewDimension.getHeight()));
+            Dimension dataViewSize = new Dimension(viewDimension.getWidth(), viewDimension.getHeight());
+            dataView.setPreferredSize(dataViewSize);
+            dataView.setSize(dataViewSize);
 
             // TODO on resize only
             recomputeDimensions();
