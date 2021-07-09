@@ -94,7 +94,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
     @Nonnull
     protected final CodeAreaCore codeArea;
     private volatile boolean initialized = false;
-    private volatile boolean adjusting = false;
+    private volatile boolean scrollingUpdate = false;
 
     private volatile boolean fontChanged = false;
     private volatile boolean layoutChanged = true;
@@ -1579,7 +1579,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         int rowHeight = metrics.getRowHeight();
         long rowsPerDocument = structure.getRowsPerDocument();
 
-        adjusting = true;
+        scrollingUpdate = true;
         ScrollBar verticalScrollBar = scrollPanel.getVerticalBar();
         ScrollBar horizontalScrollBar = scrollPanel.getHorizontalBar();
 
@@ -1597,7 +1597,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         int horizontalScrollValue = scrolling.getHorizontalScrollValue(characterWidth);
         horizontalScrollBar.setSelection(horizontalScrollValue);
 
-        adjusting = false;
+        scrollingUpdate = false;
     }
 
     @Override
@@ -1636,7 +1636,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
 
         @Override
         public void widgetSelected(@Nullable SelectionEvent se) {
-            if (se == null || adjusting) {
+            if (se == null || scrollingUpdate) {
                 return;
             }
 
@@ -1662,7 +1662,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
 
         @Override
         public void widgetSelected(@Nullable SelectionEvent se) {
-            if (se == null || adjusting) {
+            if (se == null || scrollingUpdate) {
                 return;
             }
 

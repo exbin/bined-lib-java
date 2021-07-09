@@ -344,9 +344,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
         Optional<CodeAreaScrollPosition> revealScrollPosition = painter.computeRevealScrollPosition(caretPosition);
         if (revealScrollPosition.isPresent()) {
             setScrollPosition(revealScrollPosition.get());
-            resetPainter();
-            updateScrollBars();
-            notifyScrolled();
+            painter.scrollPositionChanged();
         }
     }
 

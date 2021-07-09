@@ -89,7 +89,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
     @Nonnull
     protected final CodeAreaCore codeArea;
     private volatile boolean initialized = false;
-    private volatile boolean adjusting = false;
+    private volatile boolean scrollingUpdate = false;
 
     private volatile boolean fontChanged = false;
     private volatile boolean layoutChanged = true;
@@ -1524,7 +1524,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         int characterWidth = metrics.getCharacterWidth();
         int rowHeight = metrics.getRowHeight();
         long rowsPerDocument = structure.getRowsPerDocument();
-        adjusting = true;
+        scrollingUpdate = true;
         scrollPanel.setVbarPolicy(CodeAreaJavaFxUtils.getVerticalScrollBarPolicy(scrolling.getVerticalScrollBarVisibility()));
         scrollPanel.setHbarPolicy(CodeAreaJavaFxUtils.getHorizontalScrollBarPolicy(scrolling.getHorizontalScrollBarVisibility()));
 
@@ -1534,7 +1534,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         int horizontalScrollValue = scrolling.getHorizontalScrollValue(characterWidth);
         scrollPanel.setVvalue(horizontalScrollValue);
 
-        adjusting = false;
+        scrollingUpdate = false;
     }
 
     @Override

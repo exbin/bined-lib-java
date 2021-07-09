@@ -109,7 +109,7 @@ import org.exbin.bined.swing.extended.caret.CaretsProfileCapableCodeAreaPainter;
 /**
  * Extended code area component default painter.
  *
- * @version 0.2.0 2020/06/20
+ * @version 0.2.0 2020/07/09
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -118,7 +118,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
     @Nonnull
     protected final CodeAreaCore codeArea;
     private volatile boolean initialized = false;
-    private volatile boolean adjusting = false;
+    private volatile boolean scrollingUpdate = false;
 
     private volatile boolean fontChanged = false;
     private volatile boolean layoutChanged = true;
@@ -229,6 +229,8 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         scrollPanel.setViewportView(dataView);
         JViewport viewport = scrollPanel.getViewport();
         viewport.setOpaque(false);
+        scrolling.setHorizontalExtentChangeListener(() -> horizontalExtentChanged());
+        scrolling.setVerticalExtentChangeListener(() -> verticalExtentChanged());
 
         codeAreaMouseListener = new DefaultCodeAreaMouseListener(codeArea, scrollPanel);
         viewport.addMouseListener(codeAreaMouseListener);
@@ -420,8 +422,13 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
             recomputeCharPositions();
         }
 
+        boolean revalidate = false;
         Rectangle scrollPanelRectangle = dimensions.getScrollPanelRectangle();
-        scrollPanel.setBounds(scrollPanelRectangle);
+        Rectangle oldRect = scrollPanel.getBounds();
+        if (!oldRect.equals(scrollPanelRectangle)) {
+            scrollPanel.setBounds(scrollPanelRectangle);
+            revalidate = true;
+        }
 
         if (rowHeight > 0 && characterWidth > 0) {
             scrolling.updateCache(codeArea, horizontalScrollBarSize, verticalScrollBarSize);
@@ -429,13 +436,21 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
             Dimension viewDimension = scrolling.computeViewDimension(viewport.getWidth(), viewport.getHeight(), layoutProfile, structure, characterWidth, rowHeight);
             dataView.setPreferredSize(viewDimension);
             dataView.setSize(viewDimension);
+            scrollPanel.invalidate();
 
             // TODO on resize only
             recomputeDimensions();
-            scrollPanel.setBounds(dimensions.getScrollPanelRectangle());
+
+            scrollPanelRectangle = dimensions.getScrollPanelRectangle();
+            if (!oldRect.equals(scrollPanelRectangle)) {
+                scrollPanel.setBounds(scrollPanelRectangle);
+                revalidate = true;
+            }
         }
 
-        scrollPanel.revalidate();
+        if (revalidate) {
+            scrollPanel.revalidate();
+        }
     }
 
     @Override
@@ -1963,9 +1978,9 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         int characterWidth = metrics.getCharacterWidth();
         int rowHeight = metrics.getRowHeight();
         long rowsPerDocument = structure.getRowsPerDocument();
-        recomputeScrollState();
 
-        adjusting = true;
+        scrollingUpdate = true;
+        recomputeScrollState();
         JScrollBar verticalScrollBar = scrollPanel.getVerticalScrollBar();
         scrollPanel.setVerticalScrollBarPolicy(CodeAreaSwingUtils.getVerticalScrollBarPolicy(scrolling.getVerticalScrollBarVisibility()));
         JScrollBar horizontalScrollBar = scrollPanel.getHorizontalScrollBar();
@@ -1977,12 +1992,30 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         int horizontalScrollValue = scrolling.getHorizontalScrollValue(characterWidth);
         horizontalScrollBar.setValue(horizontalScrollValue);
 
-        adjusting = false;
+        scrollingUpdate = false;
     }
 
     @Override
     public void scrollPositionModified() {
         scrolling.clearLastVerticalScrollingValue();
+    }
+
+    @Override
+    public void scrollPositionChanged() {
+        reset();
+        updateScrollBars();
+    }
+
+    private void horizontalExtentChanged() {
+        scrollingUpdate = true;
+        horizontalScrollBarModel.notifyChanged();
+        scrollingUpdate = false;
+    }
+
+    private void verticalExtentChanged() {
+        scrollingUpdate = true;
+        verticalScrollBarModel.notifyChanged();
+        scrollingUpdate = false;
     }
 
     protected int getCharactersPerRow() {
@@ -2093,7 +2126,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
 
         @Override
         public void adjustmentValueChanged(@Nullable AdjustmentEvent e) {
-            if (e == null || adjusting) {
+            if (e == null || scrollingUpdate) {
                 return;
             }
 
@@ -2146,7 +2179,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
 
         @Override
         public void adjustmentValueChanged(@Nullable AdjustmentEvent e) {
-            if (e == null || adjusting) {
+            if (e == null || scrollingUpdate) {
                 return;
             }
 
