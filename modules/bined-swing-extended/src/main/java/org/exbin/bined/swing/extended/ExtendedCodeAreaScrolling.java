@@ -752,6 +752,14 @@ public class ExtendedCodeAreaScrolling {
 
     public void setScrollPosition(CodeAreaScrollPosition scrollPosition) {
         this.scrollPosition.setScrollPosition(scrollPosition);
+        if (scrollPosition.isRowPositionGreaterThan(maximumScrollPosition)) {
+            this.scrollPosition.setRowPosition(maximumScrollPosition.getRowPosition());
+            this.scrollPosition.setRowOffset(maximumScrollPosition.getRowOffset());
+        }
+        if (scrollPosition.isCharPositionGreaterThan(maximumScrollPosition)) {
+            this.scrollPosition.setCharPosition(maximumScrollPosition.getCharPosition());
+            this.scrollPosition.setCharOffset(maximumScrollPosition.getCharOffset());
+        }
     }
 
     public int getHorizontalExtentDifference() {

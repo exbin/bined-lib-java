@@ -33,6 +33,8 @@ import java.awt.event.AdjustmentListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -109,7 +111,7 @@ import org.exbin.bined.swing.extended.caret.CaretsProfileCapableCodeAreaPainter;
 /**
  * Extended code area component default painter.
  *
- * @version 0.2.0 2020/07/09
+ * @version 0.2.0 2021/07/15
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -118,7 +120,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
     @Nonnull
     protected final CodeAreaCore codeArea;
     private volatile boolean initialized = false;
-    private volatile boolean scrollingUpdate = false;
+    private volatile boolean scrollingByMouse = false;
 
     private volatile boolean fontChanged = false;
     private volatile boolean layoutChanged = true;
@@ -221,11 +223,41 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         verticalScrollBar.addAdjustmentListener(new VerticalAdjustmentListener());
         verticalScrollBarModel = new VerticalScrollBarModel();
         verticalScrollBar.setModel(verticalScrollBarModel);
+        verticalScrollBar.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (e.getButton() == MouseEvent.BUTTON1) {
+                    scrollingByMouse = true;
+                }
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                if (e.getButton() == MouseEvent.BUTTON1) {
+                    scrollingByMouse = false;
+                }
+            }
+        });
         JScrollBar horizontalScrollBar = scrollPanel.getHorizontalScrollBar();
         horizontalScrollBar.setIgnoreRepaint(true);
         horizontalScrollBar.addAdjustmentListener(new HorizontalAdjustmentListener());
         horizontalScrollBarModel = new HorizontalScrollBarModel();
         horizontalScrollBar.setModel(horizontalScrollBarModel);
+        horizontalScrollBar.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (e.getButton() == MouseEvent.BUTTON1) {
+                    scrollingByMouse = true;
+                }
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                if (e.getButton() == MouseEvent.BUTTON1) {
+                    scrollingByMouse = false;
+                }
+            }
+        });
         scrollPanel.setViewportView(dataView);
         JViewport viewport = scrollPanel.getViewport();
         viewport.setOpaque(false);
@@ -1979,7 +2011,6 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         int rowHeight = metrics.getRowHeight();
         long rowsPerDocument = structure.getRowsPerDocument();
 
-        scrollingUpdate = true;
         recomputeScrollState();
         JScrollBar verticalScrollBar = scrollPanel.getVerticalScrollBar();
         scrollPanel.setVerticalScrollBarPolicy(CodeAreaSwingUtils.getVerticalScrollBarPolicy(scrolling.getVerticalScrollBarVisibility()));
@@ -1991,8 +2022,6 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
 
         int horizontalScrollValue = scrolling.getHorizontalScrollValue(characterWidth);
         horizontalScrollBar.setValue(horizontalScrollValue);
-
-        scrollingUpdate = false;
     }
 
     @Override
@@ -2007,15 +2036,11 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
     }
 
     private void horizontalExtentChanged() {
-        scrollingUpdate = true;
         horizontalScrollBarModel.notifyChanged();
-        scrollingUpdate = false;
     }
 
     private void verticalExtentChanged() {
-        scrollingUpdate = true;
         verticalScrollBarModel.notifyChanged();
-        scrollingUpdate = false;
     }
 
     protected int getCharactersPerRow() {
@@ -2126,7 +2151,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
 
         @Override
         public void adjustmentValueChanged(@Nullable AdjustmentEvent e) {
-            if (e == null || scrollingUpdate) {
+            if (e == null || !scrollingByMouse) {
                 return;
             }
 
@@ -2179,7 +2204,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
 
         @Override
         public void adjustmentValueChanged(@Nullable AdjustmentEvent e) {
-            if (e == null || scrollingUpdate) {
+            if (e == null || !scrollingByMouse) {
                 return;
             }
 
