@@ -630,6 +630,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                             ((EditableBinaryData) data).insert(dataPosition, clipboardData);
                             codeArea.notifyDataChanged();
                             caret.setCaretPosition(caret.getDataPosition() + dataSize);
+                            updateSelection(SelectingMode.NONE, caret.getCaretPosition());
                         }
 
                         caret.setCodeOffset(0);
@@ -673,6 +674,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                             ((EditableBinaryData) data).insert(dataPosition, bytes);
                             codeArea.notifyDataChanged();
                             caret.setCaretPosition(caret.getDataPosition() + length);
+                            updateSelection(SelectingMode.NONE, caret.getCaretPosition());
                         }
 
                         caret.setCodeOffset(0);
@@ -738,10 +740,12 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                             ((EditableBinaryData) data).insert(caret.getDataPosition(), pastedData, 0, toRemove);
                             codeArea.notifyDataChanged();
                             caret.setCaretPosition(caret.getDataPosition() + toRemove);
+                            updateSelection(SelectingMode.NONE, caret.getCaretPosition());
                         } else {
                             ((EditableBinaryData) data).insert(caret.getDataPosition(), pastedData);
                             codeArea.notifyDataChanged();
                             caret.setCaretPosition(caret.getDataPosition() + length);
+                            updateSelection(SelectingMode.NONE, caret.getCaretPosition());
                         }
 
                         caret.setCodeOffset(0);

@@ -437,7 +437,7 @@ public class ExtendedCodeAreaScrolling {
         boolean scrolled = false;
         if (checkBottomScrollVisibility(rowPosition, rowsPerPage, rowOffset, rowHeight) != PositionScrollVisibility.VISIBLE) {
             int bottomRowOffset;
-            if (verticalScrollUnit == VerticalScrollUnit.ROW) {
+            if (verticalScrollUnit != VerticalScrollUnit.PIXEL) {
                 bottomRowOffset = 0;
             } else {
                 if (rowsPerPage == 0) {

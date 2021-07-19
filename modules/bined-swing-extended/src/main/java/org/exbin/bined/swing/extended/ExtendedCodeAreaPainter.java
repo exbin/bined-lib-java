@@ -501,16 +501,15 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
             Dimension viewDimension = scrolling.computeViewDimension(viewport.getWidth(), viewport.getHeight(), layoutProfile, structure, characterWidth, rowHeight);
             dataView.setPreferredSize(viewDimension);
             dataView.setSize(viewDimension);
-            scrollPanel.invalidate();
 
-            // TODO on resize only
             recomputeDimensions();
 
             scrollPanelRectangle = dimensions.getScrollPanelRectangle();
             if (!oldRect.equals(scrollPanelRectangle)) {
                 scrollPanel.setBounds(scrollPanelRectangle);
-                revalidate = true;
             }
+
+            revalidate = true;
         }
 
         if (revalidate) {
@@ -2045,10 +2044,17 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         long rowsPerDocument = structure.getRowsPerDocument();
 
         recomputeScrollState();
+
         JScrollBar verticalScrollBar = scrollPanel.getVerticalScrollBar();
-        scrollPanel.setVerticalScrollBarPolicy(CodeAreaSwingUtils.getVerticalScrollBarPolicy(scrolling.getVerticalScrollBarVisibility()));
+        int verticalScrollBarPolicy = CodeAreaSwingUtils.getVerticalScrollBarPolicy(scrolling.getVerticalScrollBarVisibility());
+        if (scrollPanel.getVerticalScrollBarPolicy() != verticalScrollBarPolicy) {
+            scrollPanel.setVerticalScrollBarPolicy(verticalScrollBarPolicy);
+        }
         JScrollBar horizontalScrollBar = scrollPanel.getHorizontalScrollBar();
-        scrollPanel.setHorizontalScrollBarPolicy(CodeAreaSwingUtils.getHorizontalScrollBarPolicy(scrolling.getHorizontalScrollBarVisibility()));
+        int horizontalScrollBarPolicy = CodeAreaSwingUtils.getHorizontalScrollBarPolicy(scrolling.getHorizontalScrollBarVisibility());
+        if (scrollPanel.getHorizontalScrollBarPolicy() != horizontalScrollBarPolicy) {
+            scrollPanel.setHorizontalScrollBarPolicy(horizontalScrollBarPolicy);
+        }
 
         scrollingUpdate = true;
         int verticalScrollValue = scrolling.getVerticalScrollValue(rowHeight, rowsPerDocument);
@@ -2201,17 +2207,20 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
                             if (e.getValue() == lastValue - 1 || (lastValue == 0 && e.getValue() == 0)) {
                                 scrolling.performScrolling(ScrollingDirection.UP, dimensions.getRowsPerPage(), structure.getRowsPerDocument());
                                 ((ScrollingCapable) codeArea).setScrollPosition(scrolling.getScrollPosition());
+                                notifyScrolled();
+                                codeArea.repaint();
+                                return;
                             }
 
                             int maxScroll = verticalScrollBarModel.getMaximum() - verticalScrollBarModel.getExtent();
                             if (e.getValue() == lastValue + 1 || (lastValue == maxScroll && e.getValue() == maxScroll)) {
                                 scrolling.performScrolling(ScrollingDirection.DOWN, dimensions.getRowsPerPage(), structure.getRowsPerDocument());
                                 ((ScrollingCapable) codeArea).setScrollPosition(scrolling.getScrollPosition());
+                                notifyScrolled();
+                                codeArea.repaint();
+                                return;
                             }
                         }
-                        notifyScrolled();
-                        codeArea.repaint();
-                        return;
                     }
                 }
             } else {

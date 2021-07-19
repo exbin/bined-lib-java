@@ -353,11 +353,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
             scrolling.updateMaximumScrollPosition(rowsPerDocument, rowsPerPage, charactersPerRow, charactersPerPage, dimensions.getLastCharOffset(), dimensions.getLastRowOffset());
         }
 
-        recomputeScrollState();
-
-        // Notify extent/maximum change
-        verticalScrollBarModel.notifyChanged();
-        horizontalScrollBarModel.notifyChanged();
+        updateScrollBars();
 
         layoutChanged = false;
     }
@@ -420,54 +416,21 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
             return;
         }
 
-        recomputeScrollState();
+        updateScrollBars();
+
         if (metrics.getCharacterWidth() > 0) {
-            recomputeCharPositions();
             paintComponent(g);
         }
     }
 
     private void recomputeScrollState() {
-//        System.out.println(((ScrollingCapable) codeArea).getScrollPosition().getRowPosition() + " / MAX:" + scrolling.getMaximumScrollPosition().getRowPosition());
         scrolling.setScrollPosition(((ScrollingCapable) codeArea).getScrollPosition());
         int characterWidth = metrics.getCharacterWidth();
-        int rowHeight = metrics.getRowHeight();
 
         if (characterWidth > 0) {
-            recomputeCharPositions();
-        }
-
-        boolean revalidate = false;
-        Rectangle scrollPanelRectangle = dimensions.getScrollPanelRectangle();
-        Rectangle oldRect = scrollPanel.getBounds();
-        if (!oldRect.equals(scrollPanelRectangle)) {
-            scrollPanel.setBounds(scrollPanelRectangle);
-            revalidate = true;
-        }
-
-        if (rowHeight > 0 && characterWidth > 0) {
             scrolling.updateCache(codeArea, getHorizontalScrollBarSize(), getVerticalScrollBarSize());
-            JViewport viewport = scrollPanel.getViewport();
-            BasicCodeAreaScrolling.ScrollViewDimension viewDimension = scrolling.computeViewDimension(viewport.getWidth(), viewport.getHeight(), layout, structure, characterWidth, rowHeight);
-            Dimension dataViewSize = new Dimension(viewDimension.getWidth(), viewDimension.getHeight());
-            Dimension oldDataViewSize = dataView.getSize();
-            if (!oldDataViewSize.equals(dataViewSize)) {
-                dataView.setPreferredSize(dataViewSize);
-                dataView.setSize(dataViewSize);
 
-                recomputeDimensions();
-                revalidate = true;
-            }
-
-            scrollPanelRectangle = dimensions.getScrollPanelRectangle();
-            if (!oldRect.equals(scrollPanelRectangle)) {
-                scrollPanel.setBounds(scrollPanelRectangle);
-                revalidate = true;
-            }
-        }
-
-        if (revalidate) {
-            scrollPanel.revalidate();
+            recomputeCharPositions();
         }
     }
 
@@ -1613,25 +1576,67 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
 
     @Override
     public void updateScrollBars() {
+        JScrollBar verticalScrollBar = scrollPanel.getVerticalScrollBar();
+        int verticalScrollBarPolicy = CodeAreaSwingUtils.getVerticalScrollBarPolicy(scrolling.getVerticalScrollBarVisibility());
+        if (scrollPanel.getVerticalScrollBarPolicy() != verticalScrollBarPolicy) {
+            scrollPanel.setVerticalScrollBarPolicy(verticalScrollBarPolicy);
+        }
+        JScrollBar horizontalScrollBar = scrollPanel.getHorizontalScrollBar();
+        int horizontalScrollBarPolicy = CodeAreaSwingUtils.getHorizontalScrollBarPolicy(scrolling.getHorizontalScrollBarVisibility());
+        if (scrollPanel.getHorizontalScrollBarPolicy() != horizontalScrollBarPolicy) {
+            scrollPanel.setHorizontalScrollBarPolicy(horizontalScrollBarPolicy);
+        }
+        
         int characterWidth = metrics.getCharacterWidth();
         int rowHeight = metrics.getRowHeight();
         long rowsPerDocument = structure.getRowsPerDocument();
 
         recomputeScrollState();
-        JScrollBar verticalScrollBar = scrollPanel.getVerticalScrollBar();
-        scrollPanel.setVerticalScrollBarPolicy(CodeAreaSwingUtils.getVerticalScrollBarPolicy(scrolling.getVerticalScrollBarVisibility()));
-        JScrollBar horizontalScrollBar = scrollPanel.getHorizontalScrollBar();
-        scrollPanel.setHorizontalScrollBarPolicy(CodeAreaSwingUtils.getHorizontalScrollBarPolicy(scrolling.getHorizontalScrollBarVisibility()));
 
-        scrollingUpdate = true;
-        int verticalScrollValue = scrolling.getVerticalScrollValue(rowHeight, rowsPerDocument);
-        verticalScrollBar.setValue(verticalScrollValue);
+        boolean revalidate = false;
+        Rectangle scrollPanelRectangle = dimensions.getScrollPanelRectangle();
+        Rectangle oldRect = scrollPanel.getBounds();
+        if (!oldRect.equals(scrollPanelRectangle)) {
+            scrollPanel.setBounds(scrollPanelRectangle);
+            revalidate = true;
+        }
 
-        int horizontalScrollValue = scrolling.getHorizontalScrollValue(characterWidth);
-        horizontalScrollBar.setValue(horizontalScrollValue);
-        scrollingUpdate = false;
+        JViewport viewport = scrollPanel.getViewport();
+        Dimension dataViewSize = null;
+        if (rowHeight > 0 && characterWidth > 0) {
+            BasicCodeAreaScrolling.ScrollViewDimension viewDimension = scrolling.computeViewDimension(viewport.getWidth(), viewport.getHeight(), layout, structure, characterWidth, rowHeight);
+            dataViewSize = new Dimension(viewDimension.getWidth(), viewDimension.getHeight());
+            Dimension oldDataViewSize = dataView.getSize();
+            if (!oldDataViewSize.equals(dataViewSize)) {
+                dataView.setPreferredSize(dataViewSize);
+                dataView.setSize(dataViewSize);
+
+                recomputeDimensions();
+
+                scrollPanelRectangle = dimensions.getScrollPanelRectangle();
+                if (!oldRect.equals(scrollPanelRectangle)) {
+                    scrollPanel.setBounds(scrollPanelRectangle);
+                }
+
+                revalidate = true;
+            }
+
+            scrollingUpdate = true;
+            int verticalScrollValue = scrolling.getVerticalScrollValue(rowHeight, rowsPerDocument);
+            verticalScrollBar.setValue(verticalScrollValue);
+
+            int horizontalScrollValue = scrolling.getHorizontalScrollValue(characterWidth);
+            horizontalScrollBar.setValue(horizontalScrollValue);
+            scrollingUpdate = false;
+        }
+
+        if (revalidate) {
+            horizontalExtentChanged();
+            verticalExtentChanged();
+            codeArea.revalidate();
+        }
     }
-
+    
     @Override
     public void scrollPositionModified() {
         scrolling.clearLastVerticalScrollingValue();
@@ -1760,17 +1765,20 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
                             if (e.getValue() == lastValue - 1 || (lastValue == 0 && e.getValue() == 0)) {
                                 scrolling.performScrolling(ScrollingDirection.UP, dimensions.getRowsPerPage(), structure.getRowsPerDocument());
                                 ((ScrollingCapable) codeArea).setScrollPosition(scrolling.getScrollPosition());
+                                notifyScrolled();
+                                codeArea.repaint();
+                                return;
                             }
 
                             int maxScroll = verticalScrollBarModel.getMaximum() - verticalScrollBarModel.getExtent();
                             if (e.getValue() == lastValue + 1 || (lastValue == maxScroll && e.getValue() == maxScroll)) {
                                 scrolling.performScrolling(ScrollingDirection.DOWN, dimensions.getRowsPerPage(), structure.getRowsPerDocument());
                                 ((ScrollingCapable) codeArea).setScrollPosition(scrolling.getScrollPosition());
+                                notifyScrolled();
+                                codeArea.repaint();
+                                return;
                             }
                         }
-                        notifyScrolled();
-                        codeArea.repaint();
-                        return;
                     }
                 }
             } else {
@@ -1811,7 +1819,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
     }
 
     private void notifyScrolled() {
-        recomputeScrollState();
         ((ScrollingCapable) codeArea).notifyScrolled();
     }
 
