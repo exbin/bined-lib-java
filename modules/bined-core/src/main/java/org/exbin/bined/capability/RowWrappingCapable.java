@@ -28,24 +28,74 @@ import org.exbin.bined.RowWrappingMode;
 @ParametersAreNonnullByDefault
 public interface RowWrappingCapable {
 
+    /**
+     * Returns row wrapping mode.
+     *
+     * @return row wrapping mode
+     */
     @Nonnull
     RowWrappingMode getRowWrapping();
 
+    /**
+     * Sets row wrapping mode.
+     *
+     * @param rowWrapping row wrapping mode
+     */
     void setRowWrapping(RowWrappingMode rowWrapping);
 
+    /**
+     * Returns maximum number of bytes per row.
+     *
+     * @return bytes per row
+     */
     int getMaxBytesPerRow();
 
+    /**
+     * Sets maximum number of bytes per row.
+     *
+     * @param maxBytesPerRow bytes per row
+     */
     void setMaxBytesPerRow(int maxBytesPerRow);
 
+    /**
+     * Returns size of the byte group.
+     *
+     * @return size of the byte group
+     */
     int getWrappingBytesGroupSize();
 
+    /**
+     * Sets size of the byte group.
+     *
+     * @param groupSize size of the byte group
+     */
     void setWrappingBytesGroupSize(int groupSize);
 
+    /**
+     * Returns minimum length of position section of the code area.
+     *
+     * @return minimum length
+     */
     int getMinRowPositionLength();
 
+    /**
+     * Sets minimum length of position section of the code area.
+     *
+     * @param minRowPositionLength minimum length
+     */
     void setMinRowPositionLength(int minRowPositionLength);
 
+    /**
+     * Returns maximum length of position section of the code area.
+     *
+     * @return maximum length
+     */
     int getMaxRowPositionLength();
 
+    /**
+     * Sets maximum length of position section of the code area.
+     *
+     * @param maxRowPositionLength maximum length
+     */
     void setMaxRowPositionLength(int maxRowPositionLength);
 }

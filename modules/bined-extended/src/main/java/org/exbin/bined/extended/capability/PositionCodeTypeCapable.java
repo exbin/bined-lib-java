@@ -28,8 +28,18 @@ import org.exbin.bined.PositionCodeType;
 @ParametersAreNonnullByDefault
 public interface PositionCodeTypeCapable {
 
+    /**
+     * Returns position code type.
+     *
+     * @return position code type
+     */
     @Nonnull
     PositionCodeType getPositionCodeType();
 
+    /**
+     * Sets position code type.
+     *
+     * @param positionCodeType position code type
+     */
     void setPositionCodeType(PositionCodeType positionCodeType);
 }

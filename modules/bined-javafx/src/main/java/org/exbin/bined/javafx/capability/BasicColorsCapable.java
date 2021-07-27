@@ -28,8 +28,18 @@ import org.exbin.bined.javafx.basic.color.BasicCodeAreaColorsProfile;
 @ParametersAreNonnullByDefault
 public interface BasicColorsCapable {
 
+    /**
+     * Returns basic profile for colors.
+     *
+     * @return colors profile
+     */
     @Nonnull
     BasicCodeAreaColorsProfile getBasicColors();
 
-    void setBasicColors(@Nonnull BasicCodeAreaColorsProfile colors);
+    /**
+     * Sets basic profile for colors.
+     *
+     * @param colorsProfile colors profile
+     */
+    void setBasicColors(BasicCodeAreaColorsProfile colorsProfile);
 }

@@ -117,6 +117,7 @@ public class OverwriteCodeEditDataOperation extends CodeEditDataOperation {
         }
     }
 
+    @Nonnull
     @Override
     public CodeAreaOperation[] generateUndo() {
         ModifyDataOperation modifyOperation = null;

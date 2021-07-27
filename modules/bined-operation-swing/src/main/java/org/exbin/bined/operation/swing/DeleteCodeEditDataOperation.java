@@ -70,6 +70,7 @@ public class DeleteCodeEditDataOperation extends CodeEditDataOperation {
         return codeType;
     }
 
+    @Nullable
     private CodeAreaOperation execute(boolean withUndo) {
         throw new IllegalStateException("Cannot be executed");
     }
@@ -113,6 +114,7 @@ public class DeleteCodeEditDataOperation extends CodeEditDataOperation {
         codeArea.repaint();
     }
 
+    @Nonnull
     @Override
     public CodeAreaOperation[] generateUndo() {
         InsertDataOperation insertOperation = new InsertDataOperation(codeArea, position, 0, (EditableBinaryData) undoData.copy());

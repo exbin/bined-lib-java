@@ -94,7 +94,7 @@ public enum AntialiasingMode {
                 break;
             }
             default: {
-                throw new IllegalStateException("Unexpected antialiasing type " + name());
+                throw new IllegalStateException("Unexpected antialiasing mode " + name());
             }
         }
 

@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.auxiliary.paged_data.BinaryData;
 import org.exbin.auxiliary.paged_data.ByteArrayData;
 
@@ -28,6 +29,7 @@ import org.exbin.auxiliary.paged_data.ByteArrayData;
  * @version 0.2.0 2018/04/22
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public class HugeBinaryData implements BinaryData {
 
     @Override
@@ -70,7 +72,7 @@ public class HugeBinaryData implements BinaryData {
     }
 
     @Override
-    public void saveToStream(@Nonnull OutputStream out) throws IOException {
+    public void saveToStream(OutputStream out) throws IOException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

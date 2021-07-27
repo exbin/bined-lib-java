@@ -28,8 +28,18 @@ import org.exbin.bined.swing.extended.theme.ExtendedCodeAreaThemeProfile;
 @ParametersAreNonnullByDefault
 public interface ThemeProfileCapable {
 
+    /**
+     * Returns theme profile.
+     *
+     * @return theme profile
+     */
     @Nullable
     ExtendedCodeAreaThemeProfile getThemeProfile();
 
+    /**
+     * Sets theme profile.
+     *
+     * @param themeProfile theme profile
+     */
     void setThemeProfile(ExtendedCodeAreaThemeProfile themeProfile);
 }

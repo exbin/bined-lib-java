@@ -23,7 +23,17 @@ package org.exbin.bined.extended.capability;
  */
 public interface RowOffsetCapable {
 
+    /**
+     * Returns row offset.
+     *
+     * @return row offset
+     */
     long getRowOffset();
 
+    /**
+     * Sets row offset.
+     *
+     * @param offset row offset
+     */
     void setRowOffset(long offset);
 }

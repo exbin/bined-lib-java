@@ -17,6 +17,7 @@ package org.exbin.bined.operation.swing;
 
 import java.nio.charset.Charset;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.capability.CaretCapable;
@@ -54,11 +55,13 @@ public class OverwriteCharEditDataOperation extends CharEditDataOperation {
         execute(false);
     }
 
+    @Nullable
     @Override
     public CodeAreaOperation executeWithUndo() throws BinaryDataOperationException {
         return execute(true);
     }
 
+    @Nullable
     private CodeAreaOperation execute(boolean withUndo) {
         throw new IllegalStateException("Cannot be executed");
     }

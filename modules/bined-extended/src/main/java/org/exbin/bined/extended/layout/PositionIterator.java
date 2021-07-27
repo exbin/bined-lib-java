@@ -28,29 +28,66 @@ import org.exbin.bined.basic.BasicCodeAreaSection;
 @ParametersAreNonnullByDefault
 public interface PositionIterator {
 
+    /**
+     * Resets iterator to the begining of the document.
+     */
     void reset();
 
+    /**
+     * Returns space type after current position.
+     *
+     * @return space type
+     */
     @Nonnull
     SpaceType nextSpaceType();
 
     /**
-     * @return iteration step position.
+     * Returns current iteration step position.
+     *
+     * @return iteration step position
      */
     int getPosition();
 
     /**
-     * @return byte on row offset position.
+     * Returns byte on row offset position.
+     *
+     * @return byte on row offset position
      */
     int getBytePosition();
 
+    /**
+     * Returns offset in the code position.
+     *
+     * @return offset in the code position
+     */
     int getCodeOffset();
 
+    /**
+     * Returns character position with half width character size.
+     *
+     * @return half character position
+     */
     int getHalfCharPosition();
 
+    /**
+     * Returns section for the current position
+     *
+     * @return code area section
+     */
     @Nonnull
     BasicCodeAreaSection getSection();
 
+    /**
+     * Returns true if end of document is reached.
+     *
+     * @return
+     */
     boolean isEndReached();
 
+    /**
+     * Skips given number of positions.
+     *
+     * @param count number of positions
+     */
     void skip(int count);
 }

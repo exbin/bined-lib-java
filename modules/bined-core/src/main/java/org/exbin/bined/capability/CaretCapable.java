@@ -95,14 +95,14 @@ public interface CaretCapable {
     int getMouseCursorShape(int positionX, int positionY);
 
     /**
-     * Adds caret moving listener.
+     * Adds caret movement listener.
      *
      * @param caretMovedListener listener
      */
     void addCaretMovedListener(CaretMovedListener caretMovedListener);
 
     /**
-     * Removes caret moving listener.
+     * Removes caret movement listener.
      *
      * @param caretMovedListener listener
      */

@@ -23,7 +23,7 @@ import org.exbin.bined.basic.CodeAreaScrollPosition;
 import org.exbin.bined.basic.ScrollingDirection;
 
 /**
- * Support for code type capability.
+ * Support for scrolling capability.
  *
  * @version 0.2.0 2019/02/19
  * @author ExBin Project (https://exbin.org)
@@ -31,20 +31,53 @@ import org.exbin.bined.basic.ScrollingDirection;
 @ParametersAreNonnullByDefault
 public interface ScrollingCapable {
 
+    /**
+     * Returns current scrolling position.
+     *
+     * @return scroll position
+     */
     @Nonnull
     CodeAreaScrollPosition getScrollPosition();
 
+    /**
+     * Sets current scrolling position.
+     *
+     * @param scrollPosition scrolling position
+     */
     void setScrollPosition(CodeAreaScrollPosition scrollPosition);
 
+    /**
+     * Notifies component that scrolling was performed.
+     */
     void notifyScrolled();
 
+    /**
+     * Adds scrolling listener.
+     *
+     * @param scrollingListener scrolling listener
+     */
     void addScrollingListener(ScrollingListener scrollingListener);
 
+    /**
+     * Removes scrolling listener.
+     *
+     * @param scrollingListener scrolling listener
+     */
     void removeScrollingListener(ScrollingListener scrollingListener);
 
+    /**
+     * Computes scrolling position for given direction.
+     *
+     * @param startPosition start position
+     * @param direction scrolling direction
+     * @return scrolling position
+     */
     @Nonnull
     CodeAreaScrollPosition computeScrolling(CodeAreaScrollPosition startPosition, ScrollingDirection direction);
 
+    /**
+     * Notifies scrollbar handler to perform update after change.
+     */
     void updateScrollBars();
 
     /**

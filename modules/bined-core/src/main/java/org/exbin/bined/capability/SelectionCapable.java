@@ -45,8 +45,8 @@ public interface SelectionCapable {
     void setSelection(SelectionRange selection);
 
     /**
-     * Sets current selection range from start to end including the start and not
-     * including the end position.
+     * Sets current selection range from start to end including the start and
+     * not including the end position.
      *
      * @param start selection start position
      * @param end selection end position without actual end position itself
@@ -65,7 +65,17 @@ public interface SelectionCapable {
      */
     boolean hasSelection();
 
+    /**
+     * Adds selection change listener.
+     *
+     * @param selectionChangedListener selection change listener
+     */
     void addSelectionChangedListener(SelectionChangedListener selectionChangedListener);
 
+    /**
+     * Removes selection change listener.
+     *
+     * @param selectionChangedListener selection change listener
+     */
     void removeSelectionChangedListener(SelectionChangedListener selectionChangedListener);
 }

@@ -22,7 +22,7 @@ import org.exbin.bined.basic.HorizontalScrollUnit;
 import org.exbin.bined.basic.VerticalScrollUnit;
 
 /**
- * Support for position revealing.
+ * Support for scrolling control.
  *
  * @version 0.2.0 2019/02/19
  * @author ExBin Project (https://exbin.org)
@@ -30,23 +30,63 @@ import org.exbin.bined.basic.VerticalScrollUnit;
 @ParametersAreNonnullByDefault
 public interface BasicScrollingCapable {
 
+    /**
+     * Returns vertical scrollbar visibility mode.
+     *
+     * @return scrollbar visibility mode
+     */
     @Nonnull
     ScrollBarVisibility getVerticalScrollBarVisibility();
 
+    /**
+     * Sets vertical scrollbar visibility mode.
+     *
+     * @param verticalScrollBarVisibility scrollbar visibility mode
+     */
     void setVerticalScrollBarVisibility(ScrollBarVisibility verticalScrollBarVisibility);
 
+    /**
+     * Returns vertical scrolling unit.
+     *
+     * @return vertical scrolling unit
+     */
     @Nonnull
     VerticalScrollUnit getVerticalScrollUnit();
 
+    /**
+     * Sets vertical scrolling unit.
+     *
+     * @param verticalScrollUnit vertical scrolling unit
+     */
     void setVerticalScrollUnit(VerticalScrollUnit verticalScrollUnit);
 
+    /**
+     * Returns horizotal scrollbar visibility mode.
+     *
+     * @return scrollbar visibility mode
+     */
     @Nonnull
     ScrollBarVisibility getHorizontalScrollBarVisibility();
 
+    /**
+     * Sets horizotal scrollbar visibility mode.
+     *
+     * @param horizontalScrollBarVisibility scrollbar visibility mode
+     */
     void setHorizontalScrollBarVisibility(ScrollBarVisibility horizontalScrollBarVisibility);
 
+    /**
+     * Returns horizontal scrolling unit.
+     *
+     * @return horizontal scrolling unit
+     */
     @Nonnull
     HorizontalScrollUnit getHorizontalScrollUnit();
 
+    /**
+     * Sets horizontal scrolling unit.
+     *
+     * @param horizontalScrollUnit horizontal scrolling unit
+     */
     void setHorizontalScrollUnit(HorizontalScrollUnit horizontalScrollUnit);
 }

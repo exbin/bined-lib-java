@@ -29,7 +29,7 @@ import org.exbin.bined.operation.undo.BinaryDataUndoUpdateListener;
 import org.exbin.bined.swing.CodeAreaCore;
 
 /**
- * Undo handler for hexadecimal editor.
+ * Undo handler for binary editor.
  *
  * @version 0.2.0 2018/08/11
  * @author ExBin Project (https://exbin.org)
@@ -49,7 +49,7 @@ public class CodeAreaUndoHandler implements BinaryDataUndoHandler {
     /**
      * Creates a new instance.
      *
-     * @param codeArea hexadecimal component
+     * @param codeArea code area component
      */
     public CodeAreaUndoHandler(CodeAreaCore codeArea) {
         this.codeArea = codeArea;

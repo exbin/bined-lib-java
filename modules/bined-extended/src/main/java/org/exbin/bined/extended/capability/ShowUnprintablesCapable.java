@@ -23,7 +23,17 @@ package org.exbin.bined.extended.capability;
  */
 public interface ShowUnprintablesCapable {
 
+    /**
+     * Returns whether unprintable characters should be shown.
+     *
+     * @return show unprintable characters
+     */
     boolean isShowUnprintables();
 
+    /**
+     * Sets whether unprintable characters should be shown.
+     *
+     * @param show show unprintable characters
+     */
     void setShowUnprintables(boolean show);
 }

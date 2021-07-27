@@ -53,5 +53,6 @@ public abstract class CodeEditDataOperation extends CodeAreaOperation {
      *
      * @return binary operation
      */
+    @Nonnull
     public abstract CodeAreaOperation[] generateUndo();
 }

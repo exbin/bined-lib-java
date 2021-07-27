@@ -28,8 +28,18 @@ import org.exbin.bined.swing.basic.color.CodeAreaColorsProfile;
 @ParametersAreNonnullByDefault
 public interface ColorsProfileCapable {
 
+    /**
+     * Returns colors profile.
+     *
+     * @return colors profile
+     */
     @Nullable
     CodeAreaColorsProfile getColorsProfile();
 
+    /**
+     * Sets colors profile.
+     *
+     * @param colorsProfile colors profile
+     */
     void setColorsProfile(CodeAreaColorsProfile colorsProfile);
 }

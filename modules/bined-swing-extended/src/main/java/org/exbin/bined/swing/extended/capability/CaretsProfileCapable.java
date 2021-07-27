@@ -28,8 +28,18 @@ import org.exbin.bined.swing.extended.caret.ExtendedCodeAreaCaretsProfile;
 @ParametersAreNonnullByDefault
 public interface CaretsProfileCapable {
 
+    /**
+     * Returns carets profile.
+     *
+     * @return carets profile
+     */
     @Nullable
     ExtendedCodeAreaCaretsProfile getCaretsProfile();
 
+    /**
+     * Sets carets profile.
+     *
+     * @param caretsProfile carets profile
+     */
     void setCaretsProfile(ExtendedCodeAreaCaretsProfile caretsProfile);
 }

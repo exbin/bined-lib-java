@@ -719,9 +719,9 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
     }
 
     @Override
-    public void setBasicColors(BasicCodeAreaColorsProfile colors) {
+    public void setBasicColors(BasicCodeAreaColorsProfile colorsProfile) {
         if (painter instanceof BasicColorsCapableCodeAreaPainter) {
-            ((BasicColorsCapableCodeAreaPainter) painter).setBasicColors(colors);
+            ((BasicColorsCapableCodeAreaPainter) painter).setBasicColors(colorsProfile);
         }
     }
 

@@ -28,8 +28,18 @@ import org.exbin.bined.extended.layout.ExtendedCodeAreaLayoutProfile;
 @ParametersAreNonnullByDefault
 public interface LayoutProfileCapable {
 
+    /**
+     * Returns layout profile.
+     *
+     * @return layout profile
+     */
     @Nullable
     ExtendedCodeAreaLayoutProfile getLayoutProfile();
 
+    /**
+     * Sets layout profile.
+     *
+     * @param layoutProfile layout profile
+     */
     void setLayoutProfile(ExtendedCodeAreaLayoutProfile layoutProfile);
 }

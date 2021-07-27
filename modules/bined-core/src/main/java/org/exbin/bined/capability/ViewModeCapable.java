@@ -28,8 +28,18 @@ import org.exbin.bined.basic.CodeAreaViewMode;
 @ParametersAreNonnullByDefault
 public interface ViewModeCapable {
 
+    /**
+     * Returns curret view mode.
+     *
+     * @return view mode
+     */
     @Nonnull
     CodeAreaViewMode getViewMode();
 
+    /**
+     * Sets current view mode.
+     *
+     * @param viewMode view mode
+     */
     void setViewMode(CodeAreaViewMode viewMode);
 }

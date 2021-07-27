@@ -1586,7 +1586,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         if (scrollPanel.getHorizontalScrollBarPolicy() != horizontalScrollBarPolicy) {
             scrollPanel.setHorizontalScrollBarPolicy(horizontalScrollBarPolicy);
         }
-        
+
         int characterWidth = metrics.getCharacterWidth();
         int rowHeight = metrics.getRowHeight();
         long rowsPerDocument = structure.getRowsPerDocument();
@@ -1602,7 +1602,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         }
 
         JViewport viewport = scrollPanel.getViewport();
-        Dimension dataViewSize = null;
+        Dimension dataViewSize;
         if (rowHeight > 0 && characterWidth > 0) {
             BasicCodeAreaScrolling.ScrollViewDimension viewDimension = scrolling.computeViewDimension(viewport.getWidth(), viewport.getHeight(), layout, structure, characterWidth, rowHeight);
             dataViewSize = new Dimension(viewDimension.getWidth(), viewDimension.getHeight());
@@ -1636,7 +1636,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
             codeArea.revalidate();
         }
     }
-    
+
     @Override
     public void scrollPositionModified() {
         scrolling.clearLastVerticalScrollingValue();

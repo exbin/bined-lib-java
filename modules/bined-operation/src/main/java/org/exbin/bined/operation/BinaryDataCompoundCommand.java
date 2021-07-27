@@ -30,14 +30,14 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public interface BinaryDataCompoundCommand extends BinaryDataCommand {
 
     /**
-     * Append command to the list of commands.
+     * Appends command to the list of commands.
      *
      * @param command appended command
      */
     void appendCommand(BinaryDataCommand command);
 
     /**
-     * Append list of commands to the list of commands.
+     * Appends list of commands to the list of commands.
      *
      * @param commands appended commands
      */

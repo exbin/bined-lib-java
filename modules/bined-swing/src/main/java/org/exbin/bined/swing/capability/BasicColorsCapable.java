@@ -29,8 +29,18 @@ import org.exbin.bined.swing.basic.color.BasicCodeAreaColorsProfile;
 @ParametersAreNonnullByDefault
 public interface BasicColorsCapable {
 
+    /**
+     * Returns basic profile for colors.
+     *
+     * @return colors profile
+     */
     @Nonnull
     Optional<BasicCodeAreaColorsProfile> getBasicColors();
 
-    void setBasicColors(BasicCodeAreaColorsProfile colors);
+    /**
+     * Sets basic profile for colors.
+     *
+     * @param colorsProfile colors profile
+     */
+    void setBasicColors(BasicCodeAreaColorsProfile colorsProfile);
 }

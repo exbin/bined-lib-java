@@ -28,8 +28,18 @@ import org.exbin.bined.swt.basic.AntialiasingMode;
 @ParametersAreNonnullByDefault
 public interface AntialiasingCapable {
 
+    /**
+     * Returns antialiasing mode for text painting.
+     *
+     * @return antialiasing mode
+     */
     @Nonnull
     AntialiasingMode getAntialiasingMode();
 
+    /**
+     * Sets antialiasing mode for text painting.
+     *
+     * @param antialiasingMode antialiasing mode
+     */
     void setAntialiasingMode(AntialiasingMode antialiasingMode);
 }

@@ -28,8 +28,18 @@ import org.exbin.bined.basic.BasicBackgroundPaintMode;
 @ParametersAreNonnullByDefault
 public interface BackgroundPaintCapable {
 
+    /**
+     * Returns current background paint mode.
+     *
+     * @return background paint mode
+     */
     @Nonnull
     BasicBackgroundPaintMode getBackgroundPaintMode();
 
+    /**
+     * Sets current background paint mode.
+     *
+     * @param borderPaintMode background paint mode
+     */
     void setBackgroundPaintMode(BasicBackgroundPaintMode borderPaintMode);
 }

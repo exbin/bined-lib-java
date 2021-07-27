@@ -16,6 +16,7 @@
 package org.exbin.bined.swt.capability;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.eclipse.swt.graphics.Font;
 
 /**
@@ -24,10 +25,21 @@ import org.eclipse.swt.graphics.Font;
  * @version 0.2.0 2017/04/25
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public interface FontCapable {
 
+    /**
+     * Returns font used for text painting.
+     *
+     * @return font
+     */
     @Nonnull
     Font getCodeFont();
 
-    void setCodeFont(@Nonnull Font codeFont);
+    /**
+     * Sets font used for text painting.
+     *
+     * @param codeFont font
+     */
+    void setCodeFont(Font codeFont);
 }

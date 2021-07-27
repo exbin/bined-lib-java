@@ -15,6 +15,7 @@
  */
 package org.exbin.bined.operation;
 
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -33,16 +34,15 @@ public class BinaryDataOperationException extends Exception {
         super(message);
     }
 
-    public BinaryDataOperationException(String message, Throwable cause) {
+    public BinaryDataOperationException(String message, @Nullable Throwable cause) {
         super(message, cause);
     }
 
-    public BinaryDataOperationException(Throwable cause) {
+    public BinaryDataOperationException(@Nullable Throwable cause) {
         super(cause);
     }
 
-    public BinaryDataOperationException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+    public BinaryDataOperationException(String message, @Nullable Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
-
 }

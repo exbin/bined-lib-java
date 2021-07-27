@@ -30,11 +30,26 @@ import org.exbin.bined.EditationOperation;
 @ParametersAreNonnullByDefault
 public interface EditationModeCapable {
 
+    /**
+     * Returns true if data are editable.
+     *
+     * @return true if editable
+     */
     boolean isEditable();
 
+    /**
+     * Returns editation mode.
+     *
+     * @return editation mode
+     */
     @Nonnull
     EditationMode getEditationMode();
 
+    /**
+     * Sets editation mode.
+     *
+     * @param editationMode editation mode
+     */
     void setEditationMode(EditationMode editationMode);
 
     /**
@@ -54,9 +69,24 @@ public interface EditationModeCapable {
     @Nonnull
     EditationOperation getEditationOperation();
 
+    /**
+     * Sets currently enforced editation operation.
+     *
+     * @param editationOperation editation operation
+     */
     void setEditationOperation(EditationOperation editationOperation);
 
+    /**
+     * Adds editation mode change listener.
+     *
+     * @param editationModeChangedListener editation mode change listener
+     */
     void addEditationModeChangedListener(EditationModeChangedListener editationModeChangedListener);
 
+    /**
+     * Removes editation mode change listener.
+     *
+     * @param editationModeChangedListener editation mode change listener
+     */
     void removeEditationModeChangedListener(EditationModeChangedListener editationModeChangedListener);
 }

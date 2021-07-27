@@ -28,8 +28,18 @@ import org.exbin.bined.swt.basic.color.BasicCodeAreaColorsProfile;
 @ParametersAreNonnullByDefault
 public interface BasicColorsCapable {
 
+    /**
+     * Returns basic profile for colors.
+     *
+     * @return colors profile
+     */
     @Nullable
     BasicCodeAreaColorsProfile getBasicColors();
 
-    void setBasicColors(BasicCodeAreaColorsProfile colors);
+    /**
+     * Sets basic profile for colors.
+     *
+     * @param colorsProfile colors profile
+     */
+    void setBasicColors(BasicCodeAreaColorsProfile colorsProfile);
 }

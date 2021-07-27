@@ -16,6 +16,7 @@
 package org.exbin.bined.operation.swing;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.operation.BinaryDataOperationException;
@@ -48,6 +49,7 @@ public class DeleteCharEditDataOperation extends CharEditDataOperation {
         return CodeAreaOperationType.EDIT_DATA;
     }
 
+    @Nullable
     @Override
     protected CodeAreaOperation execute(ExecutionType executionType) {
         throw new IllegalStateException("Cannot be executed");

@@ -197,6 +197,7 @@ public class InsertCodeEditDataOperation extends CodeEditDataOperation {
         }
     }
 
+    @Nonnull
     @Override
     public CodeAreaOperation[] generateUndo() {
         if (trailing) {

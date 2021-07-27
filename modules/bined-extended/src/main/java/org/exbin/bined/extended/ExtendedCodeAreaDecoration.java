@@ -29,4 +29,6 @@ public class ExtendedCodeAreaDecoration {
     public static final int DECORATION_BOX = 8;
     public static final int DECORATION_DEFAULT = DECORATION_PREVIEW_LINE | DECORATION_LINENUM_LINE | DECORATION_HEADER_LINE;
 
+    private ExtendedCodeAreaDecoration() {
+    }
 }

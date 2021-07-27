@@ -69,13 +69,13 @@ import org.exbin.bined.javafx.CodeAreaPainter;
 import org.exbin.bined.javafx.basic.DefaultCodeAreaCaret.CursorRenderingMode;
 import org.exbin.bined.javafx.basic.color.BasicCodeAreaColorsProfile;
 import org.exbin.bined.javafx.basic.color.BasicColorsCapableCodeAreaPainter;
-import org.exbin.bined.javafx.capability.BackgroundPaintCapable;
 import org.exbin.bined.javafx.capability.FontCapable;
 import org.exbin.auxiliary.paged_data.BinaryData;
 import org.exbin.bined.CodeAreaCaretPosition;
 import org.exbin.bined.DataChangedListener;
 import org.exbin.bined.basic.BasicCodeAreaLayout;
 import org.exbin.bined.basic.PositionScrollVisibility;
+import org.exbin.bined.capability.BackgroundPaintCapable;
 
 /**
  * Code area component default painter.

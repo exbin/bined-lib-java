@@ -16,6 +16,7 @@
 package org.exbin.bined.operation.swing;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import org.exbin.bined.CodeAreaUtils;
@@ -55,11 +56,13 @@ public class RemoveDataOperation extends CodeAreaOperation {
         execute(false);
     }
 
+    @Nullable
     @Override
     public CodeAreaOperation executeWithUndo() throws BinaryDataOperationException {
         return execute(true);
     }
 
+    @Nullable
     private CodeAreaOperation execute(boolean withUndo) {
         EditableBinaryData contentData = CodeAreaUtils.requireNonNull((EditableBinaryData) codeArea.getContentData());
         CodeAreaOperation undoOperation = null;

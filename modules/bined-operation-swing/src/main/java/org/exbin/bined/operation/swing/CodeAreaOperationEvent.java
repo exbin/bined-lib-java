@@ -16,6 +16,7 @@
  */
 package org.exbin.bined.operation.swing;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -33,6 +34,7 @@ public class CodeAreaOperationEvent {
         this.operation = operation;
     }
 
+    @Nonnull
     public CodeAreaOperation getOperation() {
         return operation;
     }

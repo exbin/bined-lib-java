@@ -42,7 +42,7 @@ public class CodeAreaTest {
     }
 
     @Nonnull
-    public static EditableBinaryData getSampleData(@Nonnull String dataPath) {
+    public static EditableBinaryData getSampleData(String dataPath) {
         ByteArrayEditableData data = new ByteArrayEditableData();
         try (InputStream stream = CodeAreaTest.class.getResourceAsStream(dataPath)) {
             data.loadFromStream(stream);

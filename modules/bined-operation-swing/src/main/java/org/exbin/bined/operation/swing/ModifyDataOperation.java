@@ -16,6 +16,7 @@
 package org.exbin.bined.operation.swing;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.operation.BinaryDataOperationException;
 import org.exbin.bined.swing.CodeAreaCore;
@@ -46,16 +47,19 @@ public class ModifyDataOperation extends CodeAreaOperation {
         return CodeAreaOperationType.MODIFY_DATA;
     }
 
+    @Nullable
     @Override
     public void execute() throws BinaryDataOperationException {
         execute(false);
     }
 
+    @Nullable
     @Override
     public CodeAreaOperation executeWithUndo() throws BinaryDataOperationException {
         return execute(true);
     }
 
+    @Nullable
     private CodeAreaOperation execute(boolean withUndo) {
         CodeAreaOperation undoOperation = null;
         if (withUndo) {

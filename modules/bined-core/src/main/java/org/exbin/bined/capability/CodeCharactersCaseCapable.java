@@ -20,7 +20,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.CodeCharactersCase;
 
 /**
- * Support for view mode capability.
+ * Support for characters case capability.
  *
  * @version 0.2.0 2017/11/17
  * @author ExBin Project (https://exbin.org)

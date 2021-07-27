@@ -28,8 +28,18 @@ import org.exbin.bined.CodeType;
 @ParametersAreNonnullByDefault
 public interface CodeTypeCapable {
 
+    /**
+     * Returns current code type.
+     *
+     * @return code type
+     */
     @Nonnull
     CodeType getCodeType();
 
+    /**
+     * Sets current code type.
+     *
+     * @param codeType code type
+     */
     void setCodeType(CodeType codeType);
 }
