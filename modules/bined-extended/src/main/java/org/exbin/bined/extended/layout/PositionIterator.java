@@ -80,7 +80,7 @@ public interface PositionIterator {
     /**
      * Returns true if end of document is reached.
      *
-     * @return
+     * @return true if end of document is reached
      */
     boolean isEndReached();
 

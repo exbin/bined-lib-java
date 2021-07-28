@@ -21,16 +21,69 @@ import org.exbin.bined.CaretMovedListener;
 import org.exbin.bined.CodeAreaCaret;
 import org.exbin.bined.CodeAreaCaretPosition;
 import org.exbin.bined.CaretOverlapMode;
+import org.exbin.bined.CodeAreaSection;
 import org.exbin.bined.basic.MovementDirection;
 
 /**
  * Support for caret / cursor capability.
  *
- * @version 0.2.0 2021/06/12
+ * @version 0.2.0 2021/07/28
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public interface CaretCapable {
+
+    /**
+     * Returns current caret position.
+     *
+     * @return caret position
+     */
+    @Nonnull
+    CodeAreaCaretPosition getCaretPosition();
+
+    /**
+     * Returns currently active caret section.
+     *
+     * @return code area section
+     */
+    @Nonnull
+    CodeAreaSection getActiveSection();
+
+    /**
+     * Returns current caret data position.
+     *
+     * @return data position
+     */
+    long getDataPosition();
+
+    /**
+     * Returns current caret code offset.
+     *
+     * @return code offset
+     */
+    int getCodeOffset();
+
+    /**
+     * Sets current caret position to given position.
+     *
+     * @param caretPosition caret position
+     */
+    void setCaretPosition(CodeAreaCaretPosition caretPosition);
+
+    /**
+     * Sets current caret position to given data position.
+     *
+     * @param dataPosition data position
+     */
+    void setCaretPosition(long dataPosition);
+
+    /**
+     * Sets current caret position to given data position and offset.
+     *
+     * @param dataPosition data position
+     * @param codeOffset code offset
+     */
+    void setCaretPosition(long dataPosition, int codeOffset);
 
     /**
      * Returns handler for caret.
@@ -74,16 +127,6 @@ public interface CaretCapable {
      * @param showMirrorCursor true if cursor should be mirrored
      */
     void setShowMirrorCursor(boolean showMirrorCursor);
-
-    /**
-     * Notifies component, that caret position has changed.
-     */
-    void notifyCaretMoved();
-
-    /**
-     * Notifies component, that caret state has changed.
-     */
-    void notifyCaretChanged();
 
     /**
      * Returns cursor shape type for given position.

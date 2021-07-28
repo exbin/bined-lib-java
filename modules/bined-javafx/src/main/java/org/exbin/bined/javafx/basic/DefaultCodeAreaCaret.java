@@ -26,15 +26,13 @@ import org.exbin.bined.basic.BasicCodeAreaSection;
 import org.exbin.bined.CodeAreaCaret;
 import org.exbin.bined.DefaultCodeAreaCaretPosition;
 import org.exbin.bined.CodeAreaSection;
-import org.exbin.bined.capability.CaretCapable;
-import org.exbin.bined.javafx.CodeAreaCore;
 import org.exbin.bined.CodeAreaCaretPosition;
 import org.exbin.bined.CodeAreaUtils;
 
 /**
  * Default implementation of code area caret.
  *
- * @version 0.2.0 2018/12/25
+ * @version 0.2.0 2021/07/28
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -44,7 +42,7 @@ public class DefaultCodeAreaCaret implements CodeAreaCaret {
     private static final int DEFAULT_BLINK_RATE = 450;
 
     @Nonnull
-    private final CodeAreaCore codeArea;
+    private final CaretChangeListener changeListener;
     private final DefaultCodeAreaCaretPosition caretPosition = new DefaultCodeAreaCaretPosition();
 
     private int blinkRate = 0;
@@ -54,10 +52,10 @@ public class DefaultCodeAreaCaret implements CodeAreaCaret {
     @Nonnull
     private CursorRenderingMode renderingMode = CursorRenderingMode.PAINT;
 
-    public DefaultCodeAreaCaret(CodeAreaCore codeArea) {
-        CodeAreaUtils.requireNonNull(codeArea, "Code area cannot be null");
+    public DefaultCodeAreaCaret(CaretChangeListener changeListener) {
+        CodeAreaUtils.requireNonNull(changeListener, "Change listener cannot be null");
 
-        this.codeArea = codeArea;
+        this.changeListener = changeListener;
         privateSetBlinkRate(DEFAULT_BLINK_RATE);
     }
 
@@ -87,7 +85,7 @@ public class DefaultCodeAreaCaret implements CodeAreaCaret {
     }
 
     private void notifyCaredChanged() {
-        ((CaretCapable) codeArea).notifyCaretChanged();
+        changeListener.notifyCaretChanged();
     }
 
     @Override
@@ -231,5 +229,16 @@ public class DefaultCodeAreaCaret implements CodeAreaCaret {
          * cursor.
          */
         NEGATIVE
+    }
+
+    /**
+     * Interface for changes listener.
+     */
+    public interface CaretChangeListener {
+
+        /**
+         * Caret changed.
+         */
+        void notifyCaretChanged();
     }
 }

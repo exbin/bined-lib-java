@@ -1645,7 +1645,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
             long rowsPerDocumentToLastPage = structure.getRowsPerDocument() - dimensions.getRowsPerRect();
             scrolling.updateVerticalScrollBarValue(scrollBarValue, metrics.getRowHeight(), maxValue, rowsPerDocumentToLastPage);
             ((ScrollingCapable) codeArea).setScrollPosition(scrolling.getScrollPosition());
-            notifyScrolled();
             repaint();
 //            dataViewScrolled(codeArea.getGraphics());
         }
@@ -1669,18 +1668,12 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
             int scrollBarValue = scrollPanel.getHorizontalBar().getSelection();
             scrolling.updateHorizontalScrollBarValue(scrollBarValue, metrics.getCharacterWidth());
             ((ScrollingCapable) codeArea).setScrollPosition(scrolling.getScrollPosition());
-            notifyScrolled();
             repaint();
         }
 
         @Override
         public void widgetDefaultSelected(SelectionEvent se) {
         }
-    }
-
-    private void notifyScrolled() {
-        recomputeScrollState();
-        ((ScrollingCapable) codeArea).notifyScrolled();
     }
 
     @Override

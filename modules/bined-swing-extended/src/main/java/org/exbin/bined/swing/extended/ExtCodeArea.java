@@ -71,7 +71,7 @@ import org.exbin.bined.swing.extended.caret.CaretsProfileCapableCodeAreaPainter;
 /**
  * Code area component extended code area.
  *
- * @version 0.2.0 2021/06/20
+ * @version 0.2.0 2021/07/28
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -134,12 +134,7 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
      * Creates new instance with default command handler and painter.
      */
     public ExtCodeArea() {
-        super(DefaultCodeAreaCommandHandler.createDefaultCodeAreaCommandHandlerFactory());
-
-        caret = new DefaultCodeAreaCaret(this);
-        painter = new ExtendedCodeAreaPainter(this);
-        painter.attach();
-        init();
+        this(DefaultCodeAreaCommandHandler.createDefaultCodeAreaCommandHandlerFactory());
     }
 
     /**
@@ -150,7 +145,10 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
     public ExtCodeArea(CodeAreaCommandHandler.CodeAreaCommandHandlerFactory commandHandlerFactory) {
         super(commandHandlerFactory);
 
-        caret = new DefaultCodeAreaCaret(this);
+        caret = new DefaultCodeAreaCaret(() -> {
+            notifyCaretChanged();
+            repaint();
+        });
         painter = new ExtendedCodeAreaPainter(this);
         painter.attach();
         init();
@@ -241,34 +239,41 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
         updateLayout();
     }
 
+    @Override
     public long getDataPosition() {
         return caret.getDataPosition();
     }
 
+    @Override
     public int getCodeOffset() {
         return caret.getCodeOffset();
     }
 
     @Nonnull
+    @Override
     public CodeAreaSection getActiveSection() {
         return caret.getSection();
     }
 
     @Nonnull
+    @Override
     public CodeAreaCaretPosition getCaretPosition() {
         return caret.getCaretPosition();
     }
 
+    @Override
     public void setCaretPosition(CodeAreaCaretPosition caretPosition) {
         caret.setCaretPosition(caretPosition);
         notifyCaretMoved();
     }
 
+    @Override
     public void setCaretPosition(long dataPosition) {
         caret.setCaretPosition(dataPosition);
         notifyCaretMoved();
     }
 
+    @Override
     public void setCaretPosition(long dataPosition, int codeOffset) {
         caret.setCaretPosition(dataPosition, codeOffset);
         notifyCaretMoved();
@@ -413,8 +418,7 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
         return painter.computeScrolling(startPosition, scrollingShift);
     }
 
-    @Override
-    public void updateScrollBars() {
+    protected void updateScrollBars() {
         painter.updateScrollBars();
         painter.scrollPositionModified();
         repaint();
@@ -518,8 +522,7 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
         painter.reset();
     }
 
-    @Override
-    public void notifyCaretChanged() {
+    protected void notifyCaretChanged() {
         if (painter != null) {
             painter.resetCaret();
         }
@@ -812,15 +815,13 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
         });
     }
 
-    @Override
-    public void notifyCaretMoved() {
+    protected void notifyCaretMoved() {
         caretMovedListeners.forEach((caretMovedListener) -> {
             caretMovedListener.caretMoved(caret.getCaretPosition());
         });
     }
 
-    @Override
-    public void notifyScrolled() {
+    protected void notifyScrolled() {
         scrollingListeners.forEach((scrollingListener) -> {
             scrollingListener.scrolled();
         });

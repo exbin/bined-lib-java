@@ -2207,7 +2207,6 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
                             if (e.getValue() == lastValue - 1 || (lastValue == 0 && e.getValue() == 0)) {
                                 scrolling.performScrolling(ScrollingDirection.UP, dimensions.getRowsPerPage(), structure.getRowsPerDocument());
                                 ((ScrollingCapable) codeArea).setScrollPosition(scrolling.getScrollPosition());
-                                notifyScrolled();
                                 codeArea.repaint();
                                 return;
                             }
@@ -2216,7 +2215,6 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
                             if (e.getValue() == lastValue + 1 || (lastValue == maxScroll && e.getValue() == maxScroll)) {
                                 scrolling.performScrolling(ScrollingDirection.DOWN, dimensions.getRowsPerPage(), structure.getRowsPerDocument());
                                 ((ScrollingCapable) codeArea).setScrollPosition(scrolling.getScrollPosition());
-                                notifyScrolled();
                                 codeArea.repaint();
                                 return;
                             }
@@ -2233,7 +2231,6 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
                 long rowsPerDocumentToLastPage = structure.getRowsPerDocument() - dimensions.getRowsPerRect();
                 scrolling.updateVerticalScrollBarValue(scrollBarValue, metrics.getRowHeight(), maxValue, rowsPerDocumentToLastPage);
                 ((ScrollingCapable) codeArea).setScrollPosition(scrolling.getScrollPosition());
-                notifyScrolled();
                 codeArea.repaint();
 //            dataViewScrolled(codeArea.getGraphics());
             }
@@ -2254,14 +2251,9 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
             int scrollBarValue = scrollPanel.getHorizontalScrollBar().getValue();
             scrolling.updateHorizontalScrollBarValue(scrollBarValue, metrics.getCharacterWidth());
             ((ScrollingCapable) codeArea).setScrollPosition(scrolling.getScrollPosition());
-            notifyScrolled();
             codeArea.repaint();
 //            dataViewScrolled(codeArea.getGraphics());
         }
-    }
-
-    private void notifyScrolled() {
-        ((ScrollingCapable) codeArea).notifyScrolled();
     }
 
     private static class RowDataCache {

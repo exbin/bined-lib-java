@@ -62,7 +62,7 @@ import org.exbin.bined.RowWrappingMode;
 /**
  * Code area component default code area.
  *
- * @version 0.2.0 2021/06/12
+ * @version 0.2.0 2021/07/28
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -127,12 +127,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
      * @param style style
      */
     public CodeArea(@Nullable Composite parent, int style) {
-        super(parent, style, DefaultCodeAreaCommandHandler.createDefaultCodeAreaCommandHandlerFactory());
-
-        caret = new DefaultCodeAreaCaret(this);
-        painter = new DefaultCodeAreaPainter(this);
-        painter.attach();
-        init();
+        this(parent, style, DefaultCodeAreaCommandHandler.createDefaultCodeAreaCommandHandlerFactory());
     }
 
     /**
@@ -145,7 +140,10 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
     public CodeArea(@Nullable Composite parent, int style, @Nullable CodeAreaCommandHandler.CodeAreaCommandHandlerFactory commandHandlerFactory) {
         super(parent, style, commandHandlerFactory);
 
-        caret = new DefaultCodeAreaCaret(this);
+        caret = new DefaultCodeAreaCaret(() -> {
+            notifyCaretChanged();
+            repaint();
+        });
         painter = new DefaultCodeAreaPainter(this);
         painter.attach();
         init();
@@ -226,34 +224,41 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
         return painter.isInitialized();
     }
 
+    @Override
     public long getDataPosition() {
         return caret.getDataPosition();
     }
 
+    @Override
     public int getCodeOffset() {
         return caret.getCodeOffset();
     }
 
     @Nonnull
+    @Override
     public CodeAreaSection getActiveSection() {
         return caret.getSection();
     }
 
     @Nonnull
+    @Override
     public CodeAreaCaretPosition getCaretPosition() {
         return caret.getCaretPosition();
     }
 
+    @Override
     public void setCaretPosition(CodeAreaCaretPosition caretPosition) {
         caret.setCaretPosition(caretPosition);
         notifyCaretMoved();
     }
 
+    @Override
     public void setCaretPosition(long dataPosition) {
         caret.setCaretPosition(dataPosition);
         notifyCaretMoved();
     }
 
+    @Override
     public void setCaretPosition(long dataPosition, int codeOffset) {
         caret.setCaretPosition(dataPosition, codeOffset);
         notifyCaretMoved();
@@ -391,8 +396,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
         return painter.computeScrolling(startPosition, scrollingShift);
     }
 
-    @Override
-    public void updateScrollBars() {
+    protected void updateScrollBars() {
         painter.updateScrollBars();
         repaint();
     }
@@ -506,8 +510,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
         painter.reset();
     }
 
-    @Override
-    public void notifyCaretChanged() {
+    protected void notifyCaretChanged() {
         if (painter != null) {
             painter.resetCaret();
         }
@@ -737,15 +740,13 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
         });
     }
 
-    @Override
-    public void notifyCaretMoved() {
+    protected void notifyCaretMoved() {
         caretMovedListeners.forEach((caretMovedListener) -> {
             caretMovedListener.caretMoved(caret.getCaretPosition());
         });
     }
 
-    @Override
-    public void notifyScrolled() {
+    protected void notifyScrolled() {
         scrollingListeners.forEach((scrollingListener) -> {
             scrollingListener.scrolled();
         });

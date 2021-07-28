@@ -65,7 +65,6 @@ public class ExtCodeAreaDiffPanel extends javax.swing.JPanel {
                     scrollPosition.setRowPosition(maxRowPosition);
                 }
                 rightCodeArea.setScrollPosition(scrollPosition);
-                rightCodeArea.updateScrollBars();
                 updatingScrolling = false;
             }
         });
@@ -79,7 +78,6 @@ public class ExtCodeAreaDiffPanel extends javax.swing.JPanel {
                     scrollPosition.setRowPosition(maxRowPosition);
                 }
                 leftCodeArea.setScrollPosition(scrollPosition);
-                leftCodeArea.updateScrollBars();
                 updatingScrolling = false;
             }
         });

@@ -80,7 +80,7 @@ import org.exbin.bined.basic.EnterKeyHandlingMode;
 /**
  * Command handler for undo/redo aware binary editor editing.
  *
- * @version 0.2.0 2021/04/02
+ * @version 0.2.0 2021/07/28
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -707,7 +707,6 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
 
                             undoSequenceBreak();
                             codeArea.notifyDataChanged();
-                            updateScrollBars();
                             revealCursor();
                             codeArea.repaint();
                         }
@@ -772,7 +771,6 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
 
                     undoSequenceBreak();
                     codeArea.notifyDataChanged();
-                    updateScrollBars();
                     revealCursor();
                     codeArea.repaint();
                 } catch (UnsupportedFlavorException | IllegalStateException | IOException ex) {
@@ -912,7 +910,6 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
 
                     undoSequenceBreak();
                     codeArea.notifyDataChanged();
-                    updateScrollBars();
                     revealCursor();
                     codeArea.repaint();
                 } catch (UnsupportedFlavorException | IllegalStateException | IOException ex) {
@@ -956,22 +953,19 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
     @Override
     public void moveCaret(int positionX, int positionY, SelectingMode selecting) {
         CodeAreaCaretPosition caretPosition = ((CaretCapable) codeArea).mousePositionToClosestCaretPosition(positionX, positionY, CaretOverlapMode.PARTIAL_OVERLAP);
-        ((CaretCapable) codeArea).getCaret().setCaretPosition(caretPosition);
+        ((CaretCapable) codeArea).setCaretPosition(caretPosition);
         updateSelection(selecting, caretPosition);
 
-        notifyCaretMoved();
         undoSequenceBreak();
         codeArea.repaint();
     }
 
     public void move(SelectingMode selectingMode, MovementDirection direction) {
-        DefaultCodeAreaCaret caret = (DefaultCodeAreaCaret) ((CaretCapable) codeArea).getCaret();
-        CodeAreaCaretPosition caretPosition = caret.getCaretPosition();
+        CodeAreaCaretPosition caretPosition = ((CaretCapable) codeArea).getCaretPosition();
         CodeAreaCaretPosition movePosition = ((CaretCapable) codeArea).computeMovePosition(caretPosition, direction);
         if (!caretPosition.equals(movePosition)) {
-            caret.setCaretPosition(movePosition);
+            ((CaretCapable) codeArea).setCaretPosition(movePosition);
             updateSelection(selectingMode, movePosition);
-            notifyCaretMoved();
         }
     }
 
@@ -981,8 +975,6 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
         if (!sourcePosition.equals(scrollPosition)) {
             ((ScrollingCapable) codeArea).setScrollPosition(scrollPosition);
             codeArea.resetPainter();
-            notifyScrolled();
-            updateScrollBars();
         }
     }
 
@@ -1027,22 +1019,18 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
         public void redo() throws BinaryDataOperationException {
             removeCommand.redo();
             codeArea.clearSelection();
-            CodeAreaCaret caret = ((CaretCapable) codeArea).getCaret();
-            caret.setCaretPosition(position);
+            ((CaretCapable) codeArea).setCaretPosition(position);
             ((ScrollingCapable) codeArea).revealCursor();
             codeArea.notifyDataChanged();
-            ((ScrollingCapable) codeArea).updateScrollBars();
         }
 
         @Override
         public void undo() throws BinaryDataOperationException {
             removeCommand.undo();
             codeArea.clearSelection();
-            CodeAreaCaret caret = ((CaretCapable) codeArea).getCaret();
-            caret.setCaretPosition(size);
+            ((CaretCapable) codeArea).setCaretPosition(position + size);
             ((ScrollingCapable) codeArea).revealCursor();
             codeArea.notifyDataChanged();
-            ((ScrollingCapable) codeArea).updateScrollBars();
         }
 
         @Nonnull
@@ -1082,18 +1070,6 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
     private void revealCursor() {
         ((ScrollingCapable) codeArea).revealCursor();
         codeArea.repaint();
-    }
-
-    private void notifyCaretMoved() {
-        ((CaretCapable) codeArea).notifyCaretMoved();
-    }
-
-    private void notifyScrolled() {
-        ((ScrollingCapable) codeArea).notifyScrolled();
-    }
-
-    private void updateScrollBars() {
-        ((ScrollingCapable) codeArea).updateScrollBars();
     }
 
     @Override

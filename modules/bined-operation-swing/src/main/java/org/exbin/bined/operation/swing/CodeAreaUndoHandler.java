@@ -21,7 +21,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.operation.BinaryDataCommand;
 import org.exbin.bined.operation.BinaryDataOperationException;
 import org.exbin.bined.operation.undo.BinaryDataUndoHandler;
@@ -31,7 +30,7 @@ import org.exbin.bined.swing.CodeAreaCore;
 /**
  * Undo handler for binary editor.
  *
- * @version 0.2.0 2018/08/11
+ * @version 0.2.0 2021/07/28
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -272,7 +271,6 @@ public class CodeAreaUndoHandler implements BinaryDataUndoHandler {
 
     private void undoUpdated() {
         codeArea.notifyDataChanged();
-        ((CaretCapable) codeArea).notifyCaretMoved();
         listeners.forEach((listener) -> {
             listener.undoCommandPositionChanged();
         });

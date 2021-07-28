@@ -1,24 +1,24 @@
-BinEd Hexadecimal Library
-=========================
+BinEd - Binary/Hexadecimal Components Library
+=============================================
 
-Hexadecimal viewer/editor component library written in Java.
+Library for hexadecimal viewer/editor components written in Java.
 
-Homepage: http://bined.exbin.org  
+Homepage: https://bined.exbin.org/library  
 
 Features
 --------
 
-- Data as hexadecimal codes and text preview
-- Insert and overwrite edit modes
-- Support for selection and clipboard actions
-- Scrollbars fixed or optional, character/line or pixel precision
-- Support for showing unprintable/whitespace characters
-- Support for undo/redo
-- Support for charset/encoding selection
-- Codes can be also binary, octal or decimal
-- Support for customizable highlighting
-- Support for huge files
-- Delta mode - Only changes are stored in memory
+  * Data as hexadecimal codes and text preview
+  * Insert and overwrite edit modes
+  * Support for selection and clipboard actions
+  * Scrollbars fixed or optional, character/line or pixel precision
+  * Support for showing unprintable/whitespace characters
+  * Support for undo/redo
+  * Support for charset/encoding selection
+  * Codes can be also binary, octal or decimal
+  * Support for customizable highlighting
+  * Support for huge files
+  * Delta mode - Only changes are stored in memory
 
 License
 -------

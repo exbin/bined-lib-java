@@ -61,7 +61,7 @@ import org.exbin.bined.basic.EnterKeyHandlingMode;
 /**
  * Default binary editor command handler.
  *
- * @version 0.2.0 2021/04/02
+ * @version 0.2.0 2021/07/28
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -383,14 +383,14 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             }
             ((EditableBinaryData) data).insert(dataPosition, bytes);
             codeArea.notifyDataChanged();
-            ((CaretCapable) codeArea).getCaret().setCaretPosition(dataPosition + bytes.length - 1);
+            ((CaretCapable) codeArea).setCaretPosition(dataPosition + bytes.length - 1);
             move(SelectingMode.NONE, MovementDirection.RIGHT);
             revealCursor();
         }
     }
 
     private void setCodeValue(int value) {
-        CodeAreaCaretPosition caretPosition = ((CaretCapable) codeArea).getCaret().getCaretPosition();
+        CodeAreaCaretPosition caretPosition = ((CaretCapable) codeArea).getCaretPosition();
         long dataPosition = caretPosition.getDataPosition();
         int codeOffset = caretPosition.getCodeOffset();
         BinaryData data = CodeAreaUtils.requireNonNull(codeArea.getContentData(), "Content data is null");
@@ -406,8 +406,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             return;
         }
 
-        DefaultCodeAreaCaret caret = (DefaultCodeAreaCaret) ((CaretCapable) codeArea).getCaret();
-        if (caret.getSection() == BasicCodeAreaSection.TEXT_PREVIEW) {
+        if (((CaretCapable) codeArea).getActiveSection() == BasicCodeAreaSection.TEXT_PREVIEW) {
             String sequence = enterKeyHandlingMode.getSequence();
             if (!sequence.isEmpty()) {
                 pressedCharInPreview(sequence.charAt(0));
@@ -437,8 +436,8 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                 caret.setCodeOffset(0);
                 ((EditableBinaryData) data).remove(dataPosition - 1, 1);
                 codeArea.notifyDataChanged();
+                ((CaretCapable) codeArea).setCaretPosition(caret.getCaretPosition());
                 revealCursor();
-                updateScrollBars();
             }
         }
     }
@@ -452,8 +451,6 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         if (codeArea.hasSelection()) {
             deleteSelection();
             codeArea.notifyDataChanged();
-            updateScrollBars();
-            notifyCaretMoved();
             revealCursor();
         } else {
             BinaryData data = CodeAreaUtils.requireNonNull(codeArea.getContentData(), "Content data is null");
@@ -465,8 +462,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                 if (caret.getCodeOffset() > 0) {
                     caret.setCodeOffset(0);
                 }
-                updateScrollBars();
-                notifyCaretMoved();
+                ((CaretCapable) codeArea).setCaretPosition(caret.getCaretPosition());
                 revealCursor();
             }
         }
@@ -496,10 +492,8 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             ((EditableBinaryData) data).remove(first, length);
         }
         codeArea.clearSelection();
-        DefaultCodeAreaCaret caret = (DefaultCodeAreaCaret) ((CaretCapable) codeArea).getCaret();
-        caret.setCaretPosition(first);
+        ((CaretCapable) codeArea).setCaretPosition(first);
         revealCursor();
-        updateScrollBars();
     }
 
     @Override
@@ -634,8 +628,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                         }
 
                         caret.setCodeOffset(0);
-                        updateScrollBars();
-                        notifyCaretMoved();
+                        ((CaretCapable) codeArea).setCaretPosition(caret.getCaretPosition());
                         revealCursor();
                     }
                 } catch (UnsupportedFlavorException | IOException ex) {
@@ -678,8 +671,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                         }
 
                         caret.setCodeOffset(0);
-                        updateScrollBars();
-                        notifyCaretMoved();
+                        ((CaretCapable) codeArea).setCaretPosition(caret.getCaretPosition());
                         revealCursor();
                     }
                 } catch (UnsupportedFlavorException | IOException ex) {
@@ -749,8 +741,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                         }
 
                         caret.setCodeOffset(0);
-                        updateScrollBars();
-                        notifyCaretMoved();
+                        ((CaretCapable) codeArea).setCaretPosition(caret.getCaretPosition());
                         revealCursor();
                     }
                 } catch (UnsupportedFlavorException | IOException ex) {
@@ -807,10 +798,9 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     @Override
     public void moveCaret(int positionX, int positionY, SelectingMode selecting) {
         CodeAreaCaretPosition caretPosition = ((CaretCapable) codeArea).mousePositionToClosestCaretPosition(positionX, positionY, CaretOverlapMode.PARTIAL_OVERLAP);
-        ((CaretCapable) codeArea).getCaret().setCaretPosition(caretPosition);
+        ((CaretCapable) codeArea).setCaretPosition(caretPosition);
         updateSelection(selecting, caretPosition);
 
-        notifyCaretMoved();
         undoSequenceBreak();
         codeArea.repaint();
     }
@@ -820,9 +810,8 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         CodeAreaCaretPosition caretPosition = caret.getCaretPosition();
         CodeAreaCaretPosition movePosition = ((CaretCapable) codeArea).computeMovePosition(caretPosition, direction);
         if (!caretPosition.equals(movePosition)) {
-            caret.setCaretPosition(movePosition);
+            ((CaretCapable) codeArea).setCaretPosition(movePosition);
             updateSelection(selectingMode, movePosition);
-            notifyCaretMoved();
         }
     }
 
@@ -832,8 +821,6 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         if (!sourcePosition.equals(scrollPosition)) {
             ((ScrollingCapable) codeArea).setScrollPosition(scrollPosition);
             codeArea.resetPainter();
-            notifyScrolled();
-            updateScrollBars();
         }
     }
 
@@ -886,24 +873,12 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         codeArea.repaint();
     }
 
-    private void notifyCaretMoved() {
-        ((CaretCapable) codeArea).notifyCaretMoved();
-    }
-
-    private void notifyScrolled() {
-        ((ScrollingCapable) codeArea).notifyScrolled();
-    }
-
-    private void updateScrollBars() {
-        ((ScrollingCapable) codeArea).updateScrollBars();
-    }
-
     @Override
     public boolean checkEditationAllowed() {
         return ((EditationModeCapable) codeArea).isEditable();
     }
 
-    @Nonnull    
+    @Nonnull
     private static SelectingMode isSelectingMode(KeyEvent keyEvent) {
         return (keyEvent.getModifiersEx() & KeyEvent.SHIFT_DOWN_MASK) > 0 ? SelectingMode.SELECTING : SelectingMode.NONE;
     }
