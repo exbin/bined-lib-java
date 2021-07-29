@@ -597,7 +597,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaJ
             case EXPANDING:
                 return editationOperation;
             default:
-                throw new IllegalStateException("Unexpected code type: " + editationMode.name());
+                throw new IllegalStateException("Unexpected editation mode: " + editationMode.name());
         }
     }
 

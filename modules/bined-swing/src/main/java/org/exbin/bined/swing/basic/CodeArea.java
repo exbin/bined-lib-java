@@ -63,7 +63,7 @@ import org.exbin.bined.RowWrappingMode;
 /**
  * Code area component.
  *
- * @version 0.2.0 2021/07/28
+ * @version 0.2.0 2021/07/29
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -349,7 +349,6 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
         Optional<CodeAreaScrollPosition> revealScrollPosition = painter.computeRevealScrollPosition(caretPosition);
         if (revealScrollPosition.isPresent()) {
             setScrollPosition(revealScrollPosition.get());
-            painter.scrollPositionChanged();
         }
     }
 
@@ -372,9 +371,6 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
         Optional<CodeAreaScrollPosition> centerOnScrollPosition = painter.computeCenterOnScrollPosition(caretPosition);
         if (centerOnScrollPosition.isPresent()) {
             setScrollPosition(centerOnScrollPosition.get());
-            resetPainter();
-            updateScrollBars();
-            notifyScrolled();
         }
     }
 
@@ -402,7 +398,6 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
 
     public void updateScrollBars() {
         painter.updateScrollBars();
-        painter.scrollPositionModified();
         repaint();
     }
 
@@ -414,9 +409,18 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
 
     @Override
     public void setScrollPosition(CodeAreaScrollPosition scrollPosition) {
+        if (!scrollPosition.equals(this.scrollPosition)) {
+            this.scrollPosition.setScrollPosition(scrollPosition);
+            painter.scrollPositionModified();
+            updateScrollBars();
+            notifyScrolled();
+        }
+    }
+    
+    @Override
+    public void updateScrollPosition(CodeAreaScrollPosition scrollPosition) {
         this.scrollPosition.setScrollPosition(scrollPosition);
-        painter.scrollPositionModified();
-        notifyScrolled();
+        repaint();
     }
 
     @Nonnull
@@ -616,7 +620,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
             case EXPANDING:
                 return editationOperation;
             default:
-                throw new IllegalStateException("Unexpected code type: " + editationMode.name());
+                throw new IllegalStateException("Unexpected editation mode: " + editationMode.name());
         }
     }
 

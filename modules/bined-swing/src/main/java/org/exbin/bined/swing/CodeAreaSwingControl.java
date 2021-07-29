@@ -17,6 +17,7 @@ package org.exbin.bined.swing;
 
 import java.awt.Graphics;
 import javax.annotation.ParametersAreNonnullByDefault;
+import org.exbin.bined.basic.CodeAreaScrollPosition;
 
 /**
  * Code area swing control.
@@ -51,4 +52,11 @@ public interface CodeAreaSwingControl {
      * should be recomputed and updated if necessary.
      */
     void updateLayout();
+
+    /**
+     * Updates scroll position.
+     *
+     * @param scrollPosition scroll position
+     */
+    void updateScrollPosition(CodeAreaScrollPosition scrollPosition);
 }

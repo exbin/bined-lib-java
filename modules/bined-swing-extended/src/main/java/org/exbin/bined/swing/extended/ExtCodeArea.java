@@ -71,7 +71,7 @@ import org.exbin.bined.swing.extended.caret.CaretsProfileCapableCodeAreaPainter;
 /**
  * Code area component extended code area.
  *
- * @version 0.2.0 2021/07/28
+ * @version 0.2.0 2021/07/29
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -365,9 +365,6 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
         Optional<CodeAreaScrollPosition> revealScrollPosition = painter.computeRevealScrollPosition(caretPosition);
         if (revealScrollPosition.isPresent()) {
             setScrollPosition(revealScrollPosition.get());
-            resetPainter();
-            updateScrollBars();
-            notifyScrolled();
         }
     }
 
@@ -390,9 +387,6 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
         Optional<CodeAreaScrollPosition> centerOnScrollPosition = painter.computeCenterOnScrollPosition(caretPosition);
         if (centerOnScrollPosition.isPresent()) {
             setScrollPosition(centerOnScrollPosition.get());
-            resetPainter();
-            updateScrollBars();
-            notifyScrolled();
         }
     }
 
@@ -420,7 +414,6 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
 
     protected void updateScrollBars() {
         painter.updateScrollBars();
-        painter.scrollPositionModified();
         repaint();
     }
 
@@ -432,9 +425,18 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
 
     @Override
     public void setScrollPosition(CodeAreaScrollPosition scrollPosition) {
+        if (!scrollPosition.equals(this.scrollPosition)) {
+            this.scrollPosition.setScrollPosition(scrollPosition);
+            painter.scrollPositionModified();
+            updateScrollBars();
+            notifyScrolled();
+        }
+    }
+
+    @Override
+    public void updateScrollPosition(CodeAreaScrollPosition scrollPosition) {
         this.scrollPosition.setScrollPosition(scrollPosition);
-        painter.scrollPositionModified();
-        notifyScrolled();
+        repaint();
     }
 
     @Nonnull
@@ -634,7 +636,7 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
             case EXPANDING:
                 return editationOperation;
             default:
-                throw new IllegalStateException("Unexpected code type: " + editationMode.name());
+                throw new IllegalStateException("Unexpected editation mode: " + editationMode.name());
         }
     }
 
@@ -674,7 +676,7 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
     @Nonnull
     @Override
     public Font getCodeFont() {
-        return codeFont;
+        return codeFont == null ? super.getFont() : codeFont;
     }
 
     @Override

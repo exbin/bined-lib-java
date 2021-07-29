@@ -106,12 +106,13 @@ import org.exbin.bined.extended.caret.CodeAreaCaretShape;
 import org.exbin.bined.extended.caret.CodeAreaCaretType;
 import org.exbin.bined.swing.extended.caret.ExtendedCodeAreaCaretsProfile;
 import org.exbin.bined.extended.layout.SpaceType;
+import org.exbin.bined.swing.CodeAreaSwingControl;
 import org.exbin.bined.swing.extended.caret.CaretsProfileCapableCodeAreaPainter;
 
 /**
  * Extended code area component default painter.
  *
- * @version 0.2.0 2021/07/27
+ * @version 0.2.0 2021/07/29
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -307,10 +308,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
                 recomputeLayout();
             }
         };
-        codeAreaDataChangeListener = () -> {
-            validateCaret();
-            recomputeLayout();
-        };
+        codeAreaDataChangeListener = () -> dataChanged();
         colorsProfile.reinitialize();
     }
 
@@ -390,11 +388,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
             scrolling.updateMaximumScrollPosition(rowsPerDocument, rowsPerPage, halfCharsPerRow, halfCharsPerPage, dimensions.getHalfCharOffset(), dimensions.getRowOffset(), characterWidth);
         }
 
-        recomputeScrollState();
-
-        // Notify extent/maximum change
-        verticalScrollBarModel.notifyChanged();
-        horizontalScrollBarModel.notifyChanged();
+        updateScrollBars();
 
         layoutChanged = false;
     }
@@ -464,18 +458,6 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         initialized = true;
     }
 
-    public void dataViewScrolled(Graphics g) {
-        if (!isInitialized()) {
-            return;
-        }
-
-        updateScrollBars();
-
-        if (metrics.getCharacterWidth() > 0) {
-            paintComponent(g);
-        }
-    }
-
     private void recomputeScrollState() {
         scrolling.setScrollPosition(((ScrollingCapable) codeArea).getScrollPosition());
         int characterWidth = metrics.getCharacterWidth();
@@ -499,7 +481,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         }
         updateCache();
         if (font == null) {
-            ((FontCapable) codeArea).setCodeFont(((FontCapable) codeArea).getCodeFont());
+            ((FontCapable) codeArea).setCodeFont(codeArea.getFont());
             fontChanged(g);
         }
         if (rowDataCache == null) {
@@ -2026,12 +2008,6 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
 
         recomputeScrollState();
 
-        scrolling.setScrollPosition(((ScrollingCapable) codeArea).getScrollPosition());
-
-        if (characterWidth > 0) {
-            recomputeCharPositions();
-        }
-
         boolean revalidate = false;
         Rectangle scrollPanelRectangle = dimensions.getScrollPanelRectangle();
         Rectangle oldRect = scrollPanel.getBounds();
@@ -2040,13 +2016,9 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
             revalidate = true;
         }
 
-        int horizontalScrollBarSize = getHorizontalScrollBarSize();
-        int verticalScrollBarSize = getVerticalScrollBarSize();
-
         JViewport viewport = scrollPanel.getViewport();
         Dimension dataViewSize;
         if (rowHeight > 0 && characterWidth > 0) {
-            scrolling.updateCache(codeArea, horizontalScrollBarSize, verticalScrollBarSize);
             dataViewSize = scrolling.computeViewDimension(viewport.getWidth(), viewport.getHeight(), layoutProfile, structure, characterWidth, rowHeight);
             Dimension oldDataViewSize = dataView.getSize();
             if (!oldDataViewSize.equals(dataViewSize)) {
@@ -2082,6 +2054,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
     @Override
     public void scrollPositionModified() {
         scrolling.clearLastVerticalScrollingValue();
+        recomputeScrollState();
     }
 
     @Override
@@ -2096,6 +2069,11 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
 
     private void verticalExtentChanged() {
         verticalScrollBarModel.notifyChanged();
+    }
+
+    private void dataChanged() {
+        validateCaret();
+        recomputeLayout();
     }
 
     protected int getCharactersPerRow() {
@@ -2144,7 +2122,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         @Override
         public void setRangeProperties(int newValue, int newExtent, int newMin, int newMax, boolean adjusting) {
             super.setRangeProperties(newValue, newExtent, newMin, newMax, adjusting);
-            if (newValue == scrolling.getLastVerticalScrollingValue() && (newValue <= newMin || newValue >= newMax - newExtent)) {
+            if (!scrollingUpdate && newValue == scrolling.getLastVerticalScrollingValue() && (newValue <= newMin || newValue >= newMax - newExtent)) {
                 // We still want to report change when scrolling up on corners for big files
                 fireStateChanged();
             }
@@ -2192,7 +2170,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
 
         @Override
         public void adjustmentValueChanged(@Nullable AdjustmentEvent e) {
-            if (e == null) {
+            if (e == null || scrollingUpdate) {
                 return;
             }
 
@@ -2207,7 +2185,6 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
                             if (e.getValue() == lastValue - 1 || (lastValue == 0 && e.getValue() == 0)) {
                                 scrolling.performScrolling(ScrollingDirection.UP, dimensions.getRowsPerPage(), structure.getRowsPerDocument());
                                 ((ScrollingCapable) codeArea).setScrollPosition(scrolling.getScrollPosition());
-                                codeArea.repaint();
                                 return;
                             }
 
@@ -2215,7 +2192,6 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
                             if (e.getValue() == lastValue + 1 || (lastValue == maxScroll && e.getValue() == maxScroll)) {
                                 scrolling.performScrolling(ScrollingDirection.DOWN, dimensions.getRowsPerPage(), structure.getRowsPerDocument());
                                 ((ScrollingCapable) codeArea).setScrollPosition(scrolling.getScrollPosition());
-                                codeArea.repaint();
                                 return;
                             }
                         }
@@ -2230,9 +2206,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
                 int maxValue = Integer.MAX_VALUE - scrollPanel.getVerticalScrollBar().getVisibleAmount();
                 long rowsPerDocumentToLastPage = structure.getRowsPerDocument() - dimensions.getRowsPerRect();
                 scrolling.updateVerticalScrollBarValue(scrollBarValue, metrics.getRowHeight(), maxValue, rowsPerDocumentToLastPage);
-                ((ScrollingCapable) codeArea).setScrollPosition(scrolling.getScrollPosition());
-                codeArea.repaint();
-//            dataViewScrolled(codeArea.getGraphics());
+                ((CodeAreaSwingControl) codeArea).updateScrollPosition(scrolling.getScrollPosition());
             }
         }
     }
@@ -2244,15 +2218,13 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
 
         @Override
         public void adjustmentValueChanged(@Nullable AdjustmentEvent e) {
-            if (e == null || !scrollingByUser) {
+            if (e == null || !scrollingByUser || scrollingUpdate) {
                 return;
             }
 
             int scrollBarValue = scrollPanel.getHorizontalScrollBar().getValue();
             scrolling.updateHorizontalScrollBarValue(scrollBarValue, metrics.getCharacterWidth());
-            ((ScrollingCapable) codeArea).setScrollPosition(scrolling.getScrollPosition());
-            codeArea.repaint();
-//            dataViewScrolled(codeArea.getGraphics());
+            ((CodeAreaSwingControl) codeArea).updateScrollPosition(scrolling.getScrollPosition());
         }
     }
 
