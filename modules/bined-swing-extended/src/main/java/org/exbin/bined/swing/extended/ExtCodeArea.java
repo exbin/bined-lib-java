@@ -71,7 +71,7 @@ import org.exbin.bined.swing.extended.caret.CaretsProfileCapableCodeAreaPainter;
 /**
  * Code area component extended code area.
  *
- * @version 0.2.0 2021/07/29
+ * @version 0.2.0 2021/07/30
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -435,8 +435,11 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
 
     @Override
     public void updateScrollPosition(CodeAreaScrollPosition scrollPosition) {
-        this.scrollPosition.setScrollPosition(scrollPosition);
-        repaint();
+        if (!scrollPosition.equals(this.scrollPosition)) {
+            this.scrollPosition.setScrollPosition(scrollPosition);
+            repaint();
+            notifyScrolled();
+        }
     }
 
     @Nonnull
