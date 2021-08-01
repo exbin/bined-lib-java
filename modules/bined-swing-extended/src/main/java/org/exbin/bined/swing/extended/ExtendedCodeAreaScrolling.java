@@ -15,7 +15,6 @@
  */
 package org.exbin.bined.swing.extended;
 
-import java.awt.Dimension;
 import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -25,6 +24,7 @@ import org.exbin.bined.ScrollBarVisibility;
 import org.exbin.bined.basic.CodeAreaScrollPosition;
 import org.exbin.bined.basic.PositionScrollVisibility;
 import org.exbin.bined.basic.ScrollBarVerticalScale;
+import org.exbin.bined.basic.ScrollViewDimension;
 import org.exbin.bined.basic.ScrollingDirection;
 import org.exbin.bined.basic.VerticalScrollUnit;
 import org.exbin.bined.extended.ExtendedCodeAreaStructure;
@@ -35,7 +35,7 @@ import org.exbin.bined.extended.layout.ExtendedCodeAreaLayoutProfile;
 /**
  * Code area scrolling for extended core area.
  *
- * @version 0.2.0 2021/06/30
+ * @version 0.2.0 2021/08/01
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -45,8 +45,6 @@ public class ExtendedCodeAreaScrolling {
     private final CodeAreaScrollPosition scrollPosition = new CodeAreaScrollPosition();
     @Nonnull
     private ScrollBarVerticalScale scrollBarVerticalScale = ScrollBarVerticalScale.NORMAL;
-    @Nonnull
-    private final Dimension scrollViewDimension = new Dimension();
     private int horizontalExtentDifference;
     private int verticalExtentDifference;
     private int horizontalScrollBarHeight;
@@ -85,7 +83,7 @@ public class ExtendedCodeAreaScrolling {
     }
 
     @Nonnull
-    public Dimension computeViewDimension(int dataViewWidth, int dataViewHeight, ExtendedCodeAreaLayoutProfile layoutProfile, ExtendedCodeAreaStructure structure, int characterWidth, int rowHeight) {
+    public ScrollViewDimension computeViewDimension(int dataViewWidth, int dataViewHeight, ExtendedCodeAreaLayoutProfile layoutProfile, ExtendedCodeAreaStructure structure, int characterWidth, int rowHeight) {
         int halfCharsPerRow = structure.getHalfCharsPerRow();
         int dataWidth = layoutProfile.computePositionX(halfCharsPerRow, characterWidth, characterWidth / 2);
         boolean fitsHorizontally = computeFitsHorizontally(dataViewWidth, dataWidth);
@@ -100,21 +98,24 @@ public class ExtendedCodeAreaScrolling {
             fitsVertically = computeFitsVertically(dataViewHeight - horizontalScrollBarHeight, rowsPerData, rowHeight);
         }
 
+        int width;
         if (fitsHorizontally) {
-            scrollViewDimension.width = dataWidth;
+            width = dataWidth;
             changeVerticalExtentDifference(0);
         } else {
-            scrollViewDimension.width = recomputeScrollViewWidth(dataViewWidth, characterWidth, dataWidth, halfCharsPerRow);
+            width = recomputeScrollViewWidth(dataViewWidth, characterWidth, dataWidth, halfCharsPerRow);
         }
 
+        int height;
         if (fitsVertically) {
-            scrollViewDimension.height = (int) (rowsPerData * rowHeight);
+            height = (int) (rowsPerData * rowHeight);
             changeHorizontalExtentDifference(0);
         } else {
-            scrollViewDimension.height = recomputeScrollViewHeight(dataViewHeight, rowHeight, rowsPerData);
+            height = recomputeScrollViewHeight(dataViewHeight, rowHeight, rowsPerData);
         }
 
-        return scrollViewDimension;
+        // TODO avoid creation of instance
+        return new ScrollViewDimension(dataViewWidth, dataViewHeight, width, height);
     }
 
     private boolean computeFitsHorizontally(int dataViewWidth, int dataWidth) {
@@ -833,5 +834,4 @@ public class ExtendedCodeAreaScrolling {
             }
         }
     }
-
 }

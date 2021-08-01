@@ -19,7 +19,6 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import javax.annotation.concurrent.Immutable;
 import org.exbin.bined.DataProvider;
 import org.exbin.bined.ScrollBarVisibility;
 import org.exbin.bined.capability.BasicScrollingCapable;
@@ -27,7 +26,7 @@ import org.exbin.bined.capability.BasicScrollingCapable;
 /**
  * Code area scrolling.
  *
- * @version 0.2.0 2021/06/30
+ * @version 0.2.0 2021/08/01
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -37,8 +36,6 @@ public class BasicCodeAreaScrolling {
     private final CodeAreaScrollPosition scrollPosition = new CodeAreaScrollPosition();
     @Nonnull
     private ScrollBarVerticalScale scrollBarVerticalScale = ScrollBarVerticalScale.NORMAL;
-    @Nonnull
-    private final ScrollViewDimension scrollViewDimension = new ScrollViewDimension(0, 0);
     private int horizontalExtentDifference;
     private int verticalExtentDifference;
     private int horizontalScrollBarHeight;
@@ -92,21 +89,24 @@ public class BasicCodeAreaScrolling {
             fitsVertically = computeFitsVertically(dataViewHeight - horizontalScrollBarHeight, rowsPerData, rowHeight);
         }
 
+        int width;
         if (fitsHorizontally) {
-            scrollViewDimension.width = dataWidth;
+            width = dataWidth;
             changeVerticalExtentDifference(0);
         } else {
-            scrollViewDimension.width = recomputeScrollViewWidth(dataViewWidth, characterWidth, dataWidth, charsPerRow);
+            width = recomputeScrollViewWidth(dataViewWidth, characterWidth, dataWidth, charsPerRow);
         }
 
+        int height;
         if (fitsVertically) {
-            scrollViewDimension.height = (int) (rowsPerData * rowHeight);
+            height = (int) (rowsPerData * rowHeight);
             changeHorizontalExtentDifference(0);
         } else {
-            scrollViewDimension.height = recomputeScrollViewHeight(dataViewHeight, rowHeight, rowsPerData);
+            height = recomputeScrollViewHeight(dataViewHeight, rowHeight, rowsPerData);
         }
 
-        return scrollViewDimension;
+        // TODO avoid creation of instance
+        return new ScrollViewDimension(dataViewWidth, dataViewHeight, width, height);
     }
 
     private boolean computeFitsHorizontally(int dataViewWidth, int dataWidth) {
@@ -735,26 +735,6 @@ public class BasicCodeAreaScrolling {
             if (horizontalExtentChangeListener != null) {
                 horizontalExtentChangeListener.run();
             }
-        }
-    }
-
-    @Immutable
-    public static final class ScrollViewDimension {
-
-        private int width;
-        private int height;
-
-        public ScrollViewDimension(int width, int height) {
-            this.width = width;
-            this.height = height;
-        }
-
-        public int getWidth() {
-            return width;
-        }
-
-        public int getHeight() {
-            return height;
         }
     }
 }

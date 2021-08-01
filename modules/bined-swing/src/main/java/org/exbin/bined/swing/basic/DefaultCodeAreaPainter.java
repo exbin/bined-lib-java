@@ -86,12 +86,13 @@ import org.exbin.bined.CodeAreaCaretPosition;
 import org.exbin.bined.DataChangedListener;
 import org.exbin.bined.basic.BasicCodeAreaLayout;
 import org.exbin.bined.basic.ScrollBarVerticalScale;
+import org.exbin.bined.basic.ScrollViewDimension;
 import org.exbin.bined.swing.CodeAreaSwingControl;
 
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2021/07/29
+ * @version 0.2.0 2021/08/01
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -147,6 +148,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
     private EditationOperation editationOperation;
     @Nullable
     private BasicBackgroundPaintMode backgroundPaintMode;
+    @Nullable
+    private ScrollViewDimension viewDimension;
     private boolean showMirrorCursor;
     @Nonnull
     private AntialiasingMode antialiasingMode = AntialiasingMode.AUTO;
@@ -269,6 +272,23 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         viewport.addMouseListener(codeAreaMouseListener);
         viewport.addMouseMotionListener(codeAreaMouseListener);
         viewport.addMouseWheelListener(codeAreaMouseListener);
+        viewport.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                int verticalScrollBarSize = getVerticalScrollBarSize();
+                int horizontalScrollBarSize = getHorizontalScrollBarSize();
+
+                if (dimensions.getVerticalScrollBarSize() != verticalScrollBarSize || dimensions.getHorizontalScrollBarSize() != horizontalScrollBarSize) {
+                    recomputeDimensions();
+                    recomputeScrollState();
+                }
+
+                JViewport viewport = scrollPanel.getViewport();
+                if (viewDimension != null && (viewDimension.getDataViewWidth() != viewport.getWidth() || viewDimension.getDataViewHeight() != viewport.getHeight())) {
+                    updateScrollBars();
+                }
+            }
+        });
         codeAreaComponentListener = new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
@@ -1591,12 +1611,11 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         }
 
         JViewport viewport = scrollPanel.getViewport();
-        Dimension dataViewSize;
+        
         if (rowHeight > 0 && characterWidth > 0) {
-            BasicCodeAreaScrolling.ScrollViewDimension viewDimension = scrolling.computeViewDimension(viewport.getWidth(), viewport.getHeight(), layout, structure, characterWidth, rowHeight);
-            dataViewSize = new Dimension(viewDimension.getWidth(), viewDimension.getHeight());
-            Dimension oldDataViewSize = dataView.getSize();
-            if (!oldDataViewSize.equals(dataViewSize)) {
+            viewDimension = scrolling.computeViewDimension(viewport.getWidth(), viewport.getHeight(), layout, structure, characterWidth, rowHeight);
+            if (dataView.getWidth() != viewDimension.getWidth() || dataView.getHeight() != viewDimension.getHeight()) {
+                Dimension dataViewSize  = new Dimension(viewDimension.getWidth(), viewDimension.getHeight());
                 dataView.setPreferredSize(dataViewSize);
                 dataView.setSize(dataViewSize);
 
