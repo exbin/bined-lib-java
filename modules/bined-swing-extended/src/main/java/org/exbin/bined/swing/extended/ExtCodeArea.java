@@ -827,6 +827,7 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
     }
 
     protected void notifyScrolled() {
+        painter.resetLayout();
         scrollingListeners.forEach((scrollingListener) -> {
             scrollingListener.scrolled();
         });

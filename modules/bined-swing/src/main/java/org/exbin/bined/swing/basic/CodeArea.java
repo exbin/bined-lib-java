@@ -748,6 +748,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
     }
 
     protected void notifyScrolled() {
+        painter.resetLayout();
         scrollingListeners.forEach((scrollingListener) -> {
             scrollingListener.scrolled();
         });

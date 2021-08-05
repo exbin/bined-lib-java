@@ -92,7 +92,7 @@ import org.exbin.bined.swing.CodeAreaSwingControl;
 /**
  * Code area component default painter.
  *
- * @version 0.2.0 2021/08/01
+ * @version 0.2.0 2021/08/05
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -597,7 +597,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
 
     public void paintRowPosition(Graphics g) {
         int bytesPerRow = structure.getBytesPerRow();
-        long dataSize = structure.getDataSize();
+        long dataSize = codeArea.getDataSize();
         int rowHeight = metrics.getRowHeight();
         int characterWidth = metrics.getCharacterWidth();
         int subFontSpace = metrics.getSubFontSpace();
@@ -713,7 +713,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
      */
     public void paintBackground(Graphics g) {
         int bytesPerRow = structure.getBytesPerRow();
-        long dataSize = structure.getDataSize();
+        long dataSize = codeArea.getDataSize();
         int rowHeight = metrics.getRowHeight();
         int rowsPerRect = dimensions.getRowsPerRect();
         Rectangle dataViewRect = dimensions.getDataViewRectangle();
@@ -742,18 +742,23 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
 
     public void paintRows(Graphics g) {
         int bytesPerRow = structure.getBytesPerRow();
-        int characterWidth = metrics.getCharacterWidth();
         int rowHeight = metrics.getRowHeight();
         int dataViewX = dimensions.getScrollPanelX();
         int dataViewY = dimensions.getScrollPanelY();
         int rowsPerRect = dimensions.getRowsPerRect();
+        long dataSize = codeArea.getDataSize();
         CodeAreaScrollPosition scrollPosition = scrolling.getScrollPosition();
         long dataPosition = scrollPosition.getRowPosition() * bytesPerRow;
+        int characterWidth = metrics.getCharacterWidth();
         int rowPositionX = dataViewX - scrollPosition.getCharPosition() * characterWidth - scrollPosition.getCharOffset();
         int rowPositionY = dataViewY - scrollPosition.getRowOffset();
 
         g.setColor(colorsProfile.getTextColor());
         for (int row = 0; row <= rowsPerRect; row++) {
+            if (dataPosition > dataSize) {
+                break;
+            }
+
             prepareRowData(dataPosition);
             paintRowBackground(g, dataPosition, rowPositionX, rowPositionY);
             paintRowText(g, dataPosition, rowPositionX, rowPositionY);
@@ -769,11 +774,11 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
 
     private void prepareRowData(long dataPosition) {
         int maxBytesPerChar = metrics.getMaxBytesPerChar();
-        CodeAreaViewMode viewMode = structure.getViewMode();
         int bytesPerRow = structure.getBytesPerRow();
-        long dataSize = structure.getDataSize();
+        long dataSize = codeArea.getDataSize();
         int previewCharPos = visibility.getPreviewCharPos();
         CodeType codeType = structure.getCodeType();
+        CodeAreaViewMode viewMode = structure.getViewMode();
 
         int rowBytesLimit = bytesPerRow;
         int rowStart = 0;
@@ -1214,7 +1219,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
 
                 CodeAreaViewMode viewMode = structure.getViewMode();
                 CodeAreaScrollPosition scrollPosition = scrolling.getScrollPosition();
-                long dataSize = structure.getDataSize();
+                long dataSize = codeArea.getDataSize();
                 CodeType codeType = structure.getCodeType();
                 g.fillRect(cursorX, cursorY, width, height);
                 g.setColor(colorsProfile.getCursorNegativeColor());
@@ -1317,7 +1322,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         int previewCharPos = visibility.getPreviewCharPos();
         int bytesPerRow = structure.getBytesPerRow();
         CodeType codeType = structure.getCodeType();
-        long dataSize = structure.getDataSize();
+        long dataSize = codeArea.getDataSize();
         long dataPosition;
         int codeOffset = 0;
         int byteOnRow;
@@ -1611,11 +1616,11 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         }
 
         JViewport viewport = scrollPanel.getViewport();
-        
+
         if (rowHeight > 0 && characterWidth > 0) {
             viewDimension = scrolling.computeViewDimension(viewport.getWidth(), viewport.getHeight(), layout, structure, characterWidth, rowHeight);
             if (dataView.getWidth() != viewDimension.getWidth() || dataView.getHeight() != viewDimension.getHeight()) {
-                Dimension dataViewSize  = new Dimension(viewDimension.getWidth(), viewDimension.getHeight());
+                Dimension dataViewSize = new Dimension(viewDimension.getWidth(), viewDimension.getHeight());
                 dataView.setPreferredSize(dataViewSize);
                 dataView.setSize(dataViewSize);
 
@@ -1653,7 +1658,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
 
     @Override
     public void scrollPositionChanged() {
-        reset();
+        recomputeScrollState();
         updateScrollBars();
     }
 

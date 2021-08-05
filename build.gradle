@@ -79,6 +79,7 @@ if (!project.gradle.startParameter.projectProperties.containsKey("moduleDep")) {
                 into('') {
                     from project.rootDir
                     include 'LICENSE-2.0.txt'
+                    include 'changes.txt'
                 }
                 into('') {
                     from 'src/dist'

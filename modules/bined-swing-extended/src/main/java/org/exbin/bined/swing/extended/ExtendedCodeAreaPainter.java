@@ -113,7 +113,7 @@ import org.exbin.bined.swing.extended.caret.CaretsProfileCapableCodeAreaPainter;
 /**
  * Extended code area component default painter.
  *
- * @version 0.2.0 2021/08/01
+ * @version 0.2.0 2021/08/05
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -760,7 +760,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         }
 
         int bytesPerRow = structure.getBytesPerRow();
-        long dataSize = structure.getDataSize();
+        long dataSize = codeArea.getDataSize();
         int rowHeight = metrics.getRowHeight();
         int characterWidth = metrics.getCharacterWidth();
         int subFontSpace = metrics.getSubFontSpace();
@@ -911,7 +911,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
      */
     public void paintBackground(Graphics g) {
         int bytesPerRow = structure.getBytesPerRow();
-        long dataSize = structure.getDataSize();
+        long dataSize = codeArea.getDataSize();
         int rowHeight = metrics.getRowHeight();
         int characterWidth = metrics.getCharacterWidth();
         int halfSpaceWidth = characterWidth / 2;
@@ -987,7 +987,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         int dataViewX = dimensions.getDataViewX();
         int dataViewY = dimensions.getDataViewY();
         int rowsPerRect = dimensions.getRowsPerRect();
-        long dataSize = structure.getDataSize();
+        long dataSize = codeArea.getDataSize();
         CodeAreaScrollPosition scrollPosition = scrolling.getScrollPosition();
         long dataPosition = scrollPosition.getRowPosition() * bytesPerRow;
         int characterWidth = metrics.getCharacterWidth();
@@ -1016,14 +1016,13 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
     private void prepareRowData(long dataPosition) {
         int maxBytesPerChar = metrics.getMaxBytesPerChar();
         int bytesPerRow = structure.getBytesPerRow();
-        long dataSize = structure.getDataSize();
+        long dataSize = codeArea.getDataSize();
         CodeType codeType = structure.getCodeType();
-        int skipToChar = visibility.getSkipToChar();
 
         int rowStart = 0;
         if (dataPosition < dataSize) {
             int rowDataSize = bytesPerRow + maxBytesPerChar - 1;
-            if (dataPosition + rowDataSize > dataSize) {
+            if (dataSize - dataPosition < rowDataSize) {
                 rowDataSize = (int) (dataSize - dataPosition);
             }
             if (dataPosition < 0) {
@@ -1053,6 +1052,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         positionIterator.skip(visibility.getSkipTo());
         char targetChar;
         Character replacement;
+        int skipToChar = visibility.getSkipToChar();
         int halfCharPos = positionIterator.getHalfCharPosition();
         boolean first = true;
         int byteOffset;
@@ -1585,7 +1585,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
 
                 CodeAreaViewMode viewMode = structure.getViewMode();
                 CodeAreaScrollPosition scrollPosition = scrolling.getScrollPosition();
-                long dataSize = structure.getDataSize();
+                long dataSize = codeArea.getDataSize();
                 CodeType codeType = structure.getCodeType();
                 caretsProfile.paintCaret(g, cursorX, cursorY, width, height, caretShape);
                 g.setColor(colorsProfile.getColor(CodeAreaBasicColors.CURSOR_NEGATIVE_COLOR));
@@ -1709,7 +1709,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         }
 
         int bytesPerRow = structure.getBytesPerRow();
-        long dataSize = structure.getDataSize();
+        long dataSize = codeArea.getDataSize();
         long dataPosition = byteOnRow + (cursorRowY * bytesPerRow);
 
         if (dataPosition < 0) {
@@ -2078,7 +2078,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
 
     @Override
     public void scrollPositionChanged() {
-        reset();
+        recomputeScrollState();
         updateScrollBars();
     }
 
