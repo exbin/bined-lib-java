@@ -24,6 +24,7 @@ import org.exbin.bined.CodeAreaSection;
 import org.exbin.bined.swing.CodeAreaCore;
 import org.exbin.bined.swing.extended.ExtendedCodeAreaPainter;
 import org.exbin.auxiliary.paged_data.BinaryData;
+import org.exbin.bined.CodeAreaUtils;
 
 /**
  * Highlighting painter for basic binary diff.
@@ -64,7 +65,7 @@ public class DiffHighlightCodeAreaPainter extends ExtendedCodeAreaPainter {
         }
 
         if (comparedData != null && position < codeArea.getDataSize() && position < comparedData.getDataSize()) {
-            byte sourceByte = codeArea.getContentData().getByte(position);
+            byte sourceByte = CodeAreaUtils.requireNonNull(codeArea.getContentData()).getByte(position);
             byte comparedByte = comparedData.getByte(position);
 
             if (sourceByte != comparedByte) {

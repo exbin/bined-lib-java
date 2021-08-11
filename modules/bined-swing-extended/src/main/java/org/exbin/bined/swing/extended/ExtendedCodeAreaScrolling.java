@@ -35,7 +35,7 @@ import org.exbin.bined.extended.layout.ExtendedCodeAreaLayoutProfile;
 /**
  * Code area scrolling for extended core area.
  *
- * @version 0.2.0 2021/08/01
+ * @version 0.2.0 2021/08/11
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -140,13 +140,13 @@ public class ExtendedCodeAreaScrolling {
                 break;
             }
             case CHARACTER: {
-                int charsPerDataView = dataViewWidth / characterWidth;
+                int charsPerDataView = (dataViewWidth + characterWidth - 1) / characterWidth;
                 scrollViewWidth = dataViewWidth + (((halfCharsPerRow + 1) / 2) - charsPerDataView);
                 changeHorizontalExtentDifference(dataViewWidth - charsPerDataView);
                 break;
             }
             case HALF_CHARACTER: {
-                int halfCharsPerDataView = dataViewWidth / (characterWidth / 2);
+                int halfCharsPerDataView = (dataViewWidth + (characterWidth / 2) - 1) / (characterWidth / 2);
                 scrollViewWidth = dataViewWidth + (halfCharsPerRow - halfCharsPerDataView);
                 changeHorizontalExtentDifference(dataViewWidth - halfCharsPerDataView);
                 break;
@@ -168,7 +168,7 @@ public class ExtendedCodeAreaScrolling {
                     changeVerticalExtentDifference(0);
                 } else {
                     scrollBarVerticalScale = ScrollBarVerticalScale.NORMAL;
-                    scrollViewHeight = (int) (rowsPerData * rowHeight) - dataViewHeight;
+                    scrollViewHeight = (int) (rowsPerData * rowHeight);
                     changeVerticalExtentDifference(0);
                 }
                 break;
@@ -180,7 +180,7 @@ public class ExtendedCodeAreaScrolling {
                     changeVerticalExtentDifference(0);
                 } else {
                     scrollBarVerticalScale = ScrollBarVerticalScale.NORMAL;
-                    int rowsPerDataView = dataViewHeight / rowHeight;
+                    int rowsPerDataView = (dataViewHeight + rowHeight - 1) / rowHeight;
                     scrollViewHeight = (int) (dataViewHeight + (rowsPerData - rowsPerDataView));
                     changeVerticalExtentDifference(dataViewHeight - rowsPerDataView);
                 }
@@ -319,9 +319,9 @@ public class ExtendedCodeAreaScrolling {
             case PIXEL:
                 return scrollPosition.getCharPosition() * characterWidth + scrollPosition.getCharOffset();
             case CHARACTER:
-                return scrollPosition.getCharPosition() * characterWidth;
+                return scrollPosition.getCharPosition();
             case HALF_CHARACTER:
-                return (scrollPosition.getCharPosition() / 2) * characterWidth + (scrollPosition.getCharPosition() & 1) * (characterWidth / 2);
+                return scrollPosition.getCharPosition();
             default:
                 throw new IllegalStateException("Unexpected horizontal scroll unit: " + horizontalScrollUnit.name());
         }

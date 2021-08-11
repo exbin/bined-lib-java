@@ -26,7 +26,7 @@ import org.exbin.bined.capability.BasicScrollingCapable;
 /**
  * Code area scrolling.
  *
- * @version 0.2.0 2021/08/01
+ * @version 0.2.0 2021/09/11
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -131,7 +131,7 @@ public class BasicCodeAreaScrolling {
                 break;
             }
             case CHARACTER: {
-                int charsPerDataView = dataViewWidth / characterWidth;
+                int charsPerDataView = (dataViewWidth + characterWidth - 1) / characterWidth;
                 scrollViewWidth = dataViewWidth + (charsPerRow - charsPerDataView);
                 changeHorizontalExtentDifference(dataViewWidth - charsPerDataView);
                 break;
@@ -153,7 +153,7 @@ public class BasicCodeAreaScrolling {
                     changeVerticalExtentDifference(0);
                 } else {
                     scrollBarVerticalScale = ScrollBarVerticalScale.NORMAL;
-                    scrollViewHeight = (int) (rowsPerData * rowHeight) - dataViewHeight;
+                    scrollViewHeight = (int) (rowsPerData * rowHeight);
                     changeVerticalExtentDifference(0);
                 }
                 break;
@@ -165,7 +165,7 @@ public class BasicCodeAreaScrolling {
                     changeVerticalExtentDifference(0);
                 } else {
                     scrollBarVerticalScale = ScrollBarVerticalScale.NORMAL;
-                    int rowsPerDataView = dataViewHeight / rowHeight;
+                    int rowsPerDataView = (dataViewHeight + rowHeight - 1) / rowHeight;
                     scrollViewHeight = (int) (dataViewHeight + (rowsPerData - rowsPerDataView));
                     changeVerticalExtentDifference(dataViewHeight - rowsPerDataView);
                 }
@@ -301,7 +301,7 @@ public class BasicCodeAreaScrolling {
             case PIXEL:
                 return scrollPosition.getCharPosition() * characterWidth + scrollPosition.getCharOffset();
             case CHARACTER:
-                return scrollPosition.getCharPosition() * characterWidth;
+                return scrollPosition.getCharPosition();
             default:
                 throw new IllegalStateException("Unexpected horizontal scroll unit: " + horizontalScrollUnit.name());
         }

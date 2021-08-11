@@ -52,12 +52,12 @@ public class InsertDataCommand extends OpCodeAreaCommand {
     @Override
     public void redo() throws BinaryDataOperationException {
         super.redo();
-        ((CaretCapable) codeArea).getCaret().setCaretPosition(position + dataLength);
+        ((CaretCapable) codeArea).setCaretPosition(position + dataLength);
     }
 
     @Override
     public void undo() throws BinaryDataOperationException {
         super.undo();
-        ((CaretCapable) codeArea).getCaret().setCaretPosition(position);
+        ((CaretCapable) codeArea).setCaretPosition(position);
     }
 }
