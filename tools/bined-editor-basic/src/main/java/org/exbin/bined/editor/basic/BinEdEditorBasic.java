@@ -38,12 +38,11 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-import org.exbin.bined.EditationMode;
-import org.exbin.bined.EditationOperation;
+import org.exbin.bined.EditMode;
+import org.exbin.bined.EditOperation;
 import org.exbin.bined.SelectionRange;
 import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.capability.CharsetCapable;
-import org.exbin.bined.capability.EditationModeCapable;
 import org.exbin.bined.capability.SelectionCapable;
 import org.exbin.bined.operation.BinaryDataCommand;
 import org.exbin.bined.operation.BinaryDataOperationException;
@@ -59,6 +58,7 @@ import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.CodeCharactersCase;
 import org.exbin.bined.CodeType;
 import org.exbin.bined.swing.CodeAreaSwingUtils;
+import org.exbin.bined.capability.EditModeCapable;
 
 /**
  * Basic single jar swing version of BinEd binary/hexadecimal editor.
@@ -277,25 +277,25 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
                 codeArea.repaint();
             }
         });
-        ((EditationModeCapable) codeArea).addEditationModeChangedListener((EditationMode editationMode, EditationOperation editationOperation) -> {
-            switch (editationOperation) {
+        ((EditModeCapable) codeArea).addEditModeChangedListener((EditMode editMode, EditOperation editOperation) -> {
+            switch (editOperation) {
                 case INSERT: {
-                    editationModeLabel.setText("INS");
+                    editModeLabel.setText("INS");
                     break;
                 }
                 case OVERWRITE: {
-                    editationModeLabel.setText("OVR");
+                    editModeLabel.setText("OVR");
                     break;
                 }
                 default: {
-                    throw new IllegalStateException("Unexpected editation mode " + editationOperation.name());
+                    throw new IllegalStateException("Unexpected edit mode " + editOperation.name());
                 }
             }
         });
         ((CaretCapable) codeArea).addCaretMovedListener((CodeAreaCaretPosition caretPosition) -> {
             positionLabel.setText(caretPosition.getDataPosition() + ":" + caretPosition.getCodeOffset());
         });
-        ((SelectionCapable) codeArea).addSelectionChangedListener((SelectionRange selection) -> {
+        ((SelectionCapable) codeArea).addSelectionChangedListener(() -> {
             updateClipboardState();
         });
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
@@ -342,7 +342,7 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
         statusBarPanel = new javax.swing.JPanel();
         statusBarSeparator = new javax.swing.JSeparator();
         textStatusPanel = new javax.swing.JPanel();
-        editationModeLabel = new javax.swing.JLabel();
+        editModeLabel = new javax.swing.JLabel();
         positionLabel = new javax.swing.JLabel();
         encodingLabel = new javax.swing.JLabel();
         mainMenuBar = new javax.swing.JMenuBar();
@@ -472,13 +472,13 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
         statusBarSeparator.setAutoscrolls(true);
         statusBarPanel.add(statusBarSeparator, java.awt.BorderLayout.PAGE_START);
 
-        editationModeLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        editationModeLabel.setText("OVR");
-        editationModeLabel.setToolTipText("Current editation mode");
-        editationModeLabel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        editationModeLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+        editModeLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        editModeLabel.setText("OVR");
+        editModeLabel.setToolTipText("Current edit mode");
+        editModeLabel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        editModeLabel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                editationModeLabelMouseClicked(evt);
+                editModeLabelMouseClicked(evt);
             }
         });
 
@@ -507,11 +507,11 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
                 .addGap(0, 0, 0)
                 .addComponent(positionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(editationModeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(editModeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         textStatusPanelLayout.setVerticalGroup(
             textStatusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(editationModeLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(editModeLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(positionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(encodingLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
@@ -680,17 +680,17 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
                 JOptionPane.PLAIN_MESSAGE);
     }//GEN-LAST:event_aboutMenuItemActionPerformed
 
-    private void editationModeLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_editationModeLabelMouseClicked
+    private void editModeLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_editModeLabelMouseClicked
         if (evt.getButton() == MouseEvent.BUTTON1) {
-            EditationOperation editationOperation;
-            if (((EditationModeCapable) codeArea).getEditationOperation() == EditationOperation.INSERT) {
-                editationOperation = EditationOperation.OVERWRITE;
+            EditOperation editOperation;
+            if (((EditModeCapable) codeArea).getEditOperation() == EditOperation.INSERT) {
+                editOperation = EditOperation.OVERWRITE;
             } else {
-                editationOperation = EditationOperation.INSERT;
+                editOperation = EditOperation.INSERT;
             }
-            ((EditationModeCapable) codeArea).setEditationOperation(editationOperation);
+            ((EditModeCapable) codeArea).setEditOperation(editOperation);
         }
-    }//GEN-LAST:event_editationModeLabelMouseClicked
+    }//GEN-LAST:event_editModeLabelMouseClicked
 
     private void encodingLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_encodingLabelMouseClicked
         chooseEncoding();
@@ -931,13 +931,13 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
     private javax.swing.JMenuItem editDeleteMenuItem;
     private javax.swing.JMenuItem editDeletePopupMenuItem;
     private javax.swing.JMenu editMenu;
+    private javax.swing.JLabel editModeLabel;
     private javax.swing.JMenuItem editPasteMenuItem;
     private javax.swing.JMenuItem editPastePopupMenuItem;
     private javax.swing.JMenuItem editRedoMenuItem;
     private javax.swing.JMenuItem editRedoPopupMenuItem;
     private javax.swing.JMenuItem editUndoMenuItem;
     private javax.swing.JMenuItem editUndoPopupMenuItem;
-    private javax.swing.JLabel editationModeLabel;
     private javax.swing.JLabel encodingLabel;
     private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JMenu fileMenu;

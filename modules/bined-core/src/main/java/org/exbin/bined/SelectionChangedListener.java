@@ -20,7 +20,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 /**
  * Interface for selection change listener.
  *
- * @version 0.2.0 2018/12/08
+ * @version 0.2.0 2021/08/13
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -29,8 +29,6 @@ public interface SelectionChangedListener {
     /**
      * Fires notification each time selection range changes or selection is
      * created or cleared.
-     *
-     * @param selection new selection range or null if selection is empty
      */
-    void selectionChanged(SelectionRange selection);
+    void selectionChanged();
 }

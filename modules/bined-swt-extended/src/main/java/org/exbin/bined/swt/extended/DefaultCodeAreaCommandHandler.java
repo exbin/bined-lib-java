@@ -32,7 +32,7 @@ import java.util.logging.Logger;
 import org.eclipse.swt.events.KeyEvent;
 import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.CodeType;
-import org.exbin.bined.EditationMode;
+import org.exbin.bined.EditMode;
 import org.exbin.bined.SelectionRange;
 import org.exbin.bined.swt.CodeArea;
 import org.exbin.bined.swt.CodeAreaCommandHandler;
@@ -305,8 +305,8 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 //                break;
 //            }
 //            case KeyEvent.VK_INSERT: {
-//                if (codeArea.getEditationAllowed() == EditationAllowed.ALLOWED) {
-//                    codeArea.setEditationMode(codeArea.getEditationMode() == EditationMode.INSERT ? EditationMode.OVERWRITE : EditationMode.INSERT);
+//                if (codeArea.getEditAllowed() == EditAllowed.ALLOWED) {
+//                    codeArea.setEditMode(codeArea.getEditMode() == EditMode.INSERT ? EditMode.OVERWRITE : EditMode.INSERT);
 //                }
 //                keyEvent.consume();
 //                break;
@@ -411,7 +411,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 //                }
 //
 //                BinaryData data = codeArea.getBinaryData();
-//                if (codeArea.getEditationMode() == EditationMode.OVERWRITE) {
+//                if (codeArea.getEditMode() == EditMode.OVERWRITE) {
 //                    if (dataPosition == codeArea.getDataSize()) {
 //                        ((EditableBinaryData) data).insert(dataPosition, 1);
 //                    }
@@ -460,7 +460,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 //                CaretPosition caretPosition = codeArea.getCaretPosition();
 //                long dataPosition = caretPosition.getDataPosition();
 //                byte[] bytes = codeArea.charToBytes(keyChar);
-//                if (codeArea.getEditationMode() == EditationMode.OVERWRITE) {
+//                if (codeArea.getEditMode() == EditMode.OVERWRITE) {
 //                    if (dataPosition < codeArea.getDataSize()) {
 //                        int length = bytes.length;
 //                        if (dataPosition + length > codeArea.getDataSize()) {
@@ -699,7 +699,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
                         BinaryData data = (BinaryData) object;
                         long dataSize = data.getDataSize();
-                        if (codeArea.getEditationMode() == EditationMode.OVERWRITE) {
+                        if (codeArea.getEditMode() == EditMode.OVERWRITE) {
                             long toRemove = dataSize;
                             if (dataPosition + toRemove > codeArea.getDataSize()) {
                                 toRemove = codeArea.getDataSize() - dataPosition;
@@ -732,7 +732,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 //
 //                        byte[] bytes = ((String) insertedData).getBytes(Charset.forName("UTF-8"));
 //                        int length = bytes.length;
-//                        if (codeArea.getEditationMode() == EditationMode.OVERWRITE) {
+//                        if (codeArea.getEditMode() == EditMode.OVERWRITE) {
 //                            long toRemove = length;
 //                            if (dataPosition + toRemove > codeArea.getDataSize()) {
 //                                toRemove = codeArea.getDataSize() - dataPosition;
@@ -827,7 +827,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 //                    }
 //
 //                    long length = data.getDataSize();
-//                    if (codeArea.getEditationMode() == EditationMode.OVERWRITE) {
+//                    if (codeArea.getEditMode() == EditMode.OVERWRITE) {
 //                        long toRemove = length;
 //                        if (dataPosition + toRemove > codeArea.getDataSize()) {
 //                            toRemove = codeArea.getDataSize() - dataPosition;

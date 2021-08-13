@@ -18,19 +18,19 @@ package org.exbin.bined;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * Interface for editation mode change listener.
+ * Interface for edit mode change listener.
  *
  * @version 0.2.0 2018/12/11
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public interface EditationModeChangedListener {
+public interface EditModeChangedListener {
 
     /**
-     * Fires notification each time editation mode is changed.
+     * Fires notification each time edit mode is changed.
      *
-     * @param editationMode new editation mode
-     * @param editationOperation new active editation operation type
+     * @param editMode new edit mode
+     * @param editOperation new active edit operation type
      */
-    void editationModeChanged(EditationMode editationMode, EditationOperation editationOperation);
+    void editModeChanged(EditMode editMode, EditOperation editOperation);
 }

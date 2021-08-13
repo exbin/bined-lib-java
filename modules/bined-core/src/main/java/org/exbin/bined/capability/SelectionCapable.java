@@ -17,13 +17,14 @@ package org.exbin.bined.capability;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import org.exbin.bined.CodeAreaSelection;
 import org.exbin.bined.SelectionChangedListener;
 import org.exbin.bined.SelectionRange;
 
 /**
  * Support for selection capability.
  *
- * @version 0.2.0 2019/07/07
+ * @version 0.2.0 2021/08/13
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -64,6 +65,14 @@ public interface SelectionCapable {
      * @return true if non-empty selection is active
      */
     boolean hasSelection();
+
+    /**
+     * Returns selection handler.
+     *
+     * @return code area selection handler
+     */
+    @Nonnull
+    CodeAreaSelection getSelectionHandler();
 
     /**
      * Adds selection change listener.

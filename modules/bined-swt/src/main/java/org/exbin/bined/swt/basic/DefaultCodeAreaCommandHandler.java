@@ -33,8 +33,8 @@ import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.basic.CodeAreaViewMode;
 import org.exbin.bined.CodeCharactersCase;
 import org.exbin.bined.CodeType;
-import org.exbin.bined.EditationMode;
-import org.exbin.bined.EditationOperation;
+import org.exbin.bined.EditMode;
+import org.exbin.bined.EditOperation;
 import org.exbin.bined.CaretOverlapMode;
 import org.exbin.bined.SelectionRange;
 import org.exbin.bined.basic.CodeAreaScrollPosition;
@@ -45,7 +45,6 @@ import org.exbin.bined.capability.CharsetCapable;
 import org.exbin.bined.capability.ClipboardCapable;
 import org.exbin.bined.capability.CodeCharactersCaseCapable;
 import org.exbin.bined.capability.CodeTypeCapable;
-import org.exbin.bined.capability.EditationModeCapable;
 import org.exbin.bined.capability.ScrollingCapable;
 import org.exbin.bined.capability.SelectionCapable;
 import org.exbin.bined.capability.ViewModeCapable;
@@ -58,6 +57,7 @@ import org.exbin.auxiliary.paged_data.EditableBinaryData;
 import org.exbin.bined.ClipboardHandlingMode;
 import org.exbin.bined.CodeAreaCaretPosition;
 import org.exbin.bined.basic.EnterKeyHandlingMode;
+import org.exbin.bined.capability.EditModeCapable;
 
 /**
  * Default binary editor command handler.
@@ -196,17 +196,17 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                 break;
             }
             case SWT.INSERT: {
-                EditationMode editationMode = ((EditationModeCapable) codeArea).getEditationMode();
-                if (editationMode == EditationMode.EXPANDING || editationMode == EditationMode.CAPPED) {
-                    EditationOperation editationOperation = ((EditationModeCapable) codeArea).getEditationOperation();
-                    switch (editationOperation) {
+                EditMode editMode = ((EditModeCapable) codeArea).getEditMode();
+                if (editMode == EditMode.EXPANDING || editMode == EditMode.CAPPED) {
+                    EditOperation editOperation = ((EditModeCapable) codeArea).getEditOperation();
+                    switch (editOperation) {
                         case INSERT: {
-                            ((EditationModeCapable) codeArea).setEditationOperation(EditationOperation.OVERWRITE);
+                            ((EditModeCapable) codeArea).setEditOperation(EditOperation.OVERWRITE);
                             keyEvent.doit = false;
                             break;
                         }
                         case OVERWRITE: {
-                            ((EditationModeCapable) codeArea).setEditationOperation(EditationOperation.INSERT);
+                            ((EditModeCapable) codeArea).setEditOperation(EditOperation.INSERT);
                             keyEvent.doit = false;
                             break;
                         }
@@ -270,7 +270,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         if (keyValue == java.awt.event.KeyEvent.CHAR_UNDEFINED) {
             return;
         }
-        if (!checkEditationAllowed()) {
+        if (!checkEditAllowed()) {
             return;
         }
 
@@ -293,8 +293,8 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         CodeType codeType = getCodeType();
         boolean validKey = CodeAreaUtils.isValidCodeKeyValue(keyChar, codeOffset, codeType);
         if (validKey) {
-            EditationMode editationMode = ((EditationModeCapable) codeArea).getEditationMode();
-            if (codeArea.hasSelection() && editationMode != EditationMode.INPLACE) {
+            EditMode editMode = ((EditModeCapable) codeArea).getEditMode();
+            if (codeArea.hasSelection() && editMode != EditMode.INPLACE) {
                 deleteSelection();
             }
 
@@ -306,8 +306,8 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             }
 
             BinaryData data = CodeAreaUtils.requireNonNull(codeArea.getContentData(), "Content data is null");
-            EditationOperation editationOperation = ((EditationModeCapable) codeArea).getActiveOperation();
-            if (editationMode == EditationMode.EXPANDING && editationOperation == EditationOperation.OVERWRITE) {
+            EditOperation editOperation = ((EditModeCapable) codeArea).getActiveOperation();
+            if (editMode == EditMode.EXPANDING && editOperation == EditOperation.OVERWRITE) {
                 if (dataPosition == codeArea.getDataSize()) {
                     ((EditableBinaryData) data).insert(dataPosition, 1);
                 }
@@ -353,15 +353,15 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
     private void pressedCharInPreview(char keyChar) {
         if (isValidChar(keyChar)) {
-            EditationMode editationMode = ((EditationModeCapable) codeArea).getEditationMode();
+            EditMode editMode = ((EditModeCapable) codeArea).getEditMode();
             DefaultCodeAreaCaret caret = (DefaultCodeAreaCaret) ((CaretCapable) codeArea).getCaret();
             CodeAreaCaretPosition caretPosition = caret.getCaretPosition();
-            EditationOperation editationOperation = ((EditationModeCapable) codeArea).getActiveOperation();
+            EditOperation editOperation = ((EditModeCapable) codeArea).getActiveOperation();
             BinaryData data = CodeAreaUtils.requireNonNull(codeArea.getContentData(), "Content data is null");
 
             long dataPosition = caretPosition.getDataPosition();
             byte[] bytes = charToBytes(keyChar);
-            if ((editationMode == EditationMode.EXPANDING && editationOperation == EditationOperation.OVERWRITE) || editationMode == EditationMode.INPLACE) {
+            if ((editMode == EditMode.EXPANDING && editOperation == EditOperation.OVERWRITE) || editMode == EditMode.INPLACE) {
                 if (dataPosition < codeArea.getDataSize()) {
                     int length = bytes.length;
                     if (dataPosition + length > codeArea.getDataSize()) {
@@ -392,7 +392,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
     @Override
     public void enterPressed() {
-        if (!checkEditationAllowed()) {
+        if (!checkEditAllowed()) {
             return;
         }
 
@@ -410,7 +410,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
     @Override
     public void backSpacePressed() {
-        if (!checkEditationAllowed()) {
+        if (!checkEditAllowed()) {
             return;
         }
         BinaryData data = CodeAreaUtils.requireNonNull(codeArea.getContentData(), "Content data is null");
@@ -435,7 +435,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
     @Override
     public void deletePressed() {
-        if (!checkEditationAllowed()) {
+        if (!checkEditAllowed()) {
             return;
         }
 
@@ -483,7 +483,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
     @Override
     public void delete() {
-        if (!checkEditationAllowed()) {
+        if (!checkEditAllowed()) {
             return;
         }
 
@@ -551,7 +551,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
     @Override
     public void cut() {
-        if (!checkEditationAllowed()) {
+        if (!checkEditAllowed()) {
             return;
         }
 
@@ -565,13 +565,13 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
     @Override
     public void paste() {
-        if (!checkEditationAllowed()) {
+        if (!checkEditAllowed()) {
             return;
         }
 
         BinaryData data = CodeAreaUtils.requireNonNull(codeArea.getContentData(), "Content data is null");
-        EditationMode editationMode = ((EditationModeCapable) codeArea).getEditationMode();
-        EditationOperation editationOperation = ((EditationModeCapable) codeArea).getActiveOperation();
+        EditMode editMode = ((EditModeCapable) codeArea).getEditMode();
+        EditOperation editOperation = ((EditModeCapable) codeArea).getActiveOperation();
         try {
             if (clipboard.isDataFlavorAvailable(binaryDataFlavor)) {
                 if (codeArea.hasSelection()) {
@@ -588,13 +588,13 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                         BinaryData clipboardData = (BinaryData) object;
                         long dataSize = clipboardData.getDataSize();
                         long toRemove = dataSize;
-                        if ((editationMode == EditationMode.EXPANDING && editationOperation == EditationOperation.OVERWRITE) || editationMode == EditationMode.INPLACE) {
+                        if ((editMode == EditMode.EXPANDING && editOperation == EditOperation.OVERWRITE) || editMode == EditMode.INPLACE) {
                             if (dataPosition + toRemove > codeArea.getDataSize()) {
                                 toRemove = codeArea.getDataSize() - dataPosition;
                             }
                             ((EditableBinaryData) data).remove(dataPosition, toRemove);
                         }
-                        if (editationMode == EditationMode.INPLACE && dataSize > toRemove) {
+                        if (editMode == EditMode.INPLACE && dataSize > toRemove) {
                             ((EditableBinaryData) data).insert(dataPosition, clipboardData, 0, toRemove);
                             codeArea.notifyDataChanged();
                             caret.setCaretPosition(caret.getDataPosition() + toRemove);
@@ -629,13 +629,13 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                         byte[] bytes = ((String) insertedData).getBytes(Charset.forName(CodeAreaSwtUtils.DEFAULT_ENCODING));
                         int length = bytes.length;
                         long toRemove = length;
-                        if ((editationMode == EditationMode.EXPANDING && editationOperation == EditationOperation.OVERWRITE) || editationMode == EditationMode.INPLACE) {
+                        if ((editMode == EditMode.EXPANDING && editOperation == EditOperation.OVERWRITE) || editMode == EditMode.INPLACE) {
                             if (dataPosition + toRemove > codeArea.getDataSize()) {
                                 toRemove = codeArea.getDataSize() - dataPosition;
                             }
                             ((EditableBinaryData) data).remove(dataPosition, toRemove);
                         }
-                        if (editationMode == EditationMode.INPLACE && length > toRemove) {
+                        if (editMode == EditMode.INPLACE && length > toRemove) {
                             ((EditableBinaryData) data).insert(dataPosition, bytes, 0, (int) toRemove);
                             codeArea.notifyDataChanged();
                             caret.setCaretPosition(caret.getDataPosition() + length);
@@ -662,7 +662,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
     @Override
     public void pasteFromCode() {
-        if (!checkEditationAllowed()) {
+        if (!checkEditAllowed()) {
             return;
         }
 
@@ -675,8 +675,8 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         }
 
         BinaryData data = CodeAreaUtils.requireNonNull(codeArea.getContentData(), "Content data is null");
-        EditationMode editationMode = ((EditationModeCapable) codeArea).getEditationMode();
-        EditationOperation editationOperation = ((EditationModeCapable) codeArea).getActiveOperation();
+        EditMode editMode = ((EditModeCapable) codeArea).getEditMode();
+        EditOperation editOperation = ((EditModeCapable) codeArea).getActiveOperation();
         try {
             if (clipboard.isDataFlavorAvailable(binaryDataFlavor)) {
                 paste();
@@ -699,13 +699,13 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
                         long length = pastedData.getDataSize();
                         long toRemove = length;
-                        if ((editationMode == EditationMode.EXPANDING && editationOperation == EditationOperation.OVERWRITE) || editationMode == EditationMode.INPLACE) {
+                        if ((editMode == EditMode.EXPANDING && editOperation == EditOperation.OVERWRITE) || editMode == EditMode.INPLACE) {
                             if (dataPosition + toRemove > codeArea.getDataSize()) {
                                 toRemove = codeArea.getDataSize() - dataPosition;
                             }
                             ((EditableBinaryData) data).remove(dataPosition, toRemove);
                         }
-                        if (editationMode == EditationMode.INPLACE && length > toRemove) {
+                        if (editMode == EditMode.INPLACE && length > toRemove) {
                             ((EditableBinaryData) data).insert(caret.getDataPosition(), pastedData, 0, toRemove);
                             codeArea.notifyDataChanged();
                             caret.setCaretPosition(caret.getDataPosition() + toRemove);
@@ -827,8 +827,8 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     }
 
     @Override
-    public boolean checkEditationAllowed() {
-        return ((EditationModeCapable) codeArea).isEditable();
+    public boolean checkEditAllowed() {
+        return ((EditModeCapable) codeArea).isEditable();
     }
 
     @Nonnull

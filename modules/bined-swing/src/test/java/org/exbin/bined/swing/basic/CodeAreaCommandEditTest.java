@@ -22,7 +22,7 @@ import org.exbin.auxiliary.paged_data.BinaryData;
 import org.exbin.auxiliary.paged_data.EditableBinaryData;
 import org.exbin.bined.CodeAreaCaretPosition;
 import org.exbin.bined.CodeAreaTest;
-import org.exbin.bined.EditationOperation;
+import org.exbin.bined.EditOperation;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -72,7 +72,7 @@ public class CodeAreaCommandEditTest {
         byte[] expectedData = new byte[expectedSize];
         expectedData[0] = (byte) 0xa0;
         sampleData.copyToArray(0, expectedData, 1, dataSize);
-        codeArea.setEditationOperation(EditationOperation.INSERT);
+        codeArea.setEditOperation(EditOperation.INSERT);
 
         codeArea.setContentData(sampleData);
         
@@ -120,7 +120,7 @@ public class CodeAreaCommandEditTest {
         byte[] expectedData = new byte[expectedSize];
         expectedData[256] = (byte) 0xa0;
         sampleData.copyToArray(0, expectedData, 0, dataSize);
-        codeArea.setEditationOperation(EditationOperation.INSERT);
+        codeArea.setEditOperation(EditOperation.INSERT);
 
         codeArea.setContentData(sampleData);
         codeArea.setCaretPosition(256);

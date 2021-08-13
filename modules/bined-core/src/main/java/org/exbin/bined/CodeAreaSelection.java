@@ -15,36 +15,26 @@
  */
 package org.exbin.bined;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.annotation.concurrent.Immutable;
 
 /**
- * Selection range is selection between two positions where begin represents
- * origin point and end of the selection can be before or after begin.
+ * Selection between two positions where begin represents origin point and end
+ * of the selection can be before or after begin.
  *
  * @version 0.2.0 2021/08/13
  * @author ExBin Project (https://exbin.org)
  */
-@Immutable
-public class SelectionRange {
+public class CodeAreaSelection {
 
-    private final long start;
-    private final long end;
+    private long start;
+    private long end;
 
     /**
      * Creates empty selection range.
      */
-    public SelectionRange() {
+    public CodeAreaSelection() {
         this(0, 0);
-    }
-
-    public SelectionRange(@Nullable SelectionRange selectionRange) {
-        if (selectionRange == null) {
-            start = end = 0;
-        } else {
-            start = selectionRange.start;
-            end = selectionRange.end;
-        }
     }
 
     /**
@@ -54,17 +44,18 @@ public class SelectionRange {
      * @param start selection start position
      * @param end selection end position without actual end position itself
      */
-    public SelectionRange(long start, long end) {
-        if (start < 0) {
-            throw new IllegalArgumentException("Selection with negative range start (" + start + ") is not allowed");
-        }
+    public CodeAreaSelection(long start, long end) {
+        CodeAreaSelection.this.setStart(start);
+        CodeAreaSelection.this.setEnd(end);
+    }
 
-        if (end < 0) {
-            throw new IllegalArgumentException("Selection with negative range end (" + end + ") is not allowed");
+    public CodeAreaSelection(@Nullable SelectionRange selectionRange) {
+        if (selectionRange == null) {
+            start = end = 0;
+        } else {
+            start = selectionRange.getStart();
+            end = selectionRange.getEnd();
         }
-
-        this.start = start;
-        this.end = end;
     }
 
     public long getStart() {
@@ -119,5 +110,54 @@ public class SelectionRange {
      */
     public boolean isInSelection(long position) {
         return start < end ? position >= start && position < end : position >= end && position < start;
+    }
+
+    /**
+     * Returns selection range.
+     *
+     * @return selection range
+     */
+    @Nonnull
+    public SelectionRange getRange() {
+        return new SelectionRange(start, end);
+    }
+
+    public void setStart(long start) {
+        if (start < 0) {
+            throw new IllegalArgumentException("Selection with negative range start (" + start + ") is not allowed");
+        }
+
+        this.start = start;
+    }
+
+    public void setEnd(long end) {
+        if (start < 0) {
+            throw new IllegalArgumentException("Selection with negative range end (" + end + ") is not allowed");
+        }
+
+        this.end = end;
+    }
+
+    public void setSelection(@Nullable SelectionRange selectionRange) {
+        if (selectionRange == null) {
+            start = end = 0;
+        } else {
+            setStart(selectionRange.getStart());
+            setEnd(selectionRange.getEnd());
+        }
+    }
+
+    public void setSelection(long start, long end) {
+        setStart(start);
+        setEnd(end);
+    }
+
+    public void clearSelection() {
+        end = start;
+    }
+
+    public void setRange(SelectionRange selectionRange) {
+        start = selectionRange.getStart();
+        end = selectionRange.getEnd();
     }
 }

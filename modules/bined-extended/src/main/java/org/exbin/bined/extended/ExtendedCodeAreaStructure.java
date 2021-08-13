@@ -16,7 +16,6 @@
 package org.exbin.bined.extended;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.basic.BasicCodeAreaSection;
 import org.exbin.bined.CodeAreaSection;
@@ -24,11 +23,9 @@ import org.exbin.bined.basic.CodeAreaViewMode;
 import org.exbin.bined.CodeType;
 import org.exbin.bined.DataProvider;
 import org.exbin.bined.PositionCodeType;
-import org.exbin.bined.SelectionRange;
 import org.exbin.bined.basic.MovementDirection;
 import org.exbin.bined.capability.CodeTypeCapable;
 import org.exbin.bined.capability.RowWrappingCapable;
-import org.exbin.bined.capability.SelectionCapable;
 import org.exbin.bined.capability.ViewModeCapable;
 import org.exbin.bined.extended.capability.PositionCodeTypeCapable;
 import org.exbin.bined.extended.layout.ExtendedCodeAreaLayoutProfile;
@@ -38,7 +35,7 @@ import org.exbin.bined.RowWrappingMode;
 /**
  * Code area data representation structure for extended variant.
  *
- * @version 0.2.0 2019/04/18
+ * @version 0.2.0 2021/08/13
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -46,8 +43,6 @@ public class ExtendedCodeAreaStructure {
 
     @Nonnull
     private CodeAreaViewMode viewMode = CodeAreaViewMode.DUAL;
-    @Nullable
-    private SelectionRange selectionRange = null;
 
     @Nonnull
     private CodeType codeType = CodeType.HEXADECIMAL;
@@ -72,7 +67,6 @@ public class ExtendedCodeAreaStructure {
         viewMode = ((ViewModeCapable) codeArea).getViewMode();
         codeType = ((CodeTypeCapable) codeArea).getCodeType();
         positionCodeType = ((PositionCodeTypeCapable) codeArea).getPositionCodeType();
-        selectionRange = ((SelectionCapable) codeArea).getSelection();
         dataSize = codeArea.getDataSize();
         rowWrapping = ((RowWrappingCapable) codeArea).getRowWrapping();
         maxBytesPerLine = ((RowWrappingCapable) codeArea).getMaxBytesPerRow();
@@ -100,11 +94,6 @@ public class ExtendedCodeAreaStructure {
     @Nonnull
     public CodeAreaViewMode getViewMode() {
         return viewMode;
-    }
-
-    @Nullable
-    public SelectionRange getSelectionRange() {
-        return selectionRange;
     }
 
     @Nonnull

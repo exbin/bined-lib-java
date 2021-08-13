@@ -127,11 +127,11 @@ public interface CodeAreaCommandHandler {
     void wheelScroll(int scrollSize, ScrollbarOrientation orientation);
 
     /**
-     * Checks whether editation is allowed.
+     * Checks whether edit is allowed.
      *
      * @return true if allowed
      */
-    boolean checkEditationAllowed();
+    boolean checkEditAllowed();
 
     enum ScrollbarOrientation {
         HORIZONTAL, VERTICAL

@@ -18,7 +18,7 @@ package org.exbin.bined.swing.extended.diff;
 import java.awt.BorderLayout;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import org.exbin.bined.EditationMode;
+import org.exbin.bined.EditMode;
 import org.exbin.bined.basic.CodeAreaScrollPosition;
 import org.exbin.bined.swing.extended.ExtCodeArea;
 import org.exbin.auxiliary.paged_data.ByteArrayData;
@@ -49,8 +49,8 @@ public class ExtCodeAreaDiffPanel extends javax.swing.JPanel {
     }
 
     private void init() {
-        leftCodeArea.setEditationMode(EditationMode.READ_ONLY);
-        rightCodeArea.setEditationMode(EditationMode.READ_ONLY);
+        leftCodeArea.setEditMode(EditMode.READ_ONLY);
+        rightCodeArea.setEditMode(EditMode.READ_ONLY);
         leftCodeArea.setPainter(leftPainter);
         rightCodeArea.setPainter(rightPainter);
         leftPanel.add(leftCodeArea, BorderLayout.CENTER);

@@ -27,7 +27,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.filechooser.FileFilter;
 import org.exbin.bined.basic.BasicCodeAreaSection;
-import org.exbin.bined.EditationOperation;
+import org.exbin.bined.EditOperation;
 import org.exbin.bined.SelectionRange;
 import org.exbin.bined.capability.SelectionCapable;
 import org.exbin.bined.swing.example.BinEdExampleBasicPanel;
@@ -35,7 +35,7 @@ import org.exbin.bined.swing.extended.ExtCodeArea;
 import org.exbin.auxiliary.paged_data.EditableBinaryData;
 import org.exbin.bined.CodeAreaCaretPosition;
 import org.exbin.bined.CodeAreaUtils;
-import org.exbin.bined.EditationMode;
+import org.exbin.bined.EditMode;
 import org.exbin.bined.swing.example.BinEdExample;
 import org.exbin.bined.swing.extended.ExtendedCodeAreaPainter;
 
@@ -109,7 +109,7 @@ public class StatePanelEx extends javax.swing.JPanel {
             }
         });
 
-        activeOperationLabel.setText("Active Editation Operation");
+        activeOperationLabel.setText("Active Edit Operation");
 
         activeOperationComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "INSERT", "OVERWRITE" }));
         activeOperationComboBox.setSelectedIndex(1);
@@ -321,7 +321,7 @@ public class StatePanelEx extends javax.swing.JPanel {
     }//GEN-LAST:event_loadDataButtonActionPerformed
 
     private void activeOperationComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_activeOperationComboBoxActionPerformed
-        codeArea.setEditationOperation(EditationOperation.values()[activeOperationComboBox.getSelectedIndex()]);
+        codeArea.setEditOperation(EditOperation.values()[activeOperationComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_activeOperationComboBoxActionPerformed
 
     private void testDataComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_testDataComboBoxItemStateChanged
@@ -370,7 +370,7 @@ public class StatePanelEx extends javax.swing.JPanel {
                     break;
                 }
             }
-            codeArea.setEditationMode(EditationMode.READ_ONLY);
+            codeArea.setEditMode(EditMode.READ_ONLY);
             testDataComboBox.setSelectedIndex(0);
         }
     }//GEN-LAST:event_testDataComboBoxItemStateChanged
@@ -385,11 +385,12 @@ public class StatePanelEx extends javax.swing.JPanel {
             codeOffsetTextField.setText(String.valueOf(caretPosition.getCodeOffset()));
             activeSectionComboBox.setSelectedIndex(getSection(caretPosition).ordinal());
         });
-        ((SelectionCapable) codeArea).addSelectionChangedListener((SelectionRange selection) -> {
-            if (selection != null) {
-                long first = ((SelectionCapable) codeArea).getSelection().getFirst();
+        ((SelectionCapable) codeArea).addSelectionChangedListener(() -> {
+            SelectionRange selection = codeArea.getSelection();
+            if (!selection.isEmpty()) {
+                long first = selection.getFirst();
                 selectionStartTextField.setText(String.valueOf(first));
-                long last = ((SelectionCapable) codeArea).getSelection().getLast();
+                long last = selection.getLast();
                 selectionEndTextField.setText(String.valueOf(last));
             } else {
                 selectionStartTextField.setText("");
@@ -399,8 +400,8 @@ public class StatePanelEx extends javax.swing.JPanel {
         codeArea.addDataChangedListener(() -> {
             dataSizeTextField.setText(String.valueOf(codeArea.getDataSize()));
         });
-        codeArea.addEditationModeChangedListener((editationMode, editationOperation) -> {
-            activeOperationComboBox.setSelectedIndex(editationOperation.ordinal());
+        codeArea.addEditModeChangedListener((editMode, editOperation) -> {
+            activeOperationComboBox.setSelectedIndex(editOperation.ordinal());
         });
     }
 

@@ -19,13 +19,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.exbin.bined.EditationOperation;
+import org.exbin.bined.EditOperation;
 import org.exbin.bined.capability.CaretCapable;
-import org.exbin.bined.capability.EditationModeCapable;
 import org.exbin.auxiliary.paged_data.ByteArrayEditableData;
 import org.exbin.auxiliary.paged_data.EditableBinaryData;
 import org.junit.Assert;
 import org.junit.Test;
+import org.exbin.bined.capability.EditModeCapable;
 
 /**
  * Tests for codeArea component.
@@ -68,7 +68,7 @@ public class ExtendedCodeAreaTest {
     @Test
     public void testCopyPasteInInsertMode() {
         ExtCodeArea codeArea = new ExtCodeArea();
-        ((EditationModeCapable) codeArea).setEditationOperation(EditationOperation.INSERT);
+        ((EditModeCapable) codeArea).setEditOperation(EditOperation.INSERT);
         EditableBinaryData sampleData = getSampleData(SAMPLE_ALLBYTES);
         codeArea.setContentData(sampleData);
         long dataSize = sampleData.getDataSize();

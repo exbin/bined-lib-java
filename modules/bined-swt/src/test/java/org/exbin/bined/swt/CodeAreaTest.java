@@ -60,7 +60,7 @@ public class CodeAreaTest {
 
     public void testCopyPasteInInsertMode() {
         CodeArea codeArea = new CodeArea(null, 0);
-        codeArea.setEditationMode(EditationMode.INSERT);
+        codeArea.setEditMode(EditMode.INSERT);
         EditableBinaryData sampleData = getSampleData(SAMPLE_ALLBYTES);
         codeArea.setData(sampleData);
         long dataSize = sampleData.getDataSize();

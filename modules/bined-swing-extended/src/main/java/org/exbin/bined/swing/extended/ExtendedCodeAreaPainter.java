@@ -58,10 +58,9 @@ import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.basic.CodeAreaViewMode;
 import org.exbin.bined.CodeCharactersCase;
 import org.exbin.bined.CodeType;
-import org.exbin.bined.EditationOperation;
+import org.exbin.bined.EditOperation;
 import org.exbin.bined.PositionCodeType;
 import org.exbin.bined.CaretOverlapMode;
-import org.exbin.bined.SelectionRange;
 import org.exbin.bined.basic.CodeAreaScrollPosition;
 import org.exbin.bined.basic.MovementDirection;
 import org.exbin.bined.basic.PositionScrollVisibility;
@@ -69,7 +68,6 @@ import org.exbin.bined.basic.ScrollingDirection;
 import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.capability.CharsetCapable;
 import org.exbin.bined.capability.CodeCharactersCaseCapable;
-import org.exbin.bined.capability.EditationModeCapable;
 import org.exbin.bined.capability.RowWrappingCapable;
 import org.exbin.bined.capability.ScrollingCapable;
 import org.exbin.bined.color.BasicCodeAreaDecorationColorType;
@@ -99,9 +97,11 @@ import org.exbin.bined.extended.layout.PositionIterator;
 import org.exbin.bined.extended.layout.ExtendedCodeAreaLayoutProfile;
 import org.exbin.bined.swing.basic.DefaultCodeAreaMouseListener;
 import org.exbin.bined.CodeAreaCaretPosition;
+import org.exbin.bined.CodeAreaSelection;
 import org.exbin.bined.DataChangedListener;
 import org.exbin.bined.basic.ScrollBarVerticalScale;
 import org.exbin.bined.basic.ScrollViewDimension;
+import org.exbin.bined.capability.SelectionCapable;
 import org.exbin.bined.extended.ExtendedHorizontalScrollUnit;
 import org.exbin.bined.extended.caret.CodeAreaCaretShape;
 import org.exbin.bined.extended.caret.CodeAreaCaretType;
@@ -109,6 +109,7 @@ import org.exbin.bined.swing.extended.caret.ExtendedCodeAreaCaretsProfile;
 import org.exbin.bined.extended.layout.SpaceType;
 import org.exbin.bined.swing.CodeAreaSwingControl;
 import org.exbin.bined.swing.extended.caret.CaretsProfileCapableCodeAreaPainter;
+import org.exbin.bined.capability.EditModeCapable;
 
 /**
  * Extended code area component default painter.
@@ -170,7 +171,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
     @Nullable
     private CodeCharactersCase codeCharactersCase;
     @Nullable
-    private EditationOperation editationOperation;
+    private EditOperation editOperation;
     @Nullable
     private PositionIterator positionIterator;
     @Nullable
@@ -414,7 +415,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
     }
 
     private void updateCaret() {
-        editationOperation = ((EditationModeCapable) codeArea).getActiveOperation();
+        editOperation = ((EditModeCapable) codeArea).getActiveOperation();
         showMirrorCursor = ((CaretCapable) codeArea).isShowMirrorCursor();
 
         caretChanged = false;
@@ -425,6 +426,32 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         CodeAreaCaretPosition caretPosition = caret.getCaretPosition();
         if (caretPosition.getDataPosition() > codeArea.getDataSize()) {
             caret.setCaretPosition(null);
+        }
+    }
+
+    private void validateSelection() {
+        CodeAreaSelection selectionHandler = ((SelectionCapable) codeArea).getSelectionHandler();
+        if (!selectionHandler.isEmpty()) {
+            long dataSize = codeArea.getDataSize();
+            if (dataSize == 0) {
+                ((SelectionCapable) codeArea).clearSelection();
+            } else {
+                boolean selectionChanged = false;
+                long start = selectionHandler.getStart();
+                long end = selectionHandler.getEnd();
+                if (start >= dataSize) {
+                    start = dataSize;
+                    selectionChanged = true;
+                }
+                if (end >= dataSize) {
+                    end = dataSize;
+                    selectionChanged = true;
+                }
+
+                if (selectionChanged) {
+                    ((SelectionCapable) codeArea).setSelection(start, end);
+                }
+            }
         }
     }
 
@@ -1222,10 +1249,10 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
      */
     @Nullable
     public Color getPositionBackgroundColor(long rowDataPosition, int byteOnRow, int halfCharOnRow, CodeAreaSection section, boolean unprintable) {
-        SelectionRange selectionRange = structure.getSelectionRange();
+        CodeAreaSelection selectionHandler = ((SelectionCapable) codeArea).getSelectionHandler();
         int codeLastCharPos = structure.getCodeLastHalfCharPos();
         CodeAreaCaret caret = ((CaretCapable) codeArea).getCaret();
-        boolean inSelection = selectionRange != null && selectionRange.isInSelection(rowDataPosition + byteOnRow);
+        boolean inSelection = selectionHandler.isInSelection(rowDataPosition + byteOnRow);
         if (inSelection && (section == BasicCodeAreaSection.CODE_MATRIX)) {
             if (halfCharOnRow == codeLastCharPos) {
                 inSelection = false;
@@ -1475,10 +1502,10 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
      */
     @Nullable
     public Color getPositionTextColor(long rowDataPosition, int byteOnRow, int halfCharOnRow, CodeAreaSection section, boolean unprintable) {
-        SelectionRange selectionRange = structure.getSelectionRange();
+        CodeAreaSelection selectionHandler = ((SelectionCapable) codeArea).getSelectionHandler();
         int codeLastCharPos = structure.getCodeLastHalfCharPos();
         CodeAreaCaret caret = ((CaretCapable) codeArea).getCaret();
-        boolean inSelection = selectionRange != null && selectionRange.isInSelection(rowDataPosition + byteOnRow);
+        boolean inSelection = selectionHandler.isInSelection(rowDataPosition + byteOnRow);
         if (inSelection && (section == BasicCodeAreaSection.CODE_MATRIX)) {
             if (halfCharOnRow == codeLastCharPos) {
                 inSelection = false;
@@ -1970,7 +1997,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         if (cursorPoint == null) {
             rect.setBounds(0, 0, 0, 0);
         } else {
-            DefaultCodeAreaCaret.CursorShape cursorShape = editationOperation == EditationOperation.INSERT ? DefaultCodeAreaCaret.CursorShape.INSERT : DefaultCodeAreaCaret.CursorShape.OVERWRITE;
+            DefaultCodeAreaCaret.CursorShape cursorShape = editOperation == EditOperation.INSERT ? DefaultCodeAreaCaret.CursorShape.INSERT : DefaultCodeAreaCaret.CursorShape.OVERWRITE;
             int cursorThickness = DefaultCodeAreaCaret.getCursorThickness(cursorShape, characterWidth, rowHeight);
             rect.setBounds(cursorPoint.x, cursorPoint.y, cursorThickness, rowHeight);
         }
@@ -2092,6 +2119,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
 
     private void dataChanged() {
         validateCaret();
+        validateSelection();
         recomputeLayout();
     }
 

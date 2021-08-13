@@ -20,7 +20,7 @@ import java.util.TimerTask;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.exbin.bined.CaretPosition;
-import org.exbin.bined.EditationMode;
+import org.exbin.bined.EditMode;
 import org.exbin.bined.Section;
 import org.exbin.bined.swt.CodeArea;
 
@@ -158,7 +158,7 @@ public class CodeAreaCaret {
             return null;
         }
 
-        CursorShape cursorShape = codeArea.getEditationMode() == EditationMode.INSERT ? insertCursorShape : overwriteCursorShape;
+        CursorShape cursorShape = codeArea.getEditMode() == EditMode.INSERT ? insertCursorShape : overwriteCursorShape;
         int cursorThickness = 0;
         if (cursorShape.getWidth() != CursorShapeWidth.FULL) {
             cursorThickness = getCursorThickness(cursorShape, charWidth, lineHeight);

@@ -41,9 +41,9 @@ import org.exbin.bined.CaretMovedListener;
 import org.exbin.bined.CodeAreaLineNumberLength;
 import org.exbin.bined.CodeType;
 import org.exbin.bined.DataChangedListener;
-import org.exbin.bined.EditationAllowed;
-import org.exbin.bined.EditationMode;
-import org.exbin.bined.EditationModeChangedListener;
+import org.exbin.bined.EditAllowed;
+import org.exbin.bined.EditMode;
+import org.exbin.bined.EditModeChangedListener;
 import org.exbin.bined.HexCharactersCase;
 import org.exbin.bined.PositionCodeType;
 import org.exbin.bined.ScrollBarVisibility;
@@ -92,8 +92,8 @@ public class CodeAreaEx extends Composite implements CodeAreaControl {
     private boolean lineNumberBackground = true;
     private Charset charset = Charset.defaultCharset();
     private int decorationMode = DECORATION_DEFAULT;
-    private EditationAllowed editationAllowed = EditationAllowed.ALLOWED;
-    private EditationMode editationMode = EditationMode.OVERWRITE;
+    private EditAllowed editAllowed = EditAllowed.ALLOWED;
+    private EditMode editMode = EditMode.OVERWRITE;
     private CharRenderingMode charRenderingMode = CharRenderingMode.AUTO;
     private CharAntialiasingMode charAntialiasingMode = CharAntialiasingMode.AUTO;
     private HexCharactersCase hexCharactersCase = HexCharactersCase.UPPER;
@@ -140,7 +140,7 @@ public class CodeAreaEx extends Composite implements CodeAreaControl {
      */
     private final List<SelectionChangedListener> selectionChangedListeners = new ArrayList<>();
     private final List<CaretMovedListener> caretMovedListeners = new ArrayList<>();
-    private final List<EditationModeChangedListener> editationModeChangedListeners = new ArrayList<>();
+    private final List<EditModeChangedListener> editModeChangedListeners = new ArrayList<>();
     private final List<DataChangedListener> dataChangedListeners = new ArrayList<>();
     private final List<ScrollingListener> scrollingListeners = new ArrayList<>();
 
@@ -648,12 +648,12 @@ public class CodeAreaEx extends Composite implements CodeAreaControl {
         caretMovedListeners.remove(caretMovedListener);
     }
 
-    public void addEditationModeChangedListener(EditationModeChangedListener editationModeChangedListener) {
-        editationModeChangedListeners.add(editationModeChangedListener);
+    public void addEditModeChangedListener(EditModeChangedListener editModeChangedListener) {
+        editModeChangedListeners.add(editModeChangedListener);
     }
 
-    public void removeEditationModeChangedListener(EditationModeChangedListener editationModeChangedListener) {
-        editationModeChangedListeners.remove(editationModeChangedListener);
+    public void removeEditModeChangedListener(EditModeChangedListener editModeChangedListener) {
+        editModeChangedListeners.remove(editModeChangedListener);
     }
 
     public void addDataChangedListener(DataChangedListener dataChangedListener) {
@@ -1395,19 +1395,19 @@ public class CodeAreaEx extends Composite implements CodeAreaControl {
         redraw();
     }
 
-    public EditationAllowed getEditationAllowed() {
-        return editationAllowed;
+    public EditAllowed getEditAllowed() {
+        return editAllowed;
     }
 
-    public void setEditationAllowed(EditationAllowed editationAllowed) {
-        this.editationAllowed = editationAllowed;
-        switch (editationAllowed) {
+    public void setEditAllowed(EditAllowed editAllowed) {
+        this.editAllowed = editAllowed;
+        switch (editAllowed) {
             case READ_ONLY: {
-                editationMode = EditationMode.INSERT;
+                editMode = EditMode.INSERT;
                 break;
             }
             case OVERWRITE_ONLY: {
-                editationMode = EditationMode.OVERWRITE;
+                editMode = EditMode.OVERWRITE;
                 break;
             }
             default: // ignore
@@ -1415,27 +1415,27 @@ public class CodeAreaEx extends Composite implements CodeAreaControl {
         redraw();
     }
 
-    public EditationMode getEditationMode() {
-        return editationMode;
+    public EditMode getEditMode() {
+        return editMode;
     }
 
-    public void setEditationMode(EditationMode editationMode) {
-        switch (editationAllowed) {
+    public void setEditMode(EditMode editMode) {
+        switch (editAllowed) {
             case READ_ONLY: {
-                editationMode = EditationMode.INSERT;
+                editMode = EditMode.INSERT;
                 break;
             }
             case OVERWRITE_ONLY: {
-                editationMode = EditationMode.OVERWRITE;
+                editMode = EditMode.OVERWRITE;
                 break;
             }
             default: // ignore
         }
-        boolean chaged = editationMode != this.editationMode;
-        this.editationMode = editationMode;
+        boolean chaged = editMode != this.editMode;
+        this.editMode = editMode;
         if (chaged) {
-            for (EditationModeChangedListener listener : editationModeChangedListeners) {
-                listener.editationModeChanged(editationMode);
+            for (EditModeChangedListener listener : editModeChangedListeners) {
+                listener.editModeChanged(editMode);
             }
             caret.resetBlink();
             redraw();
@@ -1463,11 +1463,11 @@ public class CodeAreaEx extends Composite implements CodeAreaControl {
     }
 
     public boolean isEditable() {
-        return editationAllowed != EditationAllowed.READ_ONLY;
+        return editAllowed != EditAllowed.READ_ONLY;
     }
 
     public void setEditable(boolean editable) {
-        setEditationAllowed(EditationAllowed.ALLOWED);
+        setEditAllowed(EditAllowed.ALLOWED);
     }
 
     public boolean isWrapMode() {

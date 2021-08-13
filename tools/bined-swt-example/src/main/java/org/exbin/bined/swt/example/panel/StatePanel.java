@@ -42,7 +42,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.exbin.bined.basic.BasicCodeAreaSection;
 import org.exbin.bined.CodeAreaCaretPosition;
 import org.exbin.bined.CodeAreaUtils;
-import org.exbin.bined.EditationOperation;
+import org.exbin.bined.EditOperation;
 import org.exbin.bined.SelectionRange;
 import org.exbin.bined.capability.SelectionCapable;
 import org.exbin.auxiliary.paged_data.EditableBinaryData;
@@ -149,13 +149,13 @@ public class StatePanel extends Composite {
         fd_activeOperationLabel.left = new FormAttachment(0, 10);
         fd_activeOperationLabel.right = new FormAttachment(100, -10);
         activeOperationLabel.setLayoutData(fd_activeOperationLabel);
-        activeOperationLabel.setText("Active Editation Operation");
+        activeOperationLabel.setText("Active Edit Operation");
 
         activeOperationCombo = new Combo(this, SWT.READ_ONLY);
         activeOperationCombo.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                codeArea.setEditationOperation(EditationOperation.values()[activeOperationCombo.getSelectionIndex()]);
+                codeArea.setEditOperation(EditOperation.values()[activeOperationCombo.getSelectionIndex()]);
             }
         });
         activeOperationCombo.setItems(new String[]{"INSERT", "OVERWRITE"});
@@ -289,11 +289,12 @@ public class StatePanel extends Composite {
             codeOffsetText.setText(String.valueOf(caretPosition.getCodeOffset()));
             activeSectionCombo.select(getSection(caretPosition).ordinal());
         });
-        ((SelectionCapable) codeArea).addSelectionChangedListener((SelectionRange selection) -> {
-            if (selection != null) {
-                long first = ((SelectionCapable) codeArea).getSelection().getFirst();
+        ((SelectionCapable) codeArea).addSelectionChangedListener(() -> {
+            SelectionRange selection = codeArea.getSelection();
+            if (!selection.isEmpty()) {
+                long first = selection.getFirst();
                 selectionStartText.setText(String.valueOf(first));
-                long last = ((SelectionCapable) codeArea).getSelection().getLast();
+                long last = selection.getLast();
                 selectionEndText.setText(String.valueOf(last));
             } else {
                 selectionStartText.setText("");
@@ -303,8 +304,8 @@ public class StatePanel extends Composite {
         codeArea.addDataChangedListener(() -> {
             dataSizeText.setText(String.valueOf(codeArea.getDataSize()));
         });
-        codeArea.addEditationModeChangedListener((editationMode, editationOperation) -> {
-            activeOperationCombo.select(editationOperation.ordinal());
+        codeArea.addEditModeChangedListener((editMode, editOperation) -> {
+            activeOperationCombo.select(editOperation.ordinal());
         });
     }
 

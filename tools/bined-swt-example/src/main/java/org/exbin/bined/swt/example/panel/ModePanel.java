@@ -31,10 +31,10 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.layout.FillLayout;
 import org.exbin.bined.basic.CodeAreaViewMode;
 import org.exbin.bined.CodeType;
-import org.exbin.bined.EditationMode;
+import org.exbin.bined.EditMode;
 import org.exbin.bined.capability.CharsetCapable;
-import org.exbin.bined.capability.EditationModeCapable;
 import org.exbin.bined.swt.basic.CodeArea;
+import org.exbin.bined.capability.EditModeCapable;
 
 /**
  * Binary editor mode options panel.
@@ -50,7 +50,7 @@ public class ModePanel extends Composite {
     private final Combo viewModeCombo;
     private final Combo codeTypeCombo;
     private final Combo antialiasingCombo;
-    private final Combo editationModeCombo;
+    private final Combo editModeCombo;
     private final Combo fontFamilyCombo;
     private final Combo fontSizeCombo;
     private final Combo charsetCombo;
@@ -129,33 +129,33 @@ public class ModePanel extends Composite {
         fd_antialiasingCombo.right = new FormAttachment(100, -10);
         antialiasingCombo.setLayoutData(fd_antialiasingCombo);
 
-        Label editationModeLabel = new Label(this, SWT.NONE);
-        editationModeLabel.setText("Editation");
-        FormData fd_editationModeLabel = new FormData();
-        fd_editationModeLabel.top = new FormAttachment(antialiasingCombo, 6);
-        fd_editationModeLabel.right = new FormAttachment(100, -10);
-        fd_editationModeLabel.left = new FormAttachment(0, 10);
-        editationModeLabel.setLayoutData(fd_editationModeLabel);
+        Label editModeLabel = new Label(this, SWT.NONE);
+        editModeLabel.setText("Edit Mode");
+        FormData fd_editModeLabel = new FormData();
+        fd_editModeLabel.top = new FormAttachment(antialiasingCombo, 6);
+        fd_editModeLabel.right = new FormAttachment(100, -10);
+        fd_editModeLabel.left = new FormAttachment(0, 10);
+        editModeLabel.setLayoutData(fd_editModeLabel);
 
-        editationModeCombo = new Combo(this, SWT.READ_ONLY);
-        editationModeCombo.addSelectionListener(new SelectionAdapter() {
+        editModeCombo = new Combo(this, SWT.READ_ONLY);
+        editModeCombo.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                ((EditationModeCapable) codeArea).setEditationMode(EditationMode.values()[editationModeCombo.getSelectionIndex()]);
+                ((EditModeCapable) codeArea).setEditMode(EditMode.values()[editModeCombo.getSelectionIndex()]);
             }
         });
-        editationModeCombo.setItems(new String[]{"READ_ONLY", "EXPANDING", "CAPPED", "INPLACE"});
-        FormData fd_editationModeCombo = new FormData();
-        fd_editationModeCombo.top = new FormAttachment(editationModeLabel, 6);
-        fd_editationModeCombo.right = new FormAttachment(100, -10);
-        fd_editationModeCombo.left = new FormAttachment(0, 10);
-        editationModeCombo.setLayoutData(fd_editationModeCombo);
+        editModeCombo.setItems(new String[]{"READ_ONLY", "EXPANDING", "CAPPED", "INPLACE"});
+        FormData fd_editModeCombo = new FormData();
+        fd_editModeCombo.top = new FormAttachment(editModeLabel, 6);
+        fd_editModeCombo.right = new FormAttachment(100, -10);
+        fd_editModeCombo.left = new FormAttachment(0, 10);
+        editModeCombo.setLayoutData(fd_editModeCombo);
 
         Group fontGroup = new Group(this, SWT.NONE);
         fontGroup.setText("Font");
         fontGroup.setLayout(new FillLayout());
         FormData fd_fontGroup = new FormData();
-        fd_fontGroup.top = new FormAttachment(editationModeCombo, 6);
+        fd_fontGroup.top = new FormAttachment(editModeCombo, 6);
         fd_fontGroup.right = new FormAttachment(100, -10);
         fd_fontGroup.left = new FormAttachment(0, 10);
         fd_fontGroup.height = 150;
@@ -279,7 +279,7 @@ public class ModePanel extends Composite {
         viewModeCombo.select(codeArea.getViewMode().ordinal());
         codeTypeCombo.select(codeArea.getCodeType().ordinal());
         // antialiasingCombo.select(((AntialiasingCapable) codeArea).getAntialiasingMode().ordinal());
-        editationModeCombo.select(codeArea.getEditationMode().ordinal());
+        editModeCombo.select(codeArea.getEditMode().ordinal());
     }
 
     @Override

@@ -117,7 +117,7 @@
     </Component>
     <Component class="javax.swing.JLabel" name="activeOperationLabel">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Active Editation Operation"/>
+        <Property name="text" type="java.lang.String" value="Active Edit Operation"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JComboBox" name="activeOperationComboBox">

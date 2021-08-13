@@ -16,32 +16,27 @@
 package org.exbin.bined.basic;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.CodeAreaCaretPosition;
 import org.exbin.bined.CodeType;
 import org.exbin.bined.DataProvider;
 import org.exbin.bined.RowWrappingMode;
-import org.exbin.bined.SelectionRange;
 import org.exbin.bined.capability.CodeTypeCapable;
 import org.exbin.bined.capability.RowWrappingCapable;
-import org.exbin.bined.capability.SelectionCapable;
 import org.exbin.bined.capability.ViewModeCapable;
 
 /**
  * Code area data representation structure for basic variant.
  *
- * @version 0.2.0 2019/06/10
+ * @version 0.2.0 2021/08/13
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class BasicCodeAreaStructure {
 
-    private BasicCodeAreaLayout layout = new BasicCodeAreaLayout();
+    private final BasicCodeAreaLayout layout = new BasicCodeAreaLayout();
     @Nonnull
     private CodeAreaViewMode viewMode = CodeAreaViewMode.DUAL;
-    @Nullable
-    private SelectionRange selectionRange = null;
 
     @Nonnull
     private CodeType codeType = CodeType.HEXADECIMAL;
@@ -62,7 +57,6 @@ public class BasicCodeAreaStructure {
     public void updateCache(DataProvider codeArea, int charactersPerPage) {
         viewMode = ((ViewModeCapable) codeArea).getViewMode();
         codeType = ((CodeTypeCapable) codeArea).getCodeType();
-        selectionRange = ((SelectionCapable) codeArea).getSelection();
         dataSize = codeArea.getDataSize();
         rowWrapping = ((RowWrappingCapable) codeArea).getRowWrapping();
         maxBytesPerLine = ((RowWrappingCapable) codeArea).getMaxBytesPerRow();
@@ -89,11 +83,6 @@ public class BasicCodeAreaStructure {
     @Nonnull
     public CodeAreaViewMode getViewMode() {
         return viewMode;
-    }
-
-    @Nullable
-    public SelectionRange getSelectionRange() {
-        return selectionRange;
     }
 
     @Nonnull

@@ -30,11 +30,11 @@ import javax.swing.plaf.basic.BasicBorders;
 import org.exbin.bined.basic.CodeAreaViewMode;
 import org.exbin.bined.CodeCharactersCase;
 import org.exbin.bined.CodeType;
-import org.exbin.bined.EditationMode;
+import org.exbin.bined.EditMode;
 import org.exbin.bined.PositionCodeType;
 import org.exbin.bined.capability.CharsetCapable;
 import org.exbin.bined.capability.CodeCharactersCaseCapable;
-import org.exbin.bined.capability.EditationModeCapable;
+import org.exbin.bined.capability.EditModeCapable;
 import org.exbin.bined.capability.ViewModeCapable;
 import org.exbin.bined.swing.basic.AntialiasingMode;
 import org.exbin.bined.swing.capability.AntialiasingCapable;
@@ -75,8 +75,8 @@ public class ModePanelEx extends javax.swing.JPanel {
         hexCharactersModeComboBox = new javax.swing.JComboBox<>();
         antialiasingLabel = new javax.swing.JLabel();
         antialiasingComboBox = new javax.swing.JComboBox<>();
-        editationModeLabel = new javax.swing.JLabel();
-        editationModeComboBox = new javax.swing.JComboBox<>();
+        editModeLabel = new javax.swing.JLabel();
+        editModeComboBox = new javax.swing.JComboBox<>();
         fontPanel = new javax.swing.JPanel();
         fontFamilyLabel = new javax.swing.JLabel();
         fontFamilyComboBox = new javax.swing.JComboBox<>();
@@ -141,12 +141,12 @@ public class ModePanelEx extends javax.swing.JPanel {
             }
         });
 
-        editationModeLabel.setText("Editation");
+        editModeLabel.setText("Edit Mode");
 
-        editationModeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "READ_ONLY", "EXPANDING", "CAPPED", "INPLACE" }));
-        editationModeComboBox.addActionListener(new java.awt.event.ActionListener() {
+        editModeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "READ_ONLY", "EXPANDING", "CAPPED", "INPLACE" }));
+        editModeComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                editationModeComboBoxActionPerformed(evt);
+                editModeComboBoxActionPerformed(evt);
             }
         });
 
@@ -230,7 +230,7 @@ public class ModePanelEx extends javax.swing.JPanel {
                             .addComponent(borderTypeComboBox, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(charsetComboBox, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(fontPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(editationModeComboBox, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(editModeComboBox, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(antialiasingComboBox, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(hexCharactersModeComboBox, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(viewModeComboBox, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -247,7 +247,7 @@ public class ModePanelEx extends javax.swing.JPanel {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(hexCharactersModeLabel)
                             .addComponent(antialiasingLabel)
-                            .addComponent(editationModeLabel)
+                            .addComponent(editModeLabel)
                             .addComponent(charsetLabel)
                             .addComponent(borderTypeLabel)
                             .addComponent(positionCodeTypeLabel))
@@ -279,9 +279,9 @@ public class ModePanelEx extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(antialiasingComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(editationModeLabel)
+                .addComponent(editModeLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(editationModeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(editModeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(fontPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -304,9 +304,9 @@ public class ModePanelEx extends javax.swing.JPanel {
         codeArea.setCodeType(CodeType.values()[codeTypeComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_codeTypeComboBoxActionPerformed
 
-    private void editationModeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editationModeComboBoxActionPerformed
-        ((EditationModeCapable) codeArea).setEditationMode(EditationMode.values()[editationModeComboBox.getSelectedIndex()]);
-    }//GEN-LAST:event_editationModeComboBoxActionPerformed
+    private void editModeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editModeComboBoxActionPerformed
+        ((EditModeCapable) codeArea).setEditMode(EditMode.values()[editModeComboBox.getSelectedIndex()]);
+    }//GEN-LAST:event_editModeComboBoxActionPerformed
 
     private void fontFamilyComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fontFamilyComboBoxActionPerformed
         Font codeFont = codeArea.getCodeFont();
@@ -366,7 +366,7 @@ public class ModePanelEx extends javax.swing.JPanel {
         positionCodeTypeComboBox.setSelectedIndex(codeArea.getPositionCodeType().ordinal());
         hexCharactersModeComboBox.setSelectedIndex(((CodeCharactersCaseCapable) codeArea).getCodeCharactersCase().ordinal());
         antialiasingComboBox.setSelectedIndex(((AntialiasingCapable) codeArea).getAntialiasingMode().ordinal());
-        editationModeComboBox.setSelectedIndex(codeArea.getEditationMode().ordinal());
+        editModeComboBox.setSelectedIndex(codeArea.getEditMode().ordinal());
     }
 
     /**
@@ -391,8 +391,8 @@ public class ModePanelEx extends javax.swing.JPanel {
     private javax.swing.JLabel charsetLabel;
     private javax.swing.JComboBox<String> codeTypeComboBox;
     private javax.swing.JLabel codeTypeLabel;
-    private javax.swing.JComboBox<String> editationModeComboBox;
-    private javax.swing.JLabel editationModeLabel;
+    private javax.swing.JComboBox<String> editModeComboBox;
+    private javax.swing.JLabel editModeLabel;
     private javax.swing.JComboBox<String> fontFamilyComboBox;
     private javax.swing.JLabel fontFamilyLabel;
     private javax.swing.JPanel fontPanel;

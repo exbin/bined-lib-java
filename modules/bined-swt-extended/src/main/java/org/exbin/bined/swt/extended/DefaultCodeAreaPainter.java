@@ -28,7 +28,7 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.graphics.FontMetrics;
 import org.exbin.bined.CodeAreaUtils;
-import org.exbin.bined.EditationMode;
+import org.exbin.bined.EditMode;
 import org.exbin.bined.HexCharactersCase;
 import org.exbin.bined.Section;
 import org.exbin.bined.SelectionRange;
@@ -715,7 +715,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                 g.setXORMode(true); // Color.WHITE
             }
 
-            CodeAreaCaret.CursorShape cursorShape = codeArea.getEditationMode() == EditationMode.INSERT ? caret.getInsertCursorShape() : caret.getOverwriteCursorShape();
+            CodeAreaCaret.CursorShape cursorShape = codeArea.getEditMode() == EditMode.INSERT ? caret.getInsertCursorShape() : caret.getOverwriteCursorShape();
             int cursorThickness = 0;
             if (cursorShape.getWidth() != CodeAreaCaret.CursorShapeWidth.FULL) {
                 cursorThickness = caret.getCursorThickness(cursorShape, charWidth, lineHeight);

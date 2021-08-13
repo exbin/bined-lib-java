@@ -55,10 +55,9 @@ import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.basic.CodeAreaViewMode;
 import org.exbin.bined.CodeCharactersCase;
 import org.exbin.bined.CodeType;
-import org.exbin.bined.EditationOperation;
+import org.exbin.bined.EditOperation;
 import org.exbin.bined.PositionCodeType;
 import org.exbin.bined.CaretOverlapMode;
-import org.exbin.bined.SelectionRange;
 import org.exbin.bined.basic.BasicBackgroundPaintMode;
 import org.exbin.bined.basic.BasicCodeAreaScrolling;
 import org.exbin.bined.basic.BasicCodeAreaStructure;
@@ -70,7 +69,6 @@ import org.exbin.bined.capability.BackgroundPaintCapable;
 import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.capability.CharsetCapable;
 import org.exbin.bined.capability.CodeCharactersCaseCapable;
-import org.exbin.bined.capability.EditationModeCapable;
 import org.exbin.bined.capability.RowWrappingCapable;
 import org.exbin.bined.capability.ScrollingCapable;
 import org.exbin.bined.swing.CodeAreaCore;
@@ -83,11 +81,14 @@ import org.exbin.bined.swing.capability.AntialiasingCapable;
 import org.exbin.bined.swing.capability.FontCapable;
 import org.exbin.auxiliary.paged_data.BinaryData;
 import org.exbin.bined.CodeAreaCaretPosition;
+import org.exbin.bined.CodeAreaSelection;
 import org.exbin.bined.DataChangedListener;
 import org.exbin.bined.basic.BasicCodeAreaLayout;
 import org.exbin.bined.basic.ScrollBarVerticalScale;
 import org.exbin.bined.basic.ScrollViewDimension;
+import org.exbin.bined.capability.SelectionCapable;
 import org.exbin.bined.swing.CodeAreaSwingControl;
+import org.exbin.bined.capability.EditModeCapable;
 
 /**
  * Code area component default painter.
@@ -145,7 +146,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
     @Nullable
     private CodeCharactersCase codeCharactersCase;
     @Nullable
-    private EditationOperation editationOperation;
+    private EditOperation editOperation;
     @Nullable
     private BasicBackgroundPaintMode backgroundPaintMode;
     @Nullable
@@ -380,7 +381,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
     }
 
     private void updateCaret() {
-        editationOperation = ((EditationModeCapable) codeArea).getActiveOperation();
+        editOperation = ((EditModeCapable) codeArea).getActiveOperation();
 
         caretChanged = false;
     }
@@ -390,6 +391,32 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         CodeAreaCaretPosition caretPosition = caret.getCaretPosition();
         if (caretPosition.getDataPosition() > codeArea.getDataSize()) {
             caret.setCaretPosition(null);
+        }
+    }
+
+    private void validateSelection() {
+        CodeAreaSelection selectionHandler = ((SelectionCapable) codeArea).getSelectionHandler();
+        if (!selectionHandler.isEmpty()) {
+            long dataSize = codeArea.getDataSize();
+            if (dataSize == 0) {
+                ((SelectionCapable) codeArea).clearSelection();
+            } else {
+                boolean selectionChanged = false;
+                long start = selectionHandler.getStart();
+                long end = selectionHandler.getEnd();
+                if (start >= dataSize) {
+                    start = dataSize;
+                    selectionChanged = true;
+                }
+                if (end >= dataSize) {
+                    end = dataSize;
+                    selectionChanged = true;
+                }
+
+                if (selectionChanged) {
+                    ((SelectionCapable) codeArea).setSelection(start, end);
+                }
+            }
         }
     }
 
@@ -930,10 +957,10 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
      */
     @Nullable
     public Color getPositionBackgroundColor(long rowDataPosition, int byteOnRow, int charOnRow, CodeAreaSection section) {
-        SelectionRange selectionRange = structure.getSelectionRange();
+        CodeAreaSelection selectionHandler = ((SelectionCapable) codeArea).getSelectionHandler();
         int codeLastCharPos = visibility.getCodeLastCharPos();
         CodeAreaCaret caret = ((CaretCapable) codeArea).getCaret();
-        boolean inSelection = selectionRange != null && selectionRange.isInSelection(rowDataPosition + byteOnRow);
+        boolean inSelection = selectionHandler.isInSelection(rowDataPosition + byteOnRow);
         if (inSelection && (section == BasicCodeAreaSection.CODE_MATRIX)) {
             if (charOnRow == codeLastCharPos) {
                 inSelection = false;
@@ -1120,9 +1147,9 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
      */
     @Nullable
     public Color getPositionTextColor(long rowDataPosition, int byteOnRow, int charOnRow, CodeAreaSection section) {
-        SelectionRange selectionRange = structure.getSelectionRange();
+        CodeAreaSelection selectionHandler = ((SelectionCapable) codeArea).getSelectionHandler();
         CodeAreaCaret caret = ((CaretCapable) codeArea).getCaret();
-        boolean inSelection = selectionRange != null && selectionRange.isInSelection(rowDataPosition + byteOnRow);
+        boolean inSelection = selectionHandler.isInSelection(rowDataPosition + byteOnRow);
         if (inSelection) {
             return section == caret.getSection() ? colorsProfile.getSelectionColor() : colorsProfile.getSelectionMirrorColor();
         }
@@ -1571,7 +1598,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         if (cursorPoint == null) {
             rect.setBounds(0, 0, 0, 0);
         } else {
-            DefaultCodeAreaCaret.CursorShape cursorShape = editationOperation == EditationOperation.INSERT ? DefaultCodeAreaCaret.CursorShape.INSERT : DefaultCodeAreaCaret.CursorShape.OVERWRITE;
+            DefaultCodeAreaCaret.CursorShape cursorShape = editOperation == EditOperation.INSERT ? DefaultCodeAreaCaret.CursorShape.INSERT : DefaultCodeAreaCaret.CursorShape.OVERWRITE;
             int cursorThickness = DefaultCodeAreaCaret.getCursorThickness(cursorShape, characterWidth, rowHeight);
             rect.setBounds(cursorPoint.x, cursorPoint.y, cursorThickness, rowHeight);
         }
@@ -1672,6 +1699,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
 
     private void dataChanged() {
         validateCaret();
+        validateSelection();
         recomputeLayout();
     }
 

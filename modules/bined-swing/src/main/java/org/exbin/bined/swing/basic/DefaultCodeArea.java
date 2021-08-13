@@ -21,7 +21,6 @@ import org.exbin.bined.capability.CharsetCapable;
 import org.exbin.bined.capability.ClipboardCapable;
 import org.exbin.bined.capability.CodeCharactersCaseCapable;
 import org.exbin.bined.capability.CodeTypeCapable;
-import org.exbin.bined.capability.EditationModeCapable;
 import org.exbin.bined.capability.RowWrappingCapable;
 import org.exbin.bined.capability.ScrollingCapable;
 import org.exbin.bined.capability.SelectionCapable;
@@ -30,6 +29,7 @@ import org.exbin.bined.swing.capability.AntialiasingCapable;
 import org.exbin.bined.swing.capability.BasicColorsCapable;
 import org.exbin.bined.swing.capability.FontCapable;
 import org.exbin.bined.capability.BasicScrollingCapable;
+import org.exbin.bined.capability.EditModeCapable;
 
 /**
  * Code area default component interface.
@@ -38,6 +38,6 @@ import org.exbin.bined.capability.BasicScrollingCapable;
  * @author ExBin Project (https://exbin.org)
  */
 public interface DefaultCodeArea extends SelectionCapable, CaretCapable, BasicScrollingCapable, ScrollingCapable, ViewModeCapable,
-        CodeTypeCapable, EditationModeCapable, CharsetCapable, CodeCharactersCaseCapable, FontCapable,
+        CodeTypeCapable, EditModeCapable, CharsetCapable, CodeCharactersCaseCapable, FontCapable,
         BackgroundPaintCapable, RowWrappingCapable, ClipboardCapable, BasicColorsCapable, AntialiasingCapable {
 }

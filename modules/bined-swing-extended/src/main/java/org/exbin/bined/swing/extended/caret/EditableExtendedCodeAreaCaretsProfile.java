@@ -90,7 +90,7 @@ public class EditableExtendedCodeAreaCaretsProfile implements ExtendedCodeAreaCa
 //                g.setXORMode(Color.WHITE);
 //            }
 //
-//            CodeAreaCaret.CursorShape cursorShape = codeArea.getEditationMode() == EditationMode.INSERT ? caret.getInsertCursorShape() : caret.getOverwriteCursorShape();
+//            CodeAreaCaret.CursorShape cursorShape = codeArea.getEditMode() == EditMode.INSERT ? caret.getInsertCursorShape() : caret.getOverwriteCursorShape();
 //            int cursorThickness = 0;
 //            if (cursorShape.getWidth() != CodeAreaCaret.CursorShapeWidth.FULL) {
 //                cursorThickness = caret.getCursorThickness(cursorShape, charWidth, lineHeight);

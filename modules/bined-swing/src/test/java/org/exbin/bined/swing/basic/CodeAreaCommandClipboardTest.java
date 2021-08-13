@@ -21,15 +21,15 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.exbin.auxiliary.paged_data.BinaryData;
-import org.exbin.bined.EditationOperation;
+import org.exbin.bined.EditOperation;
 import org.exbin.bined.capability.CaretCapable;
-import org.exbin.bined.capability.EditationModeCapable;
 import org.exbin.auxiliary.paged_data.EditableBinaryData;
 import org.exbin.bined.CodeAreaTest;
-import org.exbin.bined.EditationMode;
+import org.exbin.bined.EditMode;
 import org.exbin.bined.swing.CodeAreaSwingUtils;
 import org.junit.Assert;
 import org.junit.Test;
+import org.exbin.bined.capability.EditModeCapable;
 
 /**
  * Tests clipboard actions for CodeArea command component.
@@ -90,7 +90,7 @@ public class CodeAreaCommandClipboardTest {
     @Test
     public void testCopyPasteAllInInsertMode() {
         CodeArea codeArea = new CodeArea();
-        ((EditationModeCapable) codeArea).setEditationOperation(EditationOperation.INSERT);
+        ((EditModeCapable) codeArea).setEditOperation(EditOperation.INSERT);
         EditableBinaryData sampleData = CodeAreaTest.getSampleData(CodeAreaTest.SAMPLE_ALLBYTES);
         codeArea.setContentData(sampleData);
         long dataSize = sampleData.getDataSize();
@@ -105,7 +105,7 @@ public class CodeAreaCommandClipboardTest {
     @Test
     public void testCopyPasteAllInInplaceMode() {
         CodeArea codeArea = new CodeArea();
-        ((EditationModeCapable) codeArea).setEditationMode(EditationMode.INPLACE);
+        ((EditModeCapable) codeArea).setEditMode(EditMode.INPLACE);
         EditableBinaryData sampleData = CodeAreaTest.getSampleData(CodeAreaTest.SAMPLE_ALLBYTES);
         codeArea.setContentData(sampleData);
         long dataSize = sampleData.getDataSize();
@@ -135,7 +135,7 @@ public class CodeAreaCommandClipboardTest {
     @Test
     public void testCopyPasteInInsertAtTheEnd() {
         CodeArea codeArea = new CodeArea();
-        ((EditationModeCapable) codeArea).setEditationOperation(EditationOperation.INSERT);
+        ((EditModeCapable) codeArea).setEditOperation(EditOperation.INSERT);
         EditableBinaryData sampleData = CodeAreaTest.getSampleData(CodeAreaTest.SAMPLE_ALLBYTES);
         codeArea.setContentData(sampleData);
         long dataSize = sampleData.getDataSize();
@@ -151,7 +151,7 @@ public class CodeAreaCommandClipboardTest {
     @Test
     public void testCopyPasteInInplaceAtTheEnd() {
         CodeArea codeArea = new CodeArea();
-        ((EditationModeCapable) codeArea).setEditationMode(EditationMode.INPLACE);
+        ((EditModeCapable) codeArea).setEditMode(EditMode.INPLACE);
         EditableBinaryData sampleData = CodeAreaTest.getSampleData(CodeAreaTest.SAMPLE_ALLBYTES);
         codeArea.setContentData(sampleData);
         long dataSize = sampleData.getDataSize();
@@ -189,7 +189,7 @@ public class CodeAreaCommandClipboardTest {
     @Test
     public void testCopyPasteInInsertWithOverflow() {
         CodeArea codeArea = new CodeArea();
-        ((EditationModeCapable) codeArea).setEditationOperation(EditationOperation.INSERT);
+        ((EditModeCapable) codeArea).setEditOperation(EditOperation.INSERT);
         EditableBinaryData sampleData = CodeAreaTest.getSampleData(CodeAreaTest.SAMPLE_ALLBYTES);
         int dataSize = (int) sampleData.getDataSize();
         int expectedSize = dataSize * 2;
@@ -213,7 +213,7 @@ public class CodeAreaCommandClipboardTest {
     @Test
     public void testCopyPasteInInplaceWithOverflow() {
         CodeArea codeArea = new CodeArea();
-        ((EditationModeCapable) codeArea).setEditationMode(EditationMode.INPLACE);
+        ((EditModeCapable) codeArea).setEditMode(EditMode.INPLACE);
         EditableBinaryData sampleData = CodeAreaTest.getSampleData(CodeAreaTest.SAMPLE_ALLBYTES);
         int dataSize = (int) sampleData.getDataSize();
         int expectedSize = dataSize;
