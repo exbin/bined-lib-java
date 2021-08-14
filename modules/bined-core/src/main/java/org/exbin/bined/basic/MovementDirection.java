@@ -16,7 +16,7 @@
 package org.exbin.bined.basic;
 
 /**
- * Enumeration of supported movements.
+ * Enumeration of supported movement directions.
  *
  * @version 0.2.0 2018/01/20
  * @author ExBin Project (https://exbin.org)

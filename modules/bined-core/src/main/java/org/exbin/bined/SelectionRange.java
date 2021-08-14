@@ -15,6 +15,7 @@
  */
 package org.exbin.bined;
 
+import java.util.Objects;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
@@ -22,7 +23,7 @@ import javax.annotation.concurrent.Immutable;
  * Selection range is selection between two positions where begin represents
  * origin point and end of the selection can be before or after begin.
  *
- * @version 0.2.0 2021/08/13
+ * @version 0.2.0 2021/08/14
  * @author ExBin Project (https://exbin.org)
  */
 @Immutable
@@ -119,5 +120,28 @@ public class SelectionRange {
      */
     public boolean isInSelection(long position) {
         return start < end ? position >= start && position < end : position >= end && position < start;
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final SelectionRange other = (SelectionRange) obj;
+        if (this.start != other.start) {
+            return false;
+        }
+        return this.end == other.end;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(start, end);
     }
 }
