@@ -182,6 +182,7 @@ public class EditableExtendedCodeAreaCaretsProfile implements ExtendedCodeAreaCa
 //                g2d.setStroke(dashed);
 //                g2d.drawRect(shadowCursorPoint.x, shadowCursorPoint.y,
 //                        charWidth * (codeArea.getActiveSection() == Section.TEXT_PREVIEW ? codeDigits : 1), lineHeight - 1);
+//                g2d.dispose();
 //            }
 //        }
 //    }

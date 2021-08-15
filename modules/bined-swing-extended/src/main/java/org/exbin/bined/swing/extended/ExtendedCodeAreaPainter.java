@@ -114,7 +114,7 @@ import org.exbin.bined.capability.EditModeCapable;
 /**
  * Extended code area component default painter.
  *
- * @version 0.2.0 2021/08/05
+ * @version 0.2.0 2021/08/15
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -218,39 +218,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         dataView.setInheritsPopupMenu(true);
         // Fill whole area, no more suitable method found so far
         dataView.setPreferredSize(new Dimension(0, 0));
-        scrollPanel = new JScrollPane() {
-            @Override
-            public JScrollBar createVerticalScrollBar() {
-                return new JScrollPane.ScrollBar(JScrollBar.VERTICAL) {
-                    @Override
-                    public void setValue(int value) {
-                        if (!scrollingUpdate) {
-                            scrollingByUser = true;
-                            super.setValue(value);
-                            scrollingByUser = false;
-                        } else {
-                            super.setValue(value);
-                        }
-                    }
-                };
-            }
-
-            @Override
-            public JScrollBar createHorizontalScrollBar() {
-                return new JScrollPane.ScrollBar(JScrollBar.HORIZONTAL) {
-                    @Override
-                    public void setValue(int value) {
-                        if (!scrollingUpdate) {
-                            scrollingByUser = true;
-                            super.setValue(value);
-                            scrollingByUser = false;
-                        } else {
-                            super.setValue(value);
-                        }
-                    }
-                };
-            }
-        };
+        scrollPanel = createScrollPane();
         scrollPanel.setBorder(new EmptyBorder(0, 0, 0, 0));
         scrollPanel.setIgnoreRepaint(true);
         scrollPanel.setOpaque(false);
@@ -385,6 +353,45 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
     @Override
     public void rebuildColors() {
         colorsProfile.reinitialize();
+    }
+
+    @Nonnull
+    private JScrollPane createScrollPane() {
+        return new JScrollPane() {
+            @Nonnull
+            @Override
+            public JScrollBar createVerticalScrollBar() {
+                return new JScrollPane.ScrollBar(JScrollBar.VERTICAL) {
+                    @Override
+                    public void setValue(int value) {
+                        if (!scrollingUpdate) {
+                            scrollingByUser = true;
+                            super.setValue(value);
+                            scrollingByUser = false;
+                        } else {
+                            super.setValue(value);
+                        }
+                    }
+                };
+            }
+
+            @Nonnull
+            @Override
+            public JScrollBar createHorizontalScrollBar() {
+                return new JScrollPane.ScrollBar(JScrollBar.HORIZONTAL) {
+                    @Override
+                    public void setValue(int value) {
+                        if (!scrollingUpdate) {
+                            scrollingByUser = true;
+                            super.setValue(value);
+                            scrollingByUser = false;
+                        } else {
+                            super.setValue(value);
+                        }
+                    }
+                };
+            }
+        };
     }
 
     private void recomputeLayout() {
@@ -1584,6 +1591,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
                     Graphics2D g2d = (Graphics2D) g.create();
                     g2d.setStroke(cursorDataCache.dashedStroke);
                     g2d.drawRect(mirrorCursorRect.x, mirrorCursorRect.y, mirrorCursorRect.width - 1, mirrorCursorRect.height - 1);
+                    g2d.dispose();
                 }
             }
         }

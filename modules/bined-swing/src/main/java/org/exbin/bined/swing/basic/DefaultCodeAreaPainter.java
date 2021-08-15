@@ -185,39 +185,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         dataView.setInheritsPopupMenu(true);
         // Fill whole area, no more suitable method found so far
         dataView.setPreferredSize(new Dimension(0, 0));
-        scrollPanel = new JScrollPane() {
-            @Override
-            public JScrollBar createVerticalScrollBar() {
-                return new JScrollPane.ScrollBar(JScrollBar.VERTICAL) {
-                    @Override
-                    public void setValue(int value) {
-                        if (!scrollingUpdate) {
-                            scrollingByUser = true;
-                            super.setValue(value);
-                            scrollingByUser = false;
-                        } else {
-                            super.setValue(value);
-                        }
-                    }
-                };
-            }
-
-            @Override
-            public JScrollBar createHorizontalScrollBar() {
-                return new JScrollPane.ScrollBar(JScrollBar.HORIZONTAL) {
-                    @Override
-                    public void setValue(int value) {
-                        if (!scrollingUpdate) {
-                            scrollingByUser = true;
-                            super.setValue(value);
-                            scrollingByUser = false;
-                        } else {
-                            super.setValue(value);
-                        }
-                    }
-                };
-            }
-        };
+        scrollPanel = createScrollPane();
         scrollPanel.setBorder(new EmptyBorder(0, 0, 0, 0));
         scrollPanel.setIgnoreRepaint(true);
         scrollPanel.setOpaque(false);
@@ -352,6 +320,45 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
     @Override
     public void rebuildColors() {
         colorsProfile.reinitialize();
+    }
+
+    @Nonnull
+    private JScrollPane createScrollPane() {
+        return new JScrollPane() {
+            @Nonnull
+            @Override
+            public JScrollBar createVerticalScrollBar() {
+                return new JScrollPane.ScrollBar(JScrollBar.VERTICAL) {
+                    @Override
+                    public void setValue(int value) {
+                        if (!scrollingUpdate) {
+                            scrollingByUser = true;
+                            super.setValue(value);
+                            scrollingByUser = false;
+                        } else {
+                            super.setValue(value);
+                        }
+                    }
+                };
+            }
+
+            @Nonnull
+            @Override
+            public JScrollBar createHorizontalScrollBar() {
+                return new JScrollPane.ScrollBar(JScrollBar.HORIZONTAL) {
+                    @Override
+                    public void setValue(int value) {
+                        if (!scrollingUpdate) {
+                            scrollingByUser = true;
+                            super.setValue(value);
+                            scrollingByUser = false;
+                        } else {
+                            super.setValue(value);
+                        }
+                    }
+                };
+            }
+        };
     }
 
     public void recomputeLayout() {
@@ -1217,6 +1224,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
                     Graphics2D g2d = (Graphics2D) g.create();
                     g2d.setStroke(cursorDataCache.dashedStroke);
                     g2d.drawRect(mirrorCursorRect.x, mirrorCursorRect.y, mirrorCursorRect.width - 1, mirrorCursorRect.height - 1);
+                    g2d.dispose();
                 }
             }
         }
