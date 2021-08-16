@@ -41,7 +41,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.swing.DefaultBoundedRangeModel;
-import javax.swing.JPanel;
+import javax.swing.JComponent;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JViewport;
@@ -111,7 +111,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
     private volatile boolean caretChanged = true;
 
     @Nonnull
-    private final JPanel dataView;
+    private final JComponent dataView;
     @Nonnull
     private final JScrollPane scrollPanel;
     @Nonnull
@@ -177,7 +177,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
     public DefaultCodeAreaPainter(CodeAreaCore codeArea) {
         this.codeArea = codeArea;
 
-        dataView = new JPanel();
+        dataView = new JComponent() {
+        };
         dataView.setBorder(null);
         dataView.setVisible(false);
         dataView.setLayout(null);
@@ -1735,6 +1736,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
 
     private class VerticalScrollBarModel extends DefaultBoundedRangeModel {
 
+        private volatile int depth = 0;
+
         public VerticalScrollBarModel() {
             super();
         }
@@ -1754,7 +1757,14 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
             super.setRangeProperties(newValue, newExtent, newMin, newMax, adjusting);
             if (!scrollingUpdate && newValue == scrolling.getLastVerticalScrollingValue() && (newValue <= newMin || newValue >= newMax - newExtent)) {
                 // We still want to report change when scrolling up on corners for big files
-                fireStateChanged();
+                depth++;
+                try {
+                    if (depth < 5) {
+                        fireStateChanged();
+                    }
+                } finally {
+                    depth--;
+                }
             }
         }
 
