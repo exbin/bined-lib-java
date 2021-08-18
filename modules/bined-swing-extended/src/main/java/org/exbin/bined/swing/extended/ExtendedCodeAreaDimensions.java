@@ -27,18 +27,18 @@ import org.exbin.bined.extended.layout.ExtendedCodeAreaLayoutProfile;
 /**
  * Basic code area component dimensions.
  *
- * @version 0.2.0 2019/08/05
+ * @version 0.2.0 2021/08/18
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class ExtendedCodeAreaDimensions {
 
-    private int dataViewX;
-    private int dataViewY;
-    private int verticalScrollBarSize;
-    private int horizontalScrollBarSize;
+    private int scrollPanelX;
+    private int scrollPanelY;
     private int scrollPanelWidth;
     private int scrollPanelHeight;
+    private int verticalScrollBarSize;
+    private int horizontalScrollBarSize;
     private int dataViewWidth;
     private int dataViewHeight;
     private int halfCharOffset;
@@ -54,9 +54,9 @@ public class ExtendedCodeAreaDimensions {
     @Nullable
     private ExtendedCodeAreaLayoutProfile layoutProfile;
     @Nonnull
-    private final Rectangle componentRect = new Rectangle();
+    private final Rectangle componentRectangle = new Rectangle();
     @Nonnull
-    private final Rectangle mainAreaRect = new Rectangle();
+    private final Rectangle mainAreaRectangle = new Rectangle();
     @Nonnull
     private final Rectangle headerAreaRectangle = new Rectangle();
     @Nonnull
@@ -67,7 +67,7 @@ public class ExtendedCodeAreaDimensions {
     private final Rectangle dataViewRectangle = new Rectangle();
 
     public void recomputeSizes(BasicCodeAreaMetrics metrics, int componentX, int componentY, int componentWidth, int componentHeight, int rowPositionLength, int verticalScrollBarSize, int horizontalScrollBarSize, ExtendedCodeAreaLayoutProfile layoutProfile) {
-        componentRect.setBounds(componentX, componentY, componentWidth, componentHeight);
+        componentRectangle.setBounds(componentX, componentY, componentWidth, componentHeight);
         this.layoutProfile = layoutProfile;
         this.verticalScrollBarSize = verticalScrollBarSize;
         this.horizontalScrollBarSize = horizontalScrollBarSize;
@@ -76,8 +76,8 @@ public class ExtendedCodeAreaDimensions {
         headerAreaHeight = layoutProfile.computeHeaderAreaHeight(metrics.getFontHeight());
         rowPositionAreaWidth = layoutProfile.computeRowPositionAreaWidth(metrics.getCharacterWidth(), rowPositionLength);
 
-        dataViewX = componentX + rowPositionAreaWidth;
-        dataViewY = componentY + headerAreaHeight;
+        scrollPanelX = componentX + rowPositionAreaWidth;
+        scrollPanelY = componentY + headerAreaHeight;
         scrollPanelWidth = componentWidth - rowPositionAreaWidth;
         scrollPanelHeight = componentHeight - headerAreaHeight;
         dataViewWidth = scrollPanelWidth - verticalScrollBarSize;
@@ -90,12 +90,12 @@ public class ExtendedCodeAreaDimensions {
         rowOffset = metrics.isInitialized() ? dataViewHeight % metrics.getRowHeight() : 0;
 
         boolean availableWidth = rowPositionAreaWidth + verticalScrollBarSize <= componentWidth;
-        boolean availableHeight = dataViewY + horizontalScrollBarSize <= componentHeight;
+        boolean availableHeight = scrollPanelY + horizontalScrollBarSize <= componentHeight;
 
         if (availableWidth && availableHeight) {
-            mainAreaRect.setBounds(componentX + rowPositionAreaWidth, dataViewY, componentWidth - rowPositionAreaWidth - verticalScrollBarSize, componentHeight - dataViewY - horizontalScrollBarSize);
+            mainAreaRectangle.setBounds(componentX + rowPositionAreaWidth, scrollPanelY, componentWidth - rowPositionAreaWidth - verticalScrollBarSize, componentHeight - scrollPanelY - horizontalScrollBarSize);
         } else {
-            mainAreaRect.setBounds(0, 0, 0, 0);
+            mainAreaRectangle.setBounds(0, 0, 0, 0);
         }
         if (availableWidth) {
             headerAreaRectangle.setBounds(componentX + rowPositionAreaWidth, componentY, componentWidth - rowPositionAreaWidth - verticalScrollBarSize, headerAreaHeight);
@@ -103,18 +103,18 @@ public class ExtendedCodeAreaDimensions {
             headerAreaRectangle.setBounds(0, 0, 0, 0);
         }
         if (availableHeight) {
-            rowPositionAreaRectangle.setBounds(componentX, dataViewY, rowPositionAreaWidth, componentHeight - dataViewY - horizontalScrollBarSize);
+            rowPositionAreaRectangle.setBounds(componentX, scrollPanelY, rowPositionAreaWidth, componentHeight - scrollPanelY - horizontalScrollBarSize);
         } else {
             rowPositionAreaRectangle.setBounds(0, 0, 0, 0);
         }
 
-        scrollPanelRectangle.setBounds(dataViewX, dataViewY, scrollPanelWidth, scrollPanelHeight);
-        dataViewRectangle.setBounds(dataViewX, dataViewY, Math.max(dataViewWidth, 0), Math.max(dataViewHeight, 0));
+        scrollPanelRectangle.setBounds(scrollPanelX, scrollPanelY, scrollPanelWidth, scrollPanelHeight);
+        dataViewRectangle.setBounds(scrollPanelX, scrollPanelY, Math.max(dataViewWidth, 0), Math.max(dataViewHeight, 0));
     }
 
     @Nonnull
     public BasicCodeAreaZone getPositionZone(int positionX, int positionY) {
-        if (positionY <= dataViewY) {
+        if (positionY <= scrollPanelY) {
             if (positionX < rowPositionAreaWidth) {
                 return BasicCodeAreaZone.TOP_LEFT_CORNER;
             } else {
@@ -126,14 +126,14 @@ public class ExtendedCodeAreaDimensions {
             return BasicCodeAreaZone.ROW_POSITIONS;
         }
 
-        if (positionX >= dataViewX + scrollPanelWidth && positionY < dataViewY + scrollPanelHeight) {
+        if (positionX >= scrollPanelX + scrollPanelWidth && positionY < scrollPanelY + scrollPanelHeight) {
             return BasicCodeAreaZone.VERTICAL_SCROLLBAR;
         }
 
-        if (positionY >= dataViewY + scrollPanelHeight) {
+        if (positionY >= scrollPanelY + scrollPanelHeight) {
             if (positionX < rowPositionAreaWidth) {
                 return BasicCodeAreaZone.BOTTOM_LEFT_CORNER;
-            } else if (positionX >= dataViewX + scrollPanelWidth) {
+            } else if (positionX >= scrollPanelX + scrollPanelWidth) {
                 return BasicCodeAreaZone.SCROLLBAR_CORNER;
             }
 
@@ -182,12 +182,12 @@ public class ExtendedCodeAreaDimensions {
         return rowHeight == 0 ? 0 : dataViewHeight / rowHeight;
     }
 
-    public int getDataViewX() {
-        return dataViewX;
+    public int getScrollPanelX() {
+        return scrollPanelX;
     }
 
-    public int getDataViewY() {
-        return dataViewY;
+    public int getScrollPanelY() {
+        return scrollPanelY;
     }
 
     public int getVerticalScrollBarSize() {
@@ -253,13 +253,13 @@ public class ExtendedCodeAreaDimensions {
     }
 
     @Nonnull
-    public Rectangle getComponentRect() {
-        return componentRect;
+    public Rectangle getComponentRectangle() {
+        return componentRectangle;
     }
 
     @Nonnull
-    public Rectangle getMainAreaRect() {
-        return mainAreaRect;
+    public Rectangle getMainAreaRectangle() {
+        return mainAreaRectangle;
     }
 
     @Nonnull

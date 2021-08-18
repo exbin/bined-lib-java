@@ -362,7 +362,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         };
     }
 
-    public void recomputeLayout() {
+    private void recomputeLayout() {
         rowPositionLength = getRowPositionLength();
         recomputeDimensions();
 
@@ -490,7 +490,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         }
         updateCache();
         if (font == null) {
-            ((FontCapable) codeArea).setCodeFont(codeArea.getFont());
             fontChanged(g);
         }
         if (rowDataCache == null) {
