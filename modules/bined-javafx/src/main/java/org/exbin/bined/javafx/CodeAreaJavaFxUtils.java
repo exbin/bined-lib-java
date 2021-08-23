@@ -99,7 +99,7 @@ public class CodeAreaJavaFxUtils {
             case IF_NEEDED:
                 return ScrollPane.ScrollBarPolicy.AS_NEEDED;
             default:
-                throw new IllegalStateException("Unexpected scrollBarVisibility type " + scrollBarVisibility.name());
+                throw CodeAreaUtils.getInvalidTypeException(scrollBarVisibility);
         }
     }
 
@@ -113,7 +113,7 @@ public class CodeAreaJavaFxUtils {
             case IF_NEEDED:
                 return ScrollPane.ScrollBarPolicy.AS_NEEDED;
             default:
-                throw new IllegalStateException("Unexpected scrollBarVisibility type " + scrollBarVisibility.name());
+                throw CodeAreaUtils.getInvalidTypeException(scrollBarVisibility);
         }
     }
 

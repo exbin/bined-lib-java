@@ -19,6 +19,7 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.DataProvider;
 import org.exbin.bined.ScrollBarVisibility;
 import org.exbin.bined.basic.CodeAreaScrollPosition;
@@ -152,7 +153,7 @@ public class ExtendedCodeAreaScrolling {
                 break;
             }
             default:
-                throw new IllegalStateException("Unexpected scrolling unit " + horizontalScrollUnit);
+                throw CodeAreaUtils.getInvalidTypeException(horizontalScrollUnit);
         }
 
         return scrollViewWidth;
@@ -187,7 +188,7 @@ public class ExtendedCodeAreaScrolling {
                 break;
             }
             default:
-                throw new IllegalStateException("Unexpected scrolling unit " + verticalScrollUnit);
+                throw CodeAreaUtils.getInvalidTypeException(verticalScrollUnit);
         }
 
         return scrollViewHeight;
@@ -215,7 +216,7 @@ public class ExtendedCodeAreaScrolling {
                 break;
             }
             default:
-                throw new IllegalStateException("Unexpected horizontal scroll unit: " + horizontalScrollUnit.name());
+                throw CodeAreaUtils.getInvalidTypeException(horizontalScrollUnit);
         }
     }
 
@@ -279,7 +280,7 @@ public class ExtendedCodeAreaScrolling {
                 break;
             }
             default:
-                throw new IllegalStateException("Unexpected vertical scroll unit: " + verticalScrollUnit.name());
+                throw CodeAreaUtils.getInvalidTypeException(verticalScrollUnit);
         }
     }
 
@@ -310,7 +311,7 @@ public class ExtendedCodeAreaScrolling {
                 return (int) scrollPosition.getRowPosition();
             }
             default:
-                throw new IllegalStateException("Unexpected vertical scroll unit: " + verticalScrollUnit.name());
+                throw CodeAreaUtils.getInvalidTypeException(verticalScrollUnit);
         }
     }
 
@@ -323,7 +324,7 @@ public class ExtendedCodeAreaScrolling {
             case HALF_CHARACTER:
                 return scrollPosition.getCharPosition();
             default:
-                throw new IllegalStateException("Unexpected horizontal scroll unit: " + horizontalScrollUnit.name());
+                throw CodeAreaUtils.getInvalidTypeException(horizontalScrollUnit);
         }
     }
 
@@ -389,7 +390,7 @@ public class ExtendedCodeAreaScrolling {
                 break;
             }
             default:
-                throw new IllegalStateException("Unexpected scrolling direction type: " + direction.name());
+                throw CodeAreaUtils.getInvalidTypeException(direction);
         }
 
         return targetPosition;
@@ -588,7 +589,7 @@ public class ExtendedCodeAreaScrolling {
                 break;
             }
             default:
-                throw new IllegalStateException("Unexpected scrolling unit " + verticalScrollUnit);
+                throw CodeAreaUtils.getInvalidTypeException(verticalScrollUnit);
         }
 
         if (centerRowPosition < 0) {
@@ -628,7 +629,7 @@ public class ExtendedCodeAreaScrolling {
                 break;
             }
             default:
-                throw new IllegalStateException("Unexpected scrolling unit " + horizontalScrollUnit);
+                throw CodeAreaUtils.getInvalidTypeException(horizontalScrollUnit);
         }
         if (centerHalfCharPosition < 0) {
             centerHalfCharPosition = 0;
@@ -672,7 +673,7 @@ public class ExtendedCodeAreaScrolling {
                     break;
                 }
                 default:
-                    throw new IllegalStateException("Unexpected horizontal scrolling unit " + horizontalScrollUnit);
+                    throw CodeAreaUtils.getInvalidTypeException(horizontalScrollUnit);
             }
         }
     }
@@ -690,7 +691,7 @@ public class ExtendedCodeAreaScrolling {
                 return scrollPosition.getCharPosition() * characterWidth + scrollPosition.getCharOffset();
             }
             default:
-                throw new IllegalStateException("Unexpected horizontal scrolling unit " + horizontalScrollUnit);
+                throw CodeAreaUtils.getInvalidTypeException(horizontalScrollUnit);
         }
     }
 
@@ -706,7 +707,7 @@ public class ExtendedCodeAreaScrolling {
                 return position.getCharPosition() * 2 + (position.getCharOffset() >= (characterWidth / 2) ? 1 : 0);
             }
             default:
-                throw new IllegalStateException("Unexpected horizontal scrolling unit " + horizontalScrollUnit);
+                throw CodeAreaUtils.getInvalidTypeException(horizontalScrollUnit);
         }
     }
 
@@ -735,7 +736,7 @@ public class ExtendedCodeAreaScrolling {
                 break;
             }
             default:
-                throw new IllegalStateException("Unexpected horizontal scrolling unit " + horizontalScrollUnit);
+                throw CodeAreaUtils.getInvalidTypeException(horizontalScrollUnit);
         }
     }
 

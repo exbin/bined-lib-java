@@ -18,6 +18,7 @@ package org.exbin.bined.swing.extended.caret;
 import java.awt.Graphics;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.extended.caret.CodeAreaCaretShape;
 import org.exbin.bined.extended.caret.CodeAreaCaretType;
 import org.exbin.bined.extended.caret.DefaultCodeAreaCaretShape;
@@ -45,7 +46,7 @@ public class EditableExtendedCodeAreaCaretsProfile implements ExtendedCodeAreaCa
                 return DefaultCodeAreaCaretShape.DOTTED_BOX;
             }
             default:
-                throw new IllegalStateException("Unexpected caret type: " + caretType.name());
+                throw CodeAreaUtils.getInvalidTypeException(caretType);
         }
     }
 
@@ -163,7 +164,7 @@ public class EditableExtendedCodeAreaCaretsProfile implements ExtendedCodeAreaCa
 //                    break;
 //                }
 //                default: {
-//                    throw new IllegalStateException("Unexpected cursor shape type " + cursorShape.name());
+//                    throw CodeAreaUtils.getInvalidTypeException(cursorShape);
 //                }
 //            }
 //

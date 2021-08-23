@@ -287,9 +287,8 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
                     editModeLabel.setText("OVR");
                     break;
                 }
-                default: {
-                    throw new IllegalStateException("Unexpected edit mode " + editOperation.name());
-                }
+                default:
+                    throw CodeAreaUtils.getInvalidTypeException(editOperation);
             }
         });
         ((CaretCapable) codeArea).addCaretMovedListener((CodeAreaCaretPosition caretPosition) -> {

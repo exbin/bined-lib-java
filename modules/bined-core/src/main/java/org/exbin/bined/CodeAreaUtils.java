@@ -26,7 +26,7 @@ import org.exbin.auxiliary.paged_data.EditableBinaryData;
 /**
  * Binary editor component utilities.
  *
- * @version 0.2.0 2019/06/20
+ * @version 0.2.0 2019/08/23
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -144,7 +144,7 @@ public class CodeAreaUtils {
                 break;
             }
             default:
-                throw new IllegalStateException("Unexpected code type: " + codeType.name());
+                throw getInvalidTypeException(codeType);
         }
     }
 
@@ -237,7 +237,7 @@ public class CodeAreaUtils {
                 break;
             }
             default:
-                throw new IllegalStateException("Unexpected code type: " + codeType.name());
+                throw getInvalidTypeException(codeType);
         }
 
         return result;
@@ -374,7 +374,7 @@ public class CodeAreaUtils {
                 break;
             }
             default:
-                throw new IllegalStateException("Unexpected code type " + codeType.name());
+                throw getInvalidTypeException(codeType);
         }
         return validKey;
     }
@@ -453,7 +453,7 @@ public class CodeAreaUtils {
                 break;
             }
             default:
-                throw new IllegalStateException("Unexpected code type " + codeType.name());
+                throw getInvalidTypeException(codeType);
         }
 
         return byteValue;
@@ -473,5 +473,14 @@ public class CodeAreaUtils {
         for (Object object : objects) {
             Objects.requireNonNull(object, "Field cannot be null");
         }
+    }
+
+    public static void throwInvalidTypeException(Enum<?> enumObject) {
+        throw getInvalidTypeException(enumObject);
+    }
+
+    @Nonnull
+    public static IllegalStateException getInvalidTypeException(Enum<?> enumObject) {
+        return new IllegalStateException("Unexpected " + enumObject.getDeclaringClass().getName() + " value " + enumObject.name());
     }
 }

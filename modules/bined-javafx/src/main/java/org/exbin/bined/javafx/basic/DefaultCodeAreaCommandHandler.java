@@ -323,7 +323,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                             break;
                         }
                         default:
-                            throw new IllegalStateException("Unexpected code type " + codeType.name());
+                            throw CodeAreaUtils.getInvalidTypeException(codeType);
                     }
                     if (byteRest > 0) {
                         ((EditableBinaryData) data).insert(dataPosition + 1, 1);
@@ -430,10 +430,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                 caret.setCodeOffset(0);
                 move(SelectingMode.NONE, MovementDirection.LEFT);
                 caret.setCodeOffset(0);
-                EditableBinaryData data = (EditableBinaryData) codeArea.getContentData();
-                if (data == null) {
-                    throw new NullPointerException("Content data is null");
-                }
+                EditableBinaryData data = CodeAreaUtils.requireNonNull((EditableBinaryData) codeArea.getContentData());
                 data.remove(dataPosition - 1, 1);
                 codeArea.notifyDataChanged();
                 ((CaretCapable) codeArea).setCaretPosition(caret.getCaretPosition());

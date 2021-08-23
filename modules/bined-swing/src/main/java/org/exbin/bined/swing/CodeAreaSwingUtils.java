@@ -100,7 +100,7 @@ public class CodeAreaSwingUtils {
             case IF_NEEDED:
                 return ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED;
             default:
-                throw new IllegalStateException("Unexpected scrollBarVisibility type " + scrollBarVisibility.name());
+                throw CodeAreaUtils.getInvalidTypeException(scrollBarVisibility);
         }
     }
 
@@ -113,7 +113,7 @@ public class CodeAreaSwingUtils {
             case IF_NEEDED:
                 return ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED;
             default:
-                throw new IllegalStateException("Unexpected scrollBarVisibility type " + scrollBarVisibility.name());
+                throw CodeAreaUtils.getInvalidTypeException(scrollBarVisibility);
         }
     }
 

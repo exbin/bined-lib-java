@@ -20,6 +20,7 @@ import java.util.TimerTask;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.exbin.bined.CaretPosition;
+import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.EditMode;
 import org.exbin.bined.Section;
 import org.exbin.bined.swt.CodeArea;
@@ -200,9 +201,8 @@ public class CodeAreaCaret {
             case HALF_RIGHT: {
                 return new Rectangle(cursorPoint.x + charWidth - cursorThickness, cursorPoint.y, cursorThickness, lineHeight);
             }
-            default: {
-                throw new IllegalStateException("Unexpected cursor shape type " + cursorShape.name());
-            }
+            default:
+                throw CodeAreaUtils.getInvalidTypeException(cursorShape);
         }
     }
 

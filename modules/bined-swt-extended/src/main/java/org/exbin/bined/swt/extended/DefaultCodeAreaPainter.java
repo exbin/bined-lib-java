@@ -787,9 +787,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                             cursorPoint.x + charWidth, cursorPoint.y + lineHeight - 1);
                     break;
                 }
-                default: {
-                    throw new IllegalStateException("Unexpected cursor shape type " + cursorShape.name());
-                }
+                default:
+                    throw CodeAreaUtils.getInvalidTypeException(cursorShape);
             }
 
             if (renderingMode == CodeAreaCaret.CursorRenderingMode.XOR) {

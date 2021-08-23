@@ -22,6 +22,7 @@ import java.awt.Toolkit;
 import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import org.exbin.bined.CodeAreaUtils;
 
 /**
  * Enumeration of supported anti-aliasing modes.
@@ -93,9 +94,8 @@ public enum AntialiasingMode {
                 antialiasingHint = RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_VBGR;
                 break;
             }
-            default: {
-                throw new IllegalStateException("Unexpected antialiasing mode " + name());
-            }
+            default:
+                throw CodeAreaUtils.getInvalidTypeException(this);
         }
 
         return antialiasingHint;

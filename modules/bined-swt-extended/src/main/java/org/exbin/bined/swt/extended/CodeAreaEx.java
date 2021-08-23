@@ -63,6 +63,7 @@ import org.eclipse.swt.graphics.FontMetrics;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.exbin.bined.CodeAreaControl;
+import org.exbin.bined.CodeAreaUtils;
 
 /**
  * Binary viewer/editor component.
@@ -331,9 +332,8 @@ public class CodeAreaEx extends Composite implements CodeAreaControl {
                 antialiasingHint = RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_VBGR;
                 break;
             }
-            default: {
-                throw new IllegalStateException("Unexpected antialiasing type " + charAntialiasingMode.name());
-            }
+            default:
+                throw CodeAreaUtils.getInvalidTypeException(charAntialiasingMode);
         }
 
         return antialiasingHint;
@@ -914,7 +914,7 @@ public class CodeAreaEx extends Composite implements CodeAreaControl {
                 break;
             }
             default:
-                throw new IllegalStateException("Unexpected header space type " + headerSpaceType.name());
+                throw CodeAreaUtils.getInvalidTypeException(headerSpaceType);
         }
 
         CodeAreaSpace.SpaceType lineNumberSpaceType = lineNumberSpace.getSpaceType();
@@ -948,7 +948,7 @@ public class CodeAreaEx extends Composite implements CodeAreaControl {
                 break;
             }
             default:
-                throw new IllegalStateException("Unexpected line number space type " + lineNumberSpaceType.name());
+                throw CodeAreaUtils.getInvalidTypeException(lineNumberSpaceType);
         }
 
         Rectangle hexRect = paintDataCache.codeSectionRectangle;

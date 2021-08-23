@@ -333,7 +333,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                             break;
                         }
                         default:
-                            throw new IllegalStateException("Unexpected code type " + codeType.name());
+                            throw CodeAreaUtils.getInvalidTypeException(codeType);
                     }
                     if (byteRest > 0) {
                         ((EditableBinaryData) data).insert(dataPosition + 1, 1);

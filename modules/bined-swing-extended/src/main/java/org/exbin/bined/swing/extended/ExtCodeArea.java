@@ -644,7 +644,7 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
             case EXPANDING:
                 return editOperation;
             default:
-                throw new IllegalStateException("Unexpected edit mode: " + editMode.name());
+                throw CodeAreaUtils.getInvalidTypeException(editMode);
         }
     }
 

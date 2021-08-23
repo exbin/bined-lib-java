@@ -1245,7 +1245,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
 //                break;
 //            }
             default:
-                throw new IllegalStateException("Unexpected rendering mode " + renderingMode.name());
+                throw CodeAreaUtils.getInvalidTypeException(renderingMode);
         }
     }
 

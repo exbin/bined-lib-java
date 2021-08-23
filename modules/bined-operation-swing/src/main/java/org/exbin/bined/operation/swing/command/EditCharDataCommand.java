@@ -18,6 +18,7 @@ package org.exbin.bined.operation.swing.command;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.operation.BinaryDataOperationException;
 import org.exbin.bined.operation.BinaryDataOperationListener;
 import org.exbin.bined.operation.swing.CharEditDataOperation;
@@ -60,9 +61,8 @@ public class EditCharDataCommand extends EditDataCommand {
                 operation = new DeleteCharEditDataOperation(codeArea, position);
                 break;
             }
-            default: {
-                throw new IllegalStateException("Unsupported command type " + commandType.name());
-            }
+            default:
+                throw CodeAreaUtils.getInvalidTypeException(commandType);
         }
         operations = new CodeAreaOperation[]{operation};
         operationPerformed = true;

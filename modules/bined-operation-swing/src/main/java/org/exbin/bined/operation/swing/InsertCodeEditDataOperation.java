@@ -22,6 +22,7 @@ import org.exbin.bined.capability.CodeTypeCapable;
 import org.exbin.bined.operation.BinaryDataOperationException;
 import org.exbin.bined.swing.CodeAreaCore;
 import org.exbin.auxiliary.paged_data.EditableBinaryData;
+import org.exbin.bined.CodeAreaUtils;
 
 /**
  * Operation for editing data using insert mode.
@@ -105,7 +106,7 @@ public class InsertCodeEditDataOperation extends CodeEditDataOperation {
                     break;
                 }
                 default:
-                    throw new IllegalStateException("Unexpected code type " + codeType.name());
+                    throw CodeAreaUtils.getInvalidTypeException(codeType);
             }
             if (byteRest > 0) {
                 if (trailing) {
@@ -187,7 +188,7 @@ public class InsertCodeEditDataOperation extends CodeEditDataOperation {
                 break;
             }
             default:
-                throw new IllegalStateException("Unexpected code type " + codeType.name());
+                throw CodeAreaUtils.getInvalidTypeException(codeType);
         }
         data.setByte(editedDataPosition, byteValue);
 

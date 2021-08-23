@@ -28,6 +28,7 @@ import org.exbin.bined.extended.ExtendedCodeAreaStructure;
 import org.exbin.bined.extended.layout.PositionIterator;
 import org.exbin.bined.extended.layout.ExtendedCodeAreaLayoutProfile;
 import org.exbin.bined.CodeAreaCaretPosition;
+import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.RowWrappingMode;
 
 /**
@@ -311,9 +312,8 @@ public class DefaultExtendedCodeAreaLayoutProfile implements ExtendedCodeAreaLay
                 target.setSection(activeSection);
                 break;
             }
-            default: {
-                throw new IllegalStateException("Unexpected movement direction " + direction.name());
-            }
+            default:
+                throw CodeAreaUtils.getInvalidTypeException(direction);
         }
 
         return target;

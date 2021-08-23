@@ -19,6 +19,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.CodeAreaCaretPosition;
 import org.exbin.bined.CodeAreaSection;
+import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.CodeType;
 import org.exbin.bined.DefaultCodeAreaCaretPosition;
 import org.exbin.bined.RowWrappingMode;
@@ -232,9 +233,8 @@ public class BasicCodeAreaLayout {
                 target.setSection(activeSection);
                 break;
             }
-            default: {
-                throw new IllegalStateException("Unexpected movement direction " + direction.name());
-            }
+            default:
+                throw CodeAreaUtils.getInvalidTypeException(direction);
         }
 
         return target;
