@@ -25,10 +25,10 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import javax.swing.DefaultBoundedRangeModel;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import org.exbin.bined.basic.ScrollBarVerticalScale;
 import org.exbin.bined.basic.ScrollingDirection;
-import org.exbin.bined.capability.ScrollingCapable;
 import org.exbin.bined.extended.ExtendedCodeAreaStructure;
 import org.exbin.bined.swing.CodeAreaSwingControl;
 import org.exbin.bined.swing.basic.BasicCodeAreaMetrics;
@@ -120,7 +120,7 @@ public class ExtendedCodeAreaScrollPane extends JScrollPane {
         return new JScrollPane.ScrollBar(JScrollBar.VERTICAL) {
             @Override
             public void setValue(int value) {
-                if (!scrollingUpdate) {
+                if (!scrollingUpdate && !scrollingByUser) {
                     scrollingByUser = true;
                     super.setValue(value);
                     scrollingByUser = false;
@@ -137,7 +137,7 @@ public class ExtendedCodeAreaScrollPane extends JScrollPane {
         return new JScrollPane.ScrollBar(JScrollBar.HORIZONTAL) {
             @Override
             public void setValue(int value) {
-                if (!scrollingUpdate) {
+                if (!scrollingUpdate && !scrollingByUser) {
                     scrollingByUser = true;
                     super.setValue(value);
                     scrollingByUser = false;
@@ -249,21 +249,23 @@ public class ExtendedCodeAreaScrollPane extends JScrollPane {
                 } else {
                     // Override scrolling up/down by scrollbar buttons with direct operation
                     int lastValue = scrolling.getLastVerticalScrollingValue();
-                    if (scrolling.getScrollBarVerticalScale() == ScrollBarVerticalScale.SCALED) {
+                    if (scrollingByUser && scrolling.getScrollBarVerticalScale() == ScrollBarVerticalScale.SCALED) {
                         if (lastValue != -1) {
                             if (e.getValue() == lastValue - 1 || (lastValue == 0 && e.getValue() == 0)) {
-                                scrolling.performScrolling(ScrollingDirection.UP, dimensions.getRowsPerPage(), structure.getRowsPerDocument());
-                                throw new UnsupportedOperationException("Not supported yet.");
-                                // ((ScrollingCapable) codeArea).setScrollPosition(scrolling.getScrollPosition());
-                                // return;
+                                SwingUtilities.invokeLater(() -> {
+                                    scrolling.performScrolling(ScrollingDirection.UP, dimensions.getRowsPerPage(), structure.getRowsPerDocument());
+                                    control.updateScrollPosition(scrolling.getScrollPosition());
+                                });
+                                return;
                             }
 
                             int maxScroll = verticalScrollBarModel.getMaximum() - verticalScrollBarModel.getExtent();
                             if (e.getValue() == lastValue + 1 || (lastValue == maxScroll && e.getValue() == maxScroll)) {
-                                scrolling.performScrolling(ScrollingDirection.DOWN, dimensions.getRowsPerPage(), structure.getRowsPerDocument());
-                                throw new UnsupportedOperationException("Not supported yet.");
-                                // ((ScrollingCapable) codeArea).setScrollPosition(scrolling.getScrollPosition());
-                                // return;
+                                SwingUtilities.invokeLater(() -> {
+                                    scrolling.performScrolling(ScrollingDirection.DOWN, dimensions.getRowsPerPage(), structure.getRowsPerDocument());
+                                    control.updateScrollPosition(scrolling.getScrollPosition());
+                                });
+                                return;
                             }
                         }
                     }
