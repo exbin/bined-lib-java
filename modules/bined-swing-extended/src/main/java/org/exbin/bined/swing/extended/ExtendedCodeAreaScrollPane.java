@@ -76,6 +76,8 @@ public class ExtendedCodeAreaScrollPane extends JScrollPane {
         setOpaque(false);
         setInheritsPopupMenu(true);
         setViewportBorder(null);
+        // TODO: Try to use setColumnHeader and setRowHeader
+
         verticalScrollBar.setIgnoreRepaint(true);
         verticalScrollBar.addAdjustmentListener(new VerticalAdjustmentListener());
         verticalScrollBar.setModel(verticalScrollBarModel);

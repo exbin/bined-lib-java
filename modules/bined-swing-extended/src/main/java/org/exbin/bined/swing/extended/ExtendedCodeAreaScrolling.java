@@ -141,13 +141,13 @@ public class ExtendedCodeAreaScrolling {
                 break;
             }
             case CHARACTER: {
-                int charsPerDataView = (dataViewWidth + characterWidth - 1) / characterWidth;
+                int charsPerDataView = dataViewWidth / characterWidth;
                 scrollViewWidth = dataViewWidth + (((halfCharsPerRow + 1) / 2) - charsPerDataView);
                 changeHorizontalExtentDifference(dataViewWidth - charsPerDataView);
                 break;
             }
             case HALF_CHARACTER: {
-                int halfCharsPerDataView = (dataViewWidth + (characterWidth / 2) - 1) / (characterWidth / 2);
+                int halfCharsPerDataView = dataViewWidth / (characterWidth / 2);
                 scrollViewWidth = dataViewWidth + (halfCharsPerRow - halfCharsPerDataView);
                 changeHorizontalExtentDifference(dataViewWidth - halfCharsPerDataView);
                 break;
@@ -181,7 +181,7 @@ public class ExtendedCodeAreaScrolling {
                     changeVerticalExtentDifference(0);
                 } else {
                     scrollBarVerticalScale = ScrollBarVerticalScale.NORMAL;
-                    int rowsPerDataView = (dataViewHeight + rowHeight - 1) / rowHeight;
+                    int rowsPerDataView = dataViewHeight / rowHeight;
                     scrollViewHeight = (int) (dataViewHeight + (rowsPerData - rowsPerDataView));
                     changeVerticalExtentDifference(dataViewHeight - rowsPerDataView);
                 }

@@ -61,7 +61,7 @@ import org.exbin.bined.capability.EditModeCapable;
 /**
  * Default binary editor command handler.
  *
- * @version 0.2.0 2021/07/28
+ * @version 0.2.0 2021/08/26
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -304,7 +304,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                 value = Character.toLowerCase(keyChar) - 'a' + 10;
             }
 
-            BinaryData data = CodeAreaUtils.requireNonNull(codeArea.getContentData(), "Content data is null");
+            BinaryData data = CodeAreaUtils.requireNonNullContentData(codeArea.getContentData());
             EditOperation editOperation = ((EditModeCapable) codeArea).getActiveOperation();
             if (editMode == EditMode.EXPANDING && editOperation == EditOperation.INSERT) {
                 if (codeOffset > 0) {
@@ -370,7 +370,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                 deleteSelection();
             }
 
-            BinaryData data = CodeAreaUtils.requireNonNull(codeArea.getContentData(), "Content data is null");
+            BinaryData data = CodeAreaUtils.requireNonNullContentData(codeArea.getContentData());
             EditOperation editOperation = ((EditModeCapable) codeArea).getActiveOperation();
             if ((editMode == EditMode.EXPANDING && editOperation == EditOperation.OVERWRITE) || editMode == EditMode.INPLACE) {
                 if (dataPosition < codeArea.getDataSize()) {
@@ -393,7 +393,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         CodeAreaCaretPosition caretPosition = ((CaretCapable) codeArea).getCaretPosition();
         long dataPosition = caretPosition.getDataPosition();
         int codeOffset = caretPosition.getCodeOffset();
-        BinaryData data = CodeAreaUtils.requireNonNull(codeArea.getContentData(), "Content data is null");
+        BinaryData data = CodeAreaUtils.requireNonNullContentData(codeArea.getContentData());
         CodeType codeType = getCodeType();
         byte byteValue = data.getByte(dataPosition);
         byte outputValue = CodeAreaUtils.setCodeValue(byteValue, value, codeOffset, codeType);
@@ -422,7 +422,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         if (!checkEditAllowed()) {
             return;
         }
-        BinaryData data = CodeAreaUtils.requireNonNull(codeArea.getContentData(), "Content data is null");
+        BinaryData data = CodeAreaUtils.requireNonNullContentData(codeArea.getContentData());
 
         if (codeArea.hasSelection()) {
             deleteSelection();
@@ -438,6 +438,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                 codeArea.notifyDataChanged();
                 ((CaretCapable) codeArea).setCaretPosition(caret.getCaretPosition());
                 revealCursor();
+                clearSelection();
             }
         }
     }
@@ -453,7 +454,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             codeArea.notifyDataChanged();
             revealCursor();
         } else {
-            BinaryData data = CodeAreaUtils.requireNonNull(codeArea.getContentData(), "Content data is null");
+            BinaryData data = CodeAreaUtils.requireNonNullContentData(codeArea.getContentData());
             DefaultCodeAreaCaret caret = (DefaultCodeAreaCaret) ((CaretCapable) codeArea).getCaret();
             long dataPosition = caret.getDataPosition();
             if (dataPosition < codeArea.getDataSize()) {
@@ -463,6 +464,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                     caret.setCodeOffset(0);
                 }
                 ((CaretCapable) codeArea).setCaretPosition(caret.getCaretPosition());
+                clearSelection();
                 revealCursor();
             }
         }
@@ -491,8 +493,8 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         } else {
             ((EditableBinaryData) data).remove(first, length);
         }
-        codeArea.clearSelection();
         ((CaretCapable) codeArea).setCaretPosition(first);
+        clearSelection();
         revealCursor();
     }
 
@@ -588,7 +590,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             return;
         }
 
-        BinaryData data = CodeAreaUtils.requireNonNull(codeArea.getContentData(), "Content data is null");
+        BinaryData data = CodeAreaUtils.requireNonNullContentData(codeArea.getContentData());
         EditMode editMode = ((EditModeCapable) codeArea).getEditMode();
         EditOperation editOperation = ((EditModeCapable) codeArea).getActiveOperation();
         try {
@@ -630,6 +632,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                         caret.setCodeOffset(0);
                         ((CaretCapable) codeArea).setCaretPosition(caret.getCaretPosition());
                         revealCursor();
+                        clearSelection();
                     }
                 } catch (UnsupportedFlavorException | IOException ex) {
                     Logger.getLogger(DefaultCodeAreaCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
@@ -673,6 +676,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                         caret.setCodeOffset(0);
                         ((CaretCapable) codeArea).setCaretPosition(caret.getCaretPosition());
                         revealCursor();
+                        clearSelection();
                     }
                 } catch (UnsupportedFlavorException | IOException ex) {
                     Logger.getLogger(DefaultCodeAreaCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
@@ -689,7 +693,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             return;
         }
 
-        BinaryData data = CodeAreaUtils.requireNonNull(codeArea.getContentData(), "Content data is null");
+        BinaryData data = CodeAreaUtils.requireNonNullContentData(codeArea.getContentData());
         EditMode editMode = ((EditModeCapable) codeArea).getEditMode();
         EditOperation editOperation = ((EditModeCapable) codeArea).getActiveOperation();
         try {
@@ -743,6 +747,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                         caret.setCodeOffset(0);
                         ((CaretCapable) codeArea).setCaretPosition(caret.getCaretPosition());
                         revealCursor();
+                        clearSelection();
                     }
                 } catch (UnsupportedFlavorException | IOException ex) {
                     Logger.getLogger(DefaultCodeAreaCommandHandler.class
@@ -769,7 +774,8 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
     @Override
     public void clearSelection() {
-        ((SelectionCapable) codeArea).clearSelection();
+        long dataPosition = ((CaretCapable) codeArea).getCaretPosition().getDataPosition();
+        ((SelectionCapable) codeArea).setSelection(dataPosition, dataPosition);
     }
 
     @Nonnull

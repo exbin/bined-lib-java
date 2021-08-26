@@ -132,7 +132,7 @@ public class BasicCodeAreaScrolling {
                 break;
             }
             case CHARACTER: {
-                int charsPerDataView = (dataViewWidth + characterWidth - 1) / characterWidth;
+                int charsPerDataView = dataViewWidth / characterWidth;
                 scrollViewWidth = dataViewWidth + (charsPerRow - charsPerDataView);
                 changeHorizontalExtentDifference(dataViewWidth - charsPerDataView);
                 break;
@@ -166,7 +166,7 @@ public class BasicCodeAreaScrolling {
                     changeVerticalExtentDifference(0);
                 } else {
                     scrollBarVerticalScale = ScrollBarVerticalScale.NORMAL;
-                    int rowsPerDataView = (dataViewHeight + rowHeight - 1) / rowHeight;
+                    int rowsPerDataView = dataViewHeight / rowHeight;
                     scrollViewHeight = (int) (dataViewHeight + (rowsPerData - rowsPerDataView));
                     changeVerticalExtentDifference(dataViewHeight - rowsPerDataView);
                 }

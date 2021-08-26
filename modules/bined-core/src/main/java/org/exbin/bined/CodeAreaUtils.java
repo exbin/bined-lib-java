@@ -26,7 +26,7 @@ import org.exbin.auxiliary.paged_data.EditableBinaryData;
 /**
  * Binary editor component utilities.
  *
- * @version 0.2.0 2019/08/23
+ * @version 0.2.0 2021/08/26
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -37,6 +37,7 @@ public class CodeAreaUtils {
     private static final int CODE_BUFFER_LENGTH = 16;
 
     public static final String MIME_CLIPBOARD_BINARY = "application/octet-stream";
+    public static final String CONTENT_DATA_ERROR = "Content data is null";
 
     private CodeAreaUtils() {
     }
@@ -473,6 +474,11 @@ public class CodeAreaUtils {
         for (Object object : objects) {
             Objects.requireNonNull(object, "Field cannot be null");
         }
+    }
+
+    @Nonnull
+    public static <T> T requireNonNullContentData(@Nullable T object) {
+        return Objects.requireNonNull(object, CONTENT_DATA_ERROR);
     }
 
     public static void throwInvalidTypeException(Enum<?> enumObject) {

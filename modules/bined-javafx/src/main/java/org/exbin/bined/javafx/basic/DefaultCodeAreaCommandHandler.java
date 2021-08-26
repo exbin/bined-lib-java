@@ -300,7 +300,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                 value = Character.toLowerCase(keyChar) - 'a' + 10;
             }
 
-            BinaryData data = CodeAreaUtils.requireNonNull(codeArea.getContentData(), "Content data is null");
+            BinaryData data = CodeAreaUtils.requireNonNullContentData(codeArea.getContentData());
             EditOperation editOperation = ((EditModeCapable) codeArea).getActiveOperation();
             if (editMode == EditMode.EXPANDING && editOperation == EditOperation.INSERT) {
                 if (codeOffset > 0) {
@@ -366,7 +366,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                 deleteSelection();
             }
 
-            BinaryData data = CodeAreaUtils.requireNonNull(codeArea.getContentData(), "Content data is null");
+            BinaryData data = CodeAreaUtils.requireNonNullContentData(codeArea.getContentData());
             EditOperation editOperation = ((EditModeCapable) codeArea).getActiveOperation();
             if ((editMode == EditMode.EXPANDING && editOperation == EditOperation.OVERWRITE) || editMode == EditMode.INPLACE) {
                 if (dataPosition < codeArea.getDataSize()) {
@@ -389,7 +389,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         CodeAreaCaretPosition caretPosition = ((CaretCapable) codeArea).getCaret().getCaretPosition();
         long dataPosition = caretPosition.getDataPosition();
         int codeOffset = caretPosition.getCodeOffset();
-        BinaryData data = CodeAreaUtils.requireNonNull(codeArea.getContentData(), "Content data is null");
+        BinaryData data = CodeAreaUtils.requireNonNullContentData(codeArea.getContentData());
         CodeType codeType = getCodeType();
         byte byteValue = data.getByte(dataPosition);
         byte outputValue = CodeAreaUtils.setCodeValue(byteValue, value, codeOffset, codeType);
@@ -450,7 +450,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             codeArea.notifyDataChanged();
             revealCursor();
         } else {
-            BinaryData data = CodeAreaUtils.requireNonNull(codeArea.getContentData(), "Content data is null");
+            BinaryData data = CodeAreaUtils.requireNonNullContentData(codeArea.getContentData());
             DefaultCodeAreaCaret caret = (DefaultCodeAreaCaret) ((CaretCapable) codeArea).getCaret();
             long dataPosition = caret.getDataPosition();
             if (dataPosition < codeArea.getDataSize()) {
@@ -575,7 +575,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             return;
         }
 
-        BinaryData data = CodeAreaUtils.requireNonNull(codeArea.getContentData(), "Content data is null");
+        BinaryData data = CodeAreaUtils.requireNonNullContentData(codeArea.getContentData());
         EditMode editMode = ((EditModeCapable) codeArea).getEditMode();
         EditOperation editOperation = ((EditModeCapable) codeArea).getActiveOperation();
         try {

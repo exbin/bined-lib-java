@@ -80,7 +80,7 @@ import org.exbin.bined.capability.EditModeCapable;
 /**
  * Command handler for undo/redo aware binary editor editing.
  *
- * @version 0.2.0 2021/07/28
+ * @version 0.2.0 2021/08/26
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -125,7 +125,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
             try {
                 binaryDataFlavor = new DataFlavor(CodeAreaUtils.MIME_CLIPBOARD_BINARY);
             } catch (ClassNotFoundException ex) {
-                Logger.getLogger(DefaultCodeAreaCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(CodeAreaOperationCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
             }
             try {
                 binedDataFlavor = new DataFlavor(BINED_CLIPBOARD_MIME);
@@ -936,8 +936,8 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
 
     @Override
     public void clearSelection() {
-        SelectionRange selection = ((SelectionCapable) codeArea).getSelection();
-        ((SelectionCapable) codeArea).setSelection(selection.getStart(), selection.getStart());
+        long dataPosition = ((CaretCapable) codeArea).getCaretPosition().getDataPosition();
+        ((SelectionCapable) codeArea).setSelection(dataPosition, dataPosition);
     }
 
     public void updateSelection(SelectingMode selectingMode, CodeAreaCaretPosition caretPosition) {
@@ -1018,8 +1018,8 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
         @Override
         public void redo() throws BinaryDataOperationException {
             removeCommand.redo();
-            codeArea.clearSelection();
             ((CaretCapable) codeArea).setCaretPosition(position);
+            clearSelection();
             ((ScrollingCapable) codeArea).revealCursor();
             codeArea.notifyDataChanged();
         }
@@ -1027,7 +1027,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
         @Override
         public void undo() throws BinaryDataOperationException {
             removeCommand.undo();
-            codeArea.clearSelection();
+            clearSelection();
             ((CaretCapable) codeArea).setCaretPosition(position + size);
             ((ScrollingCapable) codeArea).revealCursor();
             codeArea.notifyDataChanged();
@@ -1042,6 +1042,11 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
         @Override
         public boolean canUndo() {
             return true;
+        }
+
+        private void clearSelection() {
+            long dataPosition = ((CaretCapable) codeArea).getCaretPosition().getDataPosition();
+            ((SelectionCapable) codeArea).setSelection(dataPosition, dataPosition);
         }
     }
 
