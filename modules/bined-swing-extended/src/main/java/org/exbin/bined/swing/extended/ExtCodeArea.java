@@ -215,7 +215,7 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
     @Override
     public void setShowMirrorCursor(boolean showMirrorCursor) {
         this.showMirrorCursor = showMirrorCursor;
-        repaint();
+        updateLayout();
     }
 
     @Override

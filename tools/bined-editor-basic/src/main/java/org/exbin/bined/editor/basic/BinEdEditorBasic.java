@@ -40,7 +40,6 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import org.exbin.bined.EditMode;
 import org.exbin.bined.EditOperation;
-import org.exbin.bined.SelectionRange;
 import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.capability.CharsetCapable;
 import org.exbin.bined.capability.SelectionCapable;
@@ -68,7 +67,7 @@ import org.exbin.bined.capability.EditModeCapable;
  */
 public class BinEdEditorBasic extends javax.swing.JFrame {
 
-    private static final String APPLICATION_VERSION = "0.2.1 DEV";
+    private static final String APPLICATION_VERSION = "0.2.0";
     private static final String APPLICATION_NAME = "BinEd";
     private static final String APPLICATION_DEFAULT_TITLE = APPLICATION_NAME + " Basic Editor";
 

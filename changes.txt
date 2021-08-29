@@ -1,4 +1,4 @@
-0.2.0
+0.2.0 (2021-08-29)
 - Renamed to BinEd
 - Support for half-size space
 - Support for layout, theme and colors profiles

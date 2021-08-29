@@ -1,13 +1,13 @@
 // Shared tools build
 
-version = '0.2.0-SNAPSHOT'
+version = '0.2.0'
 def repositoryName = "bined-java"
 def libraryUrl = 'https://bined.exbin.org/library'
 
 ext.depsExbinAuxiliaryJava = [
     githubProfile: 'exbin',
     githubRepo: 'exbin-auxiliary-java',
-    version: '0.2.0-SNAPSHOT'
+    version: '0.2.0'
 ]
 
 ext.depsThis = 'BinedJava'
