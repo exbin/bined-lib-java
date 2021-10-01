@@ -26,7 +26,7 @@ import org.exbin.auxiliary.paged_data.EditableBinaryData;
 /**
  * Operation for modifying data.
  *
- * @version 0.1.2 2017/01/02
+ * @version 0.2.1 2021/09/26
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -49,20 +49,9 @@ public class ModifyDataOperation extends CodeAreaOperation {
 
     @Nullable
     @Override
-    public void execute() throws BinaryDataOperationException {
-        execute(false);
-    }
-
-    @Nullable
-    @Override
-    public CodeAreaOperation executeWithUndo() throws BinaryDataOperationException {
-        return execute(true);
-    }
-
-    @Nullable
-    private CodeAreaOperation execute(boolean withUndo) {
+    protected CodeAreaOperation execute(ExecutionType executionType) {
         CodeAreaOperation undoOperation = null;
-        if (withUndo) {
+        if (executionType == ExecutionType.WITH_UNDO) {
             BinaryData undoData = codeArea.getContentData().copy(position, data.getDataSize());
             undoOperation = new ModifyDataOperation(codeArea, position, undoData);
         }

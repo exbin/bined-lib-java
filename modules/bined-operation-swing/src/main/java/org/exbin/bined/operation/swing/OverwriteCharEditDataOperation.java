@@ -50,19 +50,9 @@ public class OverwriteCharEditDataOperation extends CharEditDataOperation {
         return CodeAreaOperationType.EDIT_DATA;
     }
 
-    @Override
-    public void execute() throws BinaryDataOperationException {
-        execute(false);
-    }
-
     @Nullable
     @Override
-    public CodeAreaOperation executeWithUndo() throws BinaryDataOperationException {
-        return execute(true);
-    }
-
-    @Nullable
-    private CodeAreaOperation execute(boolean withUndo) {
+    protected CodeAreaOperation execute(ExecutionType executionType) {
         throw new IllegalStateException("Cannot be executed");
     }
 

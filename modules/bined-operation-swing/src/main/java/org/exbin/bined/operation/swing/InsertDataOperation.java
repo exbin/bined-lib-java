@@ -27,7 +27,7 @@ import org.exbin.auxiliary.paged_data.EditableBinaryData;
 /**
  * Operation for inserting data.
  *
- * @version 0.1.2 2017/01/02
+ * @version 0.2.1 2021/09/26
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -52,21 +52,10 @@ public class InsertDataOperation extends CodeAreaOperation {
 
     @Nullable
     @Override
-    public void execute() throws BinaryDataOperationException {
-        execute(false);
-    }
-
-    @Nullable
-    @Override
-    public CodeAreaOperation executeWithUndo() throws BinaryDataOperationException {
-        return execute(true);
-    }
-
-    @Nullable
-    private CodeAreaOperation execute(boolean withUndo) {
+    protected CodeAreaOperation execute(ExecutionType executionType) {
         CodeAreaOperation undoOperation = null;
         ((EditableBinaryData) codeArea.getContentData()).insert(position, data);
-        if (withUndo) {
+        if (executionType == ExecutionType.WITH_UNDO) {
             undoOperation = new RemoveDataOperation(codeArea, position, codeOffset, data.getDataSize());
         }
         ((CaretCapable) codeArea).getCaret().setCaretPosition(position + data.getDataSize(), codeOffset);

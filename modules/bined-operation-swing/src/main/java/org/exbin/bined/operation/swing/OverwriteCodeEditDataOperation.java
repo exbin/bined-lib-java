@@ -16,6 +16,7 @@
 package org.exbin.bined.operation.swing;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.CodeType;
@@ -59,23 +60,15 @@ public class OverwriteCodeEditDataOperation extends CodeEditDataOperation {
         return CodeAreaOperationType.EDIT_DATA;
     }
 
-    @Override
-    public void execute() throws BinaryDataOperationException {
-        execute(false);
-    }
-
-    @Override
-    public CodeAreaOperation executeWithUndo() throws BinaryDataOperationException {
-        return execute(true);
-    }
-
     @Nonnull
     @Override
     public CodeType getCodeType() {
         return codeType;
     }
 
-    private CodeAreaOperation execute(boolean withUndo) {
+    @Nullable
+    @Override
+    protected CodeAreaOperation execute(ExecutionType executionType) {
         throw new IllegalStateException("Cannot be executed");
     }
 

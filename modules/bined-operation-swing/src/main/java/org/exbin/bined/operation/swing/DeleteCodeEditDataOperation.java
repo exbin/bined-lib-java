@@ -53,17 +53,6 @@ public class DeleteCodeEditDataOperation extends CodeEditDataOperation {
         return CodeAreaOperationType.EDIT_DATA;
     }
 
-    @Override
-    public void execute() throws BinaryDataOperationException {
-        execute(false);
-    }
-
-    @Nullable
-    @Override
-    public CodeAreaOperation executeWithUndo() throws BinaryDataOperationException {
-        return execute(true);
-    }
-
     @Nonnull
     @Override
     public CodeType getCodeType() {
@@ -71,7 +60,8 @@ public class DeleteCodeEditDataOperation extends CodeEditDataOperation {
     }
 
     @Nullable
-    private CodeAreaOperation execute(boolean withUndo) {
+    @Override
+    protected CodeAreaOperation execute(ExecutionType executionType) {
         throw new IllegalStateException("Cannot be executed");
     }
 

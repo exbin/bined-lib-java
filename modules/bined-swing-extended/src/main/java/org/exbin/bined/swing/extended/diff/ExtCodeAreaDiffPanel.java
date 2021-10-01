@@ -18,15 +18,15 @@ package org.exbin.bined.swing.extended.diff;
 import java.awt.BorderLayout;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import org.exbin.auxiliary.paged_data.BinaryData;
 import org.exbin.bined.EditMode;
 import org.exbin.bined.basic.CodeAreaScrollPosition;
 import org.exbin.bined.swing.extended.ExtCodeArea;
-import org.exbin.auxiliary.paged_data.ByteArrayData;
 
 /**
  * Panel for difference comparison of two code areas.
  *
- * @version 0.2.0 2019/11/30
+ * @version 0.2.1 2021/09/26
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -127,12 +127,12 @@ public class ExtCodeAreaDiffPanel extends javax.swing.JPanel {
         return rightCodeArea;
     }
 
-    public void setLeftContentData(ByteArrayData contentData) {
+    public void setLeftContentData(BinaryData contentData) {
         leftCodeArea.setContentData(contentData);
         rightPainter.setComparedData(contentData);
     }
 
-    public void setRightContentData(ByteArrayData contentData) {
+    public void setRightContentData(BinaryData contentData) {
         rightCodeArea.setContentData(contentData);
         leftPainter.setComparedData(contentData);
     }

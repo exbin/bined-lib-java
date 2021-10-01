@@ -16,19 +16,17 @@
 package org.exbin.bined.operation.swing;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.capability.CaretCapable;
-import org.exbin.bined.operation.BinaryDataOperationException;
 import org.exbin.bined.swing.CodeAreaCore;
 import org.exbin.auxiliary.paged_data.EditableBinaryData;
 
 /**
  * Operation for deleting child block.
  *
- * @version 0.2.0 2018/02/14
+ * @version 0.2.1 2021/09/26
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -52,21 +50,10 @@ public class RemoveDataOperation extends CodeAreaOperation {
     }
 
     @Override
-    public void execute() throws BinaryDataOperationException {
-        execute(false);
-    }
-
-    @Nullable
-    @Override
-    public CodeAreaOperation executeWithUndo() throws BinaryDataOperationException {
-        return execute(true);
-    }
-
-    @Nullable
-    private CodeAreaOperation execute(boolean withUndo) {
+    protected CodeAreaOperation execute(ExecutionType executionType) {
         EditableBinaryData contentData = CodeAreaUtils.requireNonNull((EditableBinaryData) codeArea.getContentData());
         CodeAreaOperation undoOperation = null;
-        if (withUndo) {
+        if (executionType == ExecutionType.WITH_UNDO) {
             EditableBinaryData undoData = (EditableBinaryData) contentData.copy(position, length);
             undoOperation = new InsertDataOperation(codeArea, position, codeOffset, undoData);
         }
