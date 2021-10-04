@@ -199,9 +199,12 @@ public class CodeAreaSwingUtils {
             if (flavor.equals(binaryDataFlavor)) {
                 return data;
             } else if (flavor.equals(DataFlavor.stringFlavor)) {
-                ByteArrayOutputStream byteArrayStream = new ByteArrayOutputStream();
-                data.saveToStream(byteArrayStream);
-                return charset == null ? byteArrayStream.toString(DEFAULT_ENCODING) : byteArrayStream.toString(charset.name());
+                Object result;
+                try (ByteArrayOutputStream byteArrayStream = new ByteArrayOutputStream()) {
+                    data.saveToStream(byteArrayStream);
+                    result = charset == null ? byteArrayStream.toString(DEFAULT_ENCODING) : byteArrayStream.toString(charset.name());
+                }
+                return result;
             }
 
             throw new UnsupportedFlavorException(flavor);

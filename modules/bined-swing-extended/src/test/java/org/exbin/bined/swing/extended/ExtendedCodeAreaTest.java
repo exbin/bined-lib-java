@@ -97,7 +97,6 @@ public class ExtendedCodeAreaTest {
         ByteArrayEditableData data = new ByteArrayEditableData();
         try (InputStream stream = ExtendedCodeAreaTest.class.getResourceAsStream(dataPath)) {
             data.loadFromStream(stream);
-            stream.close();
         } catch (IOException ex) {
             Logger.getLogger(ExtendedCodeAreaTest.class.getName()).log(Level.SEVERE, null, ex);
         }

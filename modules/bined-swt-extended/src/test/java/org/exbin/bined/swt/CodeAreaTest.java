@@ -91,7 +91,6 @@ public class CodeAreaTest {
         ByteArrayEditableData data = new ByteArrayEditableData();
         try (InputStream stream = CodeAreaTest.class.getResourceAsStream(dataPath)) {
             data.loadFromStream(stream);
-            stream.close();
         } catch (IOException ex) {
             Logger.getLogger(CodeAreaTest.class.getName()).log(Level.SEVERE, null, ex);
         }
