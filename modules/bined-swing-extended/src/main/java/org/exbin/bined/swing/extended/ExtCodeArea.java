@@ -313,10 +313,10 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
     public void setViewMode(CodeAreaViewMode viewMode) {
         this.viewMode = viewMode;
         if (viewMode == CodeAreaViewMode.CODE_MATRIX) {
-            getCaret().setSection(BasicCodeAreaSection.CODE_MATRIX);
+            caret.setSection(BasicCodeAreaSection.CODE_MATRIX);
             notifyCaretMoved();
         } else if (viewMode == CodeAreaViewMode.TEXT_PREVIEW) {
-            getCaret().setSection(BasicCodeAreaSection.TEXT_PREVIEW);
+            caret.setSection(BasicCodeAreaSection.TEXT_PREVIEW);
             notifyCaretMoved();
         }
         updateLayout();

@@ -63,7 +63,7 @@ public class InsertCharEditDataOperation extends CharEditDataOperation {
         byte[] bytes = CodeAreaUtils.characterToBytes(value, charset);
         data.insert(editedDataPosition, bytes);
         length += bytes.length;
-        ((CaretCapable) codeArea).getCaret().setCaretPosition(startPosition + length);
+        ((CaretCapable) codeArea).setCaretPosition(startPosition + length);
     }
 
     @Nonnull

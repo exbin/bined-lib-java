@@ -1153,7 +1153,6 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
     public Color getPositionBackgroundColor(long rowDataPosition, int byteOnRow, int halfCharOnRow, CodeAreaSection section, boolean unprintable) {
         CodeAreaSelection selectionHandler = ((SelectionCapable) codeArea).getSelectionHandler();
         int codeLastCharPos = structure.getCodeLastHalfCharPos();
-        CodeAreaCaret caret = ((CaretCapable) codeArea).getCaret();
         boolean inSelection = selectionHandler.isInSelection(rowDataPosition + byteOnRow);
         if (inSelection && (section == BasicCodeAreaSection.CODE_MATRIX)) {
             if (halfCharOnRow == codeLastCharPos) {
@@ -1162,7 +1161,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         }
 
         if (inSelection) {
-            return section == caret.getSection() ? colorsProfile.getColor(CodeAreaBasicColors.SELECTION_BACKGROUND) : colorsProfile.getColor(CodeAreaBasicColors.SELECTION_MIRROR_BACKGROUND);
+            return section == ((CaretCapable) codeArea).getActiveSection() ? colorsProfile.getColor(CodeAreaBasicColors.SELECTION_BACKGROUND) : colorsProfile.getColor(CodeAreaBasicColors.SELECTION_MIRROR_BACKGROUND);
         }
 
         if (showUnprintables && unprintable) {
@@ -1406,7 +1405,6 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
     public Color getPositionTextColor(long rowDataPosition, int byteOnRow, int halfCharOnRow, CodeAreaSection section, boolean unprintable) {
         CodeAreaSelection selectionHandler = ((SelectionCapable) codeArea).getSelectionHandler();
         int codeLastCharPos = structure.getCodeLastHalfCharPos();
-        CodeAreaCaret caret = ((CaretCapable) codeArea).getCaret();
         boolean inSelection = selectionHandler.isInSelection(rowDataPosition + byteOnRow);
         if (inSelection && (section == BasicCodeAreaSection.CODE_MATRIX)) {
             if (halfCharOnRow == codeLastCharPos) {
@@ -1419,7 +1417,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
         }
 
         if (inSelection) {
-            return section == caret.getSection() ? colorsProfile.getColor(CodeAreaBasicColors.SELECTION_COLOR) : colorsProfile.getColor(CodeAreaBasicColors.SELECTION_MIRROR_COLOR);
+            return section == ((CaretCapable) codeArea).getActiveSection() ? colorsProfile.getColor(CodeAreaBasicColors.SELECTION_COLOR) : colorsProfile.getColor(CodeAreaBasicColors.SELECTION_MIRROR_COLOR);
         }
 
         return null;

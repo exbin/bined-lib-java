@@ -921,7 +921,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
     public Color getPositionBackgroundColor(long rowDataPosition, int byteOnRow, int charOnRow, CodeAreaSection section) {
         CodeAreaSelection selectionHandler = ((SelectionCapable) codeArea).getSelectionHandler();
         int codeLastCharPos = visibility.getCodeLastCharPos();
-        CodeAreaCaret caret = ((CaretCapable) codeArea).getCaret();
         boolean inSelection = selectionHandler.isInSelection(rowDataPosition + byteOnRow);
         if (inSelection && (section == BasicCodeAreaSection.CODE_MATRIX)) {
             if (charOnRow == codeLastCharPos) {
@@ -930,7 +929,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         }
 
         if (inSelection) {
-            return section == caret.getSection() ? colorsProfile.getSelectionBackground() : colorsProfile.getSelectionMirrorBackground();
+            return section == ((CaretCapable) codeArea).getActiveSection() ? colorsProfile.getSelectionBackground() : colorsProfile.getSelectionMirrorBackground();
         }
 
         return null;
@@ -1109,10 +1108,9 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
     @Nullable
     public Color getPositionTextColor(long rowDataPosition, int byteOnRow, int charOnRow, CodeAreaSection section) {
         CodeAreaSelection selectionHandler = ((SelectionCapable) codeArea).getSelectionHandler();
-        CodeAreaCaret caret = ((CaretCapable) codeArea).getCaret();
         boolean inSelection = selectionHandler.isInSelection(rowDataPosition + byteOnRow);
         if (inSelection) {
-            return section == caret.getSection() ? colorsProfile.getSelectionColor() : colorsProfile.getSelectionMirrorColor();
+            return section == ((CaretCapable) codeArea).getActiveSection() ? colorsProfile.getSelectionColor() : colorsProfile.getSelectionMirrorColor();
         }
 
         return null;

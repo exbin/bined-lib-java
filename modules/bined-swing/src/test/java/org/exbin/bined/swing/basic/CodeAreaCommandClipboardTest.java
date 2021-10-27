@@ -126,7 +126,7 @@ public class CodeAreaCommandClipboardTest {
         codeArea.selectAll();
         codeArea.copy();
         codeArea.clearSelection();
-        ((CaretCapable) codeArea).getCaret().setCaretPosition(dataSize);
+        ((CaretCapable) codeArea).setCaretPosition(dataSize);
         codeArea.paste();
 
         Assert.assertTrue(codeArea.getDataSize() == (dataSize * 2));
@@ -142,7 +142,7 @@ public class CodeAreaCommandClipboardTest {
         codeArea.selectAll();
         codeArea.copy();
         codeArea.clearSelection();
-        ((CaretCapable) codeArea).getCaret().setCaretPosition(dataSize);
+        ((CaretCapable) codeArea).setCaretPosition(dataSize);
         codeArea.paste();
 
         Assert.assertTrue(codeArea.getDataSize() == (dataSize * 2));
@@ -158,7 +158,7 @@ public class CodeAreaCommandClipboardTest {
         codeArea.selectAll();
         codeArea.copy();
         codeArea.clearSelection();
-        ((CaretCapable) codeArea).getCaret().setCaretPosition(dataSize);
+        ((CaretCapable) codeArea).setCaretPosition(dataSize);
         codeArea.paste();
 
         Assert.assertTrue(codeArea.getDataSize() == dataSize);
@@ -179,7 +179,7 @@ public class CodeAreaCommandClipboardTest {
         codeArea.selectAll();
         codeArea.copy();
         codeArea.clearSelection();
-        ((CaretCapable) codeArea).getCaret().setCaretPosition(dataSize / 2);
+        ((CaretCapable) codeArea).setCaretPosition(dataSize / 2);
         codeArea.paste();
 
         Assert.assertTrue(codeArea.getDataSize() == expectedSize);
@@ -203,7 +203,7 @@ public class CodeAreaCommandClipboardTest {
         codeArea.selectAll();
         codeArea.copy();
         codeArea.clearSelection();
-        ((CaretCapable) codeArea).getCaret().setCaretPosition(dataSize / 2);
+        ((CaretCapable) codeArea).setCaretPosition(dataSize / 2);
         codeArea.paste();
 
         Assert.assertTrue(codeArea.getDataSize() == expectedSize);
@@ -225,7 +225,7 @@ public class CodeAreaCommandClipboardTest {
         codeArea.selectAll();
         codeArea.copy();
         codeArea.clearSelection();
-        ((CaretCapable) codeArea).getCaret().setCaretPosition(dataSize / 2);
+        ((CaretCapable) codeArea).setCaretPosition(dataSize / 2);
         codeArea.paste();
 
         Assert.assertTrue(codeArea.getDataSize() == expectedSize);

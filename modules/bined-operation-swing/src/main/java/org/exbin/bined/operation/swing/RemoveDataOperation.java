@@ -58,7 +58,7 @@ public class RemoveDataOperation extends CodeAreaOperation {
             undoOperation = new InsertDataOperation(codeArea, position, codeOffset, undoData);
         }
         contentData.remove(position, length);
-        ((CaretCapable) codeArea).getCaret().setCaretPosition(position, codeOffset);
+        ((CaretCapable) codeArea).setCaretPosition(position, codeOffset);
         return undoOperation;
     }
 }

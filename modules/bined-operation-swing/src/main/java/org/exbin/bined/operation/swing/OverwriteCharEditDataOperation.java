@@ -92,7 +92,7 @@ public class OverwriteCharEditDataOperation extends CharEditDataOperation {
         }
 
         length += bytes.length;
-        ((CaretCapable) codeArea).getCaret().setCaretPosition(startPosition + length);
+        ((CaretCapable) codeArea).setCaretPosition(startPosition + length);
     }
 
     @Nonnull

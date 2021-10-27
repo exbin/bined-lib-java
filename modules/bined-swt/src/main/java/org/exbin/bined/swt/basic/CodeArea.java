@@ -300,12 +300,12 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
             this.viewMode = viewMode;
             switch (viewMode) {
                 case CODE_MATRIX:
-                    getCaret().setSection(BasicCodeAreaSection.CODE_MATRIX);
+                    caret.setSection(BasicCodeAreaSection.CODE_MATRIX);
                     reset();
                     notifyCaretMoved();
                     break;
                 case TEXT_PREVIEW:
-                    getCaret().setSection(BasicCodeAreaSection.TEXT_PREVIEW);
+                    caret.setSection(BasicCodeAreaSection.TEXT_PREVIEW);
                     reset();
                     notifyCaretMoved();
                     break;
