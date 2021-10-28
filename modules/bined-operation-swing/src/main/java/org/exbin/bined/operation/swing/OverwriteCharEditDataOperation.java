@@ -25,6 +25,7 @@ import org.exbin.bined.capability.CharsetCapable;
 import org.exbin.bined.operation.BinaryDataOperationException;
 import org.exbin.bined.swing.CodeAreaCore;
 import org.exbin.auxiliary.paged_data.EditableBinaryData;
+import org.exbin.bined.capability.SelectionCapable;
 
 /**
  * Operation for editing data using overwrite mode.
@@ -92,7 +93,9 @@ public class OverwriteCharEditDataOperation extends CharEditDataOperation {
         }
 
         length += bytes.length;
-        ((CaretCapable) codeArea).setCaretPosition(startPosition + length);
+        long dataPosition = startPosition + length;
+        ((CaretCapable) codeArea).setCaretPosition(dataPosition);
+        ((SelectionCapable) codeArea).setSelection(dataPosition, dataPosition);
     }
 
     @Nonnull

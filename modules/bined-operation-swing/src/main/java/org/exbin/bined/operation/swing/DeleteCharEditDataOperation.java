@@ -22,6 +22,7 @@ import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.operation.BinaryDataOperationException;
 import org.exbin.bined.swing.CodeAreaCore;
 import org.exbin.auxiliary.paged_data.EditableBinaryData;
+import org.exbin.bined.capability.SelectionCapable;
 
 /**
  * Operation for editing data in delete mode.
@@ -91,6 +92,7 @@ public class DeleteCharEditDataOperation extends CharEditDataOperation {
             }
         }
         ((CaretCapable) codeArea).setCaretPosition(position);
+        ((SelectionCapable) codeArea).setSelection(position, position);
         codeArea.repaint();
     }
 
