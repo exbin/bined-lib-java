@@ -1,18 +1,14 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+    id 'signing'
+}
+
 group = 'org.exbin.bined'
 ext.libraryName = 'Hexadecimal Highlight Support'
 ext.libraryDescription = 'Library with Support for Highlighting in Hexadecimal Component'
 
 apply from: '../bined-java-modules.gradle'
-
-buildscript {
-    repositories {
-        mavenLocal()
-        jcenter()
-    }
-    dependencies {
-        classpath("at.bxm.gradleplugins:gradle-svntools-plugin:latest.integration")
-    }
-}
 
 if (!hasProperty('mainClass')) {
     ext.mainClass = ''

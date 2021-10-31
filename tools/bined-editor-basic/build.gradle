@@ -1,15 +1,11 @@
-apply from: '../tools.gradle'
-
-buildscript {
-    repositories {
-        mavenLocal()
-        jcenter()
-    }
-    dependencies {
-        classpath("at.bxm.gradleplugins:gradle-svntools-plugin:latest.integration")
-        classpath("net.sf.proguard:proguard-gradle:6.1.1")
-    }
+plugins {
+    id 'java'
+    id 'distribution'
+    id 'maven-publish'
+    // classpath("net.sf.proguard:proguard-gradle:6.1.1")
 }
+
+apply from: '../tools.gradle'
 
 if (!hasProperty('mainClass')) {
     ext.mainClass = 'org.exbin.bined.editor.basic.BinEdEditorBasic'

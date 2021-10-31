@@ -1,14 +1,10 @@
-apply from: '../tools.gradle'
-
-buildscript {
-    repositories {
-        mavenLocal()
-        jcenter()
-    }
-    dependencies {
-        classpath("at.bxm.gradleplugins:gradle-svntools-plugin:latest.integration")
-    }
+plugins {
+    id 'java'
+    id 'distribution'
+    id 'maven-publish'
 }
+
+apply from: '../tools.gradle'
 
 if (!hasProperty('mainClass')) {
     ext.mainClass = 'org.exbin.bined.swing.example.BinEdExample'

@@ -22,12 +22,11 @@ buildscript {
     }
 }
 
-['java', 'distribution', 'maven-publish', 'at.bxm.svntools'].each {
-    apply plugin: it
-}
 import org.gradle.util.VersionNumber
 
 sourceCompatibility = '1.8'
+
+targetCompatibility = '1.8'
 
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 

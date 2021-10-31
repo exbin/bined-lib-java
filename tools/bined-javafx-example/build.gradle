@@ -7,13 +7,19 @@ buildscript {
         }    
     }
     dependencies {
-        classpath("at.bxm.gradleplugins:gradle-svntools-plugin:latest.integration")
         if (JavaVersion.current() != JavaVersion.VERSION_1_8) {
             classpath("org.openjfx:javafx-plugin:0.0.8")
-        } else {
-            classpath "org.bitbucket.shemnon.javafxplugin:gradle-javafx-plugin:8.1.1"
         }
+        // } else {
+        //      classpath 'org.bitbucket.shemnon.javafxplugin:gradle-javafx-plugin:8.1.1'
+        // }
     }
+}
+
+plugins {
+    id 'java'
+    id 'distribution'
+    id 'maven-publish'
 }
 
 if (JavaVersion.current() != JavaVersion.VERSION_1_8) {
@@ -68,7 +74,7 @@ if (JavaVersion.current() != JavaVersion.VERSION_1_8) {
 }
 
 dependencies {
-//    providedImplementation files("$javaFxHome/lib/jfxrt.jar")
+    //    providedImplementation files("$javaFxHome/lib/jfxrt.jar")
     if (JavaVersion.current() == JavaVersion.VERSION_1_8) {
         implementation group: 'org.openjfx', name: 'javafx-base', version: '11.0.2'
         implementation group: 'org.openjfx', name: 'javafx-controls', version: '11.0.2'

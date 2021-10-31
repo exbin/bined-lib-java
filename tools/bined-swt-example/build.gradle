@@ -1,14 +1,10 @@
-apply from: '../tools.gradle'
-
-buildscript {
-    repositories {
-        mavenLocal()
-        jcenter()
-    }
-    dependencies {
-        classpath("at.bxm.gradleplugins:gradle-svntools-plugin:latest.integration")
-    }
+plugins {
+    id 'java'
+    id 'distribution'
+    id 'maven-publish'
 }
+
+apply from: '../tools.gradle'
 
 if (!hasProperty('mainClass')) {
     ext.mainClass = 'org.exbin.bined.swt.example.BinEdExample'
@@ -43,7 +39,7 @@ repositories {
 dependencies {
     implementation moduleDep('BinedJava', 'org.exbin.bined', 'bined-core')
     implementation moduleDep('BinedJava', 'org.exbin.bined', 'bined-swt')
-//    implementation moduleDep('BinedJava', 'org.exbin.bined', 'bined-swt-extended')
+    //    implementation moduleDep('BinedJava', 'org.exbin.bined', 'bined-swt-extended')
     implementation moduleDep('ExbinAuxiliaryJava', 'org.exbin.auxiliary', 'paged_data')
     implementation group: 'org.eclipse.swt', name: 'org.eclipse.swt.gtk.linux.x86_64', version: '4.3'
     compileOnly group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.2'

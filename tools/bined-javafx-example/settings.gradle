@@ -1,3 +1,12 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }    
+    }
+}
+
 rootProject.name = 'bined-javafx-example'
 
 if (rootProject.path == ':') {

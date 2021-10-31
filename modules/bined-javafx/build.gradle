@@ -7,11 +7,19 @@ buildscript {
         }    
     }
     dependencies {
-        classpath("at.bxm.gradleplugins:gradle-svntools-plugin:latest.integration")
         if (JavaVersion.current() != JavaVersion.VERSION_1_8) {
             classpath("org.openjfx:javafx-plugin:0.0.8")
         }
+        // } else {
+        //     classpath 'org.bitbucket.shemnon.javafxplugin:gradle-javafx-plugin:8.1.1'
+        // }
     }
+}
+
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+    id 'signing'
 }
 
 if (JavaVersion.current() != JavaVersion.VERSION_1_8) {
