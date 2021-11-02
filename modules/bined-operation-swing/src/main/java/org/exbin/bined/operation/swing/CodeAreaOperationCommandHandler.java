@@ -642,7 +642,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
         }
 
         try {
-            if (!clipboard.isDataFlavorAvailable(binedDataFlavor) && !clipboard.isDataFlavorAvailable(DataFlavor.getTextPlainUnicodeFlavor())) {
+            if (!clipboard.isDataFlavorAvailable(binedDataFlavor) && !clipboard.isDataFlavorAvailable(DataFlavor.stringFlavor) && !clipboard.isDataFlavorAvailable(DataFlavor.getTextPlainUnicodeFlavor())) {
                 return;
             }
         } catch (IllegalStateException ex) {
@@ -726,20 +726,27 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
                 } catch (UnsupportedFlavorException | IllegalStateException | IOException ex) {
                     Logger.getLogger(CodeAreaOperationCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
                 }
-            } else if (clipboard.isDataFlavorAvailable(DataFlavor.getTextPlainUnicodeFlavor())) {
+            } else  {
                 InputStream clipboardData;
                 try {
-                    clipboardData = (InputStream) clipboard.getData(DataFlavor.getTextPlainUnicodeFlavor());
-                    long dataPosition = ((CaretCapable) codeArea).getDataPosition();
-
                     CodeAreaCommand modifyCommand = null;
-                    DataFlavor textPlainUnicodeFlavor = DataFlavor.getTextPlainUnicodeFlavor();
-                    String charsetName = textPlainUnicodeFlavor.getParameter(MIME_CHARSET);
-                    CharsetStreamTranslator translator = new CharsetStreamTranslator(Charset.forName(charsetName), ((CharsetCapable) codeArea).getCharset(), clipboardData);
+                    long dataPosition = ((CaretCapable) codeArea).getDataPosition();
 
                     // TODO use stream directly without buffer
                     PagedData insertedData = new PagedData();
-                    insertedData.insert(0, translator, -1);
+                    if (clipboard.isDataFlavorAvailable(DataFlavor.getTextPlainUnicodeFlavor())) {
+                        clipboardData = (InputStream) clipboard.getData(DataFlavor.getTextPlainUnicodeFlavor());
+
+                        DataFlavor textPlainUnicodeFlavor = DataFlavor.getTextPlainUnicodeFlavor();
+                        String charsetName = textPlainUnicodeFlavor.getParameter(MIME_CHARSET);
+                        CharsetStreamTranslator translator = new CharsetStreamTranslator(Charset.forName(charsetName), ((CharsetCapable) codeArea).getCharset(), clipboardData);
+
+                        insertedData.insert(0, translator, -1);
+                    } else {
+                        String text = (String) clipboard.getData(DataFlavor.stringFlavor);
+                        insertedData.insert(0, text.getBytes(((CharsetCapable) codeArea).getCharset()));
+                    }
+
                     long clipDataSize = insertedData.getDataSize();
                     long insertionPosition = dataPosition;
                     if ((editMode == EditMode.EXPANDING && editOperation == EditOperation.OVERWRITE) || editMode == EditMode.INPLACE) {
