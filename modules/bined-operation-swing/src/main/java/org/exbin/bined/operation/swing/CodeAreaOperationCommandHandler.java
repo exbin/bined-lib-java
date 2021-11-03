@@ -726,7 +726,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
                 } catch (UnsupportedFlavorException | IllegalStateException | IOException ex) {
                     Logger.getLogger(CodeAreaOperationCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
                 }
-            } else  {
+            } else {
                 InputStream clipboardData;
                 try {
                     CodeAreaCommand modifyCommand = null;

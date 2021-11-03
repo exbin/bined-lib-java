@@ -12,6 +12,16 @@ ext.depsExbinAuxiliaryJava = [
 
 ext.depsThis = 'BinedJava'
 
+buildscript {
+    repositories {
+        mavenLocal()
+        jcenter()
+    }
+    dependencies {
+        classpath("at.bxm.gradleplugins:gradle-svntools-plugin:2.2")
+    }
+}
+
 sourceCompatibility = '1.8'
 
 targetCompatibility = '1.8'
