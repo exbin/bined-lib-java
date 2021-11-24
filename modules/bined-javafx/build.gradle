@@ -1,7 +1,6 @@
 buildscript {
     repositories {
         mavenLocal()
-        jcenter()
         maven {
             url "https://plugins.gradle.org/m2/"
         }    
@@ -10,9 +9,6 @@ buildscript {
         if (JavaVersion.current() != JavaVersion.VERSION_1_8) {
             classpath("org.openjfx:javafx-plugin:0.0.8")
         }
-        // } else {
-        //     classpath 'org.bitbucket.shemnon.javafxplugin:gradle-javafx-plugin:8.1.1'
-        // }
     }
 }
 
@@ -36,9 +32,7 @@ apply from: '../bined-java-modules.gradle'
 
 sourceCompatibility = '1.8'
 
-//if (!project.plugins.findPlugin(org.bitbucket.shemnon.javafxplugin.JavaFXPlugin)) {
-//    project.apply(plugin: org.bitbucket.shemnon.javafxplugin.JavaFXPlugin)
-//}
+targetCompatibility = '1.8'
 
 if (!hasProperty('mainClass')) {
     ext.mainClass = ''

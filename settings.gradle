@@ -18,7 +18,7 @@ include ":tools:bined-javafx-example"
 include ":tools:bined-swt-example"
 include ":tools:bined-editor-basic"
 
-File placeholder = file("deps/_placeholder")
+File placeholder = file("deps/.downloaded")
 if (placeholder.exists()) {
     placeholder.delete()
 }
@@ -31,5 +31,11 @@ if (!gradle.startParameter.taskNames.contains("clean") || gradle.startParameter.
             include ':deps:' + childFile.name
         }
     }
+}
+
+gradle.allprojects {
+  ext {
+    depsRoot = 'BinedJava'
+  }
 }
 
