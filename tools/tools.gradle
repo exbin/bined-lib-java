@@ -2,15 +2,22 @@
 
 version = '0.2.1-SNAPSHOT'
 def repositoryName = "bined-java"
+def githubProfile = 'exbin'
 def libraryUrl = 'https://bined.exbin.org/library'
+
+ext.depsThis = 'BinedJava'
+
+ext.depsBinedJava = [
+    githubProfile: githubProfile,
+    githubRepo   : repositoryName,
+    version      : version
+]
 
 ext.depsExbinAuxiliaryJava = [
     githubProfile: 'exbin',
     githubRepo   : 'exbin-auxiliary-java',
     version      : '0.2.1-SNAPSHOT'
 ]
-
-ext.depsThis = 'BinedJava'
 
 import org.gradle.util.VersionNumber
 

@@ -95,7 +95,7 @@ project.dependencies.ext.moduleDep = { depsName, packageName, moduleName ->
 }
 
 project.dependencies.ext.moduleDepPath = { depsName, moduleName ->
-    if (ext.has('depsRoot') && depsName == ext.depsRoot) {
+    if (!ext.has('depsRoot') || depsName == ext.depsRoot) {
         return ":modules:${moduleName}"
     }
 

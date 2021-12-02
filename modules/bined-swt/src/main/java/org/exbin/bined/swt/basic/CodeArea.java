@@ -141,10 +141,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
     public CodeArea(@Nullable Composite parent, int style, @Nullable CodeAreaCommandHandler.CodeAreaCommandHandlerFactory commandHandlerFactory) {
         super(parent, style, commandHandlerFactory);
 
-        caret = new DefaultCodeAreaCaret(() -> {
-            notifyCaretChanged();
-            repaint();
-        });
+        caret = new DefaultCodeAreaCaret(this::notifyCaretChanged);
         painter = new DefaultCodeAreaPainter(this);
         painter.attach();
         init();

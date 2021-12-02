@@ -8,7 +8,7 @@ buildscript {
     }
     dependencies {
         classpath "at.bxm.gradleplugins:gradle-svntools-plugin:2.2"
-        classpath "org.tmatesoft.svnkit:svnkit:1.10.3"
+        classpath "org.tmatesoft.svnkit:svnkit:1.10.1"
     }
 }
 
@@ -53,14 +53,18 @@ def fetchModule(String svnUrl, targetDir, Long revision) {
 // - local maven repository module will be used if available
 // - otherwise module will be download to deps directory
 project.dependencies.ext.moduleDep = { depsName, packageName, moduleName ->
-    if (depsName == ext.depsThis) {
+    if (ext.has('depsRoot') && depsName == ext.depsRoot) {
         return project(':modules:' + moduleName)
     }
 
-    def mavenModuleDir = repositories.mavenLocal().url.path + packageName.replace('.', '/') + '/' + moduleName + '/' + ext['deps' + depsName].version
+    def depVersion = ext['deps' + depsName].version
+    def depGithubProfile = ext['deps' + depsName].githubProfile
+    def depGithubRepo = ext['deps' + depsName].githubRepo
+
+    def mavenModuleDir = repositories.mavenLocal().url.path + packageName.replace('.', '/') + '/' + moduleName + '/' + depVersion
     if (new File(mavenModuleDir).isDirectory()) {
         // Use maven package if available
-        return packageName + ':' + moduleName + ':' + ext['deps' + depsName].version
+        return packageName + ':' + moduleName + ':' + depVersion
     }
 
     def depsDir = rootProject.buildDir.parent + '/deps/'
@@ -71,7 +75,7 @@ project.dependencies.ext.moduleDep = { depsName, packageName, moduleName ->
     def depModuleDir = depsDir + moduleName
     if (!new File(depModuleDir).isDirectory()) {
         // Download module
-        def githubModulePath = 'https://github.com/' + ext['deps' + depsName].githubProfile + '/' + ext['deps' + depsName].githubRepo + '/trunk/modules/' + moduleName
+        def githubModulePath = 'https://github.com/' + depGithubProfile + '/' + depGithubRepo + '/trunk/modules/' + moduleName
         println 'Downloading ' + githubModulePath
 
         fetchModule(githubModulePath, depModuleDir, null)
@@ -91,7 +95,7 @@ project.dependencies.ext.moduleDep = { depsName, packageName, moduleName ->
 }
 
 project.dependencies.ext.moduleDepPath = { depsName, moduleName ->
-    if (depsName == ext.depsThis) {
+    if (!ext.has('depsRoot') || depsName == ext.depsRoot) {
         return ":modules:${moduleName}"
     }
 

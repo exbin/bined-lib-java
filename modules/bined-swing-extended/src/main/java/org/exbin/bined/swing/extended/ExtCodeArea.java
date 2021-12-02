@@ -146,10 +146,7 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
     public ExtCodeArea(CodeAreaCommandHandler.CodeAreaCommandHandlerFactory commandHandlerFactory) {
         super(commandHandlerFactory);
 
-        caret = new DefaultCodeAreaCaret(() -> {
-            notifyCaretChanged();
-            repaint();
-        });
+        caret = new DefaultCodeAreaCaret(this::notifyCaretChanged);
         painter = new ExtendedCodeAreaPainter(this);
         painter.attach();
         init();
