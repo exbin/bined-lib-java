@@ -22,7 +22,7 @@ import org.exbin.bined.color.CodeAreaBasicColors;
 import org.exbin.bined.color.CodeAreaColorType;
 
 /**
- * Color profile.
+ * Colors profile.
  *
  * @version 0.2.0 2018/11/28
  * @author ExBin Project (https://exbin.org)

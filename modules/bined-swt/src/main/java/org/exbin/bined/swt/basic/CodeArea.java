@@ -59,11 +59,12 @@ import org.exbin.bined.CodeAreaCaretPosition;
 import org.exbin.bined.CodeAreaSelection;
 import org.exbin.bined.RowWrappingMode;
 import org.exbin.bined.EditModeChangedListener;
+import org.exbin.bined.swt.CodeAreaSwtUtils;
 
 /**
  * Code area component default code area.
  *
- * @version 0.2.0 2021/08/13
+ * @version 0.2.1 2021/12/26
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -80,7 +81,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
     private final CodeAreaScrollPosition scrollPosition = new CodeAreaScrollPosition();
 
     @Nonnull
-    private Charset charset = Charset.defaultCharset();
+    private Charset charset = Charset.forName(CodeAreaSwtUtils.DEFAULT_ENCODING);
     private ClipboardHandlingMode clipboardHandlingMode = ClipboardHandlingMode.PROCESS;
 
     @Nonnull
@@ -193,7 +194,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
     @Override
     public void setShowMirrorCursor(boolean showMirrorCursor) {
         this.showMirrorCursor = showMirrorCursor;
-        repaint();
+        updateLayout();
     }
 
     @Override
@@ -341,9 +342,6 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
         Optional<CodeAreaScrollPosition> revealScrollPosition = painter.computeRevealScrollPosition(caretPosition);
         if (revealScrollPosition.isPresent()) {
             setScrollPosition(revealScrollPosition.get());
-            resetPainter();
-            updateScrollBars();
-            notifyScrolled();
         }
     }
 
@@ -366,9 +364,6 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
         Optional<CodeAreaScrollPosition> centerOnScrollPosition = painter.computeCenterOnScrollPosition(caretPosition);
         if (centerOnScrollPosition.isPresent()) {
             setScrollPosition(centerOnScrollPosition.get());
-            resetPainter();
-            updateScrollBars();
-            notifyScrolled();
         }
     }
 
@@ -394,7 +389,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
         return painter.computeScrolling(startPosition, scrollingShift);
     }
 
-    protected void updateScrollBars() {
+    public void updateScrollBars() {
         painter.updateScrollBars();
         repaint();
     }
@@ -407,8 +402,21 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
 
     @Override
     public void setScrollPosition(CodeAreaScrollPosition scrollPosition) {
-        this.scrollPosition.setScrollPosition(scrollPosition);
-        notifyScrolled();
+        if (!scrollPosition.equals(this.scrollPosition)) {
+            this.scrollPosition.setScrollPosition(scrollPosition);
+            painter.scrollPositionModified();
+            updateScrollBars();
+            notifyScrolled();
+        }
+    }
+
+    @Override
+    public void updateScrollPosition(CodeAreaScrollPosition scrollPosition) {
+        if (!scrollPosition.equals(this.scrollPosition)) {
+            this.scrollPosition.setScrollPosition(scrollPosition);
+            repaint();
+            notifyScrolled();
+        }
     }
 
     @Nonnull
@@ -720,13 +728,13 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
         updateLayout();
     }
 
-    @Nullable
+    @Nonnull
     @Override
-    public BasicCodeAreaColorsProfile getBasicColors() {
+    public Optional<BasicCodeAreaColorsProfile> getBasicColors() {
         if (painter instanceof BasicColorsCapableCodeAreaPainter) {
-            return ((BasicColorsCapableCodeAreaPainter) painter).getBasicColors();
+            return Optional.of(((BasicColorsCapableCodeAreaPainter) painter).getBasicColors());
         }
-        return null;
+        return Optional.empty();
     }
 
     @Override

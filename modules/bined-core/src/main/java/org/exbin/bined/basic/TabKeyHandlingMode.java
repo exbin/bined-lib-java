@@ -13,34 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.swt.capability;
-
-import java.util.Optional;
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-import org.exbin.bined.swt.basic.color.BasicCodeAreaColorsProfile;
+package org.exbin.bined.basic;
 
 /**
- * Support for basic set of colors.
+ * Enumeration of modes for tab key handling.
  *
- * @version 0.2.1 2021/12/26
+ * @version 0.2.1 2021/12/08
  * @author ExBin Project (https://exbin.org)
  */
-@ParametersAreNonnullByDefault
-public interface BasicColorsCapable {
-
+public enum TabKeyHandlingMode {
     /**
-     * Returns basic profile for colors.
-     *
-     * @return colors profile
+     * Handle enter using java platform detection (default).
      */
-    @Nonnull
-    Optional<BasicCodeAreaColorsProfile> getBasicColors();
-
+    PLATFORM_SPECIFIC,
     /**
-     * Sets basic profile for colors.
-     *
-     * @param colorsProfile colors profile
+     * Insert tab character \t.
      */
-    void setBasicColors(BasicCodeAreaColorsProfile colorsProfile);
+    INSERT_TAB,
+    /**
+     * Insert space characters.
+     */
+    INSERT_SPACES,
+    /**
+     * Jump between code area / preview section.
+     */
+    CYCLE_SECTION,
+    /**
+     * Don't handle tab key.
+     */
+    IGNORE;
 }

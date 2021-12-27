@@ -17,16 +17,16 @@ package org.exbin.bined.swt;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.eclipse.swt.graphics.GC;
-import org.exbin.bined.DataProvider;
+import org.exbin.bined.basic.CodeAreaScrollPosition;
 
 /**
- * Code area swt control.
+ * Code area SWT control.
  *
- * @version 0.2.0 2018/08/11
+ * @version 0.2.1 2021/12/27
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public interface CodeAreaSwtControl extends DataProvider {
+public interface CodeAreaSwtControl {
 
     /**
      * Paints the main component.
@@ -52,6 +52,13 @@ public interface CodeAreaSwtControl extends DataProvider {
      * should be recomputed and updated if necessary.
      */
     void updateLayout();
+
+    /**
+     * Updates scroll position.
+     *
+     * @param scrollPosition scroll position
+     */
+    void updateScrollPosition(CodeAreaScrollPosition scrollPosition);
 
     void dispose();
 }

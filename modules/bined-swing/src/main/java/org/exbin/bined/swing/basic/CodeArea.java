@@ -177,6 +177,8 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
             super.setBorder(UIManager.getLookAndFeel().getDefaults().getBorder("TextAreaUI.border"));
         }
         painter.rebuildColors();
+        painter.resetFont();
+        painter.resetColors();
     }
 
     @Override

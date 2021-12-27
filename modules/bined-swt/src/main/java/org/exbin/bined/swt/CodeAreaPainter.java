@@ -100,6 +100,11 @@ public interface CodeAreaPainter {
     void resetCaret();
 
     /**
+     * Calls rebuild of the colors profile.
+     */
+    void rebuildColors();
+
+    /**
      * Returns type of cursor for given painter relative position.
      *
      * @param positionX component relative position X
@@ -130,6 +135,9 @@ public interface CodeAreaPainter {
     @Nonnull
     CodeAreaCaretPosition mousePositionToClosestCaretPosition(int positionX, int positionY, CaretOverlapMode overflowMode);
 
+    /**
+     * Performs update of scrollbars after change in data size or position.
+     */
     void updateScrollBars();
 
     /**
@@ -197,6 +205,12 @@ public interface CodeAreaPainter {
      * scrolling by scrollbar controls.
      */
     void scrollPositionModified();
+
+
+    /**
+     * Notify scroll position was changed outside of scrolling.
+     */
+    void scrollPositionChanged();
 
     void repaint();
 

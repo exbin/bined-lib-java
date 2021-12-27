@@ -765,6 +765,15 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         return canPaste;
     }
 
+    @Nonnull
+    public EnterKeyHandlingMode getEnterKeyHandlingMode() {
+        return enterKeyHandlingMode;
+    }
+
+    public void setEnterKeyHandlingMode(EnterKeyHandlingMode enterKeyHandlingMode) {
+        this.enterKeyHandlingMode = enterKeyHandlingMode;
+    }
+
     @Override
     public void selectAll() {
         long dataSize = codeArea.getDataSize();
@@ -777,15 +786,6 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     public void clearSelection() {
         long dataPosition = ((CaretCapable) codeArea).getCaretPosition().getDataPosition();
         ((SelectionCapable) codeArea).setSelection(dataPosition, dataPosition);
-    }
-
-    @Nonnull
-    public EnterKeyHandlingMode getEnterKeyHandlingMode() {
-        return enterKeyHandlingMode;
-    }
-
-    public void setEnterKeyHandlingMode(EnterKeyHandlingMode enterKeyHandlingMode) {
-        this.enterKeyHandlingMode = enterKeyHandlingMode;
     }
 
     public void updateSelection(SelectingMode selectingMode, CodeAreaCaretPosition caretPosition) {

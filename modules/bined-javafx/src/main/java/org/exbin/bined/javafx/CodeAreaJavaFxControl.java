@@ -15,15 +15,17 @@
  */
 package org.exbin.bined.javafx;
 
-import org.exbin.bined.DataProvider;
+import javax.annotation.ParametersAreNonnullByDefault;
+import org.exbin.bined.basic.CodeAreaScrollPosition;
 
 /**
  * Hexadecimal editor code area interface.
  *
- * @version 0.2.0 2018/08/11
+ * @version 0.2.1 2021/12/27
  * @author ExBin Project (https://exbin.org)
  */
-public interface CodeAreaJavaFxControl extends DataProvider {
+@ParametersAreNonnullByDefault
+public interface CodeAreaJavaFxControl {
 
     /**
      * Returns true if painter was initialized.
@@ -54,4 +56,11 @@ public interface CodeAreaJavaFxControl extends DataProvider {
      * should be recomputed and updated if necessary.
      */
     void updateLayout();
+
+    /**
+     * Updates scroll position.
+     *
+     * @param scrollPosition scroll position
+     */
+    void updateScrollPosition(CodeAreaScrollPosition scrollPosition);
 }

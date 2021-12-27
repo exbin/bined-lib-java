@@ -289,6 +289,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             EditMode editMode = ((EditModeCapable) codeArea).getEditMode();
             if (codeArea.hasSelection() && editMode != EditMode.INPLACE) {
                 deleteSelection();
+                undoSequenceBreak();
             }
 
             int value;
@@ -360,6 +361,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                 }
             }
             if (codeArea.hasSelection() && editMode != EditMode.INPLACE) {
+                undoSequenceBreak();
                 deleteSelection();
             }
 
@@ -412,32 +414,33 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
     @Override
     public void backSpacePressed() {
-        if (!((EditModeCapable) codeArea).isEditable()) {
+        if (!checkEditAllowed()) {
             return;
         }
+        BinaryData data = CodeAreaUtils.requireNonNullContentData(codeArea.getContentData());
 
         if (codeArea.hasSelection()) {
             deleteSelection();
             codeArea.notifyDataChanged();
         } else {
             DefaultCodeAreaCaret caret = (DefaultCodeAreaCaret) ((CaretCapable) codeArea).getCaret();
-            long dataPosition = caret.getDataPosition();
+            long dataPosition = ((CaretCapable) codeArea).getDataPosition();
             if (dataPosition > 0 && dataPosition <= codeArea.getDataSize()) {
                 caret.setCodeOffset(0);
                 move(SelectingMode.NONE, MovementDirection.LEFT);
                 caret.setCodeOffset(0);
-                EditableBinaryData data = CodeAreaUtils.requireNonNull((EditableBinaryData) codeArea.getContentData());
-                data.remove(dataPosition - 1, 1);
+                ((EditableBinaryData) data).remove(dataPosition - 1, 1);
                 codeArea.notifyDataChanged();
                 ((CaretCapable) codeArea).setCaretPosition(caret.getCaretPosition());
                 revealCursor();
+                clearSelection();
             }
         }
     }
 
     @Override
     public void deletePressed() {
-        if (!((EditModeCapable) codeArea).isEditable()) {
+        if (!checkEditAllowed()) {
             return;
         }
 
@@ -456,6 +459,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                     caret.setCodeOffset(0);
                 }
                 ((CaretCapable) codeArea).setCaretPosition(caret.getCaretPosition());
+                clearSelection();
                 revealCursor();
             }
         }
@@ -475,11 +479,17 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             return;
         }
 
+        EditMode editMode = ((EditModeCapable) codeArea).getEditMode();
         long first = selection.getFirst();
         long last = selection.getLast();
-        ((EditableBinaryData) data).remove(first, last - first + 1);
-        codeArea.clearSelection();
+        long length = last - first + 1;
+        if (editMode == EditMode.INPLACE) {
+            ((EditableBinaryData) data).fillData(first, length);
+        } else {
+            ((EditableBinaryData) data).remove(first, length);
+        }
         ((CaretCapable) codeArea).setCaretPosition(first);
+        clearSelection();
         revealCursor();
     }
 
@@ -553,21 +563,24 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
     @Override
     public void cut() {
-        if (!((EditModeCapable) codeArea).isEditable()) {
+        if (!checkEditAllowed()) {
             return;
         }
 
+        EditMode editMode = ((EditModeCapable) codeArea).getEditMode();
         SelectionRange selection = ((SelectionCapable) codeArea).getSelection();
         if (!selection.isEmpty()) {
             copy();
-            deleteSelection();
-            codeArea.notifyDataChanged();
+            if (editMode == EditMode.EXPANDING) {
+                deleteSelection();
+                codeArea.notifyDataChanged();
+            }
         }
     }
 
     @Override
     public void paste() {
-        if (!((EditModeCapable) codeArea).isEditable()) {
+        if (!checkEditAllowed()) {
             return;
         }
 
@@ -595,24 +608,25 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                                 toRemove = codeArea.getDataSize() - dataPosition;
                             }
                             ((EditableBinaryData) data).replace(dataPosition, clipboardData, 0, toRemove);
-                            codeArea.notifyDataChanged();
                         } else {
-                            if ((editMode == EditMode.EXPANDING && editOperation == EditOperation.OVERWRITE) || editMode == EditMode.INPLACE) {
+                            if (editMode == EditMode.EXPANDING && editOperation == EditOperation.OVERWRITE) {
                                 if (dataPosition + toRemove > codeArea.getDataSize()) {
                                     toRemove = codeArea.getDataSize() - dataPosition;
                                 }
                                 ((EditableBinaryData) data).remove(dataPosition, toRemove);
                             }
-                            ((EditableBinaryData) data).insert(dataPosition, clipboardData);
-                            codeArea.notifyDataChanged();
 
+                            ((EditableBinaryData) data).insert(dataPosition, clipboardData);
                             caret.setCaretPosition(caret.getDataPosition() + dataSize);
                             updateSelection(SelectingMode.NONE, caret.getCaretPosition());
                         }
 
                         caret.setCodeOffset(0);
                         ((CaretCapable) codeArea).setCaretPosition(caret.getCaretPosition());
+                        undoSequenceBreak();
+                        codeArea.notifyDataChanged();
                         revealCursor();
+                        clearSelection();
                     }
                 } catch (UnsupportedFlavorException | IOException ex) {
                     Logger.getLogger(DefaultCodeAreaCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
@@ -638,24 +652,25 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                                 toRemove = codeArea.getDataSize() - dataPosition;
                             }
                             ((EditableBinaryData) data).replace(dataPosition, bytes, 0, (int) toRemove);
-                            codeArea.notifyDataChanged();
                         } else {
-                            if ((editMode == EditMode.EXPANDING && editOperation == EditOperation.OVERWRITE) || editMode == EditMode.INPLACE) {
+                            if (editMode == EditMode.EXPANDING && editOperation == EditOperation.OVERWRITE) {
                                 if (dataPosition + toRemove > codeArea.getDataSize()) {
                                     toRemove = codeArea.getDataSize() - dataPosition;
                                 }
                                 ((EditableBinaryData) data).remove(dataPosition, toRemove);
                             }
-                            ((EditableBinaryData) data).insert(dataPosition, bytes);
-                            codeArea.notifyDataChanged();
 
+                            ((EditableBinaryData) data).insert(dataPosition, bytes);
                             caret.setCaretPosition(caret.getDataPosition() + length);
                             updateSelection(SelectingMode.NONE, caret.getCaretPosition());
                         }
 
                         caret.setCodeOffset(0);
                         ((CaretCapable) codeArea).setCaretPosition(caret.getCaretPosition());
+                        undoSequenceBreak();
+                        codeArea.notifyDataChanged();
                         revealCursor();
+                        clearSelection();
                     }
                 } catch (UnsupportedFlavorException | IOException ex) {
                     Logger.getLogger(DefaultCodeAreaCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
@@ -668,10 +683,13 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
     @Override
     public void pasteFromCode() {
-        if (!((EditModeCapable) codeArea).isEditable()) {
+        if (!checkEditAllowed()) {
             return;
         }
 
+        BinaryData data = CodeAreaUtils.requireNonNullContentData(codeArea.getContentData());
+        EditMode editMode = ((EditModeCapable) codeArea).getEditMode();
+        EditOperation editOperation = ((EditModeCapable) codeArea).getActiveOperation();
         try {
             if (!clipboard.isDataFlavorAvailable(binaryDataFlavor) && !clipboard.isDataFlavorAvailable(DataFlavor.stringFlavor)) {
                 return;
@@ -680,8 +698,6 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             return;
         }
 
-        EditMode editMode = ((EditModeCapable) codeArea).getEditMode();
-        EditOperation editOperation = ((EditModeCapable) codeArea).getActiveOperation();
         try {
             if (clipboard.isDataFlavorAvailable(binaryDataFlavor)) {
                 paste();
@@ -703,23 +719,33 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                         CodeAreaUtils.insertHexStringIntoData((String) insertedData, pastedData, codeType);
 
                         long length = pastedData.getDataSize();
+                        long toRemove = length;
                         if ((editMode == EditMode.EXPANDING && editOperation == EditOperation.OVERWRITE) || editMode == EditMode.INPLACE) {
-                            long toRemove = length;
                             if (dataPosition + toRemove > codeArea.getDataSize()) {
                                 toRemove = codeArea.getDataSize() - dataPosition;
                             }
-                            ((EditableBinaryData) codeArea.getContentData()).remove(dataPosition, toRemove);
+                            ((EditableBinaryData) data).remove(dataPosition, toRemove);
                         }
-                        ((EditableBinaryData) codeArea.getContentData()).insert(caret.getDataPosition(), pastedData);
-                        codeArea.notifyDataChanged();
+                        if (editMode == EditMode.INPLACE && length > toRemove) {
+                            ((EditableBinaryData) data).insert(caret.getDataPosition(), pastedData, 0, toRemove);
+                            caret.setCaretPosition(caret.getDataPosition() + toRemove);
+                            updateSelection(SelectingMode.NONE, caret.getCaretPosition());
+                        } else {
+                            ((EditableBinaryData) data).insert(caret.getDataPosition(), pastedData);
+                            caret.setCaretPosition(caret.getDataPosition() + length);
+                            updateSelection(SelectingMode.NONE, caret.getCaretPosition());
+                        }
 
-                        caret.setCaretPosition(caret.getDataPosition() + length);
                         caret.setCodeOffset(0);
                         ((CaretCapable) codeArea).setCaretPosition(caret.getCaretPosition());
+                        undoSequenceBreak();
+                        codeArea.notifyDataChanged();
                         revealCursor();
+                        clearSelection();
                     }
                 } catch (UnsupportedFlavorException | IOException ex) {
-                    Logger.getLogger(DefaultCodeAreaCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(DefaultCodeAreaCommandHandler.class
+                            .getName()).log(Level.SEVERE, null, ex);
                 }
             }
         } catch (IllegalStateException ex) {
@@ -732,6 +758,15 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         return canPaste;
     }
 
+    @Nonnull
+    public EnterKeyHandlingMode getEnterKeyHandlingMode() {
+        return enterKeyHandlingMode;
+    }
+
+    public void setEnterKeyHandlingMode(EnterKeyHandlingMode enterKeyHandlingMode) {
+        this.enterKeyHandlingMode = enterKeyHandlingMode;
+    }
+
     @Override
     public void selectAll() {
         long dataSize = codeArea.getDataSize();
@@ -742,7 +777,8 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
     @Override
     public void clearSelection() {
-        ((SelectionCapable) codeArea).clearSelection();
+        long dataPosition = ((CaretCapable) codeArea).getCaretPosition().getDataPosition();
+        ((SelectionCapable) codeArea).setSelection(dataPosition, dataPosition);
     }
 
     public void updateSelection(SelectingMode selectingMode, CodeAreaCaretPosition caretPosition) {

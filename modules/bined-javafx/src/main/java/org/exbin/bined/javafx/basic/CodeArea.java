@@ -399,8 +399,21 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaJ
 
     @Override
     public void setScrollPosition(CodeAreaScrollPosition scrollPosition) {
-        this.scrollPosition.setScrollPosition(scrollPosition);
-        notifyScrolled();
+        if (!scrollPosition.equals(this.scrollPosition)) {
+            this.scrollPosition.setScrollPosition(scrollPosition);
+            painter.scrollPositionModified();
+            updateScrollBars();
+            notifyScrolled();
+        }
+    }
+
+    @Override
+    public void updateScrollPosition(CodeAreaScrollPosition scrollPosition) {
+        if (!scrollPosition.equals(this.scrollPosition)) {
+            this.scrollPosition.setScrollPosition(scrollPosition);
+            repaint();
+            notifyScrolled();
+        }
     }
 
     @Nonnull
