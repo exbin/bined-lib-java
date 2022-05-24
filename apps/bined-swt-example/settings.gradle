@@ -7,4 +7,4 @@ if (rootProject.path == ':') {
 
 //    include ':modules:bined-swt-extended'
 
-apply from: '../tools-settings.gradle'
+apply from: '../apps-settings.gradle'

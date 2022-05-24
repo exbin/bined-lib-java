@@ -22,7 +22,7 @@ if (JavaVersion.current() != JavaVersion.VERSION_1_8) {
     apply plugin: "org.openjfx.javafxplugin"
 }
 
-apply from: '../tools.gradle'
+apply from: '../apps.gradle'
 
 sourceCompatibility = '1.8'
 

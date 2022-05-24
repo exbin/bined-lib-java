@@ -35,9 +35,9 @@ public class InsertDataOperation extends CodeAreaOperation {
 
     private final long position;
     private final int codeOffset;
-    private final EditableBinaryData data;
+    private final BinaryData data;
 
-    public InsertDataOperation(CodeAreaCore codeArea, long position, int codeOffset, EditableBinaryData data) {
+    public InsertDataOperation(CodeAreaCore codeArea, long position, int codeOffset, BinaryData data) {
         super(codeArea);
         this.position = position;
         this.codeOffset = codeOffset;
@@ -63,7 +63,7 @@ public class InsertDataOperation extends CodeAreaOperation {
     }
 
     public void appendData(BinaryData appendData) {
-        data.insert(data.getDataSize(), appendData);
+        ((EditableBinaryData) data).insert(data.getDataSize(), appendData);
     }
 
     @Override

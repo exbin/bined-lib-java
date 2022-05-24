@@ -68,7 +68,6 @@ import org.exbin.bined.swing.basic.DefaultCodeAreaCommandHandler;
 import org.exbin.auxiliary.paged_data.BinaryData;
 import org.exbin.auxiliary.paged_data.ByteArrayData;
 import org.exbin.auxiliary.paged_data.ByteArrayEditableData;
-import org.exbin.auxiliary.paged_data.EditableBinaryData;
 import org.exbin.auxiliary.paged_data.PagedData;
 import org.exbin.bined.ClipboardHandlingMode;
 import org.exbin.bined.CodeAreaCaretPosition;
@@ -79,7 +78,7 @@ import org.exbin.bined.capability.EditModeCapable;
 /**
  * Command handler for undo/redo aware binary editor editing.
  *
- * @version 0.2.1 2021/10/27
+ * @version 0.2.1 2022/05/24
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -102,9 +101,8 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
 
     private Clipboard clipboard;
     private boolean canPaste = false;
-    private DataFlavor binedDataFlavor;
     private CodeAreaSwingUtils.ClipboardData currentClipboardData = null;
-    // TODO support for binary data
+    private DataFlavor binedDataFlavor;
     private DataFlavor binaryDataFlavor;
 
     private final BinaryDataUndoHandler undoHandler;
@@ -642,13 +640,58 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
         }
 
         try {
-            if (!clipboard.isDataFlavorAvailable(binedDataFlavor) && !clipboard.isDataFlavorAvailable(DataFlavor.stringFlavor) && !clipboard.isDataFlavorAvailable(DataFlavor.getTextPlainUnicodeFlavor())) {
+            if (!clipboard.isDataFlavorAvailable(binedDataFlavor) && !clipboard.isDataFlavorAvailable(binaryDataFlavor) && !clipboard.isDataFlavorAvailable(DataFlavor.stringFlavor) && !clipboard.isDataFlavorAvailable(DataFlavor.getTextPlainUnicodeFlavor())) {
                 return;
             }
         } catch (IllegalStateException ex) {
             return;
         }
 
+        EditMode editMode = ((EditModeCapable) codeArea).getEditMode();
+        EditOperation editOperation = ((EditModeCapable) codeArea).getActiveOperation();
+        long dataSize = codeArea.getDataSize();
+        try {
+            if (clipboard.isDataFlavorAvailable(binedDataFlavor)) {
+                try {
+                    Object clipboardObject = clipboard.getData(binedDataFlavor);
+                    if (clipboardObject instanceof BinaryData) {
+                        pasteBinaryData((BinaryData) clipboardObject);
+                    }
+                } catch (UnsupportedFlavorException | IllegalStateException | IOException ex) {
+                    Logger.getLogger(CodeAreaOperationCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } else {
+                InputStream clipboardData;
+                try {
+                    // TODO use stream directly without buffer
+                    PagedData pastedData = new PagedData();
+                    if (clipboard.isDataFlavorAvailable(binaryDataFlavor)) {
+                        clipboardData = (InputStream) clipboard.getData(binaryDataFlavor);
+                        pastedData.insert(0, clipboardData, -1);
+                    } else if (clipboard.isDataFlavorAvailable(DataFlavor.getTextPlainUnicodeFlavor())) {
+                        clipboardData = (InputStream) clipboard.getData(DataFlavor.getTextPlainUnicodeFlavor());
+
+                        DataFlavor textPlainUnicodeFlavor = DataFlavor.getTextPlainUnicodeFlavor();
+                        String charsetName = textPlainUnicodeFlavor.getParameter(MIME_CHARSET);
+                        CharsetStreamTranslator translator = new CharsetStreamTranslator(Charset.forName(charsetName), ((CharsetCapable) codeArea).getCharset(), clipboardData);
+
+                        pastedData.insert(0, translator, -1);
+                    } else {
+                        String text = (String) clipboard.getData(DataFlavor.stringFlavor);
+                        pastedData.insert(0, text.getBytes(((CharsetCapable) codeArea).getCharset()));
+                    }
+                    
+                    pasteBinaryData(pastedData);
+                } catch (UnsupportedFlavorException | IllegalStateException | IOException ex) {
+                    Logger.getLogger(CodeAreaOperationCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        } catch (IllegalStateException ex) {
+            // Clipboard not available - ignore
+        }
+    }
+    
+    private void pasteBinaryData(BinaryData pastedData) {
         DeleteSelectionCommand deleteSelectionCommand = null;
         if (codeArea.hasSelection()) {
             try {
@@ -663,143 +706,55 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
         EditMode editMode = ((EditModeCapable) codeArea).getEditMode();
         EditOperation editOperation = ((EditModeCapable) codeArea).getActiveOperation();
         long dataSize = codeArea.getDataSize();
-        try {
-            if (clipboard.isDataFlavorAvailable(binedDataFlavor)) {
-                try {
-                    Object clipboardObject = clipboard.getData(binedDataFlavor);
-                    if (clipboardObject instanceof BinaryData) {
-                        BinaryData clipboardData = (BinaryData) clipboardObject;
-                        long dataPosition = ((CaretCapable) codeArea).getDataPosition();
+        long dataPosition = ((CaretCapable) codeArea).getDataPosition();
 
-                        CodeAreaCommand modifyCommand = null;
-                        BinaryData insertedData = null;
-                        long clipDataSize = clipboardData.getDataSize();
-                        long insertionPosition = dataPosition;
-                        if ((editMode == EditMode.EXPANDING && editOperation == EditOperation.OVERWRITE) || editMode == EditMode.INPLACE) {
-                            BinaryData modifiedData;
-                            long replacedPartSize = clipDataSize;
-                            if (insertionPosition + replacedPartSize > dataSize) {
-                                replacedPartSize = dataSize - insertionPosition;
-                                modifiedData = clipboardData.copy(0, replacedPartSize);
-                            } else {
-                                modifiedData = clipboardData.copy();
-                            }
-                            if (replacedPartSize > 0) {
-                                modifyCommand = new ModifyDataCommand(codeArea, dataPosition, modifiedData);
-                                if (clipDataSize > replacedPartSize) {
-                                    insertedData = clipboardData.copy(replacedPartSize, clipDataSize - replacedPartSize);
-                                    insertionPosition += replacedPartSize;
-                                } else {
-                                    insertedData = new ByteArrayData();
-                                }
-                            }
-                        }
-                        if (insertedData == null) {
-                            insertedData = clipboardData.copy();
-                        }
-
-                        CodeAreaCommand insertCommand = null;
-                        if (!insertedData.isEmpty()) {
-                            insertCommand = new InsertDataCommand(codeArea, insertionPosition, (EditableBinaryData) insertedData);
-                        }
-
-                        CodeAreaCommand pasteCommand = BinaryCompoundCommand.buildCompoundCommand(codeArea, deleteSelectionCommand, modifyCommand, insertCommand);
-                        if (pasteCommand != null) {
-                            try {
-                                if (modifyCommand != null) {
-                                    modifyCommand.execute();
-                                }
-                                if (insertCommand != null) {
-                                    insertCommand.execute();
-                                }
-                                undoHandler.addCommand(pasteCommand);
-                            } catch (BinaryDataOperationException ex) {
-                                Logger.getLogger(CodeAreaOperationCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-
-                            undoSequenceBreak();
-                            codeArea.notifyDataChanged();
-                            revealCursor();
-                            clearSelection();
-                        }
-                    }
-                } catch (UnsupportedFlavorException | IllegalStateException | IOException ex) {
-                    Logger.getLogger(CodeAreaOperationCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
-                }
+        CodeAreaCommand modifyCommand = null;
+        long clipDataSize = pastedData.getDataSize();
+        long insertionPosition = dataPosition;
+        if ((editMode == EditMode.EXPANDING && editOperation == EditOperation.OVERWRITE) || editMode == EditMode.INPLACE) {
+            BinaryData modifiedData;
+            long replacedPartSize = clipDataSize;
+            if (insertionPosition + replacedPartSize > dataSize) {
+                replacedPartSize = dataSize - insertionPosition;
+                modifiedData = pastedData.copy(0, replacedPartSize);
             } else {
-                InputStream clipboardData;
-                try {
-                    CodeAreaCommand modifyCommand = null;
-                    long dataPosition = ((CaretCapable) codeArea).getDataPosition();
-
-                    // TODO use stream directly without buffer
-                    PagedData insertedData = new PagedData();
-                    if (clipboard.isDataFlavorAvailable(DataFlavor.getTextPlainUnicodeFlavor())) {
-                        clipboardData = (InputStream) clipboard.getData(DataFlavor.getTextPlainUnicodeFlavor());
-
-                        DataFlavor textPlainUnicodeFlavor = DataFlavor.getTextPlainUnicodeFlavor();
-                        String charsetName = textPlainUnicodeFlavor.getParameter(MIME_CHARSET);
-                        CharsetStreamTranslator translator = new CharsetStreamTranslator(Charset.forName(charsetName), ((CharsetCapable) codeArea).getCharset(), clipboardData);
-
-                        insertedData.insert(0, translator, -1);
-                    } else {
-                        String text = (String) clipboard.getData(DataFlavor.stringFlavor);
-                        insertedData.insert(0, text.getBytes(((CharsetCapable) codeArea).getCharset()));
-                    }
-
-                    long clipDataSize = insertedData.getDataSize();
-                    long insertionPosition = dataPosition;
-                    if ((editMode == EditMode.EXPANDING && editOperation == EditOperation.OVERWRITE) || editMode == EditMode.INPLACE) {
-                        BinaryData modifiedData;
-                        long replacedPartSize = clipDataSize;
-                        if (insertionPosition + replacedPartSize > dataSize) {
-                            replacedPartSize = dataSize - insertionPosition;
-                            modifiedData = insertedData.copy(0, replacedPartSize);
-                        } else {
-                            modifiedData = insertedData.copy();
-                        }
-                        if (replacedPartSize > 0) {
-                            modifyCommand = new ModifyDataCommand(codeArea, dataPosition, modifiedData);
-                            if (clipDataSize > replacedPartSize) {
-                                insertedData = insertedData.copy(replacedPartSize, clipDataSize - replacedPartSize);
-                                insertionPosition += replacedPartSize;
-                            } else {
-                                insertedData.clear();
-                            }
-                        }
-                    }
-
-                    CodeAreaCommand insertCommand = null;
-                    if (!insertedData.isEmpty()) {
-                        insertCommand = new InsertDataCommand(codeArea, insertionPosition, insertedData);
-                    }
-
-                    CodeAreaCommand pasteCommand = BinaryCompoundCommand.buildCompoundCommand(codeArea, deleteSelectionCommand, modifyCommand, insertCommand);
-                    try {
-                        if (modifyCommand != null) {
-                            modifyCommand.execute();
-                        }
-                        if (insertCommand != null) {
-                            insertCommand.execute();
-                        }
-                        undoHandler.addCommand(pasteCommand);
-                    } catch (BinaryDataOperationException ex) {
-                        Logger.getLogger(CodeAreaOperationCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-
-                    undoSequenceBreak();
-                    codeArea.notifyDataChanged();
-                    revealCursor();
-                    clearSelection();
-                } catch (UnsupportedFlavorException | IllegalStateException | IOException ex) {
-                    Logger.getLogger(CodeAreaOperationCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
+                modifiedData = pastedData.copy();
+            }
+            if (replacedPartSize > 0) {
+                modifyCommand = new ModifyDataCommand(codeArea, dataPosition, modifiedData);
+                if (clipDataSize > replacedPartSize) {
+                    pastedData = pastedData.copy(replacedPartSize, clipDataSize - replacedPartSize);
+                    insertionPosition += replacedPartSize;
+                } else {
+                    pastedData = new ByteArrayData();
                 }
             }
-        } catch (IllegalStateException ex) {
-            // Clipboard not available - ignore
         }
-    }
 
+        CodeAreaCommand insertCommand = null;
+        if (!pastedData.isEmpty()) {
+            insertCommand = new InsertDataCommand(codeArea, insertionPosition, pastedData);
+        }
+
+        CodeAreaCommand pasteCommand = BinaryCompoundCommand.buildCompoundCommand(codeArea, deleteSelectionCommand, modifyCommand, insertCommand);
+        try {
+            if (modifyCommand != null) {
+                modifyCommand.execute();
+            }
+            if (insertCommand != null) {
+                insertCommand.execute();
+            }
+            undoHandler.addCommand(pasteCommand);
+        } catch (BinaryDataOperationException ex) {
+            Logger.getLogger(CodeAreaOperationCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        undoSequenceBreak();
+        codeArea.notifyDataChanged();
+        revealCursor();
+        clearSelection();
+    }
+    
     @Override
     public void pasteFromCode() {
         if (!checkEditAllowed()) {

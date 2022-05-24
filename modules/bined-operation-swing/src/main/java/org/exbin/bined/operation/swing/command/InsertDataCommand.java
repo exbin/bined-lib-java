@@ -18,11 +18,11 @@ package org.exbin.bined.operation.swing.command;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import org.exbin.auxiliary.paged_data.BinaryData;
 import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.operation.BinaryDataOperationException;
 import org.exbin.bined.operation.swing.InsertDataOperation;
 import org.exbin.bined.swing.CodeAreaCore;
-import org.exbin.auxiliary.paged_data.EditableBinaryData;
 
 /**
  * Command for inserting data.
@@ -36,7 +36,7 @@ public class InsertDataCommand extends OpCodeAreaCommand {
     private final long position;
     private final long dataLength;
 
-    public InsertDataCommand(CodeAreaCore codeArea, long position, EditableBinaryData data) {
+    public InsertDataCommand(CodeAreaCore codeArea, long position, BinaryData data) {
         super(codeArea);
         this.position = position;
         dataLength = data.getDataSize();

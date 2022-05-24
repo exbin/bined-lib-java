@@ -110,7 +110,7 @@ if (!project.gradle.startParameter.projectProperties.containsKey("moduleDep")) {
                     }
                 }
 
-                project(':tools').subprojects.each { p ->
+                project(':apps').subprojects.each { p ->
                     p.plugins.withType(JavaPlugin) {
                         into('') {
                             from p.jar

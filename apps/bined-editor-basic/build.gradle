@@ -5,7 +5,7 @@ plugins {
     // classpath("net.sf.proguard:proguard-gradle:6.1.1")
 }
 
-apply from: '../tools.gradle'
+apply from: '../apps.gradle'
 
 if (!hasProperty('mainClass')) {
     ext.mainClass = 'org.exbin.bined.editor.basic.BinEdEditorBasic'
