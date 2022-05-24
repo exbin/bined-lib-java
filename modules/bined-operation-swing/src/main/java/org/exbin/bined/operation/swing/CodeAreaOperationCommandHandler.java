@@ -84,7 +84,6 @@ import org.exbin.bined.capability.EditModeCapable;
 @ParametersAreNonnullByDefault
 public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
 
-    public static final String BINED_CLIPBOARD_MIME = "application/x-bined";
     public static final String MIME_CHARSET = "charset";
     private static final int CODE_BUFFER_LENGTH = 16;
     private static final char BACKSPACE_CHAR = '\b';
@@ -121,12 +120,12 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
                 updateCanPaste();
             });
             try {
-                binaryDataFlavor = new DataFlavor(CodeAreaUtils.MIME_CLIPBOARD_BINARY);
+                binedDataFlavor = new DataFlavor(DefaultCodeAreaCommandHandler.BINED_CLIPBOARD_MIME);
             } catch (ClassNotFoundException ex) {
                 Logger.getLogger(CodeAreaOperationCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
             }
             try {
-                binedDataFlavor = new DataFlavor(BINED_CLIPBOARD_MIME);
+                binaryDataFlavor = new DataFlavor(CodeAreaUtils.MIME_CLIPBOARD_BINARY);
             } catch (ClassNotFoundException ex) {
                 Logger.getLogger(CodeAreaOperationCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -572,7 +571,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
             BinaryData copy = CodeAreaUtils.requireNonNull(codeArea.getContentData()).copy(first, last - first + 1);
 
             Charset charset = codeArea instanceof CharsetCapable ? ((CharsetCapable) codeArea).getCharset() : null;
-            CodeAreaSwingUtils.BinaryDataClipboardData binaryData = new CodeAreaSwingUtils.BinaryDataClipboardData(copy, binedDataFlavor, charset);
+            CodeAreaSwingUtils.BinaryDataClipboardData binaryData = new CodeAreaSwingUtils.BinaryDataClipboardData(copy, binedDataFlavor, binaryDataFlavor, charset);
             setClipboardContent(binaryData);
         }
     }
@@ -647,15 +646,12 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
             return;
         }
 
-        EditMode editMode = ((EditModeCapable) codeArea).getEditMode();
-        EditOperation editOperation = ((EditModeCapable) codeArea).getActiveOperation();
-        long dataSize = codeArea.getDataSize();
         try {
             if (clipboard.isDataFlavorAvailable(binedDataFlavor)) {
                 try {
-                    Object clipboardObject = clipboard.getData(binedDataFlavor);
-                    if (clipboardObject instanceof BinaryData) {
-                        pasteBinaryData((BinaryData) clipboardObject);
+                    Object clipboardData = clipboard.getData(binedDataFlavor);
+                    if (clipboardData instanceof BinaryData) {
+                        pasteBinaryData((BinaryData) clipboardData);
                     }
                 } catch (UnsupportedFlavorException | IllegalStateException | IOException ex) {
                     Logger.getLogger(CodeAreaOperationCommandHandler.class.getName()).log(Level.SEVERE, null, ex);

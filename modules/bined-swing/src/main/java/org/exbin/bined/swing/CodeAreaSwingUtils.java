@@ -168,36 +168,47 @@ public class CodeAreaSwingUtils {
     public static class BinaryDataClipboardData implements ClipboardData {
 
         private final BinaryData data;
+        private final DataFlavor binedDataFlavor;
         private final DataFlavor binaryDataFlavor;
         @Nullable
         private final Charset charset;
 
-        public BinaryDataClipboardData(BinaryData data, DataFlavor binaryDataFlavor, @Nullable Charset charset) {
+        public BinaryDataClipboardData(BinaryData data, DataFlavor binedDataFlavor, @Nullable Charset charset) {
             this.data = data;
+            this.binedDataFlavor = binedDataFlavor;
+            this.binaryDataFlavor = null;
+            this.charset = charset;
+        }
+
+        public BinaryDataClipboardData(BinaryData data, DataFlavor binedDataFlavor, @Nullable DataFlavor binaryDataFlavor, @Nullable Charset charset) {
+            this.data = data;
+            this.binedDataFlavor = binedDataFlavor;
             this.binaryDataFlavor = binaryDataFlavor;
             this.charset = charset;
         }
 
-        public BinaryDataClipboardData(BinaryData data, DataFlavor binaryDataFlavor) {
-            this(data, binaryDataFlavor, null);
+        public BinaryDataClipboardData(BinaryData data, DataFlavor binedDataFlavor) {
+            this(data, binedDataFlavor, null);
         }
 
         @Nonnull
         @Override
         public DataFlavor[] getTransferDataFlavors() {
-            return new DataFlavor[]{binaryDataFlavor, DataFlavor.stringFlavor};
+            return binaryDataFlavor != null ? new DataFlavor[]{binedDataFlavor, binaryDataFlavor, DataFlavor.stringFlavor} : new DataFlavor[]{binedDataFlavor, DataFlavor.stringFlavor};
         }
 
         @Override
         public boolean isDataFlavorSupported(DataFlavor flavor) {
-            return flavor.equals(binaryDataFlavor) || flavor.equals(DataFlavor.stringFlavor);
+            return flavor.equals(binedDataFlavor) || flavor.equals(binaryDataFlavor) || flavor.equals(DataFlavor.stringFlavor);
         }
 
         @Nonnull
         @Override
         public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
-            if (flavor.equals(binaryDataFlavor)) {
+            if (flavor.equals(binedDataFlavor)) {
                 return data;
+            } else if (flavor.equals(binaryDataFlavor)) {
+                return data.getDataInputStream();
             } else if (flavor.equals(DataFlavor.stringFlavor)) {
                 Object result;
                 try (ByteArrayOutputStream byteArrayStream = new ByteArrayOutputStream()) {
