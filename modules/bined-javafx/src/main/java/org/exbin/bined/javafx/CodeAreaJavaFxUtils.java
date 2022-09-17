@@ -35,6 +35,7 @@ import org.exbin.bined.CodeCharactersCase;
 import org.exbin.bined.CodeType;
 import org.exbin.bined.ScrollBarVisibility;
 import org.exbin.auxiliary.paged_data.BinaryData;
+import org.exbin.bined.CharsetStreamTranslator;
 
 /**
  * Hexadecimal editor component JavaFX utilities.
@@ -52,7 +53,7 @@ public class CodeAreaJavaFxUtils {
     public static final int EXCEPTION2_CODE_POINT = 0x9e;
 
     public static double MAX_COLOR_COMPONENT_VALUE = 1;
-    public static final String DEFAULT_ENCODING = "UTF-8";
+    public static final String DEFAULT_ENCODING = CharsetStreamTranslator.DEFAULT_ENCODING;
 
     public static final String FALLBACK_CLIPBOARD = "clipboard";
     private static Clipboard clipboard = null;

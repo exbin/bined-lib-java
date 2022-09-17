@@ -20,6 +20,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import org.exbin.bined.CharsetStreamTranslator;
 
 /**
  * Basic code area component dimensions.
@@ -56,8 +57,12 @@ public class BasicCodeAreaMetrics {
             subFontSpace = rowHeight - fontSize;
         }
 
-        CharsetEncoder encoder = charset.newEncoder();
-        maxBytesPerChar = (int) encoder.maxBytesPerChar();
+        try {
+            CharsetEncoder encoder = charset.newEncoder();
+            maxBytesPerChar = (int) encoder.maxBytesPerChar();
+        } catch (UnsupportedOperationException ex) {
+            maxBytesPerChar = CharsetStreamTranslator.DEFAULT_MAX_BYTES_PER_CHAR;
+        }
     }
 
     public boolean isInitialized() {

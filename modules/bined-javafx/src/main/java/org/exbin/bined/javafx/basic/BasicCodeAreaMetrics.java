@@ -15,13 +15,13 @@
  */
 package org.exbin.bined.javafx.basic;
 
-import com.sun.javafx.scene.control.skin.Utils;
 import com.sun.javafx.tk.FontMetrics;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 import javafx.scene.text.Text;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import org.exbin.bined.CharsetStreamTranslator;
 
 /**
  * Basic code area component dimensions.
@@ -58,8 +58,12 @@ public class BasicCodeAreaMetrics {
             characterWidth = (int) Math.ceil(text.getBoundsInLocal().getWidth());
             int fontSize = (int) fontMetrics.getFont().getSize();
             subFontSpace = fontHeight - fontSize;
-            CharsetEncoder encoder = charset.newEncoder();
-            maxBytesPerChar = (int) encoder.maxBytesPerChar();
+            try {
+                CharsetEncoder encoder = charset.newEncoder();
+                maxBytesPerChar = (int) encoder.maxBytesPerChar();
+            } catch (UnsupportedOperationException ex) {
+                maxBytesPerChar = CharsetStreamTranslator.DEFAULT_MAX_BYTES_PER_CHAR;
+            }
             
 //            Utils.
         }

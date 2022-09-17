@@ -39,6 +39,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class CharsetStreamTranslator extends InputStream {
 
+    public static final String DEFAULT_ENCODING = "UTF-8";
+    public static final int DEFAULT_MAX_BYTES_PER_CHAR = 8;
     public static final int BYTE_BUFFER_SIZE = 16;
 
     @Nonnull
@@ -64,7 +66,13 @@ public class CharsetStreamTranslator extends InputStream {
         decoder = inputCharset.newDecoder();
         decoder.onUnmappableCharacter(CodingErrorAction.REPLACE);
         decoder.onMalformedInput(CodingErrorAction.REPLACE);
-        encoder = outputCharset.newEncoder();
+        CharsetEncoder outputEencoder;
+        try {
+            outputEencoder = outputCharset.newEncoder();
+        } catch (UnsupportedOperationException ex) {
+            outputEencoder = Charset.forName(DEFAULT_ENCODING).newEncoder();
+        }
+        encoder = outputEencoder;
         encoder.onUnmappableCharacter(CodingErrorAction.REPLACE);
         encoder.onMalformedInput(CodingErrorAction.REPLACE);
         maxInputCharSize = (int) decoder.maxCharsPerByte();

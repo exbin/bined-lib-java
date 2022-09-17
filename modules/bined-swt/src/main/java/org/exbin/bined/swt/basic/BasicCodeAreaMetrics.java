@@ -21,6 +21,7 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.eclipse.swt.graphics.FontMetrics;
 import org.eclipse.swt.graphics.GC;
+import org.exbin.bined.CharsetStreamTranslator;
 
 /**
  * Basic code area component dimensions.
@@ -65,8 +66,12 @@ public class BasicCodeAreaMetrics {
             characterWidth = gc.textExtent("w").x;
             int fontSize = fontMetrics.getHeight();
             subFontSpace = fontHeight - fontSize;
-            CharsetEncoder encoder = charset.newEncoder();
-            maxBytesPerChar = (int) encoder.maxBytesPerChar();
+            try {
+                CharsetEncoder encoder = charset.newEncoder();
+                maxBytesPerChar = (int) encoder.maxBytesPerChar();
+            } catch (UnsupportedOperationException ex) {
+                maxBytesPerChar = CharsetStreamTranslator.DEFAULT_MAX_BYTES_PER_CHAR;
+            }
         }
     }
 

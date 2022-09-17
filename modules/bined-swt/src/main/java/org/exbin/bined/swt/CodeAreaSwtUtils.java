@@ -34,6 +34,7 @@ import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.CodeCharactersCase;
 import org.exbin.bined.CodeType;
 import org.exbin.auxiliary.paged_data.BinaryData;
+import org.exbin.bined.CharsetStreamTranslator;
 
 /**
  * Hexadecimal editor component SWT utilities.
@@ -51,7 +52,7 @@ public class CodeAreaSwtUtils {
     public static final int EXCEPTION2_CODE_POINT = 0x9e;
 
     public static int MAX_COLOR_COMPONENT_VALUE = 255;
-    public static final String DEFAULT_ENCODING = "UTF-8";
+    public static final String DEFAULT_ENCODING = CharsetStreamTranslator.DEFAULT_ENCODING;
 
     public static final String FALLBACK_CLIPBOARD = "clipboard";
     private static Clipboard clipboard = null;
