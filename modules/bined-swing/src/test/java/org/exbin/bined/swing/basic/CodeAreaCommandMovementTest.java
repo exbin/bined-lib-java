@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -26,7 +26,6 @@ import org.junit.Test;
 /**
  * Tests for codeArea component.
  *
- * @version 0.2.0 2020/04/13
  * @author ExBin Project (https://exbin.org)
  */
 public class CodeAreaCommandMovementTest {
@@ -48,7 +47,7 @@ public class CodeAreaCommandMovementTest {
         Assert.assertEquals(0, caretPosition.getCodeOffset());
         Assert.assertEquals(0, caretPosition.getDataPosition());
     }
-    
+
     @Test
     public void testMoveMiddleLeft() {
         CodeArea codeArea = new CodeArea();
@@ -64,7 +63,7 @@ public class CodeAreaCommandMovementTest {
         Assert.assertEquals(1, caretPosition.getCodeOffset());
         Assert.assertEquals(127, caretPosition.getDataPosition());
     }
-    
+
     @Test
     public void testMoveEndLeft() {
         CodeArea codeArea = new CodeArea();
@@ -80,7 +79,7 @@ public class CodeAreaCommandMovementTest {
         Assert.assertEquals(1, caretPosition.getCodeOffset());
         Assert.assertEquals(256, caretPosition.getDataPosition());
     }
-    
+
     @Test
     public void testMoveBeginRight() {
         CodeArea codeArea = new CodeArea();
@@ -111,7 +110,7 @@ public class CodeAreaCommandMovementTest {
         Assert.assertEquals(0, caretPosition.getCodeOffset());
         Assert.assertEquals(1, caretPosition.getDataPosition());
     }
-    
+
     @Test
     public void testMoveMiddleRight() {
         CodeArea codeArea = new CodeArea();
@@ -158,7 +157,7 @@ public class CodeAreaCommandMovementTest {
         Assert.assertEquals(0, caretPosition.getCodeOffset());
         Assert.assertEquals(0, caretPosition.getDataPosition());
     }
-    
+
     @Test
     public void testMoveMiddleUp() {
         CodeArea codeArea = new CodeArea();
@@ -174,7 +173,7 @@ public class CodeAreaCommandMovementTest {
         Assert.assertEquals(0, caretPosition.getCodeOffset());
         Assert.assertEquals(112, caretPosition.getDataPosition());
     }
-    
+
     @Test
     public void testMoveEndUp() {
         CodeArea codeArea = new CodeArea();
@@ -190,7 +189,7 @@ public class CodeAreaCommandMovementTest {
         Assert.assertEquals(0, caretPosition.getCodeOffset());
         Assert.assertEquals(241, caretPosition.getDataPosition());
     }
-    
+
     @Test
     public void testMoveBeginDown() {
         CodeArea codeArea = new CodeArea();
@@ -205,7 +204,7 @@ public class CodeAreaCommandMovementTest {
         Assert.assertEquals(0, caretPosition.getCodeOffset());
         Assert.assertEquals(16, caretPosition.getDataPosition());
     }
-    
+
     @Test
     public void testMoveMiddleDown() {
         CodeArea codeArea = new CodeArea();
@@ -221,7 +220,7 @@ public class CodeAreaCommandMovementTest {
         Assert.assertEquals(0, caretPosition.getCodeOffset());
         Assert.assertEquals(144, caretPosition.getDataPosition());
     }
-    
+
     @Test
     public void testMoveEndDown() {
         CodeArea codeArea = new CodeArea();
@@ -237,7 +236,7 @@ public class CodeAreaCommandMovementTest {
         Assert.assertEquals(0, caretPosition.getCodeOffset());
         Assert.assertEquals(257, caretPosition.getDataPosition());
     }
-    
+
     private void emulateKeyPressed(Component component, int keyEvent, char keyChar) {
         component.dispatchEvent(new KeyEvent(component, KeyEvent.KEY_PRESSED, System.currentTimeMillis(), 0, keyEvent, keyChar));
         component.dispatchEvent(new KeyEvent(component, KeyEvent.KEY_RELEASED, System.currentTimeMillis(), 0, keyEvent, keyChar));

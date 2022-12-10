@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -68,7 +68,6 @@ import org.exbin.bined.CodeAreaUtils;
 /**
  * Binary viewer/editor component.
  *
- * @version 0.2.0 2018/04/22
  * @author ExBin Project (https://exbin.org)
  */
 public class CodeAreaEx extends Composite implements CodeAreaControl {

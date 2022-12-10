@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -29,7 +29,6 @@ import org.junit.Test;
 /**
  * Tests for codeArea component.
  *
- * @version 0.2.0 2020/04/12
  * @author ExBin Project (https://exbin.org)
  */
 public class CodeAreaCommandEditTest {
@@ -51,7 +50,7 @@ public class CodeAreaCommandEditTest {
         sampleData.copyToArray(1, expectedData, 1, dataSize - 1);
 
         codeArea.setContentData(sampleData);
-        
+
         emulateKeyTyped(codeArea, KeyEvent.VK_UNDEFINED, 'a');
 
         CodeAreaCaretPosition caretPosition = codeArea.getCaretPosition();
@@ -75,7 +74,7 @@ public class CodeAreaCommandEditTest {
         codeArea.setEditOperation(EditOperation.INSERT);
 
         codeArea.setContentData(sampleData);
-        
+
         emulateKeyTyped(codeArea, KeyEvent.VK_UNDEFINED, 'a');
 
         CodeAreaCaretPosition caretPosition = codeArea.getCaretPosition();
@@ -99,7 +98,7 @@ public class CodeAreaCommandEditTest {
 
         codeArea.setContentData(sampleData);
         codeArea.setCaretPosition(256);
-        
+
         emulateKeyTyped(codeArea, KeyEvent.VK_UNDEFINED, 'a');
 
         CodeAreaCaretPosition caretPosition = codeArea.getCaretPosition();
@@ -124,7 +123,7 @@ public class CodeAreaCommandEditTest {
 
         codeArea.setContentData(sampleData);
         codeArea.setCaretPosition(256);
-        
+
         emulateKeyTyped(codeArea, KeyEvent.VK_UNDEFINED, 'a');
 
         CodeAreaCaretPosition caretPosition = codeArea.getCaretPosition();

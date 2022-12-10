@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -24,7 +24,6 @@ import org.exbin.bined.swing.extended.ExtCodeArea;
 /**
  * Binary editor cursor options panel.
  *
- * @version 0.2.0 2019/08/24
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -202,7 +201,7 @@ public class CursorPanelEx extends javax.swing.JPanel {
 
     public void setCodeArea(ExtCodeArea codeArea) {
         this.codeArea = codeArea;
-        
+
         cursorRenderingModeComboBox.setSelectedIndex(codeArea.getCaret().getRenderingMode().ordinal());
         showMirrorCursorCheckBox.setSelected(codeArea.isShowMirrorCursor());
 

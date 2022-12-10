@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -34,7 +34,6 @@ import org.exbin.bined.capability.EditModeCapable;
 /**
  * Tests clipboard actions for CodeArea command component.
  *
- * @version 0.2.0 2020/04/12
  * @author ExBin Project (https://exbin.org)
  */
 public class CodeAreaCommandClipboardTest {
@@ -58,7 +57,7 @@ public class CodeAreaCommandClipboardTest {
         EditableBinaryData sampleData = CodeAreaTest.getSampleData(CodeAreaTest.SAMPLE_ALLBYTES);
         byte[] expectedData = new byte[2];
         sampleData.copyToArray(5, expectedData, 0, 2);
-        
+
         codeArea.setContentData(sampleData);
         codeArea.setSelection(5, 7);
         codeArea.copy();
@@ -231,7 +230,7 @@ public class CodeAreaCommandClipboardTest {
         Assert.assertTrue(codeArea.getDataSize() == expectedSize);
         checkResultData(expectedData, codeArea.getContentData());
     }
-    
+
     public void checkResultData(byte[] expectedData, BinaryData data) {
         Assert.assertEquals(expectedData.length, data.getDataSize());
         byte[] resultData = new byte[expectedData.length];

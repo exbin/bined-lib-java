@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -78,7 +78,6 @@ import org.exbin.bined.capability.EditModeCapable;
 /**
  * Command handler for undo/redo aware binary editor editing.
  *
- * @version 0.2.1 2022/05/24
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
@@ -676,7 +675,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
                         String text = (String) clipboard.getData(DataFlavor.stringFlavor);
                         pastedData.insert(0, text.getBytes(((CharsetCapable) codeArea).getCharset()));
                     }
-                    
+
                     pasteBinaryData(pastedData);
                 } catch (UnsupportedFlavorException | IllegalStateException | IOException ex) {
                     Logger.getLogger(CodeAreaOperationCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
@@ -686,7 +685,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
             // Clipboard not available - ignore
         }
     }
-    
+
     private void pasteBinaryData(BinaryData pastedData) {
         DeleteSelectionCommand deleteSelectionCommand = null;
         if (codeArea.hasSelection()) {
@@ -750,7 +749,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
         revealCursor();
         clearSelection();
     }
-    
+
     @Override
     public void pasteFromCode() {
         if (!checkEditAllowed()) {

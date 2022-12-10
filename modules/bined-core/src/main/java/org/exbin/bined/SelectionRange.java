@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,7 +23,6 @@ import javax.annotation.concurrent.Immutable;
  * Selection range is selection between two positions where begin represents
  * origin point and end of the selection can be before or after begin.
  *
- * @version 0.2.0 2021/08/14
  * @author ExBin Project (https://exbin.org)
  */
 @Immutable
