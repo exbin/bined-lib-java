@@ -564,10 +564,15 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
     public void copy() {
         SelectionRange selection = ((SelectionCapable) codeArea).getSelection();
         if (!selection.isEmpty()) {
+            BinaryData data = codeArea.getContentData();
+            if (data == null) {
+                return;
+            }
+
             long first = selection.getFirst();
             long last = selection.getLast();
 
-            BinaryData copy = CodeAreaUtils.requireNonNull(codeArea.getContentData()).copy(first, last - first + 1);
+            BinaryData copy = data.copy(first, last - first + 1);
 
             Charset charset = codeArea instanceof CharsetCapable ? ((CharsetCapable) codeArea).getCharset() : null;
             CodeAreaSwingUtils.BinaryDataClipboardData binaryData = new CodeAreaSwingUtils.BinaryDataClipboardData(copy, binedDataFlavor, binaryDataFlavor, charset);
