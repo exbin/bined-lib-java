@@ -141,6 +141,11 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
         return (CodeAreaCore codeAreaCore) -> new CodeAreaOperationCommandHandler(codeAreaCore, new CodeAreaUndoHandler(codeAreaCore));
     }
 
+    @Nonnull
+    public BinaryDataUndoHandler getUndoHandler() {
+        return undoHandler;
+    }
+
     private void updateCanPaste() {
         canPaste = CodeAreaSwingUtils.canPaste(clipboard, binedDataFlavor) || CodeAreaSwingUtils.canPaste(clipboard, DataFlavor.stringFlavor);
     }
