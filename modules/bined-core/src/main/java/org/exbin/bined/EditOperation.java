@@ -24,7 +24,7 @@ public enum EditOperation {
 
     /**
      * Data are inserted at cursor position.
-     *
+     * <p>
      * Document is extended by size of the inserted data, data at cursor
      * position moved forward to provide space and then inserted data are stored
      * in this new space.
@@ -32,7 +32,7 @@ public enum EditOperation {
     INSERT,
     /**
      * Data are replaced at cursor position.
-     *
+     * <p>
      * If size of data is greater than size of the document and edit is not in
      * "overwrite only" mode, document is extended so that inserted data will
      * fit in.

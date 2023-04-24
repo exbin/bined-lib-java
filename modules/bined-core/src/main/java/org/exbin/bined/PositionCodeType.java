@@ -24,19 +24,19 @@ public enum PositionCodeType {
 
     /**
      * Represent code as number in base 8.
-     *
+     * <p>
      * Code is represented as characters of range 0 to 7.
      */
     OCTAL(8, 3),
     /**
      * Represent code as number in base 10.
-     *
+     * <p>
      * Code is represented as characters of range 0 to 9.
      */
     DECIMAL(10, 3),
     /**
      * Represent code as number in base 16.
-     *
+     * <p>
      * Code is represented as characters of range 0 to 9 and A to F.
      */
     HEXADECIMAL(16, 2);

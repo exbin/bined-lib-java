@@ -7,6 +7,8 @@ plugins {
 
 apply from: '../apps.gradle'
 
+ext.depsRoot = 'BinedJava'
+
 if (!hasProperty('mainClass')) {
     ext.mainClass = 'org.exbin.bined.editor.basic.BinEdEditorBasic'
     ext.appArgs = '-dev'

@@ -24,25 +24,25 @@ public enum CodeType {
 
     /**
      * Represent code as number in base 2.
-     *
+     * <p>
      * Code is represented as 8 characters each of range 0 to 1.
      */
     BINARY(2, 8),
     /**
      * Represent code as number in base 8.
-     *
+     * <p>
      * Code is represented as 3 characters of range 0 to 7 with limit 377.
      */
     OCTAL(8, 3),
     /**
      * Represent code as number in base 10.
-     *
+     * <p>
      * Code is represented as 3 characters of range 0 to 9 with limit 255.
      */
     DECIMAL(10, 3),
     /**
      * Represent code as number in base 16.
-     *
+     * <p>
      * Code is represented as 2 characters of range 0 to 9 and A to F.
      */
     HEXADECIMAL(16, 2);

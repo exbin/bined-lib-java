@@ -9,7 +9,7 @@ apply from: '../apps.gradle'
 ext.depsRoot = 'BinedJava'
 
 if (!hasProperty('mainClass')) {
-    ext.mainClass = 'org.exbin.bined.swing.example.BinEdExample'
+    ext.mainClass = 'org.exbin.bined.lanterna.example.BinEdExample'
     ext.appArgs = '-dev'
 }
 
@@ -40,10 +40,9 @@ repositories {
 
 dependencies {
     implementation moduleDep('BinedJava', 'org.exbin.bined', 'bined-core')
-    implementation moduleDep('BinedJava', 'org.exbin.bined', 'bined-swing')
-    implementation moduleDep('BinedJava', 'org.exbin.bined', 'bined-extended')
-    implementation moduleDep('BinedJava', 'org.exbin.bined', 'bined-swing-extended')
+    implementation moduleDep('BinedJava', 'org.exbin.bined', 'bined-lanterna')
     implementation moduleDep('ExbinAuxiliaryJava', 'org.exbin.auxiliary', 'paged_data')
+    implementation group: 'com.googlecode.lanterna', name: 'lanterna', version: '3.1.1'
     compileOnly group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.2'
 
     testImplementation group: 'junit', name: 'junit', version: '4.10'

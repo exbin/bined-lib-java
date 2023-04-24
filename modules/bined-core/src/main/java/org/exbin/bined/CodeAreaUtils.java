@@ -246,7 +246,7 @@ public class CodeAreaUtils {
 
     /**
      * Converts long value to code of given base and length limit.
-     *
+     * <p>
      * Optionally fills rest of the value with zeros.
      *
      * @param target target characters array (output parameter)

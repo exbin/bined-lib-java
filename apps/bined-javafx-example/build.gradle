@@ -24,6 +24,8 @@ if (JavaVersion.current() != JavaVersion.VERSION_1_8) {
 
 apply from: '../apps.gradle'
 
+ext.depsRoot = 'BinedJava'
+
 sourceCompatibility = '1.8'
 
 def javaFxHome = "${System.properties['java.home']}";

@@ -117,7 +117,7 @@ public abstract class CodeAreaOperation implements BinaryDataOperation {
 
     /**
      * Performs dispose of the operation.
-     *
+     * <p>
      * Default dispose is empty.
      *
      * @throws BinaryDataOperationException for operation handling issues

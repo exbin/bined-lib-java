@@ -13,16 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.swing.extended;
+package org.exbin.bined.lanterna.basic;
 
 import java.awt.Rectangle;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.basic.BasicCodeAreaZone;
-import org.exbin.bined.CodeAreaUtils;
-import org.exbin.bined.swing.basic.BasicCodeAreaMetrics;
-import org.exbin.bined.extended.layout.ExtendedCodeAreaLayoutProfile;
 
 /**
  * Basic code area component dimensions.
@@ -30,7 +26,7 @@ import org.exbin.bined.extended.layout.ExtendedCodeAreaLayoutProfile;
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public class ExtendedCodeAreaDimensions {
+public class BasicCodeAreaDimensions {
 
     private int scrollPanelX;
     private int scrollPanelY;
@@ -40,18 +36,16 @@ public class ExtendedCodeAreaDimensions {
     private int horizontalScrollBarSize;
     private int dataViewWidth;
     private int dataViewHeight;
-    private int halfCharOffset;
-    private int rowOffset;
+    private int lastCharOffset;
+    private int lastRowOffset;
 
     private int headerAreaHeight;
     private int rowPositionAreaWidth;
     private int rowsPerRect;
     private int rowsPerPage;
-    private int halfCharsPerPage;
-    private int halfCharsPerRect;
+    private int charactersPerPage;
+    private int charactersPerRect;
 
-    @Nullable
-    private ExtendedCodeAreaLayoutProfile layoutProfile;
     @Nonnull
     private final Rectangle componentRectangle = new Rectangle();
     @Nonnull
@@ -65,15 +59,12 @@ public class ExtendedCodeAreaDimensions {
     @Nonnull
     private final Rectangle dataViewRectangle = new Rectangle();
 
-    public void recomputeSizes(BasicCodeAreaMetrics metrics, int componentX, int componentY, int componentWidth, int componentHeight, int rowPositionLength, int verticalScrollBarSize, int horizontalScrollBarSize, ExtendedCodeAreaLayoutProfile layoutProfile) {
+    public void recomputeSizes(BasicCodeAreaMetrics metrics, int componentX, int componentY, int componentWidth, int componentHeight, int rowPositionLength, int verticalScrollBarSize, int horizontalScrollBarSize) {
         componentRectangle.setBounds(componentX, componentY, componentWidth, componentHeight);
-        this.layoutProfile = layoutProfile;
         this.verticalScrollBarSize = verticalScrollBarSize;
         this.horizontalScrollBarSize = horizontalScrollBarSize;
-        int characterWidth = metrics.getCharacterWidth();
-        int halfSpaceWidth = characterWidth / 2;
-        headerAreaHeight = layoutProfile.computeHeaderAreaHeight(metrics.getFontHeight());
-        rowPositionAreaWidth = layoutProfile.computeRowPositionAreaWidth(metrics.getCharacterWidth(), rowPositionLength);
+        rowPositionAreaWidth = rowPositionLength + 1;
+        headerAreaHeight = 1; // metrics.getFontHeight() + metrics.getFontHeight() / 4;
 
         scrollPanelX = componentX + rowPositionAreaWidth;
         scrollPanelY = componentY + headerAreaHeight;
@@ -81,28 +72,28 @@ public class ExtendedCodeAreaDimensions {
         scrollPanelHeight = componentHeight - headerAreaHeight;
         dataViewWidth = scrollPanelWidth - verticalScrollBarSize;
         dataViewHeight = scrollPanelHeight - horizontalScrollBarSize;
-        halfCharsPerRect = computeHalfCharsPerRectangle(metrics);
-        halfCharsPerPage = computeHalfCharsPerPage(metrics);
+        charactersPerRect = computeCharactersPerRectangle(metrics);
+        charactersPerPage = computeCharactersPerPage(metrics);
         rowsPerRect = computeRowsPerRectangle(metrics);
         rowsPerPage = computeRowsPerPage(metrics);
-        halfCharOffset = metrics.isInitialized() ? dataViewWidth % halfSpaceWidth : 0;
-        rowOffset = metrics.isInitialized() ? dataViewHeight % metrics.getRowHeight() : 0;
+        lastCharOffset = 0; // metrics.isInitialized() ? dataViewWidth % metrics.getCharacterWidth() : 0;
+        lastRowOffset = 0; // metrics.isInitialized() ? dataViewHeight % metrics.getRowHeight() : 0;
 
         boolean availableWidth = rowPositionAreaWidth + verticalScrollBarSize <= componentWidth;
         boolean availableHeight = scrollPanelY + horizontalScrollBarSize <= componentHeight;
 
         if (availableWidth && availableHeight) {
-            mainAreaRectangle.setBounds(componentX + rowPositionAreaWidth, scrollPanelY, componentWidth - rowPositionAreaWidth - verticalScrollBarSize, componentHeight - scrollPanelY - horizontalScrollBarSize);
+            mainAreaRectangle.setBounds(componentX + rowPositionAreaWidth, scrollPanelY, componentWidth - rowPositionAreaWidth - getVerticalScrollBarSize(), componentHeight - scrollPanelY - getHorizontalScrollBarSize());
         } else {
             mainAreaRectangle.setBounds(0, 0, 0, 0);
         }
         if (availableWidth) {
-            headerAreaRectangle.setBounds(componentX + rowPositionAreaWidth, componentY, componentWidth - rowPositionAreaWidth - verticalScrollBarSize, headerAreaHeight);
+            headerAreaRectangle.setBounds(componentX + rowPositionAreaWidth, componentY, componentWidth - rowPositionAreaWidth - getVerticalScrollBarSize(), headerAreaHeight);
         } else {
             headerAreaRectangle.setBounds(0, 0, 0, 0);
         }
         if (availableHeight) {
-            rowPositionAreaRectangle.setBounds(componentX, scrollPanelY, rowPositionAreaWidth, componentHeight - scrollPanelY - horizontalScrollBarSize);
+            rowPositionAreaRectangle.setBounds(componentX, scrollPanelY, rowPositionAreaWidth, componentHeight - scrollPanelY - getHorizontalScrollBarSize());
         } else {
             rowPositionAreaRectangle.setBounds(0, 0, 0, 0);
         }
@@ -144,43 +135,28 @@ public class ExtendedCodeAreaDimensions {
         return BasicCodeAreaZone.CODE_AREA;
     }
 
-    private int computeHalfCharsPerRectangle(BasicCodeAreaMetrics metrics) {
-        int characterWidth = metrics.getCharacterWidth();
-        int halfSpaceWidth = characterWidth / 2;
-        if (characterWidth == 0) {
-            return 0;
-        }
-        int width = (dataViewWidth + halfSpaceWidth - 1);
-        int halfChars = (width / characterWidth) * 2;
-        if (width % characterWidth >= halfSpaceWidth) {
-            halfChars++;
-        }
-
-        return halfChars;
+    private int computeCharactersPerRectangle(BasicCodeAreaMetrics metrics) {
+        return 0;
+//        int characterWidth = metrics.getCharacterWidth();
+//        return characterWidth == 0 ? 0 : (dataViewWidth + characterWidth - 1) / characterWidth;
     }
 
-    private int computeHalfCharsPerPage(BasicCodeAreaMetrics metrics) {
-        int characterWidth = metrics.getCharacterWidth();
-        int halfSpaceWidth = characterWidth / 2;
-        if (characterWidth == 0) {
-            return 0;
-        }
-        int halfChars = (dataViewWidth / characterWidth) * 2;
-        if (dataViewWidth % characterWidth >= halfSpaceWidth) {
-            halfChars++;
-        }
-
-        return halfChars;
+    private int computeCharactersPerPage(BasicCodeAreaMetrics metrics) {
+        return 0;
+//        int characterWidth = metrics.getCharacterWidth();
+//        return characterWidth == 0 ? 0 : dataViewWidth / characterWidth;
     }
 
     private int computeRowsPerRectangle(BasicCodeAreaMetrics metrics) {
-        int rowHeight = metrics.getRowHeight();
-        return rowHeight == 0 ? 0 : (dataViewHeight + rowHeight - 1) / rowHeight;
+        return 0;
+//        int rowHeight = metrics.getRowHeight();
+//        return rowHeight == 0 ? 0 : (dataViewHeight + rowHeight - 1) / rowHeight;
     }
 
     private int computeRowsPerPage(BasicCodeAreaMetrics metrics) {
-        int rowHeight = metrics.getRowHeight();
-        return rowHeight == 0 ? 0 : dataViewHeight / rowHeight;
+        return 0;
+//        int rowHeight = metrics.getRowHeight();
+//        return rowHeight == 0 ? 0 : dataViewHeight / rowHeight;
     }
 
     public int getScrollPanelX() {
@@ -227,30 +203,24 @@ public class ExtendedCodeAreaDimensions {
         return rowsPerRect;
     }
 
-    public int getHalfCharsPerRect() {
-        return halfCharsPerRect;
+    public int getCharactersPerRect() {
+        return charactersPerRect;
     }
 
-    public int getHalfCharsPerPage() {
-        return halfCharsPerPage;
+    public int getCharactersPerPage() {
+        return charactersPerPage;
     }
 
     public int getRowsPerPage() {
         return rowsPerPage;
     }
 
-    public int getHalfCharOffset() {
-        return halfCharOffset;
+    public int getLastCharOffset() {
+        return lastCharOffset;
     }
 
-    public int getRowOffset() {
-        return rowOffset;
-    }
-
-    @Nonnull
-    public ExtendedCodeAreaLayoutProfile getLayoutProfile() {
-        CodeAreaUtils.requireNonNull(layoutProfile);
-        return layoutProfile;
+    public int getLastRowOffset() {
+        return lastRowOffset;
     }
 
     @Nonnull

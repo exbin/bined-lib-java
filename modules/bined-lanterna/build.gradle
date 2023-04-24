@@ -1,0 +1,32 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+    id 'signing'
+}
+
+group = 'org.exbin.bined'
+ext.libraryName = 'BinEd Lanterna Library'
+ext.libraryDescription = 'Library for BinEd editor component'
+
+apply from: '../bined-java-modules.gradle'
+
+if (!hasProperty('mainClass')) {
+    ext.mainClass = ''
+}
+
+repositories {
+    flatDir {
+        dirs "../../lib"
+    }
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    api moduleDep('BinedJava', 'org.exbin.bined', 'bined-core')
+    implementation group: 'com.googlecode.lanterna', name: 'lanterna', version: '3.1.1'
+    implementation moduleDep('ExbinAuxiliaryJava', 'org.exbin.auxiliary', 'paged_data')
+    compileOnly group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.2'
+    testImplementation group : 'junit', name: 'junit', version: '4.10'
+    testImplementation project(path: moduleDepPath('BinedJava', 'bined-core'), configuration: 'tests')
+}

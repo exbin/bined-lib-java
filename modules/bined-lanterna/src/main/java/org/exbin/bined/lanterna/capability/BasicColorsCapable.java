@@ -13,34 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined;
+package org.exbin.bined.lanterna.capability;
+
+import java.util.Optional;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+import org.exbin.bined.lanterna.basic.color.BasicCodeAreaColorsProfile;
 
 /**
- * Enumeration of edit modes.
+ * Support for basic set of colors.
  *
  * @author ExBin Project (https://exbin.org)
  */
-public enum EditMode {
+@ParametersAreNonnullByDefault
+public interface BasicColorsCapable {
 
     /**
-     * Document cannot be changed.
+     * Returns basic profile for colors.
+     *
+     * @return colors profile
      */
-    READ_ONLY,
+    @Nonnull
+    Optional<BasicCodeAreaColorsProfile> getBasicColors();
+
     /**
-     * Default mode expanding data when necessary.
-     * <p>
-     * Document is extended by size of the inserted data or when replacing data
-     * overflows end of the file.
+     * Sets basic profile for colors.
+     *
+     * @param colorsProfile colors profile
      */
-    EXPANDING,
-    /**
-     * Data are inserted and replaced, but size of the file remains the same
-     * cutting out excessive data.
-     */
-    CAPPED,
-    /**
-     * Only overwrite edit mode is allowed and size of document cannot be
-     * changed.
-     */
-    INPLACE
+    void setBasicColors(BasicCodeAreaColorsProfile colorsProfile);
 }

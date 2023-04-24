@@ -6,6 +6,8 @@ plugins {
 
 apply from: '../apps.gradle'
 
+ext.depsRoot = 'BinedJava'
+
 if (!hasProperty('mainClass')) {
     ext.mainClass = 'org.exbin.bined.swt.example.BinEdExample'
     ext.appArgs = '-dev'

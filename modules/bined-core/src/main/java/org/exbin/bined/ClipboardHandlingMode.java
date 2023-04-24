@@ -17,7 +17,7 @@ package org.exbin.bined;
 
 /**
  * Enumeration of clipboard handling modes.
- *
+ * <p>
  * Used to specify what to do with basic clipboard actions like cut, copy, paste
  * and delete.
  *

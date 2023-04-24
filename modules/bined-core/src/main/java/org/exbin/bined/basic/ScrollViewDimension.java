@@ -16,6 +16,7 @@
 package org.exbin.bined.basic;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import javax.annotation.concurrent.Immutable;
 
 /**
  * Scrolling view dimensions.
@@ -23,6 +24,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
+@Immutable
 public class ScrollViewDimension {
 
     private final int dataViewWidth;
