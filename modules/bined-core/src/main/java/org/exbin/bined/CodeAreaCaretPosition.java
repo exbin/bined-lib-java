@@ -27,15 +27,14 @@ import javax.annotation.Nonnull;
 public interface CodeAreaCaretPosition {
 
     /**
-     * Returns position of byte in document.
+     * Returns specific byte position in the document.
      *
      * @return data position
      */
     long getDataPosition();
 
     /**
-     * Returns offset position of current code on current position and code
-     * type.
+     * Returns character offset position in the code on current position.
      *
      * @return code offset
      */

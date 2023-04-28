@@ -65,13 +65,13 @@ public class CharsetStreamTranslator extends InputStream {
         decoder = inputCharset.newDecoder();
         decoder.onUnmappableCharacter(CodingErrorAction.REPLACE);
         decoder.onMalformedInput(CodingErrorAction.REPLACE);
-        CharsetEncoder outputEencoder;
+        CharsetEncoder outputEncoder;
         try {
-            outputEencoder = outputCharset.newEncoder();
+            outputEncoder = outputCharset.newEncoder();
         } catch (UnsupportedOperationException ex) {
-            outputEencoder = Charset.forName(DEFAULT_ENCODING).newEncoder();
+            outputEncoder = Charset.forName(DEFAULT_ENCODING).newEncoder();
         }
-        encoder = outputEencoder;
+        encoder = outputEncoder;
         encoder.onUnmappableCharacter(CodingErrorAction.REPLACE);
         encoder.onMalformedInput(CodingErrorAction.REPLACE);
         maxInputCharSize = (int) decoder.maxCharsPerByte();
