@@ -135,7 +135,7 @@ public class CodeAreaUndoHandler implements BinaryDataUndoHandler {
     }
 
     /**
-     * Performs multiple undo step.
+     * Performs multiple undo steps.
      *
      * @param count count of steps
      * @throws BinaryDataOperationException if commands throws it
@@ -153,7 +153,7 @@ public class CodeAreaUndoHandler implements BinaryDataUndoHandler {
     }
 
     /**
-     * Performs multiple redo step.
+     * Performs multiple redo steps.
      *
      * @param count count of steps
      * @throws BinaryDataOperationException if commands throws it

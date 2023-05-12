@@ -71,21 +71,6 @@ public interface BinaryDataUndoHandler {
     long getUsedSize();
 
     /**
-     * Performs single redo step.
-     *
-     * @throws BinaryDataOperationException for operation handling issues
-     */
-    void performRedo() throws BinaryDataOperationException;
-
-    /**
-     * Performs multiple redo step.
-     *
-     * @param count count of steps
-     * @throws BinaryDataOperationException for operation handling issues
-     */
-    void performRedo(int count) throws BinaryDataOperationException;
-
-    /**
      * Performs single undo step.
      *
      * @throws BinaryDataOperationException for operation handling issues
@@ -93,7 +78,7 @@ public interface BinaryDataUndoHandler {
     void performUndo() throws BinaryDataOperationException;
 
     /**
-     * Performs multiple undo step.
+     * Performs multiple undo steps.
      *
      * @param count count of steps
      * @throws BinaryDataOperationException for operation handling issues
@@ -101,7 +86,22 @@ public interface BinaryDataUndoHandler {
     void performUndo(int count) throws BinaryDataOperationException;
 
     /**
-     * Performs undo or redo operation to reach given position.
+     * Performs single redo step.
+     *
+     * @throws BinaryDataOperationException for operation handling issues
+     */
+    void performRedo() throws BinaryDataOperationException;
+
+    /**
+     * Performs multiple redo steps.
+     *
+     * @param count count of steps
+     * @throws BinaryDataOperationException for operation handling issues
+     */
+    void performRedo(int count) throws BinaryDataOperationException;
+
+    /**
+     * Performs undo or redo operations to reach given position.
      *
      * @param targetPosition desired position
      * @throws BinaryDataOperationException for operation handling issues
