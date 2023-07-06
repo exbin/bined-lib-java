@@ -71,6 +71,7 @@ import org.exbin.bined.capability.EditModeCapable;
 public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
     public static final String BINED_CLIPBOARD_MIME = "application/x-bined";
+    public static final String BINED_CLIPBOARD_MIME_FULL = BINED_CLIPBOARD_MIME + "; class=" + BinaryData.class.getCanonicalName();
     public static final int LAST_CONTROL_CODE = 31;
     private static final char DELETE_CHAR = (char) 0x7f;
 
@@ -100,7 +101,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                 updateCanPaste();
             });
             try {
-                binedDataFlavor = new DataFlavor(BINED_CLIPBOARD_MIME);
+                binedDataFlavor = new DataFlavor(BINED_CLIPBOARD_MIME_FULL);
             } catch (ClassNotFoundException ex) {
                 Logger.getLogger(DefaultCodeAreaCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
             }
