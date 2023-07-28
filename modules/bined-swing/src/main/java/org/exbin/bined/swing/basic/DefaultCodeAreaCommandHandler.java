@@ -286,7 +286,10 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
         CodeAreaSection section = ((CaretCapable) codeArea).getActiveSection();
         if (section == BasicCodeAreaSection.CODE_MATRIX) {
-            pressedCharAsCode(keyValue);
+            int modifiersEx = keyEvent.getModifiersEx();
+            if (modifiersEx == 0 || modifiersEx == KeyEvent.SHIFT_DOWN_MASK) {
+                pressedCharAsCode(keyValue);
+            }
         } else {
             char keyChar = keyValue;
             if (keyChar > LAST_CONTROL_CODE && keyValue != DELETE_CHAR) {

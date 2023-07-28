@@ -306,7 +306,10 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
 
         CodeAreaSection section = ((CaretCapable) codeArea).getActiveSection();
         if (section != BasicCodeAreaSection.TEXT_PREVIEW) {
-            pressedCharAsCode(keyValue);
+            int modifiersEx = keyEvent.getModifiersEx();
+            if (modifiersEx == 0 || modifiersEx == KeyEvent.SHIFT_DOWN_MASK) {
+                pressedCharAsCode(keyValue);
+            }
         } else {
             if (keyValue > DefaultCodeAreaCommandHandler.LAST_CONTROL_CODE && keyValue != DELETE_CHAR) {
                 pressedCharInPreview(keyValue);
