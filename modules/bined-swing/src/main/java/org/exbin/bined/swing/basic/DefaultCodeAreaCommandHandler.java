@@ -100,11 +100,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             clipboard.addFlavorListener((FlavorEvent e) -> {
                 updateCanPaste();
             });
-            try {
-                binedDataFlavor = new DataFlavor(BINED_CLIPBOARD_MIME_FULL);
-            } catch (ClassNotFoundException ex) {
-                Logger.getLogger(DefaultCodeAreaCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            binedDataFlavor = new DataFlavor(BinaryData.class, BINED_CLIPBOARD_MIME_FULL);
             try {
                 binaryDataFlavor = new DataFlavor(CodeAreaUtils.MIME_CLIPBOARD_BINARY);
             } catch (ClassNotFoundException ex) {
