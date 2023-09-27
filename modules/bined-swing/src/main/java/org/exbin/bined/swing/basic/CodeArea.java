@@ -514,7 +514,9 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
 
     @Override
     public void updateLayout() {
-        painter.resetLayout();
+        if (painter != null) {
+            painter.resetLayout();
+        }
         repaint();
     }
 

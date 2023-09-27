@@ -512,7 +512,9 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
 
     @Override
     public void updateLayout() {
-        painter.resetLayout();
+        if (painter != null) {
+            painter.resetLayout();
+        }
         repaint();
     }
 
