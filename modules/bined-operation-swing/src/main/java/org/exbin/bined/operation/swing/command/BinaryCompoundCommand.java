@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.operation.BinaryDataCommand;
 import org.exbin.bined.operation.BinaryDataCompoundCommand;
@@ -39,7 +40,8 @@ public class BinaryCompoundCommand extends CodeAreaCommand implements BinaryData
         super(codeArea);
     }
 
-    public static CodeAreaCommand buildCompoundCommand(CodeAreaCore codeArea, CodeAreaCommand... commands) {
+    @Nullable
+    public static CodeAreaCommand buildCompoundCommand(CodeAreaCore codeArea, @Nullable CodeAreaCommand... commands) {
         CodeAreaCommand resultCommand = null;
         for (CodeAreaCommand command : commands) {
             if (command != null) {

@@ -741,10 +741,14 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
 
         CodeAreaCommand insertCommand = null;
         if (!pastedData.isEmpty()) {
-            insertCommand = new InsertDataCommand(codeArea, insertionPosition, pastedData);
+            insertCommand = new InsertDataCommand(codeArea, insertionPosition, pastedData.copy());
         }
 
         CodeAreaCommand pasteCommand = BinaryCompoundCommand.buildCompoundCommand(codeArea, deleteSelectionCommand, modifyCommand, insertCommand);
+        if (pasteCommand == null) {
+            return;
+        }
+
         try {
             if (modifyCommand != null) {
                 modifyCommand.execute();
@@ -876,6 +880,10 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
                     }
 
                     CodeAreaCommand pasteCommand = BinaryCompoundCommand.buildCompoundCommand(codeArea, deleteSelectionCommand, modifyCommand, insertCommand);
+                    if (pasteCommand == null) {
+                        return;
+                    }
+
                     try {
                         if (modifyCommand != null) {
                             modifyCommand.execute();
