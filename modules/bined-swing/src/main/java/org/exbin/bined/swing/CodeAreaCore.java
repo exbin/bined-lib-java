@@ -32,6 +32,7 @@ import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.DataChangedListener;
 import org.exbin.bined.capability.SelectionCapable;
 import org.exbin.auxiliary.paged_data.BinaryData;
+import org.exbin.auxiliary.paged_data.EmptyBinaryData;
 
 /**
  * Binary viewer/editor component.
@@ -41,8 +42,8 @@ import org.exbin.auxiliary.paged_data.BinaryData;
 @ParametersAreNonnullByDefault
 public abstract class CodeAreaCore extends JComponent implements CodeAreaControl {
 
-    @Nullable
-    private BinaryData contentData;
+    @Nonnull
+    private BinaryData contentData = EmptyBinaryData.INSTANCE;
 
     @Nonnull
     private CodeAreaCommandHandler commandHandler;
@@ -165,21 +166,21 @@ public abstract class CodeAreaCore extends JComponent implements CodeAreaControl
         return false;
     }
 
-    @Nullable
+    @Nonnull
     @Override
     public BinaryData getContentData() {
         return contentData;
     }
 
     public void setContentData(@Nullable BinaryData contentData) {
-        this.contentData = contentData;
+        this.contentData = contentData == null ? EmptyBinaryData.INSTANCE : contentData;
         notifyDataChanged();
         repaint();
     }
 
     @Override
     public long getDataSize() {
-        return contentData == null ? 0 : contentData.getDataSize();
+        return contentData.getDataSize();
     }
 
     /**
