@@ -48,24 +48,24 @@ public class ExtendedHighlightNonAsciiCodeAreaPainter extends ExtendedHighlightC
 
         int controlCodesRed = textColor.getRed();
         int controlCodesRedDiff = 0;
-        if (controlCodesRed > 128) {
+        if (controlCodesRed > 32) {
             if (controlCodesRed > 192) {
                 controlCodesRedDiff = controlCodesRed - 192;
             }
             controlCodesRed = 255;
         } else {
-            controlCodesRed += 127;
+            controlCodesRed += 224;
         }
 
         int controlCodesBlue = textColor.getBlue();
         int controlCodesBlueDiff = 0;
-        if (controlCodesBlue > 128) {
+        if (controlCodesBlue > 32) {
             if (controlCodesBlue > 192) {
                 controlCodesBlueDiff = controlCodesBlue - 192;
             }
             controlCodesBlue = 255;
         } else {
-            controlCodesBlue += 127;
+            controlCodesBlue += 224;
         }
 
         controlCodes = new Color(
@@ -73,33 +73,33 @@ public class ExtendedHighlightNonAsciiCodeAreaPainter extends ExtendedHighlightC
                 downShift(textColor.getGreen(), controlCodesBlueDiff + controlCodesRedDiff),
                 controlCodesBlue);
 
-        int aboveCodesGreen = textColor.getGreen();
-        int aboveCodesGreenDiff = 0;
-        if (aboveCodesGreen > 128) {
-            if (aboveCodesGreen > 192) {
-                aboveCodesGreenDiff = aboveCodesGreen - 192;
+        int upperCodesGreen = textColor.getGreen();
+        int upperCodesGreenDiff = 0;
+        if (upperCodesGreen > 64) {
+            if (upperCodesGreen > 192) {
+                upperCodesGreenDiff = upperCodesGreen - 192;
             }
 
-            aboveCodesGreen = 255;
+            upperCodesGreen = 255;
         } else {
-            aboveCodesGreen += 127;
+            upperCodesGreen += 192;
         }
 
-        int aboveCodesBlue = textColor.getBlue();
-        int aboveCodesBlueDiff = 0;
-        if (aboveCodesBlue > 128) {
-            if (aboveCodesBlue > 192) {
-                aboveCodesBlueDiff = aboveCodesBlue - 192;
+        int upperCodesBlue = textColor.getBlue();
+        int upperCodesBlueDiff = 0;
+        if (upperCodesBlue > 64) {
+            if (upperCodesBlue > 192) {
+                upperCodesBlueDiff = upperCodesBlue - 192;
             }
 
-            aboveCodesBlue = 255;
+            upperCodesBlue = 255;
         } else {
-            aboveCodesBlue += 127;
+            upperCodesBlue += 192;
         }
 
         upperCodes = new Color(
-                downShift(textColor.getRed(), aboveCodesGreenDiff + aboveCodesBlueDiff),
-                aboveCodesGreen, aboveCodesBlue);
+                downShift(textColor.getRed(), upperCodesGreenDiff + upperCodesBlueDiff),
+                upperCodesGreen, upperCodesBlue);
     }
 
     private int downShift(int color, int diff) {

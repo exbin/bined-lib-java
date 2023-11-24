@@ -58,9 +58,14 @@ public class ExtCodeAreaDiffPanel extends javax.swing.JPanel {
         leftCodeArea.addScrollingListener(() -> {
             if (!updatingScrolling) {
                 updatingScrolling = true;
+                CodeAreaScrollPosition currentScrollPosition = rightCodeArea.getScrollPosition();
                 CodeAreaScrollPosition scrollPosition = leftCodeArea.getScrollPosition();
                 long maxRowPosition = rightCodeArea.getDataSize() / rightCodeArea.getMaxBytesPerRow();
                 if (scrollPosition.getRowPosition() > maxRowPosition) {
+                    if (currentScrollPosition.getRowPosition() >= maxRowPosition) {
+                        updatingScrolling = false;
+                        return;
+                    }
                     scrollPosition.setRowPosition(maxRowPosition);
                 }
                 rightCodeArea.setScrollPosition(scrollPosition);
@@ -71,9 +76,14 @@ public class ExtCodeAreaDiffPanel extends javax.swing.JPanel {
         rightCodeArea.addScrollingListener(() -> {
             if (!updatingScrolling) {
                 updatingScrolling = true;
+                CodeAreaScrollPosition currentScrollPosition = leftCodeArea.getScrollPosition();
                 CodeAreaScrollPosition scrollPosition = rightCodeArea.getScrollPosition();
                 long maxRowPosition = leftCodeArea.getDataSize() / leftCodeArea.getMaxBytesPerRow();
                 if (scrollPosition.getRowPosition() > maxRowPosition) {
+                    if (currentScrollPosition.getRowPosition() >= maxRowPosition) {
+                        updatingScrolling = false;
+                        return;
+                    }
                     scrollPosition.setRowPosition(maxRowPosition);
                 }
                 leftCodeArea.setScrollPosition(scrollPosition);
