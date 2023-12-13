@@ -204,7 +204,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
             }
         };
         codeAreaDataChangeListener = () -> dataChanged();
-        colorsProfile.reinitialize();
+        DefaultCodeAreaPainter.this.rebuildColors();
     }
 
     @Override
@@ -415,7 +415,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
     protected synchronized void updateCache() {
         if (resetColors) {
             resetColors = false;
-            colorsProfile.reinitialize();
+            rebuildColors();
         }
     }
 

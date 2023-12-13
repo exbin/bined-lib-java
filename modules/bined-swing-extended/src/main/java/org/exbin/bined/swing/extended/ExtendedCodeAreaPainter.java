@@ -235,7 +235,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
             }
         };
         codeAreaDataChangeListener = () -> dataChanged();
-        colorsProfile.reinitialize();
+        ExtendedCodeAreaPainter.this.rebuildColors();
     }
 
     @Override
@@ -456,7 +456,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
     protected synchronized void updateCache() {
         if (resetColors) {
             resetColors = false;
-            colorsProfile.reinitialize();
+            rebuildColors();
         }
     }
 

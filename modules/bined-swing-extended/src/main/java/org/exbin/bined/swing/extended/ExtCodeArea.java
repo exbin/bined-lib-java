@@ -70,7 +70,7 @@ import org.exbin.bined.swing.extended.caret.CaretsProfileCapableCodeAreaPainter;
 import org.exbin.bined.EditModeChangedListener;
 
 /**
- * Code area component extended code area.
+ * Code area component with extended capabilities.
  *
  * @author ExBin Project (https://exbin.org)
  */
