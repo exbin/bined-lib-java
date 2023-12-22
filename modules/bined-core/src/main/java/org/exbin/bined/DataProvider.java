@@ -16,7 +16,7 @@
 package org.exbin.bined;
 
 import javax.annotation.Nullable;
-import org.exbin.auxiliary.paged_data.BinaryData;
+import org.exbin.auxiliary.binary_data.BinaryData;
 
 /**
  * Data provider.

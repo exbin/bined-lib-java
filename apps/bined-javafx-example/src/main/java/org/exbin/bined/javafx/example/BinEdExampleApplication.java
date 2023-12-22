@@ -24,7 +24,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import org.exbin.bined.javafx.basic.CodeArea;
-import org.exbin.auxiliary.paged_data.ByteArrayEditableData;
+import org.exbin.auxiliary.binary_data.ByteArrayEditableData;
 
 /**
  * Binary editor JavaFX examples.

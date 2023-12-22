@@ -18,7 +18,7 @@ package org.exbin.bined.swing.extended.diff;
 import java.awt.BorderLayout;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import org.exbin.auxiliary.paged_data.BinaryData;
+import org.exbin.auxiliary.binary_data.BinaryData;
 import org.exbin.bined.EditMode;
 import org.exbin.bined.basic.CodeAreaScrollPosition;
 import org.exbin.bined.swing.extended.ExtCodeArea;

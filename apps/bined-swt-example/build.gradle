@@ -42,11 +42,11 @@ dependencies {
     implementation moduleDep('BinedJava', 'org.exbin.bined', 'bined-core')
     implementation moduleDep('BinedJava', 'org.exbin.bined', 'bined-swt')
     //    implementation moduleDep('BinedJava', 'org.exbin.bined', 'bined-swt-extended')
-    implementation moduleDep('ExbinAuxiliaryJava', 'org.exbin.auxiliary', 'paged_data')
+    implementation moduleDep('ExbinAuxiliaryJava', 'org.exbin.auxiliary', 'binary_data')
     implementation group: 'org.eclipse.swt', name: 'org.eclipse.swt.gtk.linux.x86_64', version: '4.3'
     compileOnly group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.2'
 
-    testImplementation group: 'junit', name: 'junit', version: '4.10'
+    testImplementation group: 'junit', name: 'junit', version: '4.13.2'
 }
 
 def manifestClassPath() {

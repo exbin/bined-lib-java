@@ -68,7 +68,7 @@ import org.exbin.bined.javafx.basic.DefaultCodeAreaCaret.CursorRenderingMode;
 import org.exbin.bined.javafx.basic.color.BasicCodeAreaColorsProfile;
 import org.exbin.bined.javafx.basic.color.BasicColorsCapableCodeAreaPainter;
 import org.exbin.bined.javafx.capability.FontCapable;
-import org.exbin.auxiliary.paged_data.BinaryData;
+import org.exbin.auxiliary.binary_data.BinaryData;
 import org.exbin.bined.CodeAreaCaretPosition;
 import org.exbin.bined.CodeAreaSelection;
 import org.exbin.bined.DataChangedListener;

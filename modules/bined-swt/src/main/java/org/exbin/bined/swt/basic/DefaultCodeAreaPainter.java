@@ -71,7 +71,7 @@ import org.exbin.bined.swt.basic.DefaultCodeAreaCaret.CursorRenderingMode;
 import org.exbin.bined.swt.basic.color.BasicCodeAreaColorsProfile;
 import org.exbin.bined.swt.basic.color.BasicColorsCapableCodeAreaPainter;
 import org.exbin.bined.swt.capability.FontCapable;
-import org.exbin.auxiliary.paged_data.BinaryData;
+import org.exbin.auxiliary.binary_data.BinaryData;
 import org.exbin.bined.CodeAreaCaretPosition;
 import org.exbin.bined.CodeAreaSelection;
 import org.exbin.bined.DataChangedListener;

@@ -69,7 +69,7 @@ import org.exbin.bined.lanterna.CodeAreaLanternaUtils;
 import org.exbin.bined.lanterna.basic.DefaultCodeAreaCaret.CursorRenderingMode;
 import org.exbin.bined.lanterna.basic.color.BasicCodeAreaColorsProfile;
 import org.exbin.bined.lanterna.basic.color.BasicColorsCapableCodeAreaPainter;
-import org.exbin.auxiliary.paged_data.BinaryData;
+import org.exbin.auxiliary.binary_data.BinaryData;
 import org.exbin.bined.CodeAreaCaretPosition;
 import org.exbin.bined.CodeAreaSelection;
 import org.exbin.bined.DataChangedListener;
