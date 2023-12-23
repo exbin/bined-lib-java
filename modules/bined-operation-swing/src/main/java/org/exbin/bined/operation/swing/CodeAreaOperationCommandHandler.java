@@ -73,6 +73,7 @@ import org.exbin.bined.ClipboardHandlingMode;
 import org.exbin.bined.CodeAreaCaretPosition;
 import org.exbin.bined.CodeAreaSection;
 import org.exbin.bined.basic.EnterKeyHandlingMode;
+import org.exbin.bined.basic.TabKeyHandlingMode;
 import org.exbin.bined.capability.EditModeCapable;
 
 /**
@@ -94,6 +95,8 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
     private final CodeAreaCore codeArea;
     @Nonnull
     private EnterKeyHandlingMode enterKeyHandlingMode = EnterKeyHandlingMode.PLATFORM_SPECIFIC;
+    @Nonnull
+    private TabKeyHandlingMode tabKeyHandlingMode = TabKeyHandlingMode.PLATFORM_SPECIFIC;
     private final boolean codeTypeSupported;
     private final boolean viewModeSupported;
 
@@ -243,17 +246,17 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
                 break;
             }
             case KeyEvent.VK_TAB: {
-                if (viewModeSupported && ((ViewModeCapable) codeArea).getViewMode() == CodeAreaViewMode.DUAL) {
-                    move(isSelectingMode(keyEvent), MovementDirection.SWITCH_SECTION);
-                    undoSequenceBreak();
-                    revealCursor();
+                tabPressed(isSelectingMode(keyEvent));
+                if (tabKeyHandlingMode != TabKeyHandlingMode.IGNORE) {
                     keyEvent.consume();
                 }
                 break;
             }
             case KeyEvent.VK_ENTER: {
                 enterPressed();
-                keyEvent.consume();
+                if (enterKeyHandlingMode != EnterKeyHandlingMode.IGNORE) {
+                    keyEvent.consume();
+                }
                 break;
             }
             case KeyEvent.VK_DELETE: {
@@ -485,6 +488,31 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
                 if (sequence.length() == 2) {
                     pressedCharInPreview(sequence.charAt(1));
                 }
+            }
+        }
+    }
+
+    @Override
+    public void tabPressed() {
+        tabPressed(SelectingMode.NONE);
+    }
+
+    public void tabPressed(SelectingMode selectingMode) {
+        if (!checkEditAllowed()) {
+            return;
+        }
+
+        if (tabKeyHandlingMode == TabKeyHandlingMode.PLATFORM_SPECIFIC || tabKeyHandlingMode == TabKeyHandlingMode.CYCLE_TO_NEXT_SECTION || tabKeyHandlingMode == TabKeyHandlingMode.CYCLE_TO_PREVIOUS_SECTION) {
+            if (viewModeSupported && ((ViewModeCapable) codeArea).getViewMode() == CodeAreaViewMode.DUAL) {
+                move(selectingMode, MovementDirection.SWITCH_SECTION);
+                undoSequenceBreak();
+                revealCursor();
+            }
+        } else if (((CaretCapable) codeArea).getActiveSection() == BasicCodeAreaSection.TEXT_PREVIEW) {
+            String sequence = tabKeyHandlingMode == TabKeyHandlingMode.INSERT_TAB ? "\t" : "  ";
+            pressedCharInPreview(sequence.charAt(0));
+            if (sequence.length() == 2) {
+                pressedCharInPreview(sequence.charAt(1));
             }
         }
     }
@@ -1043,6 +1071,15 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
 
     public void setEnterKeyHandlingMode(EnterKeyHandlingMode enterKeyHandlingMode) {
         this.enterKeyHandlingMode = enterKeyHandlingMode;
+    }
+
+    @Nonnull
+    public TabKeyHandlingMode getTabKeyHandlingMode() {
+        return tabKeyHandlingMode;
+    }
+
+    public void setTabKeyHandlingMode(TabKeyHandlingMode tabKeyHandlingMode) {
+        this.tabKeyHandlingMode = tabKeyHandlingMode;
     }
 
     public boolean isValidChar(char value) {

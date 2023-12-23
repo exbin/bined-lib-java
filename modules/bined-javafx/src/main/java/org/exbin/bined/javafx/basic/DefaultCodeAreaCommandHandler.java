@@ -56,6 +56,7 @@ import org.exbin.bined.CodeAreaCaretPosition;
 import org.exbin.bined.basic.BasicCodeAreaSection;
 import org.exbin.bined.basic.CodeAreaViewMode;
 import org.exbin.bined.basic.EnterKeyHandlingMode;
+import org.exbin.bined.basic.TabKeyHandlingMode;
 import org.exbin.bined.capability.ClipboardCapable;
 import org.exbin.bined.capability.EditModeCapable;
 
@@ -76,6 +77,8 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     private final CodeAreaCore codeArea;
     @Nonnull
     private EnterKeyHandlingMode enterKeyHandlingMode = EnterKeyHandlingMode.PLATFORM_SPECIFIC;
+    @Nonnull
+    private TabKeyHandlingMode tabKeyHandlingMode = TabKeyHandlingMode.PLATFORM_SPECIFIC;
     private final boolean codeTypeSupported;
     private final boolean viewModeSupported;
 
@@ -209,6 +212,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                 break;
             }
             case TAB: {
+                // TODO tabKeyHandlingMode
                 if (viewModeSupported && ((ViewModeCapable) codeArea).getViewMode() == CodeAreaViewMode.DUAL) {
                     move(isSelectingMode(keyEvent), MovementDirection.SWITCH_SECTION);
                     undoSequenceBreak();

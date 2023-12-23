@@ -219,6 +219,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                 break;
             }
             case KeyEvent.VK_TAB: {
+                // TODO tab handling mode
                 if (viewModeSupported && ((ViewModeCapable) codeArea).getViewMode() == CodeAreaViewMode.DUAL) {
                     move(isSelectingMode(keyEvent), MovementDirection.SWITCH_SECTION);
                     undoSequenceBreak();

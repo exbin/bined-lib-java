@@ -34,9 +34,13 @@ public enum TabKeyHandlingMode {
      */
     INSERT_SPACES,
     /**
-     * Jump between code area / preview section.
+     * Jump to next code area section.
      */
-    CYCLE_SECTION,
+    CYCLE_TO_NEXT_SECTION,
+    /**
+     * Jump to previous code area section.
+     */
+    CYCLE_TO_PREVIOUS_SECTION,
     /**
      * Don't handle tab key.
      */
