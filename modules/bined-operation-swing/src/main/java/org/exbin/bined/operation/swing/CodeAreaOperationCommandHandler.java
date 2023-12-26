@@ -85,14 +85,14 @@ import org.exbin.bined.capability.EditModeCapable;
 public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
 
     public static final String MIME_CHARSET = "charset";
-    private static final int CODE_BUFFER_LENGTH = 16;
-    private static final char BACKSPACE_CHAR = '\b';
-    private static final char DELETE_CHAR = (char) 0x7f;
+    protected static final int CODE_BUFFER_LENGTH = 16;
+    protected static final char BACKSPACE_CHAR = '\b';
+    protected static final char DELETE_CHAR = (char) 0x7f;
 
     private final int metaMask = CodeAreaSwingUtils.getMetaMaskDown();
 
     @Nonnull
-    private final CodeAreaCore codeArea;
+    protected final CodeAreaCore codeArea;
     @Nonnull
     private EnterKeyHandlingMode enterKeyHandlingMode = EnterKeyHandlingMode.PLATFORM_SPECIFIC;
     @Nonnull
@@ -100,14 +100,14 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
     private final boolean codeTypeSupported;
     private final boolean viewModeSupported;
 
-    private Clipboard clipboard;
+    protected Clipboard clipboard;
     private boolean canPaste = false;
     private CodeAreaSwingUtils.ClipboardData currentClipboardData = null;
     private DataFlavor binedDataFlavor;
     private DataFlavor binaryDataFlavor;
 
-    private final BinaryDataUndoHandler undoHandler;
-    private EditDataCommand editCommand = null;
+    protected final BinaryDataUndoHandler undoHandler;
+    protected EditDataCommand editCommand = null;
 
     public CodeAreaOperationCommandHandler(CodeAreaCore codeArea, BinaryDataUndoHandler undoHandler) {
         this.codeArea = codeArea;
