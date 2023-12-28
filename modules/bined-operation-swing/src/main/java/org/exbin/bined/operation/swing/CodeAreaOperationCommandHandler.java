@@ -72,6 +72,8 @@ import org.exbin.auxiliary.binary_data.paged.PagedData;
 import org.exbin.bined.ClipboardHandlingMode;
 import org.exbin.bined.CodeAreaCaretPosition;
 import org.exbin.bined.CodeAreaSection;
+import static org.exbin.bined.EditOperation.INSERT;
+import static org.exbin.bined.EditOperation.OVERWRITE;
 import org.exbin.bined.basic.EnterKeyHandlingMode;
 import org.exbin.bined.basic.TabKeyHandlingMode;
 import org.exbin.bined.capability.EditModeCapable;
@@ -227,22 +229,8 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
                 break;
             }
             case KeyEvent.VK_INSERT: {
-                EditMode editMode = ((EditModeCapable) codeArea).getEditMode();
-                if (editMode == EditMode.EXPANDING || editMode == EditMode.CAPPED) {
-                    EditOperation editOperation = ((EditModeCapable) codeArea).getEditOperation();
-                    switch (editOperation) {
-                        case INSERT: {
-                            ((EditModeCapable) codeArea).setEditOperation(EditOperation.OVERWRITE);
-                            keyEvent.consume();
-                            break;
-                        }
-                        case OVERWRITE: {
-                            ((EditModeCapable) codeArea).setEditOperation(EditOperation.INSERT);
-                            keyEvent.consume();
-                            break;
-                        }
-                    }
-                }
+                changeEditOperation();
+                keyEvent.consume();
                 break;
             }
             case KeyEvent.VK_TAB: {
@@ -1007,6 +995,23 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
 
     private boolean isAppendAllowed() {
         return undoHandler.getCommandPosition() != undoHandler.getSyncPoint();
+    }
+
+    public void changeEditOperation() {
+        EditMode editMode = ((EditModeCapable) codeArea).getEditMode();
+        if (editMode == EditMode.EXPANDING || editMode == EditMode.CAPPED) {
+            EditOperation editOperation = ((EditModeCapable) codeArea).getEditOperation();
+            switch (editOperation) {
+                case INSERT: {
+                    ((EditModeCapable) codeArea).setEditOperation(EditOperation.OVERWRITE);
+                    break;
+                }
+                case OVERWRITE: {
+                    ((EditModeCapable) codeArea).setEditOperation(EditOperation.INSERT);
+                    break;
+                }
+            }
+        }
     }
 
     @ParametersAreNonnullByDefault
