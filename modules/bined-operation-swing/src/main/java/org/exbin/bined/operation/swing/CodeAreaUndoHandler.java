@@ -270,9 +270,7 @@ public class CodeAreaUndoHandler implements BinaryDataUndoHandler {
 
     private void undoUpdated() {
         codeArea.notifyDataChanged();
-        listeners.forEach((listener) -> {
-            listener.undoCommandPositionChanged();
-        });
+        listeners.forEach(BinaryDataUndoUpdateListener::undoCommandPositionChanged);
     }
 
     @Override

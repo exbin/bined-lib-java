@@ -193,6 +193,7 @@ public class DefaultCodeAreaCaret implements CodeAreaCaret {
         }
     }
 
+    @ParametersAreNonnullByDefault
     private class Blink implements ActionListener {
 
         @Override

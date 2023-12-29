@@ -173,8 +173,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         scrollPanel.setViewportView(dataView);
         JViewport viewport = scrollPanel.getViewport();
         viewport.setOpaque(false);
-        scrolling.setHorizontalExtentChangeListener(() -> horizontalExtentChanged());
-        scrolling.setVerticalExtentChangeListener(() -> verticalExtentChanged());
+        scrolling.setHorizontalExtentChangeListener(this::horizontalExtentChanged);
+        scrolling.setVerticalExtentChangeListener(this::verticalExtentChanged);
 
         codeAreaMouseListener = new DefaultCodeAreaMouseListener(codeArea, scrollPanel);
         viewport.addMouseListener(codeAreaMouseListener);
@@ -203,7 +203,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
                 recomputeLayout();
             }
         };
-        codeAreaDataChangeListener = () -> dataChanged();
+        codeAreaDataChangeListener = this::dataChanged;
         DefaultCodeAreaPainter.this.rebuildColors();
     }
 
@@ -656,7 +656,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
 
         if (backgroundPaintMode == BasicBackgroundPaintMode.STRIPED) {
             long dataPosition = scrollPosition.getRowPosition() * bytesPerRow + ((scrollPosition.getRowPosition() & 1) > 0 ? 0 : bytesPerRow);
-            int stripePositionY = dataViewRect.y - scrollPosition.getRowOffset() + (int) ((scrollPosition.getRowPosition() & 1) > 0 ? 0 : rowHeight);
+            int stripePositionY = dataViewRect.y - scrollPosition.getRowOffset() + ((scrollPosition.getRowPosition() & 1) > 0 ? 0 : rowHeight);
             g.setColor(colorsProfile.getAlternateBackground());
             for (int row = 0; row <= rowsPerRect / 2; row++) {
                 if (dataPosition > dataSize) {

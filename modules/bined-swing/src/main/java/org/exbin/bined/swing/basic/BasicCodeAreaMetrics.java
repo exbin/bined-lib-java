@@ -48,7 +48,7 @@ public class BasicCodeAreaMetrics {
             fontHeight = fontMetrics.getHeight();
             rowHeight = fontHeight;
 
-            /**
+            /*
              * Use small 'w' character to guess normal font width.
              */
             characterWidth = fontMetrics.charWidth('m');

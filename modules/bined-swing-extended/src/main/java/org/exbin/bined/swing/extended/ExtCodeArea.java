@@ -362,9 +362,7 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
         }
 
         Optional<CodeAreaScrollPosition> revealScrollPosition = painter.computeRevealScrollPosition(caretPosition);
-        if (revealScrollPosition.isPresent()) {
-            setScrollPosition(revealScrollPosition.get());
-        }
+        revealScrollPosition.ifPresent(this::setScrollPosition);
     }
 
     public void revealPosition(long dataPosition, int dataOffset, CodeAreaSection section) {
@@ -384,9 +382,7 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
         }
 
         Optional<CodeAreaScrollPosition> centerOnScrollPosition = painter.computeCenterOnScrollPosition(caretPosition);
-        if (centerOnScrollPosition.isPresent()) {
-            setScrollPosition(centerOnScrollPosition.get());
-        }
+        centerOnScrollPosition.ifPresent(this::setScrollPosition);
     }
 
     public void centerOnPosition(long dataPosition, int dataOffset, CodeAreaSection section) {
@@ -820,22 +816,16 @@ public class ExtCodeArea extends CodeAreaCore implements ExtendedCodeArea, CodeA
     }
 
     public void notifySelectionChanged() {
-        selectionChangedListeners.forEach((selectionChangedListener) -> {
-            selectionChangedListener.selectionChanged();
-        });
+        selectionChangedListeners.forEach(SelectionChangedListener::selectionChanged);
     }
 
     protected void notifyCaretMoved() {
-        caretMovedListeners.forEach((caretMovedListener) -> {
-            caretMovedListener.caretMoved(caret.getCaretPosition());
-        });
+        caretMovedListeners.forEach((caretMovedListener) -> caretMovedListener.caretMoved(caret.getCaretPosition()));
     }
 
     protected void notifyScrolled() {
         painter.resetLayout();
-        scrollingListeners.forEach((scrollingListener) -> {
-            scrollingListener.scrolled();
-        });
+        scrollingListeners.forEach(ScrollingListener::scrolled);
     }
 
     @Override

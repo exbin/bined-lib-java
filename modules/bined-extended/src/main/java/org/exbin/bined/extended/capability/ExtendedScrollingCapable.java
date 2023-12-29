@@ -68,7 +68,7 @@ public interface ExtendedScrollingCapable {
     ScrollBarVisibility getHorizontalScrollBarVisibility();
 
     /**
-     * Sets horizotal scrollbar visibility mode.
+     * Sets horizontal scrollbar visibility mode.
      *
      * @param horizontalScrollBarVisibility scrollbar visibility mode
      */

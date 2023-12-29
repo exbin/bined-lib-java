@@ -224,11 +224,11 @@ public class CodeAreaUtils {
                 for (int i = code.length() - 1; i >= 0; i--) {
                     char codeChar = code.charAt(i);
                     if (codeChar >= '0' && codeChar <= '9') {
-                        result |= bitMask * (codeChar - '0');
+                        result |= (byte) (bitMask * (codeChar - '0'));
                     } else if (codeChar >= 'a' && codeChar <= 'f') {
-                        result |= bitMask * (codeChar + 10 - 'a');
+                        result |= (byte) (bitMask * (codeChar + 10 - 'a'));
                     } else if (codeChar >= 'A' && codeChar <= 'F') {
-                        result |= bitMask * (codeChar + 10 - 'A');
+                        result |= (byte) (bitMask * (codeChar + 10 - 'A'));
                     } else {
                         throw new IllegalArgumentException("Invalid character " + codeChar);
                     }
@@ -342,7 +342,7 @@ public class CodeAreaUtils {
     }
 
     /**
-     * Return true if provided character is valid for given code type and
+     * Returns true if provided character is valid for given code type and
      * position.
      *
      * @param keyValue keyboard key value

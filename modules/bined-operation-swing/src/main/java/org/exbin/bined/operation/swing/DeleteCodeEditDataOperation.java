@@ -106,7 +106,7 @@ public class DeleteCodeEditDataOperation extends CodeEditDataOperation {
     @Nonnull
     @Override
     public CodeAreaOperation[] generateUndo() {
-        InsertDataOperation insertOperation = new InsertDataOperation(codeArea, position, 0, (EditableBinaryData) undoData.copy());
+        InsertDataOperation insertOperation = new InsertDataOperation(codeArea, position, 0, undoData.copy());
         return new CodeAreaOperation[]{insertOperation};
     }
 

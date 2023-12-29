@@ -15,6 +15,7 @@
  */
 package org.exbin.bined.swing;
 
+import java.awt.AWTEvent;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.FocusEvent;
@@ -23,10 +24,15 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
+import javax.accessibility.Accessible;
+import javax.accessibility.AccessibleContext;
+import javax.accessibility.AccessibleRole;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.swing.JComponent;
+import javax.swing.event.CaretEvent;
+import javax.swing.event.CaretListener;
 import org.exbin.bined.CodeAreaControl;
 import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.DataChangedListener;
@@ -40,7 +46,8 @@ import org.exbin.auxiliary.binary_data.EmptyBinaryData;
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public abstract class CodeAreaCore extends JComponent implements CodeAreaControl {
+// Java 9+ @SwingContainer(false)
+public abstract class CodeAreaCore extends JComponent implements CodeAreaControl, Accessible {
 
     @Nonnull
     private BinaryData contentData = EmptyBinaryData.INSTANCE;
@@ -62,6 +69,7 @@ public abstract class CodeAreaCore extends JComponent implements CodeAreaControl
     }
 
     private void init() {
+        enableEvents(AWTEvent.KEY_EVENT_MASK);
         setFocusable(true);
         setFocusTraversalKeysEnabled(false);
         registerControlListeners();
@@ -183,6 +191,15 @@ public abstract class CodeAreaCore extends JComponent implements CodeAreaControl
         return contentData.getDataSize();
     }
 
+    @Nonnull
+    @Override
+    public AccessibleContext getAccessibleContext() {
+        if (accessibleContext == null) {
+            accessibleContext = new AccessibleComponent();
+        }
+        return accessibleContext;
+    }
+
     /**
      * Notifies component, that the internal data was changed.
      */
@@ -201,4 +218,27 @@ public abstract class CodeAreaCore extends JComponent implements CodeAreaControl
     public abstract void resetPainter();
 
     public abstract void updateLayout();
+
+    @ParametersAreNonnullByDefault
+    public class AccessibleComponent extends AccessibleJComponent implements CaretListener {
+
+        @Override
+        public void caretUpdate(CaretEvent e) {
+            int caretPosition = 0;
+            firePropertyChange(ACCESSIBLE_CARET_PROPERTY, caretPosition, caretPosition);
+        }
+
+        /**
+         * Gets the role of this object.
+         *
+         * @return an instance of AccessibleRole describing the role of the
+         * object (AccessibleRole.TEXT)
+         * @see AccessibleRole
+         */
+        @Nonnull
+        @Override
+        public AccessibleRole getAccessibleRole() {
+            return AccessibleRole.TEXT;
+        }
+    }
 }

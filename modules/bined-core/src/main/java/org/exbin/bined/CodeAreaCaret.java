@@ -27,7 +27,7 @@ public interface CodeAreaCaret {
 
     /**
      * Returns caret position.
-     *
+     * <p>
      * Returned value should not be cast for editing.
      *
      * @return caret position

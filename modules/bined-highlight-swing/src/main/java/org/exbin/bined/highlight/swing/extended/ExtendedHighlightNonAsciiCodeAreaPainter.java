@@ -119,9 +119,6 @@ public class ExtendedHighlightNonAsciiCodeAreaPainter extends ExtendedHighlightC
                 long dataPosition = rowDataPosition + byteOnRow;
                 if (dataPosition < codeArea.getDataSize()) {
                     BinaryData contentData = codeArea.getContentData();
-                    if (contentData == null) {
-                        throw new IllegalStateException("Missing data when nonnull size reported");
-                    }
                     byte value = contentData.getByte(dataPosition);
                     if (value < 0) {
                         Color upperCodesColor = getColorsProfile().getColor(CodeAreaColorizationColorType.UPPER_CODES_COLOR);
@@ -146,9 +143,6 @@ public class ExtendedHighlightNonAsciiCodeAreaPainter extends ExtendedHighlightC
                 long dataPosition = rowDataPosition + byteOnRow;
                 if (dataPosition < codeArea.getDataSize()) {
                     BinaryData contentData = codeArea.getContentData();
-                    if (contentData == null) {
-                        throw new IllegalStateException("Missing data when nonnull size reported");
-                    }
                     byte value = contentData.getByte(dataPosition);
                     if (value < 0) {
                         Color upperCodesBackground = getColorsProfile().getColor(CodeAreaColorizationColorType.UPPER_CODES_BACKGROUND);
