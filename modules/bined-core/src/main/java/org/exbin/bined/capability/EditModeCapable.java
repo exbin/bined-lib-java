@@ -30,13 +30,6 @@ import org.exbin.bined.EditModeChangedListener;
 public interface EditModeCapable {
 
     /**
-     * Returns true if data are editable.
-     *
-     * @return true if editable
-     */
-    boolean isEditable();
-
-    /**
      * Returns edit mode.
      *
      * @return edit mode

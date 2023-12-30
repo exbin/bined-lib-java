@@ -165,6 +165,10 @@ public abstract class CodeAreaCore extends JComponent implements CodeAreaControl
         return false;
     }
 
+    public boolean isEditable() {
+        return false;
+    }
+
     @Nullable
     @Override
     public BinaryData getContentData() {

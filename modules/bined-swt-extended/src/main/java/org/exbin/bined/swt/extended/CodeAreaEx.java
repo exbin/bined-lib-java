@@ -762,6 +762,7 @@ public class CodeAreaEx extends Composite implements CodeAreaControl {
         redraw();
     }
 
+    @Override
     public long getDataSize() {
         return data == null ? 0 : data.getDataSize();
     }

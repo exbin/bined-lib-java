@@ -190,6 +190,10 @@ public abstract class CodeAreaCore extends Composite implements CodeAreaControl 
         return false;
     }
 
+    public boolean isEditable() {
+        return false;
+    }
+
     @Nonnull
     @Override
     public BinaryData getContentData() {

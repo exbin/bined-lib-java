@@ -149,6 +149,10 @@ public abstract class CodeAreaCore extends Pane implements CodeAreaControl {
         return false;
     }
 
+    public boolean isEditable() {
+        return false;
+    }
+
     @Nonnull
     @Override
     public BinaryData getContentData() {

@@ -585,9 +585,6 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
         SelectionRange selection = ((SelectionCapable) codeArea).getSelection();
         if (!selection.isEmpty()) {
             BinaryData data = codeArea.getContentData();
-            if (data == null) {
-                return;
-            }
 
             long first = selection.getFirst();
             long last = selection.getLast();
@@ -1107,7 +1104,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
 
     @Override
     public boolean checkEditAllowed() {
-        return ((EditModeCapable) codeArea).isEditable();
+        return codeArea.isEditable();
     }
 
     @Nonnull

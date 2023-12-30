@@ -876,7 +876,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
     @Override
     public boolean checkEditAllowed() {
-        return ((EditModeCapable) codeArea).isEditable();
+        return codeArea.isEditable();
     }
 
     @Nonnull

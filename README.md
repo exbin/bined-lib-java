@@ -1,7 +1,7 @@
-BinEd - Binary/Hexadecimal Components Library
-=============================================
+BinEd - Binary/Hex Viewer/Editor Component Library
+==================================================
 
-Library for hexadecimal viewer/editor components written in Java.
+Library for hex viewer/editor components written in Java.
 
 Homepage: https://bined.exbin.org/library  
 

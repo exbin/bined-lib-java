@@ -709,9 +709,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
                 rowStart = (int) -dataPosition;
             }
             BinaryData data = codeArea.getContentData();
-            if (data == null) {
-                throw new IllegalStateException("Missing data on nonzero data size");
-            }
             data.copyToArray(dataPosition + rowStart, rowDataCache.rowData, rowStart, rowDataSize - rowStart);
             if (dataSize - dataPosition < rowBytesLimit) {
                 rowBytesLimit = (int) (dataSize - dataPosition);

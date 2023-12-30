@@ -469,9 +469,6 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
     private void deleteSelection() {
         BinaryData data = codeArea.getContentData();
-        if (data == null) {
-            return;
-        }
         if (!(data instanceof EditableBinaryData)) {
             throw new IllegalStateException("Data is not editable");
         }
@@ -510,9 +507,6 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         SelectionRange selection = ((SelectionCapable) codeArea).getSelection();
         if (!selection.isEmpty()) {
             BinaryData data = codeArea.getContentData();
-            if (data == null) {
-                return;
-            }
 
             long first = selection.getFirst();
             long last = selection.getLast();
@@ -529,9 +523,6 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         SelectionRange selection = ((SelectionCapable) codeArea).getSelection();
         if (!selection.isEmpty()) {
             BinaryData data = codeArea.getContentData();
-            if (data == null) {
-                return;
-            }
 
             long first = selection.getFirst();
             long last = selection.getLast();
@@ -862,7 +853,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
     @Override
     public boolean checkEditAllowed() {
-        return ((EditModeCapable) codeArea).isEditable();
+        return codeArea.isEditable();
     }
 
     @Nonnull

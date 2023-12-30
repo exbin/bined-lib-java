@@ -957,9 +957,6 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
                 rowStart = (int) -dataPosition;
             }
             BinaryData data = codeArea.getContentData();
-            if (data == null) {
-                throw new IllegalStateException("Missing data on nonzero data size");
-            }
             data.copyToArray(dataPosition + rowStart, rowDataCache.rowData, rowStart, rowDataSize - rowStart);
         }
 
@@ -1543,7 +1540,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
                             charDataLength = (int) (dataSize - dataPosition);
                         }
 
-                        if (contentData == null) {
+                        if (contentData.isEmpty()) {
                             cursorDataCache.cursorChars[0] = SPACE_CHAR;
                         } else {
                             contentData.copyToArray(dataPosition, cursorDataCache.cursorData, 0, charDataLength);
@@ -1557,7 +1554,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
                             buildCharMapping(charset);
                         }
 
-                        if (contentData == null) {
+                        if (contentData.isEmpty()) {
                             cursorDataCache.cursorChars[0] = SPACE_CHAR;
                         } else {
                             cursorDataCache.cursorChars[0] = charMapping[contentData.getByte(dataPosition) & 0xFF];
@@ -1570,7 +1567,7 @@ public class ExtendedCodeAreaPainter implements CodeAreaPainter, ColorsProfileCa
 //                    int byteOffset = structure.computePositionByte(charPos);
 //                    int codeCharPos = structure.computeFirstCodeHalfCharPos(byteOffset);
 
-                    if (contentData != null && dataPosition < dataSize) {
+                    if (dataPosition < dataSize) {
                         byte dataByte = contentData.getByte(dataPosition);
                         CodeAreaUtils.byteToCharsCode(dataByte, codeType, cursorDataCache.cursorChars, 0, codeCharactersCase);
                     } else {

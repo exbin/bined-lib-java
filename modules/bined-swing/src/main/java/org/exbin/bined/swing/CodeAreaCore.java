@@ -27,12 +27,12 @@ import java.util.List;
 import javax.accessibility.Accessible;
 import javax.accessibility.AccessibleContext;
 import javax.accessibility.AccessibleRole;
+import javax.accessibility.AccessibleState;
+import javax.accessibility.AccessibleStateSet;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.swing.JComponent;
-import javax.swing.event.CaretEvent;
-import javax.swing.event.CaretListener;
 import org.exbin.bined.CodeAreaControl;
 import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.DataChangedListener;
@@ -47,6 +47,7 @@ import org.exbin.auxiliary.binary_data.EmptyBinaryData;
  */
 @ParametersAreNonnullByDefault
 // Java 9+ @SwingContainer(false)
+// TODO: Extended class from JTextComponent to utilize on screen keyboard handling
 public abstract class CodeAreaCore extends JComponent implements CodeAreaControl, Accessible {
 
     @Nonnull
@@ -70,8 +71,8 @@ public abstract class CodeAreaCore extends JComponent implements CodeAreaControl
 
     private void init() {
         enableEvents(AWTEvent.KEY_EVENT_MASK);
+        setName("CodeArea");
         setFocusable(true);
-        setFocusTraversalKeysEnabled(false);
         registerControlListeners();
     }
 
@@ -174,6 +175,10 @@ public abstract class CodeAreaCore extends JComponent implements CodeAreaControl
         return false;
     }
 
+    public boolean isEditable() {
+        return false;
+    }
+
     @Nonnull
     @Override
     public BinaryData getContentData() {
@@ -220,13 +225,7 @@ public abstract class CodeAreaCore extends JComponent implements CodeAreaControl
     public abstract void updateLayout();
 
     @ParametersAreNonnullByDefault
-    public class AccessibleComponent extends AccessibleJComponent implements CaretListener {
-
-        @Override
-        public void caretUpdate(CaretEvent e) {
-            int caretPosition = 0;
-            firePropertyChange(ACCESSIBLE_CARET_PROPERTY, caretPosition, caretPosition);
-        }
+    public class AccessibleComponent extends AccessibleJComponent {
 
         /**
          * Gets the role of this object.
@@ -239,6 +238,16 @@ public abstract class CodeAreaCore extends JComponent implements CodeAreaControl
         @Override
         public AccessibleRole getAccessibleRole() {
             return AccessibleRole.TEXT;
+        }
+
+        @Override
+        public AccessibleStateSet getAccessibleStateSet() {
+            AccessibleStateSet states = super.getAccessibleStateSet();
+            states.add(AccessibleState.MULTI_LINE);
+            if (CodeAreaCore.this.isEditable()) {
+                states.add(AccessibleState.EDITABLE);
+            }
+            return states;
         }
     }
 }
