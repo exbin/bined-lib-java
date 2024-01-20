@@ -27,6 +27,6 @@ dependencies {
     api moduleDep('BinedJava', 'org.exbin.bined', 'bined-extended')
     implementation moduleDep('ExbinAuxiliaryJava', 'org.exbin.auxiliary', 'binary_data')
     implementation group: 'org.eclipse.swt', name: 'org.eclipse.swt.gtk.linux.x86_64', version: '4.3'
-    testImplementation group : 'junit', name: 'junit', version: '4.10'
+    testImplementation group : 'junit', name: 'junit', version: '4.13.2'
     testImplementation project(path: moduleDepPath('BinedJava', 'bined-core'), configuration: 'tests')
 }

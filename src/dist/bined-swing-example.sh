@@ -1,2 +1,2 @@
 #!/bin/sh
-java -jar bined-swing-example.jar $*
+java -jar bined-swing-example.jar "$@"

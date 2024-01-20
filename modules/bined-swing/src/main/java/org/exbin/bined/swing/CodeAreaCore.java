@@ -73,6 +73,7 @@ public abstract class CodeAreaCore extends JComponent implements CodeAreaControl
         enableEvents(AWTEvent.KEY_EVENT_MASK);
         setName("CodeArea");
         setFocusable(true);
+        setFocusTraversalKeysEnabled(false);
         registerControlListeners();
     }
 
