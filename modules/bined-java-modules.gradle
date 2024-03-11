@@ -74,7 +74,7 @@ publishing {
                 archiveClassifier = 'sources'
             }
             artifact (javadocJar) {
-                archiveClassifier = 'javadoc'
+                classifier = 'javadoc'
             }
 
             pom.withXml {
