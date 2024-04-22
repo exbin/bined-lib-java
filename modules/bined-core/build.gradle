@@ -2,7 +2,6 @@ plugins {
     id 'java-library'
     id 'maven-publish'
     id 'signing'
-    id 'maven'
 }
 
 group = 'org.exbin.bined'
