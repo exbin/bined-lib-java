@@ -16,7 +16,6 @@
 package org.exbin.bined.operation;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 /**
  * Interface for binary data operation.
@@ -26,33 +25,20 @@ import javax.annotation.Nullable;
 public interface BinaryDataOperation {
 
     /**
-     * Returns caption as text.
+     * Returns operation name.
      *
-     * @return text caption
+     * @return operation name
      */
     @Nonnull
-    String getCaption();
+    String getName();
 
     /**
-     * Performs operation on given document.
-     *
-     * @throws BinaryDataOperationException for operation handling issues
+     * Performs operation.
      */
-    void execute() throws BinaryDataOperationException;
+    void execute();
 
     /**
-     * Performs operation on given document and returns undo operation.
-     *
-     * @return undo operation or null if not available
-     * @throws BinaryDataOperationException for operation handling issues
+     * Disposes of the operation's resources.
      */
-    @Nullable
-    BinaryDataOperation executeWithUndo() throws BinaryDataOperationException;
-
-    /**
-     * Disposes command.
-     *
-     * @throws BinaryDataOperationException for operation handling issues
-     */
-    void dispose() throws BinaryDataOperationException;
+    void dispose();
 }

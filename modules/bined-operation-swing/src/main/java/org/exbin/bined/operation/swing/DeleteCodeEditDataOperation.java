@@ -21,7 +21,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.CodeType;
 import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.capability.CodeTypeCapable;
-import org.exbin.bined.operation.BinaryDataOperationException;
 import org.exbin.bined.swing.CodeAreaCore;
 import org.exbin.auxiliary.binary_data.EditableBinaryData;
 
@@ -115,7 +114,7 @@ public class DeleteCodeEditDataOperation extends CodeEditDataOperation {
     }
 
     @Override
-    public void dispose() throws BinaryDataOperationException {
+    public void dispose() {
         super.dispose();
         if (undoData != null) {
             undoData.dispose();

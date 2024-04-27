@@ -19,10 +19,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.DefaultCodeAreaCaretPosition;
-import org.exbin.bined.operation.BinaryDataOperation;
-import org.exbin.bined.operation.BinaryDataOperationException;
 import org.exbin.bined.swing.CodeAreaCore;
 import org.exbin.bined.CodeAreaCaretPosition;
+import org.exbin.bined.operation.UndoableBinaryDataOperation;
 
 /**
  * Abstract class for operation on code area component.
@@ -30,7 +29,7 @@ import org.exbin.bined.CodeAreaCaretPosition;
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public abstract class CodeAreaOperation implements BinaryDataOperation {
+public abstract class CodeAreaOperation implements UndoableBinaryDataOperation {
 
     @Nonnull
     protected final CodeAreaCore codeArea;
@@ -68,7 +67,7 @@ public abstract class CodeAreaOperation implements BinaryDataOperation {
      */
     @Nonnull
     @Override
-    public String getCaption() {
+    public String getName() {
         String caption = getType().getCaption();
         return caption == null ? "" : caption;
     }
@@ -82,25 +81,14 @@ public abstract class CodeAreaOperation implements BinaryDataOperation {
         this.backPosition.setPosition(backPosition);
     }
 
-    /**
-     * Performs operation on given document.
-     *
-     * @throws BinaryDataOperationException for operation handling issues
-     */
     @Override
-    public void execute() throws BinaryDataOperationException {
+    public void execute() {
         execute(ExecutionType.NORMAL);
     }
 
-    /**
-     * Performs operation on given document and returns undo operation.
-     *
-     * @return undo operation or null if not available
-     * @throws BinaryDataOperationException for operation handling issues
-     */
-    @Nullable
+    @Nonnull
     @Override
-    public CodeAreaOperation executeWithUndo() throws BinaryDataOperationException {
+    public CodeAreaOperation executeWithUndo() {
         return execute(ExecutionType.WITH_UNDO);
     }
 
@@ -116,14 +104,12 @@ public abstract class CodeAreaOperation implements BinaryDataOperation {
     }
 
     /**
-     * Performs dispose of the operation.
+     * Performs dispose of the operation's resources.
      * <p>
      * Default dispose is empty.
-     *
-     * @throws BinaryDataOperationException for operation handling issues
      */
     @Override
-    public void dispose() throws BinaryDataOperationException {
+    public void dispose() {
     }
 
     public enum ExecutionType {

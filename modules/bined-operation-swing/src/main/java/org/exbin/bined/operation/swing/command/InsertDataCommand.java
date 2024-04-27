@@ -19,7 +19,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.auxiliary.binary_data.BinaryData;
 import org.exbin.bined.capability.CaretCapable;
-import org.exbin.bined.operation.BinaryDataOperationException;
 import org.exbin.bined.operation.swing.InsertDataOperation;
 import org.exbin.bined.swing.CodeAreaCore;
 
@@ -48,13 +47,13 @@ public class InsertDataCommand extends OpCodeAreaCommand {
     }
 
     @Override
-    public void redo() throws BinaryDataOperationException {
+    public void redo() {
         super.redo();
         ((CaretCapable) codeArea).setCaretPosition(position + dataLength);
     }
 
     @Override
-    public void undo() throws BinaryDataOperationException {
+    public void undo() {
         super.undo();
         ((CaretCapable) codeArea).setCaretPosition(position);
     }

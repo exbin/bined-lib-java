@@ -15,28 +15,18 @@
  */
 package org.exbin.bined.operation;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
- * Abstract code area command class.
+ * Code area undo update listener.
  *
  * @author ExBin Project (https://exbin.org)
  */
-public abstract class BinaryDataAbstractCommand implements BinaryDataCommand {
-
-    public BinaryDataAbstractCommand() {
-    }
+@ParametersAreNonnullByDefault
+public interface BinaryDataCommandSequenceListener {
 
     /**
-     * Default execution method performs simply redo operation.
+     * Command sequence changed.
      */
-    @Override
-    public void execute() {
-        redo();
-    }
-
-    /**
-     * Default dispose method do nothing.
-     */
-    @Override
-    public void dispose() {
-    }
+    void sequenceChanged();
 }

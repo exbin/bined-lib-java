@@ -23,7 +23,6 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.operation.BinaryDataCommand;
 import org.exbin.bined.operation.BinaryDataCompoundCommand;
-import org.exbin.bined.operation.BinaryDataOperationException;
 import org.exbin.bined.swing.CodeAreaCore;
 
 /**
@@ -68,21 +67,21 @@ public class BinaryCompoundCommand extends CodeAreaCommand implements BinaryData
     }
 
     @Override
-    public void execute() throws BinaryDataOperationException {
+    public void execute() {
         for (BinaryDataCommand command : commands) {
             command.execute();
         }
     }
 
     @Override
-    public void redo() throws BinaryDataOperationException {
+    public void redo() {
         for (BinaryDataCommand command : commands) {
             command.redo();
         }
     }
 
     @Override
-    public void undo() throws BinaryDataOperationException {
+    public void undo() {
         for (int i = commands.size() - 1; i >= 0; i--) {
             BinaryDataCommand command = commands.get(i);
             command.undo();
@@ -124,7 +123,7 @@ public class BinaryCompoundCommand extends CodeAreaCommand implements BinaryData
     }
 
     @Override
-    public void dispose() throws BinaryDataOperationException {
+    public void dispose() {
         super.dispose();
         for (BinaryDataCommand command : commands) {
             command.dispose();

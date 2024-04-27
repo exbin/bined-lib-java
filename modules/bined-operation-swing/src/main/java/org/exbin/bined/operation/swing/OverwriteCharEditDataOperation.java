@@ -22,7 +22,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.capability.CharsetCapable;
-import org.exbin.bined.operation.BinaryDataOperationException;
 import org.exbin.bined.swing.CodeAreaCore;
 import org.exbin.auxiliary.binary_data.EditableBinaryData;
 import org.exbin.bined.capability.SelectionCapable;
@@ -126,7 +125,7 @@ public class OverwriteCharEditDataOperation extends CharEditDataOperation {
     }
 
     @Override
-    public void dispose() throws BinaryDataOperationException {
+    public void dispose() {
         super.dispose();
         if (undoData != null) {
             undoData.dispose();

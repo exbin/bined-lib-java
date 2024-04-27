@@ -15,8 +15,6 @@
  */
 package org.exbin.bined.operation;
 
-import java.util.Date;
-import java.util.Optional;
 import javax.annotation.Nonnull;
 
 /**
@@ -27,38 +25,27 @@ import javax.annotation.Nonnull;
 public interface BinaryDataCommand {
 
     /**
-     * Returns caption as text.
+     * Returns command name.
      *
-     * @return text caption
+     * @return name
      */
     @Nonnull
-    String getCaption();
+    String getName();
 
     /**
      * Performs operation on given document.
-     *
-     * @throws BinaryDataOperationException for operation handling issues
      */
-    void execute() throws BinaryDataOperationException;
-
-    /**
-     * Performs update of command use information.
-     */
-    void use();
+    void execute();
 
     /**
      * Performs redo on given document.
-     *
-     * @throws BinaryDataOperationException for operation handling issues
      */
-    void redo() throws BinaryDataOperationException;
+    void redo();
 
     /**
      * Performs undo operation on given document.
-     *
-     * @throws BinaryDataOperationException for operation handling issues
      */
-    void undo() throws BinaryDataOperationException;
+    void undo();
 
     /**
      * Returns true if command support undo operation.
@@ -69,16 +56,6 @@ public interface BinaryDataCommand {
 
     /**
      * Disposes command.
-     *
-     * @throws BinaryDataOperationException for operation handling issues
      */
-    void dispose() throws BinaryDataOperationException;
-
-    /**
-     * Returns time of command execution.
-     *
-     * @return time
-     */
-    @Nonnull
-    Optional<Date> getExecutionTime();
+    void dispose();
 }

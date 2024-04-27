@@ -18,7 +18,6 @@ package org.exbin.bined.operation.swing.command;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.CodeAreaUtils;
-import org.exbin.bined.operation.BinaryDataOperationException;
 import org.exbin.bined.operation.BinaryDataOperationListener;
 import org.exbin.bined.operation.swing.CodeAreaOperation;
 import org.exbin.bined.operation.swing.CodeAreaOperationEvent;
@@ -66,7 +65,7 @@ public class EditCodeDataCommand extends EditDataCommand {
     }
 
     @Override
-    public void undo() throws BinaryDataOperationException {
+    public void undo() {
         if (operations.length == 1 && operations[0] instanceof CodeEditDataOperation) {
             CodeEditDataOperation operation = (CodeEditDataOperation) operations[0];
             operations = operation.generateUndo();
@@ -90,7 +89,7 @@ public class EditCodeDataCommand extends EditDataCommand {
     }
 
     @Override
-    public void redo() throws BinaryDataOperationException {
+    public void redo() {
         if (!operationPerformed) {
             for (int i = 0; i < operations.length; i++) {
                 CodeAreaOperation operation = operations[i];
@@ -144,7 +143,7 @@ public class EditCodeDataCommand extends EditDataCommand {
     }
 
     @Override
-    public void dispose() throws BinaryDataOperationException {
+    public void dispose() {
         super.dispose();
         if (operations != null) {
             for (CodeAreaOperation operation : operations) {

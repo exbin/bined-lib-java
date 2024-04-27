@@ -72,11 +72,10 @@ import org.exbin.auxiliary.binary_data.paged.PagedData;
 import org.exbin.bined.ClipboardHandlingMode;
 import org.exbin.bined.CodeAreaCaretPosition;
 import org.exbin.bined.CodeAreaSection;
-import static org.exbin.bined.EditOperation.INSERT;
-import static org.exbin.bined.EditOperation.OVERWRITE;
 import org.exbin.bined.basic.EnterKeyHandlingMode;
 import org.exbin.bined.basic.TabKeyHandlingMode;
 import org.exbin.bined.capability.EditModeCapable;
+import org.exbin.bined.operation.undo.BinaryDataUndoableCommandSequence;
 
 /**
  * Command handler for undo/redo aware binary editor editing.
@@ -108,10 +107,10 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
     private DataFlavor binedDataFlavor;
     private DataFlavor binaryDataFlavor;
 
-    protected final BinaryDataUndoHandler undoHandler;
+    protected final BinaryDataUndoableCommandSequence undoHandler;
     protected EditDataCommand editCommand = null;
 
-    public CodeAreaOperationCommandHandler(CodeAreaCore codeArea, BinaryDataUndoHandler undoHandler) {
+    public CodeAreaOperationCommandHandler(CodeAreaCore codeArea, BinaryDataUndoableCommandSequence undoHandler) {
         this.codeArea = codeArea;
         this.undoHandler = undoHandler;
 
@@ -342,11 +341,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
                     if (deleteSelectionCommand != null) {
                         BinaryCompoundCommand compoundCommand = new BinaryCompoundCommand(codeArea);
                         compoundCommand.appendCommand(deleteSelectionCommand);
-                        try {
-                            undoHandler.execute(compoundCommand);
-                        } catch (BinaryDataOperationException ex) {
-                            Logger.getLogger(CodeAreaOperationCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
-                        }
+                        undoHandler.execute(compoundCommand);
                         long dataPosition = ((CaretCapable) codeArea).getDataPosition();
                         int codeOffset = ((CaretCapable) codeArea).getCaretPosition().getCodeOffset();
                         editCommand = new EditCodeDataCommand(codeArea, EditCodeDataCommand.EditCommandType.OVERWRITE, dataPosition, codeOffset);
@@ -355,7 +350,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
                         long dataPosition = ((CaretCapable) codeArea).getDataPosition();
                         int codeOffset = ((CaretCapable) codeArea).getCaretPosition().getCodeOffset();
                         editCommand = new EditCodeDataCommand(codeArea, EditCodeDataCommand.EditCommandType.OVERWRITE, dataPosition, codeOffset);
-                        undoHandler.addCommand(editCommand);
+                        undoHandler.execute(editCommand);
                     }
                 }
 
@@ -368,11 +363,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
                     if (deleteSelectionCommand != null) {
                         BinaryCompoundCommand compoundCommand = new BinaryCompoundCommand(codeArea);
                         compoundCommand.appendCommand(deleteSelectionCommand);
-                        try {
-                            undoHandler.execute(compoundCommand);
-                        } catch (BinaryDataOperationException ex) {
-                            Logger.getLogger(CodeAreaOperationCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
-                        }
+                        undoHandler.execute(compoundCommand);
                         long dataPosition = ((CaretCapable) codeArea).getDataPosition();
                         int codeOffset = ((CaretCapable) codeArea).getCaretPosition().getCodeOffset();
                         editCommand = new EditCodeDataCommand(codeArea, EditCharDataCommand.EditCommandType.INSERT, dataPosition, codeOffset);
@@ -381,7 +372,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
                         long dataPosition = ((CaretCapable) codeArea).getDataPosition();
                         int codeOffset = ((CaretCapable) codeArea).getCaretPosition().getCodeOffset();
                         editCommand = new EditCodeDataCommand(codeArea, EditCharDataCommand.EditCommandType.INSERT, dataPosition, codeOffset);
-                        undoHandler.addCommand(editCommand);
+                        undoHandler.execute(editCommand);
                     }
                 }
 
@@ -415,18 +406,14 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
                     if (deleteCommand != null) {
                         BinaryCompoundCommand compoundCommand = new BinaryCompoundCommand(codeArea);
                         compoundCommand.appendCommand(deleteCommand);
-                        try {
-                            undoHandler.execute(compoundCommand);
-                        } catch (BinaryDataOperationException ex) {
-                            Logger.getLogger(CodeAreaOperationCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
-                        }
+                        undoHandler.execute(compoundCommand);
                         long dataPosition = ((CaretCapable) codeArea).getDataPosition();
                         editCommand = new EditCharDataCommand(codeArea, EditCodeDataCommand.EditCommandType.OVERWRITE, dataPosition);
                         compoundCommand.appendCommand(editCommand);
                     } else {
                         long dataPosition = ((CaretCapable) codeArea).getDataPosition();
                         editCommand = new EditCharDataCommand(codeArea, EditCodeDataCommand.EditCommandType.OVERWRITE, dataPosition);
-                        undoHandler.addCommand(editCommand);
+                        undoHandler.execute(editCommand);
                     }
                 }
 
@@ -439,18 +426,14 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
                     if (deleteCommand != null) {
                         BinaryCompoundCommand compoundCommand = new BinaryCompoundCommand(codeArea);
                         compoundCommand.appendCommand(deleteCommand);
-                        try {
-                            undoHandler.execute(compoundCommand);
-                        } catch (BinaryDataOperationException ex) {
-                            Logger.getLogger(CodeAreaOperationCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
-                        }
+                        undoHandler.execute(compoundCommand);
                         long dataPosition = ((CaretCapable) codeArea).getDataPosition();
                         editCommand = new EditCharDataCommand(codeArea, EditCodeDataCommand.EditCommandType.INSERT, dataPosition);
                         compoundCommand.appendCommand(editCommand);
                     } else {
                         long dataPosition = ((CaretCapable) codeArea).getDataPosition();
                         editCommand = new EditCharDataCommand(codeArea, EditCodeDataCommand.EditCommandType.INSERT, dataPosition);
-                        undoHandler.addCommand(editCommand);
+                        undoHandler.execute(editCommand);
                     }
                 }
 
@@ -526,13 +509,9 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
     private void deleteAction(char keyChar) {
         if (codeArea.hasSelection()) {
             DeleteSelectionCommand deleteSelectionCommand = new DeleteSelectionCommand(codeArea);
-            try {
-                undoHandler.execute(deleteSelectionCommand);
-                undoSequenceBreak();
-                codeArea.notifyDataChanged();
-            } catch (BinaryDataOperationException ex) {
-                Logger.getLogger(CodeAreaOperationCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            undoHandler.execute(deleteSelectionCommand);
+            undoSequenceBreak();
+            codeArea.notifyDataChanged();
         } else {
             if (editCommand != null && editCommand.wasReverted()) {
                 editCommand = null;
@@ -546,7 +525,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
                         || editCommand.getCommandType() != EditCodeDataCommand.EditCommandType.DELETE
                         || !isAppendAllowed()) {
                     editCommand = new EditCodeDataCommand(codeArea, EditCodeDataCommand.EditCommandType.DELETE, dataPosition, 0);
-                    undoHandler.addCommand(editCommand);
+                    undoHandler.execute(editCommand);
                 }
 
                 ((EditCodeDataCommand) editCommand).appendEdit((byte) keyChar);
@@ -556,7 +535,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
                         || editCommand.getCommandType() != EditCodeDataCommand.EditCommandType.DELETE
                         || !isAppendAllowed()) {
                     editCommand = new EditCharDataCommand(codeArea, EditCharDataCommand.EditCommandType.DELETE, dataPosition);
-                    undoHandler.addCommand(editCommand);
+                    undoHandler.execute(editCommand);
                 }
 
                 ((EditCharDataCommand) editCommand).appendEdit(keyChar);
@@ -571,13 +550,9 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
             return;
         }
 
-        try {
-            undoHandler.execute(new DeleteSelectionCommand(codeArea));
-            undoSequenceBreak();
-            codeArea.notifyDataChanged();
-        } catch (BinaryDataOperationException ex) {
-            Logger.getLogger(CodeAreaOperationCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        undoHandler.execute(new DeleteSelectionCommand(codeArea));
+        undoSequenceBreak();
+        codeArea.notifyDataChanged();
     }
 
     @Override
@@ -642,13 +617,9 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
         if (!selection.isEmpty()) {
             copy();
             if (editMode == EditMode.EXPANDING) {
-                try {
-                    undoHandler.execute(new DeleteSelectionCommand(codeArea));
-                    undoSequenceBreak();
-                    codeArea.notifyDataChanged();
-                } catch (BinaryDataOperationException ex) {
-                    Logger.getLogger(CodeAreaOperationCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                undoHandler.execute(new DeleteSelectionCommand(codeArea));
+                undoSequenceBreak();
+                codeArea.notifyDataChanged();
             }
         }
     }
@@ -711,13 +682,9 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
     private void pasteBinaryData(BinaryData pastedData) {
         DeleteSelectionCommand deleteSelectionCommand = null;
         if (codeArea.hasSelection()) {
-            try {
-                deleteSelectionCommand = new DeleteSelectionCommand(codeArea);
-                deleteSelectionCommand.execute();
-                undoSequenceBreak();
-            } catch (BinaryDataOperationException ex) {
-                Logger.getLogger(CodeAreaOperationCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            deleteSelectionCommand = new DeleteSelectionCommand(codeArea);
+            deleteSelectionCommand.execute();
+            undoSequenceBreak();
         }
 
         EditMode editMode = ((EditModeCapable) codeArea).getEditMode();
@@ -758,17 +725,13 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
             return;
         }
 
-        try {
-            if (modifyCommand != null) {
-                modifyCommand.execute();
-            }
-            if (insertCommand != null) {
-                insertCommand.execute();
-            }
-            undoHandler.addCommand(pasteCommand);
-        } catch (BinaryDataOperationException ex) {
-            Logger.getLogger(CodeAreaOperationCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
+        if (modifyCommand != null) {
+            modifyCommand.execute();
         }
+        if (insertCommand != null) {
+            insertCommand.execute();
+        }
+        undoHandler.execute(pasteCommand);
 
         undoSequenceBreak();
         codeArea.notifyDataChanged();
@@ -788,12 +751,8 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
             } else if (clipboard.isDataFlavorAvailable(DataFlavor.getTextPlainUnicodeFlavor())) {
                 DeleteSelectionCommand deleteSelectionCommand = null;
                 if (codeArea.hasSelection()) {
-                    try {
-                        deleteSelectionCommand = new DeleteSelectionCommand(codeArea);
-                        deleteSelectionCommand.execute();
-                    } catch (BinaryDataOperationException ex) {
-                        Logger.getLogger(CodeAreaOperationCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+                    deleteSelectionCommand = new DeleteSelectionCommand(codeArea);
+                    deleteSelectionCommand.execute();
                 }
 
                 long dataSize = codeArea.getDataSize();
@@ -893,17 +852,13 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
                         return;
                     }
 
-                    try {
-                        if (modifyCommand != null) {
-                            modifyCommand.execute();
-                        }
-                        if (insertCommand != null) {
-                            insertCommand.execute();
-                        }
-                        undoHandler.addCommand(pasteCommand);
-                    } catch (BinaryDataOperationException ex) {
-                        Logger.getLogger(CodeAreaOperationCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
+                    if (modifyCommand != null) {
+                        modifyCommand.execute();
                     }
+                    if (insertCommand != null) {
+                        insertCommand.execute();
+                    }
+                    undoHandler.execute(pasteCommand);
 
                     undoSequenceBreak();
                     codeArea.notifyDataChanged();
@@ -991,7 +946,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
     }
 
     private boolean isAppendAllowed() {
-        return undoHandler.getCommandPosition() != undoHandler.getSyncPoint();
+        return undoHandler.getCommandPosition() != undoHandler.getSyncPosition();
     }
 
     public void changeEditOperation() {
@@ -1027,12 +982,12 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
         }
 
         @Override
-        public void execute() throws BinaryDataOperationException {
+        public void execute() {
             super.execute();
         }
 
         @Override
-        public void redo() throws BinaryDataOperationException {
+        public void redo() {
             removeCommand.redo();
             ((CaretCapable) codeArea).setCaretPosition(position);
             clearSelection();
@@ -1041,7 +996,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
         }
 
         @Override
-        public void undo() throws BinaryDataOperationException {
+        public void undo() {
             removeCommand.undo();
             clearSelection();
             ((CaretCapable) codeArea).setCaretPosition(position + size);

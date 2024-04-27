@@ -21,7 +21,6 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import org.exbin.bined.CodeAreaUtils;
-import org.exbin.bined.operation.BinaryDataOperationException;
 import org.exbin.bined.operation.BinaryDataOperationListener;
 import org.exbin.bined.operation.swing.CodeAreaOperation;
 import org.exbin.bined.operation.swing.CodeAreaOperationEvent;
@@ -66,7 +65,7 @@ public abstract class OpCodeAreaCommand extends CodeAreaCommand {
     }
 
     @Override
-    public void undo() throws BinaryDataOperationException {
+    public void undo() {
         if (operationPerformed) {
             CodeAreaOperation redoOperation = CodeAreaUtils.requireNonNull(operation).executeWithUndo();
             operation.dispose();
@@ -82,7 +81,7 @@ public abstract class OpCodeAreaCommand extends CodeAreaCommand {
     }
 
     @Override
-    public void redo() throws BinaryDataOperationException {
+    public void redo() {
         if (!operationPerformed) {
             CodeAreaOperation undoOperation = CodeAreaUtils.requireNonNull(operation).executeWithUndo();
             operation.dispose();
@@ -98,7 +97,7 @@ public abstract class OpCodeAreaCommand extends CodeAreaCommand {
     }
 
     @Override
-    public void dispose() throws BinaryDataOperationException {
+    public void dispose() {
         super.dispose();
         if (operation != null) {
             operation.dispose();

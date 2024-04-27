@@ -45,7 +45,7 @@ public abstract class CodeAreaCommand extends BinaryDataAbstractCommand {
 
     @Nonnull
     @Override
-    public String getCaption() {
+    public String getName() {
         return getType().getCaption();
     }
 }

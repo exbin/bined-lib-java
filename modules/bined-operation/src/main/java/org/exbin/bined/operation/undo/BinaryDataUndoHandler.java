@@ -15,11 +15,7 @@
  */
 package org.exbin.bined.operation.undo;
 
-import java.util.List;
-import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import org.exbin.bined.operation.BinaryDataCommand;
-import org.exbin.bined.operation.BinaryDataOperationException;
 
 /**
  * Code area undo support handler.
@@ -29,90 +25,27 @@ import org.exbin.bined.operation.BinaryDataOperationException;
 @ParametersAreNonnullByDefault
 public interface BinaryDataUndoHandler {
 
-    boolean canRedo();
-
+    /**
+     * Returns whether undo operation is available.
+     *
+     * @return true if undo possible
+     */
     boolean canUndo();
 
-    void clear();
+    /**
+     * Returns whether redo operation is available.
+     *
+     * @return true if redo possible
+     */
+    boolean canRedo();
 
     /**
-     * Performs revert to sync point.
-     *
-     * @throws BinaryDataOperationException for operation handling issues
+     * Performs undo.
      */
-    void doSync() throws BinaryDataOperationException;
+    void performUndo();
 
     /**
-     * Adds new step into command list.
-     *
-     * @param command command
-     * @throws BinaryDataOperationException for operation handling issues
+     * Performs redo.
      */
-    void execute(BinaryDataCommand command) throws BinaryDataOperationException;
-
-    /**
-     * Adds new step into command list without executing it.
-     *
-     * @param command command
-     */
-    void addCommand(BinaryDataCommand command);
-
-    @Nonnull
-    List<BinaryDataCommand> getCommandList();
-
-    long getCommandPosition();
-
-    long getMaximumUndo();
-
-    long getSyncPoint();
-
-    long getUndoMaximumSize();
-
-    long getUsedSize();
-
-    /**
-     * Performs single undo step.
-     *
-     * @throws BinaryDataOperationException for operation handling issues
-     */
-    void performUndo() throws BinaryDataOperationException;
-
-    /**
-     * Performs multiple undo steps.
-     *
-     * @param count count of steps
-     * @throws BinaryDataOperationException for operation handling issues
-     */
-    void performUndo(int count) throws BinaryDataOperationException;
-
-    /**
-     * Performs single redo step.
-     *
-     * @throws BinaryDataOperationException for operation handling issues
-     */
-    void performRedo() throws BinaryDataOperationException;
-
-    /**
-     * Performs multiple redo steps.
-     *
-     * @param count count of steps
-     * @throws BinaryDataOperationException for operation handling issues
-     */
-    void performRedo(int count) throws BinaryDataOperationException;
-
-    /**
-     * Performs undo or redo operations to reach given position.
-     *
-     * @param targetPosition desired position
-     * @throws BinaryDataOperationException for operation handling issues
-     */
-    void setCommandPosition(long targetPosition) throws BinaryDataOperationException;
-
-    void setSyncPoint(long syncPoint);
-
-    void setSyncPoint();
-
-    void addUndoUpdateListener(BinaryDataUndoUpdateListener listener);
-
-    void removeUndoUpdateListener(BinaryDataUndoUpdateListener listener);
+    void performRedo();
 }

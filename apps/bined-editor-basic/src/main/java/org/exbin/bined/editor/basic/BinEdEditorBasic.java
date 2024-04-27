@@ -47,7 +47,6 @@ import org.exbin.bined.operation.BinaryDataCommand;
 import org.exbin.bined.operation.BinaryDataOperationException;
 import org.exbin.bined.operation.swing.CodeAreaOperationCommandHandler;
 import org.exbin.bined.operation.swing.CodeAreaUndoHandler;
-import org.exbin.bined.operation.undo.BinaryDataUndoUpdateListener;
 import org.exbin.bined.swing.CodeAreaCommandHandler;
 import org.exbin.bined.swing.basic.CodeArea;
 import org.exbin.auxiliary.binary_data.ByteArrayEditableData;
@@ -58,6 +57,7 @@ import org.exbin.bined.CodeCharactersCase;
 import org.exbin.bined.CodeType;
 import org.exbin.bined.swing.CodeAreaSwingUtils;
 import org.exbin.bined.capability.EditModeCapable;
+import org.exbin.bined.operation.BinaryDataCommandSequenceListener;
 
 /**
  * Basic single jar swing version of BinEd binary/hexadecimal editor.
@@ -185,11 +185,7 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
         ) {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                try {
-                    undoHandler.performUndo();
-                } catch (BinaryDataOperationException ex) {
-                    Logger.getLogger(BinEdEditorBasic.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                undoHandler.performUndo();
             }
         };
         undoEditAction.putValue(Action.ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Z, metaMask));
@@ -199,11 +195,7 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
         ) {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                try {
-                    undoHandler.performRedo();
-                } catch (BinaryDataOperationException ex) {
-                    Logger.getLogger(BinEdEditorBasic.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                undoHandler.performRedo();
             }
         };
         redoEditAction.putValue(Action.ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Y, metaMask));
@@ -262,15 +254,9 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
     private void postInit() {
         codeArea.setComponentPopupMenu(mainPopupMenu);
         setIconImage(getIconResource(ICON_APP).getImage());
-        undoHandler.addUndoUpdateListener(new BinaryDataUndoUpdateListener() {
+        undoHandler.addCommandSequenceListener(new BinaryDataCommandSequenceListener() {
             @Override
-            public void undoCommandPositionChanged() {
-                updateUndoState();
-                codeArea.repaint();
-            }
-
-            @Override
-            public void undoCommandAdded(@Nonnull BinaryDataCommand command) {
+            public void sequenceChanged() {
                 updateUndoState();
                 codeArea.repaint();
             }
@@ -815,7 +801,7 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
         } else {
             try (FileOutputStream stream = new FileOutputStream(file)) {
                 CodeAreaUtils.requireNonNull((EditableBinaryData) codeArea.getContentData()).saveToStream(stream);
-                undoHandler.setSyncPoint();
+                undoHandler.setSyncPosition();
                 updateTitle();
             } catch (IOException ex) {
                 Logger.getLogger(BinEdEditorBasic.class.getName()).log(Level.SEVERE, null, ex);
@@ -907,7 +893,7 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
     }
 
     public boolean isModified() {
-        return undoHandler.getCommandPosition() != undoHandler.getSyncPoint();
+        return undoHandler.getCommandPosition() != undoHandler.getSyncPosition();
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

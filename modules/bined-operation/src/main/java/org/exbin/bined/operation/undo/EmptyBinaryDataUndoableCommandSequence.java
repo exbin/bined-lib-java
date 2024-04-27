@@ -17,12 +17,11 @@ package org.exbin.bined.operation.undo;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.operation.BinaryDataCommand;
 import org.exbin.bined.operation.BinaryDataOperationException;
+import org.exbin.bined.operation.BinaryDataCommandSequenceListener;
 
 /**
  * Empty code area undo.
@@ -30,7 +29,7 @@ import org.exbin.bined.operation.BinaryDataOperationException;
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public class EmptyBinaryDataUndoHandler implements BinaryDataUndoHandler {
+public class EmptyBinaryDataUndoableCommandSequence implements BinaryDataUndoableCommandSequence {
 
     @Override
     public boolean canRedo() {
@@ -47,25 +46,22 @@ public class EmptyBinaryDataUndoHandler implements BinaryDataUndoHandler {
     }
 
     @Override
-    public void doSync() throws BinaryDataOperationException {
+    public void performSync() throws BinaryDataOperationException {
     }
 
     @Override
-    public void execute(BinaryDataCommand command) throws BinaryDataOperationException {
-        try {
-            command.execute();
-        } catch (BinaryDataOperationException ex) {
-            Logger.getLogger(EmptyBinaryDataUndoHandler.class.getName()).log(Level.SEVERE, null, ex);
-        }
+    public void execute(BinaryDataCommand command) {
+        command.execute();
     }
 
     @Override
-    public void addCommand(BinaryDataCommand command) {
-        try {
-            command.execute();
-        } catch (BinaryDataOperationException ex) {
-            Logger.getLogger(EmptyBinaryDataUndoHandler.class.getName()).log(Level.SEVERE, null, ex);
-        }
+    public void schedule(BinaryDataCommand command) {
+        throw new IllegalStateException();
+    }
+
+    @Override
+    public void executeScheduled(int count) {
+        throw new IllegalStateException();
     }
 
     @Nonnull
@@ -80,64 +76,44 @@ public class EmptyBinaryDataUndoHandler implements BinaryDataUndoHandler {
     }
 
     @Override
-    public long getMaximumUndo() {
+    public long getSyncPosition() {
         return 0;
     }
 
     @Override
-    public long getSyncPoint() {
-        return 0;
-    }
-
-    @Override
-    public long getUndoMaximumSize() {
-        return 0;
-    }
-
-    @Override
-    public long getUsedSize() {
+    public void performUndo() {
         throw new IllegalStateException();
     }
 
     @Override
-    public void performUndo() throws BinaryDataOperationException {
+    public void performUndo(int count) {
         throw new IllegalStateException();
     }
 
     @Override
-    public void performUndo(int count) throws BinaryDataOperationException {
+    public void performRedo() {
         throw new IllegalStateException();
     }
 
     @Override
-    public void performRedo() throws BinaryDataOperationException {
+    public void performRedo(int count) {
         throw new IllegalStateException();
     }
 
     @Override
-    public void performRedo(int count) throws BinaryDataOperationException {
+    public void setSyncPosition(long syncPoint) {
         throw new IllegalStateException();
     }
 
     @Override
-    public void setCommandPosition(long targetPosition) throws BinaryDataOperationException {
-        throw new IllegalStateException();
+    public void setSyncPosition() {
     }
 
     @Override
-    public void setSyncPoint(long syncPoint) {
-        throw new IllegalStateException();
+    public void addCommandSequenceListener(BinaryDataCommandSequenceListener listener) {
     }
 
     @Override
-    public void setSyncPoint() {
-    }
-
-    @Override
-    public void addUndoUpdateListener(BinaryDataUndoUpdateListener listener) {
-    }
-
-    @Override
-    public void removeUndoUpdateListener(BinaryDataUndoUpdateListener listener) {
+    public void removeCommandSequenceListener(BinaryDataCommandSequenceListener listener) {
     }
 }

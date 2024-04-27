@@ -13,28 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.operation.undo;
+package org.exbin.bined.operation;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-import org.exbin.bined.operation.BinaryDataCommand;
+import javax.annotation.Nonnull;
 
 /**
- * Code area undo update listener.
+ * Interface for undoable binary data operation.
  *
  * @author ExBin Project (https://exbin.org)
  */
-@ParametersAreNonnullByDefault
-public interface BinaryDataUndoUpdateListener {
+public interface UndoableBinaryDataOperation extends BinaryDataOperation {
 
     /**
-     * Notifies about change in undo state.
-     */
-    void undoCommandPositionChanged();
-
-    /**
-     * Reports new command added to undo sequence.
+     * Performs operation on given document and returns undo operation.
      *
-     * @param command added command
+     * @return undo operation
      */
-    void undoCommandAdded(BinaryDataCommand command);
+    @Nonnull
+    UndoableBinaryDataOperation executeWithUndo();
 }
