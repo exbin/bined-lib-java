@@ -42,10 +42,8 @@ public interface BinaryDataUndoableCommandSequence extends BinaryDataCommandSequ
 
     /**
      * Performs executions or reverts to reqch synchronization position.
-     *
-     * @throws java.lang.Exception exception
      */
-    void performSync() throws Exception;
+    void performSync();
 
     /**
      * Returns synchronization mark position.

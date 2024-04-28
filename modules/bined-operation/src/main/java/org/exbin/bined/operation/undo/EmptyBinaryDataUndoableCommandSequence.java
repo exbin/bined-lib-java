@@ -20,7 +20,6 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.operation.BinaryDataCommand;
-import org.exbin.bined.operation.BinaryDataOperationException;
 import org.exbin.bined.operation.BinaryDataCommandSequenceListener;
 
 /**
@@ -46,7 +45,7 @@ public class EmptyBinaryDataUndoableCommandSequence implements BinaryDataUndoabl
     }
 
     @Override
-    public void performSync() throws BinaryDataOperationException {
+    public void performSync() {
     }
 
     @Override

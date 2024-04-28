@@ -50,7 +50,6 @@ import org.exbin.bined.capability.CodeTypeCapable;
 import org.exbin.bined.capability.ScrollingCapable;
 import org.exbin.bined.capability.SelectionCapable;
 import org.exbin.bined.capability.ViewModeCapable;
-import org.exbin.bined.operation.BinaryDataOperationException;
 import org.exbin.bined.operation.swing.command.CodeAreaCommand;
 import org.exbin.bined.operation.swing.command.CodeAreaCommandType;
 import org.exbin.bined.operation.swing.command.EditCharDataCommand;
@@ -142,7 +141,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
     }
 
     @Nonnull
-    public BinaryDataUndoHandler getUndoHandler() {
+    public BinaryDataUndoableCommandSequence getUndoHandler() {
         return undoHandler;
     }
 
