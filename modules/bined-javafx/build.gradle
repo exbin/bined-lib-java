@@ -54,14 +54,14 @@ if (JavaVersion.current() != JavaVersion.VERSION_1_8) {
 }
 
 dependencies {
-    api moduleDep('BinedJava', 'org.exbin.bined', 'bined-core')
+    api moduleDep('BinedJava', 'org.exbin.bined', 'modules', 'bined-core')
     //    providedImplementation files("$javaFxHome/lib/jfxrt.jar")
     if (JavaVersion.current() == JavaVersion.VERSION_1_8) {
         implementation group: 'org.openjfx', name: 'javafx-base', version: '11.0.2'
         implementation group: 'org.openjfx', name: 'javafx-controls', version: '11.0.2'
         implementation group: 'org.openjfx', name: 'javafx-graphics', version: '11.0.2'
     }
-    implementation moduleDep('ExbinAuxiliaryJava', 'org.exbin.auxiliary', 'binary_data')
+    implementation moduleDep('ExbinAuxiliaryJava', 'org.exbin.auxiliary', 'modules', 'binary_data')
     compileOnly group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.2'
     testImplementation group : 'junit', name: 'junit', version: '4.13.2'
 }

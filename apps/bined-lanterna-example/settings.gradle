@@ -2,7 +2,6 @@ rootProject.name = 'bined-lanterna-example'
 
 if (rootProject.path == ':') {
     include ':modules:bined-core'
-    include ':modules:bined-extended'
     include ':modules:bined-lanterna'
 }
 
