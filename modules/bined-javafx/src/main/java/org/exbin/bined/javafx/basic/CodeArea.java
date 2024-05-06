@@ -90,7 +90,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaJ
     @Nullable
     private Font codeFont;
     @Nonnull
-    private BasicBackgroundPaintMode borderPaintMode = BasicBackgroundPaintMode.STRIPED;
+    private BasicBackgroundPaintMode backgroundPaintMode = BasicBackgroundPaintMode.STRIPED;
     @Nonnull
     private CodeType codeType = CodeType.HEXADECIMAL;
     @Nonnull
@@ -131,8 +131,8 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaJ
     public CodeArea(@Nullable CodeAreaCommandHandler.CodeAreaCommandHandlerFactory commandHandlerFactory) {
         super(commandHandlerFactory);
 
-        caret = new DefaultCodeAreaCaret(this::notifyCaretChanged);
         painter = new DefaultCodeAreaPainter(this);
+        caret = new DefaultCodeAreaCaret(this::notifyCaretChanged);
         painter.attach();
         init();
     }
@@ -681,12 +681,12 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaJ
     @Nonnull
     @Override
     public BasicBackgroundPaintMode getBackgroundPaintMode() {
-        return borderPaintMode;
+        return backgroundPaintMode;
     }
 
     @Override
-    public void setBackgroundPaintMode(BasicBackgroundPaintMode borderPaintMode) {
-        this.borderPaintMode = borderPaintMode;
+    public void setBackgroundPaintMode(BasicBackgroundPaintMode backgroundPaintMode) {
+        this.backgroundPaintMode = backgroundPaintMode;
         repaint();
     }
 

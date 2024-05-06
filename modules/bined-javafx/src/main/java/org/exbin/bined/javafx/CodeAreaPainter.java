@@ -137,7 +137,7 @@ public interface CodeAreaPainter {
     /**
      * Returns scroll position so that provided caret position is visible in
      * scrolled area.
-     *
+     * <p>
      * Performs minimal scrolling and tries to preserve current vertical /
      * horizontal scrolling if possible. If given position cannot be fully
      * shown, top left corner is preferred.
@@ -152,7 +152,7 @@ public interface CodeAreaPainter {
     /**
      * Returns scroll position so that provided caret position is visible in the
      * center of the scrolled area.
-     *
+     * <p>
      * Attempts to center as much as possible while preserving scrolling limits.
      *
      * @param caretPosition caret position
@@ -184,7 +184,7 @@ public interface CodeAreaPainter {
 
     /**
      * Notify scroll position was modified.
-     *
+     * <p>
      * This is to assist detection of scrolling from outside compare to
      * scrolling by scrollbar controls.
      */

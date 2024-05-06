@@ -92,7 +92,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
     @Nullable
     private Font codeFont;
     @Nonnull
-    private BasicBackgroundPaintMode borderPaintMode = BasicBackgroundPaintMode.STRIPED;
+    private BasicBackgroundPaintMode backgroundPaintMode = BasicBackgroundPaintMode.STRIPED;
     @Nonnull
     private AntialiasingMode antialiasingMode = AntialiasingMode.AUTO;
     @Nonnull
@@ -141,8 +141,8 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
     public CodeArea(@Nullable Composite parent, int style, @Nullable CodeAreaCommandHandler.CodeAreaCommandHandlerFactory commandHandlerFactory) {
         super(parent, style, commandHandlerFactory);
 
-        caret = new DefaultCodeAreaCaret(this::notifyCaretChanged);
         painter = new DefaultCodeAreaPainter(this);
+        caret = new DefaultCodeAreaCaret(this::notifyCaretChanged);
         painter.attach();
         init();
     }
@@ -533,9 +533,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
     }
 
     protected void notifyCaretChanged() {
-        if (painter != null) {
-            painter.resetCaret();
-        }
+        painter.resetCaret();
         repaint();
     }
 
@@ -701,12 +699,12 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
     @Nonnull
     @Override
     public BasicBackgroundPaintMode getBackgroundPaintMode() {
-        return borderPaintMode;
+        return backgroundPaintMode;
     }
 
     @Override
-    public void setBackgroundPaintMode(BasicBackgroundPaintMode borderPaintMode) {
-        this.borderPaintMode = borderPaintMode;
+    public void setBackgroundPaintMode(BasicBackgroundPaintMode backgroundPaintMode) {
+        this.backgroundPaintMode = backgroundPaintMode;
         updateLayout();
     }
 
