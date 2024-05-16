@@ -28,7 +28,7 @@ import org.exbin.bined.operation.BinaryDataCommand;
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public class EmptyBinaryDataUndo implements BinaryDataUndo {
+public class EmptyBinaryDataUndoRedo implements BinaryDataUndoRedo {
 
     @Override
     public boolean canRedo() {
@@ -114,10 +114,10 @@ public class EmptyBinaryDataUndo implements BinaryDataUndo {
     }
 
     @Override
-    public void addUndoChangeListener(BinaryDataUndoChangeListener listener) {
+    public void addChangeListener(BinaryDataUndoRedoChangeListener listener) {
     }
 
     @Override
-    public void removeUndoChangeListener(BinaryDataUndoChangeListener listener) {
+    public void removeChangeListener(BinaryDataUndoRedoChangeListener listener) {
     }
 }

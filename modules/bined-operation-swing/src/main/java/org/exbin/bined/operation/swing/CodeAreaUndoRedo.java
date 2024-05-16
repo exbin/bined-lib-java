@@ -22,8 +22,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.operation.BinaryDataCommand;
 import org.exbin.bined.swing.CodeAreaCore;
-import org.exbin.bined.operation.undo.BinaryDataUndoChangeListener;
-import org.exbin.bined.operation.undo.BinaryDataUndo;
+import org.exbin.bined.operation.undo.BinaryDataUndoRedo;
+import org.exbin.bined.operation.undo.BinaryDataUndoRedoChangeListener;
 
 /**
  * Undo handler for binary editor.
@@ -31,7 +31,7 @@ import org.exbin.bined.operation.undo.BinaryDataUndo;
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public class CodeAreaUndo implements BinaryDataUndo {
+public class CodeAreaUndoRedo implements BinaryDataUndoRedo {
 
     private long undoMaximumCount;
     private long undoMaximumSize;
@@ -40,14 +40,14 @@ public class CodeAreaUndo implements BinaryDataUndo {
     private long syncPointPosition = -1;
     private final List<BinaryDataCommand> commands = new ArrayList<>();
     private final CodeAreaCore codeArea;
-    private final List<BinaryDataUndoChangeListener> listeners = new ArrayList<>();
+    private final List<BinaryDataUndoRedoChangeListener> listeners = new ArrayList<>();
 
     /**
      * Creates a new instance.
      *
      * @param codeArea code area component
      */
-    public CodeAreaUndo(CodeAreaCore codeArea) {
+    public CodeAreaUndoRedo(CodeAreaCore codeArea) {
         this.codeArea = codeArea;
         undoMaximumCount = 1024;
         undoMaximumSize = 65535;
@@ -57,7 +57,7 @@ public class CodeAreaUndo implements BinaryDataUndo {
     private void init() {
         usedSize = 0;
         commandPosition = 0;
-        CodeAreaUndo.this.setSyncPosition(0);
+        CodeAreaUndoRedo.this.setSyncPosition(0);
     }
 
     /**
@@ -240,16 +240,16 @@ public class CodeAreaUndo implements BinaryDataUndo {
 
     private void undoUpdated() {
         codeArea.notifyDataChanged();
-        listeners.forEach(BinaryDataUndoChangeListener::undoChanged);
+        listeners.forEach(BinaryDataUndoRedoChangeListener::undoChanged);
     }
 
     @Override
-    public void addUndoChangeListener(BinaryDataUndoChangeListener listener) {
+    public void addChangeListener(BinaryDataUndoRedoChangeListener listener) {
         listeners.add(listener);
     }
 
     @Override
-    public void removeUndoChangeListener(BinaryDataUndoChangeListener listener) {
+    public void removeChangeListener(BinaryDataUndoRedoChangeListener listener) {
         listeners.remove(listener);
     }
 }

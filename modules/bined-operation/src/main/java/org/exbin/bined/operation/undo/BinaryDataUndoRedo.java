@@ -28,7 +28,7 @@ import org.exbin.bined.operation.BinaryDataModifiedState;
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public interface BinaryDataUndo extends BinaryDataUndoState, BinaryDataModifiedState {
+public interface BinaryDataUndoRedo extends BinaryDataUndoRedoState, BinaryDataModifiedState {
 
     /**
      * Executes given command and adds it at the end of the sequence replacing
@@ -123,17 +123,17 @@ public interface BinaryDataUndo extends BinaryDataUndoState, BinaryDataModifiedS
     void setSyncPosition();
 
     /**
-     * Registers undo change listener.
+     * Registers change listener.
      *
      * @param listener listener
      */
-    void addUndoChangeListener(BinaryDataUndoChangeListener listener);
+    void addChangeListener(BinaryDataUndoRedoChangeListener listener);
 
     /**
-     * Unregisters undo change listener.
+     * Unregisters change listener.
      *
      * @param listener listener
      */
-    void removeUndoChangeListener(BinaryDataUndoChangeListener listener);
+    void removeChangeListener(BinaryDataUndoRedoChangeListener listener);
 
 }

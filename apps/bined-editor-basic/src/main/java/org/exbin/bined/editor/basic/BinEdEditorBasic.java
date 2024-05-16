@@ -43,7 +43,7 @@ import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.capability.CharsetCapable;
 import org.exbin.bined.capability.SelectionCapable;
 import org.exbin.bined.operation.swing.CodeAreaOperationCommandHandler;
-import org.exbin.bined.operation.swing.CodeAreaUndo;
+import org.exbin.bined.operation.swing.CodeAreaUndoRedo;
 import org.exbin.bined.swing.CodeAreaCommandHandler;
 import org.exbin.bined.swing.basic.CodeArea;
 import org.exbin.auxiliary.binary_data.ByteArrayEditableData;
@@ -54,7 +54,7 @@ import org.exbin.bined.CodeCharactersCase;
 import org.exbin.bined.CodeType;
 import org.exbin.bined.swing.CodeAreaSwingUtils;
 import org.exbin.bined.capability.EditModeCapable;
-import org.exbin.bined.operation.undo.BinaryDataUndoChangeListener;
+import org.exbin.bined.operation.undo.BinaryDataUndoRedoChangeListener;
 
 /**
  * Basic single jar swing version of BinEd binary/hex editor.
@@ -83,7 +83,7 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
 
     private File file = null;
     private CodeArea codeArea;
-    private CodeAreaUndo undoHandler;
+    private CodeAreaUndoRedo undoHandler;
     private CodeAreaCommandHandler commandHandler;
 
     private Action newFileAction;
@@ -109,7 +109,7 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
     private void init() {
         codeArea = new CodeArea();
         codeArea.setContentData(new ByteArrayEditableData());
-        undoHandler = new CodeAreaUndo(codeArea);
+        undoHandler = new CodeAreaUndoRedo(codeArea);
         commandHandler = new CodeAreaOperationCommandHandler(codeArea, undoHandler);
         codeArea.setCommandHandler(commandHandler);
         add(codeArea, BorderLayout.CENTER);
@@ -251,7 +251,7 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
     private void postInit() {
         codeArea.setComponentPopupMenu(mainPopupMenu);
         setIconImage(getIconResource(ICON_APP).getImage());
-        undoHandler.addUndoChangeListener(new BinaryDataUndoChangeListener() {
+        undoHandler.addChangeListener(new BinaryDataUndoRedoChangeListener() {
             @Override
             public void undoChanged() {
                 updateUndoState();

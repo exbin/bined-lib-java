@@ -23,7 +23,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public interface BinaryDataUndoChangeListener {
+public interface BinaryDataUndoRedoChangeListener {
 
     /**
      * Undo changed.

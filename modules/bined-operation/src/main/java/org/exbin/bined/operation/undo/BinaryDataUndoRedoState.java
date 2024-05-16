@@ -16,7 +16,6 @@
 package org.exbin.bined.operation.undo;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import org.exbin.bined.operation.BinaryDataModifiedState;
 
 /**
  * Code area undo support handler.
@@ -24,7 +23,7 @@ import org.exbin.bined.operation.BinaryDataModifiedState;
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public interface BinaryDataUndoState {
+public interface BinaryDataUndoRedoState {
 
     /**
      * Returns whether undo operation is available.
