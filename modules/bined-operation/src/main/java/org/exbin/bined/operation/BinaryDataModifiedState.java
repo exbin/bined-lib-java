@@ -15,20 +15,17 @@
  */
 package org.exbin.bined.operation;
 
-import javax.annotation.Nonnull;
-
 /**
- * Interface for undoable binary data operation.
+ * Interface for binary data modified state.
  *
  * @author ExBin Project (https://exbin.org)
  */
-public interface UndoableBinaryDataOperation extends BinaryDataOperation {
+public interface BinaryDataModifiedState {
 
     /**
-     * Performs operation on given document and returns undo operation.
+     * Returns whether undo operation is modified.
      *
-     * @return undo operation
+     * @return true if modified
      */
-    @Nonnull
-    UndoableBinaryDataOperation executeWithUndo();
+    boolean isModified();
 }

@@ -15,37 +15,21 @@
  */
 package org.exbin.bined.operation.undo;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+import javax.annotation.Nonnull;
+import org.exbin.bined.operation.BinaryDataOperation;
 
 /**
- * Code area undo support handler.
+ * Interface for undoable binary data operation.
  *
  * @author ExBin Project (https://exbin.org)
  */
-@ParametersAreNonnullByDefault
-public interface BinaryDataUndoHandler {
+public interface UndoableBinaryDataOperation extends BinaryDataOperation {
 
     /**
-     * Returns whether undo operation is available.
+     * Performs operation on given document and returns undo operation.
      *
-     * @return true if undo possible
+     * @return undo operation
      */
-    boolean canUndo();
-
-    /**
-     * Returns whether redo operation is available.
-     *
-     * @return true if redo possible
-     */
-    boolean canRedo();
-
-    /**
-     * Performs undo.
-     */
-    void performUndo();
-
-    /**
-     * Performs redo.
-     */
-    void performRedo();
+    @Nonnull
+    UndoableBinaryDataOperation executeWithUndo();
 }

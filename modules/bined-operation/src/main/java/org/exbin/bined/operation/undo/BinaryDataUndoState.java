@@ -13,20 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.operation;
+package org.exbin.bined.operation.undo;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import org.exbin.bined.operation.BinaryDataModifiedState;
 
 /**
- * Code area undo update listener.
+ * Code area undo support handler.
  *
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public interface BinaryDataCommandSequenceListener {
+public interface BinaryDataUndoState {
 
     /**
-     * Command sequence changed.
+     * Returns whether undo operation is available.
+     *
+     * @return true if undo possible
      */
-    void sequenceChanged();
+    boolean canUndo();
+
+    /**
+     * Returns whether redo operation is available.
+     *
+     * @return true if redo possible
+     */
+    boolean canRedo();
 }

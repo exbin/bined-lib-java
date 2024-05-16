@@ -30,7 +30,6 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.Nonnull;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
@@ -43,10 +42,8 @@ import org.exbin.bined.EditOperation;
 import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.capability.CharsetCapable;
 import org.exbin.bined.capability.SelectionCapable;
-import org.exbin.bined.operation.BinaryDataCommand;
-import org.exbin.bined.operation.BinaryDataOperationException;
 import org.exbin.bined.operation.swing.CodeAreaOperationCommandHandler;
-import org.exbin.bined.operation.swing.CodeAreaUndoHandler;
+import org.exbin.bined.operation.swing.CodeAreaUndo;
 import org.exbin.bined.swing.CodeAreaCommandHandler;
 import org.exbin.bined.swing.basic.CodeArea;
 import org.exbin.auxiliary.binary_data.ByteArrayEditableData;
@@ -57,10 +54,10 @@ import org.exbin.bined.CodeCharactersCase;
 import org.exbin.bined.CodeType;
 import org.exbin.bined.swing.CodeAreaSwingUtils;
 import org.exbin.bined.capability.EditModeCapable;
-import org.exbin.bined.operation.BinaryDataCommandSequenceListener;
+import org.exbin.bined.operation.undo.BinaryDataUndoChangeListener;
 
 /**
- * Basic single jar swing version of BinEd binary/hexadecimal editor.
+ * Basic single jar swing version of BinEd binary/hex editor.
  *
  * @author ExBin Project (https://exbin.org)
  */
@@ -86,7 +83,7 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
 
     private File file = null;
     private CodeArea codeArea;
-    private CodeAreaUndoHandler undoHandler;
+    private CodeAreaUndo undoHandler;
     private CodeAreaCommandHandler commandHandler;
 
     private Action newFileAction;
@@ -112,7 +109,7 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
     private void init() {
         codeArea = new CodeArea();
         codeArea.setContentData(new ByteArrayEditableData());
-        undoHandler = new CodeAreaUndoHandler(codeArea);
+        undoHandler = new CodeAreaUndo(codeArea);
         commandHandler = new CodeAreaOperationCommandHandler(codeArea, undoHandler);
         codeArea.setCommandHandler(commandHandler);
         add(codeArea, BorderLayout.CENTER);
@@ -254,9 +251,9 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
     private void postInit() {
         codeArea.setComponentPopupMenu(mainPopupMenu);
         setIconImage(getIconResource(ICON_APP).getImage());
-        undoHandler.addCommandSequenceListener(new BinaryDataCommandSequenceListener() {
+        undoHandler.addUndoChangeListener(new BinaryDataUndoChangeListener() {
             @Override
-            public void sequenceChanged() {
+            public void undoChanged() {
                 updateUndoState();
                 codeArea.repaint();
             }

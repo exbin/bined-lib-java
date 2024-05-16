@@ -17,18 +17,18 @@ package org.exbin.bined.operation.undo;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.operation.BinaryDataCommand;
-import org.exbin.bined.operation.BinaryDataCommandSequenceListener;
 
 /**
- * Empty code area undo.
+ * Empty binary data undo.
  *
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public class EmptyBinaryDataUndoableCommandSequence implements BinaryDataUndoableCommandSequence {
+public class EmptyBinaryDataUndo implements BinaryDataUndo {
 
     @Override
     public boolean canRedo() {
@@ -41,26 +41,17 @@ public class EmptyBinaryDataUndoableCommandSequence implements BinaryDataUndoabl
     }
 
     @Override
-    public void clear() {
+    public boolean isModified() {
+        return false;
     }
 
     @Override
-    public void performSync() {
+    public void clear() {
     }
 
     @Override
     public void execute(BinaryDataCommand command) {
         command.execute();
-    }
-
-    @Override
-    public void schedule(BinaryDataCommand command) {
-        throw new IllegalStateException();
-    }
-
-    @Override
-    public void executeScheduled(int count) {
-        throw new IllegalStateException();
     }
 
     @Nonnull
@@ -70,7 +61,17 @@ public class EmptyBinaryDataUndoableCommandSequence implements BinaryDataUndoabl
     }
 
     @Override
+    public Optional<BinaryDataCommand> getTopUndoCommand() {
+        return Optional.empty();
+    }
+
+    @Override
     public long getCommandPosition() {
+        return 0;
+    }
+
+    @Override
+    public long getCommandsCount() {
         return 0;
     }
 
@@ -100,6 +101,10 @@ public class EmptyBinaryDataUndoableCommandSequence implements BinaryDataUndoabl
     }
 
     @Override
+    public void performSync() {
+    }
+
+    @Override
     public void setSyncPosition(long syncPoint) {
         throw new IllegalStateException();
     }
@@ -109,10 +114,10 @@ public class EmptyBinaryDataUndoableCommandSequence implements BinaryDataUndoabl
     }
 
     @Override
-    public void addCommandSequenceListener(BinaryDataCommandSequenceListener listener) {
+    public void addUndoChangeListener(BinaryDataUndoChangeListener listener) {
     }
 
     @Override
-    public void removeCommandSequenceListener(BinaryDataCommandSequenceListener listener) {
+    public void removeUndoChangeListener(BinaryDataUndoChangeListener listener) {
     }
 }

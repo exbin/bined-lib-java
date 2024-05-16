@@ -59,7 +59,6 @@ import org.exbin.bined.operation.swing.command.BinaryCompoundCommand;
 import org.exbin.bined.operation.swing.command.InsertDataCommand;
 import org.exbin.bined.operation.swing.command.ModifyDataCommand;
 import org.exbin.bined.operation.swing.command.RemoveDataCommand;
-import org.exbin.bined.operation.undo.BinaryDataUndoHandler;
 import org.exbin.bined.swing.CodeAreaCommandHandler;
 import org.exbin.bined.swing.CodeAreaCore;
 import org.exbin.bined.swing.CodeAreaSwingUtils;
@@ -74,7 +73,8 @@ import org.exbin.bined.CodeAreaSection;
 import org.exbin.bined.basic.EnterKeyHandlingMode;
 import org.exbin.bined.basic.TabKeyHandlingMode;
 import org.exbin.bined.capability.EditModeCapable;
-import org.exbin.bined.operation.undo.BinaryDataUndoableCommandSequence;
+import org.exbin.bined.operation.undo.BinaryDataUndo;
+import org.exbin.bined.operation.undo.BinaryDataUndoState;
 
 /**
  * Command handler for undo/redo aware binary editor editing.
@@ -106,10 +106,10 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
     private DataFlavor binedDataFlavor;
     private DataFlavor binaryDataFlavor;
 
-    protected final BinaryDataUndoableCommandSequence undoHandler;
+    protected final BinaryDataUndo undoHandler;
     protected EditDataCommand editCommand = null;
 
-    public CodeAreaOperationCommandHandler(CodeAreaCore codeArea, BinaryDataUndoableCommandSequence undoHandler) {
+    public CodeAreaOperationCommandHandler(CodeAreaCore codeArea, BinaryDataUndo undoHandler) {
         this.codeArea = codeArea;
         this.undoHandler = undoHandler;
 
@@ -137,11 +137,11 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
 
     @Nonnull
     public static CodeAreaCommandHandler.CodeAreaCommandHandlerFactory createDefaultCodeAreaCommandHandlerFactory() {
-        return (CodeAreaCore codeAreaCore) -> new CodeAreaOperationCommandHandler(codeAreaCore, new CodeAreaUndoHandler(codeAreaCore));
+        return (CodeAreaCore codeAreaCore) -> new CodeAreaOperationCommandHandler(codeAreaCore, new CodeAreaUndo(codeAreaCore));
     }
 
     @Nonnull
-    public BinaryDataUndoableCommandSequence getUndoHandler() {
+    public BinaryDataUndo getUndoHandler() {
         return undoHandler;
     }
 

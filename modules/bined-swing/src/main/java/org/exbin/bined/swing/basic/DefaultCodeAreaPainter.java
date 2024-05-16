@@ -1505,7 +1505,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
 
     /**
      * Renders sequence of background rectangles.
-     *
+     * <p>
      * Doesn't include character at offset end.
      */
     private void renderBackgroundSequence(Graphics g, int startOffset, int endOffset, int rowPositionX, int positionY) {

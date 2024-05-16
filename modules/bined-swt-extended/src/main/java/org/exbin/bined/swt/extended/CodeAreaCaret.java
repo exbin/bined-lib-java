@@ -20,10 +20,11 @@ import java.util.TimerTask;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.exbin.bined.CaretPosition;
+import org.exbin.bined.CodeAreaSection;
 import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.EditMode;
-import org.exbin.bined.Section;
-import org.exbin.bined.swt.CodeArea;
+import org.exbin.bined.basic.BasicCodeAreaSection;
+import org.exbin.bined.swt.basic.CodeArea;
 
 /**
  * Code area caret.
@@ -42,7 +43,7 @@ public class CodeAreaCaret {
     private int blinkRate = 0;
     private Timer blinkTimer = null;
     private boolean cursorVisible = true;
-    private Section section = Section.CODE_MATRIX;
+    private BasicCodeAreaSection section = BasicCodeAreaSection.CODE_MATRIX;
     private CursorShape insertCursorShape = CursorShape.DOUBLE_LEFT;
     private CursorShape overwriteCursorShape = CursorShape.BOX;
     private CursorRenderingMode renderingMode = CursorRenderingMode.NEGATIVE;
@@ -260,11 +261,11 @@ public class CodeAreaCaret {
         resetBlink();
     }
 
-    public Section getSection() {
+    public BasicCodeAreaSection getSection() {
         return section;
     }
 
-    public void setSection(Section section) {
+    public void setSection(BasicCodeAreaSection section) {
         this.section = section;
         resetBlink();
     }

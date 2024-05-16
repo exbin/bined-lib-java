@@ -17,12 +17,13 @@ package org.exbin.bined.operation.swing;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.operation.BinaryDataCommand;
 import org.exbin.bined.swing.CodeAreaCore;
-import org.exbin.bined.operation.BinaryDataCommandSequenceListener;
-import org.exbin.bined.operation.undo.BinaryDataUndoableCommandSequence;
+import org.exbin.bined.operation.undo.BinaryDataUndoChangeListener;
+import org.exbin.bined.operation.undo.BinaryDataUndo;
 
 /**
  * Undo handler for binary editor.
@@ -30,7 +31,7 @@ import org.exbin.bined.operation.undo.BinaryDataUndoableCommandSequence;
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public class CodeAreaUndoHandler implements BinaryDataUndoableCommandSequence {
+public class CodeAreaUndo implements BinaryDataUndo {
 
     private long undoMaximumCount;
     private long undoMaximumSize;
@@ -39,14 +40,14 @@ public class CodeAreaUndoHandler implements BinaryDataUndoableCommandSequence {
     private long syncPointPosition = -1;
     private final List<BinaryDataCommand> commands = new ArrayList<>();
     private final CodeAreaCore codeArea;
-    private final List<BinaryDataCommandSequenceListener> listeners = new ArrayList<>();
+    private final List<BinaryDataUndoChangeListener> listeners = new ArrayList<>();
 
     /**
      * Creates a new instance.
      *
      * @param codeArea code area component
      */
-    public CodeAreaUndoHandler(CodeAreaCore codeArea) {
+    public CodeAreaUndo(CodeAreaCore codeArea) {
         this.codeArea = codeArea;
         undoMaximumCount = 1024;
         undoMaximumSize = 65535;
@@ -56,7 +57,7 @@ public class CodeAreaUndoHandler implements BinaryDataUndoableCommandSequence {
     private void init() {
         usedSize = 0;
         commandPosition = 0;
-        CodeAreaUndoHandler.this.setSyncPosition(0);
+        CodeAreaUndo.this.setSyncPosition(0);
     }
 
     /**
@@ -68,16 +69,6 @@ public class CodeAreaUndoHandler implements BinaryDataUndoableCommandSequence {
     public void execute(BinaryDataCommand command) {
         command.execute();
         commandAdded(command);
-    }
-
-    @Override
-    public void schedule(BinaryDataCommand command) {
-        commandAdded(command);
-    }
-
-    @Override
-    public void executeScheduled(int count) {
-        performRedo(count);
     }
 
     private void commandAdded(BinaryDataCommand addedCommand) {
@@ -161,6 +152,11 @@ public class CodeAreaUndoHandler implements BinaryDataUndoableCommandSequence {
         return commands.size() > commandPosition;
     }
 
+    @Override
+    public boolean isModified() {
+        return syncPointPosition != commandPosition;
+    }
+
     public long getMaximumUndo() {
         return undoMaximumCount;
     }
@@ -168,6 +164,20 @@ public class CodeAreaUndoHandler implements BinaryDataUndoableCommandSequence {
     @Override
     public long getCommandPosition() {
         return commandPosition;
+    }
+
+    @Nonnull
+    @Override
+    public Optional<BinaryDataCommand> getTopUndoCommand() {
+        if (commandPosition >= 0) {
+            return Optional.of(commands.get((int) (commandPosition - 1)));
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public long getCommandsCount() {
+        return commands.size();
     }
 
     /**
@@ -230,16 +240,16 @@ public class CodeAreaUndoHandler implements BinaryDataUndoableCommandSequence {
 
     private void undoUpdated() {
         codeArea.notifyDataChanged();
-        listeners.forEach(BinaryDataCommandSequenceListener::sequenceChanged);
+        listeners.forEach(BinaryDataUndoChangeListener::undoChanged);
     }
 
     @Override
-    public void addCommandSequenceListener(BinaryDataCommandSequenceListener listener) {
+    public void addUndoChangeListener(BinaryDataUndoChangeListener listener) {
         listeners.add(listener);
     }
 
     @Override
-    public void removeCommandSequenceListener(BinaryDataCommandSequenceListener listener) {
+    public void removeUndoChangeListener(BinaryDataUndoChangeListener listener) {
         listeners.remove(listener);
     }
 }
