@@ -15,21 +15,22 @@
  */
 package org.exbin.bined.operation.undo;
 
-import javax.annotation.Nonnull;
-import org.exbin.bined.operation.BinaryDataOperation;
+import org.exbin.bined.operation.*;
 
 /**
- * Interface for undoable binary data operation.
+ * Interface for code area command.
  *
  * @author ExBin Project (https://exbin.org)
  */
-public interface UndoableBinaryDataOperation extends BinaryDataOperation {
+public interface BinaryDataUndoableCommand extends BinaryDataCommand {
 
     /**
-     * Performs operation on given document and returns undo operation.
-     *
-     * @return undo operation
+     * Performs redo on given document.
      */
-    @Nonnull
-    UndoableBinaryDataOperation executeWithUndo();
+    void redo();
+
+    /**
+     * Performs undo operation on given document.
+     */
+    void undo();
 }

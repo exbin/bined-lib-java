@@ -60,11 +60,6 @@ public abstract class OpCodeAreaCommand extends CodeAreaCommand {
     }
 
     @Override
-    public boolean canUndo() {
-        return true;
-    }
-
-    @Override
     public void undo() {
         if (operationPerformed) {
             CodeAreaOperation redoOperation = CodeAreaUtils.requireNonNull(operation).executeWithUndo();
@@ -81,7 +76,7 @@ public abstract class OpCodeAreaCommand extends CodeAreaCommand {
     }
 
     @Override
-    public void redo() {
+    public void execute() {
         if (!operationPerformed) {
             CodeAreaOperation undoOperation = CodeAreaUtils.requireNonNull(operation).executeWithUndo();
             operation.dispose();

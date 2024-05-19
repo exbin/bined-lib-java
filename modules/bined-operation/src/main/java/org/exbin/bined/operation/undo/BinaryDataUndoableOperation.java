@@ -13,32 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.operation;
+package org.exbin.bined.operation.undo;
 
 import javax.annotation.Nonnull;
+import org.exbin.bined.operation.BinaryDataOperation;
 
 /**
- * Interface for code area command.
+ * Interface for undoable binary data operation.
  *
  * @author ExBin Project (https://exbin.org)
  */
-public interface BinaryDataCommand {
+public interface BinaryDataUndoableOperation extends BinaryDataOperation {
 
     /**
-     * Returns command name.
+     * Performs operation on given document and returns undo operation.
      *
-     * @return name
+     * @return undo operation
      */
     @Nonnull
-    String getName();
-
-    /**
-     * Performs operation on given document.
-     */
-    void execute();
-
-    /**
-     * Disposes command.
-     */
-    void dispose();
+    BinaryDataUndoableOperation executeWithUndo();
 }

@@ -39,10 +39,12 @@ public class EditCharDataCommand extends EditDataCommand {
     @Nonnull
     private final EditCommandType commandType;
     protected boolean operationPerformed = false;
+    private char charData;
     private CodeAreaOperation[] operations = null;
 
-    public EditCharDataCommand(CodeAreaCore codeArea, EditCommandType commandType, long position) {
+    public EditCharDataCommand(CodeAreaCore codeArea, EditCommandType commandType, long position, char charData) {
         super(codeArea);
+        this.charData = charData;
         this.commandType = commandType;
         CodeAreaOperation operation;
         switch (commandType) {
@@ -51,7 +53,7 @@ public class EditCharDataCommand extends EditDataCommand {
                 break;
             }
             case OVERWRITE: {
-                operation = new OverwriteCharEditDataOperation(codeArea, position);
+                operation = new OverwriteCharEditDataOperation(codeArea, position, charData);
                 break;
             }
             case DELETE: {
@@ -62,6 +64,15 @@ public class EditCharDataCommand extends EditDataCommand {
                 throw CodeAreaUtils.getInvalidTypeException(commandType);
         }
         operations = new CodeAreaOperation[]{operation};
+    }
+
+    @Override
+    public void execute() {
+        if (operationPerformed) {
+            throw new IllegalStateException();
+        }
+
+        appendEdit(charData);
         operationPerformed = true;
     }
 
@@ -112,11 +123,6 @@ public class EditCharDataCommand extends EditDataCommand {
     @Override
     public CodeAreaCommandType getType() {
         return CodeAreaCommandType.DATA_EDITED;
-    }
-
-    @Override
-    public boolean canUndo() {
-        return true;
     }
 
     public void appendEdit(char value) {

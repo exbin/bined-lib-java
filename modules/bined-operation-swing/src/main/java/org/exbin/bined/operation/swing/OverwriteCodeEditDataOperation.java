@@ -37,11 +37,13 @@ public class OverwriteCodeEditDataOperation extends CodeEditDataOperation {
     private long length = 0;
     private EditableBinaryData undoData = null;
     private final CodeType codeType;
+    private byte value;
 
     private int codeOffset = 0;
 
-    public OverwriteCodeEditDataOperation(CodeAreaCore codeArea, long startPosition, int startCodeOffset) {
+    public OverwriteCodeEditDataOperation(CodeAreaCore codeArea, long startPosition, int startCodeOffset, byte value) {
         super(codeArea);
+        this.value = value;
         this.startPosition = startPosition;
         this.startCodeOffset = startCodeOffset;
         this.codeOffset = startCodeOffset;
@@ -67,7 +69,13 @@ public class OverwriteCodeEditDataOperation extends CodeEditDataOperation {
     @Nullable
     @Override
     protected CodeAreaOperation execute(ExecutionType executionType) {
-        throw new IllegalStateException("Cannot be executed");
+        if (executionType == ExecutionType.WITH_UNDO) {
+            // TODO
+            throw new IllegalStateException();
+        } else {
+            appendEdit(value);
+            return null;
+        }
     }
 
     @Override

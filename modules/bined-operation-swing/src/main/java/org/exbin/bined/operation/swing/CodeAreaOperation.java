@@ -21,7 +21,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.DefaultCodeAreaCaretPosition;
 import org.exbin.bined.swing.CodeAreaCore;
 import org.exbin.bined.CodeAreaCaretPosition;
-import org.exbin.bined.operation.undo.UndoableBinaryDataOperation;
+import org.exbin.bined.operation.undo.BinaryDataUndoableOperation;
 
 /**
  * Abstract class for operation on code area component.
@@ -29,7 +29,7 @@ import org.exbin.bined.operation.undo.UndoableBinaryDataOperation;
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public abstract class CodeAreaOperation implements UndoableBinaryDataOperation {
+public abstract class CodeAreaOperation implements BinaryDataUndoableOperation {
 
     @Nonnull
     protected final CodeAreaCore codeArea;

@@ -39,18 +39,20 @@ public class EditCodeDataCommand extends EditDataCommand {
     private final EditCommandType commandType;
     protected boolean operationPerformed = false;
     private CodeAreaOperation[] operations = null;
+    private byte value;
 
-    public EditCodeDataCommand(CodeAreaCore codeArea, EditCommandType commandType, long position, int positionCodeOffset) {
+    public EditCodeDataCommand(CodeAreaCore codeArea, EditCommandType commandType, long position, int positionCodeOffset, byte value) {
         super(codeArea);
         this.commandType = commandType;
+        this.value = value;
         CodeAreaOperation operation;
         switch (commandType) {
             case INSERT: {
-                operation = new InsertCodeEditDataOperation(codeArea, position, positionCodeOffset);
+                operation = new InsertCodeEditDataOperation(codeArea, position, positionCodeOffset, value);
                 break;
             }
             case OVERWRITE: {
-                operation = new OverwriteCodeEditDataOperation(codeArea, position, positionCodeOffset);
+                operation = new OverwriteCodeEditDataOperation(codeArea, position, positionCodeOffset, value);
                 break;
             }
             case DELETE: {
@@ -61,6 +63,15 @@ public class EditCodeDataCommand extends EditDataCommand {
                 throw CodeAreaUtils.getInvalidTypeException(commandType);
         }
         operations = new CodeAreaOperation[]{operation};
+    }
+
+    @Override
+    public void execute() {
+        if (operationPerformed) {
+            throw new IllegalStateException();
+        }
+
+        appendEdit(value);
         operationPerformed = true;
     }
 
@@ -95,6 +106,7 @@ public class EditCodeDataCommand extends EditDataCommand {
                 CodeAreaOperation operation = operations[i];
                 CodeAreaOperation undoOperation = operation.executeWithUndo();
                 operation.dispose();
+                // TODO Drop listener?
                 if (codeArea instanceof BinaryDataOperationListener) {
                     ((CodeAreaOperationListener) codeArea).notifyChange(new CodeAreaOperationEvent(operations[i]));
                 }
@@ -111,11 +123,6 @@ public class EditCodeDataCommand extends EditDataCommand {
     @Override
     public CodeAreaCommandType getType() {
         return CodeAreaCommandType.DATA_EDITED;
-    }
-
-    @Override
-    public boolean canUndo() {
-        return true;
     }
 
     /**

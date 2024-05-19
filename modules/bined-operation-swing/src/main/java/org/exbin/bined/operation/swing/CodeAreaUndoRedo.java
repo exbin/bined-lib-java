@@ -18,12 +18,15 @@ package org.exbin.bined.operation.swing;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.operation.BinaryDataCommand;
 import org.exbin.bined.swing.CodeAreaCore;
 import org.exbin.bined.operation.undo.BinaryDataUndoRedo;
 import org.exbin.bined.operation.undo.BinaryDataUndoRedoChangeListener;
+import org.exbin.bined.operation.undo.BinaryDataUndoableCommand;
 
 /**
  * Undo handler for binary editor.
@@ -91,9 +94,17 @@ public class CodeAreaUndoRedo implements BinaryDataUndoRedo {
     }
 
     private void performUndoInt() {
-        commandPosition--;
-        BinaryDataCommand command = commands.get((int) commandPosition);
-        command.undo();
+        BinaryDataCommand command = commands.get((int) commandPosition - 1);
+        if (command instanceof BinaryDataUndoableCommand) {
+            try {
+                ((BinaryDataUndoableCommand) command).undo();
+                commandPosition--;
+            } catch (Throwable ex) {
+                Logger.getLogger(CodeAreaUndoRedo.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
     }
 
     @Override
@@ -104,8 +115,16 @@ public class CodeAreaUndoRedo implements BinaryDataUndoRedo {
 
     private void performRedoInt() {
         BinaryDataCommand command = commands.get((int) commandPosition);
-        command.redo();
-        commandPosition++;
+        if (command instanceof BinaryDataUndoableCommand) {
+            try {
+                ((BinaryDataUndoableCommand) command).redo();
+                commandPosition++;
+            } catch (Throwable ex) {
+                Logger.getLogger(CodeAreaUndoRedo.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
     }
 
     @Override

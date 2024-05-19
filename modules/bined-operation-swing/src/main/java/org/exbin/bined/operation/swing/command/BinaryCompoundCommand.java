@@ -18,11 +18,14 @@ package org.exbin.bined.operation.swing.command;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.operation.BinaryDataCommand;
 import org.exbin.bined.operation.BinaryDataCompoundCommand;
+import org.exbin.bined.operation.undo.BinaryDataUndoableCommand;
 import org.exbin.bined.swing.CodeAreaCore;
 
 /**
@@ -76,7 +79,15 @@ public class BinaryCompoundCommand extends CodeAreaCommand implements BinaryData
     @Override
     public void redo() {
         for (BinaryDataCommand command : commands) {
-            command.redo();
+            if (command instanceof BinaryDataUndoableCommand) {
+                try {
+                    ((BinaryDataUndoableCommand) command).redo();
+                } catch (Throwable ex) {
+                    Logger.getLogger(BinaryCompoundCommand.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } else {
+                throw new UnsupportedOperationException("Not supported yet.");
+            }
         }
     }
 
@@ -84,21 +95,16 @@ public class BinaryCompoundCommand extends CodeAreaCommand implements BinaryData
     public void undo() {
         for (int i = commands.size() - 1; i >= 0; i--) {
             BinaryDataCommand command = commands.get(i);
-            command.undo();
-        }
-    }
-
-    @Override
-    public boolean canUndo() {
-        boolean canUndo = true;
-        for (BinaryDataCommand command : commands) {
-            if (!command.canUndo()) {
-                canUndo = false;
-                break;
+            if (command instanceof BinaryDataUndoableCommand) {
+                try {
+                    ((BinaryDataUndoableCommand) command).undo();
+                } catch (Throwable ex) {
+                    Logger.getLogger(BinaryCompoundCommand.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } else {
+                throw new UnsupportedOperationException("Not supported yet.");
             }
         }
-
-        return canUndo;
     }
 
     @Override

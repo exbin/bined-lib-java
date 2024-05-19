@@ -15,22 +15,24 @@
  */
 package org.exbin.bined.operation;
 
+import org.exbin.bined.operation.undo.BinaryDataUndoableCommand;
+
 /**
- * Abstract code area command class.
+ * Abstract binary data command class.
  *
  * @author ExBin Project (https://exbin.org)
  */
-public abstract class BinaryDataAbstractCommand implements BinaryDataCommand {
+public abstract class BinaryDataAbstractCommand implements BinaryDataUndoableCommand {
 
     public BinaryDataAbstractCommand() {
     }
 
     /**
-     * Default execution method performs simply redo operation.
+     * Default redo operation performs reexecutes command.
      */
     @Override
-    public void execute() {
-        redo();
+    public void redo() {
+        execute();
     }
 
     /**

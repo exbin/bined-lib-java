@@ -37,9 +37,11 @@ public class OverwriteCharEditDataOperation extends CharEditDataOperation {
     private final long startPosition;
     private long length = 0;
     private EditableBinaryData undoData = null;
+    private char value;
 
-    public OverwriteCharEditDataOperation(CodeAreaCore coreArea, long startPosition) {
+    public OverwriteCharEditDataOperation(CodeAreaCore coreArea, long startPosition, char value) {
         super(coreArea);
+        this.value = value;
         this.startPosition = startPosition;
     }
 
@@ -52,7 +54,12 @@ public class OverwriteCharEditDataOperation extends CharEditDataOperation {
     @Nullable
     @Override
     protected CodeAreaOperation execute(ExecutionType executionType) {
-        throw new IllegalStateException("Cannot be executed");
+        if (executionType == ExecutionType.WITH_UNDO) {
+            throw new IllegalStateException();
+        } else {
+            appendEdit(value);
+            return null;
+        }
     }
 
     @Override

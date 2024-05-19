@@ -37,11 +37,6 @@ public abstract class EditDataCommand extends CodeAreaCommand {
         return CodeAreaCommandType.DATA_EDITED;
     }
 
-    @Override
-    public boolean canUndo() {
-        return true;
-    }
-
     @Nonnull
     public abstract EditCommandType getCommandType();
 

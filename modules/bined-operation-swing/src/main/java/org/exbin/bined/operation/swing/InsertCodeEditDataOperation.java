@@ -37,12 +37,14 @@ public class InsertCodeEditDataOperation extends CodeEditDataOperation {
     private boolean trailing = false;
     private EditableBinaryData trailingValue = null;
     private final CodeType codeType;
+    private byte value;
 
     private long length;
     private int codeOffset = 0;
 
-    public InsertCodeEditDataOperation(CodeAreaCore codeArea, long startPosition, int startCodeOffset) {
+    public InsertCodeEditDataOperation(CodeAreaCore codeArea, long startPosition, int startCodeOffset, byte value) {
         super(codeArea);
+        this.value = value;
         codeType = ((CodeTypeCapable) codeArea).getCodeType();
         this.startPosition = startPosition;
         this.startCodeOffset = startCodeOffset;
@@ -67,7 +69,8 @@ public class InsertCodeEditDataOperation extends CodeEditDataOperation {
     @Nullable
     @Override
     protected CodeAreaOperation execute(ExecutionType executionType) {
-        throw new IllegalStateException("Cannot be executed");
+        appendEdit(value);
+        return null;
     }
 
     @Override
