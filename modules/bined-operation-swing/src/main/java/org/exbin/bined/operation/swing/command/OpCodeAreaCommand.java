@@ -60,6 +60,18 @@ public abstract class OpCodeAreaCommand extends CodeAreaCommand {
     }
 
     @Override
+    public void execute() {
+        CodeAreaOperation undoOperation = CodeAreaUtils.requireNonNull(operation).executeWithUndo();
+        operation.dispose();
+        if (codeArea instanceof BinaryDataOperationListener) {
+            ((CodeAreaOperationListener) codeArea).notifyChange(new CodeAreaOperationEvent(operation));
+        }
+
+        operation = undoOperation;
+        operationPerformed = true;
+    }
+
+    @Override
     public void undo() {
         if (operationPerformed) {
             CodeAreaOperation redoOperation = CodeAreaUtils.requireNonNull(operation).executeWithUndo();
@@ -76,16 +88,9 @@ public abstract class OpCodeAreaCommand extends CodeAreaCommand {
     }
 
     @Override
-    public void execute() {
+    public void redo() {
         if (!operationPerformed) {
-            CodeAreaOperation undoOperation = CodeAreaUtils.requireNonNull(operation).executeWithUndo();
-            operation.dispose();
-            if (codeArea instanceof BinaryDataOperationListener) {
-                ((CodeAreaOperationListener) codeArea).notifyChange(new CodeAreaOperationEvent(operation));
-            }
-
-            operation = undoOperation;
-            operationPerformed = true;
+            execute();
         } else {
             throw new UnsupportedOperationException("Not supported yet.");
         }

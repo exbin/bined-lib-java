@@ -304,36 +304,27 @@ public class CodeAreaUtils {
                 offset++;
             } else if (charAt == ' ' || charAt == '\t' || charAt == ',' || charAt == ';' || charAt == ':') {
                 byte value = CodeAreaUtils.stringCodeToByte(insertedString.substring(offset, i), codeType);
-                if (bufferUsage < CODE_BUFFER_LENGTH) {
-                    buffer[bufferUsage] = value;
-                    bufferUsage++;
-                } else {
-                    data.insert(data.getDataSize(), buffer, 0, bufferUsage);
-                    bufferUsage = 0;
-                }
+                buffer[bufferUsage] = value;
+                bufferUsage++;
                 offset = i + 1;
             } else if (i == offset + maxDigits) {
                 byte value = CodeAreaUtils.stringCodeToByte(insertedString.substring(offset, i), codeType);
-                if (bufferUsage < CODE_BUFFER_LENGTH) {
-                    buffer[bufferUsage] = value;
-                    bufferUsage++;
-                } else {
-                    data.insert(data.getDataSize(), buffer, 0, bufferUsage);
-                    bufferUsage = 0;
-                }
-                offset = i;
-            }
-        }
-
-        if (offset < insertedString.length()) {
-            byte value = CodeAreaUtils.stringCodeToByte(insertedString.substring(offset), codeType);
-            if (bufferUsage < CODE_BUFFER_LENGTH) {
                 buffer[bufferUsage] = value;
                 bufferUsage++;
-            } else {
+                offset = i;
+            }
+
+            if (bufferUsage == CODE_BUFFER_LENGTH) {
                 data.insert(data.getDataSize(), buffer, 0, bufferUsage);
                 bufferUsage = 0;
             }
+        }
+
+        // Process also partial code at the end
+        if (offset < insertedString.length()) {
+            byte value = CodeAreaUtils.stringCodeToByte(insertedString.substring(offset), codeType);
+            buffer[bufferUsage] = value;
+            bufferUsage++;
         }
 
         if (bufferUsage > 0) {

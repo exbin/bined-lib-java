@@ -761,7 +761,6 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
 
                     CodeAreaCommand modifyCommand = null;
                     CodeType codeType = ((CodeTypeCapable) codeArea).getCodeType();
-                    int maxDigits = codeType.getMaxDigitsForByte();
 
                     DataFlavor textPlainUnicodeFlavor = DataFlavor.getTextPlainUnicodeFlavor();
                     String charsetName = textPlainUnicodeFlavor.getParameter(MIME_CHARSET);
@@ -774,58 +773,14 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
                     }
                     String insertedString = outputStream.toString(((CharsetCapable) codeArea).getCharset().name());
                     ByteArrayEditableData clipData = new ByteArrayEditableData();
-                    byte[] buffer = new byte[CODE_BUFFER_LENGTH];
-                    int bufferUsage = 0;
-                    int offset = 0;
-                    for (int i = 0; i < insertedString.length(); i++) {
-                        char charAt = insertedString.charAt(i);
-                        if ((charAt == ' ' || charAt == '\t') && offset == i) {
-                            offset++;
-                        } else if (charAt == ' ' || charAt == '\t' || charAt == ',' || charAt == ';' || charAt == ':') {
-                            byte value = CodeAreaUtils.stringCodeToByte(insertedString.substring(offset, i), codeType);
-                            if (bufferUsage < CODE_BUFFER_LENGTH) {
-                                buffer[bufferUsage] = value;
-                                bufferUsage++;
-                            } else {
-                                clipData.insert(clipData.getDataSize(), buffer, 0, bufferUsage);
-                                bufferUsage = 0;
-                            }
-                            offset = i + 1;
-                        } else if (i == offset + maxDigits) {
-                            byte value = CodeAreaUtils.stringCodeToByte(insertedString.substring(offset, i), codeType);
-                            if (bufferUsage < CODE_BUFFER_LENGTH) {
-                                buffer[bufferUsage] = value;
-                                bufferUsage++;
-                            } else {
-                                clipData.insert(clipData.getDataSize(), buffer, 0, bufferUsage);
-                                bufferUsage = 0;
-                            }
-                            offset = i;
-                        }
-                    }
-
-                    long clipDataSize = clipData.getDataSize();
-                    if (offset < insertedString.length()) {
-                        byte value = CodeAreaUtils.stringCodeToByte(insertedString.substring(offset), codeType);
-                        if (bufferUsage < CODE_BUFFER_LENGTH) {
-                            buffer[bufferUsage] = value;
-                            bufferUsage++;
-                        } else {
-                            clipData.insert(clipDataSize, buffer, 0, bufferUsage);
-                            bufferUsage = 0;
-                        }
-                    }
-
-                    if (bufferUsage > 0) {
-                        clipData.insert(clipDataSize, buffer, 0, bufferUsage);
-                    }
+                    CodeAreaUtils.insertHexStringIntoData(insertedString, clipData, codeType);
 
                     PagedData pastedData = new PagedData();
                     pastedData.insert(0, clipData);
                     long pastedDataSize = pastedData.getDataSize();
                     long insertionPosition = dataPosition;
                     BinaryData modifiedData = pastedData;
-                    long replacedPartSize = clipDataSize;
+                    long replacedPartSize = clipData.getDataSize();
                     if (insertionPosition + replacedPartSize > dataSize) {
                         replacedPartSize = dataSize - insertionPosition;
                         modifiedData = pastedData.copy(0, replacedPartSize);
