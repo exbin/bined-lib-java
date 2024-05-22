@@ -60,6 +60,7 @@ public class EmptyBinaryDataUndoRedo implements BinaryDataUndoRedo {
         return Collections.emptyList();
     }
 
+    @Nonnull
     @Override
     public Optional<BinaryDataCommand> getTopUndoCommand() {
         return Optional.empty();

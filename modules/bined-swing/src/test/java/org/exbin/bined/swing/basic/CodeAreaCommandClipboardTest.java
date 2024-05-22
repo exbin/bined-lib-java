@@ -231,7 +231,7 @@ public class CodeAreaCommandClipboardTest {
         checkResultData(expectedData, codeArea.getContentData());
     }
 
-    public void checkResultData(byte[] expectedData, BinaryData data) {
+    public static void checkResultData(byte[] expectedData, BinaryData data) {
         Assert.assertEquals(expectedData.length, data.getDataSize());
         byte[] resultData = new byte[expectedData.length];
         data.copyToArray(0, resultData, 0, expectedData.length);

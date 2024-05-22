@@ -28,7 +28,7 @@ public abstract class BinaryDataAbstractCommand implements BinaryDataUndoableCom
     }
 
     /**
-     * Default redo operation performs reexecutes command.
+     * Default redo operation reexecutes command.
      */
     @Override
     public void redo() {

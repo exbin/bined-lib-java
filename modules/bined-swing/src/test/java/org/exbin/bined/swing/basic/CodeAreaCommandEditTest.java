@@ -132,11 +132,11 @@ public class CodeAreaCommandEditTest {
         checkResultData(expectedData, codeArea.getContentData());
     }
 
-    private void emulateKeyTyped(Component component, int keyEvent, char keyChar) {
+    private static void emulateKeyTyped(Component component, int keyEvent, char keyChar) {
         component.dispatchEvent(new KeyEvent(component, KeyEvent.KEY_TYPED, System.currentTimeMillis(), 0, keyEvent, keyChar));
     }
 
-    public void checkResultData(byte[] expectedData, BinaryData data) {
+    public static void checkResultData(byte[] expectedData, BinaryData data) {
         Assert.assertEquals(expectedData.length, data.getDataSize());
         byte[] resultData = new byte[expectedData.length];
         data.copyToArray(0, resultData, 0, expectedData.length);

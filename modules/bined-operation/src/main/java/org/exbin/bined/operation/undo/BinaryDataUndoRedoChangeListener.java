@@ -15,14 +15,11 @@
  */
 package org.exbin.bined.operation.undo;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
 /**
  * Binary data undo change listener.
  *
  * @author ExBin Project (https://exbin.org)
  */
-@ParametersAreNonnullByDefault
 public interface BinaryDataUndoRedoChangeListener {
 
     /**
