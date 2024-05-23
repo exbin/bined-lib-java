@@ -13,22 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.operation.swing;
+package org.exbin.bined.operation;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * Operation execution listener.
+ * Interface for appendable binary data operation.
  *
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public interface CodeAreaOperationListener {
+public interface BinaryDataAppendableOperation {
 
     /**
-     * Notifies about change in document content.
+     * Attempts to append operation.
      *
-     * @param event change event
+     * @param operation operation
+     * @return true if sucessfully appended
      */
-    void notifyChange(CodeAreaOperationEvent event);
+    boolean appendOperation(BinaryDataOperation operation);
 }

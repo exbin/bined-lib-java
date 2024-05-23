@@ -25,6 +25,7 @@ import org.exbin.bined.capability.CharsetCapable;
 import org.exbin.bined.swing.CodeAreaCore;
 import org.exbin.auxiliary.binary_data.EditableBinaryData;
 import org.exbin.bined.capability.SelectionCapable;
+import org.exbin.bined.operation.BinaryDataOperation;
 
 /**
  * Operation for editing data using overwrite mode.
@@ -37,11 +38,11 @@ public class OverwriteCharEditDataOperation extends CharEditDataOperation {
     private final long startPosition;
     private long length = 0;
     private EditableBinaryData undoData = null;
-    private char value;
+    private char key;
 
-    public OverwriteCharEditDataOperation(CodeAreaCore coreArea, long startPosition, char value) {
+    public OverwriteCharEditDataOperation(CodeAreaCore coreArea, long startPosition, char key) {
         super(coreArea);
-        this.value = value;
+        this.key = key;
         this.startPosition = startPosition;
     }
 
@@ -54,16 +55,48 @@ public class OverwriteCharEditDataOperation extends CharEditDataOperation {
     @Nullable
     @Override
     protected CodeAreaOperation execute(ExecutionType executionType) {
+        CodeAreaOperation undoOperation = null;
         if (executionType == ExecutionType.WITH_UNDO) {
-            throw new IllegalStateException();
-        } else {
-            appendEdit(value);
-            return null;
+            ModifyDataOperation modifyOperation = null;
+            if (undoData != null && !undoData.isEmpty()) {
+                modifyOperation = new ModifyDataOperation(codeArea, startPosition, undoData.copy());
+            }
+            long undoDataSize = undoData == null ? 0 : undoData.getDataSize();
+            long removeLength = length - undoDataSize;
+            if (removeLength == 0) {
+                undoOperation = modifyOperation;
+            } else {
+                RemoveDataOperation removeOperation = new RemoveDataOperation(codeArea, startPosition + undoDataSize, 0, removeLength);
+                if (modifyOperation != null) {
+                    CodeAreaCompoundOperation compoundOperation = new CodeAreaCompoundOperation(codeArea);
+                    compoundOperation.addOperation(modifyOperation);
+                    compoundOperation.addOperation(removeOperation);
+                    undoOperation = compoundOperation;
+                } else {
+                    undoOperation = removeOperation;
+                }
+            }
         }
+        
+        appendEdit(key);
+        
+        return undoOperation;
     }
 
     @Override
-    public void appendEdit(char value) {
+    public boolean appendOperation(BinaryDataOperation operation) {
+        if (operation instanceof OverwriteCharEditDataOperation) {
+            OverwriteCharEditDataOperation overwriteOperation = (OverwriteCharEditDataOperation) operation;
+            if (overwriteOperation.codeArea == codeArea) { // && overwriteOperation.position
+                appendEdit(key);
+                return true;
+            }
+        }
+        
+        return false;
+    }
+
+    private void appendEdit(char value) {
         EditableBinaryData data = (EditableBinaryData) CodeAreaUtils.requireNonNull(codeArea.getContentData());
         long editedDataPosition = startPosition + length;
 
@@ -101,26 +134,6 @@ public class OverwriteCharEditDataOperation extends CharEditDataOperation {
         long dataPosition = startPosition + length;
         ((CaretCapable) codeArea).setCaretPosition(dataPosition);
         ((SelectionCapable) codeArea).setSelection(dataPosition, dataPosition);
-    }
-
-    @Nonnull
-    @Override
-    public CodeAreaOperation[] generateUndo() {
-        ModifyDataOperation modifyOperation = null;
-        if (undoData != null && !undoData.isEmpty()) {
-            modifyOperation = new ModifyDataOperation(codeArea, startPosition, undoData.copy());
-        }
-        long undoDataSize = undoData == null ? 0 : undoData.getDataSize();
-        long removeLength = length - undoDataSize;
-        if (removeLength == 0) {
-            return new CodeAreaOperation[]{modifyOperation};
-        }
-
-        RemoveDataOperation removeOperation = new RemoveDataOperation(codeArea, startPosition + undoDataSize, 0, removeLength);
-        if (modifyOperation != null) {
-            return new CodeAreaOperation[]{modifyOperation, removeOperation};
-        }
-        return new CodeAreaOperation[]{removeOperation};
     }
 
     public long getStartPosition() {

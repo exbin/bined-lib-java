@@ -25,6 +25,7 @@ import org.exbin.bined.capability.CharsetCapable;
 import org.exbin.bined.swing.CodeAreaCore;
 import org.exbin.auxiliary.binary_data.EditableBinaryData;
 import org.exbin.bined.capability.SelectionCapable;
+import org.exbin.bined.operation.BinaryDataOperation;
 
 /**
  * Operation for editing data using insert mode.
@@ -36,9 +37,11 @@ public class InsertCharEditDataOperation extends CharEditDataOperation {
 
     private final long startPosition;
     private long length;
+    private char key;
 
-    public InsertCharEditDataOperation(CodeAreaCore coreArea, long startPosition) {
+    public InsertCharEditDataOperation(CodeAreaCore coreArea, long startPosition, char key) {
         super(coreArea);
+        this.key = key;
         this.startPosition = startPosition;
     }
 
@@ -51,11 +54,30 @@ public class InsertCharEditDataOperation extends CharEditDataOperation {
     @Nullable
     @Override
     protected CodeAreaOperation execute(ExecutionType executionType) {
-        throw new IllegalStateException("Cannot be executed");
+        CodeAreaOperation undoOperation = null;
+        if (executionType == ExecutionType.WITH_UNDO) {
+            undoOperation = new RemoveDataOperation(codeArea, startPosition, 0, length);
+        }
+        
+        appendEdit(key);
+        
+        return undoOperation;
     }
 
     @Override
-    public void appendEdit(char value) {
+    public boolean appendOperation(BinaryDataOperation operation) {
+        if (operation instanceof InsertCharEditDataOperation) {
+            InsertCharEditDataOperation insertOperation = (InsertCharEditDataOperation) operation;
+            if (insertOperation.codeArea == codeArea) { // && insertOperation.position
+                appendEdit(key);
+                return true;
+            }
+        }
+        
+        return false;
+    }
+
+    private void appendEdit(char value) {
         EditableBinaryData data = (EditableBinaryData) codeArea.getContentData();
         long editedDataPosition = startPosition + length;
 
@@ -66,12 +88,6 @@ public class InsertCharEditDataOperation extends CharEditDataOperation {
         long dataPosition = startPosition + length;
         ((CaretCapable) codeArea).setCaretPosition(dataPosition);
         ((SelectionCapable) codeArea).setSelection(dataPosition, dataPosition);
-    }
-
-    @Nonnull
-    @Override
-    public CodeAreaOperation[] generateUndo() {
-        return new CodeAreaOperation[]{new RemoveDataOperation(codeArea, startPosition, 0, length)};
     }
 
     public long getStartPosition() {

@@ -34,11 +34,11 @@ import org.exbin.bined.swing.CodeAreaCore;
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public class BinaryCompoundCommand extends CodeAreaCommand implements BinaryDataCompoundCommand {
+public class CodeAreaCompoundCommand extends CodeAreaCommand implements BinaryDataCompoundCommand {
 
     private final List<BinaryDataCommand> commands = new ArrayList<>();
 
-    public BinaryCompoundCommand(@Nonnull CodeAreaCore codeArea) {
+    public CodeAreaCompoundCommand(@Nonnull CodeAreaCore codeArea) {
         super(codeArea);
     }
 
@@ -49,12 +49,12 @@ public class BinaryCompoundCommand extends CodeAreaCommand implements BinaryData
             if (command != null) {
                 if (resultCommand == null) {
                     resultCommand = command;
-                } else if (resultCommand instanceof BinaryCompoundCommand) {
-                    ((BinaryCompoundCommand) resultCommand).appendCommand(command);
+                } else if (resultCommand instanceof CodeAreaCompoundCommand) {
+                    ((CodeAreaCompoundCommand) resultCommand).addCommand(command);
                 } else {
-                    BinaryCompoundCommand compoundCommand = new BinaryCompoundCommand(codeArea);
-                    compoundCommand.appendCommand(resultCommand);
-                    compoundCommand.appendCommand(command);
+                    CodeAreaCompoundCommand compoundCommand = new CodeAreaCompoundCommand(codeArea);
+                    compoundCommand.addCommand(resultCommand);
+                    compoundCommand.addCommand(command);
                     resultCommand = compoundCommand;
                 }
             }
@@ -83,7 +83,7 @@ public class BinaryCompoundCommand extends CodeAreaCommand implements BinaryData
                 try {
                     ((BinaryDataUndoableCommand) command).redo();
                 } catch (Throwable ex) {
-                    Logger.getLogger(BinaryCompoundCommand.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(CodeAreaCompoundCommand.class.getName()).log(Level.SEVERE, null, ex);
                 }
             } else {
                 throw new UnsupportedOperationException("Not supported yet.");
@@ -99,7 +99,7 @@ public class BinaryCompoundCommand extends CodeAreaCommand implements BinaryData
                 try {
                     ((BinaryDataUndoableCommand) command).undo();
                 } catch (Throwable ex) {
-                    Logger.getLogger(BinaryCompoundCommand.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(CodeAreaCompoundCommand.class.getName()).log(Level.SEVERE, null, ex);
                 }
             } else {
                 throw new UnsupportedOperationException("Not supported yet.");
@@ -108,12 +108,12 @@ public class BinaryCompoundCommand extends CodeAreaCommand implements BinaryData
     }
 
     @Override
-    public void appendCommand(BinaryDataCommand command) {
+    public void addCommand(BinaryDataCommand command) {
         commands.add(command);
     }
 
     @Override
-    public void appendCommands(Collection<BinaryDataCommand> commands) {
+    public void addCommands(Collection<BinaryDataCommand> commands) {
         this.commands.addAll(commands);
     }
 

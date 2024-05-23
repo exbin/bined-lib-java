@@ -23,6 +23,7 @@ import org.exbin.bined.capability.CodeTypeCapable;
 import org.exbin.bined.swing.CodeAreaCore;
 import org.exbin.auxiliary.binary_data.EditableBinaryData;
 import org.exbin.bined.CodeAreaUtils;
+import org.exbin.bined.operation.BinaryDataOperation;
 
 /**
  * Operation for editing data using insert mode.
@@ -69,12 +70,38 @@ public class InsertCodeEditDataOperation extends CodeEditDataOperation {
     @Nullable
     @Override
     protected CodeAreaOperation execute(ExecutionType executionType) {
+        CodeAreaOperation undoOperation = null;
+        if (executionType == ExecutionType.WITH_UNDO) {
+            if (trailing) {
+                ModifyDataOperation modifyDataOperation = new ModifyDataOperation(codeArea, startPosition, trailingValue.copy());
+                CodeAreaCompoundOperation compoundOperation = new CodeAreaCompoundOperation(codeArea);
+                compoundOperation.addOperation(modifyDataOperation);
+                compoundOperation.addOperation(new RemoveDataOperation(codeArea, startPosition, startCodeOffset, length));
+                undoOperation = compoundOperation;
+            } else {
+                undoOperation = new RemoveDataOperation(codeArea, startPosition, startCodeOffset, length);
+            }
+        }
+        
         appendEdit(value);
-        return null;
+        
+        return undoOperation;
     }
 
     @Override
-    public void appendEdit(byte value) {
+    public boolean appendOperation(BinaryDataOperation operation) {
+        if (operation instanceof InsertCodeEditDataOperation) {
+            InsertCodeEditDataOperation insertOperation = (InsertCodeEditDataOperation) operation;
+            if (insertOperation.codeArea == codeArea) { // && insertOperation.position
+                appendEdit(value);
+                return true;
+            }
+        }
+        
+        return false;
+    }
+
+    private void appendEdit(byte value) {
         EditableBinaryData data = (EditableBinaryData) codeArea.getContentData();
         long editedDataPosition = startPosition + length;
 
@@ -190,17 +217,6 @@ public class InsertCodeEditDataOperation extends CodeEditDataOperation {
         if (codeOffset == codeType.getMaxDigitsForByte()) {
             codeOffset = 0;
         }
-    }
-
-    @Nonnull
-    @Override
-    public CodeAreaOperation[] generateUndo() {
-        if (trailing) {
-            ModifyDataOperation modifyDataOperation = new ModifyDataOperation(codeArea, startPosition, trailingValue.copy());
-            return new CodeAreaOperation[]{modifyDataOperation, new RemoveDataOperation(codeArea, startPosition, startCodeOffset, length)};
-        }
-
-        return new CodeAreaOperation[]{new RemoveDataOperation(codeArea, startPosition, startCodeOffset, length)};
     }
 
     public long getStartPosition() {

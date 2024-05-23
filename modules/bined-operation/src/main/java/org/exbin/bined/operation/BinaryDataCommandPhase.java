@@ -13,31 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.operation.swing;
-
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
+package org.exbin.bined.operation;
 
 /**
- * Operation execution event.
+ * Enumeration of command execution phases.
  *
  * @author ExBin Project (https://exbin.org)
  */
-@ParametersAreNonnullByDefault
-public class CodeAreaOperationEvent {
+public enum BinaryDataCommandPhase {
 
-    private CodeAreaOperation operation;
-
-    public CodeAreaOperationEvent(CodeAreaOperation operation) {
-        this.operation = operation;
-    }
-
-    @Nonnull
-    public CodeAreaOperation getOperation() {
-        return operation;
-    }
-
-    public void setOperation(CodeAreaOperation operation) {
-        this.operation = operation;
-    }
+    CREATED,
+    EXECUTED,
+    REVERTED
 }

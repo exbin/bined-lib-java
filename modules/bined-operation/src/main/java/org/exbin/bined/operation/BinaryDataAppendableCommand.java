@@ -18,17 +18,18 @@ package org.exbin.bined.operation;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * Operation execution listener.
+ * Interface for appendable binary data command.
  *
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public interface BinaryDataOperationListener {
+public interface BinaryDataAppendableCommand {
 
     /**
-     * Notifies about change in document content.
+     * Attempts to append command.
      *
-     * @param event change event
+     * @param command command
+     * @return true if sucessfully appended
      */
-    void notifyChange(BinaryDataOperationEvent event);
+    boolean appendCommand(BinaryDataCommand command);
 }

@@ -21,10 +21,8 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import org.exbin.bined.CodeAreaUtils;
-import org.exbin.bined.operation.BinaryDataOperationListener;
+import org.exbin.bined.operation.BinaryDataCommandPhase;
 import org.exbin.bined.operation.swing.CodeAreaOperation;
-import org.exbin.bined.operation.swing.CodeAreaOperationEvent;
-import org.exbin.bined.operation.swing.CodeAreaOperationListener;
 import org.exbin.bined.swing.CodeAreaCore;
 
 /**
@@ -37,7 +35,7 @@ public abstract class OpCodeAreaCommand extends CodeAreaCommand {
 
     @Nullable
     protected CodeAreaOperation operation;
-    protected boolean operationPerformed = false;
+    protected BinaryDataCommandPhase phase = BinaryDataCommandPhase.CREATED;
 
     public OpCodeAreaCommand(CodeAreaCore codeArea) {
         super(codeArea);
@@ -63,37 +61,29 @@ public abstract class OpCodeAreaCommand extends CodeAreaCommand {
     public void execute() {
         CodeAreaOperation undoOperation = CodeAreaUtils.requireNonNull(operation).executeWithUndo();
         operation.dispose();
-        if (codeArea instanceof BinaryDataOperationListener) {
-            ((CodeAreaOperationListener) codeArea).notifyChange(new CodeAreaOperationEvent(operation));
-        }
-
         operation = undoOperation;
-        operationPerformed = true;
+        phase = BinaryDataCommandPhase.EXECUTED;
     }
 
     @Override
     public void undo() {
-        if (operationPerformed) {
-            CodeAreaOperation redoOperation = CodeAreaUtils.requireNonNull(operation).executeWithUndo();
-            operation.dispose();
-            if (codeArea instanceof BinaryDataOperationListener) {
-                ((CodeAreaOperationListener) codeArea).notifyChange(new CodeAreaOperationEvent(operation));
-            }
-
-            operation = redoOperation;
-            operationPerformed = false;
-        } else {
-            throw new UnsupportedOperationException("Not supported yet.");
+        if (phase == BinaryDataCommandPhase.REVERTED) {
+            throw new IllegalStateException();
         }
+
+        CodeAreaOperation redoOperation = CodeAreaUtils.requireNonNull(operation).executeWithUndo();
+        operation.dispose();
+        operation = redoOperation;
+        phase = BinaryDataCommandPhase.REVERTED;
     }
 
     @Override
     public void redo() {
-        if (!operationPerformed) {
-            execute();
-        } else {
-            throw new UnsupportedOperationException("Not supported yet.");
+        if (phase == BinaryDataCommandPhase.EXECUTED) {
+            throw new IllegalStateException();
         }
+
+        execute();
     }
 
     @Override

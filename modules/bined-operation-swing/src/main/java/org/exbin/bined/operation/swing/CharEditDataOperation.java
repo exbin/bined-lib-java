@@ -15,8 +15,8 @@
  */
 package org.exbin.bined.operation.swing;
 
-import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import org.exbin.bined.operation.BinaryDataAppendableOperation;
 import org.exbin.bined.swing.CodeAreaCore;
 
 /**
@@ -25,24 +25,9 @@ import org.exbin.bined.swing.CodeAreaCore;
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public abstract class CharEditDataOperation extends CodeAreaOperation {
+public abstract class CharEditDataOperation extends CodeAreaOperation implements BinaryDataAppendableOperation {
 
     public CharEditDataOperation(CodeAreaCore codeArea) {
         super(codeArea);
     }
-
-    /**
-     * Appends next character value in editing action sequence.
-     *
-     * @param value character
-     */
-    public abstract void appendEdit(char value);
-
-    /**
-     * Generates undo operation for combined editing action.
-     *
-     * @return hexadecimal operation
-     */
-    @Nonnull
-    public abstract CodeAreaOperation[] generateUndo();
 }

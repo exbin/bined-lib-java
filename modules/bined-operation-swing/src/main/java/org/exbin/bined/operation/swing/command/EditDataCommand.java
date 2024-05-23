@@ -42,6 +42,8 @@ public abstract class EditDataCommand extends CodeAreaCommand {
 
     /**
      * Returns true if command was already used for undo action.
+     * 
+     * TODO: Drop
      *
      * @return true if undo step performed
      */

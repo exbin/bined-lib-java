@@ -15,30 +15,45 @@
  */
 package org.exbin.bined.operation;
 
+import java.util.Collection;
+import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * Operation execution event.
+ * Interface for compound XBUP editor operation.
  *
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public class BinaryDataOperationEvent {
+public interface BinaryDataCompoundOperation extends BinaryDataOperation {
 
+    /**
+     * Adds operation to the list of operations.
+     *
+     * @param operation appended operation
+     */
+    void addOperation(BinaryDataOperation operation);
+
+    /**
+     * Adds list of operations to the list of operations.
+     *
+     * @param operations appended operations
+     */
+    void addOperations(Collection<BinaryDataOperation> operations);
+
+    /**
+     * Returns list of operations.
+     *
+     * @return list of operations
+     */
     @Nonnull
-    private BinaryDataOperation operation;
+    List<BinaryDataOperation> getOperations();
 
-    public BinaryDataOperationEvent(BinaryDataOperation operation) {
-        this.operation = operation;
-    }
-
-    @Nonnull
-    public BinaryDataOperation getOperation() {
-        return operation;
-    }
-
-    public void setOperation(BinaryDataOperation operation) {
-        this.operation = operation;
-    }
+    /**
+     * Returns true if compound operation is empty.
+     *
+     * @return true if operation is empty
+     */
+    boolean isEmpty();
 }

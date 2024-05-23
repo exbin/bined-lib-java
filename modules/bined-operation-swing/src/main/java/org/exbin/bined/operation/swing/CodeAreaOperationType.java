@@ -43,7 +43,11 @@ public enum CodeAreaOperationType {
     /**
      * Edit data operation.
      */
-    EDIT_DATA("Edit data");
+    EDIT_DATA("Edit data"),
+    /**
+     * Compound operation.
+     */
+    COMPOUND("Compound operation");
 
     @Nullable
     private final String caption;

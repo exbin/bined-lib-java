@@ -67,17 +67,17 @@ public class EmptyBinaryDataUndoRedo implements BinaryDataUndoRedo {
     }
 
     @Override
-    public long getCommandPosition() {
+    public int getCommandPosition() {
         return 0;
     }
 
     @Override
-    public long getCommandsCount() {
+    public int getCommandsCount() {
         return 0;
     }
 
     @Override
-    public long getSyncPosition() {
+    public int getSyncPosition() {
         return 0;
     }
 
@@ -106,7 +106,7 @@ public class EmptyBinaryDataUndoRedo implements BinaryDataUndoRedo {
     }
 
     @Override
-    public void setSyncPosition(long syncPoint) {
+    public void setSyncPosition(int syncPosition) {
         throw new IllegalStateException();
     }
 

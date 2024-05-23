@@ -60,14 +60,14 @@ public interface BinaryDataUndoRedo extends BinaryDataUndoRedoState, BinaryDataM
      *
      * @return position in sequence.
      */
-    long getCommandPosition();
+    int getCommandPosition();
 
     /**
      * Returns commands count.
      *
      * @return commands count.
      */
-    long getCommandsCount();
+    int getCommandsCount();
 
     /**
      * Resets / clears all commands in sequence.
@@ -108,14 +108,14 @@ public interface BinaryDataUndoRedo extends BinaryDataUndoRedoState, BinaryDataM
      *
      * @return command position
      */
-    long getSyncPosition();
+    int getSyncPosition();
 
     /**
      * Sets synchronization mark position.
      *
      * @param commandPosition command position
      */
-    void setSyncPosition(long commandPosition);
+    void setSyncPosition(int commandPosition);
 
     /**
      * Sets synchronization mark position to current command position.

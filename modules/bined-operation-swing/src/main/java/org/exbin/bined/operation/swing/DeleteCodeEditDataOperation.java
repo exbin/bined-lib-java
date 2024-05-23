@@ -23,6 +23,7 @@ import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.capability.CodeTypeCapable;
 import org.exbin.bined.swing.CodeAreaCore;
 import org.exbin.auxiliary.binary_data.EditableBinaryData;
+import org.exbin.bined.operation.BinaryDataOperation;
 
 /**
  * Operation for editing data in delete mode.
@@ -37,10 +38,12 @@ public class DeleteCodeEditDataOperation extends CodeEditDataOperation {
     private final CodeType codeType;
 
     private long position;
+    private byte value;
     private EditableBinaryData undoData = null;
 
-    public DeleteCodeEditDataOperation(CodeAreaCore codeArea, long startPosition) {
+    public DeleteCodeEditDataOperation(CodeAreaCore codeArea, long startPosition, byte value) {
         super(codeArea);
+        this.value = value;
         codeType = ((CodeTypeCapable) codeArea).getCodeType();
         this.position = startPosition;
     }
@@ -60,11 +63,30 @@ public class DeleteCodeEditDataOperation extends CodeEditDataOperation {
     @Nullable
     @Override
     protected CodeAreaOperation execute(ExecutionType executionType) {
-        throw new IllegalStateException("Cannot be executed");
+        CodeAreaOperation undoOperation = null;
+        if (executionType == ExecutionType.WITH_UNDO) {
+            undoOperation = new InsertDataOperation(codeArea, position, 0, undoData.copy());
+        }
+        
+        appendEdit(value);
+        
+        return undoOperation;
     }
 
     @Override
-    public void appendEdit(byte value) {
+    public boolean appendOperation(BinaryDataOperation operation) {
+        if (operation instanceof DeleteCodeEditDataOperation) {
+            DeleteCodeEditDataOperation deleteOperation = (DeleteCodeEditDataOperation) operation;
+            if (deleteOperation.codeArea == codeArea) { // && deleteOperation.position
+                appendEdit(value);
+                return true;
+            }
+        }
+        
+        return false;
+    }
+
+    private void appendEdit(byte value) {
         EditableBinaryData data = (EditableBinaryData) codeArea.getContentData();
         switch (value) {
             case BACKSPACE_CHAR: {
@@ -100,13 +122,6 @@ public class DeleteCodeEditDataOperation extends CodeEditDataOperation {
         }
         ((CaretCapable) codeArea).setCaretPosition(position);
         codeArea.repaint();
-    }
-
-    @Nonnull
-    @Override
-    public CodeAreaOperation[] generateUndo() {
-        InsertDataOperation insertOperation = new InsertDataOperation(codeArea, position, 0, undoData.copy());
-        return new CodeAreaOperation[]{insertOperation};
     }
 
     public long getPosition() {

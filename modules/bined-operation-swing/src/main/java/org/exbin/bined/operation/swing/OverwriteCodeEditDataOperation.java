@@ -23,6 +23,7 @@ import org.exbin.bined.CodeType;
 import org.exbin.bined.capability.CodeTypeCapable;
 import org.exbin.bined.swing.CodeAreaCore;
 import org.exbin.auxiliary.binary_data.EditableBinaryData;
+import org.exbin.bined.operation.BinaryDataOperation;
 
 /**
  * Operation for editing data using overwrite mode.
@@ -69,17 +70,48 @@ public class OverwriteCodeEditDataOperation extends CodeEditDataOperation {
     @Nullable
     @Override
     protected CodeAreaOperation execute(ExecutionType executionType) {
+        CodeAreaOperation undoOperation = null;
         if (executionType == ExecutionType.WITH_UNDO) {
-            // TODO
-            throw new IllegalStateException();
-        } else {
-            appendEdit(value);
-            return null;
+            ModifyDataOperation modifyOperation = null;
+            if (undoData != null && !undoData.isEmpty()) {
+                modifyOperation = new ModifyDataOperation(codeArea, startPosition, undoData.copy());
+            }
+            long undoDataSize = undoData == null ? 0 : undoData.getDataSize();
+            long removeLength = length - undoDataSize;
+            if (removeLength == 0) {
+                undoOperation = modifyOperation;
+            } else {
+                RemoveDataOperation removeOperation = new RemoveDataOperation(codeArea, startPosition + undoDataSize, startCodeOffset, removeLength);
+                if (modifyOperation != null) {
+                    CodeAreaCompoundOperation compoundOperation = new CodeAreaCompoundOperation(codeArea);
+                    compoundOperation.addOperation(modifyOperation);
+                    compoundOperation.addOperation(removeOperation);
+                    undoOperation = compoundOperation;
+                } else {
+                    undoOperation = removeOperation;
+                }
+            }
         }
+
+        appendEdit(value);
+
+        return undoOperation;
     }
 
     @Override
-    public void appendEdit(byte value) {
+    public boolean appendOperation(BinaryDataOperation operation) {
+        if (operation instanceof OverwriteCharEditDataOperation) {
+            OverwriteCharEditDataOperation overwriteOperation = (OverwriteCharEditDataOperation) operation;
+            if (overwriteOperation.codeArea == codeArea) { // && overwriteOperation.position
+                appendEdit(value);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private void appendEdit(byte value) {
         EditableBinaryData data = (EditableBinaryData) codeArea.getContentData();
         long editedDataPosition = startPosition + length;
 
@@ -114,26 +146,6 @@ public class OverwriteCodeEditDataOperation extends CodeEditDataOperation {
         if (codeOffset == codeType.getMaxDigitsForByte()) {
             codeOffset = 0;
         }
-    }
-
-    @Nonnull
-    @Override
-    public CodeAreaOperation[] generateUndo() {
-        ModifyDataOperation modifyOperation = null;
-        if (undoData != null && !undoData.isEmpty()) {
-            modifyOperation = new ModifyDataOperation(codeArea, startPosition, undoData.copy());
-        }
-        long undoDataSize = undoData == null ? 0 : undoData.getDataSize();
-        long removeLength = length - undoDataSize;
-        if (removeLength == 0) {
-            return new CodeAreaOperation[]{modifyOperation};
-        }
-
-        RemoveDataOperation removeOperation = new RemoveDataOperation(codeArea, startPosition + undoDataSize, startCodeOffset, removeLength);
-        if (modifyOperation != null) {
-            return new CodeAreaOperation[]{modifyOperation, removeOperation};
-        }
-        return new CodeAreaOperation[]{removeOperation};
     }
 
     public long getStartPosition() {

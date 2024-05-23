@@ -18,11 +18,11 @@ package org.exbin.bined.operation.swing.command;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.CodeAreaUtils;
-import org.exbin.bined.operation.BinaryDataOperationListener;
+import org.exbin.bined.operation.BinaryDataAppendableCommand;
+import org.exbin.bined.operation.BinaryDataCommand;
+import org.exbin.bined.operation.BinaryDataCommandPhase;
 import org.exbin.bined.operation.swing.CharEditDataOperation;
 import org.exbin.bined.operation.swing.CodeAreaOperation;
-import org.exbin.bined.operation.swing.CodeAreaOperationEvent;
-import org.exbin.bined.operation.swing.CodeAreaOperationListener;
 import org.exbin.bined.operation.swing.DeleteCharEditDataOperation;
 import org.exbin.bined.operation.swing.InsertCharEditDataOperation;
 import org.exbin.bined.operation.swing.OverwriteCharEditDataOperation;
@@ -34,11 +34,11 @@ import org.exbin.bined.swing.CodeAreaCore;
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public class EditCharDataCommand extends EditDataCommand {
+public class EditCharDataCommand extends EditDataCommand implements BinaryDataAppendableCommand {
 
     @Nonnull
     private final EditCommandType commandType;
-    protected boolean operationPerformed = false;
+    protected BinaryDataCommandPhase phase = BinaryDataCommandPhase.CREATED;
     private char charData;
     private CodeAreaOperation[] operations = null;
 
@@ -49,7 +49,7 @@ public class EditCharDataCommand extends EditDataCommand {
         CodeAreaOperation operation;
         switch (commandType) {
             case INSERT: {
-                operation = new InsertCharEditDataOperation(codeArea, position);
+                operation = new InsertCharEditDataOperation(codeArea, position, charData);
                 break;
             }
             case OVERWRITE: {
@@ -57,7 +57,7 @@ public class EditCharDataCommand extends EditDataCommand {
                 break;
             }
             case DELETE: {
-                operation = new DeleteCharEditDataOperation(codeArea, position);
+                operation = new DeleteCharEditDataOperation(codeArea, position, charData);
                 break;
             }
             default:
@@ -68,55 +68,47 @@ public class EditCharDataCommand extends EditDataCommand {
 
     @Override
     public void execute() {
-        if (operationPerformed) {
+        if (phase == BinaryDataCommandPhase.EXECUTED) {
             throw new IllegalStateException();
         }
 
-        appendEdit(charData);
-        operationPerformed = true;
+        for (int i = 0; i < operations.length; i++) {
+            CodeAreaOperation operation = operations[i];
+            CodeAreaOperation undoOperation = operation.executeWithUndo();
+            operation.dispose();
+            operations[i] = undoOperation;
+        }
+        phase = BinaryDataCommandPhase.EXECUTED;
     }
 
     @Override
     public void undo() {
+        if (phase == BinaryDataCommandPhase.REVERTED) {
+            throw new IllegalStateException();
+        }
+        
         if (operations.length == 1 && operations[0] instanceof CharEditDataOperation) {
             CharEditDataOperation operation = (CharEditDataOperation) operations[0];
-            operations = operation.generateUndo();
+            operations = new CodeAreaOperation[] { operation.executeWithUndo() };
             operation.dispose();
         }
 
-        if (operationPerformed) {
-            for (int i = operations.length - 1; i >= 0; i--) {
-                CodeAreaOperation operation = operations[i];
-                CodeAreaOperation redoOperation = operation.executeWithUndo();
-                operation.dispose();
-                if (codeArea instanceof BinaryDataOperationListener) {
-                    ((CodeAreaOperationListener) codeArea).notifyChange(new CodeAreaOperationEvent(operations[i]));
-                }
-                operations[i] = redoOperation;
-            }
-            operationPerformed = false;
-        } else {
-            throw new UnsupportedOperationException("Not supported yet.");
+        for (int i = operations.length - 1; i >= 0; i--) {
+            CodeAreaOperation operation = operations[i];
+            CodeAreaOperation redoOperation = operation.executeWithUndo();
+            operation.dispose();
+            operations[i] = redoOperation;
         }
+        phase = BinaryDataCommandPhase.REVERTED;
     }
 
     @Override
     public void redo() {
-        if (!operationPerformed) {
-            for (int i = 0; i < operations.length; i++) {
-                CodeAreaOperation operation = operations[i];
-                CodeAreaOperation undoOperation = operation.executeWithUndo();
-                operation.dispose();
-                if (codeArea instanceof BinaryDataOperationListener) {
-                    ((CodeAreaOperationListener) codeArea).notifyChange(new CodeAreaOperationEvent(operation));
-                }
-
-                operations[i] = undoOperation;
-            }
-            operationPerformed = true;
-        } else {
-            throw new UnsupportedOperationException("Not supported yet.");
+        if (phase == BinaryDataCommandPhase.EXECUTED) {
+            throw new IllegalStateException();
         }
+
+        execute();
     }
 
     @Nonnull
@@ -125,12 +117,15 @@ public class EditCharDataCommand extends EditDataCommand {
         return CodeAreaCommandType.DATA_EDITED;
     }
 
-    public void appendEdit(char value) {
-        if (operations.length == 1 && operations[0] instanceof CharEditDataOperation) {
-            ((CharEditDataOperation) operations[0]).appendEdit(value);
-        } else {
-            throw new IllegalStateException("Cannot append edit on reverted command");
+    @Override
+    public boolean appendCommand(BinaryDataCommand command) {
+        if (command instanceof EditCharDataCommand && ((EditCharDataCommand) command).phase == BinaryDataCommandPhase.CREATED) {
+            if (operations.length == 1 && operations[0] instanceof CharEditDataOperation) {
+                return ((CharEditDataOperation) operations[0]).appendOperation(((EditCharDataCommand) command).operations[0]);
+            }
         }
+        
+        return false;
     }
 
     @Nonnull

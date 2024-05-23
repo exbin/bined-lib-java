@@ -18,6 +18,7 @@ package org.exbin.bined.operation.swing;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.CodeType;
+import org.exbin.bined.operation.BinaryDataAppendableOperation;
 import org.exbin.bined.swing.CodeAreaCore;
 
 /**
@@ -26,7 +27,7 @@ import org.exbin.bined.swing.CodeAreaCore;
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public abstract class CodeEditDataOperation extends CodeAreaOperation {
+public abstract class CodeEditDataOperation extends CodeAreaOperation implements BinaryDataAppendableOperation {
 
     public CodeEditDataOperation(CodeAreaCore coreArea) {
         super(coreArea);
@@ -39,19 +40,4 @@ public abstract class CodeEditDataOperation extends CodeAreaOperation {
      */
     @Nonnull
     public abstract CodeType getCodeType();
-
-    /**
-     * Appends next binary value in editing action sequence.
-     *
-     * @param value half-byte value (0..15)
-     */
-    public abstract void appendEdit(byte value);
-
-    /**
-     * Generates undo operation for combined editing action.
-     *
-     * @return binary operation
-     */
-    @Nonnull
-    public abstract CodeAreaOperation[] generateUndo();
 }

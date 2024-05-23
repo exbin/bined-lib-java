@@ -18,10 +18,11 @@ package org.exbin.bined.operation.swing.command;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.CodeAreaUtils;
-import org.exbin.bined.operation.BinaryDataOperationListener;
+import org.exbin.bined.operation.BinaryDataAppendableCommand;
+import org.exbin.bined.operation.BinaryDataCommand;
+import org.exbin.bined.operation.BinaryDataCommandPhase;
+import org.exbin.bined.operation.swing.CharEditDataOperation;
 import org.exbin.bined.operation.swing.CodeAreaOperation;
-import org.exbin.bined.operation.swing.CodeAreaOperationEvent;
-import org.exbin.bined.operation.swing.CodeAreaOperationListener;
 import org.exbin.bined.operation.swing.CodeEditDataOperation;
 import org.exbin.bined.operation.swing.DeleteCodeEditDataOperation;
 import org.exbin.bined.operation.swing.InsertCodeEditDataOperation;
@@ -34,10 +35,10 @@ import org.exbin.bined.swing.CodeAreaCore;
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public class EditCodeDataCommand extends EditDataCommand {
+public class EditCodeDataCommand extends EditDataCommand implements BinaryDataAppendableCommand {
 
     private final EditCommandType commandType;
-    protected boolean operationPerformed = false;
+    protected BinaryDataCommandPhase phase = BinaryDataCommandPhase.CREATED;
     private CodeAreaOperation[] operations = null;
     private byte value;
 
@@ -56,7 +57,7 @@ public class EditCodeDataCommand extends EditDataCommand {
                 break;
             }
             case DELETE: {
-                operation = new DeleteCodeEditDataOperation(codeArea, position);
+                operation = new DeleteCodeEditDataOperation(codeArea, position, value);
                 break;
             }
             default:
@@ -67,56 +68,47 @@ public class EditCodeDataCommand extends EditDataCommand {
 
     @Override
     public void execute() {
-        if (operationPerformed) {
+        if (phase == BinaryDataCommandPhase.EXECUTED) {
             throw new IllegalStateException();
         }
 
-        appendEdit(value);
-        operationPerformed = true;
+        for (int i = 0; i < operations.length; i++) {
+            CodeAreaOperation operation = operations[i];
+            CodeAreaOperation undoOperation = operation.executeWithUndo();
+            operation.dispose();
+            operations[i] = undoOperation;
+        }
+        phase = BinaryDataCommandPhase.EXECUTED;
     }
 
     @Override
     public void undo() {
+        if (phase == BinaryDataCommandPhase.REVERTED) {
+            throw new IllegalStateException();
+        }
+        
         if (operations.length == 1 && operations[0] instanceof CodeEditDataOperation) {
             CodeEditDataOperation operation = (CodeEditDataOperation) operations[0];
-            operations = operation.generateUndo();
+            operations = new CodeAreaOperation[] { operation.executeWithUndo() };
             operation.dispose();
         }
 
-        if (operationPerformed) {
-            for (int i = operations.length - 1; i >= 0; i--) {
-                CodeAreaOperation operation = operations[i];
-                CodeAreaOperation redoOperation = operation.executeWithUndo();
-                operation.dispose();
-                if (codeArea instanceof BinaryDataOperationListener) {
-                    ((CodeAreaOperationListener) codeArea).notifyChange(new CodeAreaOperationEvent(operation));
-                }
-                operations[i] = redoOperation;
-            }
-            operationPerformed = false;
-        } else {
-            throw new UnsupportedOperationException("Not supported yet.");
+        for (int i = operations.length - 1; i >= 0; i--) {
+            CodeAreaOperation operation = operations[i];
+            CodeAreaOperation redoOperation = operation.executeWithUndo();
+            operation.dispose();
+            operations[i] = redoOperation;
         }
+        phase = BinaryDataCommandPhase.REVERTED;
     }
 
     @Override
     public void redo() {
-        if (!operationPerformed) {
-            for (int i = 0; i < operations.length; i++) {
-                CodeAreaOperation operation = operations[i];
-                CodeAreaOperation undoOperation = operation.executeWithUndo();
-                operation.dispose();
-                // TODO Drop listener?
-                if (codeArea instanceof BinaryDataOperationListener) {
-                    ((CodeAreaOperationListener) codeArea).notifyChange(new CodeAreaOperationEvent(operations[i]));
-                }
-
-                operations[i] = undoOperation;
-            }
-            operationPerformed = true;
-        } else {
-            throw new UnsupportedOperationException("Not supported yet.");
+        if (phase == BinaryDataCommandPhase.EXECUTED) {
+            throw new IllegalStateException();
         }
+
+        execute();
     }
 
     @Nonnull
@@ -125,17 +117,15 @@ public class EditCodeDataCommand extends EditDataCommand {
         return CodeAreaCommandType.DATA_EDITED;
     }
 
-    /**
-     * Appends next binary value in editing action sequence.
-     *
-     * @param value half-byte value (0..15)
-     */
-    public void appendEdit(byte value) {
-        if (operations.length == 1 && operations[0] instanceof CodeEditDataOperation) {
-            ((CodeEditDataOperation) operations[0]).appendEdit(value);
-        } else {
-            throw new IllegalStateException("Cannot append edit on reverted command");
+    @Override
+    public boolean appendCommand(BinaryDataCommand command) {
+        if (command instanceof EditCodeDataCommand && ((EditCodeDataCommand) command).phase == BinaryDataCommandPhase.CREATED) {
+            if (operations.length == 1 && operations[0] instanceof CodeEditDataOperation) {
+                return ((CharEditDataOperation) operations[0]).appendOperation(((EditCodeDataCommand) command).operations[0]);
+            }
         }
+        
+        return false;
     }
 
     @Nonnull

@@ -36,11 +36,11 @@ import org.exbin.bined.operation.undo.BinaryDataUndoableCommand;
 @ParametersAreNonnullByDefault
 public class CodeAreaUndoRedo implements BinaryDataUndoRedo {
 
-    private long undoMaximumCount;
-    private long undoMaximumSize;
-    private long usedSize;
-    private long commandPosition;
-    private long syncPointPosition = -1;
+    private int undoMaximumCount;
+    private int undoMaximumSize;
+    private int usedSize;
+    private int commandPosition;
+    private int syncPosition = -1;
     private final List<BinaryDataCommand> commands = new ArrayList<>();
     private final CodeAreaCore codeArea;
     private final List<BinaryDataUndoRedoChangeListener> listeners = new ArrayList<>();
@@ -173,15 +173,15 @@ public class CodeAreaUndoRedo implements BinaryDataUndoRedo {
 
     @Override
     public boolean isModified() {
-        return syncPointPosition != commandPosition;
+        return syncPosition != commandPosition;
     }
 
-    public long getMaximumUndo() {
+    public int getMaximumUndo() {
         return undoMaximumCount;
     }
 
     @Override
-    public long getCommandPosition() {
+    public int getCommandPosition() {
         return commandPosition;
     }
 
@@ -195,47 +195,47 @@ public class CodeAreaUndoRedo implements BinaryDataUndoRedo {
     }
 
     @Override
-    public long getCommandsCount() {
+    public int getCommandsCount() {
         return commands.size();
     }
 
     /**
-     * Performs revert to sync point.
+     * Performs revert to sync position.
      */
     @Override
     public void performSync() {
-        setCommandPosition(syncPointPosition);
+        setCommandPosition(syncPosition);
     }
 
-    public void setUndoMaxCount(long maxUndo) {
+    public void setUndoMaxCount(int maxUndo) {
         this.undoMaximumCount = maxUndo;
     }
 
-    public long getUndoMaximumSize() {
+    public int getUndoMaximumSize() {
         return undoMaximumSize;
     }
 
-    public void setUndoMaximumSize(long maxSize) {
+    public void setUndoMaximumSize(int maxSize) {
         this.undoMaximumSize = maxSize;
     }
 
-    public long getUsedSize() {
+    public int getUsedSize() {
         return usedSize;
     }
 
     @Override
-    public long getSyncPosition() {
-        return syncPointPosition;
+    public int getSyncPosition() {
+        return syncPosition;
     }
 
     @Override
-    public void setSyncPosition(long syncPoint) {
-        this.syncPointPosition = syncPoint;
+    public void setSyncPosition(int syncPosition) {
+        this.syncPosition = syncPosition;
     }
 
     @Override
     public void setSyncPosition() {
-        this.syncPointPosition = commandPosition;
+        this.syncPosition = commandPosition;
     }
 
     @Nonnull
@@ -247,9 +247,9 @@ public class CodeAreaUndoRedo implements BinaryDataUndoRedo {
     /**
      * Performs undo or redo operation to reach given position.
      *
-     * @param targetPosition desired position
+     * @param targetPosition target position
      */
-    public void setCommandPosition(long targetPosition) {
+    public void setCommandPosition(int targetPosition) {
         if (targetPosition < commandPosition) {
             performUndo((int) (commandPosition - targetPosition));
         } else if (targetPosition > commandPosition) {
