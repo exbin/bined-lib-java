@@ -68,8 +68,7 @@ public abstract class CodeAreaOperation implements BinaryDataUndoableOperation {
     @Nonnull
     @Override
     public String getName() {
-        String caption = getType().getCaption();
-        return caption == null ? "" : caption;
+        return getType().getName();
     }
 
     @Nonnull
@@ -81,28 +80,6 @@ public abstract class CodeAreaOperation implements BinaryDataUndoableOperation {
         this.backPosition.setPosition(backPosition);
     }
 
-    @Override
-    public void execute() {
-        execute(ExecutionType.NORMAL);
-    }
-
-    @Nonnull
-    @Override
-    public CodeAreaOperation executeWithUndo() {
-        return execute(ExecutionType.WITH_UNDO);
-    }
-
-    /**
-     * Default empty execution method supporting both modes ready for override.
-     *
-     * @param executionType if undo should be included
-     * @return undo operation or null if not available
-     */
-    @Nullable
-    protected CodeAreaOperation execute(ExecutionType executionType) {
-        return null;
-    }
-
     /**
      * Performs dispose of the operation's resources.
      * <p>
@@ -110,9 +87,5 @@ public abstract class CodeAreaOperation implements BinaryDataUndoableOperation {
      */
     @Override
     public void dispose() {
-    }
-
-    public enum ExecutionType {
-        NORMAL, WITH_UNDO
     }
 }

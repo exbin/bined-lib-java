@@ -15,21 +15,20 @@
  */
 package org.exbin.bined.operation;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+import javax.annotation.Nonnull;
 
 /**
- * Interface for appendable binary data operation.
+ * Command type interface.
  *
  * @author ExBin Project (https://exbin.org)
  */
-@ParametersAreNonnullByDefault
-public interface BinaryDataAppendableOperation {
+public interface BinaryDataCommandType {
 
     /**
-     * Attempts to append operation.
+     * Returns type name.
      *
-     * @param operation operation
-     * @return true if sucessfully appended
+     * @return type name
      */
-    boolean appendOperation(BinaryDataOperation operation);
+    @Nonnull
+    String getName();
 }

@@ -279,7 +279,7 @@ public class StatePanelEx extends javax.swing.JPanel {
             try {
                 File selectedFile = saveFC.getSelectedFile();
                 try (FileOutputStream stream = new FileOutputStream(selectedFile)) {
-                    CodeAreaUtils.requireNonNull(codeArea.getContentData()).saveToStream(stream);
+                    codeArea.getContentData().saveToStream(stream);
                 }
             } catch (IOException ex) {
                 Logger.getLogger(BinEdExampleBasicPanel.class.getName()).log(Level.SEVERE, null, ex);

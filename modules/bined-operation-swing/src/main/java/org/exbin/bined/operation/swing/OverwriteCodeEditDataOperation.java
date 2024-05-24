@@ -24,6 +24,7 @@ import org.exbin.bined.capability.CodeTypeCapable;
 import org.exbin.bined.swing.CodeAreaCore;
 import org.exbin.auxiliary.binary_data.EditableBinaryData;
 import org.exbin.bined.operation.BinaryDataOperation;
+import org.exbin.bined.operation.undo.BinaryDataUndoableOperation;
 
 /**
  * Operation for editing data using overwrite mode.
@@ -67,11 +68,20 @@ public class OverwriteCodeEditDataOperation extends CodeEditDataOperation {
         return codeType;
     }
 
-    @Nullable
     @Override
-    protected CodeAreaOperation execute(ExecutionType executionType) {
+    public void execute() {
+        execute(false);
+    }
+
+    @Nonnull
+    @Override
+    public BinaryDataUndoableOperation executeWithUndo() {
+        return execute(true);
+    }
+
+    private CodeAreaOperation execute(boolean withUndo) {
         CodeAreaOperation undoOperation = null;
-        if (executionType == ExecutionType.WITH_UNDO) {
+        if (withUndo) {
             ModifyDataOperation modifyOperation = null;
             if (undoData != null && !undoData.isEmpty()) {
                 modifyOperation = new ModifyDataOperation(codeArea, startPosition, undoData.copy());
@@ -96,19 +106,6 @@ public class OverwriteCodeEditDataOperation extends CodeEditDataOperation {
         appendEdit(value);
 
         return undoOperation;
-    }
-
-    @Override
-    public boolean appendOperation(BinaryDataOperation operation) {
-        if (operation instanceof OverwriteCharEditDataOperation) {
-            OverwriteCharEditDataOperation overwriteOperation = (OverwriteCharEditDataOperation) operation;
-            if (overwriteOperation.codeArea == codeArea) { // && overwriteOperation.position
-                appendEdit(value);
-                return true;
-            }
-        }
-
-        return false;
     }
 
     private void appendEdit(byte value) {

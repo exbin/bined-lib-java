@@ -17,15 +17,17 @@ package org.exbin.bined.operation.swing;
 
 import java.nio.charset.Charset;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.capability.CharsetCapable;
 import org.exbin.bined.swing.CodeAreaCore;
 import org.exbin.auxiliary.binary_data.EditableBinaryData;
+import org.exbin.bined.CodeAreaCaretPosition;
 import org.exbin.bined.capability.SelectionCapable;
 import org.exbin.bined.operation.BinaryDataOperation;
+import org.exbin.bined.operation.undo.BinaryDataAppendableOperation;
+import org.exbin.bined.operation.undo.BinaryDataUndoableOperation;
 
 /**
  * Operation for editing data using overwrite mode.
@@ -38,11 +40,11 @@ public class OverwriteCharEditDataOperation extends CharEditDataOperation {
     private final long startPosition;
     private long length = 0;
     private EditableBinaryData undoData = null;
-    private char key;
+    private char value;
 
-    public OverwriteCharEditDataOperation(CodeAreaCore coreArea, long startPosition, char key) {
+    public OverwriteCharEditDataOperation(CodeAreaCore coreArea, long startPosition, char value) {
         super(coreArea);
-        this.key = key;
+        this.value = value;
         this.startPosition = startPosition;
     }
 
@@ -52,11 +54,20 @@ public class OverwriteCharEditDataOperation extends CharEditDataOperation {
         return CodeAreaOperationType.EDIT_DATA;
     }
 
-    @Nullable
     @Override
-    protected CodeAreaOperation execute(ExecutionType executionType) {
+    public void execute() {
+        execute(false);
+    }
+
+    @Nonnull
+    @Override
+    public BinaryDataUndoableOperation executeWithUndo() {
+        return execute(true);
+    }
+
+    private CodeAreaOperation execute(boolean withUndo) {
         CodeAreaOperation undoOperation = null;
-        if (executionType == ExecutionType.WITH_UNDO) {
+        if (withUndo) {
             ModifyDataOperation modifyOperation = null;
             if (undoData != null && !undoData.isEmpty()) {
                 modifyOperation = new ModifyDataOperation(codeArea, startPosition, undoData.copy());
@@ -78,26 +89,13 @@ public class OverwriteCharEditDataOperation extends CharEditDataOperation {
             }
         }
         
-        appendEdit(key);
+        appendEdit(value);
         
         return undoOperation;
     }
 
-    @Override
-    public boolean appendOperation(BinaryDataOperation operation) {
-        if (operation instanceof OverwriteCharEditDataOperation) {
-            OverwriteCharEditDataOperation overwriteOperation = (OverwriteCharEditDataOperation) operation;
-            if (overwriteOperation.codeArea == codeArea) { // && overwriteOperation.position
-                appendEdit(key);
-                return true;
-            }
-        }
-        
-        return false;
-    }
-
     private void appendEdit(char value) {
-        EditableBinaryData data = (EditableBinaryData) CodeAreaUtils.requireNonNull(codeArea.getContentData());
+        EditableBinaryData data = (EditableBinaryData) codeArea.getContentData();
         long editedDataPosition = startPosition + length;
 
         Charset charset = ((CharsetCapable) codeArea).getCharset();
@@ -149,6 +147,39 @@ public class OverwriteCharEditDataOperation extends CharEditDataOperation {
         super.dispose();
         if (undoData != null) {
             undoData.dispose();
+        }
+    }
+
+    @ParametersAreNonnullByDefault
+    private static class UndoOperation extends CodeAreaOperation implements BinaryDataAppendableOperation {
+
+        public UndoOperation(CodeAreaCore codeArea) {
+            super(codeArea);
+        }
+
+        public UndoOperation(CodeAreaCore codeArea, CodeAreaCaretPosition backPosition) {
+            super(codeArea, backPosition);
+        }
+
+        @Nonnull
+        @Override
+        public CodeAreaOperationType getType() {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public BinaryDataUndoableOperation executeWithUndo() {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public void execute() {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public boolean appendOperation(BinaryDataOperation operation) {
+            throw new UnsupportedOperationException("Not supported yet.");
         }
     }
 }

@@ -16,15 +16,16 @@
 package org.exbin.bined.operation.swing;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import org.exbin.auxiliary.binary_data.BinaryData;
 
-import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.swing.CodeAreaCore;
 import org.exbin.auxiliary.binary_data.EditableBinaryData;
 import org.exbin.bined.capability.SelectionCapable;
 import org.exbin.bined.operation.BinaryDataOperation;
+import org.exbin.bined.operation.undo.BinaryDataAppendableOperation;
+import org.exbin.bined.operation.undo.BinaryDataUndoableOperation;
 
 /**
  * Operation for editing data in delete mode.
@@ -38,12 +39,11 @@ public class DeleteCharEditDataOperation extends CharEditDataOperation {
     private static final char DELETE_CHAR = (char) 0x7f;
 
     private long position;
-    private char key;
-    private EditableBinaryData undoData = null;
+    private char value;
 
-    public DeleteCharEditDataOperation(CodeAreaCore codeArea, long startPosition, char key) {
+    public DeleteCharEditDataOperation(CodeAreaCore codeArea, long startPosition, char value) {
         super(codeArea);
-        this.key = key;
+        this.value = value;
         this.position = startPosition;
     }
 
@@ -53,58 +53,34 @@ public class DeleteCharEditDataOperation extends CharEditDataOperation {
         return CodeAreaOperationType.EDIT_DATA;
     }
 
-    @Nullable
     @Override
-    protected CodeAreaOperation execute(ExecutionType executionType) {
+    public void execute() {
+        execute(false);
+    }
+
+    @Nonnull
+    @Override
+    public BinaryDataUndoableOperation executeWithUndo() {
+        return execute(true);
+    }
+
+    private CodeAreaOperation execute(boolean withUndo) {
         CodeAreaOperation undoOperation = null;
-        if (executionType == ExecutionType.WITH_UNDO) {
-            undoOperation = new InsertDataOperation(codeArea, position, 0, undoData.copy());
-        }
-        
-        appendEdit(key);
-        
-        return undoOperation;
-    }
+        EditableBinaryData undoData = null;
 
-    @Override
-    public boolean appendOperation(BinaryDataOperation operation) {
-        if (operation instanceof DeleteCharEditDataOperation) {
-            DeleteCharEditDataOperation deleteOperation = (DeleteCharEditDataOperation) operation;
-            if (deleteOperation.codeArea == codeArea && deleteOperation.key == key) { // && deleteOperation.position
-                appendEdit(key);
-                return true;
-            }
-        }
-        
-        return false;
-    }
-
-    private void appendEdit(char value) {
-        EditableBinaryData data = (EditableBinaryData) CodeAreaUtils.requireNonNull(codeArea.getContentData());
+        EditableBinaryData data = (EditableBinaryData) codeArea.getContentData();
         switch (value) {
             case BACKSPACE_CHAR: {
                 if (position > 0) {
                     position--;
-                    if (undoData == null) {
-                        undoData = (EditableBinaryData) data.copy(position, 1);
-                    } else {
-                        EditableBinaryData dataCopy = (EditableBinaryData) data.copy(position, 1);
-                        undoData.insert(0, dataCopy);
-                        dataCopy.dispose();
-                    }
+                    undoData = (EditableBinaryData) data.copy(position, 1);
                     data.remove(position, 1);
                 }
                 break;
             }
             case DELETE_CHAR: {
                 if (position < data.getDataSize()) {
-                    if (undoData == null) {
-                        undoData = (EditableBinaryData) data.copy(position, 1);
-                    } else {
-                        EditableBinaryData dataCopy = (EditableBinaryData) data.copy(position, 1);
-                        undoData.insert(0, dataCopy);
-                        dataCopy.dispose();
-                    }
+                    undoData = (EditableBinaryData) data.copy(position, 1);
                     data.remove(position, 1);
                 }
                 break;
@@ -116,6 +92,11 @@ public class DeleteCharEditDataOperation extends CharEditDataOperation {
         ((CaretCapable) codeArea).setCaretPosition(position);
         ((SelectionCapable) codeArea).setSelection(position, position);
         codeArea.repaint();
+
+        if (withUndo) {
+            undoOperation = new UndoOperation(codeArea, position, 0, undoData, value);
+        }
+        return undoOperation;
     }
 
     public long getPosition() {
@@ -125,8 +106,45 @@ public class DeleteCharEditDataOperation extends CharEditDataOperation {
     @Override
     public void dispose() {
         super.dispose();
-        if (undoData != null) {
-            undoData.dispose();
+    }
+
+    @ParametersAreNonnullByDefault
+    private static class UndoOperation extends InsertDataOperation implements BinaryDataAppendableOperation {
+
+        private char value;
+
+        public UndoOperation(CodeAreaCore codeArea, long position, int codeOffset, BinaryData data, char value) {
+            super(codeArea, position, codeOffset, data);
+            this.value = value;
+        }
+
+        @Nonnull
+        @Override
+        public CodeAreaOperationType getType() {
+            return CodeAreaOperationType.EDIT_DATA;
+        }
+
+        @Override
+        public boolean appendOperation(BinaryDataOperation operation) {
+            if (operation instanceof UndoOperation) {
+                EditableBinaryData data = (EditableBinaryData) getData();
+                switch (value) {
+                    case BACKSPACE_CHAR: {
+                        data.insert(0, ((UndoOperation) operation).getData());
+                        break;
+                    }
+                    case DELETE_CHAR: {
+                        data.insert(data.getDataSize(), ((UndoOperation) operation).getData());
+                        break;
+                    }
+                    default: {
+                        throw new IllegalStateException("Unexpected character " + value);
+                    }
+                }
+                return true;
+            }
+
+            return false;
         }
     }
 }

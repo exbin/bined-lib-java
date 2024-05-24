@@ -22,6 +22,7 @@ import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.swing.CodeAreaCore;
 import org.exbin.auxiliary.binary_data.EditableBinaryData;
+import org.exbin.bined.operation.undo.BinaryDataUndoableOperation;
 
 /**
  * Operation for deleting child block.
@@ -49,10 +50,20 @@ public class RemoveDataOperation extends CodeAreaOperation {
     }
 
     @Override
-    protected CodeAreaOperation execute(ExecutionType executionType) {
+    public void execute() {
+        execute(false);
+    }
+
+    @Nonnull
+    @Override
+    public BinaryDataUndoableOperation executeWithUndo() {
+        return execute(true);
+    }
+
+    private CodeAreaOperation execute(boolean withUndo) {
         EditableBinaryData contentData = CodeAreaUtils.requireNonNull((EditableBinaryData) codeArea.getContentData());
         CodeAreaOperation undoOperation = null;
-        if (executionType == ExecutionType.WITH_UNDO) {
+        if (withUndo) {
             EditableBinaryData undoData = (EditableBinaryData) contentData.copy(position, length);
             undoOperation = new InsertDataOperation(codeArea, position, codeOffset, undoData);
         }

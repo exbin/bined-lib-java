@@ -21,6 +21,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.swing.CodeAreaCore;
 import org.exbin.auxiliary.binary_data.BinaryData;
 import org.exbin.auxiliary.binary_data.EditableBinaryData;
+import org.exbin.bined.operation.undo.BinaryDataUndoableOperation;
 
 /**
  * Operation for modifying data.
@@ -45,11 +46,20 @@ public class ModifyDataOperation extends CodeAreaOperation {
         return CodeAreaOperationType.MODIFY_DATA;
     }
 
-    @Nullable
     @Override
-    protected CodeAreaOperation execute(ExecutionType executionType) {
+    public void execute() {
+        execute(false);
+    }
+
+    @Nonnull
+    @Override
+    public BinaryDataUndoableOperation executeWithUndo() {
+        return execute(true);
+    }
+
+    private CodeAreaOperation execute(boolean withUndo) {
         CodeAreaOperation undoOperation = null;
-        if (executionType == ExecutionType.WITH_UNDO) {
+        if (withUndo) {
             BinaryData undoData = codeArea.getContentData().copy(position, data.getDataSize());
             undoOperation = new ModifyDataOperation(codeArea, position, undoData);
         }

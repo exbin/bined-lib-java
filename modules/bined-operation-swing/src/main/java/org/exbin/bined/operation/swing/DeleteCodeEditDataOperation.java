@@ -16,14 +16,16 @@
 package org.exbin.bined.operation.swing;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import org.exbin.auxiliary.binary_data.BinaryData;
 import org.exbin.bined.CodeType;
 import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.capability.CodeTypeCapable;
 import org.exbin.bined.swing.CodeAreaCore;
 import org.exbin.auxiliary.binary_data.EditableBinaryData;
 import org.exbin.bined.operation.BinaryDataOperation;
+import org.exbin.bined.operation.undo.BinaryDataAppendableOperation;
+import org.exbin.bined.operation.undo.BinaryDataUndoableOperation;
 
 /**
  * Operation for editing data in delete mode.
@@ -39,7 +41,6 @@ public class DeleteCodeEditDataOperation extends CodeEditDataOperation {
 
     private long position;
     private byte value;
-    private EditableBinaryData undoData = null;
 
     public DeleteCodeEditDataOperation(CodeAreaCore codeArea, long startPosition, byte value) {
         super(codeArea);
@@ -60,58 +61,34 @@ public class DeleteCodeEditDataOperation extends CodeEditDataOperation {
         return codeType;
     }
 
-    @Nullable
     @Override
-    protected CodeAreaOperation execute(ExecutionType executionType) {
+    public void execute() {
+        execute(false);
+    }
+
+    @Nonnull
+    @Override
+    public BinaryDataUndoableOperation executeWithUndo() {
+        return execute(true);
+    }
+
+    private CodeAreaOperation execute(boolean withUndo) {
         CodeAreaOperation undoOperation = null;
-        if (executionType == ExecutionType.WITH_UNDO) {
-            undoOperation = new InsertDataOperation(codeArea, position, 0, undoData.copy());
-        }
-        
-        appendEdit(value);
-        
-        return undoOperation;
-    }
+        EditableBinaryData undoData = null;
 
-    @Override
-    public boolean appendOperation(BinaryDataOperation operation) {
-        if (operation instanceof DeleteCodeEditDataOperation) {
-            DeleteCodeEditDataOperation deleteOperation = (DeleteCodeEditDataOperation) operation;
-            if (deleteOperation.codeArea == codeArea) { // && deleteOperation.position
-                appendEdit(value);
-                return true;
-            }
-        }
-        
-        return false;
-    }
-
-    private void appendEdit(byte value) {
         EditableBinaryData data = (EditableBinaryData) codeArea.getContentData();
         switch (value) {
             case BACKSPACE_CHAR: {
                 if (position > 0) {
                     position--;
-                    if (undoData == null) {
-                        undoData = (EditableBinaryData) data.copy(position, 1);
-                    } else {
-                        EditableBinaryData dataCopy = (EditableBinaryData) data.copy(position, 1);
-                        undoData.insert(0, dataCopy);
-                        dataCopy.dispose();
-                    }
+                    undoData = (EditableBinaryData) data.copy(position, 1);
                     data.remove(position, 1);
                 }
                 break;
             }
             case DELETE_CHAR: {
                 if (position < data.getDataSize()) {
-                    if (undoData == null) {
-                        undoData = (EditableBinaryData) data.copy(position, 1);
-                    } else {
-                        EditableBinaryData dataCopy = (EditableBinaryData) data.copy(position, 1);
-                        undoData.insert(0, dataCopy);
-                        dataCopy.dispose();
-                    }
+                    undoData = (EditableBinaryData) data.copy(position, 1);
                     data.remove(position, 1);
                 }
                 break;
@@ -122,6 +99,11 @@ public class DeleteCodeEditDataOperation extends CodeEditDataOperation {
         }
         ((CaretCapable) codeArea).setCaretPosition(position);
         codeArea.repaint();
+
+        if (withUndo) {
+            undoOperation = new UndoOperation(codeArea, position, 0, undoData, value);
+        }
+        return undoOperation;
     }
 
     public long getPosition() {
@@ -131,8 +113,45 @@ public class DeleteCodeEditDataOperation extends CodeEditDataOperation {
     @Override
     public void dispose() {
         super.dispose();
-        if (undoData != null) {
-            undoData.dispose();
+    }
+
+    @ParametersAreNonnullByDefault
+    private static class UndoOperation extends InsertDataOperation implements BinaryDataAppendableOperation {
+
+        private byte value;
+
+        public UndoOperation(CodeAreaCore codeArea, long position, int codeOffset, BinaryData data, byte value) {
+            super(codeArea, position, codeOffset, data);
+            this.value = value;
+        }
+
+        @Nonnull
+        @Override
+        public CodeAreaOperationType getType() {
+            return CodeAreaOperationType.EDIT_DATA;
+        }
+
+        @Override
+        public boolean appendOperation(BinaryDataOperation operation) {
+            if (operation instanceof UndoOperation) {
+                EditableBinaryData data = (EditableBinaryData) getData();
+                switch (value) {
+                    case BACKSPACE_CHAR: {
+                        data.insert(0, ((UndoOperation) operation).getData());
+                        break;
+                    }
+                    case DELETE_CHAR: {
+                        data.insert(data.getDataSize(), ((UndoOperation) operation).getData());
+                        break;
+                    }
+                    default: {
+                        throw new IllegalStateException("Unexpected character " + value);
+                    }
+                }
+                return true;
+            }
+
+            return false;
         }
     }
 }

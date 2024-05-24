@@ -13,39 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.operation.swing.command;
+package org.exbin.bined.operation.undo;
 
-import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import org.exbin.bined.operation.BinaryDataAbstractCommand;
-import org.exbin.bined.swing.CodeAreaCore;
+import org.exbin.bined.operation.BinaryDataCommand;
 
 /**
- * Abstract class for operation on code area component.
+ * Undoable command sequence with suppord for appendable commands.
  *
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public abstract class CodeAreaCommand extends BinaryDataAbstractCommand {
-
-    @Nonnull
-    protected final CodeAreaCore codeArea;
-
-    public CodeAreaCommand(CodeAreaCore codeArea) {
-        this.codeArea = codeArea;
-    }
+public interface BinaryDataAppendableUndoRedo extends BinaryDataUndoRedo {
 
     /**
-     * Returns type of the command.
+     * Attempts to execute command as an append to existing command.
      *
-     * @return command type
+     * @param command command
+     * @return true if sucessfully appended
      */
-    @Nonnull
-    public abstract CodeAreaCommandType getType();
-
-    @Nonnull
-    @Override
-    public String getName() {
-        return getType().getName();
-    }
+    boolean appendExecute(BinaryDataCommand command);
 }

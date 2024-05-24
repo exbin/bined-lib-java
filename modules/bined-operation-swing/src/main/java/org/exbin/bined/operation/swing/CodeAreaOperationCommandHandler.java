@@ -73,6 +73,7 @@ import org.exbin.bined.CodeAreaSection;
 import org.exbin.bined.basic.EnterKeyHandlingMode;
 import org.exbin.bined.basic.TabKeyHandlingMode;
 import org.exbin.bined.capability.EditModeCapable;
+import org.exbin.bined.operation.undo.BinaryDataAppendableUndoRedo;
 import org.exbin.bined.operation.undo.BinaryDataUndoRedo;
 
 /**
@@ -327,9 +328,9 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
 //                if (codeArea.getEditAllowed() == EditAllowed.OVERWRITE_ONLY && codeArea.getEditMode() == EditMode.OVERWRITE && dataPosition == dataSize) {
 //                    return;
 //                }
-            if (editCommand != null && editCommand.wasReverted()) {
-                editCommand = null;
-            }
+//            if (editCommand != null && editCommand.wasReverted()) {
+//                editCommand = null;
+//            }
 
             if (editMode == EditMode.EXPANDING && editOperation == EditOperation.OVERWRITE) {
                 if (deleteSelectionCommand != null) {
@@ -344,7 +345,11 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
                     long dataPosition = ((CaretCapable) codeArea).getDataPosition();
                     int codeOffset = ((CaretCapable) codeArea).getCaretPosition().getCodeOffset();
                     EditCodeDataCommand command = new EditCodeDataCommand(codeArea, EditCodeDataCommand.EditCommandType.OVERWRITE, dataPosition, codeOffset, (byte) value);
-                    if (editCommand == null || !isAppendAllowed() || !((EditCodeDataCommand) editCommand).appendCommand(command)) {
+                    if (editCommand != null && isAppendAllowed() && undoRedo instanceof BinaryDataAppendableUndoRedo) {
+                        if (!((BinaryDataAppendableUndoRedo) undoRedo).appendExecute(command)) {
+                            editCommand = command;
+                        }
+                    } else {
                         editCommand = command;
                         undoRedo.execute(editCommand);
                     }
@@ -362,7 +367,11 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
                     long dataPosition = ((CaretCapable) codeArea).getDataPosition();
                     int codeOffset = ((CaretCapable) codeArea).getCaretPosition().getCodeOffset();
                     EditCodeDataCommand command = new EditCodeDataCommand(codeArea, EditCharDataCommand.EditCommandType.INSERT, dataPosition, codeOffset, (byte) value);
-                    if (editCommand == null || !isAppendAllowed() || !((EditCodeDataCommand) editCommand).appendCommand(command)) {
+                    if (editCommand != null && isAppendAllowed() && undoRedo instanceof BinaryDataAppendableUndoRedo) {
+                        if (!((BinaryDataAppendableUndoRedo) undoRedo).appendExecute(command)) {
+                            editCommand = command;
+                        }
+                    } else {
                         editCommand = command;
                         undoRedo.execute(editCommand);
                     }
@@ -379,9 +388,9 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
         if (validKey) {
             EditMode editMode = ((EditModeCapable) codeArea).getEditMode();
             EditOperation editOperation = ((EditModeCapable) codeArea).getActiveOperation();
-            if (editCommand != null && editCommand.wasReverted()) {
-                editCommand = null;
-            }
+//            if (editCommand != null && editCommand.wasReverted()) {
+//                editCommand = null;
+//            }
             DeleteSelectionCommand deleteCommand = null;
             if (codeArea.hasSelection()) {
                 undoSequenceBreak();
@@ -399,7 +408,11 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
                 } else {
                     long dataPosition = ((CaretCapable) codeArea).getDataPosition();
                     EditCharDataCommand command = new EditCharDataCommand(codeArea, EditCodeDataCommand.EditCommandType.OVERWRITE, dataPosition, keyChar);
-                    if (editCommand == null || !isAppendAllowed() || !((EditCodeDataCommand) editCommand).appendCommand(command)) {
+                    if (editCommand != null && isAppendAllowed() && undoRedo instanceof BinaryDataAppendableUndoRedo) {
+                        if (!((BinaryDataAppendableUndoRedo) undoRedo).appendExecute(command)) {
+                            editCommand = command;
+                        }
+                    } else {
                         editCommand = command;
                         undoRedo.execute(editCommand);
                     }
@@ -415,7 +428,11 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
                 } else {
                     long dataPosition = ((CaretCapable) codeArea).getDataPosition();
                     EditCharDataCommand command = new EditCharDataCommand(codeArea, EditCodeDataCommand.EditCommandType.INSERT, dataPosition, keyChar);
-                    if (editCommand == null || !isAppendAllowed() || !((EditCodeDataCommand) editCommand).appendCommand(command)) {
+                    if (editCommand != null && isAppendAllowed() && undoRedo instanceof BinaryDataAppendableUndoRedo) {
+                        if (!((BinaryDataAppendableUndoRedo) undoRedo).appendExecute(command)) {
+                            editCommand = command;
+                        }
+                    } else {
                         editCommand = command;
                         undoRedo.execute(editCommand);
                     }
@@ -495,21 +512,29 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
             undoSequenceBreak();
             codeArea.notifyDataChanged();
         } else {
-            if (editCommand != null && editCommand.wasReverted()) {
-                editCommand = null;
-            }
+//            if (editCommand != null && editCommand.wasReverted()) {
+//                editCommand = null;
+//            }
 
             CodeAreaSection section = ((CaretCapable) codeArea).getActiveSection();
             long dataPosition = ((CaretCapable) codeArea).getDataPosition();
             if (section == BasicCodeAreaSection.CODE_MATRIX) {
                 EditCodeDataCommand command = new EditCodeDataCommand(codeArea, EditCodeDataCommand.EditCommandType.DELETE, dataPosition, 0, (byte) keyChar);
-                if (editCommand == null || !isAppendAllowed() || !((EditCodeDataCommand) editCommand).appendCommand(command)) {
+                if (editCommand != null && isAppendAllowed() && undoRedo instanceof BinaryDataAppendableUndoRedo) {
+                    if (!((BinaryDataAppendableUndoRedo) undoRedo).appendExecute(command)) {
+                        editCommand = command;
+                    }
+                } else {
                     editCommand = command;
                     undoRedo.execute(editCommand);
                 }
             } else {
                 EditCharDataCommand command = new EditCharDataCommand(codeArea, EditCharDataCommand.EditCommandType.DELETE, dataPosition, keyChar);
-                if (editCommand == null || !isAppendAllowed() || !((EditCodeDataCommand) editCommand).appendCommand(command)) {
+                if (editCommand != null && isAppendAllowed() && undoRedo instanceof BinaryDataAppendableUndoRedo) {
+                    if (!((BinaryDataAppendableUndoRedo) undoRedo).appendExecute(command)) {
+                        editCommand = command;
+                    }
+                } else {
                     editCommand = command;
                     undoRedo.execute(editCommand);
                 }
@@ -553,7 +578,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
             long first = selection.getFirst();
             long last = selection.getLast();
 
-            BinaryData copy = CodeAreaUtils.requireNonNull(codeArea.getContentData()).copy(first, last - first + 1);
+            BinaryData copy = codeArea.getContentData().copy(first, last - first + 1);
 
             CodeType codeType = ((CodeTypeCapable) codeArea).getCodeType();
             CodeCharactersCase charactersCase = ((CodeCharactersCaseCapable) codeArea).getCodeCharactersCase();

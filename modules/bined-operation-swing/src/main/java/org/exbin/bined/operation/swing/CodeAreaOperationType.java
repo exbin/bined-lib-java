@@ -15,14 +15,16 @@
  */
 package org.exbin.bined.operation.swing;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import org.exbin.bined.operation.BinaryDataOperationType;
 
 /**
  * Operation type enumeration.
  *
  * @author ExBin Project (https://exbin.org)
  */
-public enum CodeAreaOperationType {
+public enum CodeAreaOperationType implements BinaryDataOperationType {
 
     /**
      * Insert data operation.
@@ -50,14 +52,15 @@ public enum CodeAreaOperationType {
     COMPOUND("Compound operation");
 
     @Nullable
-    private final String caption;
+    private final String name;
 
-    CodeAreaOperationType(@Nullable String caption) {
-        this.caption = caption;
+    CodeAreaOperationType(@Nonnull String name) {
+        this.name = name;
     }
 
-    @Nullable
-    public String getCaption() {
-        return caption;
+    @Nonnull
+    @Override
+    public String getName() {
+        return name;
     }
 }

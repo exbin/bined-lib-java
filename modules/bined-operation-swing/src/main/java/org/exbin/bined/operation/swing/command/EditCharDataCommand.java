@@ -18,14 +18,15 @@ package org.exbin.bined.operation.swing.command;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.CodeAreaUtils;
-import org.exbin.bined.operation.BinaryDataAppendableCommand;
 import org.exbin.bined.operation.BinaryDataCommand;
 import org.exbin.bined.operation.BinaryDataCommandPhase;
 import org.exbin.bined.operation.swing.CharEditDataOperation;
-import org.exbin.bined.operation.swing.CodeAreaOperation;
 import org.exbin.bined.operation.swing.DeleteCharEditDataOperation;
 import org.exbin.bined.operation.swing.InsertCharEditDataOperation;
 import org.exbin.bined.operation.swing.OverwriteCharEditDataOperation;
+import org.exbin.bined.operation.undo.BinaryDataAppendableCommand;
+import org.exbin.bined.operation.undo.BinaryDataAppendableOperation;
+import org.exbin.bined.operation.undo.BinaryDataUndoableOperation;
 import org.exbin.bined.swing.CodeAreaCore;
 
 /**
@@ -39,76 +40,63 @@ public class EditCharDataCommand extends EditDataCommand implements BinaryDataAp
     @Nonnull
     private final EditCommandType commandType;
     protected BinaryDataCommandPhase phase = BinaryDataCommandPhase.CREATED;
-    private char charData;
-    private CodeAreaOperation[] operations = null;
+    private BinaryDataUndoableOperation activeOperation;
 
     public EditCharDataCommand(CodeAreaCore codeArea, EditCommandType commandType, long position, char charData) {
         super(codeArea);
-        this.charData = charData;
         this.commandType = commandType;
-        CodeAreaOperation operation;
         switch (commandType) {
             case INSERT: {
-                operation = new InsertCharEditDataOperation(codeArea, position, charData);
+                activeOperation = new InsertCharEditDataOperation(codeArea, position, charData);
                 break;
             }
             case OVERWRITE: {
-                operation = new OverwriteCharEditDataOperation(codeArea, position, charData);
+                activeOperation = new OverwriteCharEditDataOperation(codeArea, position, charData);
                 break;
             }
             case DELETE: {
-                operation = new DeleteCharEditDataOperation(codeArea, position, charData);
+                activeOperation = new DeleteCharEditDataOperation(codeArea, position, charData);
                 break;
             }
             default:
                 throw CodeAreaUtils.getInvalidTypeException(commandType);
         }
-        operations = new CodeAreaOperation[]{operation};
     }
 
     @Override
     public void execute() {
-        if (phase == BinaryDataCommandPhase.EXECUTED) {
+        if (phase != BinaryDataCommandPhase.CREATED) {
             throw new IllegalStateException();
         }
 
-        for (int i = 0; i < operations.length; i++) {
-            CodeAreaOperation operation = operations[i];
-            CodeAreaOperation undoOperation = operation.executeWithUndo();
-            operation.dispose();
-            operations[i] = undoOperation;
-        }
+        BinaryDataUndoableOperation undoOperation = activeOperation.executeWithUndo();
+        activeOperation.dispose();
+        activeOperation = undoOperation;
         phase = BinaryDataCommandPhase.EXECUTED;
     }
 
     @Override
     public void undo() {
-        if (phase == BinaryDataCommandPhase.REVERTED) {
+        if (phase != BinaryDataCommandPhase.EXECUTED) {
             throw new IllegalStateException();
         }
-        
-        if (operations.length == 1 && operations[0] instanceof CharEditDataOperation) {
-            CharEditDataOperation operation = (CharEditDataOperation) operations[0];
-            operations = new CodeAreaOperation[] { operation.executeWithUndo() };
-            operation.dispose();
-        }
 
-        for (int i = operations.length - 1; i >= 0; i--) {
-            CodeAreaOperation operation = operations[i];
-            CodeAreaOperation redoOperation = operation.executeWithUndo();
-            operation.dispose();
-            operations[i] = redoOperation;
-        }
+        BinaryDataUndoableOperation undoOperation = activeOperation.executeWithUndo();
+        activeOperation.dispose();
+        activeOperation = undoOperation;
         phase = BinaryDataCommandPhase.REVERTED;
     }
 
     @Override
     public void redo() {
-        if (phase == BinaryDataCommandPhase.EXECUTED) {
+        if (phase != BinaryDataCommandPhase.REVERTED) {
             throw new IllegalStateException();
         }
 
-        execute();
+        BinaryDataUndoableOperation undoOperation = activeOperation.executeWithUndo();
+        activeOperation.dispose();
+        activeOperation = undoOperation;
+        phase = BinaryDataCommandPhase.EXECUTED;
     }
 
     @Nonnull
@@ -118,13 +106,12 @@ public class EditCharDataCommand extends EditDataCommand implements BinaryDataAp
     }
 
     @Override
-    public boolean appendCommand(BinaryDataCommand command) {
-        if (command instanceof EditCharDataCommand && ((EditCharDataCommand) command).phase == BinaryDataCommandPhase.CREATED) {
-            if (operations.length == 1 && operations[0] instanceof CharEditDataOperation) {
-                return ((CharEditDataOperation) operations[0]).appendOperation(((EditCharDataCommand) command).operations[0]);
-            }
+    public boolean appendExecute(BinaryDataCommand command) {
+        command.execute();
+        if (command instanceof EditCharDataCommand && activeOperation instanceof CharEditDataOperation) {
+            return ((BinaryDataAppendableOperation) activeOperation).appendOperation(((EditCharDataCommand) command).activeOperation);
         }
-        
+
         return false;
     }
 
@@ -135,17 +122,10 @@ public class EditCharDataCommand extends EditDataCommand implements BinaryDataAp
     }
 
     @Override
-    public boolean wasReverted() {
-        return !(operations.length == 1 && operations[0] instanceof CharEditDataOperation);
-    }
-
-    @Override
     public void dispose() {
         super.dispose();
-        if (operations != null) {
-            for (CodeAreaOperation operation : operations) {
-                operation.dispose();
-            }
+        if (activeOperation != null) {
+            activeOperation.dispose();
         }
     }
 }

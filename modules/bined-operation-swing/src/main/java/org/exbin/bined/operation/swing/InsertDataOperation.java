@@ -16,12 +16,12 @@
 package org.exbin.bined.operation.swing;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.swing.CodeAreaCore;
 import org.exbin.auxiliary.binary_data.BinaryData;
 import org.exbin.auxiliary.binary_data.EditableBinaryData;
+import org.exbin.bined.operation.undo.BinaryDataUndoableOperation;
 
 /**
  * Operation for inserting data.
@@ -48,12 +48,21 @@ public class InsertDataOperation extends CodeAreaOperation {
         return CodeAreaOperationType.INSERT_DATA;
     }
 
-    @Nullable
     @Override
-    protected CodeAreaOperation execute(ExecutionType executionType) {
+    public void execute() {
+        execute(false);
+    }
+
+    @Nonnull
+    @Override
+    public BinaryDataUndoableOperation executeWithUndo() {
+        return execute(true);
+    }
+
+    private CodeAreaOperation execute(boolean withUndo) {
         CodeAreaOperation undoOperation = null;
         ((EditableBinaryData) codeArea.getContentData()).insert(position, data);
-        if (executionType == ExecutionType.WITH_UNDO) {
+        if (withUndo) {
             undoOperation = new RemoveDataOperation(codeArea, position, codeOffset, data.getDataSize());
         }
         ((CaretCapable) codeArea).setCaretPosition(position + data.getDataSize(), codeOffset);
@@ -62,6 +71,11 @@ public class InsertDataOperation extends CodeAreaOperation {
 
     public void appendData(BinaryData appendData) {
         ((EditableBinaryData) data).insert(data.getDataSize(), appendData);
+    }
+
+    @Nonnull
+    public BinaryData getData() {
+        return data;
     }
 
     @Override

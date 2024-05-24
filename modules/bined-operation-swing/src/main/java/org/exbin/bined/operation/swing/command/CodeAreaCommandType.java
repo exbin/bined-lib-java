@@ -17,6 +17,7 @@ package org.exbin.bined.operation.swing.command;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import org.exbin.bined.operation.BinaryDataCommandType;
 
 /**
  * Operation type enumeration.
@@ -24,7 +25,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public enum CodeAreaCommandType {
+public enum CodeAreaCommandType implements BinaryDataCommandType {
 
     /**
      * Insert data command.
@@ -51,14 +52,15 @@ public enum CodeAreaCommandType {
      */
     DATA_EDITED("Data edited");
 
-    private final String caption;
+    private final String name;
 
-    CodeAreaCommandType(String caption) {
-        this.caption = caption;
+    CodeAreaCommandType(String name) {
+        this.name = name;
     }
 
     @Nonnull
-    public String getCaption() {
-        return caption;
+    @Override
+    public String getName() {
+        return name;
     }
 }

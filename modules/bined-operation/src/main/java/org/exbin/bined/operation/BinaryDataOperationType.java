@@ -13,34 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.operation.swing.command;
+package org.exbin.bined.operation;
 
 import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-import org.exbin.bined.swing.CodeAreaCore;
 
 /**
- * Command for editing data in text mode.
+ * Operation type interface.
  *
  * @author ExBin Project (https://exbin.org)
  */
-@ParametersAreNonnullByDefault
-public abstract class EditDataCommand extends CodeAreaCommand {
+public interface BinaryDataOperationType {
 
-    public EditDataCommand(CodeAreaCore codeArea) {
-        super(codeArea);
-    }
-
+    /**
+     * Returns operation type name.
+     *
+     * @return operation type name
+     */
     @Nonnull
-    @Override
-    public CodeAreaCommandType getType() {
-        return CodeAreaCommandType.DATA_EDITED;
-    }
-
-    @Nonnull
-    public abstract EditCommandType getCommandType();
-
-    public enum EditCommandType {
-        INSERT, OVERWRITE, DELETE
-    }
+    String getName();
 }

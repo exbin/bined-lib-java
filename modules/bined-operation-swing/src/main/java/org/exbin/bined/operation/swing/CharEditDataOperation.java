@@ -16,7 +16,6 @@
 package org.exbin.bined.operation.swing;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import org.exbin.bined.operation.BinaryDataAppendableOperation;
 import org.exbin.bined.swing.CodeAreaCore;
 
 /**
@@ -25,7 +24,7 @@ import org.exbin.bined.swing.CodeAreaCore;
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public abstract class CharEditDataOperation extends CodeAreaOperation implements BinaryDataAppendableOperation {
+public abstract class CharEditDataOperation extends CodeAreaOperation {
 
     public CharEditDataOperation(CodeAreaCore codeArea) {
         super(codeArea);

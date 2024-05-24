@@ -17,7 +17,6 @@ package org.exbin.bined.operation.swing;
 
 import java.nio.charset.Charset;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.capability.CaretCapable;
@@ -25,7 +24,7 @@ import org.exbin.bined.capability.CharsetCapable;
 import org.exbin.bined.swing.CodeAreaCore;
 import org.exbin.auxiliary.binary_data.EditableBinaryData;
 import org.exbin.bined.capability.SelectionCapable;
-import org.exbin.bined.operation.BinaryDataOperation;
+import org.exbin.bined.operation.undo.BinaryDataUndoableOperation;
 
 /**
  * Operation for editing data using insert mode.
@@ -37,11 +36,11 @@ public class InsertCharEditDataOperation extends CharEditDataOperation {
 
     private final long startPosition;
     private long length;
-    private char key;
+    private char value;
 
-    public InsertCharEditDataOperation(CodeAreaCore coreArea, long startPosition, char key) {
+    public InsertCharEditDataOperation(CodeAreaCore coreArea, long startPosition, char value) {
         super(coreArea);
-        this.key = key;
+        this.value = value;
         this.startPosition = startPosition;
     }
 
@@ -51,33 +50,23 @@ public class InsertCharEditDataOperation extends CharEditDataOperation {
         return CodeAreaOperationType.EDIT_DATA;
     }
 
-    @Nullable
     @Override
-    protected CodeAreaOperation execute(ExecutionType executionType) {
+    public void execute() {
+        execute(false);
+    }
+
+    @Nonnull
+    @Override
+    public BinaryDataUndoableOperation executeWithUndo() {
+        return execute(true);
+    }
+
+    private CodeAreaOperation execute(boolean withUndo) {
         CodeAreaOperation undoOperation = null;
-        if (executionType == ExecutionType.WITH_UNDO) {
+        if (withUndo) {
             undoOperation = new RemoveDataOperation(codeArea, startPosition, 0, length);
         }
         
-        appendEdit(key);
-        
-        return undoOperation;
-    }
-
-    @Override
-    public boolean appendOperation(BinaryDataOperation operation) {
-        if (operation instanceof InsertCharEditDataOperation) {
-            InsertCharEditDataOperation insertOperation = (InsertCharEditDataOperation) operation;
-            if (insertOperation.codeArea == codeArea) { // && insertOperation.position
-                appendEdit(key);
-                return true;
-            }
-        }
-        
-        return false;
-    }
-
-    private void appendEdit(char value) {
         EditableBinaryData data = (EditableBinaryData) codeArea.getContentData();
         long editedDataPosition = startPosition + length;
 
@@ -88,6 +77,8 @@ public class InsertCharEditDataOperation extends CharEditDataOperation {
         long dataPosition = startPosition + length;
         ((CaretCapable) codeArea).setCaretPosition(dataPosition);
         ((SelectionCapable) codeArea).setSelection(dataPosition, dataPosition);
+        
+        return undoOperation;
     }
 
     public long getStartPosition() {

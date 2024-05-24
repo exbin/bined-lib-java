@@ -13,23 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.operation;
+package org.exbin.bined.operation.undo;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import org.exbin.bined.operation.BinaryDataOperation;
 
 /**
- * Interface for appendable binary data command.
+ * Interface for appendable binary data operation.
  *
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public interface BinaryDataAppendableCommand {
+public interface BinaryDataAppendableOperation {
 
     /**
-     * Attempts to append command.
+     * Attempts to append an operation.
      *
-     * @param command command
+     * @param operation operation
      * @return true if sucessfully appended
      */
-    boolean appendCommand(BinaryDataCommand command);
+    boolean appendOperation(BinaryDataOperation operation);
 }

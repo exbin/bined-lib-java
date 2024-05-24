@@ -23,6 +23,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.operation.BinaryDataCommandPhase;
 import org.exbin.bined.operation.swing.CodeAreaOperation;
+import org.exbin.bined.operation.undo.BinaryDataUndoableOperation;
 import org.exbin.bined.swing.CodeAreaCore;
 
 /**
@@ -34,16 +35,11 @@ import org.exbin.bined.swing.CodeAreaCore;
 public abstract class OpCodeAreaCommand extends CodeAreaCommand {
 
     @Nullable
-    protected CodeAreaOperation operation;
+    protected BinaryDataUndoableOperation operation;
     protected BinaryDataCommandPhase phase = BinaryDataCommandPhase.CREATED;
 
     public OpCodeAreaCommand(CodeAreaCore codeArea) {
         super(codeArea);
-    }
-
-    @Nullable
-    public CodeAreaOperation getOperation() {
-        return operation;
     }
 
     public void setOperation(CodeAreaOperation operation) {
@@ -59,7 +55,7 @@ public abstract class OpCodeAreaCommand extends CodeAreaCommand {
 
     @Override
     public void execute() {
-        CodeAreaOperation undoOperation = CodeAreaUtils.requireNonNull(operation).executeWithUndo();
+        BinaryDataUndoableOperation undoOperation = CodeAreaUtils.requireNonNull(operation).executeWithUndo();
         operation.dispose();
         operation = undoOperation;
         phase = BinaryDataCommandPhase.EXECUTED;
@@ -71,7 +67,7 @@ public abstract class OpCodeAreaCommand extends CodeAreaCommand {
             throw new IllegalStateException();
         }
 
-        CodeAreaOperation redoOperation = CodeAreaUtils.requireNonNull(operation).executeWithUndo();
+        BinaryDataUndoableOperation redoOperation = CodeAreaUtils.requireNonNull(operation).executeWithUndo();
         operation.dispose();
         operation = redoOperation;
         phase = BinaryDataCommandPhase.REVERTED;

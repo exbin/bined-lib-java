@@ -23,6 +23,8 @@ import java.util.logging.Logger;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.operation.BinaryDataCommand;
+import org.exbin.bined.operation.undo.BinaryDataAppendableCommand;
+import org.exbin.bined.operation.undo.BinaryDataAppendableUndoRedo;
 import org.exbin.bined.swing.CodeAreaCore;
 import org.exbin.bined.operation.undo.BinaryDataUndoRedo;
 import org.exbin.bined.operation.undo.BinaryDataUndoRedoChangeListener;
@@ -34,7 +36,7 @@ import org.exbin.bined.operation.undo.BinaryDataUndoableCommand;
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public class CodeAreaUndoRedo implements BinaryDataUndoRedo {
+public class CodeAreaUndoRedo implements BinaryDataUndoRedo, BinaryDataAppendableUndoRedo {
 
     private int undoMaximumCount;
     private int undoMaximumSize;
@@ -72,6 +74,21 @@ public class CodeAreaUndoRedo implements BinaryDataUndoRedo {
     public void execute(BinaryDataCommand command) {
         command.execute();
         commandAdded(command);
+    }
+
+    @Override
+    public boolean appendExecute(BinaryDataCommand command) {
+        if (commandPosition > 0) {
+            BinaryDataCommand lastCommand = commands.get(commandPosition - 1);
+            if (lastCommand instanceof BinaryDataAppendableCommand) {
+                return ((BinaryDataAppendableCommand) lastCommand).appendExecute(command);
+            }
+        } else {
+            execute(command);
+        }
+
+        commandAdded(command);
+        return false;
     }
 
     private void commandAdded(BinaryDataCommand addedCommand) {

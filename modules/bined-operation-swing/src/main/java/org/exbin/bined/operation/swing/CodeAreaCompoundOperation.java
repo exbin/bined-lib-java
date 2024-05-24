@@ -24,6 +24,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.CodeAreaCaretPosition;
 import org.exbin.bined.operation.BinaryDataCompoundOperation;
 import org.exbin.bined.operation.BinaryDataOperation;
+import org.exbin.bined.operation.undo.BinaryDataUndoableOperation;
 import org.exbin.bined.swing.CodeAreaCore;
 
 /**
@@ -44,6 +45,23 @@ public class CodeAreaCompoundOperation extends CodeAreaOperation implements Bina
         super(codeArea, backPosition);
     }
 
+    @Override
+    public BinaryDataUndoableOperation executeWithUndo() {
+        CodeAreaCompoundOperation undoOperations = new CodeAreaCompoundOperation(codeArea);
+        for (BinaryDataOperation operation : operations) {
+            BinaryDataUndoableOperation undoOperation = ((BinaryDataUndoableOperation) operation).executeWithUndo();
+            undoOperations.insertOperation(0, undoOperation);
+        }
+        return undoOperations;
+    }
+
+    @Override
+    public void execute() {
+        for (BinaryDataOperation operation : operations) {
+            operation.execute();
+        }
+    }
+
     @Nonnull
     @Override
     public CodeAreaOperationType getType() {
@@ -58,6 +76,10 @@ public class CodeAreaCompoundOperation extends CodeAreaOperation implements Bina
     @Override
     public void addOperations(Collection<BinaryDataOperation> operations) {
         operations.addAll(operations);
+    }
+
+    public void insertOperation(int index, BinaryDataOperation operation) {
+        operations.add(index, operation);
     }
 
     @Nonnull
