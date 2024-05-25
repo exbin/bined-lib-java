@@ -18,6 +18,7 @@ package org.exbin.bined.operation.swing.command;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.CodeAreaUtils;
+import org.exbin.bined.capability.CodeTypeCapable;
 import org.exbin.bined.operation.BinaryDataCommand;
 import org.exbin.bined.operation.BinaryDataCommandPhase;
 import org.exbin.bined.operation.swing.CodeEditDataOperation;
@@ -50,11 +51,11 @@ public class EditCodeDataCommand extends EditDataCommand implements BinaryDataAp
                 break;
             }
             case OVERWRITE: {
-                activeOperation = new OverwriteCodeEditDataOperation(codeArea, position, positionCodeOffset, value);
+                activeOperation = new OverwriteCodeEditDataOperation(codeArea, position, positionCodeOffset, ((CodeTypeCapable) codeArea).getCodeType(), value);
                 break;
             }
             case DELETE: {
-                activeOperation = new DeleteCodeEditDataOperation(codeArea, position, value);
+                activeOperation = new DeleteCodeEditDataOperation(codeArea, position, ((CodeTypeCapable) codeArea).getCodeType(), value);
                 break;
             }
             default:

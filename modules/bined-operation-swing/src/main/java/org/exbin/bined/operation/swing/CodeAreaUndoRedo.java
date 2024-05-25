@@ -81,7 +81,9 @@ public class CodeAreaUndoRedo implements BinaryDataUndoRedo, BinaryDataAppendabl
         if (commandPosition > 0) {
             BinaryDataCommand lastCommand = commands.get(commandPosition - 1);
             if (lastCommand instanceof BinaryDataAppendableCommand) {
-                return ((BinaryDataAppendableCommand) lastCommand).appendExecute(command);
+                if (((BinaryDataAppendableCommand) lastCommand).appendExecute(command)) {
+                    return true;
+                }
             }
         } else {
             execute(command);

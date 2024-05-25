@@ -16,7 +16,6 @@
 package org.exbin.bined.operation.swing;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.swing.CodeAreaCore;
 import org.exbin.auxiliary.binary_data.BinaryData;
@@ -65,10 +64,6 @@ public class ModifyDataOperation extends CodeAreaOperation {
         }
         ((EditableBinaryData) codeArea.getContentData()).replace(position, data);
         return undoOperation;
-    }
-
-    public void appendData(BinaryData appendData) {
-        ((EditableBinaryData) data).insert(data.getDataSize(), appendData);
     }
 
     @Override

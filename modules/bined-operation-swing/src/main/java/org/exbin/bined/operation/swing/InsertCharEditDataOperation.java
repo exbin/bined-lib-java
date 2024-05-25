@@ -24,6 +24,8 @@ import org.exbin.bined.capability.CharsetCapable;
 import org.exbin.bined.swing.CodeAreaCore;
 import org.exbin.auxiliary.binary_data.EditableBinaryData;
 import org.exbin.bined.capability.SelectionCapable;
+import org.exbin.bined.operation.BinaryDataOperation;
+import org.exbin.bined.operation.undo.BinaryDataAppendableOperation;
 import org.exbin.bined.operation.undo.BinaryDataUndoableOperation;
 
 /**
@@ -35,8 +37,7 @@ import org.exbin.bined.operation.undo.BinaryDataUndoableOperation;
 public class InsertCharEditDataOperation extends CharEditDataOperation {
 
     private final long startPosition;
-    private long length;
-    private char value;
+    private final char value;
 
     public InsertCharEditDataOperation(CodeAreaCore coreArea, long startPosition, char value) {
         super(coreArea);
@@ -63,21 +64,19 @@ public class InsertCharEditDataOperation extends CharEditDataOperation {
 
     private CodeAreaOperation execute(boolean withUndo) {
         CodeAreaOperation undoOperation = null;
-        if (withUndo) {
-            undoOperation = new RemoveDataOperation(codeArea, startPosition, 0, length);
-        }
-        
         EditableBinaryData data = (EditableBinaryData) codeArea.getContentData();
-        long editedDataPosition = startPosition + length;
-
         Charset charset = ((CharsetCapable) codeArea).getCharset();
         byte[] bytes = CodeAreaUtils.characterToBytes(value, charset);
-        data.insert(editedDataPosition, bytes);
-        length += bytes.length;
+        data.insert(startPosition, bytes);
+        long length = bytes.length;
         long dataPosition = startPosition + length;
         ((CaretCapable) codeArea).setCaretPosition(dataPosition);
         ((SelectionCapable) codeArea).setSelection(dataPosition, dataPosition);
-        
+
+        if (withUndo) {
+            undoOperation = new UndoOperation(codeArea, startPosition, 0, length);
+        }
+
         return undoOperation;
     }
 
@@ -85,7 +84,60 @@ public class InsertCharEditDataOperation extends CharEditDataOperation {
         return startPosition;
     }
 
-    public long getLength() {
-        return length;
+    /**
+     * Appendable variant of RemoveDataOperation.
+     */
+    @ParametersAreNonnullByDefault
+    private static class UndoOperation extends CodeAreaOperation implements BinaryDataAppendableOperation {
+
+        private final long position;
+        private final int codeOffset;
+        private long length;
+
+        public UndoOperation(CodeAreaCore codeArea, long position, int codeOffset, long length) {
+            super(codeArea);
+            this.position = position;
+            this.codeOffset = codeOffset;
+            this.length = length;
+        }
+
+        @Nonnull
+        @Override
+        public CodeAreaOperationType getType() {
+            return CodeAreaOperationType.REMOVE_DATA;
+        }
+
+        @Override
+        public boolean appendOperation(BinaryDataOperation operation) {
+            if (operation instanceof UndoOperation) {
+                length += ((UndoOperation) operation).length;
+                return true;
+            }
+
+            return false;
+        }
+
+        @Override
+        public void execute() {
+            execute(false);
+        }
+
+        @Nonnull
+        @Override
+        public BinaryDataUndoableOperation executeWithUndo() {
+            return execute(true);
+        }
+
+        private CodeAreaOperation execute(boolean withUndo) {
+            EditableBinaryData contentData = CodeAreaUtils.requireNonNull((EditableBinaryData) codeArea.getContentData());
+            CodeAreaOperation undoOperation = null;
+            if (withUndo) {
+                EditableBinaryData undoData = (EditableBinaryData) contentData.copy(position, length);
+                undoOperation = new InsertDataOperation(codeArea, position, codeOffset, undoData);
+            }
+            contentData.remove(position, length);
+            ((CaretCapable) codeArea).setCaretPosition(position, codeOffset);
+            return undoOperation;
+        }
     }
 }

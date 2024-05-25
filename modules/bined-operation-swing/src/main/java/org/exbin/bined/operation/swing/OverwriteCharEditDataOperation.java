@@ -18,12 +18,12 @@ package org.exbin.bined.operation.swing;
 import java.nio.charset.Charset;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import org.exbin.auxiliary.binary_data.BinaryData;
 import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.capability.CharsetCapable;
 import org.exbin.bined.swing.CodeAreaCore;
 import org.exbin.auxiliary.binary_data.EditableBinaryData;
-import org.exbin.bined.CodeAreaCaretPosition;
 import org.exbin.bined.capability.SelectionCapable;
 import org.exbin.bined.operation.BinaryDataOperation;
 import org.exbin.bined.operation.undo.BinaryDataAppendableOperation;
@@ -39,7 +39,6 @@ public class OverwriteCharEditDataOperation extends CharEditDataOperation {
 
     private final long startPosition;
     private long length = 0;
-    private EditableBinaryData undoData = null;
     private char value;
 
     public OverwriteCharEditDataOperation(CodeAreaCore coreArea, long startPosition, char value) {
@@ -67,34 +66,8 @@ public class OverwriteCharEditDataOperation extends CharEditDataOperation {
 
     private CodeAreaOperation execute(boolean withUndo) {
         CodeAreaOperation undoOperation = null;
-        if (withUndo) {
-            ModifyDataOperation modifyOperation = null;
-            if (undoData != null && !undoData.isEmpty()) {
-                modifyOperation = new ModifyDataOperation(codeArea, startPosition, undoData.copy());
-            }
-            long undoDataSize = undoData == null ? 0 : undoData.getDataSize();
-            long removeLength = length - undoDataSize;
-            if (removeLength == 0) {
-                undoOperation = modifyOperation;
-            } else {
-                RemoveDataOperation removeOperation = new RemoveDataOperation(codeArea, startPosition + undoDataSize, 0, removeLength);
-                if (modifyOperation != null) {
-                    CodeAreaCompoundOperation compoundOperation = new CodeAreaCompoundOperation(codeArea);
-                    compoundOperation.addOperation(modifyOperation);
-                    compoundOperation.addOperation(removeOperation);
-                    undoOperation = compoundOperation;
-                } else {
-                    undoOperation = removeOperation;
-                }
-            }
-        }
-        
-        appendEdit(value);
-        
-        return undoOperation;
-    }
+        EditableBinaryData undoData = null;
 
-    private void appendEdit(char value) {
         EditableBinaryData data = (EditableBinaryData) codeArea.getContentData();
         long editedDataPosition = startPosition + length;
 
@@ -105,16 +78,14 @@ public class OverwriteCharEditDataOperation extends CharEditDataOperation {
             if (overwritten > bytes.length) {
                 overwritten = bytes.length;
             }
-            EditableBinaryData overwrittenData = (EditableBinaryData) data.copy(editedDataPosition, overwritten);
-            if (undoData == null) {
-                undoData = overwrittenData;
-            } else {
-                undoData.insert(undoData.getDataSize(), overwrittenData);
-            }
+            undoData = (EditableBinaryData) data.copy(editedDataPosition, overwritten);
             for (int i = 0; i < overwritten; i++) {
                 data.setByte(editedDataPosition + i, bytes[i]);
             }
+        } else {
+            undoData = (EditableBinaryData) data.copy(editedDataPosition, 0);
         }
+
         if (editedDataPosition + bytes.length > data.getDataSize()) {
             if (editedDataPosition == data.getDataSize()) {
                 data.insert(editedDataPosition, bytes);
@@ -132,54 +103,79 @@ public class OverwriteCharEditDataOperation extends CharEditDataOperation {
         long dataPosition = startPosition + length;
         ((CaretCapable) codeArea).setCaretPosition(dataPosition);
         ((SelectionCapable) codeArea).setSelection(dataPosition, dataPosition);
-    }
 
-    public long getStartPosition() {
-        return startPosition;
-    }
-
-    public long getLength() {
-        return length;
-    }
-
-    @Override
-    public void dispose() {
-        super.dispose();
-        if (undoData != null) {
-            undoData.dispose();
+        if (withUndo) {
+            undoOperation = new UndoOperation(codeArea, startPosition, undoData, length - undoData.getDataSize());
         }
+
+        return undoOperation;
     }
 
     @ParametersAreNonnullByDefault
     private static class UndoOperation extends CodeAreaOperation implements BinaryDataAppendableOperation {
 
-        public UndoOperation(CodeAreaCore codeArea) {
-            super(codeArea);
-        }
+        private final long position;
+        private final BinaryData data;
+        private long removeLength;
 
-        public UndoOperation(CodeAreaCore codeArea, CodeAreaCaretPosition backPosition) {
-            super(codeArea, backPosition);
+        public UndoOperation(CodeAreaCore codeArea, long position, BinaryData data, long removeLength) {
+            super(codeArea);
+            this.position = position;
+            this.data = data;
+            this.removeLength = removeLength;
         }
 
         @Nonnull
         @Override
         public CodeAreaOperationType getType() {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public BinaryDataUndoableOperation executeWithUndo() {
-            throw new UnsupportedOperationException("Not supported yet.");
+            return CodeAreaOperationType.MODIFY_DATA;
         }
 
         @Override
         public void execute() {
-            throw new UnsupportedOperationException("Not supported yet.");
+            execute(false);
+        }
+
+        @Nonnull
+        @Override
+        public BinaryDataUndoableOperation executeWithUndo() {
+            return execute(true);
         }
 
         @Override
         public boolean appendOperation(BinaryDataOperation operation) {
-            throw new UnsupportedOperationException("Not supported yet.");
+            if (operation instanceof UndoOperation) {
+                ((EditableBinaryData) data).insert(data.getDataSize(), ((UndoOperation) operation).data);
+                removeLength += ((UndoOperation) operation).removeLength;
+                return true;
+            }
+
+            return false;
+        }
+
+        private CodeAreaOperation execute(boolean withUndo) {
+            CodeAreaOperation undoOperation = null;
+            RemoveDataOperation removeOperation = null;
+            if (removeLength > 0) {
+                removeOperation = new RemoveDataOperation(codeArea, position + data.getDataSize(), 0, removeLength);
+            }
+
+            if (withUndo) {
+                BinaryData undoData = codeArea.getContentData().copy(position, data.getDataSize());
+                undoOperation = new ModifyDataOperation(codeArea, position, undoData);
+            }
+            ((EditableBinaryData) codeArea.getContentData()).replace(position, data);
+            if (removeOperation != null) {
+                if (withUndo) {
+                    CodeAreaCompoundOperation compoundOperation = new CodeAreaCompoundOperation(codeArea);
+                    compoundOperation.addOperation(removeOperation.executeWithUndo());
+                    compoundOperation.addOperation(undoOperation);
+                    undoOperation = compoundOperation;
+                } else {
+                    removeOperation.execute();
+                }
+            }
+            return undoOperation;
         }
     }
 }

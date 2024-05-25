@@ -20,7 +20,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.auxiliary.binary_data.BinaryData;
 import org.exbin.bined.CodeType;
 import org.exbin.bined.capability.CaretCapable;
-import org.exbin.bined.capability.CodeTypeCapable;
 import org.exbin.bined.swing.CodeAreaCore;
 import org.exbin.auxiliary.binary_data.EditableBinaryData;
 import org.exbin.bined.operation.BinaryDataOperation;
@@ -42,10 +41,10 @@ public class DeleteCodeEditDataOperation extends CodeEditDataOperation {
     private long position;
     private byte value;
 
-    public DeleteCodeEditDataOperation(CodeAreaCore codeArea, long startPosition, byte value) {
+    public DeleteCodeEditDataOperation(CodeAreaCore codeArea, long startPosition, CodeType codeType, byte value) {
         super(codeArea);
         this.value = value;
-        codeType = ((CodeTypeCapable) codeArea).getCodeType();
+        this.codeType = codeType;
         this.position = startPosition;
     }
 
@@ -104,15 +103,6 @@ public class DeleteCodeEditDataOperation extends CodeEditDataOperation {
             undoOperation = new UndoOperation(codeArea, position, 0, undoData, value);
         }
         return undoOperation;
-    }
-
-    public long getPosition() {
-        return position;
-    }
-
-    @Override
-    public void dispose() {
-        super.dispose();
     }
 
     @ParametersAreNonnullByDefault

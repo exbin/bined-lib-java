@@ -16,14 +16,14 @@
 package org.exbin.bined.operation.swing;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import org.exbin.auxiliary.binary_data.BinaryData;
 import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.CodeType;
-import org.exbin.bined.capability.CodeTypeCapable;
 import org.exbin.bined.swing.CodeAreaCore;
 import org.exbin.auxiliary.binary_data.EditableBinaryData;
 import org.exbin.bined.operation.BinaryDataOperation;
+import org.exbin.bined.operation.undo.BinaryDataAppendableOperation;
 import org.exbin.bined.operation.undo.BinaryDataUndoableOperation;
 
 /**
@@ -37,23 +37,22 @@ public class OverwriteCodeEditDataOperation extends CodeEditDataOperation {
     private final long startPosition;
     private final int startCodeOffset;
     private long length = 0;
-    private EditableBinaryData undoData = null;
     private final CodeType codeType;
     private byte value;
 
     private int codeOffset = 0;
 
-    public OverwriteCodeEditDataOperation(CodeAreaCore codeArea, long startPosition, int startCodeOffset, byte value) {
+    public OverwriteCodeEditDataOperation(CodeAreaCore codeArea, long startPosition, int startCodeOffset, CodeType codeType, byte value) {
         super(codeArea);
         this.value = value;
         this.startPosition = startPosition;
         this.startCodeOffset = startCodeOffset;
         this.codeOffset = startCodeOffset;
-        this.codeType = ((CodeTypeCapable) codeArea).getCodeType();
-        if (startCodeOffset > 0 && codeArea.getDataSize() > startPosition) {
-            undoData = (EditableBinaryData) codeArea.getContentData().copy(startPosition, 1);
-            length++;
-        }
+        this.codeType = codeType;
+//        if (startCodeOffset > 0 && codeArea.getDataSize() > startPosition) {
+//            undoData = (EditableBinaryData) codeArea.getContentData().copy(startPosition, 1);
+//            length++;
+//        }
     }
 
     @Nonnull
@@ -81,34 +80,8 @@ public class OverwriteCodeEditDataOperation extends CodeEditDataOperation {
 
     private CodeAreaOperation execute(boolean withUndo) {
         CodeAreaOperation undoOperation = null;
-        if (withUndo) {
-            ModifyDataOperation modifyOperation = null;
-            if (undoData != null && !undoData.isEmpty()) {
-                modifyOperation = new ModifyDataOperation(codeArea, startPosition, undoData.copy());
-            }
-            long undoDataSize = undoData == null ? 0 : undoData.getDataSize();
-            long removeLength = length - undoDataSize;
-            if (removeLength == 0) {
-                undoOperation = modifyOperation;
-            } else {
-                RemoveDataOperation removeOperation = new RemoveDataOperation(codeArea, startPosition + undoDataSize, startCodeOffset, removeLength);
-                if (modifyOperation != null) {
-                    CodeAreaCompoundOperation compoundOperation = new CodeAreaCompoundOperation(codeArea);
-                    compoundOperation.addOperation(modifyOperation);
-                    compoundOperation.addOperation(removeOperation);
-                    undoOperation = compoundOperation;
-                } else {
-                    undoOperation = removeOperation;
-                }
-            }
-        }
+        EditableBinaryData undoData = null;
 
-        appendEdit(value);
-
-        return undoOperation;
-    }
-
-    private void appendEdit(byte value) {
         EditableBinaryData data = (EditableBinaryData) codeArea.getContentData();
         long editedDataPosition = startPosition + length;
 
@@ -143,25 +116,79 @@ public class OverwriteCodeEditDataOperation extends CodeEditDataOperation {
         if (codeOffset == codeType.getMaxDigitsForByte()) {
             codeOffset = 0;
         }
+
+        if (withUndo) {
+            undoOperation = new UndoOperation(codeArea, startPosition, undoData, length - undoData.getDataSize());
+        }
+
+        return undoOperation;
     }
 
-    public long getStartPosition() {
-        return startPosition;
-    }
+    @ParametersAreNonnullByDefault
+    private static class UndoOperation extends CodeAreaOperation implements BinaryDataAppendableOperation {
 
-    public int getStartCodeOffset() {
-        return startCodeOffset;
-    }
+        private final long position;
+        private final BinaryData data;
+        private long removeLength;
 
-    public long getLength() {
-        return length;
-    }
+        public UndoOperation(CodeAreaCore codeArea, long position, BinaryData data, long removeLength) {
+            super(codeArea);
+            this.position = position;
+            this.data = data;
+            this.removeLength = removeLength;
+        }
 
-    @Override
-    public void dispose() {
-        super.dispose();
-        if (undoData != null) {
-            undoData.dispose();
+        @Nonnull
+        @Override
+        public CodeAreaOperationType getType() {
+            return CodeAreaOperationType.MODIFY_DATA;
+        }
+
+        @Override
+        public void execute() {
+            execute(false);
+        }
+
+        @Nonnull
+        @Override
+        public BinaryDataUndoableOperation executeWithUndo() {
+            return execute(true);
+        }
+
+        @Override
+        public boolean appendOperation(BinaryDataOperation operation) {
+            if (operation instanceof UndoOperation) {
+                ((EditableBinaryData) data).insert(data.getDataSize(), ((UndoOperation) operation).data);
+                removeLength += ((UndoOperation) operation).removeLength;
+                return true;
+            }
+
+            return false;
+        }
+
+        private CodeAreaOperation execute(boolean withUndo) {
+            CodeAreaOperation undoOperation = null;
+            RemoveDataOperation removeOperation = null;
+            if (removeLength > 0) {
+                removeOperation = new RemoveDataOperation(codeArea, position + data.getDataSize(), 0, removeLength);
+            }
+
+            if (withUndo) {
+                BinaryData undoData = codeArea.getContentData().copy(position, data.getDataSize());
+                undoOperation = new ModifyDataOperation(codeArea, position, undoData);
+            }
+            ((EditableBinaryData) codeArea.getContentData()).replace(position, data);
+            if (removeOperation != null) {
+                if (withUndo) {
+                    CodeAreaCompoundOperation compoundOperation = new CodeAreaCompoundOperation(codeArea);
+                    compoundOperation.addOperation(removeOperation.executeWithUndo());
+                    compoundOperation.addOperation(undoOperation);
+                    undoOperation = compoundOperation;
+                } else {
+                    removeOperation.execute();
+                }
+            }
+            return undoOperation;
         }
     }
 }

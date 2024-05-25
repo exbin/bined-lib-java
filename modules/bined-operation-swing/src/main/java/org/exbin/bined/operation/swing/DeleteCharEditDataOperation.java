@@ -99,15 +99,6 @@ public class DeleteCharEditDataOperation extends CharEditDataOperation {
         return undoOperation;
     }
 
-    public long getPosition() {
-        return position;
-    }
-
-    @Override
-    public void dispose() {
-        super.dispose();
-    }
-
     @ParametersAreNonnullByDefault
     private static class UndoOperation extends InsertDataOperation implements BinaryDataAppendableOperation {
 
@@ -118,15 +109,9 @@ public class DeleteCharEditDataOperation extends CharEditDataOperation {
             this.value = value;
         }
 
-        @Nonnull
-        @Override
-        public CodeAreaOperationType getType() {
-            return CodeAreaOperationType.EDIT_DATA;
-        }
-
         @Override
         public boolean appendOperation(BinaryDataOperation operation) {
-            if (operation instanceof UndoOperation) {
+            if (operation instanceof UndoOperation && ((UndoOperation) operation).value == value) {
                 EditableBinaryData data = (EditableBinaryData) getData();
                 switch (value) {
                     case BACKSPACE_CHAR: {
