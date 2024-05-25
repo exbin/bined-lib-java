@@ -123,7 +123,7 @@ public class DeleteCodeEditDataOperation extends CodeEditDataOperation {
 
         @Override
         public boolean appendOperation(BinaryDataOperation operation) {
-            if (operation instanceof UndoOperation) {
+            if (operation instanceof UndoOperation && ((UndoOperation) operation).value == value) {
                 EditableBinaryData data = (EditableBinaryData) getData();
                 switch (value) {
                     case BACKSPACE_CHAR: {

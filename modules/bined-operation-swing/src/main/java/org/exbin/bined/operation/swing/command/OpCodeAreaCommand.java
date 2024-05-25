@@ -15,8 +15,6 @@
  */
 package org.exbin.bined.operation.swing.command;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -44,21 +42,18 @@ public abstract class OpCodeAreaCommand extends CodeAreaCommand {
 
     public void setOperation(CodeAreaOperation operation) {
         if (this.operation != null) {
-            try {
-                this.operation.dispose();
-            } catch (Exception ex) {
-                Logger.getLogger(OpCodeAreaCommand.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            this.operation.dispose();
         }
         this.operation = operation;
     }
 
     @Override
     public void execute() {
-        BinaryDataUndoableOperation undoOperation = CodeAreaUtils.requireNonNull(operation).executeWithUndo();
-        operation.dispose();
-        operation = undoOperation;
-        phase = BinaryDataCommandPhase.EXECUTED;
+        if (phase != BinaryDataCommandPhase.CREATED) {
+            throw new IllegalStateException();
+        }
+
+        executeInt();
     }
 
     @Override
@@ -79,7 +74,14 @@ public abstract class OpCodeAreaCommand extends CodeAreaCommand {
             throw new IllegalStateException();
         }
 
-        execute();
+        executeInt();
+    }
+
+    private void executeInt() {
+        BinaryDataUndoableOperation undoOperation = CodeAreaUtils.requireNonNull(operation).executeWithUndo();
+        operation.dispose();
+        operation = undoOperation;
+        phase = BinaryDataCommandPhase.EXECUTED;
     }
 
     @Override

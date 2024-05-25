@@ -33,11 +33,11 @@ public class InsertDataCommand extends OpCodeAreaCommand {
     private final long position;
     private final long dataLength;
 
-    public InsertDataCommand(CodeAreaCore codeArea, long position, BinaryData data) {
+    public InsertDataCommand(CodeAreaCore codeArea, long position, int codeOffset, BinaryData data) {
         super(codeArea);
         this.position = position;
         dataLength = data.getDataSize();
-        super.setOperation(new InsertDataOperation(codeArea, position, 0 /* TODO codeArea.getCaretPosition().getCodeOffset() */, data));
+        super.setOperation(new InsertDataOperation(codeArea, position, codeOffset, data));
     }
 
     @Nonnull

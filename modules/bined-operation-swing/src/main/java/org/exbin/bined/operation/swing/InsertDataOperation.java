@@ -61,7 +61,8 @@ public class InsertDataOperation extends CodeAreaOperation {
 
     private CodeAreaOperation execute(boolean withUndo) {
         CodeAreaOperation undoOperation = null;
-        ((EditableBinaryData) codeArea.getContentData()).insert(position, data);
+        EditableBinaryData contentData = (EditableBinaryData) codeArea.getContentData();
+        contentData.insert(position, data);
         if (withUndo) {
             undoOperation = new RemoveDataOperation(codeArea, position, codeOffset, data.getDataSize());
         }

@@ -337,13 +337,13 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
                     CodeAreaCompoundCommand compoundCommand = new CodeAreaCompoundCommand(codeArea);
                     compoundCommand.addCommand(deleteSelectionCommand);
                     long dataPosition = ((CaretCapable) codeArea).getDataPosition();
-                    int codeOffset = ((CaretCapable) codeArea).getCaretPosition().getCodeOffset();
+                    int codeOffset = ((CaretCapable) codeArea).getCodeOffset();
                     editCommand = new EditCodeDataCommand(codeArea, EditCodeDataCommand.EditCommandType.OVERWRITE, dataPosition, codeOffset, (byte) value);
                     compoundCommand.addCommand(editCommand);
                     undoRedo.execute(compoundCommand);
                 } else {
                     long dataPosition = ((CaretCapable) codeArea).getDataPosition();
-                    int codeOffset = ((CaretCapable) codeArea).getCaretPosition().getCodeOffset();
+                    int codeOffset = ((CaretCapable) codeArea).getCodeOffset();
                     EditCodeDataCommand command = new EditCodeDataCommand(codeArea, EditCodeDataCommand.EditCommandType.OVERWRITE, dataPosition, codeOffset, (byte) value);
                     if (editCommand != null && isAppendAllowed() && undoRedo instanceof BinaryDataAppendableUndoRedo) {
                         if (!((BinaryDataAppendableUndoRedo) undoRedo).appendExecute(command)) {
@@ -359,13 +359,13 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
                     CodeAreaCompoundCommand compoundCommand = new CodeAreaCompoundCommand(codeArea);
                     compoundCommand.addCommand(deleteSelectionCommand);
                     long dataPosition = ((CaretCapable) codeArea).getDataPosition();
-                    int codeOffset = ((CaretCapable) codeArea).getCaretPosition().getCodeOffset();
+                    int codeOffset = ((CaretCapable) codeArea).getCodeOffset();
                     editCommand = new EditCodeDataCommand(codeArea, EditCharDataCommand.EditCommandType.INSERT, dataPosition, codeOffset, (byte) value);
                     compoundCommand.addCommand(editCommand);
                     undoRedo.execute(compoundCommand);
                 } else {
                     long dataPosition = ((CaretCapable) codeArea).getDataPosition();
-                    int codeOffset = ((CaretCapable) codeArea).getCaretPosition().getCodeOffset();
+                    int codeOffset = ((CaretCapable) codeArea).getCodeOffset();
                     EditCodeDataCommand command = new EditCodeDataCommand(codeArea, EditCharDataCommand.EditCommandType.INSERT, dataPosition, codeOffset, (byte) value);
                     if (editCommand != null && isAppendAllowed() && undoRedo instanceof BinaryDataAppendableUndoRedo) {
                         if (!((BinaryDataAppendableUndoRedo) undoRedo).appendExecute(command)) {
@@ -716,7 +716,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
 
         CodeAreaCommand insertCommand = null;
         if (!pastedData.isEmpty()) {
-            insertCommand = new InsertDataCommand(codeArea, insertionPosition, pastedData.copy());
+            insertCommand = new InsertDataCommand(codeArea, insertionPosition, ((CaretCapable) codeArea).getCodeOffset(), pastedData.copy());
         }
 
         CodeAreaCommand pasteCommand = CodeAreaCompoundCommand.buildCompoundCommand(codeArea, deleteSelectionCommand, modifyCommand, insertCommand);
@@ -798,7 +798,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
 
                     CodeAreaCommand insertCommand = null;
                     if (pastedData.getDataSize() > 0) {
-                        insertCommand = new InsertDataCommand(codeArea, insertionPosition, pastedData);
+                        insertCommand = new InsertDataCommand(codeArea, insertionPosition, ((CaretCapable) codeArea).getCodeOffset(), pastedData);
                     }
 
                     CodeAreaCommand pasteCommand = CodeAreaCompoundCommand.buildCompoundCommand(codeArea, deleteSelectionCommand, modifyCommand, insertCommand);

@@ -156,15 +156,16 @@ public class OverwriteCharEditDataOperation extends CharEditDataOperation {
         private CodeAreaOperation execute(boolean withUndo) {
             CodeAreaOperation undoOperation = null;
             RemoveDataOperation removeOperation = null;
+            EditableBinaryData contentData = (EditableBinaryData) codeArea.getContentData();
             if (removeLength > 0) {
                 removeOperation = new RemoveDataOperation(codeArea, position + data.getDataSize(), 0, removeLength);
             }
 
             if (withUndo) {
-                BinaryData undoData = codeArea.getContentData().copy(position, data.getDataSize());
+                BinaryData undoData = contentData.copy(position, data.getDataSize());
                 undoOperation = new ModifyDataOperation(codeArea, position, undoData);
             }
-            ((EditableBinaryData) codeArea.getContentData()).replace(position, data);
+            contentData.replace(position, data);
             if (removeOperation != null) {
                 if (withUndo) {
                     CodeAreaCompoundOperation compoundOperation = new CodeAreaCompoundOperation(codeArea);

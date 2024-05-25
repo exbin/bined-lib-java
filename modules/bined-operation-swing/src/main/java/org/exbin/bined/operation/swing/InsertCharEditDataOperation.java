@@ -129,7 +129,7 @@ public class InsertCharEditDataOperation extends CharEditDataOperation {
         }
 
         private CodeAreaOperation execute(boolean withUndo) {
-            EditableBinaryData contentData = CodeAreaUtils.requireNonNull((EditableBinaryData) codeArea.getContentData());
+            EditableBinaryData contentData = (EditableBinaryData) codeArea.getContentData();
             CodeAreaOperation undoOperation = null;
             if (withUndo) {
                 EditableBinaryData undoData = (EditableBinaryData) contentData.copy(position, length);

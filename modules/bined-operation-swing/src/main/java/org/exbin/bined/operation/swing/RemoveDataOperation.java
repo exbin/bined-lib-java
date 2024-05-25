@@ -18,7 +18,6 @@ package org.exbin.bined.operation.swing;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.swing.CodeAreaCore;
 import org.exbin.auxiliary.binary_data.EditableBinaryData;
@@ -61,7 +60,7 @@ public class RemoveDataOperation extends CodeAreaOperation {
     }
 
     private CodeAreaOperation execute(boolean withUndo) {
-        EditableBinaryData contentData = CodeAreaUtils.requireNonNull((EditableBinaryData) codeArea.getContentData());
+        EditableBinaryData contentData = (EditableBinaryData) codeArea.getContentData();
         CodeAreaOperation undoOperation = null;
         if (withUndo) {
             EditableBinaryData undoData = (EditableBinaryData) contentData.copy(position, length);

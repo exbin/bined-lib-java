@@ -709,7 +709,7 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
             return;
         }
 
-        CodeAreaUtils.requireNonNull((EditableBinaryData) codeArea.getContentData()).clear();
+        ((EditableBinaryData) codeArea.getContentData()).clear();
         codeArea.notifyDataChanged();
         codeArea.repaint();
         undoHandler.clear();
@@ -726,7 +726,7 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
             if (chooserResult == JFileChooser.APPROVE_OPTION) {
                 file = fileChooser.getSelectedFile();
                 try (FileInputStream stream = new FileInputStream(file)) {
-                    CodeAreaUtils.requireNonNull((EditableBinaryData) codeArea.getContentData()).loadFromStream(stream);
+                    ((EditableBinaryData) codeArea.getContentData()).loadFromStream(stream);
                     codeArea.notifyDataChanged();
                     codeArea.repaint();
                     undoHandler.clear();
@@ -797,7 +797,7 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
             saveAsFileActionPerformed();
         } else {
             try (FileOutputStream stream = new FileOutputStream(file)) {
-                CodeAreaUtils.requireNonNull((EditableBinaryData) codeArea.getContentData()).saveToStream(stream);
+                codeArea.getContentData().saveToStream(stream);
                 undoHandler.setSyncPosition();
                 updateTitle();
             } catch (IOException ex) {

@@ -20,7 +20,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.operation.BinaryDataCommand;
 import org.exbin.bined.operation.BinaryDataCommandPhase;
-import org.exbin.bined.operation.swing.CharEditDataOperation;
 import org.exbin.bined.operation.swing.DeleteCharEditDataOperation;
 import org.exbin.bined.operation.swing.InsertCharEditDataOperation;
 import org.exbin.bined.operation.swing.OverwriteCharEditDataOperation;
