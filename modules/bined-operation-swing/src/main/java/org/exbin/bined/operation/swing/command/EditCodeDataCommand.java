@@ -109,7 +109,7 @@ public class EditCodeDataCommand extends EditDataCommand implements BinaryDataAp
     public boolean appendExecute(BinaryDataCommand command) {
         command.execute();
 
-        if (command instanceof EditCodeDataCommand && activeOperation instanceof CodeEditDataOperation) {
+        if (command instanceof EditCodeDataCommand && activeOperation instanceof BinaryDataAppendableOperation) {
             return ((BinaryDataAppendableOperation) activeOperation).appendOperation(((EditCodeDataCommand) command).activeOperation);
         }
 

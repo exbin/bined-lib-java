@@ -39,7 +39,6 @@ public class OverwriteCodeEditDataOperation extends CodeEditDataOperation {
     private final CodeType codeType;
     private byte value;
 
-
     public OverwriteCodeEditDataOperation(CodeAreaCore codeArea, long startPosition, int codeOffset, CodeType codeType, byte value) {
         super(codeArea);
         this.value = value;
@@ -72,49 +71,36 @@ public class OverwriteCodeEditDataOperation extends CodeEditDataOperation {
     }
 
     private CodeAreaOperation execute(boolean withUndo) {
+        EditableBinaryData data = (EditableBinaryData) codeArea.getContentData();
+        if (startPosition > data.getDataSize() || (startPosition == data.getDataSize() && codeOffset > 0)) {
+            throw new IllegalStateException("Cannot overwrite outside of the document");
+        }
+
         CodeAreaOperation undoOperation = null;
         EditableBinaryData undoData = null;
 
-        EditableBinaryData data = (EditableBinaryData) codeArea.getContentData();
-        long editedDataPosition = startPosition;
-
         byte byteValue = 0;
+        int removeLength = 0;
         if (codeOffset > 0) {
-            editedDataPosition++;
-// TODO        if (startCodeOffset > 0 && codeArea.getDataSize() > startPosition) {
-//            undoData = (EditableBinaryData) codeArea.getContentData().copy(startPosition, 1);
-//            length++;
-//        }
-            if (editedDataPosition <= data.getDataSize()) {
-                byteValue = data.getByte(editedDataPosition - 1);
-            }
-
-            editedDataPosition--;
-            undoData = (EditableBinaryData) data.copy(editedDataPosition, 0);
+            undoData = (EditableBinaryData) codeArea.getContentData().copy(startPosition, 1);
+            byteValue = undoData.getByte(0);
         } else {
-            if (editedDataPosition < data.getDataSize()) {
-                undoData = (EditableBinaryData) data.copy(editedDataPosition, 1);
+            if (startPosition < data.getDataSize()) {
+                undoData = (EditableBinaryData) data.copy(startPosition, 1);
                 byteValue = undoData.getByte(0);
-            } else if (editedDataPosition > data.getDataSize()) {
-                throw new IllegalStateException("Cannot overwrite outside of the document");
             } else {
-                undoData = (EditableBinaryData) data.copy(editedDataPosition, 0);
-                data.insertUninitialized(editedDataPosition, 1);
+                undoData = (EditableBinaryData) data.copy(startPosition, 0);
+                data.insertUninitialized(startPosition, 1);
+                removeLength = 1;
             }
-
-//            length++;
         }
 
         byteValue = CodeAreaUtils.setCodeValue(byteValue, value, codeOffset, codeType);
 
-        data.setByte(editedDataPosition, byteValue);
-//        codeOffset++;
-//        if (codeOffset == codeType.getMaxDigitsForByte()) {
-//            codeOffset = 0;
-//        }
+        data.setByte(startPosition, byteValue);
 
         if (withUndo) {
-            undoOperation = new UndoOperation(codeArea, startPosition, undoData, 0); // TODO length - undoData.getDataSize());
+            undoOperation = new UndoOperation(codeArea, startPosition, undoData, codeType, codeOffset, removeLength);
         }
 
         return undoOperation;
@@ -125,12 +111,16 @@ public class OverwriteCodeEditDataOperation extends CodeEditDataOperation {
 
         private final long position;
         private final BinaryData data;
+        private final CodeType codeType;
+        private int codeOffset;
         private long removeLength;
 
-        public UndoOperation(CodeAreaCore codeArea, long position, BinaryData data, long removeLength) {
+        public UndoOperation(CodeAreaCore codeArea, long position, BinaryData data, CodeType codeType, int codeOffset, long removeLength) {
             super(codeArea);
             this.position = position;
             this.data = data;
+            this.codeType = codeType;
+            this.codeOffset = codeOffset;
             this.removeLength = removeLength;
         }
 
@@ -153,9 +143,13 @@ public class OverwriteCodeEditDataOperation extends CodeEditDataOperation {
 
         @Override
         public boolean appendOperation(BinaryDataOperation operation) {
-            if (operation instanceof UndoOperation) {
-                ((EditableBinaryData) data).insert(data.getDataSize(), ((UndoOperation) operation).data);
-                removeLength += ((UndoOperation) operation).removeLength;
+            if (operation instanceof UndoOperation && (((UndoOperation) operation).codeType == codeType)) {
+                codeOffset++;
+                if (codeOffset == codeType.getMaxDigitsForByte()) {
+                    codeOffset = 0;
+                    removeLength += ((UndoOperation) operation).removeLength;
+                    ((EditableBinaryData) data).insert(data.getDataSize(), ((UndoOperation) operation).data);
+                }
                 return true;
             }
 

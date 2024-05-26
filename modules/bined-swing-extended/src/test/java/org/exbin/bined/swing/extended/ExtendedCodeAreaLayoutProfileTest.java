@@ -23,6 +23,7 @@ import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
 import org.exbin.bined.extended.layout.PositionIterator;
+import org.hamcrest.MatcherAssert;
 
 /**
  * Tests for DefaultExtendedCodeAreaLayoutProfile.
@@ -44,18 +45,18 @@ public class ExtendedCodeAreaLayoutProfileTest {
         PositionIterator charPositionIterator = layout.createPositionIterator(CodeType.HEXADECIMAL, CodeAreaViewMode.DUAL, TEST_BYTES_PER_ROW_DEFAULT);
 
         Assert.assertNotNull(charPositionIterator);
-        Assert.assertThat(charPositionIterator.isEndReached(), CoreMatchers.is(false));
-        Assert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
-        Assert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.SINGLE));
-        Assert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
-        Assert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.SINGLE));
-        Assert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
-        Assert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.SINGLE));
-        Assert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
-        Assert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
-        Assert.assertThat(charPositionIterator.isEndReached(), CoreMatchers.is(false));
-        Assert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
-        Assert.assertThat(charPositionIterator.isEndReached(), CoreMatchers.is(true));
+        MatcherAssert.assertThat(charPositionIterator.isEndReached(), CoreMatchers.is(false));
+        MatcherAssert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
+        MatcherAssert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.SINGLE));
+        MatcherAssert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
+        MatcherAssert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.SINGLE));
+        MatcherAssert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
+        MatcherAssert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.SINGLE));
+        MatcherAssert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
+        MatcherAssert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
+        MatcherAssert.assertThat(charPositionIterator.isEndReached(), CoreMatchers.is(false));
+        MatcherAssert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
+        MatcherAssert.assertThat(charPositionIterator.isEndReached(), CoreMatchers.is(true));
     }
 
     @Test
@@ -67,42 +68,42 @@ public class ExtendedCodeAreaLayoutProfileTest {
         PositionIterator charPositionIterator = layout.createPositionIterator(CodeType.HEXADECIMAL, CodeAreaViewMode.DUAL, TEST_BYTES_PER_ROW_COMBINED);
 
         Assert.assertNotNull(charPositionIterator);
-        Assert.assertThat(charPositionIterator.isEndReached(), CoreMatchers.is(false));
-        Assert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
-        Assert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
-        Assert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
-        Assert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.HALF));
-        Assert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
-        Assert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.SINGLE));
-        Assert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
-        Assert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.DOUBLE));
-        Assert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
-        Assert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
-        Assert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
-        Assert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.SINGLE));
-        Assert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
-        Assert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
-        Assert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
-        Assert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.DOUBLE));
-        Assert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
-        Assert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.SINGLE));
-        Assert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
-        Assert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.HALF));
-        Assert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
-        Assert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.SINGLE));
-        Assert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
-        Assert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
-        Assert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
-        Assert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
-        Assert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
-        Assert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
-        Assert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
-        Assert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
-        Assert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
-        Assert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
-        Assert.assertThat(charPositionIterator.isEndReached(), CoreMatchers.is(false));
-        Assert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
-        Assert.assertThat(charPositionIterator.isEndReached(), CoreMatchers.is(true));
+        MatcherAssert.assertThat(charPositionIterator.isEndReached(), CoreMatchers.is(false));
+        MatcherAssert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
+        MatcherAssert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
+        MatcherAssert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
+        MatcherAssert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.HALF));
+        MatcherAssert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
+        MatcherAssert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.SINGLE));
+        MatcherAssert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
+        MatcherAssert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.DOUBLE));
+        MatcherAssert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
+        MatcherAssert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
+        MatcherAssert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
+        MatcherAssert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.SINGLE));
+        MatcherAssert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
+        MatcherAssert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
+        MatcherAssert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
+        MatcherAssert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.DOUBLE));
+        MatcherAssert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
+        MatcherAssert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.SINGLE));
+        MatcherAssert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
+        MatcherAssert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.HALF));
+        MatcherAssert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
+        MatcherAssert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.SINGLE));
+        MatcherAssert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
+        MatcherAssert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
+        MatcherAssert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
+        MatcherAssert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
+        MatcherAssert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
+        MatcherAssert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
+        MatcherAssert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
+        MatcherAssert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
+        MatcherAssert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
+        MatcherAssert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
+        MatcherAssert.assertThat(charPositionIterator.isEndReached(), CoreMatchers.is(false));
+        MatcherAssert.assertThat(charPositionIterator.nextSpaceType(), CoreMatchers.is(SpaceType.NONE));
+        MatcherAssert.assertThat(charPositionIterator.isEndReached(), CoreMatchers.is(true));
     }
 
     @Test
@@ -112,17 +113,17 @@ public class ExtendedCodeAreaLayoutProfileTest {
         layout.setSpaceGroupSize(3);
         layout.setDoubleSpaceGroupSize(4);
 
-        Assert.assertThat(layout.getSpaceSizeTypeBefore(0, TEST_CHARACTER_WIDTH), CoreMatchers.is(SpaceType.NONE));
-        Assert.assertThat(layout.getSpaceSizeTypeBefore(1, TEST_CHARACTER_WIDTH), CoreMatchers.is(SpaceType.NONE));
-        Assert.assertThat(layout.getSpaceSizeTypeBefore(2, TEST_CHARACTER_WIDTH), CoreMatchers.is(SpaceType.HALF));
-        Assert.assertThat(layout.getSpaceSizeTypeBefore(3, TEST_CHARACTER_WIDTH), CoreMatchers.is(SpaceType.SINGLE));
-        Assert.assertThat(layout.getSpaceSizeTypeBefore(4, TEST_CHARACTER_WIDTH), CoreMatchers.is(SpaceType.DOUBLE));
-        Assert.assertThat(layout.getSpaceSizeTypeBefore(5, TEST_CHARACTER_WIDTH), CoreMatchers.is(SpaceType.NONE));
-        Assert.assertThat(layout.getSpaceSizeTypeBefore(6, TEST_CHARACTER_WIDTH), CoreMatchers.is(SpaceType.SINGLE));
-        Assert.assertThat(layout.getSpaceSizeTypeBefore(7, TEST_CHARACTER_WIDTH), CoreMatchers.is(SpaceType.NONE));
-        Assert.assertThat(layout.getSpaceSizeTypeBefore(8, TEST_CHARACTER_WIDTH), CoreMatchers.is(SpaceType.DOUBLE));
-        Assert.assertThat(layout.getSpaceSizeTypeBefore(9, TEST_CHARACTER_WIDTH), CoreMatchers.is(SpaceType.SINGLE));
-        Assert.assertThat(layout.getSpaceSizeTypeBefore(10, TEST_CHARACTER_WIDTH), CoreMatchers.is(SpaceType.HALF));
+        MatcherAssert.assertThat(layout.getSpaceSizeTypeBefore(0, TEST_CHARACTER_WIDTH), CoreMatchers.is(SpaceType.NONE));
+        MatcherAssert.assertThat(layout.getSpaceSizeTypeBefore(1, TEST_CHARACTER_WIDTH), CoreMatchers.is(SpaceType.NONE));
+        MatcherAssert.assertThat(layout.getSpaceSizeTypeBefore(2, TEST_CHARACTER_WIDTH), CoreMatchers.is(SpaceType.HALF));
+        MatcherAssert.assertThat(layout.getSpaceSizeTypeBefore(3, TEST_CHARACTER_WIDTH), CoreMatchers.is(SpaceType.SINGLE));
+        MatcherAssert.assertThat(layout.getSpaceSizeTypeBefore(4, TEST_CHARACTER_WIDTH), CoreMatchers.is(SpaceType.DOUBLE));
+        MatcherAssert.assertThat(layout.getSpaceSizeTypeBefore(5, TEST_CHARACTER_WIDTH), CoreMatchers.is(SpaceType.NONE));
+        MatcherAssert.assertThat(layout.getSpaceSizeTypeBefore(6, TEST_CHARACTER_WIDTH), CoreMatchers.is(SpaceType.SINGLE));
+        MatcherAssert.assertThat(layout.getSpaceSizeTypeBefore(7, TEST_CHARACTER_WIDTH), CoreMatchers.is(SpaceType.NONE));
+        MatcherAssert.assertThat(layout.getSpaceSizeTypeBefore(8, TEST_CHARACTER_WIDTH), CoreMatchers.is(SpaceType.DOUBLE));
+        MatcherAssert.assertThat(layout.getSpaceSizeTypeBefore(9, TEST_CHARACTER_WIDTH), CoreMatchers.is(SpaceType.SINGLE));
+        MatcherAssert.assertThat(layout.getSpaceSizeTypeBefore(10, TEST_CHARACTER_WIDTH), CoreMatchers.is(SpaceType.HALF));
     }
 
     @Test
@@ -133,46 +134,46 @@ public class ExtendedCodeAreaLayoutProfileTest {
         layout.setDoubleSpaceGroupSize(4);
 
         int pixelPos = 0;
-        Assert.assertThat(layout.computePixelPosition(0, TEST_CHARACTER_WIDTH, CodeAreaViewMode.CODE_MATRIX, CodeType.HEXADECIMAL, TEST_BYTES_PER_ROW_COMBINED), CoreMatchers.is(pixelPos));
+        MatcherAssert.assertThat(layout.computePixelPosition(0, TEST_CHARACTER_WIDTH, CodeAreaViewMode.CODE_MATRIX, CodeType.HEXADECIMAL, TEST_BYTES_PER_ROW_COMBINED), CoreMatchers.is(pixelPos));
         pixelPos += TEST_CHARACTER_WIDTH;
-        Assert.assertThat(layout.computePixelPosition(1, TEST_CHARACTER_WIDTH, CodeAreaViewMode.CODE_MATRIX, CodeType.HEXADECIMAL, TEST_BYTES_PER_ROW_COMBINED), CoreMatchers.is(pixelPos));
+        MatcherAssert.assertThat(layout.computePixelPosition(1, TEST_CHARACTER_WIDTH, CodeAreaViewMode.CODE_MATRIX, CodeType.HEXADECIMAL, TEST_BYTES_PER_ROW_COMBINED), CoreMatchers.is(pixelPos));
         pixelPos += TEST_CHARACTER_WIDTH;
-        Assert.assertThat(layout.computePixelPosition(2, TEST_CHARACTER_WIDTH, CodeAreaViewMode.CODE_MATRIX, CodeType.HEXADECIMAL, TEST_BYTES_PER_ROW_COMBINED), CoreMatchers.is(pixelPos));
+        MatcherAssert.assertThat(layout.computePixelPosition(2, TEST_CHARACTER_WIDTH, CodeAreaViewMode.CODE_MATRIX, CodeType.HEXADECIMAL, TEST_BYTES_PER_ROW_COMBINED), CoreMatchers.is(pixelPos));
         pixelPos += TEST_CHARACTER_WIDTH;
-        Assert.assertThat(layout.computePixelPosition(3, TEST_CHARACTER_WIDTH, CodeAreaViewMode.CODE_MATRIX, CodeType.HEXADECIMAL, TEST_BYTES_PER_ROW_COMBINED), CoreMatchers.is(pixelPos));
+        MatcherAssert.assertThat(layout.computePixelPosition(3, TEST_CHARACTER_WIDTH, CodeAreaViewMode.CODE_MATRIX, CodeType.HEXADECIMAL, TEST_BYTES_PER_ROW_COMBINED), CoreMatchers.is(pixelPos));
         pixelPos += TEST_CHARACTER_WIDTH + TEST_CHARACTER_WIDTH / 2;
-        Assert.assertThat(layout.computePixelPosition(4, TEST_CHARACTER_WIDTH, CodeAreaViewMode.CODE_MATRIX, CodeType.HEXADECIMAL, TEST_BYTES_PER_ROW_COMBINED), CoreMatchers.is(pixelPos));
+        MatcherAssert.assertThat(layout.computePixelPosition(4, TEST_CHARACTER_WIDTH, CodeAreaViewMode.CODE_MATRIX, CodeType.HEXADECIMAL, TEST_BYTES_PER_ROW_COMBINED), CoreMatchers.is(pixelPos));
         pixelPos += TEST_CHARACTER_WIDTH;
-        Assert.assertThat(layout.computePixelPosition(5, TEST_CHARACTER_WIDTH, CodeAreaViewMode.CODE_MATRIX, CodeType.HEXADECIMAL, TEST_BYTES_PER_ROW_COMBINED), CoreMatchers.is(pixelPos));
+        MatcherAssert.assertThat(layout.computePixelPosition(5, TEST_CHARACTER_WIDTH, CodeAreaViewMode.CODE_MATRIX, CodeType.HEXADECIMAL, TEST_BYTES_PER_ROW_COMBINED), CoreMatchers.is(pixelPos));
         pixelPos += TEST_CHARACTER_WIDTH + TEST_CHARACTER_WIDTH;
-        Assert.assertThat(layout.computePixelPosition(6, TEST_CHARACTER_WIDTH, CodeAreaViewMode.CODE_MATRIX, CodeType.HEXADECIMAL, TEST_BYTES_PER_ROW_COMBINED), CoreMatchers.is(pixelPos));
+        MatcherAssert.assertThat(layout.computePixelPosition(6, TEST_CHARACTER_WIDTH, CodeAreaViewMode.CODE_MATRIX, CodeType.HEXADECIMAL, TEST_BYTES_PER_ROW_COMBINED), CoreMatchers.is(pixelPos));
         pixelPos += TEST_CHARACTER_WIDTH;
-        Assert.assertThat(layout.computePixelPosition(7, TEST_CHARACTER_WIDTH, CodeAreaViewMode.CODE_MATRIX, CodeType.HEXADECIMAL, TEST_BYTES_PER_ROW_COMBINED), CoreMatchers.is(pixelPos));
+        MatcherAssert.assertThat(layout.computePixelPosition(7, TEST_CHARACTER_WIDTH, CodeAreaViewMode.CODE_MATRIX, CodeType.HEXADECIMAL, TEST_BYTES_PER_ROW_COMBINED), CoreMatchers.is(pixelPos));
         pixelPos += TEST_CHARACTER_WIDTH + TEST_CHARACTER_WIDTH * 2;
-        Assert.assertThat(layout.computePixelPosition(8, TEST_CHARACTER_WIDTH, CodeAreaViewMode.CODE_MATRIX, CodeType.HEXADECIMAL, TEST_BYTES_PER_ROW_COMBINED), CoreMatchers.is(pixelPos));
+        MatcherAssert.assertThat(layout.computePixelPosition(8, TEST_CHARACTER_WIDTH, CodeAreaViewMode.CODE_MATRIX, CodeType.HEXADECIMAL, TEST_BYTES_PER_ROW_COMBINED), CoreMatchers.is(pixelPos));
         pixelPos += TEST_CHARACTER_WIDTH;
-        Assert.assertThat(layout.computePixelPosition(9, TEST_CHARACTER_WIDTH, CodeAreaViewMode.CODE_MATRIX, CodeType.HEXADECIMAL, TEST_BYTES_PER_ROW_COMBINED), CoreMatchers.is(pixelPos));
+        MatcherAssert.assertThat(layout.computePixelPosition(9, TEST_CHARACTER_WIDTH, CodeAreaViewMode.CODE_MATRIX, CodeType.HEXADECIMAL, TEST_BYTES_PER_ROW_COMBINED), CoreMatchers.is(pixelPos));
         pixelPos += TEST_CHARACTER_WIDTH;
-        Assert.assertThat(layout.computePixelPosition(10, TEST_CHARACTER_WIDTH, CodeAreaViewMode.CODE_MATRIX, CodeType.HEXADECIMAL, TEST_BYTES_PER_ROW_COMBINED), CoreMatchers.is(pixelPos));
+        MatcherAssert.assertThat(layout.computePixelPosition(10, TEST_CHARACTER_WIDTH, CodeAreaViewMode.CODE_MATRIX, CodeType.HEXADECIMAL, TEST_BYTES_PER_ROW_COMBINED), CoreMatchers.is(pixelPos));
         pixelPos += TEST_CHARACTER_WIDTH;
-        Assert.assertThat(layout.computePixelPosition(11, TEST_CHARACTER_WIDTH, CodeAreaViewMode.CODE_MATRIX, CodeType.HEXADECIMAL, TEST_BYTES_PER_ROW_COMBINED), CoreMatchers.is(pixelPos));
+        MatcherAssert.assertThat(layout.computePixelPosition(11, TEST_CHARACTER_WIDTH, CodeAreaViewMode.CODE_MATRIX, CodeType.HEXADECIMAL, TEST_BYTES_PER_ROW_COMBINED), CoreMatchers.is(pixelPos));
         pixelPos += TEST_CHARACTER_WIDTH + TEST_CHARACTER_WIDTH;
-        Assert.assertThat(layout.computePixelPosition(12, TEST_CHARACTER_WIDTH, CodeAreaViewMode.CODE_MATRIX, CodeType.HEXADECIMAL, TEST_BYTES_PER_ROW_COMBINED), CoreMatchers.is(pixelPos));
+        MatcherAssert.assertThat(layout.computePixelPosition(12, TEST_CHARACTER_WIDTH, CodeAreaViewMode.CODE_MATRIX, CodeType.HEXADECIMAL, TEST_BYTES_PER_ROW_COMBINED), CoreMatchers.is(pixelPos));
         pixelPos += TEST_CHARACTER_WIDTH;
-        Assert.assertThat(layout.computePixelPosition(13, TEST_CHARACTER_WIDTH, CodeAreaViewMode.CODE_MATRIX, CodeType.HEXADECIMAL, TEST_BYTES_PER_ROW_COMBINED), CoreMatchers.is(pixelPos));
+        MatcherAssert.assertThat(layout.computePixelPosition(13, TEST_CHARACTER_WIDTH, CodeAreaViewMode.CODE_MATRIX, CodeType.HEXADECIMAL, TEST_BYTES_PER_ROW_COMBINED), CoreMatchers.is(pixelPos));
         pixelPos += TEST_CHARACTER_WIDTH;
-        Assert.assertThat(layout.computePixelPosition(14, TEST_CHARACTER_WIDTH, CodeAreaViewMode.CODE_MATRIX, CodeType.HEXADECIMAL, TEST_BYTES_PER_ROW_COMBINED), CoreMatchers.is(pixelPos));
+        MatcherAssert.assertThat(layout.computePixelPosition(14, TEST_CHARACTER_WIDTH, CodeAreaViewMode.CODE_MATRIX, CodeType.HEXADECIMAL, TEST_BYTES_PER_ROW_COMBINED), CoreMatchers.is(pixelPos));
         pixelPos += TEST_CHARACTER_WIDTH;
-        Assert.assertThat(layout.computePixelPosition(15, TEST_CHARACTER_WIDTH, CodeAreaViewMode.CODE_MATRIX, CodeType.HEXADECIMAL, TEST_BYTES_PER_ROW_COMBINED), CoreMatchers.is(pixelPos));
+        MatcherAssert.assertThat(layout.computePixelPosition(15, TEST_CHARACTER_WIDTH, CodeAreaViewMode.CODE_MATRIX, CodeType.HEXADECIMAL, TEST_BYTES_PER_ROW_COMBINED), CoreMatchers.is(pixelPos));
         pixelPos += TEST_CHARACTER_WIDTH + TEST_CHARACTER_WIDTH * 2;
-        Assert.assertThat(layout.computePixelPosition(16, TEST_CHARACTER_WIDTH, CodeAreaViewMode.CODE_MATRIX, CodeType.HEXADECIMAL, TEST_BYTES_PER_ROW_COMBINED), CoreMatchers.is(pixelPos));
+        MatcherAssert.assertThat(layout.computePixelPosition(16, TEST_CHARACTER_WIDTH, CodeAreaViewMode.CODE_MATRIX, CodeType.HEXADECIMAL, TEST_BYTES_PER_ROW_COMBINED), CoreMatchers.is(pixelPos));
         pixelPos += TEST_CHARACTER_WIDTH;
-        Assert.assertThat(layout.computePixelPosition(17, TEST_CHARACTER_WIDTH, CodeAreaViewMode.CODE_MATRIX, CodeType.HEXADECIMAL, TEST_BYTES_PER_ROW_COMBINED), CoreMatchers.is(pixelPos));
+        MatcherAssert.assertThat(layout.computePixelPosition(17, TEST_CHARACTER_WIDTH, CodeAreaViewMode.CODE_MATRIX, CodeType.HEXADECIMAL, TEST_BYTES_PER_ROW_COMBINED), CoreMatchers.is(pixelPos));
         pixelPos += TEST_CHARACTER_WIDTH + TEST_CHARACTER_WIDTH;
-        Assert.assertThat(layout.computePixelPosition(18, TEST_CHARACTER_WIDTH, CodeAreaViewMode.CODE_MATRIX, CodeType.HEXADECIMAL, TEST_BYTES_PER_ROW_COMBINED), CoreMatchers.is(pixelPos));
+        MatcherAssert.assertThat(layout.computePixelPosition(18, TEST_CHARACTER_WIDTH, CodeAreaViewMode.CODE_MATRIX, CodeType.HEXADECIMAL, TEST_BYTES_PER_ROW_COMBINED), CoreMatchers.is(pixelPos));
         pixelPos += TEST_CHARACTER_WIDTH;
-        Assert.assertThat(layout.computePixelPosition(19, TEST_CHARACTER_WIDTH, CodeAreaViewMode.CODE_MATRIX, CodeType.HEXADECIMAL, TEST_BYTES_PER_ROW_COMBINED), CoreMatchers.is(pixelPos));
+        MatcherAssert.assertThat(layout.computePixelPosition(19, TEST_CHARACTER_WIDTH, CodeAreaViewMode.CODE_MATRIX, CodeType.HEXADECIMAL, TEST_BYTES_PER_ROW_COMBINED), CoreMatchers.is(pixelPos));
         pixelPos += TEST_CHARACTER_WIDTH + TEST_CHARACTER_WIDTH / 2;
-        Assert.assertThat(layout.computePixelPosition(20, TEST_CHARACTER_WIDTH, CodeAreaViewMode.CODE_MATRIX, CodeType.HEXADECIMAL, TEST_BYTES_PER_ROW_COMBINED), CoreMatchers.is(pixelPos));
+        MatcherAssert.assertThat(layout.computePixelPosition(20, TEST_CHARACTER_WIDTH, CodeAreaViewMode.CODE_MATRIX, CodeType.HEXADECIMAL, TEST_BYTES_PER_ROW_COMBINED), CoreMatchers.is(pixelPos));
     }
 }
