@@ -38,6 +38,8 @@ import org.exbin.bined.swt.CodeArea;
 import org.exbin.bined.swt.CodeAreaCommandHandler;
 import org.exbin.auxiliary.binary_data.BinaryData;
 import org.exbin.auxiliary.binary_data.EditableBinaryData;
+import org.exbin.bined.CodeAreaCaretPosition;
+import org.exbin.bined.capability.CaretCapable;
 
 /**
  * Default binary editor command handler.
@@ -478,84 +480,14 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     }
 
     private void setCodeValue(int value) {
-        long dataPosition = codeArea.getDataPosition();
-        int codeOffset = codeArea.getCodeOffset();
-        setCodeValue(dataPosition, value, codeOffset);
-    }
-
-    private void setCodeValue(long dataPosition, int value, int codeOffset) {
-        CodeType codeType = codeArea.getCodeType();
-        BinaryData data = codeArea.getBinaryData();
-
+        CodeAreaCaretPosition caretPosition = ((CaretCapable) codeArea).getCaretPosition();
+        long dataPosition = caretPosition.getDataPosition();
+        int codeOffset = caretPosition.getCodeOffset();
+        BinaryData data = CodeAreaUtils.requireNonNullContentData(codeArea.getContentData());
+        CodeType codeType = getCodeType();
         byte byteValue = data.getByte(dataPosition);
-        switch (codeType) {
-            case BINARY: {
-                int bitMask = 0x80 >> codeOffset;
-                byteValue = (byte) (byteValue & (0xff - bitMask) | (value << (7 - codeOffset)));
-                break;
-            }
-            case DECIMAL: {
-                int newValue = byteValue & 0xff;
-                switch (codeOffset) {
-                    case 0: {
-                        newValue = (newValue % 100) + value * 100;
-                        if (newValue > 255) {
-                            newValue = 200;
-                        }
-                        break;
-                    }
-                    case 1: {
-                        newValue = (newValue / 100) * 100 + value * 10 + (newValue % 10);
-                        if (newValue > 255) {
-                            newValue -= 200;
-                        }
-                        break;
-                    }
-                    case 2: {
-                        newValue = (newValue / 10) * 10 + value;
-                        if (newValue > 255) {
-                            newValue -= 200;
-                        }
-                        break;
-                    }
-                }
-
-                byteValue = (byte) newValue;
-                break;
-            }
-            case OCTAL: {
-                int newValue = byteValue & 0xff;
-                switch (codeOffset) {
-                    case 0: {
-                        newValue = (newValue % 64) + value * 64;
-                        break;
-                    }
-                    case 1: {
-                        newValue = (newValue / 64) * 64 + value * 8 + (newValue % 8);
-                        break;
-                    }
-                    case 2: {
-                        newValue = (newValue / 8) * 8 + value;
-                        break;
-                    }
-                }
-
-                byteValue = (byte) newValue;
-                break;
-            }
-            case HEXADECIMAL: {
-                if (codeOffset == 1) {
-                    byteValue = (byte) ((byteValue & 0xf0) | value);
-                } else {
-                    byteValue = (byte) ((byteValue & 0xf) | (value << 4));
-                }
-                break;
-            }
-            default:
-                throw CodeAreaUtils.getInvalidTypeException(codeType);
-        }
-
-        ((EditableBinaryData) data).setByte(dataPosition, byteValue);
+        byte outputValue = CodeAreaUtils.setCodeValue(byteValue, value, codeOffset, codeType);
+        ((EditableBinaryData) data).setByte(dataPosition, outputValue);
     }
 
     @Override

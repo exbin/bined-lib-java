@@ -18,8 +18,6 @@ package org.exbin.bined.operation.swing.command;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -80,11 +78,7 @@ public class CodeAreaCompoundCommand extends CodeAreaCommand implements BinaryDa
     public void redo() {
         for (BinaryDataCommand command : commands) {
             if (command instanceof BinaryDataUndoableCommand) {
-                try {
-                    ((BinaryDataUndoableCommand) command).redo();
-                } catch (Throwable ex) {
-                    Logger.getLogger(CodeAreaCompoundCommand.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                ((BinaryDataUndoableCommand) command).redo();
             } else {
                 throw new UnsupportedOperationException("Not supported yet.");
             }
@@ -96,11 +90,7 @@ public class CodeAreaCompoundCommand extends CodeAreaCommand implements BinaryDa
         for (int i = commands.size() - 1; i >= 0; i--) {
             BinaryDataCommand command = commands.get(i);
             if (command instanceof BinaryDataUndoableCommand) {
-                try {
-                    ((BinaryDataUndoableCommand) command).undo();
-                } catch (Throwable ex) {
-                    Logger.getLogger(CodeAreaCompoundCommand.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                ((BinaryDataUndoableCommand) command).undo();
             } else {
                 throw new UnsupportedOperationException("Not supported yet.");
             }

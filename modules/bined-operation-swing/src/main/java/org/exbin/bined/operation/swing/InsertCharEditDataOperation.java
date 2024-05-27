@@ -74,7 +74,7 @@ public class InsertCharEditDataOperation extends CharEditDataOperation {
         ((SelectionCapable) codeArea).setSelection(dataPosition, dataPosition);
 
         if (withUndo) {
-            undoOperation = new UndoOperation(codeArea, startPosition, 0, length);
+            undoOperation = new UndoOperation(codeArea, startPosition, length);
         }
 
         return undoOperation;
@@ -91,13 +91,11 @@ public class InsertCharEditDataOperation extends CharEditDataOperation {
     private static class UndoOperation extends CodeAreaOperation implements BinaryDataAppendableOperation {
 
         private final long position;
-        private final int codeOffset;
         private long length;
 
-        public UndoOperation(CodeAreaCore codeArea, long position, int codeOffset, long length) {
+        public UndoOperation(CodeAreaCore codeArea, long position, long length) {
             super(codeArea);
             this.position = position;
-            this.codeOffset = codeOffset;
             this.length = length;
         }
 
@@ -133,10 +131,10 @@ public class InsertCharEditDataOperation extends CharEditDataOperation {
             CodeAreaOperation undoOperation = null;
             if (withUndo) {
                 EditableBinaryData undoData = (EditableBinaryData) contentData.copy(position, length);
-                undoOperation = new InsertDataOperation(codeArea, position, codeOffset, undoData);
+                undoOperation = new InsertDataOperation(codeArea, position, 0, undoData);
             }
             contentData.remove(position, length);
-            ((CaretCapable) codeArea).setCaretPosition(position, codeOffset);
+            ((CaretCapable) codeArea).setCaretPosition(position, 0);
             return undoOperation;
         }
     }

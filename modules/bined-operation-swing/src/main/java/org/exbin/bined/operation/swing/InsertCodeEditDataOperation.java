@@ -16,7 +16,6 @@
 package org.exbin.bined.operation.swing;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.CodeType;
 import org.exbin.bined.capability.CodeTypeCapable;
@@ -82,27 +81,13 @@ public class InsertCodeEditDataOperation extends CodeEditDataOperation {
     }
 
     private CodeAreaOperation execute(boolean withUndo) {
-        CodeAreaOperation undoOperation = null;
-        if (withUndo) {
-            if (trailing) {
-                ModifyDataOperation modifyDataOperation = new ModifyDataOperation(codeArea, startPosition, trailingValue.copy());
-                CodeAreaCompoundOperation compoundOperation = new CodeAreaCompoundOperation(codeArea);
-                compoundOperation.addOperation(modifyDataOperation);
-                compoundOperation.addOperation(new RemoveDataOperation(codeArea, startPosition, startCodeOffset, length));
-                undoOperation = compoundOperation;
-            } else {
-                undoOperation = new RemoveDataOperation(codeArea, startPosition, startCodeOffset, length);
-            }
-        }
-        
-        appendEdit(value);
-        
-        return undoOperation;
-    }
-
-    private void appendEdit(byte value) {
         EditableBinaryData data = (EditableBinaryData) codeArea.getContentData();
+        if (startPosition > data.getDataSize() || (startPosition == data.getDataSize() && codeOffset > 0)) {
+            throw new IllegalStateException("Cannot overwrite outside of the document");
+        }
+
         long editedDataPosition = startPosition + length;
+        CodeAreaOperation undoOperation = null;
 
         byte byteValue = 0;
         if (codeOffset > 0) {
@@ -144,78 +129,14 @@ public class InsertCodeEditDataOperation extends CodeEditDataOperation {
             length++;
         }
 
-        switch (codeType) {
-            case BINARY: {
-                int bitMask = 0x80 >> codeOffset;
-                byteValue = (byte) (byteValue & (0xff - bitMask) | (value << (7 - codeOffset)));
-                break;
-            }
-            case DECIMAL: {
-                int newValue = byteValue & 0xff;
-                switch (codeOffset) {
-                    case 0: {
-                        newValue = (newValue % 100) + value * 100;
-                        if (newValue > 255) {
-                            newValue = 200;
-                        }
-                        break;
-                    }
-                    case 1: {
-                        newValue = (newValue / 100) * 100 + value * 10 + (newValue % 10);
-                        if (newValue > 255) {
-                            newValue -= 200;
-                        }
-                        break;
-                    }
-                    case 2: {
-                        newValue = (newValue / 10) * 10 + value;
-                        if (newValue > 255) {
-                            newValue -= 200;
-                        }
-                        break;
-                    }
-                }
-
-                byteValue = (byte) newValue;
-                break;
-            }
-            case OCTAL: {
-                int newValue = byteValue & 0xff;
-                switch (codeOffset) {
-                    case 0: {
-                        newValue = (newValue % 64) + value * 64;
-                        break;
-                    }
-                    case 1: {
-                        newValue = (newValue / 64) * 64 + value * 8 + (newValue % 8);
-                        break;
-                    }
-                    case 2: {
-                        newValue = (newValue / 8) * 8 + value;
-                        break;
-                    }
-                }
-
-                byteValue = (byte) newValue;
-                break;
-            }
-            case HEXADECIMAL: {
-                if (codeOffset == 1) {
-                    byteValue = (byte) ((byteValue & 0xf0) | value);
-                } else {
-                    byteValue = (byte) ((byteValue & 0xf) | (value << 4));
-                }
-                break;
-            }
-            default:
-                throw CodeAreaUtils.getInvalidTypeException(codeType);
-        }
+        byteValue = CodeAreaUtils.setCodeValue(byteValue, value, codeOffset, codeType);
         data.setByte(editedDataPosition, byteValue);
 
-        codeOffset++;
-        if (codeOffset == codeType.getMaxDigitsForByte()) {
-            codeOffset = 0;
+        if (withUndo) {
+            undoOperation = new UndoOperation(codeArea, startPosition, codeType, codeOffset, length);
         }
+
+        return undoOperation;
     }
 
     public long getStartPosition() {
@@ -245,12 +166,14 @@ public class InsertCodeEditDataOperation extends CodeEditDataOperation {
     private static class UndoOperation extends CodeAreaOperation implements BinaryDataAppendableOperation {
 
         private final long position;
-        private final int codeOffset;
+        private final CodeType codeType;
+        private int codeOffset;
         private long length;
 
-        public UndoOperation(CodeAreaCore codeArea, long position, int codeOffset, long length) {
+        public UndoOperation(CodeAreaCore codeArea, long position, CodeType codeType, int codeOffset, long length) {
             super(codeArea);
             this.position = position;
+            this.codeType = codeType;
             this.codeOffset = codeOffset;
             this.length = length;
         }
@@ -264,7 +187,11 @@ public class InsertCodeEditDataOperation extends CodeEditDataOperation {
         @Override
         public boolean appendOperation(BinaryDataOperation operation) {
             if (operation instanceof UndoOperation) {
-                length += ((UndoOperation) operation).length;
+                codeOffset++;
+                if (codeOffset == codeType.getMaxDigitsForByte()) {
+                    codeOffset = 0;
+                    length += ((UndoOperation) operation).length;
+                }
                 return true;
             }
 

@@ -17,6 +17,7 @@ package org.exbin.bined.operation.swing;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.operation.BinaryDataOperationType;
 
 /**
@@ -24,6 +25,7 @@ import org.exbin.bined.operation.BinaryDataOperationType;
  *
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public enum CodeAreaOperationType implements BinaryDataOperationType {
 
     /**
@@ -54,7 +56,7 @@ public enum CodeAreaOperationType implements BinaryDataOperationType {
     @Nullable
     private final String name;
 
-    CodeAreaOperationType(@Nonnull String name) {
+    CodeAreaOperationType(String name) {
         this.name = name;
     }
 

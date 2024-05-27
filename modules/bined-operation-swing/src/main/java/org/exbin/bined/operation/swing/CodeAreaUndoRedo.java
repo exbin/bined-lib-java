@@ -115,12 +115,8 @@ public class CodeAreaUndoRedo implements BinaryDataUndoRedo, BinaryDataAppendabl
     private void performUndoInt() {
         BinaryDataCommand command = commands.get((int) commandPosition - 1);
         if (command instanceof BinaryDataUndoableCommand) {
-            try {
-                ((BinaryDataUndoableCommand) command).undo();
-                commandPosition--;
-            } catch (Throwable ex) {
-                Logger.getLogger(CodeAreaUndoRedo.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            ((BinaryDataUndoableCommand) command).undo();
+            commandPosition--;
         } else {
             throw new UnsupportedOperationException("Not supported yet.");
         }
@@ -135,12 +131,8 @@ public class CodeAreaUndoRedo implements BinaryDataUndoRedo, BinaryDataAppendabl
     private void performRedoInt() {
         BinaryDataCommand command = commands.get((int) commandPosition);
         if (command instanceof BinaryDataUndoableCommand) {
-            try {
-                ((BinaryDataUndoableCommand) command).redo();
-                commandPosition++;
-            } catch (Throwable ex) {
-                Logger.getLogger(CodeAreaUndoRedo.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            ((BinaryDataUndoableCommand) command).redo();
+            commandPosition++;
         } else {
             throw new UnsupportedOperationException("Not supported yet.");
         }
