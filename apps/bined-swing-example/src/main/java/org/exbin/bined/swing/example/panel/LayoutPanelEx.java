@@ -21,8 +21,8 @@ import javax.swing.JFrame;
 import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.RowWrappingMode;
 import org.exbin.bined.capability.RowWrappingCapable;
-import org.exbin.bined.swing.extended.ExtCodeArea;
-import org.exbin.bined.swing.extended.layout.DefaultExtendedCodeAreaLayoutProfile;
+import org.exbin.bined.swing.section.SectCodeArea;
+import org.exbin.bined.swing.section.layout.DefaultSectionCodeAreaLayoutProfile;
 
 /**
  * Binary editor layout options panel.
@@ -32,7 +32,7 @@ import org.exbin.bined.swing.extended.layout.DefaultExtendedCodeAreaLayoutProfil
 @ParametersAreNonnullByDefault
 public class LayoutPanelEx extends javax.swing.JPanel {
 
-    private ExtCodeArea codeArea;
+    private SectCodeArea codeArea;
 
     public LayoutPanelEx() {
         initComponents();
@@ -326,13 +326,13 @@ public class LayoutPanelEx extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void showHeaderCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_showHeaderCheckBoxItemStateChanged
-        DefaultExtendedCodeAreaLayoutProfile layoutProfile = getLayoutProfile();
+        DefaultSectionCodeAreaLayoutProfile layoutProfile = getLayoutProfile();
         layoutProfile.setShowHeader(showHeaderCheckBox.isSelected());
         codeArea.setLayoutProfile(layoutProfile);
     }//GEN-LAST:event_showHeaderCheckBoxItemStateChanged
 
     private void headerTopSpaceSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_headerTopSpaceSpinnerStateChanged
-        DefaultExtendedCodeAreaLayoutProfile layoutProfile = getLayoutProfile();
+        DefaultSectionCodeAreaLayoutProfile layoutProfile = getLayoutProfile();
         layoutProfile.setTopHeaderSpace((Integer) headerTopSpaceSpinner.getValue());
         codeArea.setLayoutProfile(layoutProfile);
     }//GEN-LAST:event_headerTopSpaceSpinnerStateChanged
@@ -342,7 +342,7 @@ public class LayoutPanelEx extends javax.swing.JPanel {
     }//GEN-LAST:event_maxBytesPerRowSpinnerStateChanged
 
     private void showRowPositionCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_showRowPositionCheckBoxItemStateChanged
-        DefaultExtendedCodeAreaLayoutProfile layoutProfile = getLayoutProfile();
+        DefaultSectionCodeAreaLayoutProfile layoutProfile = getLayoutProfile();
         layoutProfile.setShowRowPosition(showRowPositionCheckBox.isSelected());
         codeArea.setLayoutProfile(layoutProfile);
     }//GEN-LAST:event_showRowPositionCheckBoxItemStateChanged
@@ -352,19 +352,19 @@ public class LayoutPanelEx extends javax.swing.JPanel {
     }//GEN-LAST:event_minRowPositionLengthSpinnerStateChanged
 
     private void rowPositionLeftSpaceSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_rowPositionLeftSpaceSpinnerStateChanged
-        DefaultExtendedCodeAreaLayoutProfile layoutProfile = getLayoutProfile();
+        DefaultSectionCodeAreaLayoutProfile layoutProfile = getLayoutProfile();
         layoutProfile.setLeftRowPositionSpace((Integer) rowPositionLeftSpaceSpinner.getValue());
         codeArea.setLayoutProfile(layoutProfile);
     }//GEN-LAST:event_rowPositionLeftSpaceSpinnerStateChanged
 
     private void halfSpaceGroupSizeSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_halfSpaceGroupSizeSpinnerStateChanged
-        DefaultExtendedCodeAreaLayoutProfile layoutProfile = getLayoutProfile();
+        DefaultSectionCodeAreaLayoutProfile layoutProfile = getLayoutProfile();
         layoutProfile.setHalfSpaceGroupSize((Integer) halfSpaceGroupSizeSpinner.getValue());
         codeArea.setLayoutProfile(layoutProfile);
     }//GEN-LAST:event_halfSpaceGroupSizeSpinnerStateChanged
 
     private void spaceGroupSizeSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spaceGroupSizeSpinnerStateChanged
-        DefaultExtendedCodeAreaLayoutProfile layoutProfile = getLayoutProfile();
+        DefaultSectionCodeAreaLayoutProfile layoutProfile = getLayoutProfile();
         layoutProfile.setSpaceGroupSize((Integer) spaceGroupSizeSpinner.getValue());
         codeArea.setLayoutProfile(layoutProfile);
     }//GEN-LAST:event_spaceGroupSizeSpinnerStateChanged
@@ -378,32 +378,32 @@ public class LayoutPanelEx extends javax.swing.JPanel {
     }//GEN-LAST:event_maxRowPositionLengthSpinnerStateChanged
 
     private void rowPositionRightSpaceSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_rowPositionRightSpaceSpinnerStateChanged
-        DefaultExtendedCodeAreaLayoutProfile layoutProfile = getLayoutProfile();
+        DefaultSectionCodeAreaLayoutProfile layoutProfile = getLayoutProfile();
         layoutProfile.setRightRowPositionSpace((Integer) rowPositionRightSpaceSpinner.getValue());
         codeArea.setLayoutProfile(layoutProfile);
     }//GEN-LAST:event_rowPositionRightSpaceSpinnerStateChanged
 
     private void headerBottomSpaceSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_headerBottomSpaceSpinnerStateChanged
-        DefaultExtendedCodeAreaLayoutProfile layoutProfile = getLayoutProfile();
+        DefaultSectionCodeAreaLayoutProfile layoutProfile = getLayoutProfile();
         layoutProfile.setBottomHeaderSpace((Integer) headerBottomSpaceSpinner.getValue());
         codeArea.setLayoutProfile(layoutProfile);
     }//GEN-LAST:event_headerBottomSpaceSpinnerStateChanged
 
     private void doubleSpaceGroupSizeSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_doubleSpaceGroupSizeSpinnerStateChanged
-        DefaultExtendedCodeAreaLayoutProfile layoutProfile = getLayoutProfile();
+        DefaultSectionCodeAreaLayoutProfile layoutProfile = getLayoutProfile();
         layoutProfile.setDoubleSpaceGroupSize((Integer) doubleSpaceGroupSizeSpinner.getValue());
         codeArea.setLayoutProfile(layoutProfile);
     }//GEN-LAST:event_doubleSpaceGroupSizeSpinnerStateChanged
 
     @Nonnull
-    private DefaultExtendedCodeAreaLayoutProfile getLayoutProfile() {
-        return CodeAreaUtils.requireNonNull((DefaultExtendedCodeAreaLayoutProfile) codeArea.getLayoutProfile());
+    private DefaultSectionCodeAreaLayoutProfile getLayoutProfile() {
+        return CodeAreaUtils.requireNonNull((DefaultSectionCodeAreaLayoutProfile) codeArea.getLayoutProfile());
     }
 
-    public void setCodeArea(ExtCodeArea codeArea) {
+    public void setCodeArea(SectCodeArea codeArea) {
         this.codeArea = codeArea;
 
-        DefaultExtendedCodeAreaLayoutProfile layoutProfile = getLayoutProfile();
+        DefaultSectionCodeAreaLayoutProfile layoutProfile = getLayoutProfile();
         rowWrappingModeCheckBox.setSelected(codeArea.getRowWrapping() == RowWrappingMode.WRAPPING);
         maxBytesPerRowSpinner.setValue(codeArea.getMaxBytesPerRow());
         minRowPositionLengthSpinner.setValue(codeArea.getMinRowPositionLength());

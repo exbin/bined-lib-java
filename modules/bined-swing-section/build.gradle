@@ -1,0 +1,33 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+    id 'signing'
+//    id 'maven'
+}
+
+group = 'org.exbin.bined'
+ext.libraryName = 'BinEd Swing Section Library'
+ext.libraryDescription = 'Library for BinEd editor component with section support'
+
+apply from: '../bined-java-modules.gradle'
+
+if (!hasProperty('mainClass')) {
+    ext.mainClass = ''
+}
+
+repositories {
+    flatDir {
+        dirs "../../lib"
+    }
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    api moduleDep('BinedJava', 'org.exbin.bined', 'modules', 'bined-swing')
+    api moduleDep('BinedJava', 'org.exbin.bined', 'modules', 'bined-section')
+    implementation moduleDep('ExbinAuxiliaryJava', 'org.exbin.auxiliary', 'modules', 'binary_data')
+    compileOnly group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.2'
+    testImplementation group : 'junit', name: 'junit', version: '4.13.2'
+    testImplementation project(path: moduleDepPath('BinedJava', 'modules', 'bined-core'), configuration: 'tests')
+}

@@ -26,8 +26,8 @@ import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 import javax.swing.event.ChangeEvent;
 import org.exbin.bined.swing.basic.CodeArea;
-import org.exbin.bined.swing.extended.ExtCodeArea;
-import org.exbin.bined.swing.extended.diff.ExtCodeAreaDiffPanel;
+import org.exbin.bined.swing.section.SectCodeArea;
+import org.exbin.bined.swing.section.diff.SectCodeAreaDiffPanel;
 import org.exbin.auxiliary.binary_data.BinaryData;
 import org.exbin.auxiliary.binary_data.ByteArrayEditableData;
 
@@ -64,12 +64,12 @@ public class BinEdExample {
         basicPanel.setCodeArea(basicCodeArea);
 
         final BinEdExampleExPanel extendedPanel = new BinEdExampleExPanel();
-        final ExtCodeArea extendedCodeArea = new ExtCodeArea();
+        final SectCodeArea extendedCodeArea = new SectCodeArea();
         extendedCodeArea.setContentData(getSampleData());
         extendedPanel.setCodeArea(extendedCodeArea);
 
         final BinEdExampleDiffPanel diffPanel = new BinEdExampleDiffPanel();
-        final ExtCodeAreaDiffPanel diffCodeAreaPanel = new ExtCodeAreaDiffPanel();
+        final SectCodeAreaDiffPanel diffCodeAreaPanel = new SectCodeAreaDiffPanel();
         diffCodeAreaPanel.setLeftContentData(getSampleData());
         diffCodeAreaPanel.setRightContentData(getSampleDiffData());
         diffPanel.setDiffPanel(diffCodeAreaPanel);

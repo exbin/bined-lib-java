@@ -41,8 +41,8 @@ repositories {
 dependencies {
     implementation moduleDep('BinedJava', 'org.exbin.bined', 'modules', 'bined-core')
     implementation moduleDep('BinedJava', 'org.exbin.bined', 'modules', 'bined-swing')
-    implementation moduleDep('BinedJava', 'org.exbin.bined', 'modules', 'bined-extended')
-    implementation moduleDep('BinedJava', 'org.exbin.bined', 'modules', 'bined-swing-extended')
+    implementation moduleDep('BinedJava', 'org.exbin.bined', 'modules', 'bined-section')
+    implementation moduleDep('BinedJava', 'org.exbin.bined', 'modules', 'bined-swing-section')
     implementation moduleDep('ExbinAuxiliaryJava', 'org.exbin.auxiliary', 'modules', 'binary_data')
     compileOnly group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.2'
 

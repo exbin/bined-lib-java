@@ -19,7 +19,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import javax.swing.JFrame;
 import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.swing.basic.DefaultCodeAreaCaret;
-import org.exbin.bined.swing.extended.ExtCodeArea;
+import org.exbin.bined.swing.section.SectCodeArea;
 
 /**
  * Binary editor cursor options panel.
@@ -29,7 +29,7 @@ import org.exbin.bined.swing.extended.ExtCodeArea;
 @ParametersAreNonnullByDefault
 public class CursorPanelEx extends javax.swing.JPanel {
 
-    private ExtCodeArea codeArea;
+    private SectCodeArea codeArea;
 
     public CursorPanelEx() {
         initComponents();
@@ -199,7 +199,7 @@ public class CursorPanelEx extends javax.swing.JPanel {
         codeArea.requestFocus();
     }//GEN-LAST:event_centerCursorButtonActionPerformed
 
-    public void setCodeArea(ExtCodeArea codeArea) {
+    public void setCodeArea(SectCodeArea codeArea) {
         this.codeArea = codeArea;
 
         cursorRenderingModeComboBox.setSelectedIndex(codeArea.getCaret().getRenderingMode().ordinal());

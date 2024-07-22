@@ -2,9 +2,9 @@ rootProject.name = 'bined-swing-example'
 
 if (rootProject.path == ':') {
     include ':modules:bined-core'
-    include ':modules:bined-extended'
+    include ':modules:bined-section'
     include ':modules:bined-swing'
-    include ':modules:bined-swing-extended'
+    include ':modules:bined-swing-section'
 }
 
 apply from: '../apps-settings.gradle'

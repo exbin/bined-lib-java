@@ -1,0 +1,9 @@
+rootProject.name = 'bined-swt-section'
+
+if (rootProject.path == ':') {
+    include ':modules:bined-core'
+    include ':modules:bined-section'
+    include ':modules:bined-swt'
+}
+
+apply from: '../bined-java-modules-settings.gradle'

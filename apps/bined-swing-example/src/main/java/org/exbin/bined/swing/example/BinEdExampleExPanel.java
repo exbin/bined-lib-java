@@ -27,7 +27,7 @@ import org.exbin.bined.swing.example.panel.ModePanelEx;
 import org.exbin.bined.swing.example.panel.ScrollingPanelEx;
 import org.exbin.bined.swing.example.panel.StatePanelEx;
 import org.exbin.bined.swing.example.panel.ThemePanelEx;
-import org.exbin.bined.swing.extended.ExtCodeArea;
+import org.exbin.bined.swing.section.SectCodeArea;
 
 /**
  * Extended binary editor component example panel.
@@ -37,7 +37,7 @@ import org.exbin.bined.swing.extended.ExtCodeArea;
 @ParametersAreNonnullByDefault
 public class BinEdExampleExPanel extends javax.swing.JPanel {
 
-    private ExtCodeArea codeArea;
+    private SectCodeArea codeArea;
     private final Map<JScrollPane, JPanel> tabMap = new HashMap<>();
     private JScrollPane activeTab;
 
@@ -45,7 +45,7 @@ public class BinEdExampleExPanel extends javax.swing.JPanel {
         initComponents();
     }
 
-    public void setCodeArea(final ExtCodeArea codeArea) {
+    public void setCodeArea(final SectCodeArea codeArea) {
         this.codeArea = codeArea;
         splitPane.setRightComponent(codeArea);
 

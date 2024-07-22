@@ -31,13 +31,13 @@ import org.exbin.bined.EditOperation;
 import org.exbin.bined.SelectionRange;
 import org.exbin.bined.capability.SelectionCapable;
 import org.exbin.bined.swing.example.BinEdExampleBasicPanel;
-import org.exbin.bined.swing.extended.ExtCodeArea;
+import org.exbin.bined.swing.section.SectCodeArea;
 import org.exbin.auxiliary.binary_data.EditableBinaryData;
 import org.exbin.bined.CodeAreaCaretPosition;
 import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.EditMode;
 import org.exbin.bined.swing.example.BinEdExample;
-import org.exbin.bined.swing.extended.ExtendedCodeAreaPainter;
+import org.exbin.bined.swing.section.SectionCodeAreaPainter;
 
 /**
  * Binary editor state panel.
@@ -47,7 +47,7 @@ import org.exbin.bined.swing.extended.ExtendedCodeAreaPainter;
 @ParametersAreNonnullByDefault
 public class StatePanelEx extends javax.swing.JPanel {
 
-    private ExtCodeArea codeArea;
+    private SectCodeArea codeArea;
 
     public StatePanelEx() {
         initComponents();
@@ -326,7 +326,7 @@ public class StatePanelEx extends javax.swing.JPanel {
     private void testDataComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_testDataComboBoxItemStateChanged
         int selectedIndex = testDataComboBox.getSelectedIndex();
         if (selectedIndex > 0) {
-            ExtendedCodeAreaPainter painter = (ExtendedCodeAreaPainter) codeArea.getPainter();
+            SectionCodeAreaPainter painter = (SectionCodeAreaPainter) codeArea.getPainter();
             int rowHeight = painter.getRowHeight();
             long bytesPerRow = painter.getBytesPerRow();
             switch (selectedIndex) {
@@ -374,7 +374,7 @@ public class StatePanelEx extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_testDataComboBoxItemStateChanged
 
-    public void setCodeArea(ExtCodeArea codeArea) {
+    public void setCodeArea(SectCodeArea codeArea) {
         this.codeArea = codeArea;
 
         dataSizeTextField.setText(String.valueOf(codeArea.getDataSize()));

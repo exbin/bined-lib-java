@@ -27,8 +27,8 @@ import org.exbin.bined.swing.example.panel.ModePanelEx;
 import org.exbin.bined.swing.example.panel.ScrollingPanelEx;
 import org.exbin.bined.swing.example.panel.StatePanelEx;
 import org.exbin.bined.swing.example.panel.ThemePanelEx;
-import org.exbin.bined.swing.extended.ExtCodeArea;
-import org.exbin.bined.swing.extended.diff.ExtCodeAreaDiffPanel;
+import org.exbin.bined.swing.section.SectCodeArea;
+import org.exbin.bined.swing.section.diff.SectCodeAreaDiffPanel;
 
 /**
  * Binary difference component example panel.
@@ -38,7 +38,7 @@ import org.exbin.bined.swing.extended.diff.ExtCodeAreaDiffPanel;
 @ParametersAreNonnullByDefault
 public class BinEdExampleDiffPanel extends javax.swing.JPanel {
 
-    private ExtCodeAreaDiffPanel diffPanel;
+    private SectCodeAreaDiffPanel diffPanel;
     private final Map<JScrollPane, JPanel> tabMap = new HashMap<>();
     private JScrollPane activeTab;
 
@@ -46,11 +46,11 @@ public class BinEdExampleDiffPanel extends javax.swing.JPanel {
         initComponents();
     }
 
-    public void setDiffPanel(final ExtCodeAreaDiffPanel diffPanel) {
+    public void setDiffPanel(final SectCodeAreaDiffPanel diffPanel) {
         this.diffPanel = diffPanel;
         splitPane.setRightComponent(diffPanel);
 
-        ExtCodeArea leftCodeArea = diffPanel.getLeftCodeArea();
+        SectCodeArea leftCodeArea = diffPanel.getLeftCodeArea();
 
         ModePanelEx modePanel = new ModePanelEx();
         modePanel.setCodeArea(leftCodeArea);

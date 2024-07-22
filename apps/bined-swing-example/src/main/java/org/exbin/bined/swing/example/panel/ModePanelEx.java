@@ -38,7 +38,7 @@ import org.exbin.bined.capability.EditModeCapable;
 import org.exbin.bined.capability.ViewModeCapable;
 import org.exbin.bined.swing.basic.AntialiasingMode;
 import org.exbin.bined.swing.capability.AntialiasingCapable;
-import org.exbin.bined.swing.extended.ExtCodeArea;
+import org.exbin.bined.swing.section.SectCodeArea;
 
 /**
  * Binary editor mode options panel.
@@ -48,7 +48,7 @@ import org.exbin.bined.swing.extended.ExtCodeArea;
 @ParametersAreNonnullByDefault
 public class ModePanelEx extends javax.swing.JPanel {
 
-    private ExtCodeArea codeArea;
+    private SectCodeArea codeArea;
 
     public ModePanelEx() {
         initComponents();
@@ -356,7 +356,7 @@ public class ModePanelEx extends javax.swing.JPanel {
         codeArea.setPositionCodeType(PositionCodeType.values()[positionCodeTypeComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_positionCodeTypeComboBoxActionPerformed
 
-    public void setCodeArea(ExtCodeArea codeArea) {
+    public void setCodeArea(SectCodeArea codeArea) {
         this.codeArea = codeArea;
 
         viewModeComboBox.setSelectedIndex(codeArea.getViewMode().ordinal());
