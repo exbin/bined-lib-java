@@ -27,7 +27,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
 import org.exbin.bined.basic.BasicCodeAreaSection;
-import org.exbin.bined.CaretMovedListener;
+import org.exbin.bined.CodeAreaCaretListener;
 import org.exbin.bined.ClipboardHandlingMode;
 import org.exbin.bined.DefaultCodeAreaCaretPosition;
 import org.exbin.bined.CodeAreaSection;
@@ -111,7 +111,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaL
     @Nonnull
     private HorizontalScrollUnit horizontalScrollUnit = HorizontalScrollUnit.PIXEL;
 
-    private final List<CaretMovedListener> caretMovedListeners = new ArrayList<>();
+    private final List<CodeAreaCaretListener> caretMovedListeners = new ArrayList<>();
     private final List<ScrollingListener> scrollingListeners = new ArrayList<>();
     private final List<SelectionChangedListener> selectionChangedListeners = new ArrayList<>();
     private final List<EditModeChangedListener> editModeChangedListeners = new ArrayList<>();
@@ -183,7 +183,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaL
 
     @Nonnull
     @Override
-    public DefaultCodeAreaCaret getCaret() {
+    public DefaultCodeAreaCaret getCodeAreaCaret() {
         return caret;
     }
 
@@ -242,24 +242,24 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaL
 
     @Nonnull
     @Override
-    public CodeAreaCaretPosition getCaretPosition() {
+    public CodeAreaCaretPosition getActiveCaretPosition() {
         return caret.getCaretPosition();
     }
 
     @Override
-    public void setCaretPosition(CodeAreaCaretPosition caretPosition) {
+    public void setActiveCaretPosition(CodeAreaCaretPosition caretPosition) {
         caret.setCaretPosition(caretPosition);
         notifyCaretMoved();
     }
 
     @Override
-    public void setCaretPosition(long dataPosition) {
+    public void setActiveCaretPosition(long dataPosition) {
         caret.setCaretPosition(dataPosition);
         notifyCaretMoved();
     }
 
     @Override
-    public void setCaretPosition(long dataPosition, int codeOffset) {
+    public void setActiveCaretPosition(long dataPosition, int codeOffset) {
         caret.setCaretPosition(dataPosition, codeOffset);
         notifyCaretMoved();
     }
@@ -755,12 +755,12 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaL
     }
 
     @Override
-    public void addCaretMovedListener(CaretMovedListener caretMovedListener) {
+    public void addCaretMovedListener(CodeAreaCaretListener caretMovedListener) {
         caretMovedListeners.add(caretMovedListener);
     }
 
     @Override
-    public void removeCaretMovedListener(CaretMovedListener caretMovedListener) {
+    public void removeCaretMovedListener(CodeAreaCaretListener caretMovedListener) {
         caretMovedListeners.remove(caretMovedListener);
     }
 

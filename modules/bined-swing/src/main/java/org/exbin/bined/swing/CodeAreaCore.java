@@ -32,7 +32,7 @@ import javax.accessibility.AccessibleStateSet;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import javax.swing.JComponent;
+import javax.swing.text.JTextComponent;
 import org.exbin.bined.CodeAreaControl;
 import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.DataChangedListener;
@@ -47,8 +47,7 @@ import org.exbin.auxiliary.binary_data.EmptyBinaryData;
  */
 @ParametersAreNonnullByDefault
 // Java 9+ @SwingContainer(false)
-// TODO: Extended class from JTextComponent to utilize on screen keyboard handling
-public abstract class CodeAreaCore extends JComponent implements CodeAreaControl, Accessible {
+public abstract class CodeAreaCore extends JTextComponent implements CodeAreaControl, Accessible {
 
     @Nonnull
     private BinaryData contentData = EmptyBinaryData.INSTANCE;

@@ -101,7 +101,7 @@ public class OverwriteCharEditDataOperation extends CharEditDataOperation {
 
         length += bytes.length;
         long dataPosition = startPosition + length;
-        ((CaretCapable) codeArea).setCaretPosition(dataPosition);
+        ((CaretCapable) codeArea).setActiveCaretPosition(dataPosition);
         ((SelectionCapable) codeArea).setSelection(dataPosition, dataPosition);
 
         if (withUndo) {

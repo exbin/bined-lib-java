@@ -96,7 +96,7 @@ public class DeleteCodeEditDataOperation extends CodeEditDataOperation {
                 throw new IllegalStateException("Unexpected character " + value);
             }
         }
-        ((CaretCapable) codeArea).setCaretPosition(position);
+        ((CaretCapable) codeArea).setActiveCaretPosition(position);
         codeArea.repaint();
 
         if (withUndo) {

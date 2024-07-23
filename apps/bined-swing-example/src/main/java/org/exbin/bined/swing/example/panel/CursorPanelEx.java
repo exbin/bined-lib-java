@@ -174,7 +174,7 @@ public class CursorPanelEx extends javax.swing.JPanel {
     }//GEN-LAST:event_showMirrorCursorCheckBoxItemStateChanged
 
     private void cursorRenderingModeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cursorRenderingModeComboBoxActionPerformed
-        ((DefaultCodeAreaCaret) ((CaretCapable) codeArea).getCaret()).setRenderingMode(DefaultCodeAreaCaret.CursorRenderingMode.values()[cursorRenderingModeComboBox.getSelectedIndex()]);
+        ((DefaultCodeAreaCaret) ((CaretCapable) codeArea).getCodeAreaCaret()).setRenderingMode(DefaultCodeAreaCaret.CursorRenderingMode.values()[cursorRenderingModeComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_cursorRenderingModeComboBoxActionPerformed
 
     private void cursorInsertShapeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cursorInsertShapeComboBoxActionPerformed
@@ -186,7 +186,7 @@ public class CursorPanelEx extends javax.swing.JPanel {
     }//GEN-LAST:event_cursorOverwriteShapeComboBoxActionPerformed
 
     private void cursorBlinkingRateSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_cursorBlinkingRateSpinnerStateChanged
-        ((DefaultCodeAreaCaret) ((CaretCapable) codeArea).getCaret()).setBlinkRate((Integer) cursorBlinkingRateSpinner.getValue());
+        ((DefaultCodeAreaCaret) ((CaretCapable) codeArea).getCodeAreaCaret()).setBlinkRate((Integer) cursorBlinkingRateSpinner.getValue());
     }//GEN-LAST:event_cursorBlinkingRateSpinnerStateChanged
 
     private void revealCursorButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_revealCursorButtonActionPerformed
@@ -202,12 +202,12 @@ public class CursorPanelEx extends javax.swing.JPanel {
     public void setCodeArea(SectCodeArea codeArea) {
         this.codeArea = codeArea;
 
-        cursorRenderingModeComboBox.setSelectedIndex(codeArea.getCaret().getRenderingMode().ordinal());
+        cursorRenderingModeComboBox.setSelectedIndex(codeArea.getCodeAreaCaret().getRenderingMode().ordinal());
         showMirrorCursorCheckBox.setSelected(codeArea.isShowMirrorCursor());
 
 //        cursorInsertShapeComboBox.setSelectedIndex(((CaretCapable) codeArea).getCaret().getInsertCursorShape().ordinal());
 //        cursorOverwriteShapeComboBox.setSelectedIndex(((CaretCapable) codeArea).getCaret().getOverwriteCursorShape().ordinal());
-        cursorBlinkingRateSpinner.setValue(((DefaultCodeAreaCaret) ((CaretCapable) codeArea).getCaret()).getBlinkRate());
+        cursorBlinkingRateSpinner.setValue(((DefaultCodeAreaCaret) ((CaretCapable) codeArea).getCodeAreaCaret()).getBlinkRate());
     }
 
     /**

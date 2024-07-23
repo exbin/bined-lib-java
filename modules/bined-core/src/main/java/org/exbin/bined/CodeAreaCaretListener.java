@@ -18,12 +18,12 @@ package org.exbin.bined;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * Interface for caret moved listener.
+ * Interface for code area caret change listener.
  *
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public interface CaretMovedListener {
+public interface CodeAreaCaretListener {
 
     /**
      * Fires notification each time caret is moved or section is changed.

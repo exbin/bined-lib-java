@@ -303,7 +303,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
     }
 
     private void pressedCharAsCode(char keyChar) {
-        CodeAreaCaretPosition caretPosition = ((CaretCapable) codeArea).getCaretPosition();
+        CodeAreaCaretPosition caretPosition = ((CaretCapable) codeArea).getActiveCaretPosition();
         int startCodeOffset = caretPosition.getCodeOffset();
         CodeType codeType = getCodeType();
         boolean validKey = CodeAreaUtils.isValidCodeKeyValue(keyChar, startCodeOffset, codeType);
@@ -314,7 +314,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
             if (codeArea.hasSelection()) {
                 long selectionStart = ((SelectionCapable) codeArea).getSelection().getFirst();
                 deleteSelectionCommand = new DeleteSelectionCommand(codeArea);
-                ((CaretCapable) codeArea).setCaretPosition(selectionStart);
+                ((CaretCapable) codeArea).setActiveCaretPosition(selectionStart);
                 undoSequenceBreak();
             }
 
@@ -859,7 +859,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
     @Override
     public void moveCaret(int positionX, int positionY, SelectingMode selecting) {
         CodeAreaCaretPosition caretPosition = ((CaretCapable) codeArea).mousePositionToClosestCaretPosition(positionX, positionY, CaretOverlapMode.PARTIAL_OVERLAP);
-        ((CaretCapable) codeArea).setCaretPosition(caretPosition);
+        ((CaretCapable) codeArea).setActiveCaretPosition(caretPosition);
         updateSelection(selecting, caretPosition);
 
         undoSequenceBreak();
@@ -867,10 +867,10 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
     }
 
     public void move(SelectingMode selectingMode, MovementDirection direction) {
-        CodeAreaCaretPosition caretPosition = ((CaretCapable) codeArea).getCaretPosition();
+        CodeAreaCaretPosition caretPosition = ((CaretCapable) codeArea).getActiveCaretPosition();
         CodeAreaCaretPosition movePosition = ((CaretCapable) codeArea).computeMovePosition(caretPosition, direction);
         if (!caretPosition.equals(movePosition)) {
-            ((CaretCapable) codeArea).setCaretPosition(movePosition);
+            ((CaretCapable) codeArea).setActiveCaretPosition(movePosition);
             updateSelection(selectingMode, movePosition);
         } else if (selectingMode == SelectingMode.NONE) {
             clearSelection();
@@ -938,7 +938,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
         @Override
         public void execute() {
             removeCommand.redo();
-            ((CaretCapable) codeArea).setCaretPosition(position);
+            ((CaretCapable) codeArea).setActiveCaretPosition(position);
             clearSelection();
             ((ScrollingCapable) codeArea).revealCursor();
             codeArea.notifyDataChanged();
@@ -948,7 +948,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
         public void undo() {
             removeCommand.undo();
             clearSelection();
-            ((CaretCapable) codeArea).setCaretPosition(position + size);
+            ((CaretCapable) codeArea).setActiveCaretPosition(position + size);
             ((ScrollingCapable) codeArea).revealCursor();
             codeArea.notifyDataChanged();
         }

@@ -287,7 +287,7 @@ public class StatePanel extends javax.swing.JPanel {
     }//GEN-LAST:event_saveDataButtonActionPerformed
 
     private void activeSectionComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_activeSectionComboBoxActionPerformed
-        codeArea.getCaret().setSection(BasicCodeAreaSection.values()[activeSectionComboBox.getSelectedIndex()]);
+        codeArea.getCodeAreaCaret().setSection(BasicCodeAreaSection.values()[activeSectionComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_activeSectionComboBoxActionPerformed
 
     private void loadDataButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadDataButtonActionPerformed

@@ -70,7 +70,7 @@ public class InsertCharEditDataOperation extends CharEditDataOperation {
         data.insert(startPosition, bytes);
         long length = bytes.length;
         long dataPosition = startPosition + length;
-        ((CaretCapable) codeArea).setCaretPosition(dataPosition);
+        ((CaretCapable) codeArea).setActiveCaretPosition(dataPosition);
         ((SelectionCapable) codeArea).setSelection(dataPosition, dataPosition);
 
         if (withUndo) {
@@ -134,7 +134,7 @@ public class InsertCharEditDataOperation extends CharEditDataOperation {
                 undoOperation = new InsertDataOperation(codeArea, position, 0, undoData);
             }
             contentData.remove(position, length);
-            ((CaretCapable) codeArea).setCaretPosition(position, 0);
+            ((CaretCapable) codeArea).setActiveCaretPosition(position, 0);
             return undoOperation;
         }
     }

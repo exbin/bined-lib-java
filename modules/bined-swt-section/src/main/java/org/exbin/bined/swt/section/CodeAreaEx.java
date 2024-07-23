@@ -37,7 +37,6 @@ import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
-import org.exbin.bined.CaretMovedListener;
 import org.exbin.bined.CodeAreaLineNumberLength;
 import org.exbin.bined.CodeType;
 import org.exbin.bined.DataChangedListener;
@@ -64,6 +63,7 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.exbin.bined.CodeAreaControl;
 import org.exbin.bined.CodeAreaUtils;
+import org.exbin.bined.CodeAreaCaretListener;
 
 /**
  * Binary viewer/editor component.
@@ -139,7 +139,7 @@ public class CodeAreaEx extends Composite implements CodeAreaControl {
      * Listeners.
      */
     private final List<SelectionChangedListener> selectionChangedListeners = new ArrayList<>();
-    private final List<CaretMovedListener> caretMovedListeners = new ArrayList<>();
+    private final List<CodeAreaCaretListener> caretMovedListeners = new ArrayList<>();
     private final List<EditModeChangedListener> editModeChangedListeners = new ArrayList<>();
     private final List<DataChangedListener> dataChangedListeners = new ArrayList<>();
     private final List<ScrollingListener> scrollingListeners = new ArrayList<>();
@@ -405,7 +405,7 @@ public class CodeAreaEx extends Composite implements CodeAreaControl {
     }
 
     public void notifyCaretMoved() {
-        for (CaretMovedListener caretMovedListener : caretMovedListeners) {
+        for (CodeAreaCaretListener caretMovedListener : caretMovedListeners) {
             caretMovedListener.caretMoved(caret.getCaretPosition(), caret.getSection());
         }
     }
@@ -639,11 +639,11 @@ public class CodeAreaEx extends Composite implements CodeAreaControl {
         selectionChangedListeners.remove(selectionChangedListener);
     }
 
-    public void addCaretMovedListener(CaretMovedListener caretMovedListener) {
+    public void addCaretMovedListener(CodeAreaCaretListener caretMovedListener) {
         caretMovedListeners.add(caretMovedListener);
     }
 
-    public void removeCaretMovedListener(CaretMovedListener caretMovedListener) {
+    public void removeCaretMovedListener(CodeAreaCaretListener caretMovedListener) {
         caretMovedListeners.remove(caretMovedListener);
     }
 

@@ -66,7 +66,7 @@ public class InsertDataOperation extends CodeAreaOperation {
         if (withUndo) {
             undoOperation = new RemoveDataOperation(codeArea, position, codeOffset, data.getDataSize());
         }
-        ((CaretCapable) codeArea).setCaretPosition(position + data.getDataSize(), codeOffset);
+        ((CaretCapable) codeArea).setActiveCaretPosition(position + data.getDataSize(), codeOffset);
         return undoOperation;
     }
 

@@ -28,7 +28,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
 import org.exbin.bined.basic.BasicCodeAreaSection;
-import org.exbin.bined.CaretMovedListener;
 import org.exbin.bined.ClipboardHandlingMode;
 import org.exbin.bined.DefaultCodeAreaCaretPosition;
 import org.exbin.bined.CodeAreaSection;
@@ -68,6 +67,7 @@ import org.exbin.bined.swing.section.caret.CaretsProfileCapableCodeAreaPainter;
 import org.exbin.bined.EditModeChangedListener;
 import org.exbin.bined.swing.section.caret.SectionCodeAreaCaretsProfile;
 import org.exbin.bined.section.layout.SectionCodeAreaLayoutProfile;
+import org.exbin.bined.CodeAreaCaretListener;
 
 /**
  * Code area component with section support.
@@ -125,7 +125,7 @@ public class SectCodeArea extends CodeAreaCore implements SectionCodeArea, CodeA
     @Nonnull
     private SectionHorizontalScrollUnit horizontalScrollUnit = SectionHorizontalScrollUnit.PIXEL;
 
-    private final List<CaretMovedListener> caretMovedListeners = new ArrayList<>();
+    private final List<CodeAreaCaretListener> caretMovedListeners = new ArrayList<>();
     private final List<ScrollingListener> scrollingListeners = new ArrayList<>();
     private final List<SelectionChangedListener> selectionChangedListeners = new ArrayList<>();
     private final List<EditModeChangedListener> editModeChangedListeners = new ArrayList<>();
@@ -184,13 +184,15 @@ public class SectCodeArea extends CodeAreaCore implements SectionCodeArea, CodeA
 
     @Override
     public void updateUI() {
-        super.updateUI();
+        // TODO super.updateUI();
         if (getBorder() == null) {
             super.setBorder(UIManager.getLookAndFeel().getDefaults().getBorder("TextAreaUI.border"));
         }
-        painter.rebuildColors();
-        painter.resetFont();
-        painter.resetColors();
+        if (painter != null) {
+            painter.rebuildColors();
+            painter.resetFont();
+            painter.resetColors();
+        }
     }
 
     @Override
@@ -201,7 +203,7 @@ public class SectCodeArea extends CodeAreaCore implements SectionCodeArea, CodeA
 
     @Nonnull
     @Override
-    public DefaultCodeAreaCaret getCaret() {
+    public DefaultCodeAreaCaret getCodeAreaCaret() {
         return caret;
     }
 
@@ -256,24 +258,24 @@ public class SectCodeArea extends CodeAreaCore implements SectionCodeArea, CodeA
 
     @Nonnull
     @Override
-    public CodeAreaCaretPosition getCaretPosition() {
+    public CodeAreaCaretPosition getActiveCaretPosition() {
         return caret.getCaretPosition();
     }
 
     @Override
-    public void setCaretPosition(CodeAreaCaretPosition caretPosition) {
+    public void setActiveCaretPosition(CodeAreaCaretPosition caretPosition) {
         caret.setCaretPosition(caretPosition);
         notifyCaretMoved();
     }
 
     @Override
-    public void setCaretPosition(long dataPosition) {
+    public void setActiveCaretPosition(long dataPosition) {
         caret.setCaretPosition(dataPosition);
         notifyCaretMoved();
     }
 
     @Override
-    public void setCaretPosition(long dataPosition, int codeOffset) {
+    public void setActiveCaretPosition(long dataPosition, int codeOffset) {
         caret.setCaretPosition(dataPosition, codeOffset);
         notifyCaretMoved();
     }
@@ -839,12 +841,12 @@ public class SectCodeArea extends CodeAreaCore implements SectionCodeArea, CodeA
     }
 
     @Override
-    public void addCaretMovedListener(CaretMovedListener caretMovedListener) {
+    public void addCaretMovedListener(CodeAreaCaretListener caretMovedListener) {
         caretMovedListeners.add(caretMovedListener);
     }
 
     @Override
-    public void removeCaretMovedListener(CaretMovedListener caretMovedListener) {
+    public void removeCaretMovedListener(CodeAreaCaretListener caretMovedListener) {
         caretMovedListeners.remove(caretMovedListener);
     }
 

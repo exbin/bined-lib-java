@@ -140,11 +140,11 @@ public class CursorPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_showMirrorCursorCheckBoxItemStateChanged
 
     private void cursorRenderingModeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cursorRenderingModeComboBoxActionPerformed
-        ((DefaultCodeAreaCaret) ((CaretCapable) codeArea).getCaret()).setRenderingMode(DefaultCodeAreaCaret.CursorRenderingMode.values()[cursorRenderingModeComboBox.getSelectedIndex()]);
+        ((DefaultCodeAreaCaret) ((CaretCapable) codeArea).getCodeAreaCaret()).setRenderingMode(DefaultCodeAreaCaret.CursorRenderingMode.values()[cursorRenderingModeComboBox.getSelectedIndex()]);
     }//GEN-LAST:event_cursorRenderingModeComboBoxActionPerformed
 
     private void cursorBlinkingRateSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_cursorBlinkingRateSpinnerStateChanged
-        ((DefaultCodeAreaCaret) ((CaretCapable) codeArea).getCaret()).setBlinkRate((Integer) cursorBlinkingRateSpinner.getValue());
+        ((DefaultCodeAreaCaret) ((CaretCapable) codeArea).getCodeAreaCaret()).setBlinkRate((Integer) cursorBlinkingRateSpinner.getValue());
     }//GEN-LAST:event_cursorBlinkingRateSpinnerStateChanged
 
     private void centerCursorButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_centerCursorButtonActionPerformed
@@ -160,9 +160,9 @@ public class CursorPanel extends javax.swing.JPanel {
     public void setCodeArea(CodeArea codeArea) {
         this.codeArea = codeArea;
 
-        cursorRenderingModeComboBox.setSelectedIndex(codeArea.getCaret().getRenderingMode().ordinal());
+        cursorRenderingModeComboBox.setSelectedIndex(codeArea.getCodeAreaCaret().getRenderingMode().ordinal());
         showMirrorCursorCheckBox.setSelected(codeArea.isShowMirrorCursor());
-        cursorBlinkingRateSpinner.setValue(((DefaultCodeAreaCaret) ((CaretCapable) codeArea).getCaret()).getBlinkRate());
+        cursorBlinkingRateSpinner.setValue(((DefaultCodeAreaCaret) ((CaretCapable) codeArea).getCodeAreaCaret()).getBlinkRate());
     }
 
     /**

@@ -43,7 +43,7 @@ public class CodeAreaCommandMovementTest {
 
         emulateKeyPressed(codeArea, KeyEvent.VK_LEFT, KeyEvent.CHAR_UNDEFINED);
 
-        CodeAreaCaretPosition caretPosition = codeArea.getCaretPosition();
+        CodeAreaCaretPosition caretPosition = codeArea.getActiveCaretPosition();
         Assert.assertEquals(0, caretPosition.getCodeOffset());
         Assert.assertEquals(0, caretPosition.getDataPosition());
     }
@@ -56,10 +56,10 @@ public class CodeAreaCommandMovementTest {
         frame.setVisible(true);
         codeArea.setContentData(CodeAreaTest.getSampleData(CodeAreaTest.SAMPLE_ALLBYTES));
 
-        codeArea.setCaretPosition(128);
+        codeArea.setActiveCaretPosition(128);
         emulateKeyPressed(codeArea, KeyEvent.VK_LEFT, KeyEvent.CHAR_UNDEFINED);
 
-        CodeAreaCaretPosition caretPosition = codeArea.getCaretPosition();
+        CodeAreaCaretPosition caretPosition = codeArea.getActiveCaretPosition();
         Assert.assertEquals(1, caretPosition.getCodeOffset());
         Assert.assertEquals(127, caretPosition.getDataPosition());
     }
@@ -72,10 +72,10 @@ public class CodeAreaCommandMovementTest {
         frame.setVisible(true);
         codeArea.setContentData(CodeAreaTest.getSampleData(CodeAreaTest.SAMPLE_ALLBYTES));
 
-        codeArea.setCaretPosition(257);
+        codeArea.setActiveCaretPosition(257);
         emulateKeyPressed(codeArea, KeyEvent.VK_LEFT, KeyEvent.CHAR_UNDEFINED);
 
-        CodeAreaCaretPosition caretPosition = codeArea.getCaretPosition();
+        CodeAreaCaretPosition caretPosition = codeArea.getActiveCaretPosition();
         Assert.assertEquals(1, caretPosition.getCodeOffset());
         Assert.assertEquals(256, caretPosition.getDataPosition());
     }
@@ -90,7 +90,7 @@ public class CodeAreaCommandMovementTest {
 
         emulateKeyPressed(codeArea, KeyEvent.VK_RIGHT, KeyEvent.CHAR_UNDEFINED);
 
-        CodeAreaCaretPosition caretPosition = codeArea.getCaretPosition();
+        CodeAreaCaretPosition caretPosition = codeArea.getActiveCaretPosition();
         Assert.assertEquals(1, caretPosition.getCodeOffset());
         Assert.assertEquals(0, caretPosition.getDataPosition());
     }
@@ -106,7 +106,7 @@ public class CodeAreaCommandMovementTest {
         emulateKeyPressed(codeArea, KeyEvent.VK_RIGHT, KeyEvent.CHAR_UNDEFINED);
         emulateKeyPressed(codeArea, KeyEvent.VK_RIGHT, KeyEvent.CHAR_UNDEFINED);
 
-        CodeAreaCaretPosition caretPosition = codeArea.getCaretPosition();
+        CodeAreaCaretPosition caretPosition = codeArea.getActiveCaretPosition();
         Assert.assertEquals(0, caretPosition.getCodeOffset());
         Assert.assertEquals(1, caretPosition.getDataPosition());
     }
@@ -119,10 +119,10 @@ public class CodeAreaCommandMovementTest {
         frame.setVisible(true);
         codeArea.setContentData(CodeAreaTest.getSampleData(CodeAreaTest.SAMPLE_ALLBYTES));
 
-        codeArea.setCaretPosition(128);
+        codeArea.setActiveCaretPosition(128);
         emulateKeyPressed(codeArea, KeyEvent.VK_RIGHT, KeyEvent.CHAR_UNDEFINED);
 
-        CodeAreaCaretPosition caretPosition = codeArea.getCaretPosition();
+        CodeAreaCaretPosition caretPosition = codeArea.getActiveCaretPosition();
         Assert.assertEquals(1, caretPosition.getCodeOffset());
         Assert.assertEquals(128, caretPosition.getDataPosition());
     }
@@ -135,10 +135,10 @@ public class CodeAreaCommandMovementTest {
         frame.setVisible(true);
         codeArea.setContentData(CodeAreaTest.getSampleData(CodeAreaTest.SAMPLE_ALLBYTES));
 
-        codeArea.setCaretPosition(257);
+        codeArea.setActiveCaretPosition(257);
         emulateKeyPressed(codeArea, KeyEvent.VK_RIGHT, KeyEvent.CHAR_UNDEFINED);
 
-        CodeAreaCaretPosition caretPosition = codeArea.getCaretPosition();
+        CodeAreaCaretPosition caretPosition = codeArea.getActiveCaretPosition();
         Assert.assertEquals(0, caretPosition.getCodeOffset());
         Assert.assertEquals(257, caretPosition.getDataPosition());
     }
@@ -153,7 +153,7 @@ public class CodeAreaCommandMovementTest {
 
         emulateKeyPressed(codeArea, KeyEvent.VK_UP, KeyEvent.CHAR_UNDEFINED);
 
-        CodeAreaCaretPosition caretPosition = codeArea.getCaretPosition();
+        CodeAreaCaretPosition caretPosition = codeArea.getActiveCaretPosition();
         Assert.assertEquals(0, caretPosition.getCodeOffset());
         Assert.assertEquals(0, caretPosition.getDataPosition());
     }
@@ -166,10 +166,10 @@ public class CodeAreaCommandMovementTest {
         frame.setVisible(true);
         codeArea.setContentData(CodeAreaTest.getSampleData(CodeAreaTest.SAMPLE_ALLBYTES));
 
-        codeArea.setCaretPosition(128);
+        codeArea.setActiveCaretPosition(128);
         emulateKeyPressed(codeArea, KeyEvent.VK_UP, KeyEvent.CHAR_UNDEFINED);
 
-        CodeAreaCaretPosition caretPosition = codeArea.getCaretPosition();
+        CodeAreaCaretPosition caretPosition = codeArea.getActiveCaretPosition();
         Assert.assertEquals(0, caretPosition.getCodeOffset());
         Assert.assertEquals(112, caretPosition.getDataPosition());
     }
@@ -182,10 +182,10 @@ public class CodeAreaCommandMovementTest {
         frame.setVisible(true);
         codeArea.setContentData(CodeAreaTest.getSampleData(CodeAreaTest.SAMPLE_ALLBYTES));
 
-        codeArea.setCaretPosition(257);
+        codeArea.setActiveCaretPosition(257);
         emulateKeyPressed(codeArea, KeyEvent.VK_UP, KeyEvent.CHAR_UNDEFINED);
 
-        CodeAreaCaretPosition caretPosition = codeArea.getCaretPosition();
+        CodeAreaCaretPosition caretPosition = codeArea.getActiveCaretPosition();
         Assert.assertEquals(0, caretPosition.getCodeOffset());
         Assert.assertEquals(241, caretPosition.getDataPosition());
     }
@@ -200,7 +200,7 @@ public class CodeAreaCommandMovementTest {
 
         emulateKeyPressed(codeArea, KeyEvent.VK_DOWN, KeyEvent.CHAR_UNDEFINED);
 
-        CodeAreaCaretPosition caretPosition = codeArea.getCaretPosition();
+        CodeAreaCaretPosition caretPosition = codeArea.getActiveCaretPosition();
         Assert.assertEquals(0, caretPosition.getCodeOffset());
         Assert.assertEquals(16, caretPosition.getDataPosition());
     }
@@ -213,10 +213,10 @@ public class CodeAreaCommandMovementTest {
         frame.setVisible(true);
         codeArea.setContentData(CodeAreaTest.getSampleData(CodeAreaTest.SAMPLE_ALLBYTES));
 
-        codeArea.setCaretPosition(128);
+        codeArea.setActiveCaretPosition(128);
         emulateKeyPressed(codeArea, KeyEvent.VK_DOWN, KeyEvent.CHAR_UNDEFINED);
 
-        CodeAreaCaretPosition caretPosition = codeArea.getCaretPosition();
+        CodeAreaCaretPosition caretPosition = codeArea.getActiveCaretPosition();
         Assert.assertEquals(0, caretPosition.getCodeOffset());
         Assert.assertEquals(144, caretPosition.getDataPosition());
     }
@@ -229,10 +229,10 @@ public class CodeAreaCommandMovementTest {
         frame.setVisible(true);
         codeArea.setContentData(CodeAreaTest.getSampleData(CodeAreaTest.SAMPLE_ALLBYTES));
 
-        codeArea.setCaretPosition(257);
+        codeArea.setActiveCaretPosition(257);
         emulateKeyPressed(codeArea, KeyEvent.VK_DOWN, KeyEvent.CHAR_UNDEFINED);
 
-        CodeAreaCaretPosition caretPosition = codeArea.getCaretPosition();
+        CodeAreaCaretPosition caretPosition = codeArea.getActiveCaretPosition();
         Assert.assertEquals(0, caretPosition.getCodeOffset());
         Assert.assertEquals(257, caretPosition.getDataPosition());
     }

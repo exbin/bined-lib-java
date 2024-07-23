@@ -217,7 +217,7 @@ public class InsertCodeEditDataOperation extends CodeEditDataOperation {
                 undoOperation = new InsertDataOperation(codeArea, position, codeOffset, undoData);
             }
             contentData.remove(position, length);
-            ((CaretCapable) codeArea).setCaretPosition(position, codeOffset);
+            ((CaretCapable) codeArea).setActiveCaretPosition(position, codeOffset);
             return undoOperation;
         }
     }

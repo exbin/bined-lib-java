@@ -221,7 +221,7 @@ public class StatePanel extends Composite {
         activeSectionCombo.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                codeArea.getCaret().setSection(BasicCodeAreaSection.values()[activeSectionCombo.getSelectionIndex()]);
+                codeArea.getCodeAreaCaret().setSection(BasicCodeAreaSection.values()[activeSectionCombo.getSelectionIndex()]);
             }
         });
         activeSectionCombo.setItems(new String[]{"CODE_MATRIX", "TEXT_PREVIEW"});

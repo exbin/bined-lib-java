@@ -17,12 +17,12 @@ package org.exbin.bined.capability;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import org.exbin.bined.CaretMovedListener;
 import org.exbin.bined.CodeAreaCaret;
 import org.exbin.bined.CodeAreaCaretPosition;
 import org.exbin.bined.CaretOverlapMode;
 import org.exbin.bined.CodeAreaSection;
 import org.exbin.bined.basic.MovementDirection;
+import org.exbin.bined.CodeAreaCaretListener;
 
 /**
  * Support for caret / cursor capability.
@@ -38,7 +38,7 @@ public interface CaretCapable {
      * @return caret position
      */
     @Nonnull
-    CodeAreaCaretPosition getCaretPosition();
+    CodeAreaCaretPosition getActiveCaretPosition();
 
     /**
      * Returns currently active caret section.
@@ -67,14 +67,14 @@ public interface CaretCapable {
      *
      * @param caretPosition caret position
      */
-    void setCaretPosition(CodeAreaCaretPosition caretPosition);
+    void setActiveCaretPosition(CodeAreaCaretPosition caretPosition);
 
     /**
      * Sets current caret position to given data position.
      *
      * @param dataPosition data position
      */
-    void setCaretPosition(long dataPosition);
+    void setActiveCaretPosition(long dataPosition);
 
     /**
      * Sets current caret position to given data position and offset.
@@ -82,7 +82,7 @@ public interface CaretCapable {
      * @param dataPosition data position
      * @param codeOffset code offset
      */
-    void setCaretPosition(long dataPosition, int codeOffset);
+    void setActiveCaretPosition(long dataPosition, int codeOffset);
 
     /**
      * Returns handler for caret.
@@ -90,7 +90,7 @@ public interface CaretCapable {
      * @return caret handler
      */
     @Nonnull
-    CodeAreaCaret getCaret();
+    CodeAreaCaret getCodeAreaCaret();
 
     /**
      * Computes position for movement action.
@@ -141,12 +141,12 @@ public interface CaretCapable {
      *
      * @param caretMovedListener listener
      */
-    void addCaretMovedListener(CaretMovedListener caretMovedListener);
+    void addCaretMovedListener(CodeAreaCaretListener caretMovedListener);
 
     /**
      * Removes caret movement listener.
      *
      * @param caretMovedListener listener
      */
-    void removeCaretMovedListener(CaretMovedListener caretMovedListener);
+    void removeCaretMovedListener(CodeAreaCaretListener caretMovedListener);
 }

@@ -53,7 +53,7 @@ public class CodeAreaCommandEditTest {
 
         emulateKeyTyped(codeArea, KeyEvent.VK_UNDEFINED, 'a');
 
-        CodeAreaCaretPosition caretPosition = codeArea.getCaretPosition();
+        CodeAreaCaretPosition caretPosition = codeArea.getActiveCaretPosition();
         Assert.assertEquals(1, caretPosition.getCodeOffset());
         Assert.assertEquals(0, caretPosition.getDataPosition());
         checkResultData(expectedData, codeArea.getContentData());
@@ -77,7 +77,7 @@ public class CodeAreaCommandEditTest {
 
         emulateKeyTyped(codeArea, KeyEvent.VK_UNDEFINED, 'a');
 
-        CodeAreaCaretPosition caretPosition = codeArea.getCaretPosition();
+        CodeAreaCaretPosition caretPosition = codeArea.getActiveCaretPosition();
         Assert.assertEquals(1, caretPosition.getCodeOffset());
         Assert.assertEquals(0, caretPosition.getDataPosition());
         checkResultData(expectedData, codeArea.getContentData());
@@ -97,11 +97,11 @@ public class CodeAreaCommandEditTest {
         sampleData.copyToArray(0, expectedData, 0, dataSize);
 
         codeArea.setContentData(sampleData);
-        codeArea.setCaretPosition(256);
+        codeArea.setActiveCaretPosition(256);
 
         emulateKeyTyped(codeArea, KeyEvent.VK_UNDEFINED, 'a');
 
-        CodeAreaCaretPosition caretPosition = codeArea.getCaretPosition();
+        CodeAreaCaretPosition caretPosition = codeArea.getActiveCaretPosition();
         Assert.assertEquals(1, caretPosition.getCodeOffset());
         Assert.assertEquals(256, caretPosition.getDataPosition());
         checkResultData(expectedData, codeArea.getContentData());
@@ -122,11 +122,11 @@ public class CodeAreaCommandEditTest {
         codeArea.setEditOperation(EditOperation.INSERT);
 
         codeArea.setContentData(sampleData);
-        codeArea.setCaretPosition(256);
+        codeArea.setActiveCaretPosition(256);
 
         emulateKeyTyped(codeArea, KeyEvent.VK_UNDEFINED, 'a');
 
-        CodeAreaCaretPosition caretPosition = codeArea.getCaretPosition();
+        CodeAreaCaretPosition caretPosition = codeArea.getActiveCaretPosition();
         Assert.assertEquals(1, caretPosition.getCodeOffset());
         Assert.assertEquals(256, caretPosition.getDataPosition());
         checkResultData(expectedData, codeArea.getContentData());

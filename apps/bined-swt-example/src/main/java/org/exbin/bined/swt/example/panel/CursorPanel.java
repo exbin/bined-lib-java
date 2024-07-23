@@ -63,7 +63,7 @@ public class CursorPanel extends Composite {
         cursorBlinkingRateSpinner.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                ((DefaultCodeAreaCaret) ((CaretCapable) codeArea).getCaret()).setBlinkRate((Integer) cursorBlinkingRateSpinner.getSelection());
+                ((DefaultCodeAreaCaret) ((CaretCapable) codeArea).getCodeAreaCaret()).setBlinkRate((Integer) cursorBlinkingRateSpinner.getSelection());
             }
         });
         FormData fd_cursorBlinkingRateSpinner = new FormData();
@@ -84,7 +84,7 @@ public class CursorPanel extends Composite {
         cursorRenderingModeCombo.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                ((DefaultCodeAreaCaret) ((CaretCapable) codeArea).getCaret()).setRenderingMode(DefaultCodeAreaCaret.CursorRenderingMode.values()[cursorRenderingModeCombo.getSelectionIndex()]);
+                ((DefaultCodeAreaCaret) ((CaretCapable) codeArea).getCodeAreaCaret()).setRenderingMode(DefaultCodeAreaCaret.CursorRenderingMode.values()[cursorRenderingModeCombo.getSelectionIndex()]);
             }
         });
         cursorRenderingModeCombo.setItems(new String[]{"PAINT", "XOR", "NEGATIVE"});
@@ -140,8 +140,8 @@ public class CursorPanel extends Composite {
     public void setCodeArea(CodeArea codeArea) {
         this.codeArea = codeArea;
 
-        cursorBlinkingRateSpinner.setSelection(((DefaultCodeAreaCaret) ((CaretCapable) codeArea).getCaret()).getBlinkRate());
-        cursorRenderingModeCombo.select(codeArea.getCaret().getRenderingMode().ordinal());
+        cursorBlinkingRateSpinner.setSelection(((DefaultCodeAreaCaret) ((CaretCapable) codeArea).getCodeAreaCaret()).getBlinkRate());
+        cursorRenderingModeCombo.select(codeArea.getCodeAreaCaret().getRenderingMode().ordinal());
         showMirrorCursorCheckButton.setSelection(codeArea.isShowMirrorCursor());
     }
 

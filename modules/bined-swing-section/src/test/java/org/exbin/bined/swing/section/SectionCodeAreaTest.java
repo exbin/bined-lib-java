@@ -87,7 +87,7 @@ public class SectionCodeAreaTest {
         codeArea.selectAll();
         codeArea.copy();
         codeArea.clearSelection();
-        ((CaretCapable) codeArea).getCaret().setCaretPosition(dataSize / 2);
+        ((CaretCapable) codeArea).getCodeAreaCaret().setCaretPosition(dataSize / 2);
         codeArea.paste();
         Assert.assertTrue(codeArea.getDataSize() == (dataSize / 2 + dataSize));
     }
