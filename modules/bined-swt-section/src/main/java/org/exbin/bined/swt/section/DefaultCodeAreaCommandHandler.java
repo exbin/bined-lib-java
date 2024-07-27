@@ -500,7 +500,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             deleteSelection();
             codeArea.notifyDataChanged();
         } else {
-            CodeAreaCaret caret = codeArea.getCaret();
+            SectionCodeAreaCaret caret = codeArea.getCaret();
             long dataPosition = caret.getDataPosition();
             if (dataPosition > 0 && dataPosition <= codeArea.getDataSize()) {
                 caret.setCodeOffset(0);
@@ -524,7 +524,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             deleteSelection();
             codeArea.notifyDataChanged();
         } else {
-            CodeAreaCaret caret = codeArea.getCaret();
+            SectionCodeAreaCaret caret = codeArea.getCaret();
             long dataPosition = caret.getDataPosition();
             if (dataPosition < codeArea.getDataSize()) {
                 ((EditableBinaryData) codeArea.getBinaryData()).remove(dataPosition, 1);
@@ -543,7 +543,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         long last = selection.getLast();
         ((EditableBinaryData) codeArea.getBinaryData()).remove(first, last - first + 1);
         codeArea.clearSelection();
-        CodeAreaCaret caret = codeArea.getCaret();
+        SectionCodeAreaCaret caret = codeArea.getCaret();
         caret.setCaretPosition(first);
         codeArea.revealCursor();
         codeArea.updateScrollBars();
@@ -625,7 +625,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                 try {
                     Object object = clipboard.getData(binaryDataFlavor);
                     if (object instanceof BinaryData) {
-                        CodeAreaCaret caret = codeArea.getCaret();
+                        SectionCodeAreaCaret caret = codeArea.getCaret();
                         long dataPosition = caret.getDataPosition();
 
                         BinaryData data = (BinaryData) object;
@@ -658,7 +658,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 //                try {
 //                    insertedData = clipboard.getBinaryData(DataFlavor.stringFlavor);
 //                    if (insertedData instanceof String) {
-//                        CodeAreaCaret caret = codeArea.getCaret();
+//                        SectionCodeAreaCaret caret = codeArea.getCaret();
 //                        long dataPosition = caret.getDataPosition();
 //
 //                        byte[] bytes = ((String) insertedData).getBytes(Charset.forName("UTF-8"));
@@ -705,7 +705,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 //            try {
 //                insertedData = clipboard.getBinaryData(DataFlavor.stringFlavor);
 //                if (insertedData instanceof String) {
-//                    CodeAreaCaret caret = codeArea.getCaret();
+//                    SectionCodeAreaCaret caret = codeArea.getCaret();
 //                    long dataPosition = caret.getDataPosition();
 //
 //                    CodeType codeType = codeArea.getCodeType();

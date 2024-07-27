@@ -31,7 +31,7 @@ import org.exbin.bined.swt.basic.CodeArea;
  *
  * @author ExBin Project (https://exbin.org)
  */
-public class CodeAreaCaret {
+public class SectionCodeAreaCaret {
 
     private static final int LINE_CURSOR_WIDTH = 1;
     private static final int DOUBLE_CURSOR_WIDTH = 2;
@@ -48,7 +48,7 @@ public class CodeAreaCaret {
     private CursorShape overwriteCursorShape = CursorShape.BOX;
     private CursorRenderingMode renderingMode = CursorRenderingMode.NEGATIVE;
 
-    public CodeAreaCaret(CodeArea codeArea) {
+    public SectionCodeAreaCaret(CodeArea codeArea) {
         this.codeArea = codeArea;
         privateSetBlinkRate(DEFAULT_BLINK_RATE);
     }

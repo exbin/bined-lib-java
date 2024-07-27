@@ -698,7 +698,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
             return;
         }
 
-        CodeAreaCaret caret = codeArea.getCaret();
+        SectionCodeAreaCaret caret = codeArea.getCaret();
         int bytesPerLine = codeArea.getBytesPerLine();
         int lineHeight = codeArea.getLineHeight();
         int charWidth = codeArea.getCharWidth();
@@ -706,17 +706,17 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         int codeDigits = codeArea.getCodeType().getMaxDigits();
         Point cursorPoint = caret.getCursorPoint(bytesPerLine, lineHeight, charWidth, linesPerRect);
         boolean cursorVisible = caret.isCursorVisible();
-        CodeAreaCaret.CursorRenderingMode renderingMode = caret.getRenderingMode();
+        SectionCodeAreaCaret.CursorRenderingMode renderingMode = caret.getRenderingMode();
 
         if (cursorVisible && cursorPoint != null) {
             g.setForeground(codeArea.getCursorColor());
-            if (renderingMode == CodeAreaCaret.CursorRenderingMode.XOR) {
+            if (renderingMode == SectionCodeAreaCaret.CursorRenderingMode.XOR) {
                 g.setXORMode(true); // Color.WHITE
             }
 
-            CodeAreaCaret.CursorShape cursorShape = codeArea.getEditMode() == EditMode.INSERT ? caret.getInsertCursorShape() : caret.getOverwriteCursorShape();
+            SectionCodeAreaCaret.CursorShape cursorShape = codeArea.getEditMode() == EditMode.INSERT ? caret.getInsertCursorShape() : caret.getOverwriteCursorShape();
             int cursorThickness = 0;
-            if (cursorShape.getWidth() != CodeAreaCaret.CursorShapeWidth.FULL) {
+            if (cursorShape.getWidth() != SectionCodeAreaCaret.CursorShapeWidth.FULL) {
                 cursorThickness = caret.getCursorThickness(cursorShape, charWidth, lineHeight);
             }
             switch (cursorShape) {
@@ -763,7 +763,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                 case CORNERS: {
                     int quarterWidth = charWidth / 4;
                     int quarterLine = lineHeight / 4;
-                    if (cursorShape == CodeAreaCaret.CursorShape.CORNERS) {
+                    if (cursorShape == SectionCodeAreaCaret.CursorShape.CORNERS) {
                         g.drawLine(cursorPoint.x, cursorPoint.y,
                                 cursorPoint.x + quarterWidth, cursorPoint.y);
                         g.drawLine(cursorPoint.x + charWidth - quarterWidth, cursorPoint.y,
@@ -790,7 +790,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
                     throw CodeAreaUtils.getInvalidTypeException(cursorShape);
             }
 
-            if (renderingMode == CodeAreaCaret.CursorRenderingMode.XOR) {
+            if (renderingMode == SectionCodeAreaCaret.CursorRenderingMode.XOR) {
                 throw new UnsupportedOperationException("Not supported yet.");
                 // TODO g.setPaintMode();
             }
@@ -808,7 +808,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter {
         }
     }
 
-    private void paintCursorRect(GC g, int x, int y, int width, int height, CodeAreaCaret.CursorRenderingMode renderingMode) {
+    private void paintCursorRect(GC g, int x, int y, int width, int height, SectionCodeAreaCaret.CursorRenderingMode renderingMode) {
         switch (renderingMode) {
             case PAINT: {
                 g.fillRectangle(x, y, width, height);

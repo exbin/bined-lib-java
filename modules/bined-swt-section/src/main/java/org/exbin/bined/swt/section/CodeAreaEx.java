@@ -82,7 +82,7 @@ public class CodeAreaEx extends Composite implements CodeAreaControl {
 
     private final List<DataChangedListener> dataChangedListeners = new ArrayList<>();
 
-    private final CodeAreaCaret caret;
+    private final SectionCodeAreaCaret caret;
     private SelectionRange selection;
 
     private ViewMode viewMode = ViewMode.DUAL;
@@ -148,7 +148,7 @@ public class CodeAreaEx extends Composite implements CodeAreaControl {
 
     public CodeAreaEx(Composite parent, int style) {
         super(parent, style);
-        caret = new CodeAreaCaret(this);
+        caret = new SectionCodeAreaCaret(this);
         painter = new DefaultCodeAreaPainter(this);
         commandHandler = new DefaultCodeAreaCommandHandler(this);
 
@@ -338,7 +338,7 @@ public class CodeAreaEx extends Composite implements CodeAreaControl {
         return antialiasingHint;
     }
 
-    public CodeAreaCaret getCaret() {
+    public SectionCodeAreaCaret getCaret() {
         return caret;
     }
 

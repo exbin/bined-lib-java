@@ -20,6 +20,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.DisposeEvent;
@@ -27,6 +28,8 @@ import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
+import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.exbin.bined.CodeAreaControl;
 import org.exbin.bined.DataChangedListener;
@@ -41,7 +44,7 @@ import org.exbin.bined.CodeAreaUtils;
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public abstract class CodeAreaCore extends Composite implements CodeAreaControl {
+public abstract class CodeAreaCore extends Canvas implements CodeAreaControl {
 
     @Nonnull
     private BinaryData contentData = EmptyBinaryData.INSTANCE;
@@ -60,7 +63,7 @@ public abstract class CodeAreaCore extends Composite implements CodeAreaControl 
      * @param commandHandlerFactory command handler or null for default handler
      */
     public CodeAreaCore(@Nullable Composite parent, int style, CodeAreaCommandHandler.CodeAreaCommandHandlerFactory commandHandlerFactory) {
-        super(parent, style);
+        super(parent, style | SWT.NO_MERGE_PAINTS | SWT.NO_REDRAW_RESIZE);
         this.commandHandler = createCommandHandler(CodeAreaUtils.requireNonNull(commandHandlerFactory));
         init();
     }
@@ -224,6 +227,11 @@ public abstract class CodeAreaCore extends Composite implements CodeAreaControl 
 
     public void removeDataChangedListener(DataChangedListener dataChangedListener) {
         dataChangedListeners.remove(dataChangedListener);
+    }
+    
+    @Override
+    public void drawBackground(GC gc, int i, int i1, int i2, int i3) {
+        
     }
 
     public abstract void resetPainter();
