@@ -620,6 +620,14 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         }
 
         try {
+            if (!clipboard.isDataFlavorAvailable(binedDataFlavor) && !clipboard.isDataFlavorAvailable(binaryDataFlavor) && !clipboard.isDataFlavorAvailable(DataFlavor.stringFlavor) && !clipboard.isDataFlavorAvailable(DataFlavor.getTextPlainUnicodeFlavor())) {
+                return;
+            }
+        } catch (IllegalStateException ex) {
+            return;
+        }
+
+        try {
             if (clipboard.isDataFlavorAvailable(binedDataFlavor)) {
                 try {
                     Object clipboardData = clipboard.getData(binedDataFlavor);
@@ -644,9 +652,6 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                 try {
                     Object clipboardData = clipboard.getData(DataFlavor.stringFlavor);
                     if (clipboardData instanceof String) {
-                        DefaultCodeAreaCaret caret = (DefaultCodeAreaCaret) ((CaretCapable) codeArea).getCodeAreaCaret();
-                        long dataPosition = caret.getDataPosition();
-
                         byte[] bytes = ((String) clipboardData).getBytes(Charset.forName(CodeAreaSwingUtils.DEFAULT_ENCODING));
                         BinaryData pastedData = new ByteArrayData(bytes);
                         pasteBinaryData(pastedData);

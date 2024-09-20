@@ -724,12 +724,6 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
             return;
         }
 
-        if (modifyCommand != null) {
-            modifyCommand.execute();
-        }
-        if (insertCommand != null) {
-            insertCommand.execute();
-        }
         undoRedo.execute(pasteCommand);
 
         undoSequenceBreak();
