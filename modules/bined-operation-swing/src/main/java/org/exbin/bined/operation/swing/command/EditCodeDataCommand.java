@@ -21,7 +21,6 @@ import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.capability.CodeTypeCapable;
 import org.exbin.bined.operation.BinaryDataCommand;
 import org.exbin.bined.operation.BinaryDataCommandPhase;
-import org.exbin.bined.operation.swing.CodeEditDataOperation;
 import org.exbin.bined.operation.swing.DeleteCodeEditDataOperation;
 import org.exbin.bined.operation.swing.InsertCodeEditDataOperation;
 import org.exbin.bined.operation.swing.OverwriteCodeEditDataOperation;

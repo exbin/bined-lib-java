@@ -113,77 +113,77 @@ public class SectionCodeAreaPainter implements CodeAreaPainter, ColorsProfileCap
 
     @Nonnull
     protected final CodeAreaCore codeArea;
-    private volatile boolean initialized = false;
+    protected volatile boolean initialized = false;
 
-    private volatile boolean fontChanged = false;
-    private volatile boolean layoutChanged = true;
-    private volatile boolean caretChanged = true;
-    private volatile boolean resetColors = true;
-
-    @Nonnull
-    private final JComponent dataView;
-    @Nonnull
-    private final SectionCodeAreaScrollPane scrollPanel;
-    @Nonnull
-    private final DefaultCodeAreaMouseListener codeAreaMouseListener;
-    @Nonnull
-    private final ComponentListener codeAreaComponentListener;
-    @Nonnull
-    private final DataChangedListener codeAreaDataChangeListener;
+    protected volatile boolean fontChanged = false;
+    protected volatile boolean layoutChanged = true;
+    protected volatile boolean caretChanged = true;
+    protected volatile boolean resetColors = true;
 
     @Nonnull
-    private final BasicCodeAreaMetrics metrics = new BasicCodeAreaMetrics();
+    protected final JComponent dataView;
     @Nonnull
-    private final SectionCodeAreaStructure structure = new SectionCodeAreaStructure();
+    protected final SectionCodeAreaScrollPane scrollPanel;
     @Nonnull
-    private final SectionCodeAreaScrolling scrolling = new SectionCodeAreaScrolling();
+    protected final DefaultCodeAreaMouseListener codeAreaMouseListener;
     @Nonnull
-    private final SectionCodeAreaDimensions dimensions = new SectionCodeAreaDimensions();
+    protected final ComponentListener codeAreaComponentListener;
     @Nonnull
-    private final SectionCodeAreaVisibility visibility = new SectionCodeAreaVisibility();
+    protected final DataChangedListener codeAreaDataChangeListener;
 
     @Nonnull
-    private SectionCodeAreaLayoutProfile layoutProfile = new DefaultSectionCodeAreaLayoutProfile();
+    protected final BasicCodeAreaMetrics metrics = new BasicCodeAreaMetrics();
     @Nonnull
-    private CodeAreaColorsProfile colorsProfile = new SectionCodeAreaColorProfile();
+    protected final SectionCodeAreaStructure structure = new SectionCodeAreaStructure();
     @Nonnull
-    private SectionCodeAreaThemeProfile themeProfile = new SectionCodeAreaThemeProfile();
+    protected final SectionCodeAreaScrolling scrolling = new SectionCodeAreaScrolling();
     @Nonnull
-    private SectionCodeAreaCaretsProfile caretsProfile = new DefaultExtendedCodeAreaCaretsProfile();
+    protected final SectionCodeAreaDimensions dimensions = new SectionCodeAreaDimensions();
+    @Nonnull
+    protected final SectionCodeAreaVisibility visibility = new SectionCodeAreaVisibility();
 
-    @Nullable
-    private CodeCharactersCase codeCharactersCase;
-    @Nullable
-    private EditOperation editOperation;
-    @Nullable
-    private PositionIterator positionIterator;
-    @Nullable
-    private ScrollViewDimension viewDimension;
-    private boolean showMirrorCursor;
-    private boolean showUnprintables;
     @Nonnull
-    private AntialiasingMode antialiasingMode = AntialiasingMode.AUTO;
-
-    private int rowPositionLength;
-    private int minRowPositionLength;
-    private int maxRowPositionLength;
+    protected SectionCodeAreaLayoutProfile layoutProfile = new DefaultSectionCodeAreaLayoutProfile();
+    @Nonnull
+    protected CodeAreaColorsProfile colorsProfile = new SectionCodeAreaColorProfile();
+    @Nonnull
+    protected SectionCodeAreaThemeProfile themeProfile = new SectionCodeAreaThemeProfile();
+    @Nonnull
+    protected SectionCodeAreaCaretsProfile caretsProfile = new DefaultExtendedCodeAreaCaretsProfile();
 
     @Nullable
-    private Font font;
+    protected CodeCharactersCase codeCharactersCase;
     @Nullable
-    private Charset charset;
-
+    protected EditOperation editOperation;
     @Nullable
-    private RowDataCache rowDataCache = null;
+    protected PositionIterator positionIterator;
     @Nullable
-    private CursorDataCache cursorDataCache = null;
-
-    @Nullable
-    private Charset charMappingCharset = null;
+    protected ScrollViewDimension viewDimension;
+    protected boolean showMirrorCursor;
+    protected boolean showUnprintables;
     @Nonnull
-    private final char[] charMapping = new char[256];
+    protected AntialiasingMode antialiasingMode = AntialiasingMode.AUTO;
 
-    private static final char SPACE_CHAR = ' '; //\u2003
+    protected int rowPositionLength;
+    protected int minRowPositionLength;
+    protected int maxRowPositionLength;
+
+    @Nullable
+    protected Font font;
+    @Nullable
+    protected Charset charset;
+
+    @Nullable
+    protected RowDataCache rowDataCache = null;
+    @Nullable
+    protected CursorDataCache cursorDataCache = null;
+
+    @Nullable
+    protected Charset charMappingCharset = null;
+    @Nonnull
+    protected final char[] charMapping = new char[256];
+
+    protected static final char SPACE_CHAR = ' '; //\u2003
 
     @Nullable
     protected Map<Character, Character> unprintableCharactersMapping = null;

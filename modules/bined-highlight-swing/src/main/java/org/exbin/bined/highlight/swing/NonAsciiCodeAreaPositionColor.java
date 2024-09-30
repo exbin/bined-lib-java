@@ -16,30 +16,48 @@
 package org.exbin.bined.highlight.swing;
 
 import java.awt.Color;
+import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import org.exbin.auxiliary.binary_data.BinaryData;
 import org.exbin.bined.basic.BasicCodeAreaSection;
 import org.exbin.bined.CodeAreaSection;
-import org.exbin.bined.swing.CodeAreaCore;
+import org.exbin.bined.color.CodeAreaBasicColors;
+import org.exbin.bined.swing.CodeAreaPaintState;
+import org.exbin.bined.swing.CodeAreaPositionColor;
+import org.exbin.bined.swing.basic.color.CodeAreaColorsProfile;
 
 /**
- * Experimental support for highlighting of non-ascii characters.
+ * Support for highlighting of non-ascii characters.
  *
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public class HighlightNonAsciiCodeAreaPainter extends HighlightCodeAreaPainter {
+public class NonAsciiCodeAreaPositionColor implements CodeAreaPositionColor {
+
+    private final CodeAreaPositionColor parentPositionColor;
 
     private Color controlCodes;
     private Color upperCodes;
     private Color textColor;
     private boolean nonAsciiHighlightingEnabled = true;
 
-    public HighlightNonAsciiCodeAreaPainter(CodeAreaCore codeArea) {
-        super(codeArea);
+    private long dataSize;
+    private BinaryData contentData;
 
-        textColor = codeArea.getForeground(); //MainColors().getTextColor();
+    public NonAsciiCodeAreaPositionColor(@Nullable CodeAreaPositionColor parentPositionColor) {
+        this.parentPositionColor = parentPositionColor;
+    }
+
+    @Override
+    public void startPaint(CodeAreaPaintState codeAreaPaintState) {
+        CodeAreaColorsProfile colorsProfile = codeAreaPaintState.getColorsProfile();
+        
+        dataSize = codeAreaPaintState.getDataSize();
+        contentData = codeAreaPaintState.getContentData();
+
+        textColor = colorsProfile.getColor(CodeAreaBasicColors.TEXT_COLOR);
         if (textColor == null) {
             textColor = Color.BLACK;
         }
@@ -100,23 +118,15 @@ public class HighlightNonAsciiCodeAreaPainter extends HighlightCodeAreaPainter {
                 upperCodesGreen, upperCodesBlue);
     }
 
-    private int downShift(int color, int diff) {
-        if (color < diff) {
-            return 0;
-        }
-
-        return color - diff;
-    }
-
     @Nullable
     @Override
     public Color getPositionTextColor(long rowDataPosition, int byteOnRow, int charOnRow, @Nonnull CodeAreaSection section) {
-        Color color = super.getPositionTextColor(rowDataPosition, byteOnRow, charOnRow, section);
+        Color color = parentPositionColor != null ? parentPositionColor.getPositionTextColor(rowDataPosition, byteOnRow, charOnRow, section) : null;
         if (nonAsciiHighlightingEnabled && section == BasicCodeAreaSection.CODE_MATRIX) {
             if (color == null || textColor.equals(color)) {
                 long dataPosition = rowDataPosition + byteOnRow;
-                if (dataPosition < codeArea.getDataSize()) {
-                    byte value = codeArea.getContentData().getByte(dataPosition);
+                if (dataPosition < dataSize) {
+                    byte value = contentData.getByte(dataPosition);
                     if (value < 0) {
                         color = upperCodes;
                     } else if (value < 0x20) {
@@ -127,6 +137,21 @@ public class HighlightNonAsciiCodeAreaPainter extends HighlightCodeAreaPainter {
         }
 
         return color;
+    }
+
+    @Nullable
+    @Override
+    public Color getPositionBackgroundColor(long rowDataPosition, int byteOnRow, int charOnRow, CodeAreaSection section) {
+        if (parentPositionColor != null) {
+            return parentPositionColor.getPositionBackgroundColor(rowDataPosition, byteOnRow, charOnRow, section);
+        }
+        return null;
+    }
+
+    @Nonnull
+    @Override
+    public Optional<CodeAreaPositionColor> getParentPositionColor() {
+        return Optional.ofNullable(parentPositionColor);
     }
 
     @Nonnull
@@ -153,5 +178,13 @@ public class HighlightNonAsciiCodeAreaPainter extends HighlightCodeAreaPainter {
 
     public void setNonAsciiHighlightingEnabled(boolean nonAsciiHighlightingEnabled) {
         this.nonAsciiHighlightingEnabled = nonAsciiHighlightingEnabled;
+    }
+
+    private static int downShift(int color, int diff) {
+        if (color < diff) {
+            return 0;
+        }
+
+        return color - diff;
     }
 }

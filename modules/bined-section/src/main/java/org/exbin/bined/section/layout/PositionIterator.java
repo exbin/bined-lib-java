@@ -16,7 +16,6 @@
 package org.exbin.bined.section.layout;
 
 import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.basic.BasicCodeAreaSection;
 
 /**
@@ -24,7 +23,6 @@ import org.exbin.bined.basic.BasicCodeAreaSection;
  *
  * @author ExBin Project (https://exbin.org)
  */
-@ParametersAreNonnullByDefault
 public interface PositionIterator {
 
     /**

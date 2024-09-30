@@ -70,7 +70,8 @@ import org.exbin.bined.CodeAreaCaretListener;
  *
  * @author ExBin Project (https://exbin.org)
  */
-public class CodeAreaEx extends Composite implements CodeAreaControl {
+@ParametersAreNonnullByDefault
+public class SectCodeArea extends Composite implements CodeAreaControl {
 
     @Nullable
     private BinaryData data;
@@ -146,7 +147,7 @@ public class CodeAreaEx extends Composite implements CodeAreaControl {
 
     private final PaintDataCache paintDataCache = new PaintDataCache();
 
-    public CodeAreaEx(Composite parent, int style) {
+    public SectCodeArea(Composite parent, int style) {
         super(parent, style);
         caret = new SectionCodeAreaCaret(this);
         painter = new DefaultCodeAreaPainter(this);
@@ -219,14 +220,14 @@ public class CodeAreaEx extends Composite implements CodeAreaControl {
         addDisposeListener(new DisposeListener() {
             @Override
             public void widgetDisposed(DisposeEvent e) {
-                CodeAreaEx.this.widgetDisposed(e);
+                SectCodeArea.this.widgetDisposed(e);
 
             }
         });
         addPaintListener(new PaintListener() {
             @Override
             public void paintControl(PaintEvent e) {
-                CodeAreaEx.this.paintControl(e);
+                SectCodeArea.this.paintControl(e);
             }
         });
         addFocusListener(new FocusListener() {

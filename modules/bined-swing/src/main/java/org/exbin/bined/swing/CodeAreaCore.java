@@ -175,6 +175,7 @@ public abstract class CodeAreaCore extends JTextComponent implements CodeAreaCon
         return false;
     }
 
+    @Override
     public boolean isEditable() {
         return false;
     }

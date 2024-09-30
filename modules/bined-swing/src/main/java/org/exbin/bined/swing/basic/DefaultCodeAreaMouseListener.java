@@ -32,7 +32,7 @@ import org.exbin.bined.swing.CodeAreaCore;
 import org.exbin.bined.capability.ScrollingCapable;
 
 /**
- * Component mouse listener for code area.
+ * Code area mouse listener.
  *
  * @author ExBin Project (https://exbin.org)
  */

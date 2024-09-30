@@ -13,25 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.color;
+package org.exbin.bined.swing;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+import org.exbin.auxiliary.binary_data.BinaryData;
+import org.exbin.bined.CodeAreaSection;
+import org.exbin.bined.swing.basic.color.CodeAreaColorsProfile;
 
 /**
- * Interface for code area color group.
+ * Code area paint state.
  *
  * @author ExBin Project (https://exbin.org)
  */
-public interface CodeAreaColorGroup {
+@ParametersAreNonnullByDefault
+public interface CodeAreaPaintState {
 
-    /**
-     * Returns unique string identifier.
-     * <p>
-     * Custom implementations should start with full package name to avoid
-     * collisions.
-     *
-     * @return unique identification ID key
-     */
     @Nonnull
-    String getId();
+    CodeAreaSection getActiveSection();
+
+    @Nonnull
+    CodeAreaColorsProfile getColorsProfile();
+
+    int getCodeLastCharPos();
+
+    int getCharactersPerRow();
+
+    int getBytesPerRow();
+
+    long getDataSize();
+    
+    // TODO: Replace with row data only?
+    @Nonnull
+    BinaryData getContentData();
 }

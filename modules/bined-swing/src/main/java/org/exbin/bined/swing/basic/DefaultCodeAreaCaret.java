@@ -36,19 +36,19 @@ import org.exbin.bined.CodeAreaCaretPosition;
 @ParametersAreNonnullByDefault
 public class DefaultCodeAreaCaret implements CodeAreaCaret {
 
-    private static final int DOUBLE_CURSOR_WIDTH = 2;
-    private static final int DEFAULT_BLINK_RATE = 450;
+    protected static final int DOUBLE_CURSOR_WIDTH = 2;
+    protected static final int DEFAULT_BLINK_RATE = 450;
 
     @Nonnull
-    private final CaretChangeListener changeListener;
-    private final DefaultCodeAreaCaretPosition caretPosition = new DefaultCodeAreaCaretPosition();
+    protected final CaretChangeListener changeListener;
+    protected final DefaultCodeAreaCaretPosition caretPosition = new DefaultCodeAreaCaretPosition();
 
-    private int blinkRate = 0;
-    private Timer blinkTimer = null;
-    private boolean cursorVisible = true;
+    protected int blinkRate = 0;
+    protected Timer blinkTimer = null;
+    protected boolean cursorVisible = true;
 
     @Nonnull
-    private CursorRenderingMode renderingMode = CursorRenderingMode.NEGATIVE;
+    protected CursorRenderingMode renderingMode = CursorRenderingMode.NEGATIVE;
 
     public DefaultCodeAreaCaret(CaretChangeListener changeListener) {
         CodeAreaUtils.requireNonNull(changeListener, "Change listener cannot be null");
@@ -194,7 +194,7 @@ public class DefaultCodeAreaCaret implements CodeAreaCaret {
     }
 
     @ParametersAreNonnullByDefault
-    private class Blink implements ActionListener {
+    protected class Blink implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {

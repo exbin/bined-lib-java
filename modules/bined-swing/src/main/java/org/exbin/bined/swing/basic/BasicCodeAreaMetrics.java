@@ -18,6 +18,8 @@ package org.exbin.bined.swing.basic;
 import java.awt.FontMetrics;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
+import java.util.Optional;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.CharsetStreamTranslator;
@@ -31,13 +33,13 @@ import org.exbin.bined.CharsetStreamTranslator;
 public class BasicCodeAreaMetrics {
 
     @Nullable
-    private FontMetrics fontMetrics;
+    protected FontMetrics fontMetrics;
 
-    private int rowHeight;
-    private int characterWidth;
-    private int fontHeight;
-    private int maxBytesPerChar;
-    private int subFontSpace = 0;
+    protected int rowHeight;
+    protected int characterWidth;
+    protected int fontHeight;
+    protected int maxBytesPerChar;
+    protected int subFontSpace = 0;
 
     public void recomputeMetrics(@Nullable FontMetrics fontMetrics, Charset charset) {
         this.fontMetrics = fontMetrics;
@@ -68,9 +70,9 @@ public class BasicCodeAreaMetrics {
         return rowHeight != 0 && characterWidth != 0;
     }
 
-    @Nullable
-    public FontMetrics getFontMetrics() {
-        return fontMetrics;
+    @Nonnull
+    public Optional<FontMetrics> getFontMetrics() {
+        return Optional.ofNullable(fontMetrics);
     }
 
     public int getCharWidth(char value) {
