@@ -15,6 +15,7 @@
  */
 package org.exbin.bined.swing;
 
+import java.nio.charset.Charset;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.auxiliary.binary_data.BinaryData;
@@ -35,6 +36,14 @@ public interface CodeAreaPaintState {
     @Nonnull
     CodeAreaColorsProfile getColorsProfile();
 
+    @Nonnull
+    Charset getCharset();
+
+    @Nonnull
+    byte[] getRowData();
+
+    int getMaxBytesPerChar();
+
     int getCodeLastCharPos();
 
     int getCharactersPerRow();
@@ -42,7 +51,7 @@ public interface CodeAreaPaintState {
     int getBytesPerRow();
 
     long getDataSize();
-    
+
     // TODO: Replace with row data only?
     @Nonnull
     BinaryData getContentData();

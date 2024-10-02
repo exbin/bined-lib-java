@@ -25,7 +25,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.basic.BasicCodeAreaSection;
 import org.exbin.bined.CodeAreaSection;
 import org.exbin.bined.swing.CodeAreaPaintState;
-import org.exbin.bined.swing.CodeAreaPositionColor;
+import org.exbin.bined.swing.CodeAreaColorAssessor;
 
 /**
  * Code area search matches highlighting.
@@ -33,9 +33,9 @@ import org.exbin.bined.swing.CodeAreaPositionColor;
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public class MatchCodeAreaPositionColor implements CodeAreaPositionColor {
+public class MatchCodeAreaColorAssessor implements CodeAreaColorAssessor {
 
-    private final CodeAreaPositionColor parentPositionColor;
+    private final CodeAreaColorAssessor parentAssessor;
 
     /**
      * Matches must be ordered by position.
@@ -49,8 +49,8 @@ public class MatchCodeAreaPositionColor implements CodeAreaPositionColor {
     private Color currentMatchColor;
     private int charactersPerRow = 1;
 
-    public MatchCodeAreaPositionColor(@Nullable CodeAreaPositionColor parentPositionColor) {
-        this.parentPositionColor = parentPositionColor;
+    public MatchCodeAreaColorAssessor(@Nullable CodeAreaColorAssessor parentAssessor) {
+        this.parentAssessor = parentAssessor;
 
         foundMatchesColor = new Color(180, 255, 180);
         currentMatchColor = new Color(255, 210, 180);
@@ -65,8 +65,8 @@ public class MatchCodeAreaPositionColor implements CodeAreaPositionColor {
     @Nullable
     @Override
     public Color getPositionTextColor(long rowDataPosition, int byteOnRow, int charOnRow, CodeAreaSection section) {
-        if (parentPositionColor != null) {
-            return parentPositionColor.getPositionTextColor(rowDataPosition, byteOnRow, charOnRow, section);
+        if (parentAssessor != null) {
+            return parentAssessor.getPositionTextColor(rowDataPosition, byteOnRow, charOnRow, section);
         }
 
         return null;
@@ -112,16 +112,16 @@ public class MatchCodeAreaPositionColor implements CodeAreaPositionColor {
             }
         }
 
-        if (parentPositionColor != null) {
-            return parentPositionColor.getPositionBackgroundColor(rowDataPosition, byteOnRow, charOnRow, section);
+        if (parentAssessor != null) {
+            return parentAssessor.getPositionBackgroundColor(rowDataPosition, byteOnRow, charOnRow, section);
         }
 
         return null;
     }
 
     @Override
-    public Optional<CodeAreaPositionColor> getParentPositionColor() {
-        return Optional.ofNullable(parentPositionColor);
+    public Optional<CodeAreaColorAssessor> getParentColorAssessor() {
+        return Optional.ofNullable(parentAssessor);
     }
 
     @Nonnull

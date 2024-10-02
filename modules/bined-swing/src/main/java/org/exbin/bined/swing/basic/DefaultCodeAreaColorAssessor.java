@@ -25,30 +25,30 @@ import org.exbin.bined.CodeAreaSelection;
 import org.exbin.bined.basic.BasicCodeAreaSection;
 import org.exbin.bined.capability.SelectionCapable;
 import org.exbin.bined.swing.CodeAreaPaintState;
-import org.exbin.bined.swing.CodeAreaPositionColor;
 import org.exbin.bined.swing.basic.color.BasicCodeAreaColorsProfile;
+import org.exbin.bined.swing.CodeAreaColorAssessor;
 
 /**
- * Default code area position color.
+ * Default code area color assessor.
  *
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public class DefaultCodeAreaPositionColor implements CodeAreaPositionColor {
+public class DefaultCodeAreaColorAssessor implements CodeAreaColorAssessor {
     
-    private final CodeAreaPositionColor parentPositionColor;
+    private final CodeAreaColorAssessor parentAssessor;
     
     private CodeAreaSelection selectionHandler = null;
     private CodeAreaSection activeSection = null;
     private int codeLastCharPos;
     private BasicCodeAreaColorsProfile colorsProfile;
 
-    public DefaultCodeAreaPositionColor() {
-        parentPositionColor = null;
+    public DefaultCodeAreaColorAssessor() {
+        parentAssessor = null;
     }
 
-    public DefaultCodeAreaPositionColor(@Nullable CodeAreaPositionColor parentPositionColor) {
-        this.parentPositionColor = parentPositionColor;
+    public DefaultCodeAreaColorAssessor(@Nullable CodeAreaColorAssessor parentAssessor) {
+        this.parentAssessor = parentAssessor;
     }
 
     @Override
@@ -89,7 +89,7 @@ public class DefaultCodeAreaPositionColor implements CodeAreaPositionColor {
 
     @Nonnull
     @Override
-    public Optional<CodeAreaPositionColor> getParentPositionColor() {
-        return Optional.ofNullable(parentPositionColor);
+    public Optional<CodeAreaColorAssessor> getParentColorAssessor() {
+        return Optional.ofNullable(parentAssessor);
     }
 }

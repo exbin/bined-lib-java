@@ -80,10 +80,11 @@ import org.exbin.bined.basic.BasicCodeAreaLayout;
 import org.exbin.bined.basic.ScrollViewDimension;
 import org.exbin.bined.capability.SelectionCapable;
 import org.exbin.bined.capability.EditModeCapable;
+import org.exbin.bined.swing.CodeAreaCharAssessor;
 import org.exbin.bined.swing.CodeAreaPaintState;
 import org.exbin.bined.swing.CodeAreaSwingControl;
-import org.exbin.bined.swing.CodeAreaPositionColor;
 import org.exbin.bined.swing.basic.color.CodeAreaColorsProfile;
+import org.exbin.bined.swing.CodeAreaColorAssessor;
 
 /**
  * Code area component default painter.
@@ -149,23 +150,21 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
     protected Font font;
     @Nullable
     protected Charset charset;
-    @Nullable
-    protected CodeAreaPositionColor positionColor = null;
+    @Nonnull
+    protected CodeAreaColorAssessor colorAssessor = null;
+    @Nonnull
+    protected CodeAreaCharAssessor charAssessor = null;
 
     @Nullable
     protected RowDataCache rowDataCache = null;
     @Nullable
     protected CursorDataCache cursorDataCache = null;
 
-    @Nullable
-    protected Charset charMappingCharset = null;
-    @Nonnull
-    protected final char[] charMapping = new char[256];
-
     public DefaultCodeAreaPainter(CodeAreaCore codeArea) {
         this.codeArea = codeArea;
         
-        positionColor = new DefaultCodeAreaPositionColor();
+        colorAssessor = new DefaultCodeAreaColorAssessor();
+        charAssessor = new DefaultCodeAreaCharAssessor();
 
         dataView = new JComponent() {
         };
@@ -611,6 +610,8 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
 
         Rectangle clipBounds = g.getClipBounds();
         g.setClip(clipBounds != null ? clipBounds.intersection(mainAreaRect) : mainAreaRect);
+        colorAssessor.startPaint(this);
+        charAssessor.startPaint(this);
         paintBackground(g);
 
         // Decoration lines
@@ -766,28 +767,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
             int skipRestFromPreview = visibility.getSkipRestFromPreview();
             int endPreview = Math.min(skipRestFromPreview, rowBytesLimit);
             for (int byteOnRow = skipToPreview; byteOnRow < endPreview; byteOnRow++) {
-                byte dataByte = rowDataCache.rowData[byteOnRow];
-
-                if (maxBytesPerChar > 1) {
-                    if (dataPosition + maxBytesPerChar > dataSize) {
-                        maxBytesPerChar = (int) (dataSize - dataPosition);
-                    }
-
-                    int charDataLength = maxBytesPerChar;
-                    if (byteOnRow + charDataLength > rowDataCache.rowData.length) {
-                        charDataLength = rowDataCache.rowData.length - byteOnRow;
-                    }
-                    String displayString = new String(rowDataCache.rowData, byteOnRow, charDataLength, charset);
-                    if (!displayString.isEmpty()) {
-                        rowDataCache.rowCharacters[previewCharPos + byteOnRow] = displayString.charAt(0);
-                    }
-                } else {
-                    if (charMappingCharset == null || charMappingCharset != charset) {
-                        buildCharMapping(charset);
-                    }
-
-                    rowDataCache.rowCharacters[previewCharPos + byteOnRow] = charMapping[dataByte & 0xFF];
-                }
+                rowDataCache.rowCharacters[previewCharPos + byteOnRow] = charAssessor.getPreviewCharacter(dataPosition, byteOnRow, previewCharPos, BasicCodeAreaSection.TEXT_PREVIEW);
             }
             if (bytesPerRow > rowBytesLimit) {
                 Arrays.fill(rowDataCache.rowCharacters, previewCharPos + rowBytesLimit, previewCharPos + bytesPerRow, ' ');
@@ -824,7 +804,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
             }
             boolean sequenceBreak = false;
 
-            Color color = positionColor.getPositionBackgroundColor(rowDataPosition, byteOnRow, charOnRow, section);
+            Color color = colorAssessor.getPositionBackgroundColor(rowDataPosition, byteOnRow, charOnRow, section);
             if (!CodeAreaSwingUtils.areSameColors(color, renderColor)) {
                 sequenceBreak = true;
             }
@@ -972,7 +952,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
                 continue;
             }
 
-            Color color = positionColor.getPositionTextColor(rowDataPosition, byteOnRow, charOnRow, section);
+            Color color = colorAssessor.getPositionTextColor(rowDataPosition, byteOnRow, charOnRow, section);
             if (color == null) {
                 color = colorsProfile.getTextColor();
             }
@@ -1016,12 +996,21 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
     }
 
     @Nonnull
-    public CodeAreaPositionColor getColorModifier() {
-        return positionColor;
+    public CodeAreaColorAssessor getColorAssessor() {
+        return colorAssessor;
     }
 
-    public void setPositionColor(CodeAreaPositionColor positionColor) {
-        this.positionColor = CodeAreaUtils.requireNonNull(positionColor);
+    public void setColorAssessor(CodeAreaColorAssessor colorAssessor) {
+        this.colorAssessor = CodeAreaUtils.requireNonNull(colorAssessor);
+    }
+
+    @Nonnull
+    public CodeAreaCharAssessor getCharAssessor() {
+        return charAssessor;
+    }
+
+    public void setCharAssessor(CodeAreaCharAssessor charAssessor) {
+        this.charAssessor = charAssessor;
     }
 
     @Override
@@ -1129,30 +1118,23 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
                         break;
                     }
 
-                    if (maxBytesPerChar > 1) {
-                        int charDataLength = maxBytesPerChar;
-                        if (dataPosition + maxBytesPerChar > dataSize) {
-                            charDataLength = (int) (dataSize - dataPosition);
-                        }
+                    int byteOnRow = (int) (dataPosition % structure.getBytesPerRow());
+                    int previewCharPos = visibility.getPreviewCharPos();
 
-                        if (contentData.isEmpty()) {
-                            cursorDataCache.cursorChars[0] = ' ';
-                        } else {
-                            contentData.copyToArray(dataPosition, cursorDataCache.cursorData, 0, charDataLength);
-                            String displayString = new String(cursorDataCache.cursorData, 0, charDataLength, charset);
-                            if (!displayString.isEmpty()) {
-                                cursorDataCache.cursorChars[0] = displayString.charAt(0);
-                            }
-                        }
+                    if (contentData.isEmpty()) {
+                        cursorDataCache.cursorChars[0] = charAssessor.getPreviewCursorCharacter(dataPosition, byteOnRow, previewCharPos, cursorDataCache.cursorData, 0, BasicCodeAreaSection.TEXT_PREVIEW);
                     } else {
-                        if (charMappingCharset == null || charMappingCharset != charset) {
-                            buildCharMapping(charset);
-                        }
+                        if (maxBytesPerChar > 1) {
+                            int charDataLength = maxBytesPerChar;
+                            if (dataPosition + maxBytesPerChar > dataSize) {
+                                charDataLength = (int) (dataSize - dataPosition);
+                            }
 
-                        if (contentData.isEmpty()) {
-                            cursorDataCache.cursorChars[0] = ' ';
+                            contentData.copyToArray(dataPosition, cursorDataCache.cursorData, 0, charDataLength);
+                            cursorDataCache.cursorChars[0] = charAssessor.getPreviewCursorCharacter(dataPosition, byteOnRow, previewCharPos, cursorDataCache.cursorData, charDataLength, BasicCodeAreaSection.TEXT_PREVIEW);
                         } else {
-                            cursorDataCache.cursorChars[0] = charMapping[contentData.getByte(dataPosition) & 0xFF];
+                            cursorDataCache.cursorData[0] = contentData.getByte(dataPosition);
+                            cursorDataCache.cursorChars[0] = charAssessor.getPreviewCursorCharacter(dataPosition, byteOnRow, previewCharPos, cursorDataCache.cursorData, 1, BasicCodeAreaSection.TEXT_PREVIEW);
                         }
                     }
                     int posX = previewRelativeX + charPos * characterWidth - scrollPosition.getCharPosition() * characterWidth - scrollPosition.getCharOffset();
@@ -1410,18 +1392,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         g.drawChars(drawnChars, charOffset, length, positionX, positionY);
     }
 
-    /**
-     * Precomputes widths for basic ascii characters.
-     *
-     * @param charset character set
-     */
-    private void buildCharMapping(Charset charset) {
-        for (int i = 0; i < 256; i++) {
-            charMapping[i] = new String(new byte[]{(byte) i}, charset).charAt(0);
-        }
-        charMappingCharset = charset;
-    }
-
     private int getRowPositionLength() {
         if (minRowPositionLength > 0 && minRowPositionLength == maxRowPositionLength) {
             return minRowPositionLength;
@@ -1583,8 +1553,25 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
 
     @Nonnull
     @Override
+    public Charset getCharset() {
+        return charset;
+    }
+
+    @Override
+    public int getMaxBytesPerChar() {
+        return metrics.getMaxBytesPerChar();
+    }
+
+    @Nonnull
+    @Override
     public CodeAreaColorsProfile getColorsProfile() {
         return colorsProfile;
+    }
+
+    @Nonnull
+    @Override
+    public byte[] getRowData() {
+        return rowDataCache.rowData;
     }
 
     @Override

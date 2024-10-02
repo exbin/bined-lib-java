@@ -25,8 +25,8 @@ import org.exbin.bined.basic.BasicCodeAreaSection;
 import org.exbin.bined.CodeAreaSection;
 import org.exbin.bined.color.CodeAreaBasicColors;
 import org.exbin.bined.swing.CodeAreaPaintState;
-import org.exbin.bined.swing.CodeAreaPositionColor;
 import org.exbin.bined.swing.basic.color.CodeAreaColorsProfile;
+import org.exbin.bined.swing.CodeAreaColorAssessor;
 
 /**
  * Support for highlighting of non-ascii characters.
@@ -34,9 +34,9 @@ import org.exbin.bined.swing.basic.color.CodeAreaColorsProfile;
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public class NonAsciiCodeAreaPositionColor implements CodeAreaPositionColor {
+public class NonAsciiCodeAreaColorAssessor implements CodeAreaColorAssessor {
 
-    private final CodeAreaPositionColor parentPositionColor;
+    private final CodeAreaColorAssessor parentAssessor;
 
     private Color controlCodes;
     private Color upperCodes;
@@ -46,8 +46,8 @@ public class NonAsciiCodeAreaPositionColor implements CodeAreaPositionColor {
     private long dataSize;
     private BinaryData contentData;
 
-    public NonAsciiCodeAreaPositionColor(@Nullable CodeAreaPositionColor parentPositionColor) {
-        this.parentPositionColor = parentPositionColor;
+    public NonAsciiCodeAreaColorAssessor(@Nullable CodeAreaColorAssessor parentAssessor) {
+        this.parentAssessor = parentAssessor;
     }
 
     @Override
@@ -121,7 +121,7 @@ public class NonAsciiCodeAreaPositionColor implements CodeAreaPositionColor {
     @Nullable
     @Override
     public Color getPositionTextColor(long rowDataPosition, int byteOnRow, int charOnRow, @Nonnull CodeAreaSection section) {
-        Color color = parentPositionColor != null ? parentPositionColor.getPositionTextColor(rowDataPosition, byteOnRow, charOnRow, section) : null;
+        Color color = parentAssessor != null ? parentAssessor.getPositionTextColor(rowDataPosition, byteOnRow, charOnRow, section) : null;
         if (nonAsciiHighlightingEnabled && section == BasicCodeAreaSection.CODE_MATRIX) {
             if (color == null || textColor.equals(color)) {
                 long dataPosition = rowDataPosition + byteOnRow;
@@ -142,16 +142,16 @@ public class NonAsciiCodeAreaPositionColor implements CodeAreaPositionColor {
     @Nullable
     @Override
     public Color getPositionBackgroundColor(long rowDataPosition, int byteOnRow, int charOnRow, CodeAreaSection section) {
-        if (parentPositionColor != null) {
-            return parentPositionColor.getPositionBackgroundColor(rowDataPosition, byteOnRow, charOnRow, section);
+        if (parentAssessor != null) {
+            return parentAssessor.getPositionBackgroundColor(rowDataPosition, byteOnRow, charOnRow, section);
         }
         return null;
     }
 
     @Nonnull
     @Override
-    public Optional<CodeAreaPositionColor> getParentPositionColor() {
-        return Optional.ofNullable(parentPositionColor);
+    public Optional<CodeAreaColorAssessor> getParentColorAssessor() {
+        return Optional.ofNullable(parentAssessor);
     }
 
     @Nonnull

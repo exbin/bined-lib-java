@@ -50,12 +50,12 @@ import org.exbin.auxiliary.binary_data.EmptyBinaryData;
 public abstract class CodeAreaCore extends JTextComponent implements CodeAreaControl, Accessible {
 
     @Nonnull
-    private BinaryData contentData = EmptyBinaryData.INSTANCE;
+    protected BinaryData contentData = EmptyBinaryData.INSTANCE;
 
     @Nonnull
-    private CodeAreaCommandHandler commandHandler;
+    protected CodeAreaCommandHandler commandHandler;
 
-    private final List<DataChangedListener> dataChangedListeners = new ArrayList<>();
+    protected final List<DataChangedListener> dataChangedListeners = new ArrayList<>();
 
     /**
      * Creates new instance with provided command handler factory method.

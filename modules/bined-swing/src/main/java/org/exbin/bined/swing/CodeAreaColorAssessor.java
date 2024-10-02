@@ -23,12 +23,12 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.CodeAreaSection;
 
 /**
- * Code area color position provider.
+ * Code area color assessor.
  *
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public interface CodeAreaPositionColor {
+public interface CodeAreaColorAssessor {
 
     /**
      * Reports start of the paint operation.
@@ -62,10 +62,10 @@ public interface CodeAreaPositionColor {
     Color getPositionBackgroundColor(long rowDataPosition, int byteOnRow, int charOnRow, CodeAreaSection section);
 
     /**
-     * Returns parent color modifier if present.
+     * Returns parent color assessor if present.
      *
-     * @return color modifier
+     * @return color assessor
      */
     @Nonnull
-    Optional<CodeAreaPositionColor> getParentPositionColor();
+    Optional<CodeAreaColorAssessor> getParentColorAssessor();
 }
