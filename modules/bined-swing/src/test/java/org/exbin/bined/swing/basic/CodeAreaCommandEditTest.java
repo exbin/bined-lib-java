@@ -17,6 +17,7 @@ package org.exbin.bined.swing.basic;
 
 import java.awt.Component;
 import java.awt.event.KeyEvent;
+import javax.annotation.ParametersAreNonnullByDefault;
 import javax.swing.JFrame;
 import org.exbin.auxiliary.binary_data.BinaryData;
 import org.exbin.auxiliary.binary_data.EditableBinaryData;
@@ -31,6 +32,7 @@ import org.junit.Test;
  *
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public class CodeAreaCommandEditTest {
 
     public CodeAreaCommandEditTest() {

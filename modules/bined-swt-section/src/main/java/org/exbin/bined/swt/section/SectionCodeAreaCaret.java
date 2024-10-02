@@ -31,22 +31,23 @@ import org.exbin.bined.swt.basic.CodeArea;
  *
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public class SectionCodeAreaCaret {
 
-    private static final int LINE_CURSOR_WIDTH = 1;
-    private static final int DOUBLE_CURSOR_WIDTH = 2;
-    private static final int DEFAULT_BLINK_RATE = 450;
+    protected static final int LINE_CURSOR_WIDTH = 1;
+    protected static final int DOUBLE_CURSOR_WIDTH = 2;
+    protected static final int DEFAULT_BLINK_RATE = 450;
 
-    private final CodeArea codeArea;
+    protected final CodeArea codeArea;
 
-    private final CaretPosition caretPosition = new CaretPosition();
-    private int blinkRate = 0;
-    private Timer blinkTimer = null;
-    private boolean cursorVisible = true;
-    private BasicCodeAreaSection section = BasicCodeAreaSection.CODE_MATRIX;
-    private CursorShape insertCursorShape = CursorShape.DOUBLE_LEFT;
-    private CursorShape overwriteCursorShape = CursorShape.BOX;
-    private CursorRenderingMode renderingMode = CursorRenderingMode.NEGATIVE;
+    protected final CaretPosition caretPosition = new CaretPosition();
+    protected int blinkRate = 0;
+    protected Timer blinkTimer = null;
+    protected boolean cursorVisible = true;
+    protected BasicCodeAreaSection section = BasicCodeAreaSection.CODE_MATRIX;
+    protected CursorShape insertCursorShape = CursorShape.DOUBLE_LEFT;
+    protected CursorShape overwriteCursorShape = CursorShape.BOX;
+    protected CursorRenderingMode renderingMode = CursorRenderingMode.NEGATIVE;
 
     public SectionCodeAreaCaret(CodeArea codeArea) {
         this.codeArea = codeArea;

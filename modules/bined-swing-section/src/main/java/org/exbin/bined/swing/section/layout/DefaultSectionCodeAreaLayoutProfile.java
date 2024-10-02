@@ -39,17 +39,17 @@ import org.exbin.bined.section.layout.SectionCodeAreaLayoutProfile;
 @ParametersAreNonnullByDefault
 public class DefaultSectionCodeAreaLayoutProfile implements SectionCodeAreaLayoutProfile {
 
-    private boolean showHeader = true;
-    private int topHeaderSpace = 0;
-    private int bottomHeaderSpace = 0;
+    protected boolean showHeader = true;
+    protected int topHeaderSpace = 0;
+    protected int bottomHeaderSpace = 0;
 
-    private boolean showRowPosition = true;
-    private int leftRowPositionSpace = 0;
-    private int rightRowPositionSpace = 0;
+    protected boolean showRowPosition = true;
+    protected int leftRowPositionSpace = 0;
+    protected int rightRowPositionSpace = 0;
 
-    private int halfSpaceGroupSize = 0;
-    private int spaceGroupSize = 1;
-    private int doubleSpaceGroupSize = 0;
+    protected int halfSpaceGroupSize = 0;
+    protected int spaceGroupSize = 1;
+    protected int doubleSpaceGroupSize = 0;
 
     public DefaultSectionCodeAreaLayoutProfile() {
     }

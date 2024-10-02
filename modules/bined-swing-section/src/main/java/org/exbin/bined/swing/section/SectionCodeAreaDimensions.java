@@ -32,38 +32,38 @@ import org.exbin.bined.section.layout.SectionCodeAreaLayoutProfile;
 @ParametersAreNonnullByDefault
 public class SectionCodeAreaDimensions {
 
-    private int scrollPanelX;
-    private int scrollPanelY;
-    private int scrollPanelWidth;
-    private int scrollPanelHeight;
-    private int verticalScrollBarSize;
-    private int horizontalScrollBarSize;
-    private int dataViewWidth;
-    private int dataViewHeight;
-    private int halfCharOffset;
-    private int rowOffset;
+    protected int scrollPanelX;
+    protected int scrollPanelY;
+    protected int scrollPanelWidth;
+    protected int scrollPanelHeight;
+    protected int verticalScrollBarSize;
+    protected int horizontalScrollBarSize;
+    protected int dataViewWidth;
+    protected int dataViewHeight;
+    protected int halfCharOffset;
+    protected int rowOffset;
 
-    private int headerAreaHeight;
-    private int rowPositionAreaWidth;
-    private int rowsPerRect;
-    private int rowsPerPage;
-    private int halfCharsPerPage;
-    private int halfCharsPerRect;
+    protected int headerAreaHeight;
+    protected int rowPositionAreaWidth;
+    protected int rowsPerRect;
+    protected int rowsPerPage;
+    protected int halfCharsPerPage;
+    protected int halfCharsPerRect;
 
     @Nullable
-    private SectionCodeAreaLayoutProfile layoutProfile;
+    protected SectionCodeAreaLayoutProfile layoutProfile;
     @Nonnull
-    private final Rectangle componentRectangle = new Rectangle();
+    protected final Rectangle componentRectangle = new Rectangle();
     @Nonnull
-    private final Rectangle mainAreaRectangle = new Rectangle();
+    protected final Rectangle mainAreaRectangle = new Rectangle();
     @Nonnull
-    private final Rectangle headerAreaRectangle = new Rectangle();
+    protected final Rectangle headerAreaRectangle = new Rectangle();
     @Nonnull
-    private final Rectangle rowPositionAreaRectangle = new Rectangle();
+    protected final Rectangle rowPositionAreaRectangle = new Rectangle();
     @Nonnull
-    private final Rectangle scrollPanelRectangle = new Rectangle();
+    protected final Rectangle scrollPanelRectangle = new Rectangle();
     @Nonnull
-    private final Rectangle dataViewRectangle = new Rectangle();
+    protected final Rectangle dataViewRectangle = new Rectangle();
 
     public void recomputeSizes(BasicCodeAreaMetrics metrics, int componentX, int componentY, int componentWidth, int componentHeight, int rowPositionLength, int verticalScrollBarSize, int horizontalScrollBarSize, SectionCodeAreaLayoutProfile layoutProfile) {
         componentRectangle.setBounds(componentX, componentY, componentWidth, componentHeight);

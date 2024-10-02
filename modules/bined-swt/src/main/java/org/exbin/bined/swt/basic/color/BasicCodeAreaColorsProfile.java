@@ -36,27 +36,27 @@ import org.exbin.bined.swt.CodeAreaSwtUtils;
 public class BasicCodeAreaColorsProfile implements CodeAreaColorsProfile {
 
     @Nullable
-    private Color textColor;
+    protected Color textColor;
     @Nullable
-    private Color textBackground;
+    protected Color textBackground;
     @Nullable
-    private Color selectionColor;
+    protected Color selectionColor;
     @Nullable
-    private Color selectionBackground;
+    protected Color selectionBackground;
     @Nullable
-    private Color selectionMirrorColor;
+    protected Color selectionMirrorColor;
     @Nullable
-    private Color selectionMirrorBackground;
+    protected Color selectionMirrorBackground;
     @Nullable
-    private Color alternateColor;
+    protected Color alternateColor;
     @Nullable
-    private Color alternateBackground;
+    protected Color alternateBackground;
     @Nullable
-    private Color cursorColor;
+    protected Color cursorColor;
     @Nullable
-    private Color cursorNegativeColor;
+    protected Color cursorNegativeColor;
     @Nullable
-    private Color decorationLine;
+    protected Color decorationLine;
 
     public BasicCodeAreaColorsProfile() {
     }

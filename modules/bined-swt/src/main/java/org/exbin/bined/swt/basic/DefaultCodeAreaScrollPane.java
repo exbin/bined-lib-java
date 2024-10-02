@@ -39,23 +39,23 @@ import org.exbin.bined.swt.CodeAreaSwtControl;
 @ParametersAreNonnullByDefault
 public class DefaultCodeAreaScrollPane extends ScrolledComposite {
 
-    private volatile boolean scrollingByUser = false;
-    private volatile boolean scrollingUpdate = false;
+    protected volatile boolean scrollingByUser = false;
+    protected volatile boolean scrollingUpdate = false;
 
     @Nonnull
-    private final VerticalScrollBarModel verticalScrollBarModel = new VerticalScrollBarModel();
+    protected final VerticalScrollBarModel verticalScrollBarModel = new VerticalScrollBarModel();
     @Nonnull
-    private final HorizontalScrollBarModel horizontalScrollBarModel = new HorizontalScrollBarModel();
+    protected final HorizontalScrollBarModel horizontalScrollBarModel = new HorizontalScrollBarModel();
     @Nonnull
-    private final BasicCodeAreaMetrics metrics;
+    protected final BasicCodeAreaMetrics metrics;
     @Nonnull
-    private final BasicCodeAreaStructure structure;
+    protected final BasicCodeAreaStructure structure;
     @Nonnull
-    private final BasicCodeAreaScrolling scrolling;
+    protected final BasicCodeAreaScrolling scrolling;
     @Nonnull
-    private final BasicCodeAreaDimensions dimensions;
+    protected final BasicCodeAreaDimensions dimensions;
     @Nonnull
-    private final CodeAreaSwtControl control;
+    protected final CodeAreaSwtControl control;
 
     public DefaultCodeAreaScrollPane(Composite parent, CodeAreaSwtControl control, BasicCodeAreaMetrics metrics, BasicCodeAreaStructure structure, BasicCodeAreaDimensions dimensions, BasicCodeAreaScrolling scrolling) {
         super(parent, SWT.H_SCROLL | SWT.V_SCROLL);

@@ -28,38 +28,38 @@ import org.exbin.bined.basic.BasicCodeAreaZone;
 @ParametersAreNonnullByDefault
 public class BasicCodeAreaDimensions {
 
-    private double scrollPanelX;
-    private double scrollPanelY;
-    private double scrollPanelWidth;
-    private double scrollPanelHeight;
-    private double verticalScrollBarSize;
-    private double horizontalScrollBarSize;
-    private double dataViewWidth;
-    private double dataViewHeight;
-    private int lastCharOffset;
-    private int lastRowOffset;
+    protected double scrollPanelX;
+    protected double scrollPanelY;
+    protected double scrollPanelWidth;
+    protected double scrollPanelHeight;
+    protected double verticalScrollBarSize;
+    protected double horizontalScrollBarSize;
+    protected double dataViewWidth;
+    protected double dataViewHeight;
+    protected int lastCharOffset;
+    protected int lastRowOffset;
 
-    private double headerAreaHeight;
-    private double rowPositionAreaWidth;
-    private int rowsPerRect;
-    private int rowsPerPage;
-    private int charactersPerPage;
-    private int charactersPerRect;
+    protected double headerAreaHeight;
+    protected double rowPositionAreaWidth;
+    protected int rowsPerRect;
+    protected int rowsPerPage;
+    protected int charactersPerPage;
+    protected int charactersPerRect;
 
     @Nonnull
-    private Rectangle2D componentRectangle = new Rectangle2D(0, 0, 0, 0);
+    protected Rectangle2D componentRectangle = new Rectangle2D(0, 0, 0, 0);
     @Nonnull
-    private Rectangle2D mainAreaRectangle = new Rectangle2D(0, 0, 0, 0);
+    protected Rectangle2D mainAreaRectangle = new Rectangle2D(0, 0, 0, 0);
     @Nonnull
-    private Rectangle2D headerAreaRectangle = new Rectangle2D(0, 0, 0, 0);
+    protected Rectangle2D headerAreaRectangle = new Rectangle2D(0, 0, 0, 0);
     @Nonnull
-    private Rectangle2D rowPositionAreaRectangle = new Rectangle2D(0, 0, 0, 0);
+    protected Rectangle2D rowPositionAreaRectangle = new Rectangle2D(0, 0, 0, 0);
     @Nonnull
-    private Rectangle2D scrollPanelRectangle = new Rectangle2D(0, 0, 0, 0);
+    protected Rectangle2D scrollPanelRectangle = new Rectangle2D(0, 0, 0, 0);
     @Nonnull
-    private Rectangle2D dataViewRectangle = new Rectangle2D(0, 0, 0, 0);
+    protected Rectangle2D dataViewRectangle = new Rectangle2D(0, 0, 0, 0);
     @Nonnull
-    private Rectangle2D dataViewInnerRectangle = new Rectangle2D(0, 0, 0, 0);
+    protected Rectangle2D dataViewInnerRectangle = new Rectangle2D(0, 0, 0, 0);
 
     public void recomputeSizes(BasicCodeAreaMetrics metrics, double componentX, double componentY, double componentWidth, double componentHeight, int rowPositionLength, int verticalScrollBarSize, int horizontalScrollBarSize) {
         componentRectangle = new Rectangle2D(componentX, componentY, componentWidth, componentHeight);

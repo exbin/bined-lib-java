@@ -79,16 +79,16 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     private final int metaMask = CodeAreaSwingUtils.getMetaMaskDown();
 
     @Nonnull
-    private final CodeAreaCore codeArea;
+    protected final CodeAreaCore codeArea;
     @Nonnull
-    private EnterKeyHandlingMode enterKeyHandlingMode = EnterKeyHandlingMode.PLATFORM_SPECIFIC;
+    protected EnterKeyHandlingMode enterKeyHandlingMode = EnterKeyHandlingMode.PLATFORM_SPECIFIC;
     @Nonnull
-    private TabKeyHandlingMode tabKeyHandlingMode = TabKeyHandlingMode.PLATFORM_SPECIFIC;
-    private final boolean codeTypeSupported;
-    private final boolean viewModeSupported;
+    protected TabKeyHandlingMode tabKeyHandlingMode = TabKeyHandlingMode.PLATFORM_SPECIFIC;
+    protected final boolean codeTypeSupported;
+    protected final boolean viewModeSupported;
 
     private Clipboard clipboard;
-    private boolean canPaste = false;
+    protected boolean canPaste = false;
     private CodeAreaSwingUtils.ClipboardData currentClipboardData = null;
     private DataFlavor binedDataFlavor;
     private DataFlavor binaryDataFlavor;

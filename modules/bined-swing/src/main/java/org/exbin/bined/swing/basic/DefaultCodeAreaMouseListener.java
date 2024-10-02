@@ -41,13 +41,13 @@ public class DefaultCodeAreaMouseListener extends MouseAdapter implements MouseM
 
     public static final int MOUSE_SCROLL_LINES = 3;
 
-    private final CodeAreaCore codeArea;
-    private final JScrollPane view;
+    protected final CodeAreaCore codeArea;
+    protected final JScrollPane view;
 
-    private final Cursor defaultCursor = Cursor.getDefaultCursor();
-    private final Cursor textCursor = Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR);
-    private Cursor currentCursor;
-    private boolean mouseDown = false;
+    protected final Cursor defaultCursor = Cursor.getDefaultCursor();
+    protected final Cursor textCursor = Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR);
+    protected Cursor currentCursor;
+    protected boolean mouseDown = false;
 
     public DefaultCodeAreaMouseListener(CodeAreaCore codeArea, JScrollPane view) {
         this.codeArea = codeArea;

@@ -22,6 +22,7 @@ import org.exbin.auxiliary.binary_data.BinaryData;
 import org.exbin.bined.EditMode;
 import org.exbin.bined.basic.CodeAreaScrollPosition;
 import org.exbin.bined.swing.section.SectCodeArea;
+import org.exbin.bined.swing.section.SectionCodeAreaPainter;
 
 /**
  * Panel for difference comparison of two code areas.
@@ -31,27 +32,29 @@ import org.exbin.bined.swing.section.SectCodeArea;
 @ParametersAreNonnullByDefault
 public class SectCodeAreaDiffPanel extends javax.swing.JPanel {
 
-    private final SectCodeArea leftCodeArea;
-    private final SectCodeArea rightCodeArea;
-    private final DiffHighlightCodeAreaPainter leftPainter;
-    private final DiffHighlightCodeAreaPainter rightPainter;
-    private volatile boolean updatingScrolling = false;
+    protected final SectCodeArea leftCodeArea;
+    protected final SectCodeArea rightCodeArea;
+    protected final DiffHighlightCodeAreaColorAssessor leftColorAssessor;
+    protected final DiffHighlightCodeAreaColorAssessor rightColorAssessor;
+    protected volatile boolean updatingScrolling = false;
 
     public SectCodeAreaDiffPanel() {
         initComponents();
 
         leftCodeArea = new SectCodeArea();
         rightCodeArea = new SectCodeArea();
-        leftPainter = new DiffHighlightCodeAreaPainter(leftCodeArea);
-        rightPainter = new DiffHighlightCodeAreaPainter(rightCodeArea);
+        SectionCodeAreaPainter leftCodeAreaPainter = (SectionCodeAreaPainter) leftCodeArea.getPainter();
+        leftColorAssessor = new DiffHighlightCodeAreaColorAssessor(leftCodeArea, leftCodeAreaPainter.getColorAssessor(), rightCodeArea.getContentData());
+        leftCodeAreaPainter.setColorAssessor(leftColorAssessor);
+        SectionCodeAreaPainter rightCodeAreaPainter = (SectionCodeAreaPainter) rightCodeArea.getPainter();
+        rightColorAssessor = new DiffHighlightCodeAreaColorAssessor(rightCodeArea, rightCodeAreaPainter.getColorAssessor(), leftCodeArea.getContentData());
+        rightCodeAreaPainter.setColorAssessor(rightColorAssessor);
         init();
     }
 
     private void init() {
         leftCodeArea.setEditMode(EditMode.READ_ONLY);
         rightCodeArea.setEditMode(EditMode.READ_ONLY);
-        leftCodeArea.setPainter(leftPainter);
-        rightCodeArea.setPainter(rightPainter);
         leftPanel.add(leftCodeArea, BorderLayout.CENTER);
         rightPanel.add(rightCodeArea, BorderLayout.CENTER);
 
@@ -138,11 +141,11 @@ public class SectCodeAreaDiffPanel extends javax.swing.JPanel {
 
     public void setLeftContentData(BinaryData contentData) {
         leftCodeArea.setContentData(contentData);
-        rightPainter.setComparedData(contentData);
+        rightColorAssessor.setComparedData(contentData);
     }
 
     public void setRightContentData(BinaryData contentData) {
         rightCodeArea.setContentData(contentData);
-        leftPainter.setComparedData(contentData);
+        leftColorAssessor.setComparedData(contentData);
     }
 }

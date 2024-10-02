@@ -22,12 +22,13 @@ import org.eclipse.swt.graphics.Color;
  *
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public class ColorsGroup {
 
-    private Color textColor;
-    private Color backgroundColor;
-    private Color unprintablesColor;
-    private Color unprintablesBackgroundColor;
+    protected Color textColor;
+    protected Color backgroundColor;
+    protected Color unprintablesColor;
+    protected Color unprintablesBackgroundColor;
 
     public ColorsGroup() {
     }

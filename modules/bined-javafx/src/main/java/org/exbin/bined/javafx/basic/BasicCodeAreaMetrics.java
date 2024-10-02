@@ -32,13 +32,13 @@ import org.exbin.bined.CharsetStreamTranslator;
 public class BasicCodeAreaMetrics {
 
     @Nullable
-    private FontMetrics fontMetrics;
+    protected FontMetrics fontMetrics;
 
-    private int rowHeight;
-    private int characterWidth;
-    private int fontHeight;
-    private int maxBytesPerChar;
-    private int subFontSpace = 0;
+    protected int rowHeight;
+    protected int characterWidth;
+    protected int fontHeight;
+    protected int maxBytesPerChar;
+    protected int subFontSpace = 0;
 
     public void recomputeMetrics(@Nullable FontMetrics fontMetrics, Charset charset) {
         this.fontMetrics = fontMetrics;

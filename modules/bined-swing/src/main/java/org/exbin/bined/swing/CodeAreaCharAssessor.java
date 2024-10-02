@@ -26,14 +26,7 @@ import org.exbin.bined.CodeAreaSection;
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public interface CodeAreaCharAssessor {
-
-    /**
-     * Reports start of the paint operation.
-     *
-     * @param codeAreaPainterState paint state
-     */
-    void startPaint(CodeAreaPaintState codeAreaPainterState);
+public interface CodeAreaCharAssessor extends CodeAreaPaintAssessor {
 
     /**
      * Returns preview character for particular position.

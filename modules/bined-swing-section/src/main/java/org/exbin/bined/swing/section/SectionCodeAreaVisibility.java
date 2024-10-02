@@ -31,23 +31,41 @@ import org.exbin.bined.section.layout.SectionCodeAreaLayoutProfile;
 @ParametersAreNonnullByDefault
 public class SectionCodeAreaVisibility {
 
-    private int splitLinePos;
+    protected int splitLinePos;
 
-    private int skipTo;
-    private int skipToChar;
-    private int skipRestFrom;
-    private int skipRestFromChar;
+    protected int skipTo;
+    protected int skipToChar;
+    protected int skipRestFrom;
+    protected int skipRestFromChar;
 
-    private boolean codeSectionVisible;
-    private boolean previewSectionVisible;
+    protected boolean codeSectionVisible;
+    protected boolean previewSectionVisible;
+
+    protected int codeLastCharPos;
+    protected int previewCharPos;
 
     public void recomputeCharPositions(BasicCodeAreaMetrics metrics, SectionCodeAreaStructure structure, SectionCodeAreaDimensions dimensions, SectionCodeAreaLayoutProfile layout, SectionCodeAreaScrolling scrolling) {
+        int bytesPerRow = structure.getBytesPerRow();
         int characterWidth = metrics.getCharacterWidth();
+        int charsPerByte = structure.getCodeType().getMaxDigitsForByte() + 1;
         int halfSpaceWidth = characterWidth / 2;
         CodeAreaViewMode viewMode = structure.getViewMode();
 
         int invisibleFromLeftX = scrolling.getHorizontalScrollX(characterWidth);
         int invisibleFromRightX = invisibleFromLeftX + dimensions.getDataViewWidth();
+
+        // Compute first and last visible character of the code area
+        if (viewMode != CodeAreaViewMode.TEXT_PREVIEW) {
+            codeLastCharPos = bytesPerRow * charsPerByte - 1;
+        } else {
+            codeLastCharPos = 0;
+        }
+
+        if (viewMode == CodeAreaViewMode.DUAL) {
+            previewCharPos = bytesPerRow * charsPerByte;
+        } else {
+            previewCharPos = 0;
+        }
 
         skipTo = 0;
         skipToChar = 0;
@@ -125,5 +143,13 @@ public class SectionCodeAreaVisibility {
 
     public int getMaxRowDataChars() {
         return skipRestFromChar - skipToChar;
+    }
+
+    public int getCodeLastCharPos() {
+        return codeLastCharPos;
+    }
+
+    public int getPreviewCharPos() {
+        return previewCharPos;
     }
 }

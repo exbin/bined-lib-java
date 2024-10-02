@@ -41,10 +41,10 @@ import org.exbin.bined.CodeAreaUtils;
 public abstract class CodeAreaCore extends Pane implements CodeAreaControl {
 
     @Nonnull
-    private BinaryData contentData = EmptyBinaryData.INSTANCE;
+    protected BinaryData contentData = EmptyBinaryData.INSTANCE;
 
     @Nonnull
-    private CodeAreaCommandHandler commandHandler;
+    protected CodeAreaCommandHandler commandHandler;
 
     private final List<DataChangedListener> dataChangedListeners = new ArrayList<>();
 

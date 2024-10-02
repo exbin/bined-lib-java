@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.swing;
+package org.exbin.bined.javafx;
 
 import java.nio.charset.Charset;
 import javax.annotation.Nonnull;
@@ -22,7 +22,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.auxiliary.binary_data.BinaryData;
 import org.exbin.bined.CodeAreaSection;
 import org.exbin.bined.CodeAreaSelection;
-import org.exbin.bined.swing.basic.color.CodeAreaColorsProfile;
+import org.exbin.bined.javafx.basic.color.CodeAreaColorsProfile;
 
 /**
  * Code area paint state.

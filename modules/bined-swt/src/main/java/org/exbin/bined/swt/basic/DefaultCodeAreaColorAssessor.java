@@ -13,20 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.swing.basic;
+package org.exbin.bined.swt.basic;
 
-import java.awt.Color;
 import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import org.eclipse.swt.graphics.Color;
 import org.exbin.bined.CodeAreaSection;
 import org.exbin.bined.CodeAreaSelection;
 import org.exbin.bined.basic.BasicCodeAreaSection;
 import org.exbin.bined.color.CodeAreaBasicColors;
-import org.exbin.bined.swing.CodeAreaPaintState;
-import org.exbin.bined.swing.CodeAreaColorAssessor;
-import org.exbin.bined.swing.basic.color.CodeAreaColorsProfile;
+import org.exbin.bined.swt.CodeAreaColorAssessor;
+import org.exbin.bined.swt.CodeAreaPaintState;
+import org.exbin.bined.swt.basic.color.CodeAreaColorsProfile;
 
 /**
  * Default code area color assessor.
@@ -64,10 +64,6 @@ public class DefaultCodeAreaColorAssessor implements CodeAreaColorAssessor {
         selectionMirrorColor = colorsProfile.getColor(CodeAreaBasicColors.SELECTION_MIRROR_COLOR);
         selectionBackground = colorsProfile.getColor(CodeAreaBasicColors.SELECTION_BACKGROUND);
         selectionMirrorBackground = colorsProfile.getColor(CodeAreaBasicColors.SELECTION_MIRROR_BACKGROUND);
-
-        if (parentAssessor != null) {
-            parentAssessor.startPaint(codeAreaPainterState);
-        }
     }
 
     @Nullable

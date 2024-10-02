@@ -74,53 +74,53 @@ import org.exbin.bined.CodeAreaCaretListener;
 public class SectCodeArea extends Composite implements CodeAreaControl {
 
     @Nullable
-    private BinaryData data;
+    protected BinaryData data;
 
     @Nonnull
-    private CodeAreaWorker worker;
+    protected CodeAreaWorker worker;
     @Nonnull
-    private CodeAreaCommandHandler commandHandler;
+    protected CodeAreaCommandHandler commandHandler;
 
     private final List<DataChangedListener> dataChangedListeners = new ArrayList<>();
 
-    private final SectionCodeAreaCaret caret;
-    private SelectionRange selection;
+    protected final SectionCodeAreaCaret caret;
+    protected SelectionRange selection;
 
-    private ViewMode viewMode = ViewMode.DUAL;
-    private CodeType codeType = CodeType.HEXADECIMAL;
-    private PositionCodeType positionCodeType = PositionCodeType.HEXADECIMAL;
-    private BackgroundPaintMode backgroundPaintMode = BackgroundPaintMode.STRIPPED;
-    private boolean lineNumberBackground = true;
-    private Charset charset = Charset.defaultCharset();
-    private int decorationMode = DECORATION_DEFAULT;
-    private EditAllowed editAllowed = EditAllowed.ALLOWED;
-    private EditMode editMode = EditMode.OVERWRITE;
-    private CharRenderingMode charRenderingMode = CharRenderingMode.AUTO;
-    private CharAntialiasingMode charAntialiasingMode = CharAntialiasingMode.AUTO;
-    private HexCharactersCase hexCharactersCase = HexCharactersCase.UPPER;
-    private final CodeAreaSpace headerSpace = new CodeAreaSpace(CodeAreaSpace.SpaceType.HALF_UNIT);
-    private final CodeAreaSpace lineNumberSpace = new CodeAreaSpace();
-    private final CodeAreaLineNumberLength lineNumberLength = new CodeAreaLineNumberLength();
+    protected ViewMode viewMode = ViewMode.DUAL;
+    protected CodeType codeType = CodeType.HEXADECIMAL;
+    protected PositionCodeType positionCodeType = PositionCodeType.HEXADECIMAL;
+    protected BackgroundPaintMode backgroundPaintMode = BackgroundPaintMode.STRIPPED;
+    protected boolean lineNumberBackground = true;
+    protected Charset charset = Charset.defaultCharset();
+    protected int decorationMode = DECORATION_DEFAULT;
+    protected EditAllowed editAllowed = EditAllowed.ALLOWED;
+    protected EditMode editMode = EditMode.OVERWRITE;
+    protected CharRenderingMode charRenderingMode = CharRenderingMode.AUTO;
+    protected CharAntialiasingMode charAntialiasingMode = CharAntialiasingMode.AUTO;
+    protected HexCharactersCase hexCharactersCase = HexCharactersCase.UPPER;
+    protected final CodeAreaSpace headerSpace = new CodeAreaSpace(CodeAreaSpace.SpaceType.HALF_UNIT);
+    protected final CodeAreaSpace lineNumberSpace = new CodeAreaSpace();
+    protected final CodeAreaLineNumberLength lineNumberLength = new CodeAreaLineNumberLength();
 
-    private int lineLength = 16;
-    private int byteGroupSize = 1;
-    private int spaceGroupSize = 0;
-    private int subFontSpace = 3;
-    private boolean showHeader = true;
-    private boolean showLineNumbers = true;
-    private boolean mouseDown;
-    private boolean wrapMode = false;
-    private boolean handleClipboard = true;
-    private boolean showUnprintableCharacters = false;
-    private boolean showShadowCursor = true;
+    protected int lineLength = 16;
+    protected int byteGroupSize = 1;
+    protected int spaceGroupSize = 0;
+    protected int subFontSpace = 3;
+    protected boolean showHeader = true;
+    protected boolean showLineNumbers = true;
+    protected boolean mouseDown;
+    protected boolean wrapMode = false;
+    protected boolean handleClipboard = true;
+    protected boolean showUnprintableCharacters = false;
+    protected boolean showShadowCursor = true;
 
-    private ScrollBarVisibility verticalScrollBarVisibility = ScrollBarVisibility.IF_NEEDED;
-    private VerticalScrollMode verticalScrollMode = VerticalScrollMode.PER_LINE;
-    private ScrollBarVisibility horizontalScrollBarVisibility = ScrollBarVisibility.IF_NEEDED;
-    private HorizontalScrollMode horizontalScrollMode = HorizontalScrollMode.PIXEL;
-    private ScrollBar horizontalScrollBar;
-    private ScrollBar verticalScrollBar;
-    private final ScrollPosition scrollPosition = new ScrollPosition();
+    protected ScrollBarVisibility verticalScrollBarVisibility = ScrollBarVisibility.IF_NEEDED;
+    protected VerticalScrollMode verticalScrollMode = VerticalScrollMode.PER_LINE;
+    protected ScrollBarVisibility horizontalScrollBarVisibility = ScrollBarVisibility.IF_NEEDED;
+    protected HorizontalScrollMode horizontalScrollMode = HorizontalScrollMode.PIXEL;
+    protected ScrollBar horizontalScrollBar;
+    protected ScrollBar verticalScrollBar;
+    protected final ScrollPosition scrollPosition = new ScrollPosition();
 
     /**
      * Component colors.

@@ -68,21 +68,21 @@ import org.exbin.bined.capability.EditModeCapable;
 public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
     public static final int LAST_CONTROL_CODE = 31;
-    private static final char DELETE_CHAR = (char) 0x7f;
+    protected static final char DELETE_CHAR = (char) 0x7f;
 
     private final int metaMask = CodeAreaSwtUtils.getMetaMask();
 
     @Nonnull
-    private final CodeAreaCore codeArea;
+    protected final CodeAreaCore codeArea;
     @Nonnull
-    private EnterKeyHandlingMode enterKeyHandlingMode = EnterKeyHandlingMode.PLATFORM_SPECIFIC;
-    private final boolean codeTypeSupported;
-    private final boolean viewModeSupported;
+    protected EnterKeyHandlingMode enterKeyHandlingMode = EnterKeyHandlingMode.PLATFORM_SPECIFIC;
+    protected final boolean codeTypeSupported;
+    protected final boolean viewModeSupported;
 
-    private Clipboard clipboard;
-    private boolean canPaste = false;
-    private DataFlavor binaryDataFlavor;
-    private CodeAreaSwtUtils.ClipboardData currentClipboardData = null;
+    protected Clipboard clipboard;
+    protected boolean canPaste = false;
+    protected DataFlavor binaryDataFlavor;
+    protected CodeAreaSwtUtils.ClipboardData currentClipboardData = null;
 
     public DefaultCodeAreaCommandHandler(CodeAreaCore codeArea) {
         this.codeArea = codeArea;

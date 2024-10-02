@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.section.color;
+package org.exbin.bined.highlight.swing.color;
 
 import java.util.Optional;
 import javax.annotation.Nonnull;
@@ -24,22 +24,22 @@ import org.exbin.bined.color.CodeAreaColorGroup;
 import org.exbin.bined.color.CodeAreaColorType;
 
 /**
- * Enumeration of unprintable color types.
+ * Enumeration of non-printable color types.
  *
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public enum CodeAreaUnprintablesColorType implements CodeAreaColorType {
+public enum CodeAreaNonprintablesColorType implements CodeAreaColorType {
 
-    UNPRINTABLES_COLOR(CodeAreaBasicColors.TEXT_COLOR.getId(), SectionCodeAreaColorsGroup.UNPRINTABLES),
-    UNPRINTABLES_BACKGROUND(CodeAreaBasicColors.TEXT_BACKGROUND.getId(), SectionCodeAreaColorsGroup.UNPRINTABLES);
+    NONPRINTABLES_COLOR(CodeAreaBasicColors.TEXT_COLOR.getId(), NonprintableCodeAreaColorsGroup.NONPRINTABLES),
+    NONPRINTABLES_BACKGROUND(CodeAreaBasicColors.TEXT_BACKGROUND.getId(), NonprintableCodeAreaColorsGroup.NONPRINTABLES);
 
     @Nonnull
     private final String typeId;
     @Nullable
     private final CodeAreaColorGroup group;
 
-    private CodeAreaUnprintablesColorType(String typeId, @Nullable CodeAreaColorGroup group) {
+    private CodeAreaNonprintablesColorType(String typeId, @Nullable CodeAreaColorGroup group) {
         this.typeId = typeId;
         this.group = group;
     }

@@ -16,53 +16,58 @@
 package org.exbin.bined.swing.section.diff;
 
 import java.awt.Color;
-import java.awt.Graphics;
+import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.CodeAreaSection;
-import org.exbin.bined.swing.CodeAreaCore;
-import org.exbin.bined.swing.section.SectionCodeAreaPainter;
 import org.exbin.auxiliary.binary_data.BinaryData;
+import org.exbin.bined.swing.CodeAreaColorAssessor;
+import org.exbin.bined.swing.CodeAreaCore;
+import org.exbin.bined.swing.CodeAreaPaintState;
 
 /**
- * Highlighting painter for basic binary diff.
+ * Highlighting color assessor for basic binary diff.
  *
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public class DiffHighlightCodeAreaPainter extends SectionCodeAreaPainter {
+public class DiffHighlightCodeAreaColorAssessor implements CodeAreaColorAssessor {
 
-    private BinaryData comparedData;
-    private Color diffColor;
-    private Color addedColor;
+    protected CodeAreaColorAssessor parentAssessor;
+    protected BinaryData comparedData;
+    protected Color diffColor;
+    protected Color addedColor;
 
-    public DiffHighlightCodeAreaPainter(CodeAreaCore codeArea) {
-        this(codeArea, null);
-    }
+    protected CodeAreaCore codeArea;
+    protected long dataSize;
 
-    public DiffHighlightCodeAreaPainter(CodeAreaCore codeArea, @Nullable BinaryData comparedData) {
-        super(codeArea);
-
+    public DiffHighlightCodeAreaColorAssessor(CodeAreaCore codeArea, @Nullable CodeAreaColorAssessor parentColorAssessor, @Nullable BinaryData comparedData) {
+        this.codeArea = codeArea;
+        this.parentAssessor = parentColorAssessor;
         this.comparedData = comparedData;
         diffColor = new Color(255, 180, 180);
         addedColor = new Color(180, 255, 180);
     }
 
     @Override
-    public void paintMainArea(@Nonnull Graphics g) {
-        super.paintMainArea(g);
+    public void startPaint(CodeAreaPaintState codeAreaPainterState) {
+        dataSize = codeAreaPainterState.getDataSize();
+        
+        if (parentAssessor != null) {
+            parentAssessor.startPaint(codeAreaPainterState);
+        }
     }
 
     @Nullable
     @Override
-    public Color getPositionTextColor(long rowDataPosition, int byteOnRow, int charOnRow, CodeAreaSection section, boolean unprintables) {
+    public Color getPositionTextColor(long rowDataPosition, int byteOnRow, int charOnRow, CodeAreaSection section) {
         long position = rowDataPosition + byteOnRow;
         if (comparedData != null && position >= comparedData.getDataSize()) {
             return addedColor;
         }
 
-        if (comparedData != null && position < codeArea.getDataSize() && position < comparedData.getDataSize()) {
+        if (comparedData != null && position < dataSize && position < comparedData.getDataSize()) {
             byte sourceByte = codeArea.getContentData().getByte(position);
             byte comparedByte = comparedData.getByte(position);
 
@@ -71,7 +76,27 @@ public class DiffHighlightCodeAreaPainter extends SectionCodeAreaPainter {
             }
         }
 
-        return super.getPositionTextColor(rowDataPosition, byteOnRow, charOnRow, section, unprintables);
+        if (parentAssessor != null) {
+            return parentAssessor.getPositionTextColor(rowDataPosition, byteOnRow, charOnRow, section);
+        }
+        
+        return null;
+    }
+
+    @Nullable
+    @Override
+    public Color getPositionBackgroundColor(long rowDataPosition, int byteOnRow, int charOnRow, CodeAreaSection section) {
+        if (parentAssessor != null) {
+            return parentAssessor.getPositionBackgroundColor(rowDataPosition, byteOnRow, charOnRow, section);
+        }
+        
+        return null;
+    }
+
+    @Nonnull
+    @Override
+    public Optional<CodeAreaColorAssessor> getParentColorAssessor() {
+        return Optional.ofNullable(parentAssessor);
     }
 
     public void setComparedData(BinaryData comparedData) {

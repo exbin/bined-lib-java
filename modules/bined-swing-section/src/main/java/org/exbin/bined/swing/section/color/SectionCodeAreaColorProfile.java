@@ -26,7 +26,6 @@ import org.exbin.bined.color.BasicCodeAreaDecorationColorType;
 import org.exbin.bined.color.CodeAreaBasicColors;
 import org.exbin.bined.color.CodeAreaColorType;
 import org.exbin.bined.swing.basic.color.CodeAreaColorsProfile;
-import org.exbin.bined.section.color.CodeAreaUnprintablesColorType;
 import org.exbin.bined.swing.CodeAreaSwingUtils;
 
 /**
@@ -37,8 +36,8 @@ import org.exbin.bined.swing.CodeAreaSwingUtils;
 @ParametersAreNonnullByDefault
 public class SectionCodeAreaColorProfile implements CodeAreaColorsProfile {
 
-    private final Map<CodeAreaColorType, Color> colors = new HashMap<>();
-    private boolean inheritSystemColors = true;
+    protected final Map<CodeAreaColorType, Color> colors = new HashMap<>();
+    protected boolean inheritSystemColors = true;
 
     public SectionCodeAreaColorProfile() {
     }
@@ -146,8 +145,9 @@ public class SectionCodeAreaColorProfile implements CodeAreaColorsProfile {
             Color alternateBackground = CodeAreaSwingUtils.createOddColor(textBackground);
             colors.put(CodeAreaBasicColors.ALTERNATE_BACKGROUND, alternateBackground);
 
-            Color unprintablesColor = new Color(textColor.getRed(), textColor.getGreen(), (textColor.getBlue() + 196) % 256);
-            colors.put(CodeAreaUnprintablesColorType.UNPRINTABLES_COLOR, unprintablesColor);
+            // TODO Moved to highlight
+//            Color nonprintablesColor = new Color(textColor.getRed(), textColor.getGreen(), (textColor.getBlue() + 196) % 256);
+//            colors.put(CodeAreaNonprintablesColorType.NONPRINTABLES_COLOR, nonprintablesColor);
         }
     }
 }

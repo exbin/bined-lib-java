@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.swing.basic;
+package org.exbin.bined.swt.basic;
 
 import java.nio.charset.Charset;
 import java.util.Optional;
@@ -21,8 +21,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.CodeAreaSection;
-import org.exbin.bined.swing.CodeAreaCharAssessor;
-import org.exbin.bined.swing.CodeAreaPaintState;
+import org.exbin.bined.swt.CodeAreaCharAssessor;
+import org.exbin.bined.swt.CodeAreaPaintState;
 
 /**
  * Default code area character assessor.
@@ -53,16 +53,11 @@ public class DefaultCodeAreaCharAssessor implements CodeAreaCharAssessor {
     }
 
     @Override
-    public void startPaint(CodeAreaPaintState codeAreaPaintState) {
-        dataSize = codeAreaPaintState.getDataSize();
-        charset = codeAreaPaintState.getCharset();
-        rowData = codeAreaPaintState.getRowData();
-        maxBytesPerChar = codeAreaPaintState.getMaxBytesPerChar();
-
-        
-        if (parentAssessor != null) {
-            parentAssessor.startPaint(codeAreaPaintState);
-        }
+    public void startPaint(CodeAreaPaintState codeAreaPainterState) {
+        dataSize = codeAreaPainterState.getDataSize();
+        charset = codeAreaPainterState.getCharset();
+        rowData = codeAreaPainterState.getRowData();
+        maxBytesPerChar = codeAreaPainterState.getMaxBytesPerChar();
     }
 
     @Override

@@ -50,7 +50,6 @@ public class BasicCodeAreaVisibility {
         int bytesPerRow = structure.getBytesPerRow();
         int characterWidth = metrics.getCharacterWidth();
         int charsPerByte = structure.getCodeType().getMaxDigitsForByte() + 1;
-        previewRelativeX = previewCharPos * characterWidth;
 
         CodeAreaViewMode viewMode = structure.getViewMode();
 
@@ -71,6 +70,7 @@ public class BasicCodeAreaVisibility {
         } else {
             previewCharPos = 0;
         }
+        previewRelativeX = previewCharPos * characterWidth;
 
         skipToCode = 0;
         skipToChar = 0;

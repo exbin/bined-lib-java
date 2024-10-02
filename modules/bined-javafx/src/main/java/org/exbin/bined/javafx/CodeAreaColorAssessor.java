@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.swing;
+package org.exbin.bined.javafx;
 
-import java.awt.Color;
+import javafx.scene.paint.Color;
 import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

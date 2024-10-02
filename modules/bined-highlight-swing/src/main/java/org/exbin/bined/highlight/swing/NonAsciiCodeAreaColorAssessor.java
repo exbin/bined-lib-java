@@ -53,7 +53,7 @@ public class NonAsciiCodeAreaColorAssessor implements CodeAreaColorAssessor {
     @Override
     public void startPaint(CodeAreaPaintState codeAreaPaintState) {
         CodeAreaColorsProfile colorsProfile = codeAreaPaintState.getColorsProfile();
-        
+
         dataSize = codeAreaPaintState.getDataSize();
         contentData = codeAreaPaintState.getContentData();
 
@@ -116,6 +116,11 @@ public class NonAsciiCodeAreaColorAssessor implements CodeAreaColorAssessor {
         upperCodes = new Color(
                 downShift(textColor.getRed(), upperCodesGreenDiff + upperCodesBlueDiff),
                 upperCodesGreen, upperCodesBlue);
+
+        
+        if (parentAssessor != null) {
+            parentAssessor.startPaint(codeAreaPaintState);
+        }
     }
 
     @Nullable
@@ -145,6 +150,7 @@ public class NonAsciiCodeAreaColorAssessor implements CodeAreaColorAssessor {
         if (parentAssessor != null) {
             return parentAssessor.getPositionBackgroundColor(rowDataPosition, byteOnRow, charOnRow, section);
         }
+
         return null;
     }
 

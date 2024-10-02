@@ -39,13 +39,13 @@ public class DefaultCodeAreaMouseListener implements MouseListener, MouseMoveLis
 
     public static final int MOUSE_SCROLL_LINES = 3;
 
-    private final CodeAreaCore codeArea;
-    private final ScrolledComposite view;
+    protected final CodeAreaCore codeArea;
+    protected final ScrolledComposite view;
 
-    private final Cursor defaultCursor = new Cursor(null, SWT.CURSOR_ARROW); // Cursor.getDefaultCursor();
-    private final Cursor textCursor = new Cursor(null, SWT.CURSOR_IBEAM);
-    private Cursor currentCursor;
-    private boolean mouseDown = false;
+    protected final Cursor defaultCursor = new Cursor(null, SWT.CURSOR_ARROW); // Cursor.getDefaultCursor();
+    protected final Cursor textCursor = new Cursor(null, SWT.CURSOR_IBEAM);
+    protected Cursor currentCursor;
+    protected boolean mouseDown = false;
 
     public DefaultCodeAreaMouseListener(CodeAreaCore codeArea, ScrolledComposite view) {
         this.codeArea = codeArea;

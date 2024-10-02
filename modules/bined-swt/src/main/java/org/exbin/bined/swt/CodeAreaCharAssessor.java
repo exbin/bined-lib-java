@@ -13,25 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.swing;
+package org.exbin.bined.swt;
 
-import java.awt.Color;
 import java.util.Optional;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.CodeAreaSection;
 
 /**
- * Code area color assessor.
+ * Code area character assessor.
  *
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public interface CodeAreaColorAssessor extends CodeAreaPaintAssessor {
+public interface CodeAreaCharAssessor extends CodeAreaPaintAssessor {
 
     /**
-     * Returns background color for particular code.
+     * Returns preview character for particular position.
      *
      * @param rowDataPosition row data position
      * @param byteOnRow byte on current row
@@ -39,26 +37,26 @@ public interface CodeAreaColorAssessor extends CodeAreaPaintAssessor {
      * @param section current section
      * @return color or null for default color
      */
-    @Nullable
-    Color getPositionTextColor(long rowDataPosition, int byteOnRow, int charOnRow, CodeAreaSection section);
+    char getPreviewCharacter(long rowDataPosition, int byteOnRow, int charOnRow, CodeAreaSection section);
 
     /**
-     * Returns background color for particular code.
+     * Returns preview character for cursor position.
      *
      * @param rowDataPosition row data position
      * @param byteOnRow byte on current row
      * @param charOnRow character on current row
+     * @param cursorData cursor data
+     * @param cursorDataLength cursor data length
      * @param section current section
      * @return color or null for default color
      */
-    @Nullable
-    Color getPositionBackgroundColor(long rowDataPosition, int byteOnRow, int charOnRow, CodeAreaSection section);
+    char getPreviewCursorCharacter(long rowDataPosition, int byteOnRow, int charOnRow, byte[] cursorData, int cursorDataLength, CodeAreaSection section);
 
     /**
-     * Returns parent color assessor if present.
+     * Returns parent character assessor if present.
      *
-     * @return color assessor
+     * @return character assessor
      */
     @Nonnull
-    Optional<CodeAreaColorAssessor> getParentColorAssessor();
+    Optional<CodeAreaCharAssessor> getParentCharAssessor();
 }

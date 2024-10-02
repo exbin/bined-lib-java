@@ -35,13 +35,13 @@ public class DefaultCodeAreaMouseListener {
 
     public static final int MOUSE_SCROLL_LINES = 3;
 
-    private final CodeAreaCore codeArea;
-    private final ScrollPane view;
+    protected final CodeAreaCore codeArea;
+    protected final ScrollPane view;
 
-    private final Cursor defaultCursor = Cursor.DEFAULT;
-    private final Cursor textCursor = Cursor.TEXT;
-    private Cursor currentCursor;
-    private boolean mouseDown = false;
+    protected final Cursor defaultCursor = Cursor.DEFAULT;
+    protected final Cursor textCursor = Cursor.TEXT;
+    protected Cursor currentCursor;
+    protected boolean mouseDown = false;
 
     public DefaultCodeAreaMouseListener(CodeAreaCore codeArea, ScrollPane view) {
         this.codeArea = codeArea;

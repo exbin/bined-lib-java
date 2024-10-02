@@ -60,6 +60,11 @@ public class MatchCodeAreaColorAssessor implements CodeAreaColorAssessor {
     public void startPaint(CodeAreaPaintState codeAreaPaintState) {
         matchIndex = 0;
         charactersPerRow = codeAreaPaintState.getCharactersPerRow();
+
+        
+        if (parentAssessor != null) {
+            parentAssessor.startPaint(codeAreaPaintState);
+        }
     }
 
     @Nullable

@@ -36,24 +36,24 @@ import org.exbin.bined.CodeAreaCaretPosition;
 @ParametersAreNonnullByDefault
 public class SectionCodeAreaCaret implements CodeAreaCaret {
 
-    private static final int LINE_CURSOR_WIDTH = 1;
-    private static final int DOUBLE_CURSOR_WIDTH = 2;
-    private static final int DEFAULT_BLINK_RATE = 450;
+    protected static final int LINE_CURSOR_WIDTH = 1;
+    protected static final int DOUBLE_CURSOR_WIDTH = 2;
+    protected static final int DEFAULT_BLINK_RATE = 450;
 
     @Nonnull
-    private final CaretChangeListener changeListener;
-    private final DefaultCodeAreaCaretPosition caretPosition = new DefaultCodeAreaCaretPosition();
+    protected final CaretChangeListener changeListener;
+    protected final DefaultCodeAreaCaretPosition caretPosition = new DefaultCodeAreaCaretPosition();
 
-    private int blinkRate = 0;
-    private Timer blinkTimer = null;
-    private boolean cursorVisible = true;
+    protected int blinkRate = 0;
+    protected Timer blinkTimer = null;
+    protected boolean cursorVisible = true;
 
     @Nonnull
-    private CursorShape insertCursorShape = CursorShape.DOUBLE_LEFT;
+    protected CursorShape insertCursorShape = CursorShape.DOUBLE_LEFT;
     @Nonnull
-    private CursorShape overwriteCursorShape = CursorShape.BOX;
+    protected CursorShape overwriteCursorShape = CursorShape.BOX;
     @Nonnull
-    private CursorRenderingMode renderingMode = CursorRenderingMode.PAINT; //NEGATIVE;
+    protected CursorRenderingMode renderingMode = CursorRenderingMode.PAINT; //NEGATIVE;
 
     public SectionCodeAreaCaret(CaretChangeListener changeListener) {
         CodeAreaUtils.requireNonNull(changeListener, "Change listener cannot be null");

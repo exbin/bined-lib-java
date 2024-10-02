@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.swing;
+package org.exbin.bined.swt;
 
-import java.awt.Color;
+import org.eclipse.swt.graphics.Color;
 import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

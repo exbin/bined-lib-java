@@ -43,15 +43,15 @@ import org.exbin.bined.swt.ColorsGroup;
  *
  * @author ExBin Project (https://exbin.org)
  */
-public class DefaultCodeAreaPainter implements CodeAreaPainter {
+public class SectionCodeAreaPainter implements CodeAreaPainter {
 
     protected final CodeArea codeArea;
 
-    private Charset charMappingCharset = null;
+    protected Charset charMappingCharset = null;
     protected final char[] charMapping = new char[256];
     protected Map<Character, Character> unprintableCharactersMapping = null;
 
-    public DefaultCodeAreaPainter(CodeArea codeArea) {
+    public SectionCodeAreaPainter(CodeArea codeArea) {
         this.codeArea = codeArea;
     }
 

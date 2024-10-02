@@ -46,16 +46,17 @@ import org.exbin.bined.capability.CaretCapable;
  *
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
-    private static final int CODE_BUFFER_LENGTH = 16;
+    protected static final int CODE_BUFFER_LENGTH = 16;
 
-    private final int metaMask;
+    protected final int metaMask;
 
-    private final CodeArea codeArea;
-    private Clipboard clipboard;
-    private boolean canPaste = false;
-    private DataFlavor binaryDataFlavor;
+    protected final CodeArea codeArea;
+    protected Clipboard clipboard;
+    protected boolean canPaste = false;
+    protected DataFlavor binaryDataFlavor;
 
     public DefaultCodeAreaCommandHandler(CodeArea codeArea) {
         this.codeArea = codeArea;

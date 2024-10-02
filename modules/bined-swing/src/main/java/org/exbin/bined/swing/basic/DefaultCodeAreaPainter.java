@@ -162,7 +162,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
 
     public DefaultCodeAreaPainter(CodeAreaCore codeArea) {
         this.codeArea = codeArea;
-        
+
         colorAssessor = new DefaultCodeAreaColorAssessor();
         charAssessor = new DefaultCodeAreaCharAssessor();
 
@@ -612,6 +612,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         g.setClip(clipBounds != null ? clipBounds.intersection(mainAreaRect) : mainAreaRect);
         colorAssessor.startPaint(this);
         charAssessor.startPaint(this);
+
         paintBackground(g);
 
         // Decoration lines
@@ -1590,6 +1591,12 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         return codeArea.getContentData();
     }
 
+    @Nullable
+    @Override
+    public CodeAreaSelection getSelectionHandler() {
+        return ((SelectionCapable) codeArea).getSelectionHandler();
+    }
+
     public int getRowHeight() {
         return metrics.getRowHeight();
     }
@@ -1604,7 +1611,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         return verticalScrollBar.isVisible() ? verticalScrollBar.getWidth() : 0;
     }
 
-    private static class RowDataCache {
+    protected static class RowDataCache {
 
         char[] headerChars;
         byte[] rowData;
@@ -1612,7 +1619,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         char[] rowCharacters;
     }
 
-    private static class CursorDataCache {
+    protected static class CursorDataCache {
 
         Rectangle caretRect = new Rectangle();
         Rectangle mirrorCursorRect = new Rectangle();

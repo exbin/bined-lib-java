@@ -20,6 +20,7 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.auxiliary.binary_data.BinaryData;
 import org.exbin.bined.EditOperation;
 import org.exbin.bined.capability.CaretCapable;
@@ -36,6 +37,7 @@ import org.exbin.bined.capability.EditModeCapable;
  *
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public class CodeAreaCommandClipboardTest {
 
     public CodeAreaCommandClipboardTest() {

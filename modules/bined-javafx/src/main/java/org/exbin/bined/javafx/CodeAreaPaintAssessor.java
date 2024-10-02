@@ -13,34 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.section.color;
+package org.exbin.bined.javafx;
 
-import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import org.exbin.bined.color.CodeAreaColorGroup;
 
 /**
- * Enumeration of color groups for section code area.
+ * Code area paint assessor.
  *
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public enum SectionCodeAreaColorsGroup implements CodeAreaColorGroup {
+public interface CodeAreaPaintAssessor {
 
-    UNPRINTABLES("unprintables"),
-    CONTROL_CODES("control_codes"),
-    UPPER_CODES("upper_codes");
-
-    @Nonnull
-    private final String groupId;
-
-    SectionCodeAreaColorsGroup(String groupId) {
-        this.groupId = groupId;
-    }
-
-    @Nonnull
-    @Override
-    public String getId() {
-        return groupId;
-    }
+    /**
+     * Reports start of the paint operation.
+     *
+     * @param codeAreaPainterState paint state
+     */
+    void startPaint(CodeAreaPaintState codeAreaPainterState);
 }
