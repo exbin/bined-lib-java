@@ -13,26 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.highlight.swing;
+package org.exbin.bined.swing.capability;
 
-//import org.exbin.bined.highlight.swing.HighlightCodeAreaPainter;
-import org.exbin.bined.swing.basic.CodeArea;
-import org.junit.Test;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+import org.exbin.bined.swing.CodeAreaCharAssessor;
 
 /**
- * Tests for highlighting code area painter.
+ * Painter support for character assessor capability.
  *
  * @author ExBin Project (https://exbin.org)
  */
-public class HighlightCodeAreaPainterTest {
+@ParametersAreNonnullByDefault
+public interface CharAssessorPainterCapable {
 
-    public HighlightCodeAreaPainterTest() {
-    }
+    /**
+     * Returns character assessor.
+     *
+     * @return character assessor
+     */
+    @Nonnull
+    CodeAreaCharAssessor getCharAssessor();
 
-    @Test
-    public void testSetPainter() {
-        CodeArea codeArea = new CodeArea();
-//        HighlightCodeAreaPainter painter = new HighlightCodeAreaPainter(codeArea);
-//        codeArea.setPainter(painter);
-    }
+    /**
+     * Sets character assessor.
+     *
+     * @param charAssessor character assessor
+     */
+    void setCharAssessor(CodeAreaCharAssessor charAssessor);
 }

@@ -68,8 +68,7 @@ public class DefaultCodeAreaColorAssessor implements CodeAreaColorAssessor {
 
     @Nullable
     @Override
-    public Color getPositionTextColor(long rowDataPosition, int byteOnRow, int charOnRow, CodeAreaSection section) {
-        boolean inSelection = selectionHandler != null && selectionHandler.isInSelection(rowDataPosition + byteOnRow);
+    public Color getPositionTextColor(long rowDataPosition, int byteOnRow, int charOnRow, CodeAreaSection section, boolean inSelection) {
         if (inSelection) {
             return section == activeSection ? selectionColor : selectionMirrorColor;
         }
@@ -79,8 +78,7 @@ public class DefaultCodeAreaColorAssessor implements CodeAreaColorAssessor {
 
     @Nullable
     @Override
-    public Color getPositionBackgroundColor(long rowDataPosition, int byteOnRow, int charOnRow, CodeAreaSection section) {
-        boolean inSelection = selectionHandler != null && selectionHandler.isInSelection(rowDataPosition + byteOnRow);
+    public Color getPositionBackgroundColor(long rowDataPosition, int byteOnRow, int charOnRow, CodeAreaSection section, boolean inSelection) {
         if (inSelection && (section == BasicCodeAreaSection.CODE_MATRIX)) {
             if (charOnRow == codeLastCharPos) {
                 inSelection = false;

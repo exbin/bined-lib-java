@@ -105,6 +105,8 @@ import org.exbin.bined.swing.CodeAreaColorAssessor;
 import org.exbin.bined.swing.CodeAreaPaintState;
 import org.exbin.bined.swing.basic.DefaultCodeAreaCharAssessor;
 import org.exbin.bined.swing.basic.DefaultCodeAreaColorAssessor;
+import org.exbin.bined.swing.capability.CharAssessorPainterCapable;
+import org.exbin.bined.swing.capability.ColorAssessorPainterCapable;
 
 /**
  * Section code area component default painter.
@@ -112,7 +114,7 @@ import org.exbin.bined.swing.basic.DefaultCodeAreaColorAssessor;
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public class SectionCodeAreaPainter implements CodeAreaPainter, ColorsProfileCapableCodeAreaPainter, LayoutProfileCapableCodeAreaPainter, ThemeProfileCapableCodeAreaPainter, CaretsProfileCapableCodeAreaPainter, CodeAreaPaintState {
+public class SectionCodeAreaPainter implements CodeAreaPainter, ColorsProfileCapableCodeAreaPainter, LayoutProfileCapableCodeAreaPainter, ThemeProfileCapableCodeAreaPainter, CaretsProfileCapableCodeAreaPainter, CodeAreaPaintState, ColorAssessorPainterCapable, CharAssessorPainterCapable {
 
     @Nonnull
     protected final CodeAreaCore codeArea;
@@ -1078,7 +1080,9 @@ public class SectionCodeAreaPainter implements CodeAreaPainter, ColorsProfileCap
 
             boolean sequenceBreak = false;
 //            unprintable = showUnprintables && (rowDataCache.unprintables[byteOnRow >> 3] & (1 << (byteOnRow & 7))) != 0;
-            Color color = colorAssessor.getPositionBackgroundColor(rowDataPosition, byteOnRow, charPos, section);
+            CodeAreaSelection selectionHandler = ((SelectionCapable) codeArea).getSelectionHandler();
+            boolean inSelection = selectionHandler.isInSelection(rowDataPosition + byteOnRow);
+            Color color = colorAssessor.getPositionBackgroundColor(rowDataPosition, byteOnRow, charPos, section, inSelection);
             if (!CodeAreaSwingUtils.areSameColors(color, renderColor)) {
                 sequenceBreak = true;
             }
@@ -1244,7 +1248,7 @@ public class SectionCodeAreaPainter implements CodeAreaPainter, ColorsProfileCap
         char currentChar;
         do {
             CodeAreaSection section = positionIterator.getSection();
-            int byteOffset = positionIterator.getBytePosition();
+            int byteOnRow = positionIterator.getBytePosition();
 
 //            boolean currentUnprintables = false;
 //            if (showUnprintables) {
@@ -1261,7 +1265,9 @@ public class SectionCodeAreaPainter implements CodeAreaPainter, ColorsProfileCap
                     continue;
                 }
 
-                Color color = colorAssessor.getPositionTextColor(rowDataPosition, byteOffset, halfCharPos, section); // currentUnprintables
+                CodeAreaSelection selectionHandler = ((SelectionCapable) codeArea).getSelectionHandler();
+                boolean inSelection = selectionHandler.isInSelection(rowDataPosition + byteOnRow);
+                Color color = colorAssessor.getPositionTextColor(rowDataPosition, byteOnRow, halfCharPos, section, inSelection); // currentUnprintables
                 if (color == null) {
                     color = colorsProfile.getColor(CodeAreaBasicColors.TEXT_COLOR);
                 }
@@ -1306,7 +1312,9 @@ public class SectionCodeAreaPainter implements CodeAreaPainter, ColorsProfileCap
                     continue;
                 }
 
-                Color color = colorAssessor.getPositionTextColor(rowDataPosition, byteOffset, halfCharPos, section); // currentUnprintables
+                CodeAreaSelection selectionHandler = ((SelectionCapable) codeArea).getSelectionHandler();
+                boolean inSelection = selectionHandler.isInSelection(rowDataPosition + byteOnRow);
+                Color color = colorAssessor.getPositionTextColor(rowDataPosition, byteOnRow, halfCharPos, section, inSelection); // currentUnprintables
                 if (color == null) {
                     color = colorsProfile.getColor(CodeAreaBasicColors.TEXT_COLOR);
                 }
@@ -1403,19 +1411,23 @@ public class SectionCodeAreaPainter implements CodeAreaPainter, ColorsProfileCap
 //    }
 
     @Nonnull
+    @Override
     public CodeAreaColorAssessor getColorAssessor() {
         return colorAssessor;
     }
 
+    @Override
     public void setColorAssessor(CodeAreaColorAssessor colorAssessor) {
         this.colorAssessor = CodeAreaUtils.requireNonNull(colorAssessor);
     }
 
     @Nonnull
+    @Override
     public CodeAreaCharAssessor getCharAssessor() {
         return charAssessor;
     }
 
+    @Override
     public void setCharAssessor(CodeAreaCharAssessor charAssessor) {
         this.charAssessor = charAssessor;
     }

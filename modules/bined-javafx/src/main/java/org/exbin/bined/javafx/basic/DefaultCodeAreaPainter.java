@@ -81,6 +81,8 @@ import org.exbin.bined.javafx.CodeAreaCharAssessor;
 import org.exbin.bined.javafx.CodeAreaColorAssessor;
 import org.exbin.bined.javafx.CodeAreaPaintState;
 import org.exbin.bined.javafx.basic.color.CodeAreaColorsProfile;
+import org.exbin.bined.javafx.capability.CharAssessorPainterCapable;
+import org.exbin.bined.javafx.capability.ColorAssessorPainterCapable;
 
 /**
  * Code area component default painter.
@@ -88,7 +90,7 @@ import org.exbin.bined.javafx.basic.color.CodeAreaColorsProfile;
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapableCodeAreaPainter, CodeAreaPaintState {
+public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapableCodeAreaPainter, CodeAreaPaintState, ColorAssessorPainterCapable, CharAssessorPainterCapable {
 
     @Nonnull
     protected final CodeAreaCore codeArea;
@@ -857,7 +859,9 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
             }
             boolean sequenceBreak = false;
 
-            Color color = colorAssessor.getPositionBackgroundColor(rowDataPosition, byteOnRow, charOnRow, section);
+            CodeAreaSelection selectionHandler = ((SelectionCapable) codeArea).getSelectionHandler();
+            boolean inSelection = selectionHandler.isInSelection(rowDataPosition + byteOnRow);
+            Color color = colorAssessor.getPositionBackgroundColor(rowDataPosition, byteOnRow, charOnRow, section, inSelection);
             if (!CodeAreaJavaFxUtils.areSameColors(color, renderColor)) {
                 sequenceBreak = true;
             }
@@ -1005,7 +1009,9 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
                 continue;
             }
 
-            Color color = colorAssessor.getPositionTextColor(rowDataPosition, byteOnRow, charOnRow, section);
+            CodeAreaSelection selectionHandler = ((SelectionCapable) codeArea).getSelectionHandler();
+            boolean inSelection = selectionHandler.isInSelection(rowDataPosition + byteOnRow);
+            Color color = colorAssessor.getPositionTextColor(rowDataPosition, byteOnRow, charOnRow, section, inSelection);
             if (color == null) {
                 color = colorsProfile.getTextColor();
             }
@@ -1049,19 +1055,23 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
     }
 
     @Nonnull
+    @Override
     public CodeAreaColorAssessor getColorAssessor() {
         return colorAssessor;
     }
 
+    @Override
     public void setColorAssessor(CodeAreaColorAssessor colorAssessor) {
         this.colorAssessor = CodeAreaUtils.requireNonNull(colorAssessor);
     }
 
     @Nonnull
+    @Override
     public CodeAreaCharAssessor getCharAssessor() {
         return charAssessor;
     }
 
+    @Override
     public void setCharAssessor(CodeAreaCharAssessor charAssessor) {
         this.charAssessor = charAssessor;
     }

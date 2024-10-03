@@ -37,10 +37,11 @@ public interface CodeAreaColorAssessor extends CodeAreaPaintAssessor {
      * @param byteOnRow byte on current row
      * @param charOnRow character on current row
      * @param section current section
+     * @param inSelection true if in selection
      * @return color or null for default color
      */
     @Nullable
-    Color getPositionTextColor(long rowDataPosition, int byteOnRow, int charOnRow, CodeAreaSection section);
+    Color getPositionTextColor(long rowDataPosition, int byteOnRow, int charOnRow, CodeAreaSection section, boolean inSelection);
 
     /**
      * Returns background color for particular code.
@@ -49,10 +50,11 @@ public interface CodeAreaColorAssessor extends CodeAreaPaintAssessor {
      * @param byteOnRow byte on current row
      * @param charOnRow character on current row
      * @param section current section
+     * @param inSelection true if in selection
      * @return color or null for default color
      */
     @Nullable
-    Color getPositionBackgroundColor(long rowDataPosition, int byteOnRow, int charOnRow, CodeAreaSection section);
+    Color getPositionBackgroundColor(long rowDataPosition, int byteOnRow, int charOnRow, CodeAreaSection section, boolean inSelection);
 
     /**
      * Returns parent color assessor if present.

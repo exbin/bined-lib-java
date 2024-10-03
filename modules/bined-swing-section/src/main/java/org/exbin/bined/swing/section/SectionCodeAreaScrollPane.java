@@ -41,24 +41,24 @@ import org.exbin.bined.swing.basic.BasicCodeAreaMetrics;
 @ParametersAreNonnullByDefault
 public class SectionCodeAreaScrollPane extends JScrollPane {
 
-    private volatile boolean scrollingByUser = false;
-    private volatile boolean scrollingUpdate = false;
+    protected volatile boolean scrollingByUser = false;
+    protected volatile boolean scrollingUpdate = false;
 
     @Nonnull
-    private final VerticalScrollBarModel verticalScrollBarModel = new VerticalScrollBarModel();
+    protected final VerticalScrollBarModel verticalScrollBarModel = new VerticalScrollBarModel();
     @Nonnull
-    private final HorizontalScrollBarModel horizontalScrollBarModel = new HorizontalScrollBarModel();
+    protected final HorizontalScrollBarModel horizontalScrollBarModel = new HorizontalScrollBarModel();
 
     @Nonnull
-    private final CodeAreaSwingControl control;
+    protected final CodeAreaSwingControl control;
     @Nonnull
-    private final BasicCodeAreaMetrics metrics;
+    protected final BasicCodeAreaMetrics metrics;
     @Nonnull
-    private final SectionCodeAreaStructure structure;
+    protected final SectionCodeAreaStructure structure;
     @Nonnull
-    private final SectionCodeAreaScrolling scrolling;
+    protected final SectionCodeAreaScrolling scrolling;
     @Nonnull
-    private final SectionCodeAreaDimensions dimensions;
+    protected final SectionCodeAreaDimensions dimensions;
 
     public SectionCodeAreaScrollPane(CodeAreaSwingControl control, BasicCodeAreaMetrics metrics, SectionCodeAreaStructure structure, SectionCodeAreaScrolling scrolling, SectionCodeAreaDimensions dimensions) {
         this.control = control;

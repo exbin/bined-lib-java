@@ -53,7 +53,7 @@ public class DiffHighlightCodeAreaColorAssessor implements CodeAreaColorAssessor
     @Override
     public void startPaint(CodeAreaPaintState codeAreaPainterState) {
         dataSize = codeAreaPainterState.getDataSize();
-        
+
         if (parentAssessor != null) {
             parentAssessor.startPaint(codeAreaPainterState);
         }
@@ -61,7 +61,7 @@ public class DiffHighlightCodeAreaColorAssessor implements CodeAreaColorAssessor
 
     @Nullable
     @Override
-    public Color getPositionTextColor(long rowDataPosition, int byteOnRow, int charOnRow, CodeAreaSection section) {
+    public Color getPositionTextColor(long rowDataPosition, int byteOnRow, int charOnRow, CodeAreaSection section, boolean inSelection) {
         long position = rowDataPosition + byteOnRow;
         if (comparedData != null && position >= comparedData.getDataSize()) {
             return addedColor;
@@ -77,19 +77,19 @@ public class DiffHighlightCodeAreaColorAssessor implements CodeAreaColorAssessor
         }
 
         if (parentAssessor != null) {
-            return parentAssessor.getPositionTextColor(rowDataPosition, byteOnRow, charOnRow, section);
+            return parentAssessor.getPositionTextColor(rowDataPosition, byteOnRow, charOnRow, section, inSelection);
         }
-        
+
         return null;
     }
 
     @Nullable
     @Override
-    public Color getPositionBackgroundColor(long rowDataPosition, int byteOnRow, int charOnRow, CodeAreaSection section) {
+    public Color getPositionBackgroundColor(long rowDataPosition, int byteOnRow, int charOnRow, CodeAreaSection section, boolean inSelection) {
         if (parentAssessor != null) {
-            return parentAssessor.getPositionBackgroundColor(rowDataPosition, byteOnRow, charOnRow, section);
+            return parentAssessor.getPositionBackgroundColor(rowDataPosition, byteOnRow, charOnRow, section, inSelection);
         }
-        
+
         return null;
     }
 

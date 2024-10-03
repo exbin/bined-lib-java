@@ -32,11 +32,11 @@ import org.exbin.bined.swing.section.layout.SectionCodeAreaDecorations;
 public class SectionCodeAreaThemeProfile {
 
     @Nonnull
-    private SectionBackgroundPaintMode borderPaintMode = SectionBackgroundPaintMode.STRIPED;
-    private boolean paintRowPosBackground = true;
-    private int verticalLineByteGroupSize = 0;
+    protected SectionBackgroundPaintMode borderPaintMode = SectionBackgroundPaintMode.STRIPED;
+    protected boolean paintRowPosBackground = true;
+    protected int verticalLineByteGroupSize = 0;
 
-    private final Set<CodeAreaDecorationType> decorations = new HashSet<>();
+    protected final Set<CodeAreaDecorationType> decorations = new HashSet<>();
 
     public SectionCodeAreaThemeProfile() {
         decorations.add(SectionCodeAreaDecorations.HEADER_LINE);

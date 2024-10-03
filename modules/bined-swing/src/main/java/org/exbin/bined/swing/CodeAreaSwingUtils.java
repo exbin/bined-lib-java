@@ -37,6 +37,8 @@ import org.exbin.bined.CodeType;
 import org.exbin.bined.ScrollBarVisibility;
 import org.exbin.auxiliary.binary_data.BinaryData;
 import org.exbin.bined.CharsetStreamTranslator;
+import org.exbin.bined.swing.capability.CharAssessorPainterCapable;
+import org.exbin.bined.swing.capability.ColorAssessorPainterCapable;
 
 /**
  * Binary editor component swing utilities.
@@ -123,6 +125,48 @@ public class CodeAreaSwingUtils {
         } catch (IllegalStateException ex) {
             return false;
         }
+    }
+
+    /**
+     * Finds specific color assessor if present.
+     *
+     * @param <T> color assessor
+     * @param painter painter
+     * @param assessorClass color assessor class
+     * @return color assessor if present
+     */
+    @Nullable
+    public static <T extends CodeAreaColorAssessor> T findColorAssessor(ColorAssessorPainterCapable painter, Class<T> assessorClass) {
+        CodeAreaColorAssessor colorAssessor = painter.getColorAssessor();
+        do {
+            if (assessorClass.isInstance(colorAssessor)) {
+                return assessorClass.cast(colorAssessor);
+            }
+            colorAssessor = colorAssessor.getParentColorAssessor().orElse(null);
+        } while (colorAssessor != null);
+
+        return null;
+    }
+
+    /**
+     * Finds specific character assessor if present.
+     *
+     * @param <T> character assessor
+     * @param painter painter
+     * @param assessorClass character assessor class
+     * @return character assessor if present
+     */
+    @Nullable
+    public static <T extends CodeAreaCharAssessor> T findCharAssessor(CharAssessorPainterCapable painter, Class<T> assessorClass) {
+        CodeAreaCharAssessor charAssessor = painter.getCharAssessor();
+        do {
+            if (assessorClass.isInstance(charAssessor)) {
+                return assessorClass.cast(charAssessor);
+            }
+            charAssessor = charAssessor.getParentCharAssessor().orElse(null);
+        } while (charAssessor != null);
+
+        return null;
     }
 
     @SuppressWarnings("deprecation")

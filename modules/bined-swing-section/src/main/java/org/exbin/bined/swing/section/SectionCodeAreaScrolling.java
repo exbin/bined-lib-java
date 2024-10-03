@@ -42,28 +42,28 @@ import org.exbin.bined.section.layout.SectionCodeAreaLayoutProfile;
 public class SectionCodeAreaScrolling {
 
     @Nonnull
-    private final CodeAreaScrollPosition scrollPosition = new CodeAreaScrollPosition();
+    protected final CodeAreaScrollPosition scrollPosition = new CodeAreaScrollPosition();
     @Nonnull
-    private ScrollBarVerticalScale scrollBarVerticalScale = ScrollBarVerticalScale.NORMAL;
-    private int horizontalExtentDifference;
-    private int verticalExtentDifference;
-    private int horizontalScrollBarHeight;
-    private int verticalScrollBarWidth;
+    protected ScrollBarVerticalScale scrollBarVerticalScale = ScrollBarVerticalScale.NORMAL;
+    protected int horizontalExtentDifference;
+    protected int verticalExtentDifference;
+    protected int horizontalScrollBarHeight;
+    protected int verticalScrollBarWidth;
 
-    private int lastVerticalScrollingValue = -1;
+    protected int lastVerticalScrollingValue = -1;
 
     @Nonnull
-    private VerticalScrollUnit verticalScrollUnit = VerticalScrollUnit.ROW;
+    protected VerticalScrollUnit verticalScrollUnit = VerticalScrollUnit.ROW;
     @Nonnull
-    private ScrollBarVisibility verticalScrollBarVisibility = ScrollBarVisibility.IF_NEEDED;
+    protected ScrollBarVisibility verticalScrollBarVisibility = ScrollBarVisibility.IF_NEEDED;
     @Nonnull
-    private SectionHorizontalScrollUnit horizontalScrollUnit = SectionHorizontalScrollUnit.PIXEL;
+    protected SectionHorizontalScrollUnit horizontalScrollUnit = SectionHorizontalScrollUnit.PIXEL;
     @Nonnull
-    private ScrollBarVisibility horizontalScrollBarVisibility = ScrollBarVisibility.IF_NEEDED;
+    protected ScrollBarVisibility horizontalScrollBarVisibility = ScrollBarVisibility.IF_NEEDED;
     @Nonnull
-    private final CodeAreaScrollPosition maximumScrollPosition = new CodeAreaScrollPosition();
+    protected final CodeAreaScrollPosition maximumScrollPosition = new CodeAreaScrollPosition();
 
-    private static final long ROW_POSITION_LIMIT = Long.MAX_VALUE / Integer.MAX_VALUE;
+    protected static final long ROW_POSITION_LIMIT = Long.MAX_VALUE / Integer.MAX_VALUE;
 
     @Nullable
     private Runnable verticalExtentChangeListener = null;

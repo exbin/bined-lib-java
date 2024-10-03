@@ -33,7 +33,7 @@ import org.exbin.bined.swing.CodeAreaColorAssessor;
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public class MatchCodeAreaColorAssessor implements CodeAreaColorAssessor {
+public class SearchCodeAreaColorAssessor implements CodeAreaColorAssessor {
 
     private final CodeAreaColorAssessor parentAssessor;
 
@@ -49,7 +49,7 @@ public class MatchCodeAreaColorAssessor implements CodeAreaColorAssessor {
     private Color currentMatchColor;
     private int charactersPerRow = 1;
 
-    public MatchCodeAreaColorAssessor(@Nullable CodeAreaColorAssessor parentAssessor) {
+    public SearchCodeAreaColorAssessor(@Nullable CodeAreaColorAssessor parentAssessor) {
         this.parentAssessor = parentAssessor;
 
         foundMatchesColor = new Color(180, 255, 180);
@@ -61,7 +61,6 @@ public class MatchCodeAreaColorAssessor implements CodeAreaColorAssessor {
         matchIndex = 0;
         charactersPerRow = codeAreaPaintState.getCharactersPerRow();
 
-        
         if (parentAssessor != null) {
             parentAssessor.startPaint(codeAreaPaintState);
         }
@@ -69,9 +68,9 @@ public class MatchCodeAreaColorAssessor implements CodeAreaColorAssessor {
 
     @Nullable
     @Override
-    public Color getPositionTextColor(long rowDataPosition, int byteOnRow, int charOnRow, CodeAreaSection section) {
+    public Color getPositionTextColor(long rowDataPosition, int byteOnRow, int charOnRow, CodeAreaSection section, boolean inSelection) {
         if (parentAssessor != null) {
-            return parentAssessor.getPositionTextColor(rowDataPosition, byteOnRow, charOnRow, section);
+            return parentAssessor.getPositionTextColor(rowDataPosition, byteOnRow, charOnRow, section, inSelection);
         }
 
         return null;
@@ -79,7 +78,7 @@ public class MatchCodeAreaColorAssessor implements CodeAreaColorAssessor {
 
     @Nullable
     @Override
-    public Color getPositionBackgroundColor(long rowDataPosition, int byteOnRow, int charOnRow, CodeAreaSection section) {
+    public Color getPositionBackgroundColor(long rowDataPosition, int byteOnRow, int charOnRow, CodeAreaSection section, boolean inSelection) {
         if (!matches.isEmpty() && charOnRow < charactersPerRow - 1) {
             long dataPosition = rowDataPosition + byteOnRow;
             if (currentMatchIndex >= 0) {
@@ -118,7 +117,7 @@ public class MatchCodeAreaColorAssessor implements CodeAreaColorAssessor {
         }
 
         if (parentAssessor != null) {
-            return parentAssessor.getPositionBackgroundColor(rowDataPosition, byteOnRow, charOnRow, section);
+            return parentAssessor.getPositionBackgroundColor(rowDataPosition, byteOnRow, charOnRow, section, inSelection);
         }
 
         return null;
@@ -180,36 +179,4 @@ public class MatchCodeAreaColorAssessor implements CodeAreaColorAssessor {
         this.currentMatchColor = currentMatchBackgroundColor;
     }
 
-    /**
-     * Simple POJO class for search match.
-     */
-    public static class SearchMatch {
-
-        private long position;
-        private long length;
-
-        public SearchMatch() {
-        }
-
-        public SearchMatch(long position, long length) {
-            this.position = position;
-            this.length = length;
-        }
-
-        public long getPosition() {
-            return position;
-        }
-
-        public void setPosition(long position) {
-            this.position = position;
-        }
-
-        public long getLength() {
-            return length;
-        }
-
-        public void setLength(long length) {
-            this.length = length;
-        }
-    }
 }

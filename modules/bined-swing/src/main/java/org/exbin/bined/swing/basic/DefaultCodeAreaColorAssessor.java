@@ -21,7 +21,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.CodeAreaSection;
-import org.exbin.bined.CodeAreaSelection;
 import org.exbin.bined.basic.BasicCodeAreaSection;
 import org.exbin.bined.color.CodeAreaBasicColors;
 import org.exbin.bined.swing.CodeAreaPaintState;
@@ -38,7 +37,6 @@ public class DefaultCodeAreaColorAssessor implements CodeAreaColorAssessor {
 
     protected final CodeAreaColorAssessor parentAssessor;
 
-    protected CodeAreaSelection selectionHandler = null;
     protected CodeAreaSection activeSection = null;
     protected int codeLastCharPos;
     protected Color selectionColor;
@@ -56,7 +54,6 @@ public class DefaultCodeAreaColorAssessor implements CodeAreaColorAssessor {
 
     @Override
     public void startPaint(CodeAreaPaintState codeAreaPainterState) {
-        selectionHandler = codeAreaPainterState.getSelectionHandler();
         activeSection = codeAreaPainterState.getActiveSection();
         codeLastCharPos = codeAreaPainterState.getCodeLastCharPos();
         CodeAreaColorsProfile colorsProfile = codeAreaPainterState.getColorsProfile();
@@ -72,8 +69,7 @@ public class DefaultCodeAreaColorAssessor implements CodeAreaColorAssessor {
 
     @Nullable
     @Override
-    public Color getPositionTextColor(long rowDataPosition, int byteOnRow, int charOnRow, CodeAreaSection section) {
-        boolean inSelection = selectionHandler != null && selectionHandler.isInSelection(rowDataPosition + byteOnRow);
+    public Color getPositionTextColor(long rowDataPosition, int byteOnRow, int charOnRow, CodeAreaSection section, boolean inSelection) {
         if (inSelection) {
             return section == activeSection ? selectionColor : selectionMirrorColor;
         }
@@ -83,8 +79,7 @@ public class DefaultCodeAreaColorAssessor implements CodeAreaColorAssessor {
 
     @Nullable
     @Override
-    public Color getPositionBackgroundColor(long rowDataPosition, int byteOnRow, int charOnRow, CodeAreaSection section) {
-        boolean inSelection = selectionHandler != null && selectionHandler.isInSelection(rowDataPosition + byteOnRow);
+    public Color getPositionBackgroundColor(long rowDataPosition, int byteOnRow, int charOnRow, CodeAreaSection section, boolean inSelection) {
         if (inSelection && (section == BasicCodeAreaSection.CODE_MATRIX)) {
             if (charOnRow == codeLastCharPos) {
                 inSelection = false;
