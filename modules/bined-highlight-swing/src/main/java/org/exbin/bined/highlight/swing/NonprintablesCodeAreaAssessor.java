@@ -24,9 +24,13 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.CodeAreaSection;
 import org.exbin.bined.basic.BasicCodeAreaSection;
+import org.exbin.bined.color.BasicCodeAreaColorGroup;
+import org.exbin.bined.color.CodeAreaBasicColors;
 import org.exbin.bined.swing.CodeAreaCharAssessor;
 import org.exbin.bined.swing.CodeAreaPaintState;
 import org.exbin.bined.swing.CodeAreaColorAssessor;
+import org.exbin.bined.swing.basic.color.BasicCodeAreaColorsProfile;
+import org.exbin.bined.swing.basic.color.CodeAreaColorsProfile;
 
 /**
  * Code area non-printable characters highlighting.
@@ -41,16 +45,15 @@ public class NonprintablesCodeAreaAssessor implements CodeAreaColorAssessor, Cod
 
     @Nullable
     protected Map<Character, Character> nonprintableCharactersMapping = null;
-    protected boolean showNonprintables;
+    protected boolean showNonprintables = true;
 
-    private Color nonprintableColor;
-    private int charactersPerRow = 1;
+    private Color nonprintablesColor;
 
     public NonprintablesCodeAreaAssessor(@Nullable CodeAreaColorAssessor parentColorAssessor, @Nullable CodeAreaCharAssessor parentCharAssessor) {
         this.parentColorAssessor = parentColorAssessor;
         this.parentCharAssessor = parentCharAssessor;
 
-        nonprintableColor = new Color(180, 255, 180);
+        nonprintablesColor = Color.BLUE;
     }
 
     public boolean isShowNonprintables() {
@@ -63,10 +66,14 @@ public class NonprintablesCodeAreaAssessor implements CodeAreaColorAssessor, Cod
 
     @Override
     public void startPaint(CodeAreaPaintState codeAreaPaintState) {
-        charactersPerRow = codeAreaPaintState.getCharactersPerRow();
-
-        if (nonprintableCharactersMapping != null) {
+        if (nonprintableCharactersMapping == null) {
             buildNonprintableCharactersMapping();
+        }
+
+        CodeAreaColorsProfile colorsProfile = codeAreaPaintState.getColorsProfile();
+        Color textColor = colorsProfile.getColor(CodeAreaBasicColors.TEXT_COLOR);
+        if (textColor != null) {
+            nonprintablesColor = new Color(textColor.getRed(), textColor.getGreen(), (textColor.getBlue() + 196) % 256);
         }
 
         if (parentColorAssessor != null) {
@@ -81,11 +88,11 @@ public class NonprintablesCodeAreaAssessor implements CodeAreaColorAssessor, Cod
     @Nullable
     @Override
     public Color getPositionTextColor(long rowDataPosition, int byteOnRow, int charOnRow, CodeAreaSection section, boolean inSelection) {
-        if (showNonprintables && section == BasicCodeAreaSection.TEXT_PREVIEW && !inSelection) {
+        if (showNonprintables && section == BasicCodeAreaSection.TEXT_PREVIEW) {
             // Cache results to speed up?
             Character character = parentCharAssessor != null ? parentCharAssessor.getPreviewCharacter(rowDataPosition, byteOnRow, charOnRow, section) : null;
             if (character != null && nonprintableCharactersMapping.containsKey(character)) {
-                return nonprintableColor;
+                return nonprintablesColor;
             }
         }
 

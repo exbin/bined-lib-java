@@ -103,7 +103,6 @@ public class SectCodeArea extends CodeAreaCore implements SectionCodeArea, CodeA
     protected AntialiasingMode antialiasingMode = AntialiasingMode.AUTO;
     @Nonnull
     protected CodeType codeType = CodeType.HEXADECIMAL;
-    protected boolean showUnprintables;
     protected int minRowPositionLength = 0;
     protected int maxRowPositionLength = 0;
     @Nonnull
@@ -804,17 +803,6 @@ public class SectCodeArea extends CodeAreaCore implements SectionCodeArea, CodeA
         if (painter instanceof CaretsProfileCapableCodeAreaPainter) {
             ((CaretsProfileCapableCodeAreaPainter) painter).setCaretsProfile(caretsProfile);
         }
-    }
-
-    @Override
-    public boolean isShowUnprintables() {
-        return showUnprintables;
-    }
-
-    @Override
-    public void setShowUnprintables(boolean show) {
-        this.showUnprintables = show;
-        updateLayout();
     }
 
     public void notifySelectionChanged() {

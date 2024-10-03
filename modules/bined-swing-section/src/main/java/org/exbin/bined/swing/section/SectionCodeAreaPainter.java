@@ -1239,7 +1239,7 @@ public class SectionCodeAreaPainter implements CodeAreaPainter, ColorsProfileCap
         Color renderColor = null;
         Color renderColorShifted = null;
 
-        boolean unprintables = false;
+//        boolean unprintables = false;
         positionIterator.reset();
         positionIterator.skip(visibility.getSkipTo());
         int halfCharPos = positionIterator.getHalfCharPosition();

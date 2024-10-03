@@ -24,7 +24,6 @@ import org.exbin.bined.capability.RowWrappingCapable;
 import org.exbin.bined.capability.SelectionCapable;
 import org.exbin.bined.capability.ViewModeCapable;
 import org.exbin.bined.section.capability.PositionCodeTypeCapable;
-import org.exbin.bined.section.capability.ShowUnprintablesCapable;
 import org.exbin.bined.swing.capability.AntialiasingCapable;
 import org.exbin.bined.swing.capability.FontCapable;
 import org.exbin.bined.swing.section.capability.ColorsProfileCapable;
@@ -42,6 +41,6 @@ import org.exbin.bined.section.capability.SectionScrollingCapable;
  */
 public interface SectionCodeArea extends SelectionCapable, CaretCapable, ScrollingCapable, SectionScrollingCapable, ViewModeCapable,
         CodeTypeCapable, EditModeCapable, CharsetCapable, CodeCharactersCaseCapable, FontCapable,
-        RowWrappingCapable, ClipboardCapable, AntialiasingCapable, ShowUnprintablesCapable, PositionCodeTypeCapable,
+        RowWrappingCapable, ClipboardCapable, AntialiasingCapable, PositionCodeTypeCapable,
         ColorsProfileCapable, LayoutProfileCapable, ThemeProfileCapable, CaretsProfileCapable {
 }
