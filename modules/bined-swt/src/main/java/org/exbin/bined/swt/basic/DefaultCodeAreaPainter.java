@@ -35,6 +35,7 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.ScrollBar;
@@ -146,9 +147,9 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
     @Nonnull
     protected AntialiasingMode antialiasingMode = AntialiasingMode.AUTO;
 
+    protected int rowPositionLength;
     protected int minRowPositionLength;
     protected int maxRowPositionLength;
-    protected int rowPositionLength;
 
     private AtomicBoolean repaintRequest = new AtomicBoolean();
 
@@ -179,7 +180,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
 //        scrollPanel.setViewportBorder(null);
 //        scrollPanel.getViewport().setOpaque(false);
 
-        dataView = new Composite(scrollPanel, SWT.NO_BACKGROUND | SWT.NO_REDRAW_RESIZE | SWT.NO_MERGE_PAINTS);
+        dataView = new Canvas(scrollPanel, SWT.NO_BACKGROUND | SWT.NO_REDRAW_RESIZE | SWT.NO_MERGE_PAINTS);
         codeAreaPaintListener = (PaintEvent paintEvent) -> {
             GC g = paintEvent.gc;
             if (g == null) {
@@ -236,13 +237,13 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         codeArea.addMouseTrackListener(codeAreaMouseListener);
         codeArea.addControlListener(codeAreaControlListener);
         codeArea.addDataChangedListener(codeAreaDataChangeListener);
-        scrollPanel.setContent(dataView);
+//        scrollPanel.setContent(dataView);
         codeArea.update();
     }
 
     @Override
     public void detach() {
-        scrollPanel.setContent(null);
+//        scrollPanel.setContent(null);
         dataView.removePaintListener(codeAreaPaintListener);
         dataView.removeMouseListener(codeAreaMouseListener);
         dataView.removeMouseMoveListener(codeAreaMouseListener);

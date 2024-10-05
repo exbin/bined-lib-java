@@ -44,9 +44,7 @@ public class DefaultCodeAreaScrollPane extends JScrollPane {
     protected volatile boolean scrollingByUser = false;
     protected volatile boolean scrollingUpdate = false;
 
-    @Nonnull
     protected final VerticalScrollBarModel verticalScrollBarModel = new VerticalScrollBarModel();
-    @Nonnull
     protected final HorizontalScrollBarModel horizontalScrollBarModel = new HorizontalScrollBarModel();
     @Nonnull
     protected final BasicCodeAreaMetrics metrics;

@@ -144,10 +144,6 @@ public class SectionCodeAreaColorProfile implements CodeAreaColorsProfile {
 
             Color alternateBackground = CodeAreaSwingUtils.createOddColor(textBackground);
             colors.put(CodeAreaBasicColors.ALTERNATE_BACKGROUND, alternateBackground);
-
-            // TODO Moved to highlight
-//            Color nonprintablesColor = new Color(textColor.getRed(), textColor.getGreen(), (textColor.getBlue() + 196) % 256);
-//            colors.put(CodeAreaNonprintablesColorType.NONPRINTABLES_COLOR, nonprintablesColor);
         }
     }
 }

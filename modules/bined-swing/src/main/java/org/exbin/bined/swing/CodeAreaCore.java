@@ -16,6 +16,8 @@
 package org.exbin.bined.swing;
 
 import java.awt.AWTEvent;
+import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.FocusEvent;
@@ -32,6 +34,9 @@ import javax.accessibility.AccessibleStateSet;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.EventListenerList;
+import javax.swing.text.Caret;
 import javax.swing.text.JTextComponent;
 import org.exbin.bined.CodeAreaControl;
 import org.exbin.bined.CodeAreaUtils;
@@ -42,6 +47,8 @@ import org.exbin.auxiliary.binary_data.EmptyBinaryData;
 
 /**
  * Binary viewer/editor component.
+ * <p>
+ * Class extends JTextComponent to be able to invoke on screen keyboard.
  *
  * @author ExBin Project (https://exbin.org)
  */
@@ -71,6 +78,7 @@ public abstract class CodeAreaCore extends JTextComponent implements CodeAreaCon
     private void init() {
         enableEvents(AWTEvent.KEY_EVENT_MASK);
         setName("CodeArea");
+        setCaret(new SimulatedCaret());
         setFocusable(true);
         setFocusTraversalKeysEnabled(false);
         registerControlListeners();
@@ -249,6 +257,103 @@ public abstract class CodeAreaCore extends JTextComponent implements CodeAreaCon
                 states.add(AccessibleState.EDITABLE);
             }
             return states;
+        }
+    }
+
+    @ParametersAreNonnullByDefault
+    private class SimulatedCaret implements Caret {
+
+        @Nullable
+        private JTextComponent component;
+        private final EventListenerList listenerList = new EventListenerList();
+        private boolean visible = true;
+        private boolean selectionVisible = false;
+        private int rate;
+        private int dot;
+        private Point magicCaretPosition = new Point();
+
+        @Override
+        public void install(JTextComponent component) {
+            this.component = component;
+        }
+
+        @Override
+        public void deinstall(JTextComponent jtc) {
+            this.component = null;
+        }
+
+        @Override
+        public void paint(Graphics g) {
+        }
+
+        @Override
+        public void addChangeListener(ChangeListener listener) {
+            listenerList.add(ChangeListener.class, listener);
+        }
+
+        @Override
+        public void removeChangeListener(ChangeListener listener) {
+            listenerList.remove(ChangeListener.class, listener);
+        }
+
+        @Override
+        public boolean isVisible() {
+            return visible;
+        }
+
+        @Override
+        public void setVisible(boolean visible) {
+            this.visible = visible;
+        }
+
+        @Override
+        public boolean isSelectionVisible() {
+            return selectionVisible;
+        }
+
+        @Override
+        public void setSelectionVisible(boolean selectionVisible) {
+            this.selectionVisible = selectionVisible;
+        }
+
+        @Override
+        public void setMagicCaretPosition(Point magicCaretPosition) {
+            this.magicCaretPosition = magicCaretPosition;
+        }
+
+        @Override
+        public Point getMagicCaretPosition() {
+            return magicCaretPosition;
+        }
+
+        @Override
+        public void setBlinkRate(int rate) {
+            this.rate = rate;
+        }
+
+        @Override
+        public int getBlinkRate() {
+            return rate;
+        }
+
+        @Override
+        public int getDot() {
+            return dot;
+        }
+
+        @Override
+        public int getMark() {
+            return 0;
+        }
+
+        @Override
+        public void setDot(int dot) {
+            this.dot = dot;
+        }
+
+        @Override
+        public void moveDot(int dot) {
+            this.dot = dot;
         }
     }
 }

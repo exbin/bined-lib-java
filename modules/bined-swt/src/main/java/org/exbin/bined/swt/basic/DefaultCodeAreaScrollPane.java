@@ -23,6 +23,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.ScrollBar;
 import org.exbin.bined.basic.BasicCodeAreaScrolling;
@@ -37,14 +38,12 @@ import org.exbin.bined.swt.CodeAreaSwtControl;
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public class DefaultCodeAreaScrollPane extends ScrolledComposite {
+public class DefaultCodeAreaScrollPane extends Canvas {
 
     protected volatile boolean scrollingByUser = false;
     protected volatile boolean scrollingUpdate = false;
 
-    @Nonnull
     protected final VerticalScrollBarModel verticalScrollBarModel = new VerticalScrollBarModel();
-    @Nonnull
     protected final HorizontalScrollBarModel horizontalScrollBarModel = new HorizontalScrollBarModel();
     @Nonnull
     protected final BasicCodeAreaMetrics metrics;
@@ -58,7 +57,7 @@ public class DefaultCodeAreaScrollPane extends ScrolledComposite {
     protected final CodeAreaSwtControl control;
 
     public DefaultCodeAreaScrollPane(Composite parent, CodeAreaSwtControl control, BasicCodeAreaMetrics metrics, BasicCodeAreaStructure structure, BasicCodeAreaDimensions dimensions, BasicCodeAreaScrolling scrolling) {
-        super(parent, SWT.H_SCROLL | SWT.V_SCROLL);
+        super(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_BACKGROUND | SWT.NO_REDRAW_RESIZE | SWT.NO_MERGE_PAINTS);
         this.control = control;
         this.metrics = metrics;
         this.structure = structure;

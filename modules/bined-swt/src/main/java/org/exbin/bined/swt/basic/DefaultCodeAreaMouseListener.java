@@ -40,14 +40,14 @@ public class DefaultCodeAreaMouseListener implements MouseListener, MouseMoveLis
     public static final int MOUSE_SCROLL_LINES = 3;
 
     protected final CodeAreaCore codeArea;
-    protected final ScrolledComposite view;
+    protected final DefaultCodeAreaScrollPane view;
 
     protected final Cursor defaultCursor = new Cursor(null, SWT.CURSOR_ARROW); // Cursor.getDefaultCursor();
     protected final Cursor textCursor = new Cursor(null, SWT.CURSOR_IBEAM);
     protected Cursor currentCursor;
     protected boolean mouseDown = false;
 
-    public DefaultCodeAreaMouseListener(CodeAreaCore codeArea, ScrolledComposite view) {
+    public DefaultCodeAreaMouseListener(CodeAreaCore codeArea, DefaultCodeAreaScrollPane view) {
         this.codeArea = codeArea;
         this.view = view;
         currentCursor = codeArea.getCursor();
@@ -116,12 +116,12 @@ public class DefaultCodeAreaMouseListener implements MouseListener, MouseMoveLis
     }
 
     private int computeRelativeX(MouseEvent me) {
-        boolean isDataView = me.getSource() == view.getContent();
+        boolean isDataView = me.getSource() == view;
         return isDataView ? me.x + view.getLocation().x : me.x;
     }
 
     private int computeRelativeY(MouseEvent me) {
-        boolean isDataView = me.getSource() == view.getContent();
+        boolean isDataView = me.getSource() == view;
         return isDataView ? me.y + view.getLocation().y : me.y;
     }
 
