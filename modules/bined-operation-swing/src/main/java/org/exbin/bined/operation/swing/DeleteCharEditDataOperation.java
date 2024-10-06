@@ -16,12 +16,14 @@
 package org.exbin.bined.operation.swing;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.auxiliary.binary_data.BinaryData;
 
 import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.swing.CodeAreaCore;
 import org.exbin.auxiliary.binary_data.EditableBinaryData;
+import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.capability.SelectionCapable;
 import org.exbin.bined.operation.BinaryDataOperation;
 import org.exbin.bined.operation.undo.BinaryDataAppendableOperation;
@@ -38,8 +40,8 @@ public class DeleteCharEditDataOperation extends CharEditDataOperation {
     private static final char BACKSPACE_CHAR = '\b';
     private static final char DELETE_CHAR = (char) 0x7f;
 
-    private long position;
-    private char value;
+    protected long position;
+    protected char value;
 
     public DeleteCharEditDataOperation(CodeAreaCore codeArea, long startPosition, char value) {
         super(codeArea);
@@ -61,9 +63,10 @@ public class DeleteCharEditDataOperation extends CharEditDataOperation {
     @Nonnull
     @Override
     public BinaryDataUndoableOperation executeWithUndo() {
-        return execute(true);
+        return CodeAreaUtils.requireNonNull(execute(true));
     }
 
+    @Nullable
     private CodeAreaOperation execute(boolean withUndo) {
         CodeAreaOperation undoOperation = null;
         EditableBinaryData undoData = null;

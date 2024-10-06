@@ -16,6 +16,7 @@
 package org.exbin.bined.operation.swing;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.CodeType;
 import org.exbin.bined.capability.CodeTypeCapable;
@@ -35,12 +36,14 @@ import org.exbin.bined.operation.undo.BinaryDataUndoableOperation;
 @ParametersAreNonnullByDefault
 public class InsertCodeEditDataOperation extends CodeEditDataOperation {
 
-    private final long startPosition;
-    private final int startCodeOffset;
-    private boolean trailing = false;
-    private EditableBinaryData trailingValue = null;
-    private final CodeType codeType;
-    private byte value;
+    protected final long startPosition;
+    protected final int startCodeOffset;
+    protected boolean trailing = false;
+    @Nullable
+    protected EditableBinaryData trailingValue = null;
+    @Nonnull
+    protected final CodeType codeType;
+    protected byte value;
 
     private long length;
     private int codeOffset = 0;
@@ -77,9 +80,10 @@ public class InsertCodeEditDataOperation extends CodeEditDataOperation {
     @Nonnull
     @Override
     public BinaryDataUndoableOperation executeWithUndo() {
-        return execute(true);
+        return CodeAreaUtils.requireNonNull(execute(true));
     }
 
+    @Nullable
     private CodeAreaOperation execute(boolean withUndo) {
         EditableBinaryData data = (EditableBinaryData) codeArea.getContentData();
         if (startPosition > data.getDataSize() || (startPosition == data.getDataSize() && codeOffset > 0)) {
@@ -206,9 +210,10 @@ public class InsertCodeEditDataOperation extends CodeEditDataOperation {
         @Nonnull
         @Override
         public BinaryDataUndoableOperation executeWithUndo() {
-            return execute(true);
+            return CodeAreaUtils.requireNonNull(execute(true));
         }
 
+        @Nullable
         private CodeAreaOperation execute(boolean withUndo) {
             EditableBinaryData contentData = (EditableBinaryData) codeArea.getContentData();
             CodeAreaOperation undoOperation = null;

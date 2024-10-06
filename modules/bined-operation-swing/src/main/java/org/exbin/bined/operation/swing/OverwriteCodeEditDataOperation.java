@@ -16,6 +16,7 @@
 package org.exbin.bined.operation.swing;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.auxiliary.binary_data.BinaryData;
 import org.exbin.bined.CodeAreaUtils;
@@ -34,10 +35,11 @@ import org.exbin.bined.operation.undo.BinaryDataUndoableOperation;
 @ParametersAreNonnullByDefault
 public class OverwriteCodeEditDataOperation extends CodeEditDataOperation {
 
-    private final long startPosition;
-    private final int codeOffset;
-    private final CodeType codeType;
-    private byte value;
+    protected final long startPosition;
+    protected final int codeOffset;
+    @Nonnull
+    protected final CodeType codeType;
+    protected byte value;
 
     public OverwriteCodeEditDataOperation(CodeAreaCore codeArea, long startPosition, int codeOffset, CodeType codeType, byte value) {
         super(codeArea);
@@ -67,9 +69,10 @@ public class OverwriteCodeEditDataOperation extends CodeEditDataOperation {
     @Nonnull
     @Override
     public BinaryDataUndoableOperation executeWithUndo() {
-        return execute(true);
+        return CodeAreaUtils.requireNonNull(execute(true));
     }
 
+    @Nullable
     private CodeAreaOperation execute(boolean withUndo) {
         EditableBinaryData data = (EditableBinaryData) codeArea.getContentData();
         if (startPosition > data.getDataSize() || (startPosition == data.getDataSize() && codeOffset > 0)) {
@@ -138,7 +141,7 @@ public class OverwriteCodeEditDataOperation extends CodeEditDataOperation {
         @Nonnull
         @Override
         public BinaryDataUndoableOperation executeWithUndo() {
-            return execute(true);
+            return CodeAreaUtils.requireNonNull(execute(true));
         }
 
         @Override
@@ -156,6 +159,7 @@ public class OverwriteCodeEditDataOperation extends CodeEditDataOperation {
             return false;
         }
 
+        @Nullable
         private CodeAreaOperation execute(boolean withUndo) {
             CodeAreaOperation undoOperation = null;
             RemoveDataOperation removeOperation = null;

@@ -59,6 +59,8 @@ import org.exbin.auxiliary.binary_data.paged.PagedData;
 import org.exbin.bined.ClipboardHandlingMode;
 import org.exbin.bined.CodeAreaCaretPosition;
 import org.exbin.bined.CodeAreaSection;
+import static org.exbin.bined.EditOperation.INSERT;
+import static org.exbin.bined.EditOperation.OVERWRITE;
 import org.exbin.bined.basic.EnterKeyHandlingMode;
 import org.exbin.bined.basic.TabKeyHandlingMode;
 import org.exbin.bined.capability.EditModeCapable;
@@ -123,7 +125,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     }
 
     @Override
-    public void undoSequenceBreak() {
+    public void sequenceBreak() {
         // Do nothing
     }
 
@@ -136,28 +138,28 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         switch (keyEvent.getKeyCode()) {
             case KeyEvent.VK_LEFT: {
                 move(isSelectingMode(keyEvent), MovementDirection.LEFT);
-                undoSequenceBreak();
+                sequenceBreak();
                 revealCursor();
                 keyEvent.consume();
                 break;
             }
             case KeyEvent.VK_RIGHT: {
                 move(isSelectingMode(keyEvent), MovementDirection.RIGHT);
-                undoSequenceBreak();
+                sequenceBreak();
                 revealCursor();
                 keyEvent.consume();
                 break;
             }
             case KeyEvent.VK_UP: {
                 move(isSelectingMode(keyEvent), MovementDirection.UP);
-                undoSequenceBreak();
+                sequenceBreak();
                 revealCursor();
                 keyEvent.consume();
                 break;
             }
             case KeyEvent.VK_DOWN: {
                 move(isSelectingMode(keyEvent), MovementDirection.DOWN);
-                undoSequenceBreak();
+                sequenceBreak();
                 revealCursor();
                 keyEvent.consume();
                 break;
@@ -168,7 +170,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                 } else {
                     move(isSelectingMode(keyEvent), MovementDirection.ROW_START);
                 }
-                undoSequenceBreak();
+                sequenceBreak();
                 revealCursor();
                 keyEvent.consume();
                 break;
@@ -179,7 +181,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                 } else {
                     move(isSelectingMode(keyEvent), MovementDirection.ROW_END);
                 }
-                undoSequenceBreak();
+                sequenceBreak();
                 revealCursor();
                 keyEvent.consume();
                 break;
@@ -187,7 +189,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             case KeyEvent.VK_PAGE_UP: {
                 scroll(ScrollingDirection.PAGE_UP);
                 move(isSelectingMode(keyEvent), MovementDirection.PAGE_UP);
-                undoSequenceBreak();
+                sequenceBreak();
                 revealCursor();
                 keyEvent.consume();
                 break;
@@ -195,26 +197,13 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             case KeyEvent.VK_PAGE_DOWN: {
                 scroll(ScrollingDirection.PAGE_DOWN);
                 move(isSelectingMode(keyEvent), MovementDirection.PAGE_DOWN);
-                undoSequenceBreak();
+                sequenceBreak();
                 keyEvent.consume();
                 break;
             }
             case KeyEvent.VK_INSERT: {
-                EditMode editMode = ((EditModeCapable) codeArea).getEditMode();
-                if (editMode == EditMode.EXPANDING || editMode == EditMode.CAPPED) {
-                    EditOperation editOperation = ((EditModeCapable) codeArea).getEditOperation();
-                    switch (editOperation) {
-                        case INSERT: {
-                            ((EditModeCapable) codeArea).setEditOperation(EditOperation.OVERWRITE);
-                            keyEvent.consume();
-                            break;
-                        }
-                        case OVERWRITE: {
-                            ((EditModeCapable) codeArea).setEditOperation(EditOperation.INSERT);
-                            keyEvent.consume();
-                            break;
-                        }
-                    }
+                if (changeEditOperation()) {
+                    keyEvent.consume();
                 }
                 break;
             }
@@ -284,15 +273,14 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         }
 
         CodeAreaSection section = ((CaretCapable) codeArea).getActiveSection();
-        if (section == BasicCodeAreaSection.CODE_MATRIX) {
+        if (section != BasicCodeAreaSection.TEXT_PREVIEW) {
             int modifiersEx = keyEvent.getModifiersEx();
             if (modifiersEx == 0 || modifiersEx == KeyEvent.SHIFT_DOWN_MASK) {
                 pressedCharAsCode(keyValue);
             }
         } else {
-            char keyChar = keyValue;
-            if (keyChar > LAST_CONTROL_CODE && keyValue != DELETE_CHAR) {
-                pressedCharInPreview(keyChar);
+            if (keyValue > DefaultCodeAreaCommandHandler.LAST_CONTROL_CODE && keyValue != DELETE_CHAR) {
+                pressedCharInPreview(keyValue);
             }
         }
     }
@@ -307,7 +295,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             EditMode editMode = ((EditModeCapable) codeArea).getEditMode();
             if (codeArea.hasSelection() && editMode != EditMode.INPLACE) {
                 deleteSelection();
-                undoSequenceBreak();
+                sequenceBreak();
             }
 
             int value;
@@ -379,7 +367,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                 }
             }
             if (codeArea.hasSelection() && editMode != EditMode.INPLACE) {
-                undoSequenceBreak();
+                sequenceBreak();
                 deleteSelection();
             }
 
@@ -434,7 +422,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     public void tabPressed() {
         tabPressed(SelectingMode.NONE);
     }
-        
+
     public void tabPressed(SelectingMode selectingMode) {
         if (!checkEditAllowed()) {
             return;
@@ -443,7 +431,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         if (tabKeyHandlingMode == TabKeyHandlingMode.PLATFORM_SPECIFIC || tabKeyHandlingMode == TabKeyHandlingMode.CYCLE_TO_NEXT_SECTION || tabKeyHandlingMode == TabKeyHandlingMode.CYCLE_TO_PREVIOUS_SECTION) {
             if (viewModeSupported && ((ViewModeCapable) codeArea).getViewMode() == CodeAreaViewMode.DUAL) {
                 move(selectingMode, MovementDirection.SWITCH_SECTION);
-                undoSequenceBreak();
+                sequenceBreak();
                 revealCursor();
             }
         } else if (((CaretCapable) codeArea).getActiveSection() == BasicCodeAreaSection.TEXT_PREVIEW) {
@@ -564,12 +552,10 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     public void copyAsCode() {
         SelectionRange selection = ((SelectionCapable) codeArea).getSelection();
         if (!selection.isEmpty()) {
-            BinaryData data = codeArea.getContentData();
-
             long first = selection.getFirst();
             long last = selection.getLast();
 
-            BinaryData copy = data.copy(first, last - first + 1);
+            BinaryData copy = codeArea.getContentData().copy(first, last - first + 1);
 
             CodeType codeType = ((CodeTypeCapable) codeArea).getCodeType();
             CodeCharactersCase charactersCase = ((CodeCharactersCaseCapable) codeArea).getCodeCharactersCase();
@@ -700,7 +686,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
         caret.setCodeOffset(0);
         ((CaretCapable) codeArea).setActiveCaretPosition(caret.getCaretPosition());
-        undoSequenceBreak();
+        sequenceBreak();
         codeArea.notifyDataChanged();
         revealCursor();
         clearSelection();
@@ -763,7 +749,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
                         caret.setCodeOffset(0);
                         ((CaretCapable) codeArea).setActiveCaretPosition(caret.getCaretPosition());
-                        undoSequenceBreak();
+                        sequenceBreak();
                         codeArea.notifyDataChanged();
                         revealCursor();
                         clearSelection();
@@ -835,7 +821,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         ((CaretCapable) codeArea).setActiveCaretPosition(caretPosition);
         updateSelection(selecting, caretPosition);
 
-        undoSequenceBreak();
+        sequenceBreak();
         codeArea.repaint();
     }
 
@@ -845,6 +831,8 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         if (!caretPosition.equals(movePosition)) {
             ((CaretCapable) codeArea).setActiveCaretPosition(movePosition);
             updateSelection(selectingMode, movePosition);
+        } else if (selectingMode == SelectingMode.NONE) {
+            clearSelection();
         }
     }
 
@@ -878,6 +866,26 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                 break;
             }
         }
+    }
+
+    public boolean changeEditOperation() {
+        EditMode editMode = ((EditModeCapable) codeArea).getEditMode();
+        if (editMode == EditMode.EXPANDING || editMode == EditMode.CAPPED) {
+            EditOperation editOperation = ((EditModeCapable) codeArea).getEditOperation();
+            switch (editOperation) {
+                case INSERT: {
+                    ((EditModeCapable) codeArea).setEditOperation(EditOperation.OVERWRITE);
+                    break;
+                }
+                case OVERWRITE: {
+                    ((EditModeCapable) codeArea).setEditOperation(EditOperation.INSERT);
+                    break;
+                }
+            }
+            return true;
+        }
+
+        return false;
     }
 
     public boolean isValidChar(char value) {

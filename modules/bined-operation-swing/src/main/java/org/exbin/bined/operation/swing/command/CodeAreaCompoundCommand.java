@@ -34,7 +34,7 @@ import org.exbin.bined.swing.CodeAreaCore;
 @ParametersAreNonnullByDefault
 public class CodeAreaCompoundCommand extends CodeAreaCommand implements BinaryDataCompoundCommand {
 
-    private final List<BinaryDataCommand> commands = new ArrayList<>();
+    protected final List<BinaryDataCommand> commands = new ArrayList<>();
 
     public CodeAreaCompoundCommand(@Nonnull CodeAreaCore codeArea) {
         super(codeArea);

@@ -33,7 +33,6 @@ public abstract class CodeAreaOperation implements BinaryDataUndoableOperation {
 
     @Nonnull
     protected final CodeAreaCore codeArea;
-    @Nonnull
     protected final DefaultCodeAreaCaretPosition backPosition = new DefaultCodeAreaCaretPosition();
 
     public CodeAreaOperation(CodeAreaCore codeArea) {

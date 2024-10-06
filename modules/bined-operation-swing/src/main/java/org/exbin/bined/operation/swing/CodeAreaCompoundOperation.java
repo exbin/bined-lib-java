@@ -35,7 +35,7 @@ import org.exbin.bined.swing.CodeAreaCore;
 @ParametersAreNonnullByDefault
 public class CodeAreaCompoundOperation extends CodeAreaOperation implements BinaryDataCompoundOperation {
 
-    private final List<BinaryDataOperation> operations = new ArrayList<>();
+    protected final List<BinaryDataOperation> operations = new ArrayList<>();
 
     public CodeAreaCompoundOperation(CodeAreaCore codeArea) {
         super(codeArea);
@@ -45,6 +45,7 @@ public class CodeAreaCompoundOperation extends CodeAreaOperation implements Bina
         super(codeArea, backPosition);
     }
 
+    @Nonnull
     @Override
     public BinaryDataUndoableOperation executeWithUndo() {
         CodeAreaCompoundOperation undoOperations = new CodeAreaCompoundOperation(codeArea);
@@ -92,5 +93,4 @@ public class CodeAreaCompoundOperation extends CodeAreaOperation implements Bina
     public boolean isEmpty() {
         return operations.isEmpty();
     }
-
 }

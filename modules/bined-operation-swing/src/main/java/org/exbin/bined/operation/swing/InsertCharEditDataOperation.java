@@ -17,6 +17,7 @@ package org.exbin.bined.operation.swing;
 
 import java.nio.charset.Charset;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.capability.CaretCapable;
@@ -36,8 +37,8 @@ import org.exbin.bined.operation.undo.BinaryDataUndoableOperation;
 @ParametersAreNonnullByDefault
 public class InsertCharEditDataOperation extends CharEditDataOperation {
 
-    private final long startPosition;
-    private final char value;
+    protected final long startPosition;
+    protected final char value;
 
     public InsertCharEditDataOperation(CodeAreaCore coreArea, long startPosition, char value) {
         super(coreArea);
@@ -59,9 +60,10 @@ public class InsertCharEditDataOperation extends CharEditDataOperation {
     @Nonnull
     @Override
     public BinaryDataUndoableOperation executeWithUndo() {
-        return execute(true);
+        return CodeAreaUtils.requireNonNull(execute(true));
     }
 
+    @Nullable
     private CodeAreaOperation execute(boolean withUndo) {
         CodeAreaOperation undoOperation = null;
         EditableBinaryData data = (EditableBinaryData) codeArea.getContentData();
@@ -123,9 +125,10 @@ public class InsertCharEditDataOperation extends CharEditDataOperation {
         @Nonnull
         @Override
         public BinaryDataUndoableOperation executeWithUndo() {
-            return execute(true);
+            return CodeAreaUtils.requireNonNull(execute(true));
         }
 
+        @Nullable
         private CodeAreaOperation execute(boolean withUndo) {
             EditableBinaryData contentData = (EditableBinaryData) codeArea.getContentData();
             CodeAreaOperation undoOperation = null;

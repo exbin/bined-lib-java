@@ -37,9 +37,10 @@ import org.exbin.bined.swing.CodeAreaCore;
 @ParametersAreNonnullByDefault
 public class EditCodeDataCommand extends EditDataCommand implements BinaryDataAppendableCommand {
 
-    private final EditCommandType commandType;
+    protected final EditCommandType commandType;
+    @Nonnull
     protected BinaryDataCommandPhase phase = BinaryDataCommandPhase.CREATED;
-    private BinaryDataUndoableOperation activeOperation;
+    protected BinaryDataUndoableOperation activeOperation;
 
     public EditCodeDataCommand(CodeAreaCore codeArea, EditCommandType commandType, long position, int positionCodeOffset, byte value) {
         super(codeArea);

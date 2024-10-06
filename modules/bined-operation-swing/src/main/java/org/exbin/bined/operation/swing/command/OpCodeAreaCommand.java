@@ -15,6 +15,7 @@
  */
 package org.exbin.bined.operation.swing.command;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -34,6 +35,7 @@ public abstract class OpCodeAreaCommand extends CodeAreaCommand {
 
     @Nullable
     protected BinaryDataUndoableOperation operation;
+    @Nonnull
     protected BinaryDataCommandPhase phase = BinaryDataCommandPhase.CREATED;
 
     public OpCodeAreaCommand(CodeAreaCore codeArea) {
