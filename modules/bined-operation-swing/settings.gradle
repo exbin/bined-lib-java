@@ -4,6 +4,8 @@ if (rootProject.path == ':') {
     include ':modules:bined-core'
     include ':modules:bined-operation'
     include ':modules:bined-swing'
+    include ':modules:bined-section'
+    include ':modules:bined-swing-section'
 }
 
 apply from: '../bined-java-modules-settings.gradle'

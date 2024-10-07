@@ -30,7 +30,7 @@ public interface CodeAreaCommandHandler {
     /**
      * Notifies command handler about end of sequence of append-able commands.
      */
-    void undoSequenceBreak();
+    void sequenceBreak();
 
     /**
      * Keyboard key was pressed.

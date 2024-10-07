@@ -17,6 +17,7 @@ package org.exbin.bined.swing.basic;
 
 import java.awt.Component;
 import java.awt.event.KeyEvent;
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.swing.JFrame;
 import org.exbin.auxiliary.binary_data.BinaryData;
@@ -24,11 +25,14 @@ import org.exbin.auxiliary.binary_data.EditableBinaryData;
 import org.exbin.bined.CodeAreaCaretPosition;
 import org.exbin.bined.CodeAreaTest;
 import org.exbin.bined.EditOperation;
+import org.exbin.bined.capability.CaretCapable;
+import org.exbin.bined.capability.EditModeCapable;
+import org.exbin.bined.swing.CodeAreaCore;
 import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Tests for codeArea component.
+ * Tests for CodeArea component.
  *
  * @author ExBin Project (https://exbin.org)
  */
@@ -38,9 +42,14 @@ public class CodeAreaCommandEditTest {
     public CodeAreaCommandEditTest() {
     }
 
+    @Nonnull
+    public CodeAreaCore createCodeArea() {
+        return new CodeArea();
+    }
+
     @Test
     public void testOverwriteCodeBegin() {
-        CodeArea codeArea = new CodeArea();
+        CodeAreaCore codeArea = createCodeArea();
         JFrame frame = new JFrame();
         frame.add(codeArea);
         frame.setVisible(true);
@@ -55,7 +64,7 @@ public class CodeAreaCommandEditTest {
 
         emulateKeyTyped(codeArea, KeyEvent.VK_UNDEFINED, 'a');
 
-        CodeAreaCaretPosition caretPosition = codeArea.getActiveCaretPosition();
+        CodeAreaCaretPosition caretPosition = ((CaretCapable) codeArea).getActiveCaretPosition();
         Assert.assertEquals(1, caretPosition.getCodeOffset());
         Assert.assertEquals(0, caretPosition.getDataPosition());
         checkResultData(expectedData, codeArea.getContentData());
@@ -63,7 +72,7 @@ public class CodeAreaCommandEditTest {
 
     @Test
     public void testInsertCodeBegin() {
-        CodeArea codeArea = new CodeArea();
+        CodeAreaCore codeArea = createCodeArea();
         JFrame frame = new JFrame();
         frame.add(codeArea);
         frame.setVisible(true);
@@ -73,13 +82,13 @@ public class CodeAreaCommandEditTest {
         byte[] expectedData = new byte[expectedSize];
         expectedData[0] = (byte) 0xa0;
         sampleData.copyToArray(0, expectedData, 1, dataSize);
-        codeArea.setEditOperation(EditOperation.INSERT);
+        ((EditModeCapable) codeArea).setEditOperation(EditOperation.INSERT);
 
         codeArea.setContentData(sampleData);
 
         emulateKeyTyped(codeArea, KeyEvent.VK_UNDEFINED, 'a');
 
-        CodeAreaCaretPosition caretPosition = codeArea.getActiveCaretPosition();
+        CodeAreaCaretPosition caretPosition = ((CaretCapable) codeArea).getActiveCaretPosition();
         Assert.assertEquals(1, caretPosition.getCodeOffset());
         Assert.assertEquals(0, caretPosition.getDataPosition());
         checkResultData(expectedData, codeArea.getContentData());
@@ -87,7 +96,7 @@ public class CodeAreaCommandEditTest {
 
     @Test
     public void testOverwriteCodeEnd() {
-        CodeArea codeArea = new CodeArea();
+        CodeAreaCore codeArea = createCodeArea();
         JFrame frame = new JFrame();
         frame.add(codeArea);
         frame.setVisible(true);
@@ -99,11 +108,11 @@ public class CodeAreaCommandEditTest {
         sampleData.copyToArray(0, expectedData, 0, dataSize);
 
         codeArea.setContentData(sampleData);
-        codeArea.setActiveCaretPosition(256);
+        ((CaretCapable) codeArea).setActiveCaretPosition(256);
 
         emulateKeyTyped(codeArea, KeyEvent.VK_UNDEFINED, 'a');
 
-        CodeAreaCaretPosition caretPosition = codeArea.getActiveCaretPosition();
+        CodeAreaCaretPosition caretPosition = ((CaretCapable) codeArea).getActiveCaretPosition();
         Assert.assertEquals(1, caretPosition.getCodeOffset());
         Assert.assertEquals(256, caretPosition.getDataPosition());
         checkResultData(expectedData, codeArea.getContentData());
@@ -111,7 +120,7 @@ public class CodeAreaCommandEditTest {
 
     @Test
     public void testInsertCodeEnd() {
-        CodeArea codeArea = new CodeArea();
+        CodeAreaCore codeArea = createCodeArea();
         JFrame frame = new JFrame();
         frame.add(codeArea);
         frame.setVisible(true);
@@ -121,14 +130,14 @@ public class CodeAreaCommandEditTest {
         byte[] expectedData = new byte[expectedSize];
         expectedData[256] = (byte) 0xa0;
         sampleData.copyToArray(0, expectedData, 0, dataSize);
-        codeArea.setEditOperation(EditOperation.INSERT);
+        ((EditModeCapable) codeArea).setEditOperation(EditOperation.INSERT);
 
         codeArea.setContentData(sampleData);
-        codeArea.setActiveCaretPosition(256);
+        ((CaretCapable) codeArea).setActiveCaretPosition(256);
 
         emulateKeyTyped(codeArea, KeyEvent.VK_UNDEFINED, 'a');
 
-        CodeAreaCaretPosition caretPosition = codeArea.getActiveCaretPosition();
+        CodeAreaCaretPosition caretPosition = ((CaretCapable) codeArea).getActiveCaretPosition();
         Assert.assertEquals(1, caretPosition.getCodeOffset());
         Assert.assertEquals(256, caretPosition.getDataPosition());
         checkResultData(expectedData, codeArea.getContentData());

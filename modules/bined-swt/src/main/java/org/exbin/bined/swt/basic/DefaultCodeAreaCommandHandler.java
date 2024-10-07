@@ -113,7 +113,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     }
 
     @Override
-    public void undoSequenceBreak() {
+    public void sequenceBreak() {
         // Do nothing
     }
 
@@ -129,28 +129,28 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         switch (keyEvent.keyCode) {
             case SWT.ARROW_LEFT: {
                 move(isSelectingMode(keyEvent), MovementDirection.LEFT);
-                undoSequenceBreak();
+                sequenceBreak();
                 revealCursor();
                 keyEvent.doit = false;
                 break;
             }
             case SWT.ARROW_RIGHT: {
                 move(isSelectingMode(keyEvent), MovementDirection.RIGHT);
-                undoSequenceBreak();
+                sequenceBreak();
                 revealCursor();
                 keyEvent.doit = false;
                 break;
             }
             case SWT.ARROW_UP: {
                 move(isSelectingMode(keyEvent), MovementDirection.UP);
-                undoSequenceBreak();
+                sequenceBreak();
                 revealCursor();
                 keyEvent.doit = false;
                 break;
             }
             case SWT.ARROW_DOWN: {
                 move(isSelectingMode(keyEvent), MovementDirection.DOWN);
-                undoSequenceBreak();
+                sequenceBreak();
                 revealCursor();
                 keyEvent.doit = false;
                 break;
@@ -161,7 +161,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                 } else {
                     move(isSelectingMode(keyEvent), MovementDirection.ROW_START);
                 }
-                undoSequenceBreak();
+                sequenceBreak();
                 revealCursor();
                 keyEvent.doit = false;
                 break;
@@ -172,7 +172,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                 } else {
                     move(isSelectingMode(keyEvent), MovementDirection.ROW_END);
                 }
-                undoSequenceBreak();
+                sequenceBreak();
                 revealCursor();
                 keyEvent.doit = false;
                 break;
@@ -180,7 +180,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             case SWT.PAGE_UP: {
                 scroll(ScrollingDirection.PAGE_UP);
                 move(isSelectingMode(keyEvent), MovementDirection.PAGE_UP);
-                undoSequenceBreak();
+                sequenceBreak();
                 revealCursor();
                 keyEvent.doit = false;
                 break;
@@ -188,7 +188,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             case SWT.PAGE_DOWN: {
                 scroll(ScrollingDirection.PAGE_DOWN);
                 move(isSelectingMode(keyEvent), MovementDirection.PAGE_DOWN);
-                undoSequenceBreak();
+                sequenceBreak();
                 keyEvent.doit = false;
                 break;
             }
@@ -214,7 +214,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             case SWT.TAB: {
                 if (viewModeSupported && ((ViewModeCapable) codeArea).getViewMode() == CodeAreaViewMode.DUAL) {
                     move(isSelectingMode(keyEvent), MovementDirection.SWITCH_SECTION);
-                    undoSequenceBreak();
+                    sequenceBreak();
                     revealCursor();
                     keyEvent.doit = false;
                 }
@@ -291,7 +291,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             EditMode editMode = ((EditModeCapable) codeArea).getEditMode();
             if (codeArea.hasSelection() && editMode != EditMode.INPLACE) {
                 deleteSelection();
-                undoSequenceBreak();
+                sequenceBreak();
             }
 
             int value;
@@ -363,7 +363,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                 }
             }
             if (codeArea.hasSelection() && editMode != EditMode.INPLACE) {
-                undoSequenceBreak();
+                sequenceBreak();
                 deleteSelection();
             }
 
@@ -577,7 +577,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             return;
         }
 
-        BinaryData data = CodeAreaUtils.requireNonNullContentData(codeArea.getContentData());
+        BinaryData data = codeArea.getContentData();
         EditMode editMode = ((EditModeCapable) codeArea).getEditMode();
         EditOperation editOperation = ((EditModeCapable) codeArea).getActiveOperation();
         try {
@@ -616,7 +616,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
                         caret.setCodeOffset(0);
                         ((CaretCapable) codeArea).setActiveCaretPosition(caret.getCaretPosition());
-                        undoSequenceBreak();
+                        sequenceBreak();
                         codeArea.notifyDataChanged();
                         revealCursor();
                         clearSelection();
@@ -660,7 +660,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
                         caret.setCodeOffset(0);
                         ((CaretCapable) codeArea).setActiveCaretPosition(caret.getCaretPosition());
-                        undoSequenceBreak();
+                        sequenceBreak();
                         codeArea.notifyDataChanged();
                         revealCursor();
                         clearSelection();
@@ -731,7 +731,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
                         caret.setCodeOffset(0);
                         ((CaretCapable) codeArea).setActiveCaretPosition(caret.getCaretPosition());
-                        undoSequenceBreak();
+                        sequenceBreak();
                         codeArea.notifyDataChanged();
                         revealCursor();
                         clearSelection();
@@ -794,7 +794,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         ((CaretCapable) codeArea).setActiveCaretPosition(caretPosition);
         updateSelection(selecting, caretPosition);
 
-        undoSequenceBreak();
+        sequenceBreak();
         codeArea.repaint();
     }
 

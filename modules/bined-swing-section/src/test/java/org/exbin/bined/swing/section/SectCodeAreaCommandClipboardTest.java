@@ -13,27 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.operation.swing;
+package org.exbin.bined.swing.section;
 
-import org.exbin.bined.swing.CodeAreaCommandHandler;
-import org.exbin.bined.swing.basic.CodeArea;
-import org.exbin.bined.swing.basic.DefaultCodeAreaCommandHandler;
-import org.junit.Test;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+import org.exbin.bined.swing.basic.CodeAreaCommandClipboardTest;
+import org.exbin.bined.swing.CodeAreaCore;
 
 /**
- * Tests for code command handler.
+ * Tests clipboard actions for SectCodeArea command component.
  *
  * @author ExBin Project (https://exbin.org)
  */
-public class CodeCommandHandlerTest {
+@ParametersAreNonnullByDefault
+public class SectCodeAreaCommandClipboardTest extends CodeAreaCommandClipboardTest {
 
-    public CodeCommandHandlerTest() {
+    public SectCodeAreaCommandClipboardTest() {
     }
 
-    @Test
-    public void testSetHandler() {
-        CodeArea codeArea = new CodeArea();
-        CodeAreaCommandHandler commandHandler = new DefaultCodeAreaCommandHandler(codeArea);
-        codeArea.setCommandHandler(commandHandler);
+    @Nonnull
+    @Override
+    public CodeAreaCore createCodeArea() {
+        return new SectCodeArea();
     }
 }

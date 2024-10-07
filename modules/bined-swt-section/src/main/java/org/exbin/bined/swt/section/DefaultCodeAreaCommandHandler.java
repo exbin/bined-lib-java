@@ -39,7 +39,9 @@ import org.exbin.bined.swt.CodeAreaCommandHandler;
 import org.exbin.auxiliary.binary_data.BinaryData;
 import org.exbin.auxiliary.binary_data.EditableBinaryData;
 import org.exbin.bined.CodeAreaCaretPosition;
+import org.exbin.bined.EditOperation;
 import org.exbin.bined.capability.CaretCapable;
+import org.exbin.bined.capability.EditModeCapable;
 
 /**
  * Default binary editor command handler.
@@ -616,6 +618,9 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             return;
         }
 
+        BinaryData data = codeArea.getContentData();
+        EditMode editMode = ((EditModeCapable) codeArea).getEditMode();
+        EditOperation editOperation = ((EditModeCapable) codeArea).getActiveOperation();
         try {
             if (clipboard.isDataFlavorAvailable(binaryDataFlavor)) {
                 if (codeArea.hasSelection()) {
@@ -629,20 +634,30 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                         SectionCodeAreaCaret caret = codeArea.getCaret();
                         long dataPosition = caret.getDataPosition();
 
-                        BinaryData data = (BinaryData) object;
-                        long dataSize = data.getDataSize();
-                        if (codeArea.getEditMode() == EditMode.OVERWRITE) {
-                            long toRemove = dataSize;
+                        BinaryData clipboardData = (BinaryData) object;
+                        long dataSize = clipboardData.getDataSize();
+                        long toRemove = dataSize;
+                        if (editMode == EditMode.INPLACE) {
                             if (dataPosition + toRemove > codeArea.getDataSize()) {
                                 toRemove = codeArea.getDataSize() - dataPosition;
                             }
-                            ((EditableBinaryData) codeArea.getBinaryData()).remove(dataPosition, toRemove);
+                            ((EditableBinaryData) data).replace(dataPosition, clipboardData, 0, toRemove);
+                        } else {
+                            if (editMode == EditMode.EXPANDING && editOperation == EditMode.OVERWRITE) {
+                                if (dataPosition + toRemove > codeArea.getDataSize()) {
+                                    toRemove = codeArea.getDataSize() - dataPosition;
+                                }
+                                ((EditableBinaryData) data).remove(dataPosition, toRemove);
+                            }
+
+                            ((EditableBinaryData) data).insert(codeArea.getDataPosition(), clipboardData);
+                            caret.setCaretPosition(caret.getDataPosition() + dataSize);
                         }
-                        ((EditableBinaryData) codeArea.getBinaryData()).insert(codeArea.getDataPosition(), data);
                         codeArea.notifyDataChanged();
 
-                        caret.setCaretPosition(caret.getDataPosition() + dataSize);
                         caret.setCodeOffset(0);
+                        ((CaretCapable) codeArea).setActiveCaretPosition(caret.getCaretPosition());
+                        undoSequenceBreak();
                         codeArea.updateScrollBars();
                         codeArea.revealCursor();
                     }

@@ -59,8 +59,6 @@ import org.exbin.auxiliary.binary_data.paged.PagedData;
 import org.exbin.bined.ClipboardHandlingMode;
 import org.exbin.bined.CodeAreaCaretPosition;
 import org.exbin.bined.CodeAreaSection;
-import static org.exbin.bined.EditOperation.INSERT;
-import static org.exbin.bined.EditOperation.OVERWRITE;
 import org.exbin.bined.basic.EnterKeyHandlingMode;
 import org.exbin.bined.basic.TabKeyHandlingMode;
 import org.exbin.bined.capability.EditModeCapable;
@@ -638,7 +636,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                 try {
                     Object clipboardData = clipboard.getData(DataFlavor.stringFlavor);
                     if (clipboardData instanceof String) {
-                        byte[] bytes = ((String) clipboardData).getBytes(Charset.forName(CodeAreaSwingUtils.DEFAULT_ENCODING));
+                        byte[] bytes = ((String) clipboardData).getBytes(((CharsetCapable) codeArea).getCharset());
                         BinaryData pastedData = new ByteArrayData(bytes);
                         pasteBinaryData(pastedData);
                     }
@@ -664,23 +662,23 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         DefaultCodeAreaCaret caret = (DefaultCodeAreaCaret) ((CaretCapable) codeArea).getCodeAreaCaret();
         long dataPosition = caret.getDataPosition();
 
-        long dataSize = pastedData.getDataSize();
-        long toRemove = dataSize;
+        long clipDataSize = pastedData.getDataSize();
+        long toReplace = clipDataSize;
         if (editMode == EditMode.INPLACE) {
-            if (dataPosition + toRemove > codeArea.getDataSize()) {
-                toRemove = codeArea.getDataSize() - dataPosition;
+            if (dataPosition + toReplace > codeArea.getDataSize()) {
+                toReplace = codeArea.getDataSize() - dataPosition;
             }
-            ((EditableBinaryData) data).replace(dataPosition, pastedData, 0, toRemove);
+            ((EditableBinaryData) data).replace(dataPosition, pastedData, 0, toReplace);
         } else {
             if (editMode == EditMode.EXPANDING && editOperation == EditOperation.OVERWRITE) {
-                if (dataPosition + toRemove > codeArea.getDataSize()) {
-                    toRemove = codeArea.getDataSize() - dataPosition;
+                if (dataPosition + toReplace > codeArea.getDataSize()) {
+                    toReplace = codeArea.getDataSize() - dataPosition;
                 }
-                ((EditableBinaryData) data).remove(dataPosition, toRemove);
+                ((EditableBinaryData) data).remove(dataPosition, toReplace);
             }
 
             ((EditableBinaryData) data).insert(dataPosition, pastedData);
-            caret.setCaretPosition(caret.getDataPosition() + dataSize);
+            caret.setCaretPosition(caret.getDataPosition() + clipDataSize);
             updateSelection(SelectingMode.NONE, caret.getCaretPosition());
         }
 

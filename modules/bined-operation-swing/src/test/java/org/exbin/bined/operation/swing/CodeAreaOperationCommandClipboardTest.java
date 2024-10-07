@@ -13,34 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.swing.basic;
+package org.exbin.bined.operation.swing;
 
 import javax.annotation.Nonnull;
-import org.exbin.bined.CodeAreaTest;
+import javax.annotation.ParametersAreNonnullByDefault;
+import org.exbin.bined.swing.basic.CodeAreaCommandClipboardTest;
 import org.exbin.bined.swing.CodeAreaCore;
-import org.junit.Assert;
-import org.junit.Test;
+import org.exbin.bined.swing.basic.CodeArea;
 
 /**
- * Tests for CodeArea component.
+ * Tests clipboard actions for SectCodeArea command component.
  *
  * @author ExBin Project (https://exbin.org)
  */
-public class CodeAreaDataTest {
+@ParametersAreNonnullByDefault
+public class CodeAreaOperationCommandClipboardTest extends CodeAreaCommandClipboardTest {
 
-    public CodeAreaDataTest() {
+    public CodeAreaOperationCommandClipboardTest() {
     }
 
     @Nonnull
+    @Override
     public CodeAreaCore createCodeArea() {
-        return new CodeArea();
-    }
-
-    @Test
-    public void testContentData() {
-        CodeAreaCore codeArea = createCodeArea();
-        codeArea.setContentData(CodeAreaTest.getSampleData(CodeAreaTest.SAMPLE_ALLBYTES));
-
-        Assert.assertTrue(codeArea.getDataSize() == 256);
+        CodeArea codeArea = new CodeArea();
+        codeArea.setCommandHandler(new CodeAreaOperationCommandHandler(codeArea, new CodeAreaUndoRedo(codeArea)));
+        return codeArea;
     }
 }

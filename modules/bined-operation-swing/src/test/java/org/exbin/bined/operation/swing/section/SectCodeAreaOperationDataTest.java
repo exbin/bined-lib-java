@@ -13,34 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.swing.basic;
+package org.exbin.bined.operation.swing.section;
 
+import org.exbin.bined.operation.swing.*;
 import javax.annotation.Nonnull;
-import org.exbin.bined.CodeAreaTest;
 import org.exbin.bined.swing.CodeAreaCore;
-import org.junit.Assert;
-import org.junit.Test;
+import org.exbin.bined.swing.basic.CodeAreaDataTest;
+import org.exbin.bined.swing.section.SectCodeArea;
 
 /**
- * Tests for CodeArea component.
+ * Tests for SectCodeArea component.
  *
  * @author ExBin Project (https://exbin.org)
  */
-public class CodeAreaDataTest {
+public class SectCodeAreaOperationDataTest extends CodeAreaDataTest {
 
-    public CodeAreaDataTest() {
+    public SectCodeAreaOperationDataTest() {
     }
 
     @Nonnull
+    @Override
     public CodeAreaCore createCodeArea() {
-        return new CodeArea();
-    }
-
-    @Test
-    public void testContentData() {
-        CodeAreaCore codeArea = createCodeArea();
-        codeArea.setContentData(CodeAreaTest.getSampleData(CodeAreaTest.SAMPLE_ALLBYTES));
-
-        Assert.assertTrue(codeArea.getDataSize() == 256);
+        SectCodeArea codeArea = new SectCodeArea();
+        codeArea.setCommandHandler(new CodeAreaOperationCommandHandler(codeArea, new CodeAreaUndoRedo(codeArea)));
+        return codeArea;
     }
 }

@@ -29,6 +29,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import jdk.internal.org.jline.utils.Curses;
 import org.exbin.bined.basic.BasicCodeAreaSection;
 import org.exbin.bined.CharsetStreamTranslator;
 import org.exbin.bined.CodeAreaUtils;
@@ -66,6 +67,7 @@ import org.exbin.bined.swing.basic.DefaultCodeAreaCommandHandler;
 import org.exbin.auxiliary.binary_data.BinaryData;
 import org.exbin.auxiliary.binary_data.ByteArrayData;
 import org.exbin.auxiliary.binary_data.ByteArrayEditableData;
+import org.exbin.auxiliary.binary_data.EditableBinaryData;
 import org.exbin.auxiliary.binary_data.paged.PagedData;
 import org.exbin.bined.ClipboardHandlingMode;
 import org.exbin.bined.CodeAreaCaretPosition;
@@ -696,22 +698,33 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
         CodeAreaCommand modifyCommand = null;
         long clipDataSize = pastedData.getDataSize();
         long insertionPosition = dataPosition;
-        if ((editMode == EditMode.EXPANDING && editOperation == EditOperation.OVERWRITE) || editMode == EditMode.INPLACE) {
-            BinaryData modifiedData;
-            long replacedPartSize = clipDataSize;
-            if (insertionPosition + replacedPartSize > dataSize) {
-                replacedPartSize = dataSize - insertionPosition;
-                modifiedData = pastedData.copy(0, replacedPartSize);
-            } else {
-                modifiedData = pastedData.copy();
+        if (editMode == EditMode.INPLACE) {
+            long toReplace = clipDataSize;
+            if (dataPosition + toReplace > codeArea.getDataSize()) {
+                toReplace = codeArea.getDataSize() - dataPosition;
             }
-            if (replacedPartSize > 0) {
-                modifyCommand = new ModifyDataCommand(codeArea, dataPosition, modifiedData);
-                if (clipDataSize > replacedPartSize) {
-                    pastedData = pastedData.copy(replacedPartSize, clipDataSize - replacedPartSize);
-                    insertionPosition += replacedPartSize;
+            if (toReplace > 0) {
+                modifyCommand = new ModifyDataCommand(codeArea, dataPosition, pastedData.copy(0, toReplace));
+            }
+            pastedData = new ByteArrayData();
+        } else {
+            if (editMode == EditMode.EXPANDING && editOperation == EditOperation.OVERWRITE) {
+                BinaryData modifiedData;
+                long replacedPartSize = clipDataSize;
+                if (insertionPosition + replacedPartSize > dataSize) {
+                    replacedPartSize = dataSize - insertionPosition;
+                    modifiedData = pastedData.copy(0, replacedPartSize);
                 } else {
-                    pastedData = new ByteArrayData();
+                    modifiedData = pastedData.copy();
+                }
+                if (replacedPartSize > 0) {
+                    modifyCommand = new ModifyDataCommand(codeArea, dataPosition, modifiedData);
+                    if (clipDataSize > replacedPartSize) {
+                        pastedData = pastedData.copy(replacedPartSize, clipDataSize - replacedPartSize);
+                        insertionPosition += replacedPartSize;
+                    } else {
+                        pastedData = new ByteArrayData();
+                    }
                 }
             }
         }

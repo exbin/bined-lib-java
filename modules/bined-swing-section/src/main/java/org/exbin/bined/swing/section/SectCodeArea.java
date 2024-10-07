@@ -89,6 +89,7 @@ public class SectCodeArea extends CodeAreaCore implements SectionCodeArea, CodeA
 
     @Nonnull
     protected Charset charset = Charset.defaultCharset();
+    @Nonnull
     protected ClipboardHandlingMode clipboardHandlingMode = ClipboardHandlingMode.PROCESS;
 
     @Nonnull
