@@ -29,7 +29,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import jdk.internal.org.jline.utils.Curses;
 import org.exbin.bined.basic.BasicCodeAreaSection;
 import org.exbin.bined.CharsetStreamTranslator;
 import org.exbin.bined.CodeAreaUtils;
@@ -67,7 +66,6 @@ import org.exbin.bined.swing.basic.DefaultCodeAreaCommandHandler;
 import org.exbin.auxiliary.binary_data.BinaryData;
 import org.exbin.auxiliary.binary_data.ByteArrayData;
 import org.exbin.auxiliary.binary_data.ByteArrayEditableData;
-import org.exbin.auxiliary.binary_data.EditableBinaryData;
 import org.exbin.auxiliary.binary_data.paged.PagedData;
 import org.exbin.bined.ClipboardHandlingMode;
 import org.exbin.bined.CodeAreaCaretPosition;
@@ -522,6 +520,11 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
 
             CodeAreaSection section = ((CaretCapable) codeArea).getActiveSection();
             long dataPosition = ((CaretCapable) codeArea).getDataPosition();
+            if ((DELETE_CHAR == keyChar && dataPosition >= codeArea.getDataSize())
+                    || (DELETE_CHAR != keyChar && (dataPosition == 0 || dataPosition > codeArea.getDataSize()))) {
+                return;
+            }
+
             if (section == BasicCodeAreaSection.CODE_MATRIX) {
                 EditCodeDataCommand command = new EditCodeDataCommand(codeArea, EditCodeDataCommand.EditCommandType.DELETE, dataPosition, 0, (byte) keyChar);
                 if (editCommand != null && isAppendAllowed() && undoRedo instanceof BinaryDataAppendableUndoRedo) {

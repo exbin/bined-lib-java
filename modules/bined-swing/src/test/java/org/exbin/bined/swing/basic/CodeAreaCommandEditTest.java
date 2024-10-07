@@ -39,6 +39,8 @@ import org.junit.Test;
 @ParametersAreNonnullByDefault
 public class CodeAreaCommandEditTest {
 
+    private static final char DELETE_CHAR = (char) 0x7f;
+
     public CodeAreaCommandEditTest() {
     }
 
@@ -143,8 +145,130 @@ public class CodeAreaCommandEditTest {
         checkResultData(expectedData, codeArea.getContentData());
     }
 
+    @Test
+    public void testDeleteKeyEmpty() {
+        CodeAreaCore codeArea = createCodeArea();
+        JFrame frame = new JFrame();
+        frame.add(codeArea);
+        frame.setVisible(true);
+
+        emulateKeyPressed(codeArea, KeyEvent.VK_UNDEFINED, KeyEvent.VK_DELETE);
+
+        CodeAreaCaretPosition caretPosition = ((CaretCapable) codeArea).getActiveCaretPosition();
+        Assert.assertEquals(0, caretPosition.getCodeOffset());
+        Assert.assertEquals(0, caretPosition.getDataPosition());
+        Assert.assertEquals(0, codeArea.getDataSize());
+    }
+
+    @Test
+    public void testDeleteKeyBegin() {
+        CodeAreaCore codeArea = createCodeArea();
+        JFrame frame = new JFrame();
+        frame.add(codeArea);
+        frame.setVisible(true);
+        EditableBinaryData sampleData = CodeAreaTest.getSampleData(CodeAreaTest.SAMPLE_ALLBYTES);
+        int dataSize = (int) sampleData.getDataSize();
+        int expectedSize = dataSize - 1;
+        byte[] expectedData = new byte[expectedSize];
+        sampleData.copyToArray(1, expectedData, 0, dataSize - 1);
+
+        codeArea.setContentData(sampleData);
+
+        emulateKeyPressed(codeArea, KeyEvent.VK_UNDEFINED, KeyEvent.VK_DELETE);
+
+        CodeAreaCaretPosition caretPosition = ((CaretCapable) codeArea).getActiveCaretPosition();
+        Assert.assertEquals(0, caretPosition.getCodeOffset());
+        Assert.assertEquals(0, caretPosition.getDataPosition());
+        checkResultData(expectedData, codeArea.getContentData());
+    }
+
+    @Test
+    public void testDeleteKeyEnd() {
+        CodeAreaCore codeArea = createCodeArea();
+        JFrame frame = new JFrame();
+        frame.add(codeArea);
+        frame.setVisible(true);
+        EditableBinaryData sampleData = CodeAreaTest.getSampleData(CodeAreaTest.SAMPLE_ALLBYTES);
+        codeArea.setContentData(sampleData);
+        int dataSize = (int) sampleData.getDataSize();
+        int expectedSize = dataSize;
+        byte[] expectedData = new byte[expectedSize];
+        sampleData.copyToArray(0, expectedData, 0, dataSize);
+        ((CaretCapable) codeArea).setActiveCaretPosition(256);
+
+        emulateKeyPressed(codeArea, KeyEvent.VK_UNDEFINED, KeyEvent.VK_DELETE);
+
+        CodeAreaCaretPosition caretPosition = ((CaretCapable) codeArea).getActiveCaretPosition();
+        Assert.assertEquals(0, caretPosition.getCodeOffset());
+        Assert.assertEquals(256, caretPosition.getDataPosition());
+        checkResultData(expectedData, codeArea.getContentData());
+    }
+
+    @Test
+    public void testBackspaceKeyEmpty() {
+        CodeAreaCore codeArea = createCodeArea();
+        JFrame frame = new JFrame();
+        frame.add(codeArea);
+        frame.setVisible(true);
+
+        emulateKeyPressed(codeArea, KeyEvent.VK_UNDEFINED, KeyEvent.VK_BACK_SPACE);
+
+        CodeAreaCaretPosition caretPosition = ((CaretCapable) codeArea).getActiveCaretPosition();
+        Assert.assertEquals(0, caretPosition.getCodeOffset());
+        Assert.assertEquals(0, caretPosition.getDataPosition());
+        Assert.assertEquals(0, codeArea.getDataSize());
+    }
+
+    @Test
+    public void testBackspaceKeyBegin() {
+        CodeAreaCore codeArea = createCodeArea();
+        JFrame frame = new JFrame();
+        frame.add(codeArea);
+        frame.setVisible(true);
+        EditableBinaryData sampleData = CodeAreaTest.getSampleData(CodeAreaTest.SAMPLE_ALLBYTES);
+        int dataSize = (int) sampleData.getDataSize();
+        int expectedSize = dataSize;
+        byte[] expectedData = new byte[expectedSize];
+        sampleData.copyToArray(0, expectedData, 0, dataSize);
+
+        codeArea.setContentData(sampleData);
+
+        emulateKeyPressed(codeArea, KeyEvent.VK_UNDEFINED, KeyEvent.VK_BACK_SPACE);
+
+        CodeAreaCaretPosition caretPosition = ((CaretCapable) codeArea).getActiveCaretPosition();
+        Assert.assertEquals(0, caretPosition.getCodeOffset());
+        Assert.assertEquals(0, caretPosition.getDataPosition());
+        checkResultData(expectedData, codeArea.getContentData());
+    }
+
+    @Test
+    public void testBackspaceKeyEnd() {
+        CodeAreaCore codeArea = createCodeArea();
+        JFrame frame = new JFrame();
+        frame.add(codeArea);
+        frame.setVisible(true);
+        EditableBinaryData sampleData = CodeAreaTest.getSampleData(CodeAreaTest.SAMPLE_ALLBYTES);
+        codeArea.setContentData(sampleData);
+        int dataSize = (int) sampleData.getDataSize();
+        int expectedSize = dataSize - 1;
+        byte[] expectedData = new byte[expectedSize];
+        sampleData.copyToArray(0, expectedData, 0, dataSize - 1);
+        ((CaretCapable) codeArea).setActiveCaretPosition(256);
+
+        emulateKeyPressed(codeArea, KeyEvent.VK_UNDEFINED, KeyEvent.VK_BACK_SPACE);
+
+        CodeAreaCaretPosition caretPosition = ((CaretCapable) codeArea).getActiveCaretPosition();
+        Assert.assertEquals(0, caretPosition.getCodeOffset());
+        Assert.assertEquals(255, caretPosition.getDataPosition());
+        checkResultData(expectedData, codeArea.getContentData());
+    }
+
     private static void emulateKeyTyped(Component component, int keyEvent, char keyChar) {
         component.dispatchEvent(new KeyEvent(component, KeyEvent.KEY_TYPED, System.currentTimeMillis(), 0, keyEvent, keyChar));
+    }
+
+    private static void emulateKeyPressed(Component component, int keyCode, int keyEvent) {
+        component.dispatchEvent(new KeyEvent(component, KeyEvent.KEY_PRESSED, System.currentTimeMillis(), keyCode, keyEvent, ' '));
     }
 
     public static void checkResultData(byte[] expectedData, BinaryData data) {

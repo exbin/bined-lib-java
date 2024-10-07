@@ -303,7 +303,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                 value = Character.toLowerCase(keyChar) - 'a' + 10;
             }
 
-            BinaryData data = CodeAreaUtils.requireNonNullContentData(codeArea.getContentData());
+            BinaryData data = codeArea.getContentData();
             EditOperation editOperation = ((EditModeCapable) codeArea).getActiveOperation();
             if (editMode == EditMode.EXPANDING && editOperation == EditOperation.INSERT) {
                 if (codeOffset > 0) {
@@ -369,7 +369,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                 deleteSelection();
             }
 
-            BinaryData data = CodeAreaUtils.requireNonNullContentData(codeArea.getContentData());
+            BinaryData data = codeArea.getContentData();
             EditOperation editOperation = ((EditModeCapable) codeArea).getActiveOperation();
             if ((editMode == EditMode.EXPANDING && editOperation == EditOperation.OVERWRITE) || editMode == EditMode.INPLACE) {
                 if (dataPosition < codeArea.getDataSize()) {
@@ -392,7 +392,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         CodeAreaCaretPosition caretPosition = ((CaretCapable) codeArea).getActiveCaretPosition();
         long dataPosition = caretPosition.getDataPosition();
         int codeOffset = caretPosition.getCodeOffset();
-        BinaryData data = CodeAreaUtils.requireNonNullContentData(codeArea.getContentData());
+        BinaryData data = codeArea.getContentData();
         CodeType codeType = getCodeType();
         byte byteValue = data.getByte(dataPosition);
         byte outputValue = CodeAreaUtils.setCodeValue(byteValue, value, codeOffset, codeType);
@@ -446,7 +446,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         if (!checkEditAllowed()) {
             return;
         }
-        BinaryData data = CodeAreaUtils.requireNonNullContentData(codeArea.getContentData());
+        BinaryData data = codeArea.getContentData();
 
         if (codeArea.hasSelection()) {
             deleteSelection();
@@ -454,16 +454,18 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         } else {
             DefaultCodeAreaCaret caret = (DefaultCodeAreaCaret) ((CaretCapable) codeArea).getCodeAreaCaret();
             long dataPosition = ((CaretCapable) codeArea).getDataPosition();
-            if (dataPosition > 0 && dataPosition <= codeArea.getDataSize()) {
-                caret.setCodeOffset(0);
-                move(SelectingMode.NONE, MovementDirection.LEFT);
-                caret.setCodeOffset(0);
-                ((EditableBinaryData) data).remove(dataPosition - 1, 1);
-                codeArea.notifyDataChanged();
-                ((CaretCapable) codeArea).setActiveCaretPosition(caret.getCaretPosition());
-                revealCursor();
-                clearSelection();
+            if (dataPosition == 0 || dataPosition > codeArea.getDataSize()) {
+                return;
             }
+
+            caret.setCodeOffset(0);
+            move(SelectingMode.NONE, MovementDirection.LEFT);
+            caret.setCodeOffset(0);
+            ((EditableBinaryData) data).remove(dataPosition - 1, 1);
+            codeArea.notifyDataChanged();
+            ((CaretCapable) codeArea).setActiveCaretPosition(caret.getCaretPosition());
+            revealCursor();
+            clearSelection();
         }
     }
 
@@ -478,19 +480,20 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             codeArea.notifyDataChanged();
             revealCursor();
         } else {
-            BinaryData data = CodeAreaUtils.requireNonNullContentData(codeArea.getContentData());
+            BinaryData data = codeArea.getContentData();
             DefaultCodeAreaCaret caret = (DefaultCodeAreaCaret) ((CaretCapable) codeArea).getCodeAreaCaret();
             long dataPosition = caret.getDataPosition();
-            if (dataPosition < codeArea.getDataSize()) {
-                ((EditableBinaryData) data).remove(dataPosition, 1);
-                codeArea.notifyDataChanged();
-                if (caret.getCodeOffset() > 0) {
-                    caret.setCodeOffset(0);
-                }
-                ((CaretCapable) codeArea).setActiveCaretPosition(caret.getCaretPosition());
-                clearSelection();
-                revealCursor();
+            if (dataPosition >= codeArea.getDataSize()) {
+                return;
             }
+            ((EditableBinaryData) data).remove(dataPosition, 1);
+            codeArea.notifyDataChanged();
+            if (caret.getCodeOffset() > 0) {
+                caret.setCodeOffset(0);
+            }
+            ((CaretCapable) codeArea).setActiveCaretPosition(caret.getCaretPosition());
+            clearSelection();
+            revealCursor();
         }
     }
 
@@ -650,7 +653,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     }
 
     private void pasteBinaryData(BinaryData pastedData) {
-        BinaryData data = CodeAreaUtils.requireNonNullContentData(codeArea.getContentData());
+        BinaryData data = codeArea.getContentData();
         EditMode editMode = ((EditModeCapable) codeArea).getEditMode();
         EditOperation editOperation = ((EditModeCapable) codeArea).getActiveOperation();
 
@@ -696,7 +699,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             return;
         }
 
-        BinaryData data = CodeAreaUtils.requireNonNullContentData(codeArea.getContentData());
+        BinaryData data = codeArea.getContentData();
         EditMode editMode = ((EditModeCapable) codeArea).getEditMode();
         EditOperation editOperation = ((EditModeCapable) codeArea).getActiveOperation();
         try {
