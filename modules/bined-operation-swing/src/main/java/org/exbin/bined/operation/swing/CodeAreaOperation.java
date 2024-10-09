@@ -46,28 +46,9 @@ public abstract class CodeAreaOperation implements BinaryDataUndoableOperation {
         }
     }
 
-    /**
-     * Returns type of the operation.
-     *
-     * @return operation type
-     */
-    @Nonnull
-    public abstract CodeAreaOperationType getType();
-
     @Nonnull
     public CodeAreaCore getCodeArea() {
         return codeArea;
-    }
-
-    /**
-     * Returns caption as text.
-     *
-     * @return text caption
-     */
-    @Nonnull
-    @Override
-    public String getName() {
-        return getType().getName();
     }
 
     @Nonnull

@@ -74,18 +74,22 @@ public class DeleteCharEditDataOperation extends CharEditDataOperation {
         EditableBinaryData data = (EditableBinaryData) codeArea.getContentData();
         switch (value) {
             case BACKSPACE_CHAR: {
-                if (position > 0) {
-                    position--;
-                    undoData = (EditableBinaryData) data.copy(position, 1);
-                    data.remove(position, 1);
+                if (position <= 0) {
+                    throw new IllegalStateException("Cannot apply backspace on position " + position);
                 }
+
+                position--;
+                undoData = (EditableBinaryData) data.copy(position, 1);
+                data.remove(position, 1);
                 break;
             }
             case DELETE_CHAR: {
-                if (position < data.getDataSize()) {
-                    undoData = (EditableBinaryData) data.copy(position, 1);
-                    data.remove(position, 1);
+                if (position >= data.getDataSize()) {
+                    throw new IllegalStateException("Cannot apply delete on position " + position);
                 }
+
+                undoData = (EditableBinaryData) data.copy(position, 1);
+                data.remove(position, 1);
                 break;
             }
             default: {
@@ -115,14 +119,14 @@ public class DeleteCharEditDataOperation extends CharEditDataOperation {
         @Override
         public boolean appendOperation(BinaryDataOperation operation) {
             if (operation instanceof UndoOperation && ((UndoOperation) operation).value == value) {
-                EditableBinaryData data = (EditableBinaryData) getData();
+                EditableBinaryData editableData = (EditableBinaryData) data;
                 switch (value) {
                     case BACKSPACE_CHAR: {
-                        data.insert(0, ((UndoOperation) operation).getData());
+                        editableData.insert(0, ((UndoOperation) operation).getData());
                         break;
                     }
                     case DELETE_CHAR: {
-                        data.insert(data.getDataSize(), ((UndoOperation) operation).getData());
+                        editableData.insert(editableData.getDataSize(), ((UndoOperation) operation).getData());
                         break;
                     }
                     default: {

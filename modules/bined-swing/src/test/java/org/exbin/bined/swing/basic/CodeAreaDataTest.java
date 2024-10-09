@@ -15,7 +15,6 @@
  */
 package org.exbin.bined.swing.basic;
 
-import javax.annotation.Nonnull;
 import org.exbin.bined.CodeAreaTest;
 import org.exbin.bined.swing.CodeAreaCore;
 import org.junit.Assert;
@@ -26,14 +25,9 @@ import org.junit.Test;
  *
  * @author ExBin Project (https://exbin.org)
  */
-public class CodeAreaDataTest {
+public class CodeAreaDataTest extends CodeAreaComponentTest {
 
     public CodeAreaDataTest() {
-    }
-
-    @Nonnull
-    public CodeAreaCore createCodeArea() {
-        return new CodeArea();
     }
 
     @Test
@@ -41,6 +35,6 @@ public class CodeAreaDataTest {
         CodeAreaCore codeArea = createCodeArea();
         codeArea.setContentData(CodeAreaTest.getSampleData(CodeAreaTest.SAMPLE_ALLBYTES));
 
-        Assert.assertTrue(codeArea.getDataSize() == 256);
+        Assert.assertEquals(256, codeArea.getDataSize());
     }
 }

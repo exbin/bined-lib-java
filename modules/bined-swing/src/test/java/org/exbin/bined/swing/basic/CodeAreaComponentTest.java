@@ -13,12 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.operation;
+package org.exbin.bined.swing.basic;
+
+import javax.annotation.Nonnull;
+import org.exbin.bined.swing.CodeAreaCore;
 
 /**
- * Command type interface.
+ * Tests for CodeArea component.
  *
  * @author ExBin Project (https://exbin.org)
  */
-public interface BinaryDataCommandType {
+public class CodeAreaComponentTest {
+
+    public CodeAreaComponentTest() {
+    }
+
+    @Nonnull
+    public CodeAreaCore createCodeArea() {
+        return new CodeArea();
+    }
 }

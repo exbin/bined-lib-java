@@ -68,7 +68,7 @@ public class OverwriteCharEditDataOperation extends CharEditDataOperation {
     @Nullable
     private CodeAreaOperation execute(boolean withUndo) {
         CodeAreaOperation undoOperation = null;
-        EditableBinaryData undoData = null;
+        EditableBinaryData undoData;
 
         EditableBinaryData data = (EditableBinaryData) codeArea.getContentData();
         long editedDataPosition = startPosition + length;

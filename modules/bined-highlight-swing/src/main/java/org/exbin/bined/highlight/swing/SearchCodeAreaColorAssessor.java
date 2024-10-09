@@ -24,8 +24,10 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.basic.BasicCodeAreaSection;
 import org.exbin.bined.CodeAreaSection;
+import org.exbin.bined.highlight.swing.color.CodeAreaMatchColorType;
 import org.exbin.bined.swing.CodeAreaPaintState;
 import org.exbin.bined.swing.CodeAreaColorAssessor;
+import org.exbin.bined.swing.basic.color.CodeAreaColorsProfile;
 
 /**
  * Code area search matches highlighting.
@@ -45,21 +47,37 @@ public class SearchCodeAreaColorAssessor implements CodeAreaColorAssessor {
     private int matchIndex = 0;
     private long matchPosition = -1;
 
+    @Nullable
     private Color foundMatchesColor;
+    @Nullable
+    private Color foundMatchesBackground;
+    @Nullable
     private Color currentMatchColor;
+    @Nullable
+    private Color currentMatchBackground;
     private int charactersPerRow = 1;
 
     public SearchCodeAreaColorAssessor(@Nullable CodeAreaColorAssessor parentAssessor) {
         this.parentAssessor = parentAssessor;
-
-        foundMatchesColor = new Color(180, 255, 180);
-        currentMatchColor = new Color(255, 210, 180);
     }
 
     @Override
     public void startPaint(CodeAreaPaintState codeAreaPaintState) {
         matchIndex = 0;
         charactersPerRow = codeAreaPaintState.getCharactersPerRow();
+        CodeAreaColorsProfile colorsProfile = codeAreaPaintState.getColorsProfile();
+
+        foundMatchesColor = colorsProfile.getColor(CodeAreaMatchColorType.MATCH_COLOR);
+        foundMatchesBackground = colorsProfile.getColor(CodeAreaMatchColorType.MATCH_BACKGROUND);
+        if (foundMatchesBackground == null) {
+            foundMatchesBackground = new Color(180, 255, 180);
+        }
+
+        currentMatchColor = colorsProfile.getColor(CodeAreaMatchColorType.CURRENT_MATCH_COLOR);
+        currentMatchBackground = colorsProfile.getColor(CodeAreaMatchColorType.CURRENT_MATCH_BACKGROUND);
+        if (currentMatchBackground == null) {
+            currentMatchBackground = new Color(255, 210, 180);
+        }
 
         if (parentAssessor != null) {
             parentAssessor.startPaint(codeAreaPaintState);
@@ -160,23 +178,4 @@ public class SearchCodeAreaColorAssessor implements CodeAreaColorAssessor {
     public void setCurrentMatchIndex(int currentMatchIndex) {
         this.currentMatchIndex = currentMatchIndex;
     }
-
-    @Nonnull
-    public Color getFoundMatchesBackgroundColor() {
-        return foundMatchesColor;
-    }
-
-    public void setFoundMatchesBackgroundColor(Color foundMatchesBackgroundColor) {
-        this.foundMatchesColor = foundMatchesBackgroundColor;
-    }
-
-    @Nonnull
-    public Color getCurrentMatchBackgroundColor() {
-        return currentMatchColor;
-    }
-
-    public void setCurrentMatchBackgroundColor(Color currentMatchBackgroundColor) {
-        this.currentMatchColor = currentMatchBackgroundColor;
-    }
-
 }

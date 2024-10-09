@@ -17,7 +17,6 @@ package org.exbin.bined.swing.basic;
 
 import java.awt.Component;
 import java.awt.event.KeyEvent;
-import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.swing.JFrame;
 import org.exbin.auxiliary.binary_data.BinaryData;
@@ -37,16 +36,9 @@ import org.junit.Test;
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public class CodeAreaCommandEditTest {
-
-    private static final char DELETE_CHAR = (char) 0x7f;
+public class CodeAreaCommandEditTest extends CodeAreaComponentTest {
 
     public CodeAreaCommandEditTest() {
-    }
-
-    @Nonnull
-    public CodeAreaCore createCodeArea() {
-        return new CodeArea();
     }
 
     @Test

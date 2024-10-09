@@ -20,7 +20,6 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.auxiliary.binary_data.BinaryData;
 import org.exbin.bined.EditOperation;
@@ -41,14 +40,9 @@ import org.exbin.bined.swing.CodeAreaCore;
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public class CodeAreaCommandClipboardTest {
+public class CodeAreaCommandClipboardTest extends CodeAreaComponentTest {
 
     public CodeAreaCommandClipboardTest() {
-    }
-
-    @Nonnull
-    public CodeAreaCore createCodeArea() {
-        return new CodeArea();
     }
 
     @Test
@@ -93,7 +87,7 @@ public class CodeAreaCommandClipboardTest {
         codeArea.clearSelection();
         codeArea.paste();
 
-        Assert.assertTrue(codeArea.getDataSize() == dataSize);
+        Assert.assertEquals(dataSize, codeArea.getDataSize());
     }
 
     @Test
@@ -108,7 +102,7 @@ public class CodeAreaCommandClipboardTest {
         codeArea.clearSelection();
         codeArea.paste();
 
-        Assert.assertTrue(codeArea.getDataSize() == dataSize * 2);
+        Assert.assertEquals(dataSize * 2, codeArea.getDataSize());
     }
 
     @Test
@@ -123,7 +117,7 @@ public class CodeAreaCommandClipboardTest {
         codeArea.clearSelection();
         codeArea.paste();
 
-        Assert.assertTrue(codeArea.getDataSize() == dataSize);
+        Assert.assertEquals(dataSize, codeArea.getDataSize());
     }
 
     @Test
@@ -138,7 +132,7 @@ public class CodeAreaCommandClipboardTest {
         ((CaretCapable) codeArea).setActiveCaretPosition(dataSize);
         codeArea.paste();
 
-        Assert.assertTrue(codeArea.getDataSize() == (dataSize * 2));
+        Assert.assertEquals(dataSize * 2, codeArea.getDataSize());
     }
 
     @Test
@@ -154,7 +148,7 @@ public class CodeAreaCommandClipboardTest {
         ((CaretCapable) codeArea).setActiveCaretPosition(dataSize);
         codeArea.paste();
 
-        Assert.assertTrue(codeArea.getDataSize() == (dataSize * 2));
+        Assert.assertEquals(dataSize * 2, codeArea.getDataSize());
     }
 
     @Test
@@ -170,8 +164,7 @@ public class CodeAreaCommandClipboardTest {
         ((CaretCapable) codeArea).setActiveCaretPosition(dataSize);
         codeArea.paste();
 
-        System.out.println("Test");
-        Assert.assertTrue(codeArea.getDataSize() == dataSize);
+        Assert.assertEquals(dataSize, codeArea.getDataSize());
     }
 
     @Test
@@ -192,7 +185,7 @@ public class CodeAreaCommandClipboardTest {
         ((CaretCapable) codeArea).setActiveCaretPosition(dataSize / 2);
         codeArea.paste();
 
-        Assert.assertTrue(codeArea.getDataSize() == expectedSize);
+        Assert.assertEquals(expectedSize, codeArea.getDataSize());
         checkResultData(expectedData, codeArea.getContentData());
     }
 
@@ -216,7 +209,7 @@ public class CodeAreaCommandClipboardTest {
         ((CaretCapable) codeArea).setActiveCaretPosition(dataSize / 2);
         codeArea.paste();
 
-        Assert.assertTrue(codeArea.getDataSize() == expectedSize);
+        Assert.assertEquals(expectedSize, codeArea.getDataSize());
         checkResultData(expectedData, codeArea.getContentData());
     }
 
@@ -238,7 +231,7 @@ public class CodeAreaCommandClipboardTest {
         ((CaretCapable) codeArea).setActiveCaretPosition(dataSize / 2);
         codeArea.paste();
 
-        Assert.assertTrue(codeArea.getDataSize() == expectedSize);
+        Assert.assertEquals(expectedSize, codeArea.getDataSize());
         checkResultData(expectedData, codeArea.getContentData());
     }
 

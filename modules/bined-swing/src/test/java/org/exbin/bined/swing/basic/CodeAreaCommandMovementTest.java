@@ -17,7 +17,6 @@ package org.exbin.bined.swing.basic;
 
 import java.awt.Component;
 import java.awt.event.KeyEvent;
-import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.swing.JFrame;
 import org.exbin.bined.CodeAreaCaretPosition;
@@ -33,14 +32,9 @@ import org.junit.Test;
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public class CodeAreaCommandMovementTest {
+public class CodeAreaCommandMovementTest extends CodeAreaComponentTest {
 
     public CodeAreaCommandMovementTest() {
-    }
-
-    @Nonnull
-    public CodeAreaCore createCodeArea() {
-        return new CodeArea();
     }
 
     @Test

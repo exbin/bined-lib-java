@@ -26,7 +26,7 @@ import org.exbin.bined.operation.undo.BinaryDataUndoableOperation;
 import org.exbin.bined.swing.CodeAreaCore;
 
 /**
- * Abstract class for operation on hexadecimal document.
+ * Abstract class for operation on binary document.
  *
  * @author ExBin Project (https://exbin.org)
  */
