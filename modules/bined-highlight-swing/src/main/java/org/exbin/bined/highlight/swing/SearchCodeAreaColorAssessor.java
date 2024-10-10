@@ -87,21 +87,11 @@ public class SearchCodeAreaColorAssessor implements CodeAreaColorAssessor {
     @Nullable
     @Override
     public Color getPositionTextColor(long rowDataPosition, int byteOnRow, int charOnRow, CodeAreaSection section, boolean inSelection) {
-        if (parentAssessor != null) {
-            return parentAssessor.getPositionTextColor(rowDataPosition, byteOnRow, charOnRow, section, inSelection);
-        }
-
-        return null;
-    }
-
-    @Nullable
-    @Override
-    public Color getPositionBackgroundColor(long rowDataPosition, int byteOnRow, int charOnRow, CodeAreaSection section, boolean inSelection) {
-        if (!matches.isEmpty() && charOnRow < charactersPerRow - 1) {
+        if ((currentMatchColor != null || foundMatchesColor != null) && !matches.isEmpty() && charOnRow < charactersPerRow - 1) {
             long dataPosition = rowDataPosition + byteOnRow;
             if (currentMatchIndex >= 0) {
                 SearchMatch currentMatch = matches.get(currentMatchIndex);
-                if (dataPosition >= currentMatch.position && dataPosition < currentMatch.position + currentMatch.length
+                if (currentMatchColor != null && dataPosition >= currentMatch.position && dataPosition < currentMatch.position + currentMatch.length
                         && (section == BasicCodeAreaSection.TEXT_PREVIEW || charOnRow != ((currentMatch.position + currentMatch.length) - rowDataPosition) * charactersPerRow - 1)) {
                     return currentMatchColor;
                 }
@@ -119,7 +109,57 @@ public class SearchCodeAreaColorAssessor implements CodeAreaColorAssessor {
                         matchIndex = lineMatchIndex;
                         matchPosition = match.position;
                     }
-                    return foundMatchesColor;
+                    if (foundMatchesColor != null) {
+                        return foundMatchesColor;
+                    }
+                    break;
+                }
+
+                if (match.position > dataPosition) {
+                    break;
+                }
+
+                if (byteOnRow == 0) {
+                    matchIndex = lineMatchIndex;
+                    matchPosition = match.position;
+                }
+                lineMatchIndex++;
+            }
+        }
+
+        if (parentAssessor != null) {
+            return parentAssessor.getPositionTextColor(rowDataPosition, byteOnRow, charOnRow, section, inSelection);
+        }
+
+        return null;
+    }
+
+    @Nullable
+    @Override
+    public Color getPositionBackgroundColor(long rowDataPosition, int byteOnRow, int charOnRow, CodeAreaSection section, boolean inSelection) {
+        if (!matches.isEmpty() && charOnRow < charactersPerRow - 1) {
+            long dataPosition = rowDataPosition + byteOnRow;
+            if (currentMatchIndex >= 0) {
+                SearchMatch currentMatch = matches.get(currentMatchIndex);
+                if (dataPosition >= currentMatch.position && dataPosition < currentMatch.position + currentMatch.length
+                        && (section == BasicCodeAreaSection.TEXT_PREVIEW || charOnRow != ((currentMatch.position + currentMatch.length) - rowDataPosition) * charactersPerRow - 1)) {
+                    return currentMatchBackground;
+                }
+            }
+
+            if (matchPosition < rowDataPosition) {
+                matchIndex = 0;
+            }
+            int lineMatchIndex = matchIndex;
+            while (lineMatchIndex < matches.size()) {
+                SearchMatch match = matches.get(lineMatchIndex);
+                if (dataPosition >= match.position && dataPosition < match.position + match.length
+                        && (section == BasicCodeAreaSection.TEXT_PREVIEW || charOnRow != ((match.position + match.length) - rowDataPosition) * charactersPerRow - 1)) {
+                    if (byteOnRow == 0) {
+                        matchIndex = lineMatchIndex;
+                        matchPosition = match.position;
+                    }
+                    return foundMatchesBackground;
                 }
 
                 if (match.position > dataPosition) {

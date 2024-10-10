@@ -32,7 +32,7 @@ import org.exbin.bined.swing.CodeAreaPaintState;
 @ParametersAreNonnullByDefault
 public class DefaultCodeAreaCharAssessor implements CodeAreaCharAssessor {
 
-    protected final CodeAreaCharAssessor parentAssessor;
+    protected final CodeAreaCharAssessor parentCharAssessor;
 
     @Nullable
     protected Charset charMappingCharset = null;
@@ -45,11 +45,11 @@ public class DefaultCodeAreaCharAssessor implements CodeAreaCharAssessor {
     protected Charset charset;
 
     public DefaultCodeAreaCharAssessor() {
-        parentAssessor = null;
+        parentCharAssessor = null;
     }
 
-    public DefaultCodeAreaCharAssessor(@Nullable CodeAreaCharAssessor parentAssessor) {
-        this.parentAssessor = parentAssessor;
+    public DefaultCodeAreaCharAssessor(@Nullable CodeAreaCharAssessor parentCharAssessor) {
+        this.parentCharAssessor = parentCharAssessor;
     }
 
     @Override
@@ -59,9 +59,8 @@ public class DefaultCodeAreaCharAssessor implements CodeAreaCharAssessor {
         rowData = codeAreaPaintState.getRowData();
         maxBytesPerChar = codeAreaPaintState.getMaxBytesPerChar();
 
-        
-        if (parentAssessor != null) {
-            parentAssessor.startPaint(codeAreaPaintState);
+        if (parentCharAssessor != null) {
+            parentCharAssessor.startPaint(codeAreaPaintState);
         }
     }
 
@@ -88,6 +87,10 @@ public class DefaultCodeAreaCharAssessor implements CodeAreaCharAssessor {
             return charMapping[rowData[byteOnRow] & 0xFF];
         }
 
+        if (parentCharAssessor != null) {
+            return parentCharAssessor.getPreviewCharacter(rowDataPosition, byteOnRow, charOnRow, section);
+        }
+
         return ' ';
     }
 
@@ -109,14 +112,18 @@ public class DefaultCodeAreaCharAssessor implements CodeAreaCharAssessor {
 
             return charMapping[cursorData[0] & 0xFF];
         }
-        
+
+        if (parentCharAssessor != null) {
+            return parentCharAssessor.getPreviewCursorCharacter(rowDataPosition, byteOnRow, charOnRow, cursorData, cursorDataLength, section);
+        }
+
         return ' ';
     }
 
     @Nonnull
     @Override
     public Optional<CodeAreaCharAssessor> getParentCharAssessor() {
-        return Optional.ofNullable(parentAssessor);
+        return Optional.ofNullable(parentCharAssessor);
     }
 
     /**

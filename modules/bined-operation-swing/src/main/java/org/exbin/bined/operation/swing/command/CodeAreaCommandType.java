@@ -15,7 +15,6 @@
  */
 package org.exbin.bined.operation.swing.command;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.operation.BinaryDataCommandType;
 
 /**
@@ -23,7 +22,6 @@ import org.exbin.bined.operation.BinaryDataCommandType;
  *
  * @author ExBin Project (https://exbin.org)
  */
-@ParametersAreNonnullByDefault
 public enum CodeAreaCommandType implements BinaryDataCommandType {
 
     /**

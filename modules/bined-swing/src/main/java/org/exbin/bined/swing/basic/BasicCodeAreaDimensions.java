@@ -46,17 +46,11 @@ public class BasicCodeAreaDimensions {
     protected int charactersPerPage;
     protected int charactersPerRect;
 
-    @Nonnull
     protected final Rectangle componentRectangle = new Rectangle();
-    @Nonnull
     protected final Rectangle mainAreaRectangle = new Rectangle();
-    @Nonnull
     protected final Rectangle headerAreaRectangle = new Rectangle();
-    @Nonnull
     protected final Rectangle rowPositionAreaRectangle = new Rectangle();
-    @Nonnull
     protected final Rectangle scrollPanelRectangle = new Rectangle();
-    @Nonnull
     protected final Rectangle dataViewRectangle = new Rectangle();
 
     public void recomputeSizes(BasicCodeAreaMetrics metrics, int componentX, int componentY, int componentWidth, int componentHeight, int rowPositionLength, int verticalScrollBarSize, int horizontalScrollBarSize) {

@@ -35,7 +35,7 @@ import org.exbin.bined.swing.basic.color.CodeAreaColorsProfile;
 @ParametersAreNonnullByDefault
 public class DefaultCodeAreaColorAssessor implements CodeAreaColorAssessor {
 
-    protected final CodeAreaColorAssessor parentAssessor;
+    protected final CodeAreaColorAssessor parentColorAssessor;
 
     protected CodeAreaSection activeSection = null;
     protected int codeLastCharPos;
@@ -45,11 +45,11 @@ public class DefaultCodeAreaColorAssessor implements CodeAreaColorAssessor {
     protected Color selectionMirrorBackground;
 
     public DefaultCodeAreaColorAssessor() {
-        parentAssessor = null;
+        parentColorAssessor = null;
     }
 
-    public DefaultCodeAreaColorAssessor(@Nullable CodeAreaColorAssessor parentAssessor) {
-        this.parentAssessor = parentAssessor;
+    public DefaultCodeAreaColorAssessor(@Nullable CodeAreaColorAssessor parentColorAssessor) {
+        this.parentColorAssessor = parentColorAssessor;
     }
 
     @Override
@@ -62,8 +62,8 @@ public class DefaultCodeAreaColorAssessor implements CodeAreaColorAssessor {
         selectionBackground = colorsProfile.getColor(CodeAreaBasicColors.SELECTION_BACKGROUND);
         selectionMirrorBackground = colorsProfile.getColor(CodeAreaBasicColors.SELECTION_MIRROR_BACKGROUND);
 
-        if (parentAssessor != null) {
-            parentAssessor.startPaint(codeAreaPainterState);
+        if (parentColorAssessor != null) {
+            parentColorAssessor.startPaint(codeAreaPainterState);
         }
     }
 
@@ -72,6 +72,10 @@ public class DefaultCodeAreaColorAssessor implements CodeAreaColorAssessor {
     public Color getPositionTextColor(long rowDataPosition, int byteOnRow, int charOnRow, CodeAreaSection section, boolean inSelection) {
         if (inSelection) {
             return section == activeSection ? selectionColor : selectionMirrorColor;
+        }
+
+        if (parentColorAssessor != null) {
+            return parentColorAssessor.getPositionTextColor(rowDataPosition, byteOnRow, charOnRow, section, inSelection);
         }
 
         return null;
@@ -90,12 +94,16 @@ public class DefaultCodeAreaColorAssessor implements CodeAreaColorAssessor {
             return section == activeSection ? selectionBackground : selectionMirrorBackground;
         }
 
+        if (parentColorAssessor != null) {
+            return parentColorAssessor.getPositionBackgroundColor(rowDataPosition, byteOnRow, charOnRow, section, inSelection);
+        }
+
         return null;
     }
 
     @Nonnull
     @Override
     public Optional<CodeAreaColorAssessor> getParentColorAssessor() {
-        return Optional.ofNullable(parentAssessor);
+        return Optional.ofNullable(parentColorAssessor);
     }
 }

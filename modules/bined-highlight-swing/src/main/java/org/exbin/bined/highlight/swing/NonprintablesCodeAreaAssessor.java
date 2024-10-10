@@ -72,7 +72,7 @@ public class NonprintablesCodeAreaAssessor implements CodeAreaColorAssessor, Cod
 
         CodeAreaColorsProfile colorsProfile = codeAreaPaintState.getColorsProfile();
         nonprintablesColor = colorsProfile.getColor(CodeAreaNonprintablesColorType.NONPRINTABLES_COLOR);
-        if (nonprintablesColor != null) {
+        if (nonprintablesColor == null) {
             Color textColor = colorsProfile.getColor(CodeAreaBasicColors.TEXT_COLOR);
             nonprintablesColor = new Color(textColor.getRed(), textColor.getGreen(), (textColor.getBlue() + 196) % 256);
         }

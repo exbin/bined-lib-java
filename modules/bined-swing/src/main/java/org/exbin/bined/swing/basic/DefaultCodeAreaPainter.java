@@ -85,6 +85,7 @@ import org.exbin.bined.swing.CodeAreaPaintState;
 import org.exbin.bined.swing.CodeAreaSwingControl;
 import org.exbin.bined.swing.basic.color.CodeAreaColorsProfile;
 import org.exbin.bined.swing.CodeAreaColorAssessor;
+import org.exbin.bined.swing.capability.CharAssessorPainterCapable;
 import org.exbin.bined.swing.capability.ColorAssessorPainterCapable;
 
 /**
@@ -93,7 +94,7 @@ import org.exbin.bined.swing.capability.ColorAssessorPainterCapable;
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapableCodeAreaPainter, CodeAreaPaintState, ColorAssessorPainterCapable {
+public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapableCodeAreaPainter, CodeAreaPaintState, ColorAssessorPainterCapable, CharAssessorPainterCapable {
 
     @Nonnull
     protected final CodeAreaCore codeArea;
@@ -115,18 +116,12 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
     @Nonnull
     protected final DataChangedListener codeAreaDataChangeListener;
 
-    @Nonnull
     protected final BasicCodeAreaMetrics metrics = new BasicCodeAreaMetrics();
-    @Nonnull
     protected final BasicCodeAreaStructure structure = new BasicCodeAreaStructure();
-    @Nonnull
     protected final BasicCodeAreaScrolling scrolling = new BasicCodeAreaScrolling();
-    @Nonnull
     protected final BasicCodeAreaDimensions dimensions = new BasicCodeAreaDimensions();
-    @Nonnull
     protected final BasicCodeAreaVisibility visibility = new BasicCodeAreaVisibility();
 
-    @Nonnull
     protected final BasicCodeAreaLayout layout = new BasicCodeAreaLayout();
     @Nonnull
     protected BasicCodeAreaColorsProfile colorsProfile = new BasicCodeAreaColorsProfile();
@@ -791,6 +786,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         int charactersPerRow = structure.getCharactersPerRow();
         int skipToChar = visibility.getSkipToChar();
         int skipRestFromChar = visibility.getSkipRestFromChar();
+        CodeAreaSelection selectionHandler = ((SelectionCapable) codeArea).getSelectionHandler();
 
         int renderOffset = skipToChar;
         Color renderColor = null;
@@ -806,8 +802,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
             }
             boolean sequenceBreak = false;
 
-            
-            CodeAreaSelection selectionHandler = ((SelectionCapable) codeArea).getSelectionHandler();
             boolean inSelection = selectionHandler.isInSelection(rowDataPosition + byteOnRow);
             Color color = colorAssessor.getPositionBackgroundColor(rowDataPosition, byteOnRow, charOnRow, section, inSelection);
             if (!CodeAreaSwingUtils.areSameColors(color, renderColor)) {
@@ -930,6 +924,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         int rowHeight = metrics.getRowHeight();
         int characterWidth = metrics.getCharacterWidth();
         int subFontSpace = metrics.getSubFontSpace();
+        CodeAreaSelection selectionHandler = ((SelectionCapable) codeArea).getSelectionHandler();
 
         g.setFont(font);
         int positionY = rowPositionY + rowHeight - subFontSpace;
@@ -957,7 +952,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
                 continue;
             }
 
-            CodeAreaSelection selectionHandler = ((SelectionCapable) codeArea).getSelectionHandler();
             boolean inSelection = selectionHandler.isInSelection(rowDataPosition + byteOnRow);
             Color color = colorAssessor.getPositionTextColor(rowDataPosition, byteOnRow, charOnRow, section, inSelection);
             if (color == null) {
@@ -1014,10 +1008,12 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
     }
 
     @Nonnull
+    @Override
     public CodeAreaCharAssessor getCharAssessor() {
         return charAssessor;
     }
 
+    @Override
     public void setCharAssessor(CodeAreaCharAssessor charAssessor) {
         this.charAssessor = charAssessor;
     }
