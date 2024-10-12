@@ -28,6 +28,8 @@ import org.exbin.bined.swing.CodeAreaCore;
 
 /**
  * Class for compound command on binary document.
+ * <p>
+ * TODO: make it BinaryDataAppendableCommand
  *
  * @author ExBin Project (https://exbin.org)
  */

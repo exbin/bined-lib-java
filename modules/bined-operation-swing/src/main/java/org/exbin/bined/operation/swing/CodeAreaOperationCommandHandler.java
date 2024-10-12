@@ -317,10 +317,13 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
             EditMode editMode = ((EditModeCapable) codeArea).getEditMode();
             EditOperation editOperation = ((EditModeCapable) codeArea).getActiveOperation();
             DeleteSelectionCommand deleteSelectionCommand = null;
+            long dataPosition = ((CaretCapable) codeArea).getDataPosition();
+            int codeOffset = ((CaretCapable) codeArea).getCodeOffset();
             if (codeArea.hasSelection()) {
-                long selectionStart = ((SelectionCapable) codeArea).getSelection().getFirst();
+                dataPosition = ((SelectionCapable) codeArea).getSelection().getFirst();
+                codeOffset = 0;
                 deleteSelectionCommand = new DeleteSelectionCommand(codeArea);
-                ((CaretCapable) codeArea).setActiveCaretPosition(selectionStart);
+                ((CaretCapable) codeArea).setActiveCaretPosition(dataPosition);
                 sequenceBreak();
             }
 
@@ -341,14 +344,10 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
                 if (deleteSelectionCommand != null) {
                     CodeAreaCompoundCommand compoundCommand = new CodeAreaCompoundCommand(codeArea);
                     compoundCommand.addCommand(deleteSelectionCommand);
-                    long dataPosition = ((CaretCapable) codeArea).getDataPosition();
-                    int codeOffset = ((CaretCapable) codeArea).getCodeOffset();
                     editCommand = new EditCodeDataCommand(codeArea, EditDataCommand.EditOperationType.OVERWRITE, dataPosition, codeOffset, (byte) value);
                     compoundCommand.addCommand(editCommand);
                     undoRedo.execute(compoundCommand);
                 } else {
-                    long dataPosition = ((CaretCapable) codeArea).getDataPosition();
-                    int codeOffset = ((CaretCapable) codeArea).getCodeOffset();
                     EditCodeDataCommand command = new EditCodeDataCommand(codeArea, EditDataCommand.EditOperationType.OVERWRITE, dataPosition, codeOffset, (byte) value);
                     if (editCommand != null && isAppendAllowed() && undoRedo instanceof BinaryDataAppendableUndoRedo) {
                         if (!((BinaryDataAppendableUndoRedo) undoRedo).appendExecute(command)) {
@@ -363,14 +362,10 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
                 if (deleteSelectionCommand != null) {
                     CodeAreaCompoundCommand compoundCommand = new CodeAreaCompoundCommand(codeArea);
                     compoundCommand.addCommand(deleteSelectionCommand);
-                    long dataPosition = ((CaretCapable) codeArea).getDataPosition();
-                    int codeOffset = ((CaretCapable) codeArea).getCodeOffset();
                     editCommand = new EditCodeDataCommand(codeArea, EditDataCommand.EditOperationType.INSERT, dataPosition, codeOffset, (byte) value);
                     compoundCommand.addCommand(editCommand);
                     undoRedo.execute(compoundCommand);
                 } else {
-                    long dataPosition = ((CaretCapable) codeArea).getDataPosition();
-                    int codeOffset = ((CaretCapable) codeArea).getCodeOffset();
                     EditCodeDataCommand command = new EditCodeDataCommand(codeArea, EditDataCommand.EditOperationType.INSERT, dataPosition, codeOffset, (byte) value);
                     if (editCommand != null && isAppendAllowed() && undoRedo instanceof BinaryDataAppendableUndoRedo) {
                         if (!((BinaryDataAppendableUndoRedo) undoRedo).appendExecute(command)) {
@@ -400,7 +395,9 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
             DeleteSelectionCommand deleteCommand = null;
             if (codeArea.hasSelection() && editMode != EditMode.INPLACE) {
                 sequenceBreak();
+                dataPosition = ((SelectionCapable) codeArea).getSelection().getFirst();
                 deleteCommand = new DeleteSelectionCommand(codeArea);
+                ((CaretCapable) codeArea).setActiveCaretPosition(dataPosition);
             }
 
             if (editMode == EditMode.EXPANDING && editOperation == EditOperation.OVERWRITE) {

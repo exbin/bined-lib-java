@@ -108,6 +108,10 @@ public class EditCodeDataCommand extends EditDataCommand implements BinaryDataAp
 
     @Override
     public boolean appendExecute(BinaryDataCommand command) {
+        if (phase != BinaryDataCommandPhase.EXECUTED) {
+            throw new IllegalStateException();
+        }
+
         command.execute();
 
         if (command instanceof EditCodeDataCommand && activeOperation instanceof BinaryDataAppendableOperation) {

@@ -174,6 +174,7 @@ public abstract class CodeAreaCore extends JTextComponent implements CodeAreaCon
         return commandHandler.canPaste();
     }
 
+    // TODO - collision with component
     @Override
     public boolean hasSelection() {
         if (this instanceof SelectionCapable) {
