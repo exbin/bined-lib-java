@@ -22,21 +22,23 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.operation.BinaryDataCommand;
+import org.exbin.bined.operation.BinaryDataCommandPhase;
 import org.exbin.bined.operation.BinaryDataCompoundCommand;
+import org.exbin.bined.operation.undo.BinaryDataAppendableCommand;
 import org.exbin.bined.operation.undo.BinaryDataUndoableCommand;
 import org.exbin.bined.swing.CodeAreaCore;
 
 /**
  * Class for compound command on binary document.
- * <p>
- * TODO: make it BinaryDataAppendableCommand
  *
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public class CodeAreaCompoundCommand extends CodeAreaCommand implements BinaryDataCompoundCommand {
+public class CodeAreaCompoundCommand extends CodeAreaCommand implements BinaryDataCompoundCommand, BinaryDataAppendableCommand {
 
     protected final List<BinaryDataCommand> commands = new ArrayList<>();
+    @Nonnull
+    protected BinaryDataCommandPhase phase = BinaryDataCommandPhase.CREATED;
 
     public CodeAreaCompoundCommand(@Nonnull CodeAreaCore codeArea) {
         super(codeArea);
@@ -71,13 +73,23 @@ public class CodeAreaCompoundCommand extends CodeAreaCommand implements BinaryDa
 
     @Override
     public void execute() {
+        if (phase != BinaryDataCommandPhase.CREATED) {
+            throw new IllegalStateException();
+        }
+
         for (BinaryDataCommand command : commands) {
             command.execute();
         }
+
+        phase = BinaryDataCommandPhase.EXECUTED;
     }
 
     @Override
     public void redo() {
+        if (phase != BinaryDataCommandPhase.REVERTED) {
+            throw new IllegalStateException();
+        }
+
         for (BinaryDataCommand command : commands) {
             if (command instanceof BinaryDataUndoableCommand) {
                 ((BinaryDataUndoableCommand) command).redo();
@@ -85,10 +97,16 @@ public class CodeAreaCompoundCommand extends CodeAreaCommand implements BinaryDa
                 throw new UnsupportedOperationException("Not supported yet.");
             }
         }
+
+        phase = BinaryDataCommandPhase.EXECUTED;
     }
 
     @Override
     public void undo() {
+        if (phase != BinaryDataCommandPhase.EXECUTED) {
+            throw new IllegalStateException();
+        }
+
         for (int i = commands.size() - 1; i >= 0; i--) {
             BinaryDataCommand command = commands.get(i);
             if (command instanceof BinaryDataUndoableCommand) {
@@ -97,6 +115,26 @@ public class CodeAreaCompoundCommand extends CodeAreaCommand implements BinaryDa
                 throw new UnsupportedOperationException("Not supported yet.");
             }
         }
+
+        phase = BinaryDataCommandPhase.REVERTED;
+    }
+
+    @Override
+    public boolean appendExecute(BinaryDataCommand command) {
+        if (phase != BinaryDataCommandPhase.EXECUTED) {
+            throw new IllegalStateException();
+        }
+
+        if (!isEmpty()) {
+            BinaryDataCommand lastCommand = commands.get(commands.size() - 1);
+            if (lastCommand instanceof BinaryDataAppendableCommand) {
+                return ((BinaryDataAppendableCommand) lastCommand).appendExecute(command);
+            }
+        }
+
+        command.execute();
+
+        return false;
     }
 
     @Override
