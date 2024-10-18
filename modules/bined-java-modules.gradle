@@ -16,7 +16,7 @@ ext.depsBinedJava = [
 ext.depsExbinAuxiliaryJava = [
     githubProfile: 'exbin',
     githubRepo: 'exbin-auxiliary-java',
-    version: '0.2.1'
+    version: '0.2.2-SNAPSHOT'
 ]
 
 apply from: '../deps_processing.gradle'
