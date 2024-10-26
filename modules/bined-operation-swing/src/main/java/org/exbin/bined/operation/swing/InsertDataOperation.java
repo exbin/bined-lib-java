@@ -33,8 +33,8 @@ import org.exbin.bined.operation.undo.BinaryDataUndoableOperation;
 @ParametersAreNonnullByDefault
 public class InsertDataOperation extends CodeAreaOperation {
 
-    protected final long position;
-    protected final int codeOffset;
+    protected long position;
+    protected int codeOffset;
     @Nonnull
     protected final BinaryData data;
 
