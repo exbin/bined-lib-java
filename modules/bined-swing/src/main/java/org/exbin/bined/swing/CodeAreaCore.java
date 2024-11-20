@@ -35,9 +35,18 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.event.EventListenerList;
+import javax.swing.event.UndoableEditListener;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
 import javax.swing.text.Caret;
+import javax.swing.text.Document;
+import javax.swing.text.Element;
 import javax.swing.text.JTextComponent;
+import javax.swing.text.Position;
+import javax.swing.text.Segment;
 import org.exbin.bined.CodeAreaControl;
 import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.DataChangedListener;
@@ -78,6 +87,7 @@ public abstract class CodeAreaCore extends JTextComponent implements CodeAreaCon
     private void init() {
         enableEvents(AWTEvent.KEY_EVENT_MASK);
         setName("CodeArea");
+        setDocument(new SimulatedDocument());
         setCaret(new SimulatedCaret());
         setFocusable(true);
         setFocusTraversalKeysEnabled(false);
@@ -220,6 +230,10 @@ public abstract class CodeAreaCore extends JTextComponent implements CodeAreaCon
      */
     public void notifyDataChanged() {
         dataChangedListeners.forEach(DataChangedListener::dataChanged);
+        Document document = getDocument();
+        if (document instanceof SimulatedDocument) {
+            ((SimulatedDocument) document).notifyDataChanged();
+        }
     }
 
     public void addDataChangedListener(DataChangedListener dataChangedListener) {
@@ -233,6 +247,137 @@ public abstract class CodeAreaCore extends JTextComponent implements CodeAreaCon
     public abstract void resetPainter();
 
     public abstract void updateLayout();
+
+    @ParametersAreNonnullByDefault
+    protected class SimulatedDocument implements Document {
+
+        private final List<UndoableEditListener> undoableEditListeners = new ArrayList<>();
+        private final List<DocumentListener> documentListeners = new ArrayList<>();
+
+        public SimulatedDocument() {
+        }
+
+        @Override
+        public int getLength() {
+            return 0;
+        }
+
+        @Override
+        public void addDocumentListener(DocumentListener listener) {
+            documentListeners.add(listener);
+        }
+
+        @Override
+        public void removeDocumentListener(DocumentListener listener) {
+            documentListeners.remove(listener);
+        }
+
+        public void notifyDataChanged() {
+            if (documentListeners.isEmpty()) {
+                return;
+            }
+
+            DocumentEvent documentEvent = new DocumentEvent() {
+                @Override
+                public int getOffset() {
+                    return 0;
+                }
+
+                @Override
+                public int getLength() {
+                    return 0;
+                }
+
+                @Override
+                public Document getDocument() {
+                    return SimulatedDocument.this;
+                }
+
+                @Nonnull
+                @Override
+                public DocumentEvent.EventType getType() {
+                    return DocumentEvent.EventType.CHANGE;
+                }
+
+                @Override
+                public DocumentEvent.ElementChange getChange(Element elem) {
+                    throw new UnsupportedOperationException();
+                }
+            };
+            documentListeners.forEach((t) -> {
+                t.changedUpdate(documentEvent);
+            });
+        }
+
+        @Override
+        public void addUndoableEditListener(UndoableEditListener listener) {
+            undoableEditListeners.add(listener);
+        }
+
+        @Override
+        public void removeUndoableEditListener(UndoableEditListener listener) {
+            undoableEditListeners.remove(listener);
+        }
+
+        @Nullable
+        @Override
+        public Object getProperty(Object key) {
+            return null;
+        }
+
+        @Override
+        public void putProperty(Object key, @Nullable Object value) {
+        }
+
+        @Override
+        public void remove(int offs, int len) throws BadLocationException {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void insertString(int i, String string, AttributeSet as) throws BadLocationException {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public String getText(int offset, int length) throws BadLocationException {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void getText(int i, int i1, Segment sgmnt) throws BadLocationException {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Position getStartPosition() {
+            return () -> 0;
+        }
+
+        @Override
+        public Position getEndPosition() {
+            return () -> 0;
+        }
+
+        @Override
+        public Position createPosition(int i) throws BadLocationException {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Element[] getRootElements() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Element getDefaultRootElement() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void render(Runnable r) {
+        }
+    }
 
     @ParametersAreNonnullByDefault
     public class AccessibleComponent extends AccessibleJComponent {
@@ -262,7 +407,7 @@ public abstract class CodeAreaCore extends JTextComponent implements CodeAreaCon
     }
 
     @ParametersAreNonnullByDefault
-    private class SimulatedCaret implements Caret {
+    protected class SimulatedCaret implements Caret {
 
         @Nullable
         private JTextComponent component;
