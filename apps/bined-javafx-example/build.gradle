@@ -24,7 +24,7 @@ if (JavaVersion.current() != JavaVersion.VERSION_1_8) {
 
 apply from: '../apps.gradle'
 
-ext.depsRoot = 'BinedJava'
+ext.depsRoot = 'BinedLibJava'
 
 sourceCompatibility = '1.8'
 
@@ -75,8 +75,8 @@ dependencies {
         implementation group: 'org.openjfx', name: 'javafx-graphics', version: '11.0.2'
         implementation group: 'org.openjfx', name: 'javafx-fxml', version: '11.0.2'
     }
-    implementation moduleDep('BinedJava', 'org.exbin.bined', 'modules', 'bined-core')
-    implementation moduleDep('BinedJava', 'org.exbin.bined', 'modules', 'bined-javafx')
+    implementation moduleDep('BinedLibJava', 'org.exbin.bined', 'modules', 'bined-core')
+    implementation moduleDep('BinedLibJava', 'org.exbin.bined', 'modules', 'bined-javafx')
     implementation moduleDep('ExbinAuxiliaryJava', 'org.exbin.auxiliary', 'modules', 'binary_data')
     compileOnly group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.2'
 

@@ -54,7 +54,7 @@ if (JavaVersion.current() != JavaVersion.VERSION_1_8) {
 }
 
 dependencies {
-    api moduleDep('BinedJava', 'org.exbin.bined', 'modules', 'bined-core')
+    api moduleDep('BinedLibJava', 'org.exbin.bined', 'modules', 'bined-core')
     //    providedImplementation files("$javaFxHome/lib/jfxrt.jar")
     if (JavaVersion.current() == JavaVersion.VERSION_1_8) {
         implementation group: 'org.openjfx', name: 'javafx-base', version: '11.0.2'

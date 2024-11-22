@@ -23,11 +23,11 @@ repositories {
 }
 
 dependencies {
-    api moduleDep('BinedJava', 'org.exbin.bined', 'modules', 'bined-core')
+    api moduleDep('BinedLibJava', 'org.exbin.bined', 'modules', 'bined-core')
     implementation group: 'com.googlecode.lanterna', name: 'lanterna', version: '3.1.1'
     implementation moduleDep('ExbinAuxiliaryJava', 'org.exbin.auxiliary', 'modules', 'binary_data')
     implementation moduleDep('ExbinAuxiliaryJava', 'org.exbin.auxiliary', 'modules', 'binary_data-paged')
     compileOnly group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.2'
     testImplementation group : 'junit', name: 'junit', version: '4.13.2'
-    testImplementation project(path: moduleDepPath('BinedJava', 'modules', 'bined-core'), configuration: 'tests')
+    testImplementation project(path: moduleDepPath('BinedLibJava', 'modules', 'bined-core'), configuration: 'tests')
 }

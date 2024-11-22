@@ -24,12 +24,12 @@ repositories {
 }
 
 dependencies {
-    api moduleDep('BinedJava', 'org.exbin.bined', 'modules', 'bined-swing')
-    api moduleDep('BinedJava', 'org.exbin.bined', 'modules', 'bined-section')
+    api moduleDep('BinedLibJava', 'org.exbin.bined', 'modules', 'bined-swing')
+    api moduleDep('BinedLibJava', 'org.exbin.bined', 'modules', 'bined-section')
     implementation moduleDep('ExbinAuxiliaryJava', 'org.exbin.auxiliary', 'modules', 'binary_data')
     compileOnly group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.2'
     testImplementation group : 'junit', name: 'junit', version: '4.13.2'
-    testImplementation project(path: moduleDepPath('BinedJava', 'modules', 'bined-core'), configuration: 'tests')
-    testImplementation project(path: moduleDepPath('BinedJava', 'modules', 'bined-swing'), configuration: 'tests')
+    testImplementation project(path: moduleDepPath('BinedLibJava', 'modules', 'bined-core'), configuration: 'tests')
+    testImplementation project(path: moduleDepPath('BinedLibJava', 'modules', 'bined-swing'), configuration: 'tests')
     testCompileOnly group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.2'
 }

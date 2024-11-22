@@ -37,7 +37,7 @@ if (!gradle.startParameter.taskNames.contains("clean") || gradle.startParameter.
 
 gradle.allprojects {
   ext {
-    depsRoot = 'BinedJava'
+    depsRoot = 'BinedLibJava'
   }
 }
 

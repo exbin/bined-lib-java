@@ -1,13 +1,13 @@
 // Shared modules build
 
 version = '0.3.0-SNAPSHOT'
-def repositoryName = "bined-java"
+def repositoryName = "bined-lib-java"
 def githubProfile = 'exbin'
 def libraryUrl = 'https://bined.exbin.org/library'
 
-ext.depsThis = 'BinedJava'
+ext.depsThis = 'BinedLibJava'
 
-ext.depsBinedJava = [
+ext.depsBinedLibJava = [
     githubProfile: githubProfile,
     githubRepo   : repositoryName,
     version      : version

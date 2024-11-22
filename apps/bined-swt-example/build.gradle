@@ -6,7 +6,7 @@ plugins {
 
 apply from: '../apps.gradle'
 
-ext.depsRoot = 'BinedJava'
+ext.depsRoot = 'BinedLibJava'
 
 if (!hasProperty('mainClass')) {
     ext.mainClass = 'org.exbin.bined.swt.example.BinEdExample'
@@ -39,9 +39,9 @@ repositories {
 }
 
 dependencies {
-    implementation moduleDep('BinedJava', 'org.exbin.bined', 'modules', 'bined-core')
-    implementation moduleDep('BinedJava', 'org.exbin.bined', 'modules', 'bined-swt')
-    //    implementation moduleDep('BinedJava', 'org.exbin.bined', 'modules', 'bined-swt-extended')
+    implementation moduleDep('BinedLibJava', 'org.exbin.bined', 'modules', 'bined-core')
+    implementation moduleDep('BinedLibJava', 'org.exbin.bined', 'modules', 'bined-swt')
+    //    implementation moduleDep('BinedLibJava', 'org.exbin.bined', 'modules', 'bined-swt-extended')
     implementation moduleDep('ExbinAuxiliaryJava', 'org.exbin.auxiliary', 'modules', 'binary_data')
     implementation group: 'org.eclipse.swt', name: 'org.eclipse.swt.gtk.linux.x86_64', version: '4.3'
     compileOnly group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.2'

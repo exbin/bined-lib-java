@@ -23,10 +23,10 @@ repositories {
 }
 
 dependencies {
-    api moduleDep('BinedJava', 'org.exbin.bined', 'modules', 'bined-swt')
-    api moduleDep('BinedJava', 'org.exbin.bined', 'modules', 'bined-section')
+    api moduleDep('BinedLibJava', 'org.exbin.bined', 'modules', 'bined-swt')
+    api moduleDep('BinedLibJava', 'org.exbin.bined', 'modules', 'bined-section')
     implementation moduleDep('ExbinAuxiliaryJava', 'org.exbin.auxiliary', 'modules', 'binary_data')
     implementation group: 'org.eclipse.swt', name: 'org.eclipse.swt.gtk.linux.x86_64', version: '4.3'
     testImplementation group : 'junit', name: 'junit', version: '4.13.2'
-    testImplementation project(path: moduleDepPath('BinedJava', 'modules', 'bined-core'), configuration: 'tests')
+    testImplementation project(path: moduleDepPath('BinedLibJava', 'modules', 'bined-core'), configuration: 'tests')
 }

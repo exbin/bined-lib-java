@@ -349,16 +349,19 @@ public abstract class CodeAreaCore extends JTextComponent implements CodeAreaCon
             throw new UnsupportedOperationException();
         }
 
+        @Nonnull
         @Override
         public Position getStartPosition() {
             return () -> 0;
         }
 
+        @Nonnull
         @Override
         public Position getEndPosition() {
             return () -> 0;
         }
 
+        @Nonnull
         @Override
         public Position createPosition(int i) throws BadLocationException {
             throw new UnsupportedOperationException();
@@ -395,6 +398,7 @@ public abstract class CodeAreaCore extends JTextComponent implements CodeAreaCon
             return AccessibleRole.TEXT;
         }
 
+        @Nonnull
         @Override
         public AccessibleStateSet getAccessibleStateSet() {
             AccessibleStateSet states = super.getAccessibleStateSet();
@@ -467,6 +471,7 @@ public abstract class CodeAreaCore extends JTextComponent implements CodeAreaCon
             this.magicCaretPosition = magicCaretPosition;
         }
 
+        @Nonnull
         @Override
         public Point getMagicCaretPosition() {
             return magicCaretPosition;
