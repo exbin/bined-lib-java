@@ -5,6 +5,8 @@ if (rootProject.path == ':') {
     include ':modules:bined-operation'
     include ':modules:bined-operation-swing'
     include ':modules:bined-swing'
+    include ':modules:bined-swing-section'
+    include ':modules:bined-section'
 }
 
 apply from: '../apps-settings.gradle'

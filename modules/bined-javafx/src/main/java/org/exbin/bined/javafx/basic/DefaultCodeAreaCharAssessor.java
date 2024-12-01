@@ -15,7 +15,13 @@
  */
 package org.exbin.bined.javafx.basic;
 
+import java.nio.BufferUnderflowException;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
+import java.nio.charset.CharsetDecoder;
+import java.nio.charset.CodingErrorAction;
 import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -34,15 +40,14 @@ public class DefaultCodeAreaCharAssessor implements CodeAreaCharAssessor {
 
     protected final CodeAreaCharAssessor parentAssessor;
 
-    @Nullable
-    protected Charset charMappingCharset = null;
-    @Nonnull
-    protected final char[] charMapping = new char[256];
+    protected char[] charMapping = null;
 
     protected long dataSize;
     protected int maxBytesPerChar;
     protected byte[] rowData;
     protected Charset charset;
+    private CharsetDecoder decoder;
+    private ByteBuffer byteBuffer;
 
     public DefaultCodeAreaCharAssessor() {
         parentAssessor = null;
@@ -55,29 +60,41 @@ public class DefaultCodeAreaCharAssessor implements CodeAreaCharAssessor {
     @Override
     public void startPaint(CodeAreaPaintState codeAreaPainterState) {
         dataSize = codeAreaPainterState.getDataSize();
-        charset = codeAreaPainterState.getCharset();
-        rowData = codeAreaPainterState.getRowData();
+        Charset painterCharset = codeAreaPainterState.getCharset();
         maxBytesPerChar = codeAreaPainterState.getMaxBytesPerChar();
+        if (charset != painterCharset) {
+            charMapping = null;
+            decoder = painterCharset.newDecoder();
+            decoder.onUnmappableCharacter(CodingErrorAction.REPLACE);
+            decoder.onMalformedInput(CodingErrorAction.REPLACE);
+            byteBuffer = ByteBuffer.allocate(maxBytesPerChar);
+            this.charset = painterCharset;
+        }
+        rowData = codeAreaPainterState.getRowData();
     }
 
     @Override
     public char getPreviewCharacter(long rowDataPosition, int byteOnRow, int charOnRow, CodeAreaSection section) {
         if (maxBytesPerChar > 1) {
-            if (rowDataPosition + maxBytesPerChar > dataSize) {
-                maxBytesPerChar = (int) (dataSize - rowDataPosition);
-            }
+            decoder.reset();
 
-            int charDataLength = maxBytesPerChar;
-            if (byteOnRow + charDataLength > rowData.length) {
-                charDataLength = rowData.length - byteOnRow;
+            if (rowDataPosition + maxBytesPerChar > dataSize) {
+                int charDataLength = (int) (dataSize - rowDataPosition);
+                byteBuffer.clear();
+                byteBuffer.put(rowData, byteOnRow, charDataLength);
+            } else {
+                byteBuffer.rewind();
+                byteBuffer.put(rowData, byteOnRow, maxBytesPerChar);
             }
-            String displayString = new String(rowData, byteOnRow, charDataLength, charset);
-            if (!displayString.isEmpty()) {
-                return displayString.charAt(0);
+            byteBuffer.rewind();
+            try {
+                CharBuffer decodeResult = decoder.decode(byteBuffer);
+                return decodeResult.get();
+            } catch (CharacterCodingException | BufferUnderflowException ex) {
             }
         } else {
-            if (charMappingCharset == null || charMappingCharset != charset) {
-                buildCharMapping(charset);
+            if (charMapping == null) {
+                buildCharMapping();
             }
 
             return charMapping[rowData[byteOnRow] & 0xFF];
@@ -93,18 +110,23 @@ public class DefaultCodeAreaCharAssessor implements CodeAreaCharAssessor {
         }
 
         if (maxBytesPerChar > 1) {
-            String displayString = new String(cursorData, 0, cursorDataLength, charset);
-            if (!displayString.isEmpty()) {
-                return displayString.charAt(0);
+            decoder.reset();
+            byteBuffer.rewind();
+            byteBuffer.put(cursorData, 0, cursorDataLength);
+            byteBuffer.rewind();
+            try {
+                CharBuffer decodeResult = decoder.decode(byteBuffer);
+                return decodeResult.get();
+            } catch (CharacterCodingException | BufferUnderflowException ex) {
             }
         } else {
-            if (charMappingCharset == null || charMappingCharset != charset) {
-                buildCharMapping(charset);
+            if (charMapping == null) {
+                buildCharMapping();
             }
 
             return charMapping[cursorData[0] & 0xFF];
         }
-        
+
         return ' ';
     }
 
@@ -116,14 +138,22 @@ public class DefaultCodeAreaCharAssessor implements CodeAreaCharAssessor {
 
     /**
      * Precomputes widths for basic ascii characters.
-     *
-     * @param charset character set
      */
-    private void buildCharMapping(Charset charset) {
+    private void buildCharMapping() {
+        charMapping = new char[256];
+        ByteBuffer buffer = ByteBuffer.allocate(1);
         for (int i = 0; i < 256; i++) {
-            charMapping[i] = new String(new byte[]{(byte) i}, charset).charAt(0);
+            buffer.rewind();
+            buffer.put((byte) i);
+            decoder.reset();
+            buffer.rewind();
+            CharBuffer decodeResult;
+            try {
+                decodeResult = decoder.decode(buffer);
+                charMapping[i] = decodeResult.get();
+            } catch (CharacterCodingException | BufferUnderflowException ex) {
+                charMapping[i] = ' ';
+            }
         }
-        charMappingCharset = charset;
     }
-
 }

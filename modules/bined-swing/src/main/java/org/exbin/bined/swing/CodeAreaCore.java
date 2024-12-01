@@ -341,12 +341,11 @@ public abstract class CodeAreaCore extends JTextComponent implements CodeAreaCon
 
         @Override
         public String getText(int offset, int length) throws BadLocationException {
-            throw new UnsupportedOperationException();
+            return "";
         }
 
         @Override
-        public void getText(int i, int i1, Segment sgmnt) throws BadLocationException {
-            throw new UnsupportedOperationException();
+        public void getText(int offset, int length, Segment sgmnt) throws BadLocationException {
         }
 
         @Nonnull
