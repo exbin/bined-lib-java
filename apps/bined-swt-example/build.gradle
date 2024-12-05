@@ -43,6 +43,7 @@ dependencies {
     implementation moduleDep('BinedLibJava', 'org.exbin.bined', 'modules', 'bined-swt')
     //    implementation moduleDep('BinedLibJava', 'org.exbin.bined', 'modules', 'bined-swt-extended')
     implementation moduleDep('ExbinAuxiliaryJava', 'org.exbin.auxiliary', 'modules', 'binary_data')
+    implementation moduleDep('ExbinAuxiliaryJava', 'org.exbin.auxiliary', 'modules', 'binary_data-array')
     implementation group: 'org.eclipse.swt', name: 'org.eclipse.swt.gtk.linux.x86_64', version: '4.3'
     compileOnly group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.2'
 

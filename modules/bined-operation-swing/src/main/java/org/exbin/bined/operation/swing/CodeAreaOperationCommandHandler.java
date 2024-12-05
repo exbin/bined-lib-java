@@ -64,6 +64,7 @@ import org.exbin.bined.swing.basic.DefaultCodeAreaCommandHandler;
 import org.exbin.auxiliary.binary_data.BinaryData;
 import org.exbin.auxiliary.binary_data.ByteArrayData;
 import org.exbin.auxiliary.binary_data.ByteArrayEditableData;
+import org.exbin.auxiliary.binary_data.paged.ByteArrayPagedData;
 import org.exbin.auxiliary.binary_data.paged.PagedData;
 import org.exbin.bined.ClipboardHandlingMode;
 import org.exbin.bined.CodeAreaCaretPosition;
@@ -673,7 +674,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
                 InputStream clipboardData;
                 try {
                     // TODO use stream directly without buffer
-                    PagedData pastedData = new PagedData();
+                    PagedData pastedData = new ByteArrayPagedData();
                     if (clipboard.isDataFlavorAvailable(binaryDataFlavor)) {
                         clipboardData = (InputStream) clipboard.getData(binaryDataFlavor);
                         pastedData.insert(0, clipboardData, -1);
@@ -803,7 +804,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
                     ByteArrayEditableData clipData = new ByteArrayEditableData();
                     CodeAreaUtils.insertHexStringIntoData(insertedString, clipData, codeType);
 
-                    PagedData pastedData = new PagedData();
+                    ByteArrayEditableData pastedData = new ByteArrayEditableData();
                     pastedData.insert(0, clipData);
                     long pastedDataSize = pastedData.getDataSize();
                     long insertionPosition = dataPosition;

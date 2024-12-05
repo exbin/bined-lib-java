@@ -55,6 +55,7 @@ import org.exbin.auxiliary.binary_data.BinaryData;
 import org.exbin.auxiliary.binary_data.ByteArrayData;
 import org.exbin.auxiliary.binary_data.ByteArrayEditableData;
 import org.exbin.auxiliary.binary_data.EditableBinaryData;
+import org.exbin.auxiliary.binary_data.paged.ByteArrayPagedData;
 import org.exbin.auxiliary.binary_data.paged.PagedData;
 import org.exbin.bined.ClipboardHandlingMode;
 import org.exbin.bined.CodeAreaCaretPosition;
@@ -615,7 +616,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                 try {
                     Object clipboardData = clipboard.getData(binaryDataFlavor);
                     if (clipboardData instanceof InputStream) {
-                        PagedData pastedData = new PagedData();
+                        PagedData pastedData = new ByteArrayPagedData();
                         pastedData.insert(0, (InputStream) clipboardData, -1);
                         pasteBinaryData((BinaryData) pastedData);
                     }

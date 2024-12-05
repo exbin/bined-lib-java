@@ -42,6 +42,7 @@ dependencies {
     implementation moduleDep('BinedLibJava', 'org.exbin.bined', 'modules', 'bined-core')
     implementation moduleDep('BinedLibJava', 'org.exbin.bined', 'modules', 'bined-lanterna')
     implementation moduleDep('ExbinAuxiliaryJava', 'org.exbin.auxiliary', 'modules', 'binary_data')
+    implementation moduleDep('ExbinAuxiliaryJava', 'org.exbin.auxiliary', 'modules', 'binary_data-array')
     implementation group: 'com.googlecode.lanterna', name: 'lanterna', version: '3.1.1'
     compileOnly group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.2'
 
