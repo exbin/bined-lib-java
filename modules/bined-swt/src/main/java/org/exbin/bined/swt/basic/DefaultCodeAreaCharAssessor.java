@@ -18,9 +18,9 @@ package org.exbin.bined.swt.basic;
 import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
-import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
+import java.nio.charset.CoderMalfunctionError;
 import java.nio.charset.CodingErrorAction;
 import java.util.Optional;
 import javax.annotation.Nonnull;
@@ -48,6 +48,7 @@ public class DefaultCodeAreaCharAssessor implements CodeAreaCharAssessor {
     protected Charset charset;
     private CharsetDecoder decoder;
     private ByteBuffer byteBuffer;
+    private CharBuffer charBuffer = null;
 
     public DefaultCodeAreaCharAssessor() {
         parentAssessor = null;
@@ -62,6 +63,9 @@ public class DefaultCodeAreaCharAssessor implements CodeAreaCharAssessor {
         dataSize = codeAreaPainterState.getDataSize();
         Charset painterCharset = codeAreaPainterState.getCharset();
         maxBytesPerChar = codeAreaPainterState.getMaxBytesPerChar();
+        if (charBuffer == null) {
+            charBuffer = CharBuffer.allocate(8);
+        }
         if (charset != painterCharset) {
             charMapping = null;
             decoder = painterCharset.newDecoder();
@@ -90,10 +94,15 @@ public class DefaultCodeAreaCharAssessor implements CodeAreaCharAssessor {
                 byteBuffer.put(rowData, byteOnRow, maxBytesPerChar);
             }
             byteBuffer.rewind();
+            charBuffer.clear();
             try {
-                CharBuffer decodeResult = decoder.decode(byteBuffer);
-                return decodeResult.get();
-            } catch (CharacterCodingException | BufferUnderflowException ex) {
+                decoder.decode(byteBuffer, charBuffer, true);
+                if (charBuffer.position() > 0) {
+                    charBuffer.rewind();
+                    return charBuffer.get();
+                }
+            } catch (CoderMalfunctionError | BufferUnderflowException ex) {
+                // ignore
             }
         } else {
             if (charMapping == null) {
@@ -117,10 +126,15 @@ public class DefaultCodeAreaCharAssessor implements CodeAreaCharAssessor {
             byteBuffer.rewind();
             byteBuffer.put(cursorData, 0, cursorDataLength);
             byteBuffer.rewind();
+            charBuffer.clear();
             try {
-                CharBuffer decodeResult = decoder.decode(byteBuffer);
-                return decodeResult.get();
-            } catch (CharacterCodingException | BufferUnderflowException ex) {
+                decoder.decode(byteBuffer, charBuffer, true);
+                if (charBuffer.position() > 0) {
+                    charBuffer.rewind();
+                    return charBuffer.get();
+                }
+            } catch (CoderMalfunctionError | BufferUnderflowException ex) {
+                // ignore
             }
         } else {
             if (charMapping == null) {
@@ -148,13 +162,18 @@ public class DefaultCodeAreaCharAssessor implements CodeAreaCharAssessor {
         for (int i = 0; i < 256; i++) {
             buffer.rewind();
             buffer.put((byte) i);
-            buffer.rewind();
             decoder.reset();
-            CharBuffer decodeResult;
+            buffer.rewind();
+            charBuffer.clear();
             try {
-                decodeResult = decoder.decode(buffer);
-                charMapping[i] = decodeResult.get();
-            } catch (CharacterCodingException | BufferUnderflowException ex) {
+                decoder.decode(buffer, charBuffer, true);
+                if (charBuffer.position() > 0) {
+                    charBuffer.rewind();
+                    charMapping[i] = charBuffer.get();
+                } else {
+                    charMapping[i] = ' ';
+                }
+            } catch (CoderMalfunctionError | BufferUnderflowException ex) {
                 charMapping[i] = ' ';
             }
         }
