@@ -1,8 +1,19 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'net.sf.proguard:proguard-gradle:6.1.1'
+        classpath 'net.sf.proguard:proguard-base:6.1.1'
+//        classpath 'de.gliderpilot.gradle.jnlp:gradle-jnlp-plugin:+'
+    }
+}
+
 plugins {
     id 'java'
     id 'distribution'
-    id 'maven-publish'
-    // classpath("net.sf.proguard:proguard-gradle:6.1.1")
+    // Requires older gradle
+//    id("de.gliderpilot.jnlp") version "1.2.6"
 }
 
 apply from: '../apps.gradle'
@@ -86,9 +97,42 @@ task fatJar(type: Jar) {
 
 import proguard.gradle.*
 
-// task proguardJar(type: proguard.gradle.ProGuardTask) {
-//     libraryjars "${System.properties['java.home']}/jre/lib/rt.jar"
-//     injars "build/libs/bined-editor-basic-standalone-${version}.jar"
-//     outjars "build/libs/bined-editor-basic-proguard-${version}.jar"
-// }
-// proguardJar.dependsOn fatJar
+task proguardJar(type: proguard.gradle.ProGuardTask) {
+    injars "build/libs/bined-editor-basic-standalone-${version}.jar"
+    outjars "build/libs/bined-editor-basic-proguard-${version}.jar"
+
+    // Automatically handle the Java version of this build.
+    if (System.getProperty('java.version').startsWith('1.')) {
+        // Before Java 9, the runtime classes were packaged in a single jar file.
+        libraryjars "${System.getProperty('java.home')}/lib/rt.jar"
+    } else {
+        // As of Java 9, the runtime classes are packaged in modular jmod files.
+        libraryjars "${System.getProperty('java.home')}/jmods/java.base.jmod", jarfilter: '!**.jar', filter: '!module-info.class'
+        //libraryjars "${System.getProperty('java.home')}/jmods/....."
+    }
+
+    keepclasseswithmembers 'public class ' + mainClass + ' { \
+        public static void main(java.lang.String[]); \
+    }'
+    
+    dontwarn 'javax.annotation.**'
+    dontobfuscate
+    // Comment off use of DefaultCodeAreaCommandHandler in CodeArea constructor for smaller size
+}
+//proguardJar.dependsOn fatJar
+
+/*
+jnlp {
+    useVersions = true
+    withXml {
+        information {
+            title project.name
+            vendor project.group ?: project.name
+        }
+        security {
+            'all-permissions'()
+        }
+    }
+    // signJarParams = [alias: 'myalias', storepass: 'mystorepass']
+}
+*/

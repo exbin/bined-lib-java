@@ -126,7 +126,9 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
      * Creates new instance with default command handler and painter.
      */
     public CodeArea() {
-        this(DefaultCodeAreaCommandHandler.createDefaultCodeAreaCommandHandlerFactory());
+         this(DefaultCodeAreaCommandHandler.createDefaultCodeAreaCommandHandlerFactory());
+        // Comment DefaultCodeAreaCommandHandler to allow proguard to ignore it for smaller basic editor
+        // this(null);
     }
 
     /**

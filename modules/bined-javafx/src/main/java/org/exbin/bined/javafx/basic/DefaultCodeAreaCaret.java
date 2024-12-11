@@ -52,9 +52,7 @@ public class DefaultCodeAreaCaret implements CodeAreaCaret {
     protected CursorRenderingMode renderingMode = CursorRenderingMode.PAINT;
 
     public DefaultCodeAreaCaret(CaretChangeListener changeListener) {
-        CodeAreaUtils.requireNonNull(changeListener, "Change listener cannot be null");
-
-        this.changeListener = changeListener;
+        this.changeListener = CodeAreaUtils.requireNonNull(changeListener);
         privateSetBlinkRate(DEFAULT_BLINK_RATE);
     }
 

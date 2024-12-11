@@ -55,8 +55,6 @@ import org.exbin.auxiliary.binary_data.BinaryData;
 import org.exbin.auxiliary.binary_data.ByteArrayData;
 import org.exbin.auxiliary.binary_data.ByteArrayEditableData;
 import org.exbin.auxiliary.binary_data.EditableBinaryData;
-import org.exbin.auxiliary.binary_data.paged.ByteArrayPagedData;
-import org.exbin.auxiliary.binary_data.paged.PagedData;
 import org.exbin.bined.ClipboardHandlingMode;
 import org.exbin.bined.CodeAreaCaretPosition;
 import org.exbin.bined.CodeAreaSection;
@@ -72,8 +70,6 @@ import org.exbin.bined.capability.EditModeCapable;
 @ParametersAreNonnullByDefault
 public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
-    public static final String BINED_CLIPBOARD_MIME = "application/x-bined";
-    public static final String BINED_CLIPBOARD_MIME_FULL = BINED_CLIPBOARD_MIME + "; class=" + BinaryData.class.getCanonicalName();
     public static final int LAST_CONTROL_CODE = 31;
     private static final char DELETE_CHAR = (char) 0x7f;
 
@@ -104,7 +100,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             clipboard.addFlavorListener((FlavorEvent e) -> {
                 updateCanPaste();
             });
-            binedDataFlavor = new DataFlavor(BinaryData.class, BINED_CLIPBOARD_MIME_FULL);
+            binedDataFlavor = new DataFlavor(BinaryData.class, CodeAreaUtils.BINED_CLIPBOARD_MIME_FULL);
             try {
                 binaryDataFlavor = new DataFlavor(CodeAreaUtils.MIME_CLIPBOARD_BINARY);
             } catch (ClassNotFoundException ex) {
@@ -629,7 +625,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                 try {
                     Object clipboardData = clipboard.getData(binaryDataFlavor);
                     if (clipboardData instanceof InputStream) {
-                        PagedData pastedData = new ByteArrayPagedData();
+                        ByteArrayEditableData pastedData = new ByteArrayEditableData();
                         pastedData.insert(0, (InputStream) clipboardData, -1);
                         pasteBinaryData((BinaryData) pastedData);
                     }

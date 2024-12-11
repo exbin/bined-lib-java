@@ -60,12 +60,9 @@ import org.exbin.bined.operation.swing.command.ModifyDataCommand;
 import org.exbin.bined.swing.CodeAreaCommandHandler;
 import org.exbin.bined.swing.CodeAreaCore;
 import org.exbin.bined.swing.CodeAreaSwingUtils;
-import org.exbin.bined.swing.basic.DefaultCodeAreaCommandHandler;
 import org.exbin.auxiliary.binary_data.BinaryData;
 import org.exbin.auxiliary.binary_data.ByteArrayData;
 import org.exbin.auxiliary.binary_data.ByteArrayEditableData;
-import org.exbin.auxiliary.binary_data.paged.ByteArrayPagedData;
-import org.exbin.auxiliary.binary_data.paged.PagedData;
 import org.exbin.bined.ClipboardHandlingMode;
 import org.exbin.bined.CodeAreaCaretPosition;
 import org.exbin.bined.CodeAreaSection;
@@ -85,6 +82,7 @@ import org.exbin.bined.operation.undo.BinaryDataUndoRedo;
 public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
 
     public static final String MIME_CHARSET = "charset";
+    public static final int LAST_CONTROL_CODE = 31;
     protected static final int CODE_BUFFER_LENGTH = 16;
     protected static final char BACKSPACE_CHAR = '\b';
     protected static final char DELETE_CHAR = (char) 0x7f;
@@ -122,14 +120,14 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
             clipboard.addFlavorListener((FlavorEvent e) -> {
                 updateCanPaste();
             });
-            binedDataFlavor = new DataFlavor(BinaryData.class, DefaultCodeAreaCommandHandler.BINED_CLIPBOARD_MIME_FULL);
+            binedDataFlavor = new DataFlavor(BinaryData.class, CodeAreaUtils.BINED_CLIPBOARD_MIME_FULL);
             try {
                 binaryDataFlavor = new DataFlavor(CodeAreaUtils.MIME_CLIPBOARD_BINARY);
             } catch (ClassNotFoundException ex) {
                 Logger.getLogger(CodeAreaOperationCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
             }
             updateCanPaste();
-        } catch (IllegalStateException ex) {
+        } catch (IllegalStateException | SecurityException ex) {
             canPaste = false;
         } catch (java.awt.HeadlessException ex) {
             Logger.getLogger(CodeAreaOperationCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
@@ -303,7 +301,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
                 pressedCharAsCode(keyValue);
             }
         } else {
-            if (keyValue > DefaultCodeAreaCommandHandler.LAST_CONTROL_CODE && keyValue != DELETE_CHAR) {
+            if (keyValue > LAST_CONTROL_CODE && keyValue != DELETE_CHAR) {
                 pressedCharInPreview(keyValue);
             }
         }
@@ -674,7 +672,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
                 InputStream clipboardData;
                 try {
                     // TODO use stream directly without buffer
-                    PagedData pastedData = new ByteArrayPagedData();
+                    ByteArrayEditableData pastedData = new ByteArrayEditableData();
                     if (clipboard.isDataFlavorAvailable(binaryDataFlavor)) {
                         clipboardData = (InputStream) clipboard.getData(binaryDataFlavor);
                         pastedData.insert(0, clipboardData, -1);

@@ -616,7 +616,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                 try {
                     Object clipboardData = clipboard.getData(binaryDataFlavor);
                     if (clipboardData instanceof InputStream) {
-                        PagedData pastedData = new ByteArrayPagedData();
+                        ByteArrayEditableData pastedData = new ByteArrayEditableData();
                         pastedData.insert(0, (InputStream) clipboardData, -1);
                         pasteBinaryData((BinaryData) pastedData);
                     }

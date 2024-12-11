@@ -30,6 +30,8 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
@@ -44,7 +46,6 @@ import org.exbin.bined.capability.CharsetCapable;
 import org.exbin.bined.capability.SelectionCapable;
 import org.exbin.bined.operation.swing.CodeAreaOperationCommandHandler;
 import org.exbin.bined.operation.swing.CodeAreaUndoRedo;
-import org.exbin.bined.swing.CodeAreaCommandHandler;
 import org.exbin.bined.swing.basic.CodeArea;
 import org.exbin.auxiliary.binary_data.ByteArrayEditableData;
 import org.exbin.auxiliary.binary_data.EditableBinaryData;
@@ -54,16 +55,16 @@ import org.exbin.bined.CodeCharactersCase;
 import org.exbin.bined.CodeType;
 import org.exbin.bined.swing.CodeAreaSwingUtils;
 import org.exbin.bined.capability.EditModeCapable;
-import org.exbin.bined.operation.undo.BinaryDataUndoRedoChangeListener;
 
 /**
  * Basic single jar swing version of BinEd binary/hex editor.
  *
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public class BinEdEditorBasic extends javax.swing.JFrame {
 
-    private static final String APPLICATION_VERSION = "0.2.1";
+    private static final String APPLICATION_VERSION = "0.3.0 DEV";
     private static final String APPLICATION_NAME = "BinEd";
     private static final String APPLICATION_DEFAULT_TITLE = APPLICATION_NAME + " Basic Editor";
 
@@ -84,7 +85,6 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
     private File file = null;
     private CodeArea codeArea;
     private CodeAreaUndoRedo undoHandler;
-    private CodeAreaCommandHandler commandHandler;
 
     private Action newFileAction;
     private Action openFileAction;
@@ -107,11 +107,9 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
     }
 
     private void init() {
-        codeArea = new CodeArea();
+        codeArea = new CodeArea((codeArea) -> new CodeAreaOperationCommandHandler(codeArea, new CodeAreaUndoRedo(codeArea)));
+        undoHandler = (CodeAreaUndoRedo) ((CodeAreaOperationCommandHandler) codeArea.getCommandHandler()).getUndoRedo();
         codeArea.setContentData(new ByteArrayEditableData());
-        undoHandler = new CodeAreaUndoRedo(codeArea);
-        commandHandler = new CodeAreaOperationCommandHandler(codeArea, undoHandler);
-        codeArea.setCommandHandler(commandHandler);
         add(codeArea, BorderLayout.CENTER);
 
         addWindowListener(new WindowAdapter() {
@@ -251,12 +249,9 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
     private void postInit() {
         codeArea.setComponentPopupMenu(mainPopupMenu);
         setIconImage(getIconResource(ICON_APP).getImage());
-        undoHandler.addChangeListener(new BinaryDataUndoRedoChangeListener() {
-            @Override
-            public void undoChanged() {
-                updateUndoState();
-                codeArea.repaint();
-            }
+        undoHandler.addChangeListener(() -> {
+            updateUndoState();
+            codeArea.repaint();
         });
         ((EditModeCapable) codeArea).addEditModeChangedListener((EditMode editMode, EditOperation editOperation) -> {
             switch (editOperation) {
@@ -278,7 +273,7 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
         ((SelectionCapable) codeArea).addSelectionChangedListener(() -> {
             updateClipboardState();
         });
-        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        Clipboard clipboard = CodeAreaSwingUtils.getClipboard();
         clipboard.addFlavorListener((FlavorEvent e) -> {
             updateClipboardState();
         });
@@ -954,6 +949,7 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
     private javax.swing.JMenu viewMenu;
     // End of variables declaration//GEN-END:variables
 
+    @Nonnull
     private ImageIcon getIconResource(String iconFileName) {
         return new ImageIcon(getClass().getResource(ICONS_DIRECTORY + iconFileName));
     }
