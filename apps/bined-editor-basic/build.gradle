@@ -3,8 +3,8 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'net.sf.proguard:proguard-gradle:6.1.1'
-        classpath 'net.sf.proguard:proguard-base:6.1.1'
+        classpath 'net.sf.proguard:proguard-gradle:6.2.2'
+        classpath 'net.sf.proguard:proguard-base:6.2.2'
 //        classpath 'de.gliderpilot.gradle.jnlp:gradle-jnlp-plugin:+'
     }
 }
@@ -117,9 +117,30 @@ task proguardJar(type: proguard.gradle.ProGuardTask) {
     
     dontwarn 'javax.annotation.**'
     dontobfuscate
-    // Comment off use of DefaultCodeAreaCommandHandler in CodeArea constructor for smaller size
 }
-//proguardJar.dependsOn fatJar
+proguardJar.dependsOn fatJar
+
+task proguardObfJar(type: proguard.gradle.ProGuardTask) {
+    injars "build/libs/bined-editor-basic-standalone-${version}.jar"
+    outjars "build/libs/bined-editor-basic-obfuscated-${version}.jar"
+
+    // Automatically handle the Java version of this build.
+    if (System.getProperty('java.version').startsWith('1.')) {
+        // Before Java 9, the runtime classes were packaged in a single jar file.
+        libraryjars "${System.getProperty('java.home')}/lib/rt.jar"
+    } else {
+        // As of Java 9, the runtime classes are packaged in modular jmod files.
+        libraryjars "${System.getProperty('java.home')}/jmods/java.base.jmod", jarfilter: '!**.jar', filter: '!module-info.class'
+        //libraryjars "${System.getProperty('java.home')}/jmods/....."
+    }
+
+    keepclasseswithmembers 'public class ' + mainClass + ' { \
+        public static void main(java.lang.String[]); \
+    }'
+    
+    dontwarn 'javax.annotation.**'
+}
+proguardObfJar.dependsOn fatJar
 
 /*
 jnlp {

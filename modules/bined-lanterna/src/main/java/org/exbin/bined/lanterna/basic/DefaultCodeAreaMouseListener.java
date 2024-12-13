@@ -24,10 +24,9 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.swing.JScrollPane;
+import org.exbin.bined.ScrollBarOrientation;
+import org.exbin.bined.basic.SelectingMode;
 import org.exbin.bined.capability.CaretCapable;
-import org.exbin.bined.lanterna.CodeAreaCommandHandler;
-import org.exbin.bined.lanterna.CodeAreaCommandHandler.ScrollbarOrientation;
-import org.exbin.bined.lanterna.CodeAreaCommandHandler.SelectingMode;
 import org.exbin.bined.lanterna.CodeAreaCore;
 import org.exbin.bined.capability.ScrollingCapable;
 
@@ -127,7 +126,7 @@ public class DefaultCodeAreaMouseListener extends MouseAdapter implements MouseM
             return;
         }
 
-        ScrollbarOrientation orientation = me.isShiftDown() ? CodeAreaCommandHandler.ScrollbarOrientation.HORIZONTAL : CodeAreaCommandHandler.ScrollbarOrientation.VERTICAL;
+        ScrollBarOrientation orientation = me.isShiftDown() ? ScrollBarOrientation.HORIZONTAL : ScrollBarOrientation.VERTICAL;
         int scrollAmount = me.getWheelRotation() > 0 ? MOUSE_SCROLL_LINES : -MOUSE_SCROLL_LINES;
         codeArea.getCommandHandler().wheelScroll(scrollAmount, orientation);
     }

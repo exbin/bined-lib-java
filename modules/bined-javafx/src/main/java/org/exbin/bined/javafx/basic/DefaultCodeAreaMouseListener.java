@@ -20,9 +20,9 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javax.annotation.ParametersAreNonnullByDefault;
+import org.exbin.bined.basic.SelectingMode;
 import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.capability.ScrollingCapable;
-import org.exbin.bined.javafx.CodeAreaCommandHandler.SelectingMode;
 import org.exbin.bined.javafx.CodeAreaCore;
 
 /**

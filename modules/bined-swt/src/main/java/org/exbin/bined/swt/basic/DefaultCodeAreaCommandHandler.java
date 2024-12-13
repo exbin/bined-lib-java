@@ -56,7 +56,9 @@ import org.exbin.auxiliary.binary_data.ByteArrayEditableData;
 import org.exbin.auxiliary.binary_data.EditableBinaryData;
 import org.exbin.bined.ClipboardHandlingMode;
 import org.exbin.bined.CodeAreaCaretPosition;
+import org.exbin.bined.ScrollBarOrientation;
 import org.exbin.bined.basic.EnterKeyHandlingMode;
+import org.exbin.bined.basic.SelectingMode;
 import org.exbin.bined.capability.EditModeCapable;
 
 /**
@@ -817,7 +819,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     }
 
     @Override
-    public void wheelScroll(int scrollSize, ScrollbarOrientation direction) {
+    public void wheelScroll(int scrollSize, ScrollBarOrientation direction) {
         // TODO
         scroll(ScrollingDirection.UP);
     }

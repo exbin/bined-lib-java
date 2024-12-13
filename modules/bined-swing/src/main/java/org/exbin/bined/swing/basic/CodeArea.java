@@ -127,8 +127,6 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
      */
     public CodeArea() {
          this(DefaultCodeAreaCommandHandler.createDefaultCodeAreaCommandHandlerFactory());
-        // Comment DefaultCodeAreaCommandHandler to allow proguard to ignore it for smaller basic editor
-        // this(null);
     }
 
     /**

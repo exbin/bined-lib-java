@@ -16,7 +16,6 @@
 package org.exbin.bined.editor.basic;
 
 import java.awt.BorderLayout;
-import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.FlavorEvent;
 import java.awt.event.ActionEvent;
@@ -107,7 +106,7 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
     }
 
     private void init() {
-        codeArea = new CodeArea((codeArea) -> new CodeAreaOperationCommandHandler(codeArea, new CodeAreaUndoRedo(codeArea)));
+        codeArea = new CodeAreaWrapper();
         undoHandler = (CodeAreaUndoRedo) ((CodeAreaOperationCommandHandler) codeArea.getCommandHandler()).getUndoRedo();
         codeArea.setContentData(new ByteArrayEditableData());
         add(codeArea, BorderLayout.CENTER);
@@ -952,5 +951,15 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
     @Nonnull
     private ImageIcon getIconResource(String iconFileName) {
         return new ImageIcon(getClass().getResource(ICONS_DIRECTORY + iconFileName));
+    }
+    
+    /**
+     * Helps proguard to cut out default constructor for smaller basic editor.
+     */
+    private static class CodeAreaWrapper extends CodeArea {
+
+        public CodeAreaWrapper() {
+            super((codeArea) -> new CodeAreaOperationCommandHandler(codeArea, new CodeAreaUndoRedo(codeArea)));
+        }
     }
 }

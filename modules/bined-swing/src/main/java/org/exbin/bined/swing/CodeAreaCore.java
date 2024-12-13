@@ -146,10 +146,6 @@ public abstract class CodeAreaCore extends JTextComponent implements CodeAreaCon
         commandHandler.copy();
     }
 
-    public void copyAsCode() {
-        commandHandler.copyAsCode();
-    }
-
     @Override
     public void cut() {
         commandHandler.cut();
@@ -158,10 +154,6 @@ public abstract class CodeAreaCore extends JTextComponent implements CodeAreaCon
     @Override
     public void paste() {
         commandHandler.paste();
-    }
-
-    public void pasteFromCode() {
-        commandHandler.pasteFromCode();
     }
 
     @Override

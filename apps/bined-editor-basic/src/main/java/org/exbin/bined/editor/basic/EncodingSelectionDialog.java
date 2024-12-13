@@ -19,6 +19,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.nio.charset.Charset;
 import java.util.Map;
+import javax.annotation.ParametersAreNonnullByDefault;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.DefaultComboBoxModel;
@@ -32,6 +33,7 @@ import org.exbin.bined.swing.CodeAreaSwingUtils;
  *
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public class EncodingSelectionDialog extends javax.swing.JDialog {
 
     private ReturnStatus returnStatus = ReturnStatus.CANCEL;

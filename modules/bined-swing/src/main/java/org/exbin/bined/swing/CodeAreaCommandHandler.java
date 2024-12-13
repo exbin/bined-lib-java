@@ -18,6 +18,8 @@ package org.exbin.bined.swing;
 import java.awt.event.KeyEvent;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import org.exbin.bined.ScrollBarOrientation;
+import org.exbin.bined.basic.SelectingMode;
 
 /**
  * Interface for code area data manipulation.
@@ -77,11 +79,6 @@ public interface CodeAreaCommandHandler {
     void copy();
 
     /**
-     * Copies selection to clipboard as code string.
-     */
-    void copyAsCode();
-
-    /**
      * Cuts selection to clipboard.
      */
     void cut();
@@ -90,11 +87,6 @@ public interface CodeAreaCommandHandler {
      * Pastes content of clipboard to cursor area.
      */
     void paste();
-
-    /**
-     * Pastes content of clipboard to cursor area analyzing string code.
-     */
-    void pasteFromCode();
 
     /**
      * Returns true if paste action is possible.
@@ -128,7 +120,7 @@ public interface CodeAreaCommandHandler {
      * @param scrollSize number of scroll units (positive or negative)
      * @param orientation scrollbar orientation
      */
-    void wheelScroll(int scrollSize, ScrollbarOrientation orientation);
+    void wheelScroll(int scrollSize, ScrollBarOrientation orientation);
 
     /**
      * Checks whether edit is allowed.
@@ -136,14 +128,6 @@ public interface CodeAreaCommandHandler {
      * @return true if allowed
      */
     boolean checkEditAllowed();
-
-    enum ScrollbarOrientation {
-        HORIZONTAL, VERTICAL
-    }
-
-    enum SelectingMode {
-        NONE, SELECTING
-    }
 
     @ParametersAreNonnullByDefault
     interface CodeAreaCommandHandlerFactory {

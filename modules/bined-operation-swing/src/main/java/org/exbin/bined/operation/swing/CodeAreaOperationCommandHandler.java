@@ -66,7 +66,9 @@ import org.exbin.auxiliary.binary_data.ByteArrayEditableData;
 import org.exbin.bined.ClipboardHandlingMode;
 import org.exbin.bined.CodeAreaCaretPosition;
 import org.exbin.bined.CodeAreaSection;
+import org.exbin.bined.ScrollBarOrientation;
 import org.exbin.bined.basic.EnterKeyHandlingMode;
+import org.exbin.bined.basic.SelectingMode;
 import org.exbin.bined.basic.TabKeyHandlingMode;
 import org.exbin.bined.capability.EditModeCapable;
 import org.exbin.bined.operation.swing.command.DeleteSelectionCommand;
@@ -592,7 +594,6 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
         }
     }
 
-    @Override
     public void copyAsCode() {
         SelectionRange selection = ((SelectionCapable) codeArea).getSelection();
         if (!selection.isEmpty()) {
@@ -764,7 +765,6 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
         clearSelection();
     }
 
-    @Override
     public void pasteFromCode() {
         if (!checkEditAllowed()) {
             return;
@@ -913,7 +913,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
     }
 
     @Override
-    public void wheelScroll(int scrollSize, ScrollbarOrientation orientation) {
+    public void wheelScroll(int scrollSize, ScrollBarOrientation orientation) {
         switch (orientation) {
             case HORIZONTAL: {
                 if (scrollSize > 0) {

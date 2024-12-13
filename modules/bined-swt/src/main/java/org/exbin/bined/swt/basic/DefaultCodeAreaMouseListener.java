@@ -17,16 +17,15 @@ package org.exbin.bined.swt.basic;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.events.MouseTrackListener;
 import org.eclipse.swt.events.MouseWheelListener;
 import org.eclipse.swt.graphics.Cursor;
+import org.exbin.bined.basic.SelectingMode;
 import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.capability.ScrollingCapable;
-import org.exbin.bined.swt.CodeAreaCommandHandler.SelectingMode;
 import org.exbin.bined.swt.CodeAreaCore;
 
 /**

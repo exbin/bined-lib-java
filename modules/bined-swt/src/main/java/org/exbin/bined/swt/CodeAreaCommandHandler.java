@@ -18,6 +18,8 @@ package org.exbin.bined.swt;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.eclipse.swt.events.KeyEvent;
+import org.exbin.bined.ScrollBarOrientation;
+import org.exbin.bined.basic.SelectingMode;
 
 /**
  * Interface for code area data manipulation.
@@ -123,7 +125,7 @@ public interface CodeAreaCommandHandler {
      * @param scrollSize number of scroll units (positive or negative)
      * @param orientation scrollbar orientation
      */
-    void wheelScroll(int scrollSize, ScrollbarOrientation orientation);
+    void wheelScroll(int scrollSize, ScrollBarOrientation orientation);
 
     void dispose();
 
@@ -133,14 +135,6 @@ public interface CodeAreaCommandHandler {
      * @return true if allowed
      */
     boolean checkEditAllowed();
-
-    enum ScrollbarOrientation {
-        HORIZONTAL, VERTICAL
-    }
-
-    enum SelectingMode {
-        NONE, SELECTING
-    }
 
     @ParametersAreNonnullByDefault
     interface CodeAreaCommandHandlerFactory {
