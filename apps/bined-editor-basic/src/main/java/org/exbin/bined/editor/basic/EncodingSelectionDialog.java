@@ -19,6 +19,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.nio.charset.Charset;
 import java.util.Map;
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
@@ -170,6 +171,7 @@ public class EncodingSelectionDialog extends javax.swing.JDialog {
         dispose();
     }
 
+    @Nonnull
     public String getEncoding() {
         return (String) encodingComboBox.getSelectedItem();
     }

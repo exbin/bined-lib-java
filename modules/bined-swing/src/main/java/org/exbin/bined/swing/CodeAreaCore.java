@@ -251,7 +251,8 @@ public abstract class CodeAreaCore extends JTextComponent implements CodeAreaCon
 
         @Override
         public int getLength() {
-            return 0;
+            // Return non-empty document - some components blocks backspace for empty documents
+            return 2;
         }
 
         @Override
@@ -333,6 +334,14 @@ public abstract class CodeAreaCore extends JTextComponent implements CodeAreaCon
 
         @Override
         public String getText(int offset, int length) throws BadLocationException {
+            if (offset < 2) {
+                if (length == 1) {
+                    return " ";
+                }
+                if (offset == 0 && length == 2) {
+                    return " ";
+                }
+            }
             return "";
         }
 
@@ -410,7 +419,7 @@ public abstract class CodeAreaCore extends JTextComponent implements CodeAreaCon
         private boolean visible = true;
         private boolean selectionVisible = false;
         private int rate;
-        private int dot;
+        private int dot = 1;
         private Point magicCaretPosition = new Point();
 
         @Override
