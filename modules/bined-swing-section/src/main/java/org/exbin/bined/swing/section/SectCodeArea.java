@@ -184,7 +184,7 @@ public class SectCodeArea extends CodeAreaCore implements SectionCodeArea, CodeA
 
     @Override
     public void updateUI() {
-        // TODO super.updateUI();
+        super.updateUI();
         if (getBorder() == null) {
             super.setBorder(UIManager.getLookAndFeel().getDefaults().getBorder("TextAreaUI.border"));
         }

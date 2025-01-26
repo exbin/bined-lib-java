@@ -15,7 +15,6 @@
  */
 package org.exbin.bined.swing;
 
-import java.awt.AWTEvent;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.ComponentAdapter;
@@ -34,11 +33,13 @@ import javax.accessibility.AccessibleStateSet;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import javax.swing.UIManager;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.EventListenerList;
 import javax.swing.event.UndoableEditListener;
+import javax.swing.plaf.TextUI;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Caret;
@@ -47,6 +48,7 @@ import javax.swing.text.Element;
 import javax.swing.text.JTextComponent;
 import javax.swing.text.Position;
 import javax.swing.text.Segment;
+import javax.swing.text.SimpleAttributeSet;
 import org.exbin.bined.CodeAreaControl;
 import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.DataChangedListener;
@@ -65,6 +67,8 @@ import org.exbin.auxiliary.binary_data.EmptyBinaryData;
 // Java 9+ @SwingContainer(false)
 public abstract class CodeAreaCore extends JTextComponent implements CodeAreaControl, Accessible {
 
+    private static final String UI_CLASS_ID = "CodeAreaUI";
+
     @Nonnull
     protected BinaryData contentData = EmptyBinaryData.INSTANCE;
 
@@ -72,6 +76,10 @@ public abstract class CodeAreaCore extends JTextComponent implements CodeAreaCon
     protected CodeAreaCommandHandler commandHandler;
 
     protected final List<DataChangedListener> dataChangedListeners = new ArrayList<>();
+    
+    static {
+        UIManager.getDefaults().put("CodeAreaUI", "org.exbin.bined.swing.CodeAreaUI");
+    }
 
     /**
      * Creates new instance with provided command handler factory method.
@@ -85,7 +93,6 @@ public abstract class CodeAreaCore extends JTextComponent implements CodeAreaCon
     }
 
     private void init() {
-        enableEvents(AWTEvent.KEY_EVENT_MASK);
         setName("CodeArea");
         setDocument(new SimulatedDocument());
         setCaret(new SimulatedCaret());
@@ -193,6 +200,26 @@ public abstract class CodeAreaCore extends JTextComponent implements CodeAreaCon
 
     @Nonnull
     @Override
+    public String getUIClassID() {
+        return UI_CLASS_ID;
+    }
+
+    @Override
+    public void updateUI() {
+        TextUI ui = (TextUI)UIManager.getUI(this);
+/*        if (ui == null) {
+            JTextField textField = new JTextField();
+            ui = textField.getUI();
+            if (ui == null) {
+                throw new IllegalStateException("Unable to get UI");
+            }
+        } */
+        setUI(ui);
+        invalidate();
+    }
+
+    @Nonnull
+    @Override
     public BinaryData getContentData() {
         return contentData;
     }
@@ -245,6 +272,7 @@ public abstract class CodeAreaCore extends JTextComponent implements CodeAreaCon
 
         private final List<UndoableEditListener> undoableEditListeners = new ArrayList<>();
         private final List<DocumentListener> documentListeners = new ArrayList<>();
+        private SimulatedElement rootElement = new SimulatedElement(this);
 
         public SimulatedDocument() {
         }
@@ -294,7 +322,27 @@ public abstract class CodeAreaCore extends JTextComponent implements CodeAreaCon
 
                 @Override
                 public DocumentEvent.ElementChange getChange(Element elem) {
-                    throw new UnsupportedOperationException();
+                    return new DocumentEvent.ElementChange() {
+                        @Override
+                        public Element getElement() {
+                            return elem;
+                        }
+
+                        @Override
+                        public int getIndex() {
+                            return 0;
+                        }
+
+                        @Override
+                        public Element[] getChildrenRemoved() {
+                            return new Element[0];
+                        }
+
+                        @Override
+                        public Element[] getChildrenAdded() {
+                            return new Element[0];
+                        }
+                    };
                 }
             };
             documentListeners.forEach((t) -> {
@@ -369,16 +417,78 @@ public abstract class CodeAreaCore extends JTextComponent implements CodeAreaCon
 
         @Override
         public Element[] getRootElements() {
-            throw new UnsupportedOperationException();
+            Element[] result = new Element[1];
+            result[0] = rootElement;
+            return result;
         }
 
         @Override
         public Element getDefaultRootElement() {
-            throw new UnsupportedOperationException();
+            return rootElement;
         }
 
         @Override
         public void render(Runnable r) {
+        }
+    }
+    
+    public class SimulatedElement implements Element {
+        
+        private final Document document;
+        private final AttributeSet attributeSet = new SimpleAttributeSet();
+
+        public SimulatedElement(Document document) {
+            this.document = document;
+        }
+
+        @Override
+        public Document getDocument() {
+            return document;
+        }
+
+        @Override
+        public Element getParentElement() {
+            return null;
+        }
+
+        @Override
+        public String getName() {
+            return "codeArea";
+        }
+
+        @Override
+        public AttributeSet getAttributes() {
+            return attributeSet;
+        }
+
+        @Override
+        public int getStartOffset() {
+            return 0;
+        }
+
+        @Override
+        public int getEndOffset() {
+            return 2;
+        }
+
+        @Override
+        public int getElementIndex(int offset) {
+            return 0;
+        }
+
+        @Override
+        public int getElementCount() {
+            return 0;
+        }
+
+        @Override
+        public Element getElement(int index) {
+            return null;
+        }
+
+        @Override
+        public boolean isLeaf() {
+            return true;
         }
     }
 
