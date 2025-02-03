@@ -33,13 +33,11 @@ import javax.accessibility.AccessibleStateSet;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import javax.swing.UIManager;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.EventListenerList;
 import javax.swing.event.UndoableEditListener;
-import javax.swing.plaf.TextUI;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Caret;
@@ -76,10 +74,6 @@ public abstract class CodeAreaCore extends JTextComponent implements CodeAreaCon
     protected CodeAreaCommandHandler commandHandler;
 
     protected final List<DataChangedListener> dataChangedListeners = new ArrayList<>();
-    
-    static {
-        UIManager.getDefaults().put("CodeAreaUI", "org.exbin.bined.swing.CodeAreaUI");
-    }
 
     /**
      * Creates new instance with provided command handler factory method.
@@ -206,15 +200,7 @@ public abstract class CodeAreaCore extends JTextComponent implements CodeAreaCon
 
     @Override
     public void updateUI() {
-        TextUI ui = (TextUI)UIManager.getUI(this);
-/*        if (ui == null) {
-            JTextField textField = new JTextField();
-            ui = textField.getUI();
-            if (ui == null) {
-                throw new IllegalStateException("Unable to get UI");
-            }
-        } */
-        setUI(ui);
+        setUI(CodeAreaUI.createUI(this));
         invalidate();
     }
 
@@ -372,12 +358,12 @@ public abstract class CodeAreaCore extends JTextComponent implements CodeAreaCon
 
         @Override
         public void remove(int offs, int len) throws BadLocationException {
-            throw new UnsupportedOperationException();
+            // ignore
         }
 
         @Override
         public void insertString(int i, String string, AttributeSet as) throws BadLocationException {
-            throw new UnsupportedOperationException();
+            // ignore
         }
 
         @Override
@@ -387,7 +373,7 @@ public abstract class CodeAreaCore extends JTextComponent implements CodeAreaCon
                     return " ";
                 }
                 if (offset == 0 && length == 2) {
-                    return " ";
+                    return "  ";
                 }
             }
             return "";
@@ -395,6 +381,27 @@ public abstract class CodeAreaCore extends JTextComponent implements CodeAreaCon
 
         @Override
         public void getText(int offset, int length, Segment sgmnt) throws BadLocationException {
+            if (offset < 2) {
+                if (length == 1) {
+                    sgmnt.array = new char[1];
+                    sgmnt.array[0] = ' ';
+                    sgmnt.offset = 0;
+                    sgmnt.count = 1;
+                    return;
+                }
+                if (offset == 0 && length == 2) {
+                    sgmnt.array = new char[2];
+                    sgmnt.array[0] = ' ';
+                    sgmnt.array[1] = ' ';
+                    sgmnt.offset = 0;
+                    sgmnt.count = 2;
+                    return;
+                }
+            }
+
+            sgmnt.array = new char[0];
+            sgmnt.offset = 0;
+            sgmnt.count = 0;
         }
 
         @Nonnull
@@ -412,7 +419,7 @@ public abstract class CodeAreaCore extends JTextComponent implements CodeAreaCon
         @Nonnull
         @Override
         public Position createPosition(int i) throws BadLocationException {
-            throw new UnsupportedOperationException();
+            return () -> i;
         }
 
         @Override
@@ -431,9 +438,9 @@ public abstract class CodeAreaCore extends JTextComponent implements CodeAreaCon
         public void render(Runnable r) {
         }
     }
-    
+
     public class SimulatedElement implements Element {
-        
+
         private final Document document;
         private final AttributeSet attributeSet = new SimpleAttributeSet();
 

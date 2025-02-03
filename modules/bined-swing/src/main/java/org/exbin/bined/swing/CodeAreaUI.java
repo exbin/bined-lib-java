@@ -22,6 +22,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.Rectangle2D;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.swing.JComponent;
@@ -53,6 +54,7 @@ public class CodeAreaUI extends TextUI implements ViewFactory {
     transient RootView rootView = new RootView();
     private static final EditorKit defaultKit = new DefaultEditorKit();
 
+    @Nonnull
     public static ComponentUI createUI(JComponent c) {
         return new CodeAreaUI();
     }
