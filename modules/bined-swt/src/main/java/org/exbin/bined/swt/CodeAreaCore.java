@@ -47,7 +47,7 @@ import org.exbin.bined.CodeAreaUtils;
 public abstract class CodeAreaCore extends Canvas implements CodeAreaControl {
 
     @Nonnull
-    protected BinaryData contentData = EmptyBinaryData.INSTANCE;
+    protected BinaryData contentData;
 
     @Nonnull
     protected CodeAreaCommandHandler commandHandler;
@@ -65,6 +65,7 @@ public abstract class CodeAreaCore extends Canvas implements CodeAreaControl {
     public CodeAreaCore(@Nullable Composite parent, int style, CodeAreaCommandHandler.CodeAreaCommandHandlerFactory commandHandlerFactory) {
         super(parent, style | SWT.NO_MERGE_PAINTS | SWT.NO_REDRAW_RESIZE);
         this.commandHandler = createCommandHandler(CodeAreaUtils.requireNonNull(commandHandlerFactory));
+        contentData = EmptyBinaryData.getInstance();
         init();
     }
 
@@ -204,7 +205,7 @@ public abstract class CodeAreaCore extends Canvas implements CodeAreaControl {
     }
 
     public void setContentData(@Nullable BinaryData contentData) {
-        this.contentData = contentData == null ? EmptyBinaryData.INSTANCE : contentData;
+        this.contentData = contentData == null ? EmptyBinaryData.getInstance() : contentData;
         notifyDataChanged();
         repaint();
     }

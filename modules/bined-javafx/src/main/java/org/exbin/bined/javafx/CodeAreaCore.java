@@ -41,7 +41,7 @@ import org.exbin.bined.CodeAreaUtils;
 public abstract class CodeAreaCore extends Pane implements CodeAreaControl {
 
     @Nonnull
-    protected BinaryData contentData = EmptyBinaryData.INSTANCE;
+    protected BinaryData contentData;
 
     @Nonnull
     protected CodeAreaCommandHandler commandHandler;
@@ -56,6 +56,7 @@ public abstract class CodeAreaCore extends Pane implements CodeAreaControl {
     public CodeAreaCore(CodeAreaCommandHandler.CodeAreaCommandHandlerFactory commandHandlerFactory) {
         super();
         this.commandHandler = createCommandHandler(CodeAreaUtils.requireNonNull(commandHandlerFactory));
+        contentData = EmptyBinaryData.getInstance();
         init();
     }
 
@@ -160,7 +161,7 @@ public abstract class CodeAreaCore extends Pane implements CodeAreaControl {
     }
 
     public void setContentData(@Nullable BinaryData contentData) {
-        this.contentData = contentData == null ? EmptyBinaryData.INSTANCE : contentData;
+        this.contentData = contentData == null ? EmptyBinaryData.getInstance() : contentData;
         notifyDataChanged();
         repaint();
     }

@@ -68,7 +68,7 @@ public abstract class CodeAreaCore extends JTextComponent implements CodeAreaCon
     private static final String UI_CLASS_ID = "CodeAreaUI";
 
     @Nonnull
-    protected BinaryData contentData = EmptyBinaryData.INSTANCE;
+    protected BinaryData contentData;
 
     @Nonnull
     protected CodeAreaCommandHandler commandHandler;
@@ -81,7 +81,18 @@ public abstract class CodeAreaCore extends JTextComponent implements CodeAreaCon
      * @param commandHandlerFactory command handler or null for default handler
      */
     public CodeAreaCore(CodeAreaCommandHandler.CodeAreaCommandHandlerFactory commandHandlerFactory) {
+        this(commandHandlerFactory, EmptyBinaryData.getInstance());
+    }
+
+    /**
+     * Creates new instance with provided command handler factory method.
+     *
+     * @param commandHandlerFactory command handler or null for default handler
+     * @param contentData content data
+     */
+    public CodeAreaCore(CodeAreaCommandHandler.CodeAreaCommandHandlerFactory commandHandlerFactory, BinaryData contentData) {
         super();
+        this.contentData = contentData;
         this.commandHandler = createCommandHandler(CodeAreaUtils.requireNonNull(commandHandlerFactory));
         init();
     }
@@ -211,7 +222,7 @@ public abstract class CodeAreaCore extends JTextComponent implements CodeAreaCon
     }
 
     public void setContentData(@Nullable BinaryData contentData) {
-        this.contentData = contentData == null ? EmptyBinaryData.INSTANCE : contentData;
+        this.contentData = contentData == null ? EmptyBinaryData.getInstance() : contentData;
         notifyDataChanged();
         repaint();
     }

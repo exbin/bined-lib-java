@@ -27,6 +27,8 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
+import org.exbin.auxiliary.binary_data.BinaryData;
+import org.exbin.auxiliary.binary_data.EmptyBinaryData;
 import org.exbin.bined.basic.BasicCodeAreaSection;
 import org.exbin.bined.ClipboardHandlingMode;
 import org.exbin.bined.DefaultCodeAreaCaretPosition;
@@ -126,7 +128,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
      * Creates new instance with default command handler and painter.
      */
     public CodeArea() {
-         this(DefaultCodeAreaCommandHandler.createDefaultCodeAreaCommandHandlerFactory());
+        this(DefaultCodeAreaCommandHandler.createDefaultCodeAreaCommandHandlerFactory());
     }
 
     /**
@@ -135,7 +137,17 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
      * @param commandHandlerFactory command handler or null for default handler
      */
     public CodeArea(CodeAreaCommandHandler.CodeAreaCommandHandlerFactory commandHandlerFactory) {
-        super(commandHandlerFactory);
+        this(commandHandlerFactory, EmptyBinaryData.getInstance());
+    }
+
+    /**
+     * Creates new instance with provided command handler factory method.
+     *
+     * @param commandHandlerFactory command handler or null for default handler
+     * @param contentData content data
+     */
+    public CodeArea(CodeAreaCommandHandler.CodeAreaCommandHandlerFactory commandHandlerFactory, BinaryData contentData) {
+        super(commandHandlerFactory, contentData);
 
         painter = new DefaultCodeAreaPainter(this);
         codeAreaCaret = new DefaultCodeAreaCaret(this::notifyCaretChanged);

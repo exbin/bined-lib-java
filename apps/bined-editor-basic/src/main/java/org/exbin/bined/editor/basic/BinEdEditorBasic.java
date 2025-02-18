@@ -38,6 +38,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import org.exbin.auxiliary.binary_data.ByteArrayEditableData;
 import org.exbin.bined.EditMode;
 import org.exbin.bined.EditOperation;
 import org.exbin.bined.capability.CaretCapable;
@@ -46,7 +47,6 @@ import org.exbin.bined.capability.SelectionCapable;
 import org.exbin.bined.operation.swing.CodeAreaOperationCommandHandler;
 import org.exbin.bined.operation.swing.CodeAreaUndoRedo;
 import org.exbin.bined.swing.basic.CodeArea;
-import org.exbin.auxiliary.binary_data.ByteArrayEditableData;
 import org.exbin.auxiliary.binary_data.EditableBinaryData;
 import org.exbin.bined.CodeAreaCaretPosition;
 import org.exbin.bined.CodeAreaUtils;
@@ -108,7 +108,6 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
     private void init() {
         codeArea = new CodeAreaWrapper();
         undoHandler = (CodeAreaUndoRedo) ((CodeAreaOperationCommandHandler) codeArea.getCommandHandler()).getUndoRedo();
-        codeArea.setContentData(new ByteArrayEditableData());
         add(codeArea, BorderLayout.CENTER);
 
         addWindowListener(new WindowAdapter() {
@@ -125,9 +124,7 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
 
     private void initActions() {
         int metaMask = CodeAreaSwingUtils.getMetaMaskDown();
-        newFileAction = new AbstractAction(
-                "New", getIconResource(ICON_FILE_NEW)
-        ) {
+        newFileAction = new AbstractAction("New", getIconResource(ICON_FILE_NEW)) {
             @Override
             public void actionPerformed(ActionEvent evt) {
                 newFileActionPerformed();
@@ -135,9 +132,7 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
         };
         newFileAction.putValue(Action.ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, metaMask));
 
-        openFileAction = new AbstractAction(
-                "Open...", getIconResource(ICON_FILE_OPEN)
-        ) {
+        openFileAction = new AbstractAction("Open...", getIconResource(ICON_FILE_OPEN)) {
             @Override
             public void actionPerformed(ActionEvent evt) {
                 openFileActionPerformed();
@@ -145,18 +140,18 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
         };
         openFileAction.putValue(Action.ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, metaMask));
 
-        saveFileAction = new AbstractAction(
-                "Save", getIconResource(ICON_FILE_SAVE)
-        ) {
+        saveFileAction = new AbstractAction("Save", getIconResource(ICON_FILE_SAVE)) {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                saveFileActionPerformed();
+                if (file != null) {
+                    saveAsFileActionPerformed();
+                } else {
+                    saveToFile();
+                }
             }
         };
 
-        saveAsFileAction = new AbstractAction(
-                "Save As...", getIconResource(ICON_FILE_SAVE_AS)
-        ) {
+        saveAsFileAction = new AbstractAction("Save As...", getIconResource(ICON_FILE_SAVE_AS)) {
             @Override
             public void actionPerformed(ActionEvent evt) {
                 saveAsFileActionPerformed();
@@ -164,19 +159,15 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
         };
         saveAsFileAction.putValue(Action.ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.SHIFT_DOWN_MASK | metaMask));
 
-        exitAction = new AbstractAction(
-                "Exit", null
-        ) {
+        exitAction = new AbstractAction("Exit", null) {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                exitActionPerformed();
+                dispatchEvent(new WindowEvent(BinEdEditorBasic.this, WindowEvent.WINDOW_CLOSING));
             }
         };
         exitAction.putValue(Action.ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F4, java.awt.event.InputEvent.ALT_DOWN_MASK));
 
-        undoEditAction = new AbstractAction(
-                "Undo", getIconResource(ICON_EDIT_UNDO)
-        ) {
+        undoEditAction = new AbstractAction("Undo", getIconResource(ICON_EDIT_UNDO)) {
             @Override
             public void actionPerformed(ActionEvent evt) {
                 undoHandler.performUndo();
@@ -184,9 +175,7 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
         };
         undoEditAction.putValue(Action.ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Z, metaMask));
 
-        redoEditAction = new AbstractAction(
-                "Redo", getIconResource(ICON_EDIT_REDO)
-        ) {
+        redoEditAction = new AbstractAction("Redo", getIconResource(ICON_EDIT_REDO)) {
             @Override
             public void actionPerformed(ActionEvent evt) {
                 undoHandler.performRedo();
@@ -194,9 +183,7 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
         };
         redoEditAction.putValue(Action.ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Y, metaMask));
 
-        cutEditAction = new AbstractAction(
-                "Cut", getIconResource(ICON_EDIT_CUT)
-        ) {
+        cutEditAction = new AbstractAction("Cut", getIconResource(ICON_EDIT_CUT)) {
             @Override
             public void actionPerformed(ActionEvent evt) {
                 codeArea.cut();
@@ -204,9 +191,7 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
         };
         cutEditAction.putValue(Action.ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_X, metaMask));
 
-        copyEditAction = new AbstractAction(
-                "Copy", getIconResource(ICON_EDIT_COPY)
-        ) {
+        copyEditAction = new AbstractAction("Copy", getIconResource(ICON_EDIT_COPY)) {
             @Override
             public void actionPerformed(ActionEvent evt) {
                 codeArea.copy();
@@ -214,9 +199,7 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
         };
         copyEditAction.putValue(Action.ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, metaMask));
 
-        pasteEditAction = new AbstractAction(
-                "Paste", getIconResource(ICON_EDIT_PASTE)
-        ) {
+        pasteEditAction = new AbstractAction("Paste", getIconResource(ICON_EDIT_PASTE)) {
             @Override
             public void actionPerformed(ActionEvent evt) {
                 codeArea.paste();
@@ -224,9 +207,7 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
         };
         pasteEditAction.putValue(Action.ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_V, metaMask));
 
-        deleteEditAction = new AbstractAction(
-                "Delete", getIconResource(ICON_EDIT_DELETE)
-        ) {
+        deleteEditAction = new AbstractAction("Delete", getIconResource(ICON_EDIT_DELETE)) {
             @Override
             public void actionPerformed(ActionEvent evt) {
                 codeArea.delete();
@@ -234,9 +215,7 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
         };
         deleteEditAction.putValue(Action.ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_DELETE, 0));
 
-        selectAllAction = new AbstractAction(
-                "Select All", getIconResource(ICON_EDIT_SELECT_ALL)
-        ) {
+        selectAllAction = new AbstractAction("Select All", getIconResource(ICON_EDIT_SELECT_ALL)) {
             @Override
             public void actionPerformed(ActionEvent evt) {
                 codeArea.selectAll();
@@ -279,6 +258,40 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
         updateUndoState();
         updateClipboardState();
         openFileButton.setText("Open");
+
+        binaryCodeTypeRadioButtonMenuItem.addActionListener((event) -> {
+            codeArea.setCodeType(CodeType.BINARY);
+        });
+        octalCodeTypeRadioButtonMenuItem.addActionListener((event) -> {
+            codeArea.setCodeType(CodeType.OCTAL);
+        });
+        decimalCodeTypeRadioButtonMenuItem.addActionListener((event) -> {
+            codeArea.setCodeType(CodeType.DECIMAL);
+        });
+        hexadecimalCodeTypeRadioButtonMenuItem.addActionListener((event) -> {
+            codeArea.setCodeType(CodeType.HEXADECIMAL);
+        });
+
+        upperCaseRadioButtonMenuItem.addActionListener((event) -> {
+            codeArea.setCodeCharactersCase(CodeCharactersCase.UPPER);
+        });
+        lowerCaseRadioButtonMenuItem.addActionListener((event) -> {
+            codeArea.setCodeCharactersCase(CodeCharactersCase.LOWER);
+        });
+        chooseEncodingMenuItem.addActionListener((event) -> {
+            chooseEncoding();
+        });
+        encodingLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                chooseEncoding();
+            }
+        });
+        aboutMenuItem.addActionListener((event) -> {
+            JOptionPane.showMessageDialog(this,
+                    APPLICATION_NAME + " Binary Editor - Basic Editor\nVersion " + APPLICATION_VERSION + "\nhttps://bined.exbin.org",
+                    "About application",
+                    JOptionPane.PLAIN_MESSAGE);
+        });
     }
 
     /**
@@ -350,32 +363,25 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
         aboutMenuItem = new javax.swing.JMenuItem();
 
         editUndoPopupMenuItem.setAction(undoEditAction);
-        editUndoPopupMenuItem.setText("Undo");
         mainPopupMenu.add(editUndoPopupMenuItem);
 
         editRedoPopupMenuItem.setAction(redoEditAction);
-        editRedoPopupMenuItem.setText("Redo");
         mainPopupMenu.add(editRedoPopupMenuItem);
         mainPopupMenu.add(jSeparator5);
 
         editCutPopupMenuItem.setAction(cutEditAction);
-        editCutPopupMenuItem.setText("Cut");
         mainPopupMenu.add(editCutPopupMenuItem);
 
         editCopyPopupMenuItem.setAction(copyEditAction);
-        editCopyPopupMenuItem.setText("Copy");
         mainPopupMenu.add(editCopyPopupMenuItem);
 
         editPastePopupMenuItem.setAction(pasteEditAction);
-        editPastePopupMenuItem.setText("Paste");
         mainPopupMenu.add(editPastePopupMenuItem);
 
         editDeletePopupMenuItem.setAction(deleteEditAction);
-        editDeletePopupMenuItem.setText("Delete");
         mainPopupMenu.add(editDeletePopupMenuItem);
 
         selectAllPopupMenuItem.setAction(selectAllAction);
-        selectAllPopupMenuItem.setText("Select All");
         mainPopupMenu.add(selectAllPopupMenuItem);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -465,11 +471,6 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
         encodingLabel.setText("UTF-8");
         encodingLabel.setToolTipText("Currently active encoding");
         encodingLabel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        encodingLabel.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                encodingLabelMouseClicked(evt);
-            }
-        });
 
         javax.swing.GroupLayout textStatusPanelLayout = new javax.swing.GroupLayout(textStatusPanel);
         textStatusPanel.setLayout(textStatusPanelLayout);
@@ -497,24 +498,19 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
         fileMenu.setText("File");
 
         newFileMenuItem.setAction(newFileAction);
-        newFileMenuItem.setText("New");
         fileMenu.add(newFileMenuItem);
 
         openFileMenuItem.setAction(openFileAction);
-        openFileMenuItem.setText("Open...");
         fileMenu.add(openFileMenuItem);
 
         saveFileMenuItem.setAction(saveFileAction);
-        saveFileMenuItem.setText("Save");
         fileMenu.add(saveFileMenuItem);
 
         saveAsFileMenuItem.setAction(saveAsFileAction);
-        saveAsFileMenuItem.setText("Save As...");
         fileMenu.add(saveAsFileMenuItem);
         fileMenu.add(jSeparator1);
 
         exitMenuItem.setAction(exitAction);
-        exitMenuItem.setText("Exit");
         fileMenu.add(exitMenuItem);
 
         mainMenuBar.add(fileMenu);
@@ -522,32 +518,25 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
         editMenu.setText("Edit");
 
         editUndoMenuItem.setAction(undoEditAction);
-        editUndoMenuItem.setText("Undo");
         editMenu.add(editUndoMenuItem);
 
         editRedoMenuItem.setAction(redoEditAction);
-        editRedoMenuItem.setText("Redo");
         editMenu.add(editRedoMenuItem);
         editMenu.add(jSeparator2);
 
         editCutMenuItem.setAction(cutEditAction);
-        editCutMenuItem.setText("Cut");
         editMenu.add(editCutMenuItem);
 
         editCopyMenuItem.setAction(copyEditAction);
-        editCopyMenuItem.setText("Copy");
         editMenu.add(editCopyMenuItem);
 
         editPasteMenuItem.setAction(pasteEditAction);
-        editPasteMenuItem.setText("Paste");
         editMenu.add(editPasteMenuItem);
 
         editDeleteMenuItem.setAction(deleteEditAction);
-        editDeleteMenuItem.setText("Delete");
         editMenu.add(editDeleteMenuItem);
 
         selectAllMenuItem.setAction(selectAllAction);
-        selectAllMenuItem.setText("Select All");
         editMenu.add(selectAllMenuItem);
 
         mainMenuBar.add(editMenu);
@@ -558,39 +547,19 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
 
         codeTypeButtonGroup.add(binaryCodeTypeRadioButtonMenuItem);
         binaryCodeTypeRadioButtonMenuItem.setText("Binary");
-        binaryCodeTypeRadioButtonMenuItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                binaryCodeTypeRadioButtonMenuItemActionPerformed(evt);
-            }
-        });
         codeTypeMenu.add(binaryCodeTypeRadioButtonMenuItem);
 
         codeTypeButtonGroup.add(octalCodeTypeRadioButtonMenuItem);
         octalCodeTypeRadioButtonMenuItem.setText("Octal");
-        octalCodeTypeRadioButtonMenuItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                octalCodeTypeRadioButtonMenuItemActionPerformed(evt);
-            }
-        });
         codeTypeMenu.add(octalCodeTypeRadioButtonMenuItem);
 
         codeTypeButtonGroup.add(decimalCodeTypeRadioButtonMenuItem);
         decimalCodeTypeRadioButtonMenuItem.setText("Decimal");
-        decimalCodeTypeRadioButtonMenuItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                decimalCodeTypeRadioButtonMenuItemActionPerformed(evt);
-            }
-        });
         codeTypeMenu.add(decimalCodeTypeRadioButtonMenuItem);
 
         codeTypeButtonGroup.add(hexadecimalCodeTypeRadioButtonMenuItem);
         hexadecimalCodeTypeRadioButtonMenuItem.setSelected(true);
         hexadecimalCodeTypeRadioButtonMenuItem.setText("Hexadecimal");
-        hexadecimalCodeTypeRadioButtonMenuItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                hexadecimalCodeTypeRadioButtonMenuItemActionPerformed(evt);
-            }
-        });
         codeTypeMenu.add(hexadecimalCodeTypeRadioButtonMenuItem);
 
         viewMenu.add(codeTypeMenu);
@@ -600,31 +569,15 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
         hexCharacterCaseButtonGroup.add(upperCaseRadioButtonMenuItem);
         upperCaseRadioButtonMenuItem.setSelected(true);
         upperCaseRadioButtonMenuItem.setText("Upper Case");
-        upperCaseRadioButtonMenuItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                upperCaseRadioButtonMenuItemActionPerformed(evt);
-            }
-        });
         hexCharacterCaseMenu.add(upperCaseRadioButtonMenuItem);
 
         hexCharacterCaseButtonGroup.add(lowerCaseRadioButtonMenuItem);
         lowerCaseRadioButtonMenuItem.setText("Lower Case");
-        lowerCaseRadioButtonMenuItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                lowerCaseRadioButtonMenuItemActionPerformed(evt);
-            }
-        });
         hexCharacterCaseMenu.add(lowerCaseRadioButtonMenuItem);
 
         viewMenu.add(hexCharacterCaseMenu);
 
         chooseEncodingMenuItem.setText("Choose Encoding...");
-        chooseEncodingMenuItem.setToolTipText("");
-        chooseEncodingMenuItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                chooseEncodingMenuItemActionPerformed(evt);
-            }
-        });
         viewMenu.add(chooseEncodingMenuItem);
 
         mainMenuBar.add(viewMenu);
@@ -632,11 +585,6 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
         aboutMenu.setText("About");
 
         aboutMenuItem.setText("About...");
-        aboutMenuItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                aboutMenuItemActionPerformed(evt);
-            }
-        });
         aboutMenu.add(aboutMenuItem);
 
         mainMenuBar.add(aboutMenu);
@@ -646,13 +594,6 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
         setSize(new java.awt.Dimension(715, 481));
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
-
-    private void aboutMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aboutMenuItemActionPerformed
-        JOptionPane.showMessageDialog(this,
-                APPLICATION_NAME + " Binary Editor - Basic Editor\nVersion " + APPLICATION_VERSION + "\nhttps://bined.exbin.org",
-                "About application",
-                JOptionPane.PLAIN_MESSAGE);
-    }//GEN-LAST:event_aboutMenuItemActionPerformed
 
     private void editModeLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_editModeLabelMouseClicked
         if (evt.getButton() == MouseEvent.BUTTON1) {
@@ -665,38 +606,6 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
             ((EditModeCapable) codeArea).setEditOperation(editOperation);
         }
     }//GEN-LAST:event_editModeLabelMouseClicked
-
-    private void encodingLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_encodingLabelMouseClicked
-        chooseEncoding();
-    }//GEN-LAST:event_encodingLabelMouseClicked
-
-    private void chooseEncodingMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chooseEncodingMenuItemActionPerformed
-        chooseEncoding();
-    }//GEN-LAST:event_chooseEncodingMenuItemActionPerformed
-
-    private void binaryCodeTypeRadioButtonMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_binaryCodeTypeRadioButtonMenuItemActionPerformed
-        codeArea.setCodeType(CodeType.BINARY);
-    }//GEN-LAST:event_binaryCodeTypeRadioButtonMenuItemActionPerformed
-
-    private void octalCodeTypeRadioButtonMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_octalCodeTypeRadioButtonMenuItemActionPerformed
-        codeArea.setCodeType(CodeType.OCTAL);
-    }//GEN-LAST:event_octalCodeTypeRadioButtonMenuItemActionPerformed
-
-    private void decimalCodeTypeRadioButtonMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_decimalCodeTypeRadioButtonMenuItemActionPerformed
-        codeArea.setCodeType(CodeType.DECIMAL);
-    }//GEN-LAST:event_decimalCodeTypeRadioButtonMenuItemActionPerformed
-
-    private void hexadecimalCodeTypeRadioButtonMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hexadecimalCodeTypeRadioButtonMenuItemActionPerformed
-        codeArea.setCodeType(CodeType.HEXADECIMAL);
-    }//GEN-LAST:event_hexadecimalCodeTypeRadioButtonMenuItemActionPerformed
-
-    private void upperCaseRadioButtonMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_upperCaseRadioButtonMenuItemActionPerformed
-        codeArea.setCodeCharactersCase(CodeCharactersCase.UPPER);
-    }//GEN-LAST:event_upperCaseRadioButtonMenuItemActionPerformed
-
-    private void lowerCaseRadioButtonMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lowerCaseRadioButtonMenuItemActionPerformed
-        codeArea.setCodeCharactersCase(CodeCharactersCase.LOWER);
-    }//GEN-LAST:event_lowerCaseRadioButtonMenuItemActionPerformed
 
     private void newFileActionPerformed() {
         if (!releaseFile()) {
@@ -731,14 +640,6 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
                     Logger.getLogger(BinEdEditorBasic.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-        }
-    }
-
-    private void saveFileActionPerformed() {
-        if (file != null) {
-            saveAsFileActionPerformed();
-        } else {
-            saveToFile();
         }
     }
 
@@ -780,10 +681,6 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
         }
 
         return false;
-    }
-
-    private void exitActionPerformed() {
-        dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
     }
 
     public void saveToFile() {
@@ -828,11 +725,9 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
         dialog.setVisible(true);
         if (dialog.getReturnStatus() == EncodingSelectionDialog.ReturnStatus.OK) {
             String encoding = dialog.getEncoding();
-            if (encoding != null) {
-                ((CharsetCapable) codeArea).setCharset(Charset.forName(encoding));
-                codeArea.repaint();
-                encodingLabel.setText(encoding);
-            }
+            ((CharsetCapable) codeArea).setCharset(Charset.forName(encoding));
+            codeArea.repaint();
+            encodingLabel.setText(encoding);
         }
     }
 
@@ -865,19 +760,11 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
     }
 
     private static void switchLookAndFeel() {
-        String osName = System.getProperty("os.name").toLowerCase();
-        if (!osName.startsWith("windows") && !osName.startsWith("mac")) {
-            // Try "GTK+" on linux
-            try {
-                UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
-                return;
-            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
-            }
-        }
-
         // Try system look and feel
         try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            String osName = System.getProperty("os.name").toLowerCase();
+            // Try "GTK+" on linux
+            UIManager.setLookAndFeel(!osName.startsWith("windows") && !osName.startsWith("mac") ? "com.sun.java.swing.plaf.gtk.GTKLookAndFeel" : UIManager.getSystemLookAndFeelClassName());
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
             Logger.getLogger(BinEdEditorBasic.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -952,14 +839,14 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
     private ImageIcon getIconResource(String iconFileName) {
         return new ImageIcon(getClass().getResource(ICONS_DIRECTORY + iconFileName));
     }
-    
+
     /**
      * Helps proguard to cut out default constructor for smaller basic editor.
      */
-    private static class CodeAreaWrapper extends CodeArea {
+    private static final class CodeAreaWrapper extends CodeArea {
 
         public CodeAreaWrapper() {
-            super((codeArea) -> new CodeAreaOperationCommandHandler(codeArea, new CodeAreaUndoRedo(codeArea)));
+            super((codeArea) -> new CodeAreaOperationCommandHandler(codeArea, new CodeAreaUndoRedo(codeArea)), new ByteArrayEditableData());
         }
     }
 }

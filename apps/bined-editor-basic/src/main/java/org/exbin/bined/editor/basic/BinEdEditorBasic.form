@@ -13,7 +13,6 @@
             <Property name="action" type="javax.swing.Action" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
               <Connection code="undoEditAction" type="code"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="Undo"/>
           </Properties>
         </MenuItem>
         <MenuItem class="javax.swing.JMenuItem" name="editRedoPopupMenuItem">
@@ -21,7 +20,6 @@
             <Property name="action" type="javax.swing.Action" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
               <Connection code="redoEditAction" type="code"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="Redo"/>
           </Properties>
         </MenuItem>
         <Component class="javax.swing.JPopupMenu$Separator" name="jSeparator5">
@@ -31,7 +29,6 @@
             <Property name="action" type="javax.swing.Action" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
               <Connection code="cutEditAction" type="code"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="Cut"/>
           </Properties>
         </MenuItem>
         <MenuItem class="javax.swing.JMenuItem" name="editCopyPopupMenuItem">
@@ -39,7 +36,6 @@
             <Property name="action" type="javax.swing.Action" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
               <Connection code="copyEditAction" type="code"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="Copy"/>
           </Properties>
         </MenuItem>
         <MenuItem class="javax.swing.JMenuItem" name="editPastePopupMenuItem">
@@ -47,7 +43,6 @@
             <Property name="action" type="javax.swing.Action" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
               <Connection code="pasteEditAction" type="code"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="Paste"/>
           </Properties>
         </MenuItem>
         <MenuItem class="javax.swing.JMenuItem" name="editDeletePopupMenuItem">
@@ -55,7 +50,6 @@
             <Property name="action" type="javax.swing.Action" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
               <Connection code="deleteEditAction" type="code"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="Delete"/>
           </Properties>
         </MenuItem>
         <MenuItem class="javax.swing.JMenuItem" name="selectAllPopupMenuItem">
@@ -63,7 +57,6 @@
             <Property name="action" type="javax.swing.Action" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
               <Connection code="selectAllAction" type="code"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="Select All"/>
           </Properties>
         </MenuItem>
       </SubComponents>
@@ -84,7 +77,6 @@
                 <Property name="action" type="javax.swing.Action" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
                   <Connection code="newFileAction" type="code"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="New"/>
               </Properties>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="openFileMenuItem">
@@ -92,7 +84,6 @@
                 <Property name="action" type="javax.swing.Action" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
                   <Connection code="openFileAction" type="code"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Open..."/>
               </Properties>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="saveFileMenuItem">
@@ -100,7 +91,6 @@
                 <Property name="action" type="javax.swing.Action" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
                   <Connection code="saveFileAction" type="code"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Save"/>
               </Properties>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="saveAsFileMenuItem">
@@ -108,7 +98,6 @@
                 <Property name="action" type="javax.swing.Action" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
                   <Connection code="saveAsFileAction" type="code"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Save As..."/>
               </Properties>
             </MenuItem>
             <MenuItem class="javax.swing.JPopupMenu$Separator" name="jSeparator1">
@@ -118,7 +107,6 @@
                 <Property name="action" type="javax.swing.Action" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
                   <Connection code="exitAction" type="code"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Exit"/>
               </Properties>
             </MenuItem>
           </SubComponents>
@@ -133,7 +121,6 @@
                 <Property name="action" type="javax.swing.Action" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
                   <Connection code="undoEditAction" type="code"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Undo"/>
               </Properties>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="editRedoMenuItem">
@@ -141,7 +128,6 @@
                 <Property name="action" type="javax.swing.Action" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
                   <Connection code="redoEditAction" type="code"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Redo"/>
               </Properties>
             </MenuItem>
             <MenuItem class="javax.swing.JPopupMenu$Separator" name="jSeparator2">
@@ -151,7 +137,6 @@
                 <Property name="action" type="javax.swing.Action" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
                   <Connection code="cutEditAction" type="code"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Cut"/>
               </Properties>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="editCopyMenuItem">
@@ -159,7 +144,6 @@
                 <Property name="action" type="javax.swing.Action" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
                   <Connection code="copyEditAction" type="code"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Copy"/>
               </Properties>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="editPasteMenuItem">
@@ -167,7 +151,6 @@
                 <Property name="action" type="javax.swing.Action" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
                   <Connection code="pasteEditAction" type="code"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Paste"/>
               </Properties>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="editDeleteMenuItem">
@@ -175,7 +158,6 @@
                 <Property name="action" type="javax.swing.Action" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
                   <Connection code="deleteEditAction" type="code"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Delete"/>
               </Properties>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="selectAllMenuItem">
@@ -183,7 +165,6 @@
                 <Property name="action" type="javax.swing.Action" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
                   <Connection code="selectAllAction" type="code"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Select All"/>
               </Properties>
             </MenuItem>
           </SubComponents>
@@ -205,9 +186,6 @@
                     </Property>
                     <Property name="text" type="java.lang.String" value="Binary"/>
                   </Properties>
-                  <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="binaryCodeTypeRadioButtonMenuItemActionPerformed"/>
-                  </Events>
                 </MenuItem>
                 <MenuItem class="javax.swing.JRadioButtonMenuItem" name="octalCodeTypeRadioButtonMenuItem">
                   <Properties>
@@ -216,9 +194,6 @@
                     </Property>
                     <Property name="text" type="java.lang.String" value="Octal"/>
                   </Properties>
-                  <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="octalCodeTypeRadioButtonMenuItemActionPerformed"/>
-                  </Events>
                 </MenuItem>
                 <MenuItem class="javax.swing.JRadioButtonMenuItem" name="decimalCodeTypeRadioButtonMenuItem">
                   <Properties>
@@ -227,9 +202,6 @@
                     </Property>
                     <Property name="text" type="java.lang.String" value="Decimal"/>
                   </Properties>
-                  <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="decimalCodeTypeRadioButtonMenuItemActionPerformed"/>
-                  </Events>
                 </MenuItem>
                 <MenuItem class="javax.swing.JRadioButtonMenuItem" name="hexadecimalCodeTypeRadioButtonMenuItem">
                   <Properties>
@@ -239,9 +211,6 @@
                     <Property name="selected" type="boolean" value="true"/>
                     <Property name="text" type="java.lang.String" value="Hexadecimal"/>
                   </Properties>
-                  <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="hexadecimalCodeTypeRadioButtonMenuItemActionPerformed"/>
-                  </Events>
                 </MenuItem>
               </SubComponents>
             </Menu>
@@ -258,9 +227,6 @@
                     <Property name="selected" type="boolean" value="true"/>
                     <Property name="text" type="java.lang.String" value="Upper Case"/>
                   </Properties>
-                  <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="upperCaseRadioButtonMenuItemActionPerformed"/>
-                  </Events>
                 </MenuItem>
                 <MenuItem class="javax.swing.JRadioButtonMenuItem" name="lowerCaseRadioButtonMenuItem">
                   <Properties>
@@ -269,20 +235,13 @@
                     </Property>
                     <Property name="text" type="java.lang.String" value="Lower Case"/>
                   </Properties>
-                  <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="lowerCaseRadioButtonMenuItemActionPerformed"/>
-                  </Events>
                 </MenuItem>
               </SubComponents>
             </Menu>
             <MenuItem class="javax.swing.JMenuItem" name="chooseEncodingMenuItem">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Choose Encoding..."/>
-                <Property name="toolTipText" type="java.lang.String" value=""/>
               </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="chooseEncodingMenuItemActionPerformed"/>
-              </Events>
             </MenuItem>
           </SubComponents>
         </Menu>
@@ -295,9 +254,6 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="About..."/>
               </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="aboutMenuItemActionPerformed"/>
-              </Events>
             </MenuItem>
           </SubComponents>
         </Menu>
@@ -525,9 +481,6 @@
                   </Border>
                 </Property>
               </Properties>
-              <Events>
-                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="encodingLabelMouseClicked"/>
-              </Events>
             </Component>
           </SubComponents>
         </Container>
