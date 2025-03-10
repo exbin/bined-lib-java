@@ -282,6 +282,7 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
             chooseEncoding();
         });
         encodingLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 chooseEncoding();
             }
