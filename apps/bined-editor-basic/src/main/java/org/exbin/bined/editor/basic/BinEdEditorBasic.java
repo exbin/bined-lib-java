@@ -752,9 +752,14 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        // GraalVM workaround
+        if (System.getProperty("java.home") == null) {
+            System.setProperty("java.home", new File(".").getAbsolutePath());
+        }
+
         switchLookAndFeel();
 
-        /* Create and display the form */
+        // Create and display the form
         java.awt.EventQueue.invokeLater(() -> {
             new BinEdEditorBasic().setVisible(true);
         });
