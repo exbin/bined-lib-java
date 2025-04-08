@@ -275,7 +275,7 @@ public class DefaultCodeAreaScrollPane extends JScrollPane {
 
             if (scrollingByUser) {
                 int scrollBarValue = verticalScrollBar.getValue();
-                int maxValue = Integer.MAX_VALUE - verticalScrollBar.getVisibleAmount();
+                int maxValue = scrolling.getMaximumScrollBarHeight() - verticalScrollBar.getVisibleAmount();
                 long rowsPerDocumentToLastPage = structure.getRowsPerDocument() - dimensions.getRowsPerRect();
                 scrolling.updateVerticalScrollBarValue(scrollBarValue, metrics.getRowHeight(), maxValue, rowsPerDocumentToLastPage);
                 control.updateScrollPosition(scrolling.getScrollPosition());
