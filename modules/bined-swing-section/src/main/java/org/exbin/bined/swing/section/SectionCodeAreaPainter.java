@@ -162,8 +162,7 @@ public class SectionCodeAreaPainter implements CodeAreaPainter, ColorsProfileCap
     protected EditOperation editOperation;
     @Nullable
     protected PositionIterator positionIterator;
-    @Nullable
-    protected ScrollViewDimension viewDimension;
+    protected final ScrollViewDimension viewDimension = new ScrollViewDimension();
     protected boolean showMirrorCursor;
     @Nonnull
     protected AntialiasingMode antialiasingMode = AntialiasingMode.AUTO;
@@ -1940,7 +1939,7 @@ public class SectionCodeAreaPainter implements CodeAreaPainter, ColorsProfileCap
 
         JViewport viewport = scrollPanel.getViewport();
         if (rowHeight > 0 && characterWidth > 0) {
-            viewDimension = scrolling.computeViewDimension(viewport.getWidth(), viewport.getHeight(), layoutProfile, structure, characterWidth, rowHeight);
+            scrolling.computeViewDimension(viewDimension, viewport.getWidth(), viewport.getHeight(), layoutProfile, structure, characterWidth, rowHeight);
             if (dataView.getWidth() != viewDimension.getWidth() || dataView.getHeight() != viewDimension.getHeight()) {
                 Dimension dataViewSize = new Dimension(viewDimension.getWidth(), viewDimension.getHeight());
                 dataView.setPreferredSize(dataViewSize);

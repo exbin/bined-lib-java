@@ -82,8 +82,7 @@ public class SectionCodeAreaScrolling {
         this.verticalScrollBarWidth = verticalScrollBarWidth;
     }
 
-    @Nonnull
-    public ScrollViewDimension computeViewDimension(int dataViewWidth, int dataViewHeight, SectionCodeAreaLayoutProfile layoutProfile, SectionCodeAreaStructure structure, int characterWidth, int rowHeight) {
+    public void computeViewDimension(ScrollViewDimension outputDimension, int dataViewWidth, int dataViewHeight, SectionCodeAreaLayoutProfile layoutProfile, SectionCodeAreaStructure structure, int characterWidth, int rowHeight) {
         int halfCharsPerRow = structure.getHalfCharsPerRow();
         int dataWidth = layoutProfile.computePositionX(halfCharsPerRow, characterWidth, characterWidth / 2);
         boolean fitsHorizontally = computeFitsHorizontally(dataViewWidth, dataWidth);
@@ -114,8 +113,7 @@ public class SectionCodeAreaScrolling {
             height = recomputeScrollViewHeight(dataViewHeight, rowHeight, rowsPerData);
         }
 
-        // TODO avoid creation of instance
-        return new ScrollViewDimension(dataViewWidth, dataViewHeight, width, height);
+        outputDimension.setDimension(dataViewWidth, dataViewHeight, width, height);
     }
 
     private boolean computeFitsHorizontally(int dataViewWidth, int dataWidth) {

@@ -141,8 +141,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
     protected EditOperation editOperation;
     @Nullable
     protected BasicBackgroundPaintMode backgroundPaintMode;
-    @Nullable
-    protected ScrollViewDimension viewDimension;
+    protected final ScrollViewDimension viewDimension = new ScrollViewDimension();
     protected boolean showMirrorCursor;
     @Nonnull
     protected AntialiasingMode antialiasingMode = AntialiasingMode.AUTO;
@@ -1581,7 +1580,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         Point viewport = scrollPanel.getSize();
 
         if (rowHeight > 0 && characterWidth > 0) {
-            viewDimension = scrolling.computeViewDimension(viewport.x, viewport.y, layout, structure, characterWidth, rowHeight);
+            scrolling.computeViewDimension(viewDimension, viewport.x, viewport.y, layout, structure, characterWidth, rowHeight);
 
             Point currentSize = dataView.getSize();
             if (currentSize.x != viewDimension.getWidth() || currentSize.y != viewDimension.getHeight()) {
