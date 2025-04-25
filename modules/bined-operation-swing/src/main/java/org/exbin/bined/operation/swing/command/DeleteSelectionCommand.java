@@ -35,12 +35,12 @@ public class DeleteSelectionCommand extends CodeAreaCommand {
     private final long position;
     private final long size;
 
-    public DeleteSelectionCommand(CodeAreaCore coreArea) {
-        super(coreArea);
-        SelectionRange selection = ((SelectionCapable) coreArea).getSelection();
+    public DeleteSelectionCommand(CodeAreaCore codeArea) {
+        super(codeArea);
+        SelectionRange selection = ((SelectionCapable) codeArea).getSelection();
         position = selection.getFirst();
         size = selection.getLast() - position + 1;
-        removeCommand = new RemoveDataCommand(coreArea, position, 0, size);
+        removeCommand = new RemoveDataCommand(codeArea, position, 0, size);
     }
 
     @Override

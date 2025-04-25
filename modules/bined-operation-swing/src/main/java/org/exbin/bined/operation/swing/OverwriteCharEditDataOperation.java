@@ -42,8 +42,8 @@ public class OverwriteCharEditDataOperation extends CharEditDataOperation {
     protected long length = 0;
     protected char value;
 
-    public OverwriteCharEditDataOperation(CodeAreaCore coreArea, long startPosition, char value) {
-        super(coreArea);
+    public OverwriteCharEditDataOperation(CodeAreaCore codeArea, long startPosition, char value) {
+        super(codeArea);
         this.value = value;
         this.startPosition = startPosition;
     }

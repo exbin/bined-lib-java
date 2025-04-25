@@ -235,6 +235,20 @@ public class CodeAreaCommandClipboardTest extends CodeAreaComponentTest {
         checkResultData(expectedData, codeArea.getContentData());
     }
 
+    @Test
+    public void testCopyPasteReplaceSelection() {
+        CodeAreaCore codeArea = createCodeArea();
+        EditableBinaryData sampleData = CodeAreaTest.getSampleData(CodeAreaTest.SAMPLE_ALLBYTES);
+        codeArea.setContentData(sampleData);
+        long dataSize = sampleData.getDataSize();
+        ((SelectionCapable) codeArea).setSelection(0, dataSize - 4);
+        codeArea.copy();
+        ((SelectionCapable) codeArea).setSelection(2, dataSize - 2);
+        codeArea.paste();
+
+        Assert.assertEquals(dataSize - 2, codeArea.getDataSize());
+    }
+
     public static void checkResultData(byte[] expectedData, BinaryData data) {
         Assert.assertEquals(expectedData.length, data.getDataSize());
         byte[] resultData = new byte[expectedData.length];

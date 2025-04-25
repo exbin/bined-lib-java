@@ -55,13 +55,10 @@ import org.exbin.bined.operation.swing.command.EditCharDataCommand;
 import org.exbin.bined.operation.swing.command.EditCodeDataCommand;
 import org.exbin.bined.operation.swing.command.EditDataCommand;
 import org.exbin.bined.operation.swing.command.CodeAreaCompoundCommand;
-import org.exbin.bined.operation.swing.command.InsertDataCommand;
-import org.exbin.bined.operation.swing.command.ModifyDataCommand;
 import org.exbin.bined.swing.CodeAreaCommandHandler;
 import org.exbin.bined.swing.CodeAreaCore;
 import org.exbin.bined.swing.CodeAreaSwingUtils;
 import org.exbin.auxiliary.binary_data.BinaryData;
-import org.exbin.auxiliary.binary_data.ByteArrayData;
 import org.exbin.auxiliary.binary_data.ByteArrayEditableData;
 import org.exbin.bined.ClipboardHandlingMode;
 import org.exbin.bined.CodeAreaCaretPosition;
@@ -72,6 +69,7 @@ import org.exbin.bined.basic.SelectingMode;
 import org.exbin.bined.basic.TabKeyHandlingMode;
 import org.exbin.bined.capability.EditModeCapable;
 import org.exbin.bined.operation.swing.command.DeleteSelectionCommand;
+import org.exbin.bined.operation.swing.command.PasteDataCommand;
 import org.exbin.bined.operation.undo.BinaryDataAppendableUndoRedo;
 import org.exbin.bined.operation.undo.BinaryDataUndoRedo;
 
@@ -704,59 +702,10 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
         DeleteSelectionCommand deleteSelectionCommand = null;
         if (codeArea.hasSelection()) {
             deleteSelectionCommand = new DeleteSelectionCommand(codeArea);
-            deleteSelectionCommand.execute();
-            sequenceBreak();
         }
-
-        EditMode editMode = ((EditModeCapable) codeArea).getEditMode();
-        EditOperation editOperation = ((EditModeCapable) codeArea).getActiveOperation();
-        long dataSize = codeArea.getDataSize();
-        long dataPosition = ((CaretCapable) codeArea).getDataPosition();
-
-        CodeAreaCommand modifyCommand = null;
-        long clipDataSize = pastedData.getDataSize();
-        long insertionPosition = dataPosition;
-        if (editMode == EditMode.INPLACE) {
-            long toReplace = clipDataSize;
-            if (dataPosition + toReplace > codeArea.getDataSize()) {
-                toReplace = codeArea.getDataSize() - dataPosition;
-            }
-            if (toReplace > 0) {
-                modifyCommand = new ModifyDataCommand(codeArea, dataPosition, pastedData.copy(0, toReplace));
-            }
-            pastedData = new ByteArrayData();
-        } else {
-            if (editMode == EditMode.EXPANDING && editOperation == EditOperation.OVERWRITE) {
-                BinaryData modifiedData;
-                long replacedPartSize = clipDataSize;
-                if (insertionPosition + replacedPartSize > dataSize) {
-                    replacedPartSize = dataSize - insertionPosition;
-                    modifiedData = pastedData.copy(0, replacedPartSize);
-                } else {
-                    modifiedData = pastedData.copy();
-                }
-                if (replacedPartSize > 0) {
-                    modifyCommand = new ModifyDataCommand(codeArea, dataPosition, modifiedData);
-                    if (clipDataSize > replacedPartSize) {
-                        pastedData = pastedData.copy(replacedPartSize, clipDataSize - replacedPartSize);
-                        insertionPosition += replacedPartSize;
-                    } else {
-                        pastedData = new ByteArrayData();
-                    }
-                }
-            }
-        }
-
-        CodeAreaCommand insertCommand = null;
-        if (!pastedData.isEmpty()) {
-            insertCommand = new InsertDataCommand(codeArea, insertionPosition, ((CaretCapable) codeArea).getCodeOffset(), pastedData.copy());
-        }
-
-        CodeAreaCommand pasteCommand = CodeAreaCompoundCommand.buildCompoundCommand(codeArea, deleteSelectionCommand, modifyCommand, insertCommand);
-        if (pasteCommand == null) {
-            return;
-        }
-
+        
+        PasteDataCommand pasteDataCommand = new PasteDataCommand(codeArea, pastedData);
+        CodeAreaCommand pasteCommand = CodeAreaCompoundCommand.buildCompoundCommand(codeArea, deleteSelectionCommand, pasteDataCommand);
         undoRedo.execute(pasteCommand);
 
         sequenceBreak();
@@ -774,19 +723,9 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
             if (clipboard.isDataFlavorAvailable(binedDataFlavor)) {
                 paste();
             } else if (clipboard.isDataFlavorAvailable(DataFlavor.getTextPlainUnicodeFlavor())) {
-                DeleteSelectionCommand deleteSelectionCommand = null;
-                if (codeArea.hasSelection()) {
-                    deleteSelectionCommand = new DeleteSelectionCommand(codeArea);
-                    deleteSelectionCommand.execute();
-                }
-
-                long dataSize = codeArea.getDataSize();
                 InputStream insertedData;
                 try {
                     insertedData = (InputStream) clipboard.getData(DataFlavor.getTextPlainUnicodeFlavor());
-                    long dataPosition = ((CaretCapable) codeArea).getDataPosition();
-
-                    CodeAreaCommand modifyCommand = null;
                     CodeType codeType = ((CodeTypeCapable) codeArea).getCodeType();
 
                     DataFlavor textPlainUnicodeFlavor = DataFlavor.getTextPlainUnicodeFlavor();
@@ -801,49 +740,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
                     String insertedString = outputStream.toString(((CharsetCapable) codeArea).getCharset().name());
                     ByteArrayEditableData clipData = new ByteArrayEditableData();
                     CodeAreaUtils.insertHexStringIntoData(insertedString, clipData, codeType);
-
-                    ByteArrayEditableData pastedData = new ByteArrayEditableData();
-                    pastedData.insert(0, clipData);
-                    long pastedDataSize = pastedData.getDataSize();
-                    long insertionPosition = dataPosition;
-                    BinaryData modifiedData = pastedData;
-                    long replacedPartSize = clipData.getDataSize();
-                    if (insertionPosition + replacedPartSize > dataSize) {
-                        replacedPartSize = dataSize - insertionPosition;
-                        modifiedData = pastedData.copy(0, replacedPartSize);
-                    }
-                    if (replacedPartSize > 0) {
-                        modifyCommand = new ModifyDataCommand(codeArea, dataPosition, modifiedData);
-                        if (pastedDataSize > replacedPartSize) {
-                            pastedData = pastedData.copy(replacedPartSize, pastedDataSize - replacedPartSize);
-                            insertionPosition += replacedPartSize;
-                        } else {
-                            pastedData.clear();
-                        }
-                    }
-
-                    CodeAreaCommand insertCommand = null;
-                    if (pastedData.getDataSize() > 0) {
-                        insertCommand = new InsertDataCommand(codeArea, insertionPosition, ((CaretCapable) codeArea).getCodeOffset(), pastedData);
-                    }
-
-                    CodeAreaCommand pasteCommand = CodeAreaCompoundCommand.buildCompoundCommand(codeArea, deleteSelectionCommand, modifyCommand, insertCommand);
-                    if (pasteCommand == null) {
-                        return;
-                    }
-
-                    if (modifyCommand != null) {
-                        modifyCommand.execute();
-                    }
-                    if (insertCommand != null) {
-                        insertCommand.execute();
-                    }
-                    undoRedo.execute(pasteCommand);
-
-                    sequenceBreak();
-                    codeArea.notifyDataChanged();
-                    revealCursor();
-                    clearSelection();
+                    pasteBinaryData(clipData);
                 } catch (UnsupportedFlavorException | IllegalStateException | IOException ex) {
                     Logger.getLogger(CodeAreaOperationCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
                 }

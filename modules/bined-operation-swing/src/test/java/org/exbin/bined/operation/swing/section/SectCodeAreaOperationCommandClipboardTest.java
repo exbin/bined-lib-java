@@ -34,7 +34,6 @@ public class SectCodeAreaOperationCommandClipboardTest extends CodeAreaCommandCl
     public SectCodeAreaOperationCommandClipboardTest() {
     }
 
-    
     @Nonnull
     @Override
     public CodeAreaCore createCodeArea() {

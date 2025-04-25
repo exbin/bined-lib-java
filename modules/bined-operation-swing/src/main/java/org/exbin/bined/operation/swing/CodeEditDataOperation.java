@@ -28,8 +28,8 @@ import org.exbin.bined.swing.CodeAreaCore;
 @ParametersAreNonnullByDefault
 public abstract class CodeEditDataOperation extends CodeAreaOperation {
 
-    public CodeEditDataOperation(CodeAreaCore coreArea) {
-        super(coreArea);
+    public CodeEditDataOperation(CodeAreaCore codeArea) {
+        super(codeArea);
     }
 
     /**

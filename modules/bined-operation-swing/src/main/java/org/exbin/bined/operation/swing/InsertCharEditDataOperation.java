@@ -40,8 +40,8 @@ public class InsertCharEditDataOperation extends CharEditDataOperation {
     protected final long startPosition;
     protected final char value;
 
-    public InsertCharEditDataOperation(CodeAreaCore coreArea, long startPosition, char value) {
-        super(coreArea);
+    public InsertCharEditDataOperation(CodeAreaCore codeArea, long startPosition, char value) {
+        super(codeArea);
         this.value = value;
         this.startPosition = startPosition;
     }
