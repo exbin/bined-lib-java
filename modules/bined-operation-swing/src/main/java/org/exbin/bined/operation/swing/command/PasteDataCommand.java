@@ -65,21 +65,17 @@ public class PasteDataCommand extends CodeAreaCommand {
             }
         } else {
             long replacedPartSize = 0;
-            if (editMode == EditMode.EXPANDING && editOperation == EditOperation.OVERWRITE) {
-                BinaryData modifiedData;
+            if (editOperation == EditOperation.OVERWRITE) {
                 replacedPartSize = clipDataSize;
                 if (insertionPosition + replacedPartSize > dataSize) {
                     replacedPartSize = dataSize - insertionPosition;
-                    modifiedData = pastedData.copy(0, replacedPartSize);
-                } else {
-                    modifiedData = pastedData;
                 }
                 if (replacedPartSize > 0) {
-                    modifyCommand = new ModifyDataCommand(codeArea, dataPosition, modifiedData);
+                    modifyCommand = new ModifyDataCommand(codeArea, dataPosition, pastedData.copy(0, replacedPartSize));
                 }
             }
 
-            if (clipDataSize > replacedPartSize) {
+            if (editMode == EditMode.EXPANDING && clipDataSize > replacedPartSize) {
                 insertedData = pastedData.copy(replacedPartSize, clipDataSize - replacedPartSize);
                 insertionPosition += replacedPartSize;
             }
