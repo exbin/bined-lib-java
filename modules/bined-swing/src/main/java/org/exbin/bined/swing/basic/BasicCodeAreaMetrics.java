@@ -80,7 +80,12 @@ public class BasicCodeAreaMetrics {
     }
 
     public int getCharsWidth(char[] data, int offset, int length) {
-        return fontMetrics.charsWidth(data, offset, length);
+        // TODO use code point?
+        try {
+            return fontMetrics.charsWidth(data, offset, length);
+        } catch (Throwable ex) {
+            return characterWidth;
+        }
     }
 
     public boolean hasUniformLineMetrics() {
