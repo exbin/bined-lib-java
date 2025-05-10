@@ -23,7 +23,7 @@ import org.exbin.bined.color.CodeAreaColorGroup;
 import org.exbin.bined.color.CodeAreaColorType;
 
 /**
- * Enumeration of unprintable color types.
+ * Enumeration of colorization color types.
  *
  * @author ExBin Project (https://exbin.org)
  */

@@ -143,7 +143,7 @@ public class NonAsciiCodeAreaColorAssessor implements CodeAreaColorAssessor {
     public Color getPositionTextColor(long rowDataPosition, int byteOnRow, int charOnRow, @Nonnull CodeAreaSection section, boolean inSelection) {
         Color color = parentAssessor != null ? parentAssessor.getPositionTextColor(rowDataPosition, byteOnRow, charOnRow, section, inSelection) : null;
         if (nonAsciiHighlightingEnabled && section == BasicCodeAreaSection.CODE_MATRIX) {
-            if (color == null || textColor.equals(color)) {
+            if (color == null || color.equals(textColor)) {
                 long dataPosition = rowDataPosition + byteOnRow;
                 if (dataPosition < dataSize) {
                     byte value = contentData.getByte(dataPosition);
@@ -164,7 +164,7 @@ public class NonAsciiCodeAreaColorAssessor implements CodeAreaColorAssessor {
     public Color getPositionBackgroundColor(long rowDataPosition, int byteOnRow, int charOnRow, CodeAreaSection section, boolean inSelection) {
         Color color = parentAssessor != null ? parentAssessor.getPositionBackgroundColor(rowDataPosition, byteOnRow, charOnRow, section, inSelection) : null;
         if ((upperCodesBackground != null || controlCodesBackground != null) && nonAsciiHighlightingEnabled && section == BasicCodeAreaSection.CODE_MATRIX) {
-            if (color == null || textColor.equals(color)) {
+            if (color == null || color.equals(textColor)) {
                 long dataPosition = rowDataPosition + byteOnRow;
                 if (dataPosition < dataSize) {
                     byte value = contentData.getByte(dataPosition);
@@ -194,7 +194,7 @@ public class NonAsciiCodeAreaColorAssessor implements CodeAreaColorAssessor {
         this.nonAsciiHighlightingEnabled = nonAsciiHighlightingEnabled;
     }
 
-    private static int downShift(int color, int diff) {
+    protected static int downShift(int color, int diff) {
         if (color < diff) {
             return 0;
         }

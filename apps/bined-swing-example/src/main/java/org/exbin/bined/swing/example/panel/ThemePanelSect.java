@@ -28,11 +28,11 @@ import org.exbin.bined.swing.section.theme.SectionCodeAreaThemeProfile;
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public class ThemePanelEx extends javax.swing.JPanel {
+public class ThemePanelSect extends javax.swing.JPanel {
 
     private SectCodeArea codeArea;
 
-    public ThemePanelEx() {
+    public ThemePanelSect() {
         initComponents();
     }
 
@@ -258,7 +258,7 @@ public class ThemePanelEx extends javax.swing.JPanel {
     public static void main(String[] args) {
         final JFrame frame = new JFrame("Panel");
         frame.setSize(1000, 600);
-        frame.add(new ThemePanelEx());
+        frame.add(new ThemePanelSect());
         frame.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         frame.setVisible(true);
     }

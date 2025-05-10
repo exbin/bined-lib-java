@@ -860,7 +860,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     }
 
     @Nonnull
-    private CodeType getCodeType() {
+    protected CodeType getCodeType() {
         if (codeTypeSupported) {
             return ((CodeTypeCapable) codeArea).getCodeType();
         }
@@ -868,7 +868,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         return CodeType.HEXADECIMAL;
     }
 
-    private void revealCursor() {
+    protected void revealCursor() {
         ((ScrollingCapable) codeArea).revealCursor();
         codeArea.repaint();
     }
@@ -879,7 +879,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     }
 
     @Nonnull
-    private static SelectingMode isSelectingMode(KeyEvent keyEvent) {
+    protected static SelectingMode isSelectingMode(KeyEvent keyEvent) {
         return (keyEvent.getModifiersEx() & KeyEvent.SHIFT_DOWN_MASK) > 0 ? SelectingMode.SELECTING : SelectingMode.NONE;
     }
 }

@@ -31,11 +31,11 @@ import org.exbin.bined.section.capability.SectionScrollingCapable;
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public class ScrollingPanelEx extends javax.swing.JPanel {
+public class ScrollingPanelSect extends javax.swing.JPanel {
 
     private SectCodeArea codeArea;
 
-    public ScrollingPanelEx() {
+    public ScrollingPanelSect() {
         initComponents();
     }
 
@@ -263,7 +263,7 @@ public class ScrollingPanelEx extends javax.swing.JPanel {
     public static void main(String[] args) {
         final JFrame frame = new JFrame("Panel");
         frame.setSize(1000, 600);
-        frame.add(new ScrollingPanelEx());
+        frame.add(new ScrollingPanelSect());
         frame.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         frame.setVisible(true);
     }

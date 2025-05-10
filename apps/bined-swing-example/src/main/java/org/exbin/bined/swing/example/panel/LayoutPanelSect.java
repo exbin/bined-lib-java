@@ -30,11 +30,11 @@ import org.exbin.bined.swing.section.layout.DefaultSectionCodeAreaLayoutProfile;
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public class LayoutPanelEx extends javax.swing.JPanel {
+public class LayoutPanelSect extends javax.swing.JPanel {
 
     private SectCodeArea codeArea;
 
-    public LayoutPanelEx() {
+    public LayoutPanelSect() {
         initComponents();
     }
 
@@ -427,7 +427,7 @@ public class LayoutPanelEx extends javax.swing.JPanel {
     public static void main(String[] args) {
         final JFrame frame = new JFrame("Panel");
         frame.setSize(1000, 600);
-        frame.add(new LayoutPanelEx());
+        frame.add(new LayoutPanelSect());
         frame.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         frame.setVisible(true);
     }

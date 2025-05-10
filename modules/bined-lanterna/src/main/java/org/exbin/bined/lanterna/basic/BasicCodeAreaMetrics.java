@@ -28,7 +28,7 @@ import org.exbin.bined.CharsetStreamTranslator;
 @ParametersAreNonnullByDefault
 public class BasicCodeAreaMetrics {
 
-    private int maxBytesPerChar;
+    protected int maxBytesPerChar;
 
     public void recomputeMetrics(Charset charset) {
         try {

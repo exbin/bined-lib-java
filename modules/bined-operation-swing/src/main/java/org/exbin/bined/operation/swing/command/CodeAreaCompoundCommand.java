@@ -40,7 +40,7 @@ public class CodeAreaCompoundCommand extends CodeAreaCommand implements BinaryDa
     @Nonnull
     protected BinaryDataCommandPhase phase = BinaryDataCommandPhase.CREATED;
 
-    public CodeAreaCompoundCommand(@Nonnull CodeAreaCore codeArea) {
+    public CodeAreaCompoundCommand(CodeAreaCore codeArea) {
         super(codeArea);
     }
 

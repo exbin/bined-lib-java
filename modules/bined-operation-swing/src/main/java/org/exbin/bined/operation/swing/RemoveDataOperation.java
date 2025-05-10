@@ -26,7 +26,7 @@ import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.operation.undo.BinaryDataUndoableOperation;
 
 /**
- * Operation for deleting child block.
+ * Operation for deleting section of data.
  *
  * @author ExBin Project (https://exbin.org)
  */

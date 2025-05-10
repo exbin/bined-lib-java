@@ -188,11 +188,9 @@ public class SectCodeArea extends CodeAreaCore implements SectionCodeArea, CodeA
         if (getBorder() == null) {
             super.setBorder(UIManager.getLookAndFeel().getDefaults().getBorder("TextAreaUI.border"));
         }
-        if (painter != null) {
-            painter.rebuildColors();
-            painter.resetFont();
-            painter.resetColors();
-        }
+        painter.rebuildColors();
+        painter.resetFont();
+        painter.resetColors();
     }
 
     @Override
@@ -393,8 +391,8 @@ public class SectCodeArea extends CodeAreaCore implements SectionCodeArea, CodeA
 
     @Nonnull
     @Override
-    public CodeAreaCaretPosition mousePositionToClosestCaretPosition(int positionX, int positionY, CaretOverlapMode overflowMode) {
-        return painter.mousePositionToClosestCaretPosition(positionX, positionY, overflowMode);
+    public CodeAreaCaretPosition mousePositionToClosestCaretPosition(int positionX, int positionY, CaretOverlapMode overlapMode) {
+        return painter.mousePositionToClosestCaretPosition(positionX, positionY, overlapMode);
     }
 
     @Nonnull
@@ -510,9 +508,7 @@ public class SectCodeArea extends CodeAreaCore implements SectionCodeArea, CodeA
 
     @Override
     public void updateLayout() {
-        if (painter != null) {
-            painter.resetLayout();
-        }
+        painter.resetLayout();
         repaint();
     }
 
@@ -527,9 +523,7 @@ public class SectCodeArea extends CodeAreaCore implements SectionCodeArea, CodeA
     }
 
     protected void notifyCaretChanged() {
-        if (painter != null) {
-            painter.resetCaret();
-        }
+        painter.resetCaret();
         repaint();
     }
 

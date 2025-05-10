@@ -27,6 +27,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.swing.JComponent;
+
+import org.exbin.auxiliary.binary_data.EmptyBinaryData;
 import org.exbin.bined.CodeAreaControl;
 import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.DataChangedListener;
@@ -41,13 +43,13 @@ import org.exbin.auxiliary.binary_data.BinaryData;
 @ParametersAreNonnullByDefault
 public abstract class CodeAreaCore extends JComponent implements CodeAreaControl {
 
-    @Nullable
-    private BinaryData contentData;
+    @Nonnull
+    protected BinaryData contentData;
 
     @Nonnull
-    private CodeAreaCommandHandler commandHandler;
+    protected CodeAreaCommandHandler commandHandler;
 
-    private final List<DataChangedListener> dataChangedListeners = new ArrayList<>();
+    protected final List<DataChangedListener> dataChangedListeners = new ArrayList<>();
 
     /**
      * Creates new instance with provided command handler factory method.
@@ -55,7 +57,18 @@ public abstract class CodeAreaCore extends JComponent implements CodeAreaControl
      * @param commandHandlerFactory command handler or null for default handler
      */
     public CodeAreaCore(CodeAreaCommandHandler.CodeAreaCommandHandlerFactory commandHandlerFactory) {
+        this(commandHandlerFactory, EmptyBinaryData.getInstance());
+    }
+
+    /**
+     * Creates new instance with provided command handler factory method.
+     *
+     * @param commandHandlerFactory command handler or null for default handler
+     * @param contentData content data
+     */
+    public CodeAreaCore(CodeAreaCommandHandler.CodeAreaCommandHandlerFactory commandHandlerFactory, BinaryData contentData) {
         super();
+        this.contentData = contentData;
         this.commandHandler = createCommandHandler(CodeAreaUtils.requireNonNull(commandHandlerFactory));
         init();
     }
@@ -161,13 +174,13 @@ public abstract class CodeAreaCore extends JComponent implements CodeAreaControl
         return false;
     }
 
-    @Nullable
+    @Nonnull
     @Override
     public BinaryData getContentData() {
         return contentData;
     }
 
-    public void setContentData(@Nullable BinaryData contentData) {
+    public void setContentData(BinaryData contentData) {
         this.contentData = contentData;
         notifyDataChanged();
         repaint();
@@ -175,7 +188,7 @@ public abstract class CodeAreaCore extends JComponent implements CodeAreaControl
 
     @Override
     public long getDataSize() {
-        return contentData == null ? 0 : contentData.getDataSize();
+        return contentData.getDataSize();
     }
 
     /**

@@ -16,8 +16,10 @@
 package org.exbin.bined.javafx.capability;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.javafx.basic.color.BasicCodeAreaColorsProfile;
+import java.util.Optional;
 
 /**
  * Support for basic set of colors.
@@ -33,12 +35,12 @@ public interface BasicColorsCapable {
      * @return colors profile
      */
     @Nonnull
-    BasicCodeAreaColorsProfile getBasicColors();
+    Optional<BasicCodeAreaColorsProfile> getBasicColors();
 
     /**
      * Sets basic profile for colors.
      *
      * @param colorsProfile colors profile
      */
-    void setBasicColors(BasicCodeAreaColorsProfile colorsProfile);
+    void setBasicColors(@Nullable BasicCodeAreaColorsProfile colorsProfile);
 }

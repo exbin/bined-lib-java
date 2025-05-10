@@ -392,8 +392,8 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaL
 
     @Nonnull
     @Override
-    public CodeAreaCaretPosition mousePositionToClosestCaretPosition(int positionX, int positionY, CaretOverlapMode overflowMode) {
-        return painter.mousePositionToClosestCaretPosition(positionX, positionY, overflowMode);
+    public CodeAreaCaretPosition mousePositionToClosestCaretPosition(int positionX, int positionY, CaretOverlapMode overlapMode) {
+        return painter.mousePositionToClosestCaretPosition(positionX, positionY, overlapMode);
     }
 
     @Nonnull

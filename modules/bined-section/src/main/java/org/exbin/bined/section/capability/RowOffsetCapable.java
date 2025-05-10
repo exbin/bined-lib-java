@@ -16,7 +16,7 @@
 package org.exbin.bined.section.capability;
 
 /**
- * Support for anti-aliasing capability.
+ * Support for row offset capability.
  *
  * @author ExBin Project (https://exbin.org)
  */

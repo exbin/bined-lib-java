@@ -123,7 +123,6 @@ public class NonprintablesCodeAreaAssessor implements CodeAreaColorAssessor, Cod
         return null;
     }
 
-    @Nonnull
     @Override
     public char getPreviewCharacter(long rowDataPosition, int byteOnRow, int charOnRow, CodeAreaSection section) {
         Character character = parentCharAssessor != null ? parentCharAssessor.getPreviewCharacter(rowDataPosition, byteOnRow, charOnRow, section) : null;
@@ -135,7 +134,6 @@ public class NonprintablesCodeAreaAssessor implements CodeAreaColorAssessor, Cod
         return character == null ? ' ' : character;
     }
 
-    @Nonnull
     @Override
     public char getPreviewCursorCharacter(long rowDataPosition, int byteOnRow, int charOnRow, byte[] cursorData, int cursorDataLength, CodeAreaSection section) {
         Character character = parentCharAssessor != null ? parentCharAssessor.getPreviewCursorCharacter(rowDataPosition, byteOnRow, charOnRow, cursorData, cursorDataLength, section) : null;
@@ -159,7 +157,7 @@ public class NonprintablesCodeAreaAssessor implements CodeAreaColorAssessor, Cod
         return Optional.ofNullable(parentColorAssessor);
     }
 
-    private void buildNonprintableCharactersMapping() {
+    protected void buildNonprintableCharactersMapping() {
         nonprintableCharactersMapping = new HashMap<>();
         // Unicode control characters, might not be supported by font
         for (int i = 0; i < 32; i++) {

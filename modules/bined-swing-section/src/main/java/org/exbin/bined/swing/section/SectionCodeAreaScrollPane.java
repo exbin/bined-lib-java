@@ -44,9 +44,7 @@ public class SectionCodeAreaScrollPane extends JScrollPane {
     protected volatile boolean scrollingByUser = false;
     protected volatile boolean scrollingUpdate = false;
 
-    @Nonnull
     protected final VerticalScrollBarModel verticalScrollBarModel = new VerticalScrollBarModel();
-    @Nonnull
     protected final HorizontalScrollBarModel horizontalScrollBarModel = new HorizontalScrollBarModel();
 
     @Nonnull
@@ -164,7 +162,7 @@ public class SectionCodeAreaScrollPane extends JScrollPane {
         scrollingUpdate = false;
     }
 
-    private class VerticalScrollBarModel extends DefaultBoundedRangeModel {
+    protected class VerticalScrollBarModel extends DefaultBoundedRangeModel {
 
         private volatile int depth = 0;
 
@@ -210,7 +208,7 @@ public class SectionCodeAreaScrollPane extends JScrollPane {
         }
     }
 
-    private class HorizontalScrollBarModel extends DefaultBoundedRangeModel {
+    protected class HorizontalScrollBarModel extends DefaultBoundedRangeModel {
 
         public HorizontalScrollBarModel() {
             super();
@@ -231,7 +229,7 @@ public class SectionCodeAreaScrollPane extends JScrollPane {
         }
     }
 
-    private class VerticalAdjustmentListener implements AdjustmentListener {
+    protected class VerticalAdjustmentListener implements AdjustmentListener {
 
         private boolean wasAdjusting = false;
 
@@ -285,7 +283,7 @@ public class SectionCodeAreaScrollPane extends JScrollPane {
         }
     }
 
-    private class HorizontalAdjustmentListener implements AdjustmentListener {
+    protected class HorizontalAdjustmentListener implements AdjustmentListener {
 
         public HorizontalAdjustmentListener() {
         }

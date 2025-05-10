@@ -17,7 +17,7 @@ include ":modules:bined-highlight-swing"
 include ":apps:bined-swing-example"
 include ":apps:bined-javafx-example"
 include ":apps:bined-swt-example"
-include ":apps:bined-lanterna-example"
+// include ":apps:bined-lanterna-example"
 include ":apps:bined-editor-basic"
 
 File placeholder = file("deps/.downloaded")

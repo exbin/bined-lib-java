@@ -222,8 +222,7 @@ public class DefaultCodeAreaCaret implements CodeAreaCaret {
          */
         XOR,
         /**
-         * Underlying character is painted using negative color to cursor
-         * cursor.
+         * Underlying character is painted using negative color to cursor.
          */
         NEGATIVE
     }

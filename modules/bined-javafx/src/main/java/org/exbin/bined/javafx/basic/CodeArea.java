@@ -128,7 +128,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaJ
      *
      * @param commandHandlerFactory command handler or null for default handler
      */
-    public CodeArea(@Nullable CodeAreaCommandHandler.CodeAreaCommandHandlerFactory commandHandlerFactory) {
+    public CodeArea(CodeAreaCommandHandler.CodeAreaCommandHandlerFactory commandHandlerFactory) {
         super(commandHandlerFactory);
 
         painter = new DefaultCodeAreaPainter(this);
@@ -270,9 +270,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaJ
 
     @Override
     public void resetColors() {
-        if (painter != null) {
-            painter.resetCaret();
-        }
+        painter.resetCaret();
         repaint();
     }
 
@@ -386,8 +384,8 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaJ
 
     @Nonnull
     @Override
-    public CodeAreaCaretPosition mousePositionToClosestCaretPosition(int positionX, int positionY, CaretOverlapMode overflowMode) {
-        return painter.mousePositionToClosestCaretPosition(positionX, positionY, overflowMode);
+    public CodeAreaCaretPosition mousePositionToClosestCaretPosition(int positionX, int positionY, CaretOverlapMode overlapMode) {
+        return painter.mousePositionToClosestCaretPosition(positionX, positionY, overlapMode);
     }
 
     @Nonnull
@@ -723,13 +721,13 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaJ
         this.maxBytesPerRow = maxBytesPerRow;
     }
 
-    @Nullable
+    @Nonnull
     @Override
-    public BasicCodeAreaColorsProfile getBasicColors() {
+    public Optional<BasicCodeAreaColorsProfile> getBasicColors() {
         if (painter instanceof BasicColorsCapableCodeAreaPainter) {
-            return ((BasicColorsCapableCodeAreaPainter) painter).getBasicColors();
+            return Optional.of(((BasicColorsCapableCodeAreaPainter) painter).getBasicColors());
         }
-        return null;
+        return Optional.empty();
     }
 
     @Override

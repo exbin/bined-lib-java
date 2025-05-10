@@ -76,7 +76,7 @@ public class CodeAreaCompoundOperation extends CodeAreaOperation implements Bina
 
     @Override
     public void addOperations(Collection<BinaryDataOperation> operations) {
-        operations.addAll(operations);
+        this.operations.addAll(operations);
     }
 
     public void insertOperation(int index, BinaryDataOperation operation) {

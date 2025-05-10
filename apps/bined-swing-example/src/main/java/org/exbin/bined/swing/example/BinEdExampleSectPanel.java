@@ -21,27 +21,27 @@ import java.util.Map;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import org.exbin.bined.swing.example.panel.CursorPanelEx;
-import org.exbin.bined.swing.example.panel.LayoutPanelEx;
-import org.exbin.bined.swing.example.panel.ModePanelEx;
-import org.exbin.bined.swing.example.panel.ScrollingPanelEx;
-import org.exbin.bined.swing.example.panel.StatePanelEx;
-import org.exbin.bined.swing.example.panel.ThemePanelEx;
+import org.exbin.bined.swing.example.panel.CursorPanelSect;
+import org.exbin.bined.swing.example.panel.LayoutPanelSect;
+import org.exbin.bined.swing.example.panel.ModePanelSect;
+import org.exbin.bined.swing.example.panel.ScrollingPanelSect;
+import org.exbin.bined.swing.example.panel.StatePanelSect;
+import org.exbin.bined.swing.example.panel.ThemePanelSect;
 import org.exbin.bined.swing.section.SectCodeArea;
 
 /**
- * Extended binary editor component example panel.
+ * Section binary editor component example panel.
  *
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public class BinEdExampleExPanel extends javax.swing.JPanel {
+public class BinEdExampleSectPanel extends javax.swing.JPanel {
 
     private SectCodeArea codeArea;
     private final Map<JScrollPane, JPanel> tabMap = new HashMap<>();
     private JScrollPane activeTab;
 
-    public BinEdExampleExPanel() {
+    public BinEdExampleSectPanel() {
         initComponents();
     }
 
@@ -49,17 +49,17 @@ public class BinEdExampleExPanel extends javax.swing.JPanel {
         this.codeArea = codeArea;
         splitPane.setRightComponent(codeArea);
 
-        ModePanelEx modePanel = new ModePanelEx();
+        ModePanelSect modePanel = new ModePanelSect();
         modePanel.setCodeArea(codeArea);
-        StatePanelEx statePanel = new StatePanelEx();
+        StatePanelSect statePanel = new StatePanelSect();
         statePanel.setCodeArea(codeArea);
-        LayoutPanelEx layoutPanel = new LayoutPanelEx();
+        LayoutPanelSect layoutPanel = new LayoutPanelSect();
         layoutPanel.setCodeArea(codeArea);
-        ThemePanelEx themePanel = new ThemePanelEx();
+        ThemePanelSect themePanel = new ThemePanelSect();
         themePanel.setCodeArea(codeArea);
-        ScrollingPanelEx scrollingPanel = new ScrollingPanelEx();
+        ScrollingPanelSect scrollingPanel = new ScrollingPanelSect();
         scrollingPanel.setCodeArea(codeArea);
-        CursorPanelEx cursorPanel = new CursorPanelEx();
+        CursorPanelSect cursorPanel = new CursorPanelSect();
         cursorPanel.setCodeArea(codeArea);
 
         tabMap.put(modeScrollPane, modePanel);

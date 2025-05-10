@@ -41,25 +41,25 @@ import org.exbin.bined.section.layout.SectionCodeAreaLayoutProfile;
 public class SectionCodeAreaStructure {
 
     @Nonnull
-    private CodeAreaViewMode viewMode = CodeAreaViewMode.DUAL;
+    protected CodeAreaViewMode viewMode = CodeAreaViewMode.DUAL;
 
     @Nonnull
-    private CodeType codeType = CodeType.HEXADECIMAL;
+    protected CodeType codeType = CodeType.HEXADECIMAL;
     @Nonnull
-    private PositionCodeType positionCodeType = PositionCodeType.HEXADECIMAL;
+    protected PositionCodeType positionCodeType = PositionCodeType.HEXADECIMAL;
 
-    private long dataSize;
+    protected long dataSize;
     @Nonnull
-    private RowWrappingMode rowWrapping = RowWrappingMode.NO_WRAPPING;
-    private int maxBytesPerLine;
-    private int wrappingBytesGroupSize;
+    protected RowWrappingMode rowWrapping = RowWrappingMode.NO_WRAPPING;
+    protected int maxBytesPerLine;
+    protected int wrappingBytesGroupSize;
 
-    private SectionCodeAreaLayoutProfile layout;
-    private long rowsPerDocument;
-    private int bytesPerRow;
-    private int halfCharsPerRow;
+    protected SectionCodeAreaLayoutProfile layout;
+    protected long rowsPerDocument;
+    protected int bytesPerRow;
+    protected int halfCharsPerRow;
 
-    private int codeLastHalfCharPos;
+    protected int codeLastHalfCharPos;
 
     public void updateCache(DataProvider codeArea, int halfCharsPerPage, SectionCodeAreaLayoutProfile layout) {
         this.layout = layout;

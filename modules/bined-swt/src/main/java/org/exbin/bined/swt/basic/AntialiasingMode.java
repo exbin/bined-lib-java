@@ -18,7 +18,7 @@ package org.exbin.bined.swt.basic;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * Enumeration of supported anti-aliasing modes.
+ * Enumeration of supported antialiasing modes.
  *
  * @author ExBin Project (https://exbin.org)
  */

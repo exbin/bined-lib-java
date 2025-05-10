@@ -521,7 +521,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
         deleteAction(DELETE_CHAR);
     }
 
-    private void deleteAction(char keyChar) {
+    protected void deleteAction(char keyChar) {
         if (codeArea.hasSelection()) {
             DeleteSelectionCommand deleteSelectionCommand = new DeleteSelectionCommand(codeArea);
             undoRedo.execute(deleteSelectionCommand);

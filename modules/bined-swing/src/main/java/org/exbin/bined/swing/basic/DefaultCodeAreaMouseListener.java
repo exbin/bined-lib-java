@@ -110,12 +110,12 @@ public class DefaultCodeAreaMouseListener extends MouseAdapter implements MouseM
         }
     }
 
-    private int computeRelativeX(MouseEvent me) {
+    protected int computeRelativeX(MouseEvent me) {
         boolean isDataView = me.getSource() != codeArea;
         return isDataView ? me.getX() + view.getX() : me.getX();
     }
 
-    private int computeRelativeY(MouseEvent me) {
+    protected int computeRelativeY(MouseEvent me) {
         boolean isDataView = me.getSource() != codeArea;
         return isDataView ? me.getY() + view.getY() : me.getY();
     }

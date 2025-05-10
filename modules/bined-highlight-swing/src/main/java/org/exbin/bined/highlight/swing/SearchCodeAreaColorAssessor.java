@@ -37,25 +37,25 @@ import org.exbin.bined.swing.basic.color.CodeAreaColorsProfile;
 @ParametersAreNonnullByDefault
 public class SearchCodeAreaColorAssessor implements CodeAreaColorAssessor {
 
-    private final CodeAreaColorAssessor parentAssessor;
+    protected final CodeAreaColorAssessor parentAssessor;
 
     /**
      * Matches must be ordered by position.
      */
-    private final List<SearchMatch> matches = new ArrayList<>();
+    protected final List<SearchMatch> matches = new ArrayList<>();
     private int currentMatchIndex = -1;
     private int matchIndex = 0;
     private long matchPosition = -1;
 
     @Nullable
-    private Color foundMatchesColor;
+    protected Color foundMatchesColor;
     @Nullable
-    private Color foundMatchesBackground;
+    protected Color foundMatchesBackground;
     @Nullable
-    private Color currentMatchColor;
+    protected Color currentMatchColor;
     @Nullable
-    private Color currentMatchBackground;
-    private int charactersPerRow = 1;
+    protected Color currentMatchBackground;
+    protected int charactersPerRow = 1;
 
     public SearchCodeAreaColorAssessor(@Nullable CodeAreaColorAssessor parentAssessor) {
         this.parentAssessor = parentAssessor;
@@ -137,7 +137,7 @@ public class SearchCodeAreaColorAssessor implements CodeAreaColorAssessor {
     @Nullable
     @Override
     public Color getPositionBackgroundColor(long rowDataPosition, int byteOnRow, int charOnRow, CodeAreaSection section, boolean inSelection) {
-        if (!matches.isEmpty() && charOnRow < charactersPerRow - 1) {
+        if (!matches.isEmpty() && charOnRow < charactersPerRow) {
             long dataPosition = rowDataPosition + byteOnRow;
             if (currentMatchIndex >= 0) {
                 SearchMatch currentMatch = matches.get(currentMatchIndex);
@@ -181,6 +181,7 @@ public class SearchCodeAreaColorAssessor implements CodeAreaColorAssessor {
         return null;
     }
 
+    @Nonnull
     @Override
     public Optional<CodeAreaColorAssessor> getParentColorAssessor() {
         return Optional.ofNullable(parentAssessor);

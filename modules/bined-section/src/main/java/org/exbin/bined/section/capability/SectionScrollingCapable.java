@@ -22,7 +22,7 @@ import org.exbin.bined.basic.VerticalScrollUnit;
 import org.exbin.bined.section.SectionHorizontalScrollUnit;
 
 /**
- * Support for code type capability for section code area.
+ * Support for scrolling capability for section code area.
  *
  * @author ExBin Project (https://exbin.org)
  */
@@ -60,7 +60,7 @@ public interface SectionScrollingCapable {
     void setVerticalScrollUnit(VerticalScrollUnit verticalScrollUnit);
 
     /**
-     * Returns horizotal scrollbar visibility mode.
+     * Returns horizontal scrollbar visibility mode.
      *
      * @return scrollbar visibility mode
      */

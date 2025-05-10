@@ -21,12 +21,12 @@ import java.util.Map;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import org.exbin.bined.swing.example.panel.CursorPanelEx;
-import org.exbin.bined.swing.example.panel.LayoutPanelEx;
-import org.exbin.bined.swing.example.panel.ModePanelEx;
-import org.exbin.bined.swing.example.panel.ScrollingPanelEx;
-import org.exbin.bined.swing.example.panel.StatePanelEx;
-import org.exbin.bined.swing.example.panel.ThemePanelEx;
+import org.exbin.bined.swing.example.panel.CursorPanelSect;
+import org.exbin.bined.swing.example.panel.LayoutPanelSect;
+import org.exbin.bined.swing.example.panel.ModePanelSect;
+import org.exbin.bined.swing.example.panel.ScrollingPanelSect;
+import org.exbin.bined.swing.example.panel.StatePanelSect;
+import org.exbin.bined.swing.example.panel.ThemePanelSect;
 import org.exbin.bined.swing.section.SectCodeArea;
 import org.exbin.bined.swing.section.diff.SectCodeAreaDiffPanel;
 
@@ -52,17 +52,17 @@ public class BinEdExampleDiffPanel extends javax.swing.JPanel {
 
         SectCodeArea leftCodeArea = diffPanel.getLeftCodeArea();
 
-        ModePanelEx modePanel = new ModePanelEx();
+        ModePanelSect modePanel = new ModePanelSect();
         modePanel.setCodeArea(leftCodeArea);
-        StatePanelEx statePanel = new StatePanelEx();
+        StatePanelSect statePanel = new StatePanelSect();
         statePanel.setCodeArea(leftCodeArea);
-        LayoutPanelEx layoutPanel = new LayoutPanelEx();
+        LayoutPanelSect layoutPanel = new LayoutPanelSect();
         layoutPanel.setCodeArea(leftCodeArea);
-        ThemePanelEx themePanel = new ThemePanelEx();
+        ThemePanelSect themePanel = new ThemePanelSect();
         themePanel.setCodeArea(leftCodeArea);
-        ScrollingPanelEx scrollingPanel = new ScrollingPanelEx();
+        ScrollingPanelSect scrollingPanel = new ScrollingPanelSect();
         scrollingPanel.setCodeArea(leftCodeArea);
-        CursorPanelEx cursorPanel = new CursorPanelEx();
+        CursorPanelSect cursorPanel = new CursorPanelSect();
         cursorPanel.setCodeArea(leftCodeArea);
 
         tabMap.put(modeScrollPane, modePanel);

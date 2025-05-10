@@ -188,11 +188,9 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
         if (getBorder() == null) {
             super.setBorder(UIManager.getLookAndFeel().getDefaults().getBorder("TextAreaUI.border"));
         }
-        if (painter != null) {
-            painter.rebuildColors();
-            painter.resetFont();
-            painter.resetColors();
-        }
+        painter.rebuildColors();
+        painter.resetFont();
+        painter.resetColors();
     }
 
     @Override
@@ -408,8 +406,8 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
 
     @Nonnull
     @Override
-    public CodeAreaCaretPosition mousePositionToClosestCaretPosition(int positionX, int positionY, CaretOverlapMode overflowMode) {
-        return painter.mousePositionToClosestCaretPosition(positionX, positionY, overflowMode);
+    public CodeAreaCaretPosition mousePositionToClosestCaretPosition(int positionX, int positionY, CaretOverlapMode overlapMode) {
+        return painter.mousePositionToClosestCaretPosition(positionX, positionY, overlapMode);
     }
 
     @Nonnull
@@ -525,9 +523,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
 
     @Override
     public void updateLayout() {
-        if (painter != null) {
-            painter.resetLayout();
-        }
+        painter.resetLayout();
         repaint();
     }
 
@@ -542,9 +538,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
     }
 
     protected void notifyCaretChanged() {
-        if (painter != null) {
-            painter.resetCaret();
-        }
+        painter.resetCaret();
         repaint();
     }
 

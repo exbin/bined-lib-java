@@ -41,23 +41,21 @@ import org.exbin.bined.lanterna.CodeAreaLanternaControl;
 @ParametersAreNonnullByDefault
 public class DefaultCodeAreaScrollPane extends JScrollPane {
 
-    private volatile boolean scrollingByUser = false;
-    private volatile boolean scrollingUpdate = false;
+    protected volatile boolean scrollingByUser = false;
+    protected volatile boolean scrollingUpdate = false;
 
+    protected final VerticalScrollBarModel verticalScrollBarModel = new VerticalScrollBarModel();
+    protected final HorizontalScrollBarModel horizontalScrollBarModel = new HorizontalScrollBarModel();
     @Nonnull
-    private final VerticalScrollBarModel verticalScrollBarModel = new VerticalScrollBarModel();
+    protected final BasicCodeAreaMetrics metrics;
     @Nonnull
-    private final HorizontalScrollBarModel horizontalScrollBarModel = new HorizontalScrollBarModel();
+    protected final BasicCodeAreaStructure structure;
     @Nonnull
-    private final BasicCodeAreaMetrics metrics;
+    protected final BasicCodeAreaScrolling scrolling;
     @Nonnull
-    private final BasicCodeAreaStructure structure;
+    protected final BasicCodeAreaDimensions dimensions;
     @Nonnull
-    private final BasicCodeAreaScrolling scrolling;
-    @Nonnull
-    private final BasicCodeAreaDimensions dimensions;
-    @Nonnull
-    private final CodeAreaLanternaControl control;
+    protected final CodeAreaLanternaControl control;
 
     public DefaultCodeAreaScrollPane(CodeAreaLanternaControl control, BasicCodeAreaMetrics metrics, BasicCodeAreaStructure structure, BasicCodeAreaDimensions dimensions, BasicCodeAreaScrolling scrolling) {
         this.control = control;
@@ -164,9 +162,9 @@ public class DefaultCodeAreaScrollPane extends JScrollPane {
         scrollingUpdate = false;
     }
 
-    private class VerticalScrollBarModel extends DefaultBoundedRangeModel {
+    protected class VerticalScrollBarModel extends DefaultBoundedRangeModel {
 
-        private volatile int depth = 0;
+        protected volatile int depth = 0;
 
         public VerticalScrollBarModel() {
             super();
@@ -210,7 +208,7 @@ public class DefaultCodeAreaScrollPane extends JScrollPane {
         }
     }
 
-    private class HorizontalScrollBarModel extends DefaultBoundedRangeModel {
+    protected class HorizontalScrollBarModel extends DefaultBoundedRangeModel {
 
         public HorizontalScrollBarModel() {
             super();
@@ -231,9 +229,9 @@ public class DefaultCodeAreaScrollPane extends JScrollPane {
         }
     }
 
-    private class VerticalAdjustmentListener implements AdjustmentListener {
+    protected class VerticalAdjustmentListener implements AdjustmentListener {
 
-        private boolean wasAdjusting = false;
+        protected boolean wasAdjusting = false;
 
         public VerticalAdjustmentListener() {
         }
@@ -285,7 +283,7 @@ public class DefaultCodeAreaScrollPane extends JScrollPane {
         }
     }
 
-    private class HorizontalAdjustmentListener implements AdjustmentListener {
+    protected class HorizontalAdjustmentListener implements AdjustmentListener {
 
         public HorizontalAdjustmentListener() {
         }

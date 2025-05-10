@@ -63,10 +63,10 @@ public class BinEdExample {
         basicCodeArea.setContentData(getSampleData());
         basicPanel.setCodeArea(basicCodeArea);
 
-        final BinEdExampleExPanel extendedPanel = new BinEdExampleExPanel();
-        final SectCodeArea extendedCodeArea = new SectCodeArea();
-        extendedCodeArea.setContentData(getSampleData());
-        extendedPanel.setCodeArea(extendedCodeArea);
+        final BinEdExampleSectPanel sectionPanel = new BinEdExampleSectPanel();
+        final SectCodeArea sectionCodeArea = new SectCodeArea();
+        sectionCodeArea.setContentData(getSampleData());
+        sectionPanel.setCodeArea(sectionCodeArea);
 
         final BinEdExampleDiffPanel diffPanel = new BinEdExampleDiffPanel();
         final SectCodeAreaDiffPanel diffCodeAreaPanel = new SectCodeAreaDiffPanel();
@@ -75,7 +75,7 @@ public class BinEdExample {
         diffPanel.setDiffPanel(diffCodeAreaPanel);
 
         tabbedPane.addTab("Basic", basicPanel);
-        tabbedPane.addTab("Extended", extendedPanel);
+        tabbedPane.addTab("Section", sectionPanel);
         tabbedPane.addTab("Diff", diffPanel);
 
         tabbedPane.addChangeListener((ChangeEvent e) -> {
@@ -86,8 +86,8 @@ public class BinEdExample {
                     break;
                 }
                 case 1: {
-                    tabbedPane.setSelectedComponent(extendedPanel);
-                    extendedCodeArea.requestFocus();
+                    tabbedPane.setSelectedComponent(sectionPanel);
+                    sectionCodeArea.requestFocus();
                     break;
                 }
             }

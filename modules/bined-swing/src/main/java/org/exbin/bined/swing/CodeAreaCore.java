@@ -111,7 +111,7 @@ public abstract class CodeAreaCore extends JTextComponent implements CodeAreaCon
         return commandHandlerFactory.createCommandHandler(this);
     }
 
-    private void registerControlListeners() {
+    protected void registerControlListeners() {
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(@Nonnull ComponentEvent event) {
@@ -265,7 +265,7 @@ public abstract class CodeAreaCore extends JTextComponent implements CodeAreaCon
     public abstract void updateLayout();
 
     @ParametersAreNonnullByDefault
-    protected class SimulatedDocument implements Document {
+    protected static class SimulatedDocument implements Document {
 
         private final List<UndoableEditListener> undoableEditListeners = new ArrayList<>();
         private final List<DocumentListener> documentListeners = new ArrayList<>();
@@ -450,7 +450,7 @@ public abstract class CodeAreaCore extends JTextComponent implements CodeAreaCon
         }
     }
 
-    public class SimulatedElement implements Element {
+    public static class SimulatedElement implements Element {
 
         private final Document document;
         private final AttributeSet attributeSet = new SimpleAttributeSet();
@@ -539,7 +539,7 @@ public abstract class CodeAreaCore extends JTextComponent implements CodeAreaCon
     }
 
     @ParametersAreNonnullByDefault
-    protected class SimulatedCaret implements Caret {
+    protected static class SimulatedCaret implements Caret {
 
         @Nullable
         private JTextComponent component;

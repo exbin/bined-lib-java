@@ -167,11 +167,11 @@ public class CodeAreaLanternaUtils {
     @ParametersAreNonnullByDefault
     public static class BinaryDataClipboardData implements ClipboardData {
 
-        private final BinaryData data;
-        private final DataFlavor binedDataFlavor;
-        private final DataFlavor binaryDataFlavor;
+        protected final BinaryData data;
+        protected final DataFlavor binedDataFlavor;
+        protected final DataFlavor binaryDataFlavor;
         @Nullable
-        private final Charset charset;
+        protected final Charset charset;
 
         public BinaryDataClipboardData(BinaryData data, DataFlavor binedDataFlavor, @Nullable Charset charset) {
             this.data = data;
@@ -235,10 +235,10 @@ public class CodeAreaLanternaUtils {
     @ParametersAreNonnullByDefault
     public static class CodeDataClipboardData implements ClipboardData {
 
-        private final BinaryData data;
-        private final DataFlavor binaryDataFlavor;
-        private final CodeType codeType;
-        private final CodeCharactersCase charactersCase;
+        protected final BinaryData data;
+        protected final DataFlavor binaryDataFlavor;
+        protected final CodeType codeType;
+        protected final CodeCharactersCase charactersCase;
 
         public CodeDataClipboardData(BinaryData data, DataFlavor binaryDataFlavor, CodeType codeType, CodeCharactersCase charactersCase) {
             this.data = data;
