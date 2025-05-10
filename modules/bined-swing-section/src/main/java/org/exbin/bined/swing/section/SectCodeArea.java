@@ -70,7 +70,7 @@ import org.exbin.bined.section.layout.SectionCodeAreaLayoutProfile;
 import org.exbin.bined.CodeAreaCaretListener;
 
 /**
- * Code area component with section support.
+ * TODO: Binary viewer/editor component with configurable sections.
  *
  * @author ExBin Project (https://exbin.org)
  */
@@ -188,9 +188,11 @@ public class SectCodeArea extends CodeAreaCore implements SectionCodeArea, CodeA
         if (getBorder() == null) {
             super.setBorder(UIManager.getLookAndFeel().getDefaults().getBorder("TextAreaUI.border"));
         }
-        painter.rebuildColors();
-        painter.resetFont();
-        painter.resetColors();
+        if (painter != null) {
+            painter.rebuildColors();
+            painter.resetFont();
+            painter.resetColors();
+        }
     }
 
     @Override

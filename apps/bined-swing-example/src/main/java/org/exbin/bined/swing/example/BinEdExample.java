@@ -15,172 +15,47 @@
  */
 package org.exbin.bined.swing.example;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.swing.JFrame;
-import javax.swing.JTabbedPane;
-import javax.swing.event.ChangeEvent;
+import javax.swing.WindowConstants;
 import org.exbin.bined.swing.basic.CodeArea;
-import org.exbin.bined.swing.section.SectCodeArea;
-import org.exbin.bined.swing.section.diff.SectCodeAreaDiffPanel;
-import org.exbin.auxiliary.binary_data.BinaryData;
 import org.exbin.auxiliary.binary_data.ByteArrayEditableData;
 
 /**
- * Example Swing GUI demonstration application of the bined component.
+ * BinEd component usage example.
+ *
+ * <p>
+ * You can use this component for your own project using one of the following
+ * methods:
+ * <ul>
+ * <li>Download library and include it with your project</li>
+ * <li>Download sources and modify it for your needs</li>
+ * <li>Import library using Maven
+ * </ul>
+ *
+ * Libraries (groupId:artifactId:version):<br>
+ * org.exbin.bined:bined-swing:0.2.2<br>
+ * org.exbin.auxiliary:binary_data:0.2.2<br>
+ * org.exbin.auxiliary:binary_data-array:0.2.2<br>
  *
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class BinEdExample {
 
-    private static final String EXAMPLE_FILE_PATH = "/org/exbin/bined/swing/example/resources/lorem_1.txt";
-    private static final String EXAMPLE_DIFF_FILE_PATH = "/org/exbin/bined/swing/example/resources/lorem_2.txt";
-
-    public BinEdExample() {
-    }
-
-    /**
-     * Main method launching the application.
-     *
-     * @param args arguments
-     */
     public static void main(String[] args) {
-        final JFrame frame = new JFrame("BinEd Library Swing Example");
-        frame.setLocationByPlatform(true);
+
+        // Create component instance
+        CodeArea codeArea = new CodeArea();
+
+        // Fill it with some data
+        codeArea.setContentData(new ByteArrayEditableData(new byte[]{1, 2, 3}));
+
+        // Add it to frame to display it
+        final JFrame frame = new JFrame("BinEd Example");
+        frame.add(codeArea);
         frame.setSize(1000, 600);
-        frame.setLocationRelativeTo(null);
-        final JTabbedPane tabbedPane = new JTabbedPane();
-        tabbedPane.setFocusable(false);
-
-        final BinEdExampleBasicPanel basicPanel = new BinEdExampleBasicPanel();
-        final CodeArea basicCodeArea = new CodeArea();
-        basicCodeArea.setContentData(getSampleData());
-        basicPanel.setCodeArea(basicCodeArea);
-
-        final BinEdExampleSectPanel sectionPanel = new BinEdExampleSectPanel();
-        final SectCodeArea sectionCodeArea = new SectCodeArea();
-        sectionCodeArea.setContentData(getSampleData());
-        sectionPanel.setCodeArea(sectionCodeArea);
-
-        final BinEdExampleDiffPanel diffPanel = new BinEdExampleDiffPanel();
-        final SectCodeAreaDiffPanel diffCodeAreaPanel = new SectCodeAreaDiffPanel();
-        diffCodeAreaPanel.setLeftContentData(getSampleData());
-        diffCodeAreaPanel.setRightContentData(getSampleDiffData());
-        diffPanel.setDiffPanel(diffCodeAreaPanel);
-
-        tabbedPane.addTab("Basic", basicPanel);
-        tabbedPane.addTab("Section", sectionPanel);
-        tabbedPane.addTab("Diff", diffPanel);
-
-        tabbedPane.addChangeListener((ChangeEvent e) -> {
-            switch (tabbedPane.getSelectedIndex()) {
-                case 0: {
-                    tabbedPane.setSelectedComponent(basicPanel);
-                    basicCodeArea.requestFocus();
-                    break;
-                }
-                case 1: {
-                    tabbedPane.setSelectedComponent(sectionPanel);
-                    sectionCodeArea.requestFocus();
-                    break;
-                }
-            }
-        });
-        frame.add(tabbedPane);
-
-        java.awt.EventQueue.invokeLater(() -> {
-            frame.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-
-            frame.addWindowListener(new java.awt.event.WindowAdapter() {
-                @Override
-                public void windowClosing(java.awt.event.WindowEvent e) {
-                    System.exit(0);
-                }
-            });
-            frame.setVisible(true);
-            basicCodeArea.requestFocus();
-        });
-    }
-
-    @Nonnull
-    private static ByteArrayEditableData getSampleData() {
-        ByteArrayEditableData data = new ByteArrayEditableData();
-        try {
-            data.loadFromStream(data.getClass().getResourceAsStream(EXAMPLE_FILE_PATH));
-        } catch (IOException ex) {
-            Logger.getLogger(BinEdExample.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        return data;
-    }
-
-    @Nonnull
-    private static ByteArrayEditableData getSampleDiffData() {
-        ByteArrayEditableData data = new ByteArrayEditableData();
-        try {
-            data.loadFromStream(data.getClass().getResourceAsStream(EXAMPLE_DIFF_FILE_PATH));
-        } catch (IOException ex) {
-            Logger.getLogger(BinEdExample.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        return data;
-    }
-
-    @Nonnull
-    public static BinaryData getBigSampleData(int offset, long size) {
-        BinaryData data = new BinaryData() {
-            @Override
-            public boolean isEmpty() {
-                return false;
-            }
-
-            @Override
-            public long getDataSize() {
-                return size;
-            }
-
-            @Override
-            public byte getByte(long l) {
-                return (byte) ((l + offset) % 128);
-            }
-
-            @Override
-            public BinaryData copy() {
-                return getBigSampleData(offset, size);
-            }
-
-            @Override
-            public BinaryData copy(long l, long l1) {
-                return getBigSampleData((int) ((offset + l) % 128), l1);
-            }
-
-            @Override
-            public void copyToArray(long l, byte[] bytes, int i, int i1) {
-                for (int j = 0; j < i1; j++) {
-                    bytes[i + j] = getByte(l + j);
-                }
-            }
-
-            @Override
-            public void saveToStream(OutputStream out) throws IOException {
-                throw new UnsupportedOperationException("Not supported yet.");
-            }
-
-            @Override
-            public InputStream getDataInputStream() {
-                throw new UnsupportedOperationException("Not supported yet.");
-            }
-
-            @Override
-            public void dispose() {
-            }
-        };
-        return data;
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        frame.setVisible(true);
     }
 }

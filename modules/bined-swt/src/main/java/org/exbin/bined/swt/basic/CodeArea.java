@@ -139,7 +139,7 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
      * @param style style
      * @param commandHandlerFactory command handler or null for default handler
      */
-    public CodeArea(@Nullable Composite parent, int style, @Nullable CodeAreaCommandHandler.CodeAreaCommandHandlerFactory commandHandlerFactory) {
+    public CodeArea(@Nullable Composite parent, int style, CodeAreaCommandHandler.CodeAreaCommandHandlerFactory commandHandlerFactory) {
         super(parent, style, commandHandlerFactory);
 
         painter = new DefaultCodeAreaPainter(this);

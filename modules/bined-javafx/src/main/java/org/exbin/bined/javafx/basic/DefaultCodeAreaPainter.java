@@ -115,20 +115,14 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
     @Nonnull
     protected final DataChangedListener codeAreaDataChangeListener;
 
-    @Nonnull
     protected final BasicCodeAreaMetrics metrics = new BasicCodeAreaMetrics();
-    @Nonnull
     protected final BasicCodeAreaStructure structure = new BasicCodeAreaStructure();
-    @Nonnull
     protected final BasicCodeAreaScrolling scrolling = new BasicCodeAreaScrolling();
-    @Nonnull
     protected final BasicCodeAreaDimensions dimensions = new BasicCodeAreaDimensions();
-    @Nonnull
     protected final BasicCodeAreaVisibility visibility = new BasicCodeAreaVisibility();
     @Nonnull
     protected volatile ScrollingState scrollingState = ScrollingState.NO_SCROLLING;
 
-    @Nonnull
     protected final BasicCodeAreaLayout layout = new BasicCodeAreaLayout();
     protected BasicCodeAreaColorsProfile colorsProfile = new BasicCodeAreaColorsProfile();
 
@@ -1491,6 +1485,12 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
      * Renders sequence of background rectangles.
      * <p>
      * Doesn't include character at offset end.
+     *
+     * @param g graphics context
+     * @param startOffset start offset
+     * @param endOffset end offset
+     * @param rowPositionX row position x
+     * @param positionY position y
      */
     private void renderBackgroundSequence(GraphicsContext g, int startOffset, int endOffset, double rowPositionX, double positionY) {
         int characterWidth = metrics.getCharacterWidth();

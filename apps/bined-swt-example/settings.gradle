@@ -5,6 +5,4 @@ if (rootProject.path == ':') {
     include ':modules:bined-swt'
 }
 
-//    include ':modules:bined-swt-extended'
-
 apply from: '../apps-settings.gradle'

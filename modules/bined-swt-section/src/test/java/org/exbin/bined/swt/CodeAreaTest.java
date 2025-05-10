@@ -30,6 +30,7 @@ import static org.junit.Assert.*;
  *
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public class CodeAreaTest {
 
     public static final String SAMPLE_FILES_PATH = "/org/exbin/bined/resources/test/";

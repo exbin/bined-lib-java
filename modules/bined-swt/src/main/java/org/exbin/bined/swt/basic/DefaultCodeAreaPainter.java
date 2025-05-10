@@ -99,12 +99,12 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
 
     @Nonnull
     protected final CodeAreaCore codeArea;
-    private volatile boolean initialized = false;
+    protected volatile boolean initialized = false;
 
-    private volatile boolean fontChanged = false;
-    private volatile boolean layoutChanged = true;
-    private volatile boolean resetColors = true;
-    private volatile boolean caretChanged = true;
+    protected volatile boolean fontChanged = false;
+    protected volatile boolean layoutChanged = true;
+    protected volatile boolean resetColors = true;
+    protected volatile boolean caretChanged = true;
 
     @Nonnull
     protected final Composite dataView;
@@ -119,20 +119,14 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
     @Nonnull
     protected final DataChangedListener codeAreaDataChangeListener;
 
-    @Nonnull
     protected final BasicCodeAreaMetrics metrics = new BasicCodeAreaMetrics();
-    @Nonnull
     protected final BasicCodeAreaStructure structure = new BasicCodeAreaStructure();
-    @Nonnull
     protected final BasicCodeAreaScrolling scrolling = new BasicCodeAreaScrolling();
-    @Nonnull
     protected final BasicCodeAreaDimensions dimensions = new BasicCodeAreaDimensions();
-    @Nonnull
     protected final BasicCodeAreaVisibility visibility = new BasicCodeAreaVisibility();
 
     @Nonnull
     protected final BasicCodeAreaLayout layout = new BasicCodeAreaLayout();
-    @Nonnull
     protected BasicCodeAreaColorsProfile colorsProfile = new BasicCodeAreaColorsProfile();
 
     @Nullable
@@ -156,9 +150,9 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
     protected Font font;
     @Nonnull
     protected Charset charset;
-    @Nonnull
+    @Nullable
     protected CodeAreaColorAssessor colorAssessor = null;
-    @Nonnull
+    @Nullable
     protected CodeAreaCharAssessor charAssessor = null;
 
     @Nullable
@@ -797,9 +791,6 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
                 rowStart = (int) -dataPosition;
             }
             BinaryData content = codeArea.getContentData();
-            if (content == null) {
-                throw new IllegalStateException("Missing data on nonzero data size");
-            }
             content.copyToArray(dataPosition + rowStart, rowDataCache.rowData, rowStart, rowDataSize - rowStart);
             if (dataSize - dataPosition < rowBytesLimit) {
                 rowBytesLimit = (int) (dataSize - dataPosition);
@@ -1423,6 +1414,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         return SWT.CURSOR_ARROW;
     }
 
+    @Nonnull
     @Override
     public BasicCodeAreaZone getPositionZone(int positionX, int positionY) {
         return dimensions.getPositionZone(positionX, positionY);
@@ -1543,8 +1535,14 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
 
     /**
      * Renders sequence of background rectangles.
-     *
+     * <p>
      * Doesn't include character at offset end.
+     *
+     * @param g graphics
+     * @param startOffset start offset
+     * @param endOffset end offset
+     * @param rowPositionX row position x
+     * @param positionY position y
      */
     private void renderBackgroundSequence(GC g, int startOffset, int endOffset, int rowPositionX, int positionY) {
         int characterWidth = metrics.getCharacterWidth();
@@ -1690,7 +1688,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         return ((SelectionCapable) codeArea).getSelectionHandler();
     }
 
-    private int getHorizontalScrollBarSize() {
+    protected int getHorizontalScrollBarSize() {
         ScrollBar horizontalScrollBar = scrollPanel.getHorizontalBar();
         int size;
         if (horizontalScrollBar.isVisible()) {
@@ -1702,7 +1700,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         return size;
     }
 
-    private int getVerticalScrollBarSize() {
+    protected int getVerticalScrollBarSize() {
         ScrollBar verticalScrollBar = scrollPanel.getVerticalBar();
         int size;
         if (verticalScrollBar.isVisible()) {

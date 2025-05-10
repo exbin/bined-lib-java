@@ -1450,6 +1450,12 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
      * Renders sequence of background rectangles.
      * <p>
      * Doesn't include character at offset end.
+     *
+     * @param g graphics
+     * @param startOffset start offset
+     * @param endOffset end offset
+     * @param rowPositionX row position x
+     * @param positionY position y
      */
     protected void renderBackgroundSequence(Graphics g, int startOffset, int endOffset, int rowPositionX, int positionY) {
         int characterWidth = metrics.getCharacterWidth();

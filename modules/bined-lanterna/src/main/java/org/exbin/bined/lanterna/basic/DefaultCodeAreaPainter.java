@@ -265,7 +265,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
         int charactersPerRow = structure.getCharactersPerRow();
 
 //        if (metrics.isInitialized()) {
-            scrolling.updateMaximumScrollPosition(rowsPerDocument, rowsPerPage, charactersPerRow, charactersPerPage, dimensions.getLastCharOffset(), dimensions.getLastRowOffset());
+        scrolling.updateMaximumScrollPosition(rowsPerDocument, rowsPerPage, charactersPerRow, charactersPerPage, dimensions.getLastCharOffset(), dimensions.getLastRowOffset());
 //        }
 
         updateScrollBars();
@@ -1383,7 +1383,7 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
 
             boolean groupable;
 //            if (metrics.hasUniformLineMetrics()) {
-                groupable = charWidth == cellWidth;
+            groupable = charWidth == cellWidth;
 //            } else {
 //                int charsWidth = metrics.getCharsWidth(drawnChars, charOffset + pos - group, group + 1);
 //                groupable = charsWidth == cellWidth * (group + 1);
@@ -1487,6 +1487,12 @@ public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapab
      * Renders sequence of background rectangles.
      * <p>
      * Doesn't include character at offset end.
+     *
+     * @param g graphics
+     * @param startOffset start offset
+     * @param endOffset end offset
+     * @param rowPositionX row position x
+     * @param positionY position y
      */
     protected void renderBackgroundSequence(Graphics g, int startOffset, int endOffset, int rowPositionX, int positionY) {
         g.fillRect(rowPositionX + startOffset /* * characterWidth */, positionY, (endOffset - startOffset) /* * characterWidth */, 1 /* rowHeight */);

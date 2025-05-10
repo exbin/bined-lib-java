@@ -163,7 +163,7 @@ public class DefaultCodeAreaScrollPane extends Canvas {
         scrollingUpdate = false;
     }
 
-    private class VerticalScrollBarModel extends DefaultBoundedRangeModel {
+    protected class VerticalScrollBarModel extends DefaultBoundedRangeModel {
 
         private volatile int depth = 0;
 
@@ -209,7 +209,7 @@ public class DefaultCodeAreaScrollPane extends Canvas {
         }
     }
 
-    private class HorizontalScrollBarModel extends DefaultBoundedRangeModel {
+    protected class HorizontalScrollBarModel extends DefaultBoundedRangeModel {
 
         public HorizontalScrollBarModel() {
             super();
@@ -230,7 +230,7 @@ public class DefaultCodeAreaScrollPane extends Canvas {
         }
     }
 
-    private class VerticalAdjustmentListener implements SelectionListener {
+    protected class VerticalAdjustmentListener implements SelectionListener {
 
         private boolean wasAdjusting = false;
 
@@ -288,7 +288,7 @@ public class DefaultCodeAreaScrollPane extends Canvas {
         }
     }
 
-    private class HorizontalAdjustmentListener implements SelectionListener {
+    protected class HorizontalAdjustmentListener implements SelectionListener {
 
         public HorizontalAdjustmentListener() {
         }

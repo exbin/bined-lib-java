@@ -188,9 +188,11 @@ public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaS
         if (getBorder() == null) {
             super.setBorder(UIManager.getLookAndFeel().getDefaults().getBorder("TextAreaUI.border"));
         }
-        painter.rebuildColors();
-        painter.resetFont();
-        painter.resetColors();
+        if (painter != null) {
+            painter.rebuildColors();
+            painter.resetFont();
+            painter.resetColors();
+        }
     }
 
     @Override

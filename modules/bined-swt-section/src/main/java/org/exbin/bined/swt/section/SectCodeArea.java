@@ -66,7 +66,7 @@ import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.CodeAreaCaretListener;
 
 /**
- * Binary viewer/editor component.
+ * TODO: Binary viewer/editor component with configurable sections.
  *
  * @author ExBin Project (https://exbin.org)
  */

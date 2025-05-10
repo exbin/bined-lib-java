@@ -20,7 +20,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.swt.basic.AntialiasingMode;
 
 /**
- * Support for anti-aliasing capability.
+ * Support for antialiasing capability.
  *
  * @author ExBin Project (https://exbin.org)
  */

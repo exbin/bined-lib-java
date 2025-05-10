@@ -15,69 +15,52 @@
  */
 package org.exbin.bined.swt.example;
 
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.ShellAdapter;
 import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.TabFolder;
-import org.eclipse.swt.widgets.TabItem;
 import org.exbin.bined.swt.basic.CodeArea;
 import org.exbin.auxiliary.binary_data.ByteArrayEditableData;
 
 /**
- * Example Swing GUI demonstration application of the bined component.
+ * BinEd component usage example.
+ *
+ * <p>
+ * You can use this component for your own project using one of the following
+ * methods:
+ * <ul>
+ * <li>Download library and include it with your project</li>
+ * <li>Download sources and modify it for your needs</li>
+ * <li>Import library using Maven
+ * </ul>
+ *
+ * Libraries (groupId:artifactId:version):<br>
+ * org.exbin.bined:bined-swt:0.2.2<br>
+ * org.exbin.auxiliary:binary_data:0.2.2<br>
+ * org.exbin.auxiliary:binary_data-array:0.2.2<br>
+ * + SWT libraries<br>
  *
  * @author ExBin Project (https://exbin.org)
  */
 public class BinEdExample {
 
-    private static final String EXAMPLE_FILE_PATH = "/org/exbin/bined/swt/example/resources/lorem_1.txt";
-
-    public BinEdExample() {
-    }
-
-    /**
-     * Main method launching the application.
-     *
-     * @param args arguments
-     */
     public static void main(String[] args) {
+        // Prepare window shell
         Display display = new Display();
         Shell shell = new Shell(display);
         shell.setText("BinEd Library SWT Example");
         shell.setSize(1000, 600);
         shell.setLayout(new FillLayout());
 
-//        shell.setLocation(point);
-        final TabFolder tabFolder = new TabFolder(shell, SWT.BORDER);
+        // Create component instance
+        final CodeArea basicCodeArea = new CodeArea(shell, SWT.BORDER);
 
-        TabItem basicTabItem = new TabItem(tabFolder, SWT.NULL);
-        basicTabItem.setText("Basic");
-        SashForm basicForm = new SashForm(tabFolder, SWT.HORIZONTAL);
-        basicForm.setLayout(new FillLayout());
+        // Fill it with some data
+        basicCodeArea.setContentData(new ByteArrayEditableData(new byte[]{1, 2, 3}));
 
-        final BinEdExampleBasicPanel basicPanel = new BinEdExampleBasicPanel(basicForm, SWT.NONE);
-        final CodeArea basicCodeArea = new CodeArea(basicForm, SWT.BORDER);
-        ByteArrayEditableData basicData = new ByteArrayEditableData();
-        try {
-            basicData.loadFromStream(basicCodeArea.getClass().getResourceAsStream(EXAMPLE_FILE_PATH));
-        } catch (IOException ex) {
-            Logger.getLogger(BinEdExample.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        basicCodeArea.setContentData(basicData);
-        basicPanel.setCodeArea(basicCodeArea);
-
-        TabItem extendedTabItem = new TabItem(tabFolder, SWT.NULL);
-        extendedTabItem.setText("Extended");
-
-//        basicTabItem.setControl(basicCodeArea);
-        basicTabItem.setControl(basicForm);
+        // Display window
         shell.addShellListener(new ShellAdapter() {
             @Override
             public void shellClosed(ShellEvent se) {

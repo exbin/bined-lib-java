@@ -46,7 +46,7 @@ public interface CodeAreaSwtControl {
 
     /**
      * Requests update of the component layout.
-     *
+     * <p>
      * Notifies worker, that change of parameters will affect layout and it
      * should be recomputed and updated if necessary.
      */

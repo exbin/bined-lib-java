@@ -1,0 +1,8 @@
+rootProject.name = 'bined-lanterna-demo'
+
+if (rootProject.path == ':') {
+    include ':modules:bined-core'
+    include ':modules:bined-lanterna'
+}
+
+apply from: '../apps-settings.gradle'

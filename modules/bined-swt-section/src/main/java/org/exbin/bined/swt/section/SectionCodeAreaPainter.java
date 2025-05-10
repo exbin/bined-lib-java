@@ -43,6 +43,7 @@ import org.exbin.bined.swt.ColorsGroup;
  *
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public class SectionCodeAreaPainter implements CodeAreaPainter {
 
     protected final CodeArea codeArea;

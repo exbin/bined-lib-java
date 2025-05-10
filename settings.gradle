@@ -15,9 +15,11 @@ include ":modules:bined-operation-swing"
 include ":modules:bined-highlight-swing"
 
 include ":apps:bined-swing-example"
-include ":apps:bined-javafx-example"
+include ":apps:bined-swing-demo"
+include ":apps:bined-javafx-demo"
 include ":apps:bined-swt-example"
-// include ":apps:bined-lanterna-example"
+include ":apps:bined-swt-demo"
+// include ":apps:bined-lanterna-demo"
 include ":apps:bined-editor-basic"
 
 File placeholder = file("deps/.downloaded")
