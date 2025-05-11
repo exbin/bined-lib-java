@@ -1,7 +1,4 @@
-0.3.0
-- Support for configurable sections
-
-0,2,2
+0.2.2
 - Some fixes and refactoring
 
 0.2.1 (2023-12-30)

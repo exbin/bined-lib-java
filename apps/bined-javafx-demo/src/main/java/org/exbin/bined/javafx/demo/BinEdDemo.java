@@ -15,14 +15,53 @@
  */
 package org.exbin.bined.javafx.demo;
 
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
+import javax.annotation.ParametersAreNonnullByDefault;
+import org.exbin.auxiliary.binary_data.ByteArrayEditableData;
+import org.exbin.bined.javafx.basic.CodeArea;
+
 /**
  * Binary component demo application for JavaFX.
  *
  * @author ExBin Project (https://exbin.org)
  */
-public class BinEdDemo {
+@ParametersAreNonnullByDefault
+public class BinEdDemo extends Application {
 
     public static void main(String[] args) {
-        BinEdDemoApplication.main(args);
+        BinEdDemo.launch(args);
+    }
+
+    private void init(Stage stage) {
+        final CodeArea codeArea = new CodeArea();
+        ByteArrayEditableData data = new ByteArrayEditableData();
+        try {
+            data.loadFromStream(codeArea.getClass().getResourceAsStream("/org/exbin/bined/javafx/demo/resources/lorem_1.txt"));
+        } catch (IOException ex) {
+            Logger.getLogger(BinEdDemo.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        codeArea.setContentData(data);
+
+        stage.setTitle("BinEd Library JavaFX Demo");
+        stage.setOnCloseRequest((WindowEvent e) -> {
+            Platform.exit();
+            System.exit(0);
+        });
+
+        Scene scene = new Scene(codeArea, 1000, 600);
+        stage.setScene(scene);
+    }
+
+    @Override
+    public void start(Stage stage) throws Exception {
+        init(stage);
+        stage.show();
     }
 }

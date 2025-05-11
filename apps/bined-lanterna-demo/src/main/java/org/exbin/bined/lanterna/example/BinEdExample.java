@@ -13,13 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.swing.example;
+package org.exbin.bined.lanterna.example;
 
+import com.googlecode.lanterna.TextColor;
+import com.googlecode.lanterna.gui2.BasicWindow;
+import com.googlecode.lanterna.gui2.DefaultWindowManager;
+import com.googlecode.lanterna.gui2.EmptySpace;
+import com.googlecode.lanterna.gui2.MultiWindowTextGUI;
+import com.googlecode.lanterna.screen.Screen;
+import com.googlecode.lanterna.screen.TerminalScreen;
+import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
+import com.googlecode.lanterna.terminal.Terminal;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.ParametersAreNonnullByDefault;
-import javax.swing.JFrame;
-import javax.swing.WindowConstants;
-import org.exbin.bined.swing.basic.CodeArea;
 import org.exbin.auxiliary.binary_data.ByteArrayEditableData;
+import org.exbin.bined.lanterna.basic.CodeArea;
 
 /**
  * BinEd component usage example.
@@ -49,11 +59,20 @@ public class BinEdExample {
         // Fill it with some data
         codeArea.setContentData(new ByteArrayEditableData(new byte[]{1, 2, 3, 0x45, 0x58, 0x41, 0x4D, 0x50, 0x4C, 0x45}));
 
-        // Add it to frame to display it
-        JFrame frame = new JFrame("BinEd Example");
-        frame.add(codeArea);
-        frame.setSize(1000, 600);
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        frame.setVisible(true);
+        // Setup terminal and screen layers
+        try {
+            Terminal terminal = new DefaultTerminalFactory().createTerminal();
+            Screen screen = new TerminalScreen(terminal);
+            screen.startScreen();
+
+            // Create window to hold the panel
+            BasicWindow window = new BasicWindow();
+
+            // Create gui and start gui
+            MultiWindowTextGUI gui = new MultiWindowTextGUI(screen, new DefaultWindowManager(), new EmptySpace(TextColor.ANSI.BLUE));
+            gui.addWindowAndWait(window);
+        } catch (IOException ex) {
+            Logger.getLogger(BinEdExample.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }

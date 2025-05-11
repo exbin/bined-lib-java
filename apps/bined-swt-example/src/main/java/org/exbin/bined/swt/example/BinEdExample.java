@@ -27,26 +27,25 @@ import org.exbin.auxiliary.binary_data.ByteArrayEditableData;
 /**
  * BinEd component usage example.
  *
- * <p>
- * You can use this component for your own project using one of the following
- * methods:
- * <ul>
- * <li>Download library and include it with your project</li>
- * <li>Download sources and modify it for your needs</li>
- * <li>Import library using Maven
- * </ul>
- *
- * Libraries (groupId:artifactId:version):<br>
- * org.exbin.bined:bined-swt:0.2.2<br>
- * org.exbin.auxiliary:binary_data:0.2.2<br>
- * org.exbin.auxiliary:binary_data-array:0.2.2<br>
- * + SWT libraries<br>
- *
  * @author ExBin Project (https://exbin.org)
  */
 public class BinEdExample {
 
     public static void main(String[] args) {
+        // You can use this component for your own project using one of the
+        // following options:
+        //
+        // - Download library and include it with your project
+        // - Download sources and modify it for your needs
+        // - Import library using Maven
+        //
+        // Libraries (groupId:artifactId:version):
+        //   org.exbin.bined:bined-core:0.2.2
+        //   org.exbin.bined:bined-swt:0.2.2
+        //   org.exbin.auxiliary:binary_data:0.2.2
+        //   org.exbin.auxiliary:binary_data-array:0.2.2
+        //   + SWT libraries
+
         // Prepare window shell
         Display display = new Display();
         Shell shell = new Shell(display);
@@ -55,10 +54,10 @@ public class BinEdExample {
         shell.setLayout(new FillLayout());
 
         // Create component instance
-        final CodeArea basicCodeArea = new CodeArea(shell, SWT.BORDER);
+        CodeArea codeArea = new CodeArea(shell, SWT.BORDER);
 
         // Fill it with some data
-        basicCodeArea.setContentData(new ByteArrayEditableData(new byte[]{1, 2, 3}));
+        codeArea.setContentData(new ByteArrayEditableData(new byte[]{1, 2, 3, 0x45, 0x58, 0x41, 0x4D, 0x50, 0x4C, 0x45}));
 
         // Display window
         shell.addShellListener(new ShellAdapter() {

@@ -1,5 +1,5 @@
-BinEd Hexadecimal Library Examples
-==================================
+BinEd Hexadecimal Library Basic Editor
+======================================
 
 Testing application for hexadecimal viewer/editor library.
 

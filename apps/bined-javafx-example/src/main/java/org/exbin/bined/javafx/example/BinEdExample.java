@@ -13,13 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.swing.example;
+package org.exbin.bined.javafx.example;
 
+import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import javax.annotation.ParametersAreNonnullByDefault;
-import javax.swing.JFrame;
-import javax.swing.WindowConstants;
-import org.exbin.bined.swing.basic.CodeArea;
 import org.exbin.auxiliary.binary_data.ByteArrayEditableData;
+import org.exbin.bined.javafx.basic.CodeArea;
 
 /**
  * BinEd component usage example.
@@ -27,7 +30,7 @@ import org.exbin.auxiliary.binary_data.ByteArrayEditableData;
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public class BinEdExample {
+public class BinEdExample extends Application {
 
     public static void main(String[] args) {
         // You can use this component for your own project using one of the
@@ -39,10 +42,14 @@ public class BinEdExample {
         //
         // Libraries (groupId:artifactId:version):
         //   org.exbin.bined:bined-core:0.2.2
-        //   org.exbin.bined:bined-swing:0.2.2
+        //   org.exbin.bined:bined-javafx:0.2.2
         //   org.exbin.auxiliary:binary_data:0.2.2
         //   org.exbin.auxiliary:binary_data-array:0.2.2
 
+        BinEdExample.launch(args);
+    }
+
+    private void init(Stage stage) {
         // Create component instance
         CodeArea codeArea = new CodeArea();
 
@@ -50,10 +57,19 @@ public class BinEdExample {
         codeArea.setContentData(new ByteArrayEditableData(new byte[]{1, 2, 3, 0x45, 0x58, 0x41, 0x4D, 0x50, 0x4C, 0x45}));
 
         // Add it to frame to display it
-        JFrame frame = new JFrame("BinEd Example");
-        frame.add(codeArea);
-        frame.setSize(1000, 600);
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        frame.setVisible(true);
+        stage.setTitle("BinEd Example");
+        stage.setOnCloseRequest((WindowEvent e) -> {
+            Platform.exit();
+            System.exit(0);
+        });
+
+        Scene scene = new Scene(codeArea, 1000, 600);
+        stage.setScene(scene);
+    }
+
+    @Override
+    public void start(Stage stage) throws Exception {
+        init(stage);
+        stage.show();
     }
 }

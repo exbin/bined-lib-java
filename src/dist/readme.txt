@@ -28,5 +28,5 @@ Apache License, Version 2.0 - see LICENSE-2.0.txt
 Usage
 -----
 
-Please see bined-example application and sources.
+Please see bined-*-example and bined-*-demo applications.
 
