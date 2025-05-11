@@ -19,7 +19,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 import org.exbin.bined.swing.basic.CodeArea;
-import org.exbin.auxiliary.binary_data.ByteArrayEditableData;
+import org.exbin.auxiliary.binary_data.array.ByteArrayEditableData;
 
 /**
  * BinEd component usage example.

@@ -52,7 +52,7 @@ import org.exbin.bined.swt.CodeAreaCommandHandler;
 import org.exbin.bined.swt.CodeAreaCore;
 import org.exbin.bined.swt.CodeAreaSwtUtils;
 import org.exbin.auxiliary.binary_data.BinaryData;
-import org.exbin.auxiliary.binary_data.ByteArrayEditableData;
+import org.exbin.auxiliary.binary_data.array.ByteArrayEditableData;
 import org.exbin.auxiliary.binary_data.EditableBinaryData;
 import org.exbin.bined.ClipboardHandlingMode;
 import org.exbin.bined.CodeAreaCaretPosition;

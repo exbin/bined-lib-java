@@ -49,7 +49,7 @@ import org.exbin.bined.javafx.CodeAreaCommandHandler;
 import org.exbin.bined.javafx.CodeAreaCore;
 import org.exbin.bined.javafx.CodeAreaJavaFxUtils;
 import org.exbin.auxiliary.binary_data.BinaryData;
-import org.exbin.auxiliary.binary_data.ByteArrayEditableData;
+import org.exbin.auxiliary.binary_data.array.ByteArrayEditableData;
 import org.exbin.auxiliary.binary_data.EditableBinaryData;
 import org.exbin.bined.ClipboardHandlingMode;
 import org.exbin.bined.CodeAreaCaretPosition;

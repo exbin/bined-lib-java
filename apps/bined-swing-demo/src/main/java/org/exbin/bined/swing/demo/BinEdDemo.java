@@ -29,7 +29,7 @@ import org.exbin.bined.swing.basic.CodeArea;
 import org.exbin.bined.swing.section.SectCodeArea;
 import org.exbin.bined.swing.section.diff.SectCodeAreaDiffPanel;
 import org.exbin.auxiliary.binary_data.BinaryData;
-import org.exbin.auxiliary.binary_data.ByteArrayEditableData;
+import org.exbin.auxiliary.binary_data.array.ByteArrayEditableData;
 
 /**
  * Binary component demo application for Swing.

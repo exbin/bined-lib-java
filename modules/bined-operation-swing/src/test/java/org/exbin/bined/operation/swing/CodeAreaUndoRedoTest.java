@@ -17,7 +17,7 @@ package org.exbin.bined.operation.swing;
 
 import javax.annotation.Nonnull;
 import org.exbin.auxiliary.binary_data.BinaryData;
-import org.exbin.auxiliary.binary_data.ByteArrayEditableData;
+import org.exbin.auxiliary.binary_data.array.ByteArrayEditableData;
 import org.exbin.auxiliary.binary_data.EditableBinaryData;
 import org.exbin.bined.CodeAreaTest;
 import org.exbin.bined.SelectionRange;
