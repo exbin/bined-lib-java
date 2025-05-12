@@ -210,7 +210,6 @@ public class SectCodeArea extends Composite implements CodeAreaControl {
 //        add(horizontalScrollBar);
 
 //        setFocusable(true);
-//        setFocusTraversalKeysEnabled(false);
 //        addComponentListener(new CodeAreaComponentListener());
 //        CodeAreaMouseListener codeAreaMouseListener = new CodeAreaMouseListener();
 //        addMouseListener(codeAreaMouseListener);

@@ -12,7 +12,7 @@ plugins {
     id 'maven-publish'
 }
 
-version = '0.2.2-SNAPSHOT'
+version = '0.2.2'
 
 task cleanDeps {
     if (gradle.startParameter.taskNames.contains("clean") && !project.gradle.startParameter.projectProperties.containsKey("moduleDep")) {
@@ -83,7 +83,7 @@ if (!project.gradle.startParameter.projectProperties.containsKey("moduleDep")) {
 
                 into('') {
                     from project.rootDir
-                    include 'LICENSE-2.0.txt'
+                    include 'LICENSE.txt'
                     include 'changes.txt'
                 }
                 into('') {

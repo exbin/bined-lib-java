@@ -73,7 +73,6 @@ public abstract class CodeAreaCore extends Canvas implements CodeAreaControl {
         // TODO: Use swing color instead
 //        setBackground(java.awt.Color.WHITE);
 //        setFocusable(true);
-//        setFocusTraversalKeysEnabled(false);
         forceFocus();
         registerControlListeners();
     }

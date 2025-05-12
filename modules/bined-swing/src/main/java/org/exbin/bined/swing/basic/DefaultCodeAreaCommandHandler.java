@@ -421,10 +421,6 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     }
 
     public void tabPressed(SelectingMode selectingMode) {
-        if (!checkEditAllowed()) {
-            return;
-        }
-
         if (tabKeyHandlingMode == TabKeyHandlingMode.PLATFORM_SPECIFIC || tabKeyHandlingMode == TabKeyHandlingMode.CYCLE_TO_NEXT_SECTION || tabKeyHandlingMode == TabKeyHandlingMode.CYCLE_TO_PREVIOUS_SECTION) {
             if (viewModeSupported && ((ViewModeCapable) codeArea).getViewMode() == CodeAreaViewMode.DUAL) {
                 move(selectingMode, MovementDirection.SWITCH_SECTION);
