@@ -63,7 +63,7 @@ import org.exbin.bined.capability.EditModeCapable;
 @ParametersAreNonnullByDefault
 public class BinEdEditorBasic extends javax.swing.JFrame {
 
-    private static final String APPLICATION_VERSION = "0.2.2";
+    private static final String APPLICATION_VERSION = "0.3.0 DEV";
     private static final String APPLICATION_NAME = "BinEd";
     private static final String APPLICATION_DEFAULT_TITLE = APPLICATION_NAME + " Basic Editor";
 
