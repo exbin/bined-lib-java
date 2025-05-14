@@ -34,7 +34,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.lanterna.basic.CodeArea;
 import org.exbin.auxiliary.binary_data.BinaryData;
-import org.exbin.auxiliary.binary_data.ByteArrayEditableData;
+import org.exbin.auxiliary.binary_data.array.ByteArrayEditableData;
 
 /**
  * Binary component demo application for Lanterna.
