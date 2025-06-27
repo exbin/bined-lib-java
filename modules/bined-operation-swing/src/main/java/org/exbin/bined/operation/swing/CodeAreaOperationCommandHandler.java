@@ -672,9 +672,8 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
                         clipboardData = (InputStream) clipboard.getData(binaryDataFlavor);
                         pastedData.insert(0, clipboardData, -1);
                     } else if (clipboard.isDataFlavorAvailable(DataFlavor.getTextPlainUnicodeFlavor())) {
-                        clipboardData = (InputStream) clipboard.getData(DataFlavor.getTextPlainUnicodeFlavor());
-
                         DataFlavor textPlainUnicodeFlavor = DataFlavor.getTextPlainUnicodeFlavor();
+                        clipboardData = (InputStream) clipboard.getData(textPlainUnicodeFlavor);
                         String charsetName = textPlainUnicodeFlavor.getParameter(MIME_CHARSET);
                         CharsetStreamTranslator translator = new CharsetStreamTranslator(Charset.forName(charsetName), ((CharsetCapable) codeArea).getCharset(), clipboardData);
 
