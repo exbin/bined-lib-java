@@ -6,7 +6,11 @@ plugins {
 
 apply from: '../apps.gradle'
 
-ext.depsRoot = 'BinedLibJava'
+ext {
+    depsRoot = 'BinedLibJava'
+    appName = 'BinEd Swing Demo'
+    vendor = 'ExBin Project'
+}
 
 if (!hasProperty('mainClass')) {
     ext.mainClass = 'org.exbin.bined.swing.demo.BinEdDemo'
@@ -62,7 +66,11 @@ jar {
     manifest {
         attributes(
             'Main-Class': mainClass,
-            'Class-Path': manifestClassPath()
+            'Class-Path': manifestClassPath(),
+            'Build-JDK': System.getProperty('java.version'),
+            'Specification-Title': project.appName,
+            'Specification-Version': project.version,
+            'Specification-Vendor': project.vendor
         )
     }
 }

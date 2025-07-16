@@ -18,7 +18,11 @@ plugins {
 
 apply from: '../apps.gradle'
 
-ext.depsRoot = 'BinedLibJava'
+ext {
+    depsRoot = 'BinedLibJava'
+    appName = 'BinEd Basic Editor'
+    vendor = 'ExBin Project'
+}
 
 if (!hasProperty('mainClass')) {
     ext.mainClass = 'org.exbin.bined.editor.basic.BinEdEditorBasic'
@@ -80,7 +84,11 @@ jar {
     manifest {
         attributes(
             'Main-Class': mainClass,
-            'Class-Path': manifestClassPath()
+            'Class-Path': manifestClassPath(),
+            'Build-JDK': System.getProperty('java.version'),
+            'Specification-Title': project.appName,
+            'Specification-Version': project.version,
+            'Specification-Vendor': project.vendor
         )
     }
 }

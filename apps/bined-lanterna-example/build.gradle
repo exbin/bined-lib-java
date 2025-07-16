@@ -6,7 +6,11 @@ plugins {
 
 apply from: '../apps.gradle'
 
-ext.depsRoot = 'BinedLibJava'
+ext {
+    depsRoot = 'BinedLibJava'
+    appName = 'BinEd Lanterna Example'
+    vendor = 'ExBin Project'
+}
 
 if (!hasProperty('mainClass')) {
     ext.mainClass = 'org.exbin.bined.lanterna.example.BinEdExample'
@@ -61,7 +65,11 @@ jar {
     manifest {
         attributes(
             'Main-Class': mainClass,
-            'Class-Path': manifestClassPath()
+            'Class-Path': manifestClassPath(),
+            'Build-JDK': System.getProperty('java.version'),
+            'Specification-Title': project.appName,
+            'Specification-Version': project.version,
+            'Specification-Vendor': project.vendor
         )
     }
 }
