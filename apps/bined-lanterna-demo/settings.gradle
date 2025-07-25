@@ -1,4 +1,4 @@
-rootProject.name = 'bined-lanterna-example'
+rootProject.name = 'bined-lanterna-demo'
 
 if (rootProject.path == ':') {
     include ':modules:bined-core'

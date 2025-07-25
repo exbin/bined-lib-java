@@ -30,7 +30,6 @@ import org.exbin.bined.basic.BasicCodeAreaSection;
 import org.exbin.bined.EditOperation;
 import org.exbin.bined.SelectionRange;
 import org.exbin.bined.capability.SelectionCapable;
-import org.exbin.bined.swing.demo.BinEdDemoBasicPanel;
 import org.exbin.bined.swing.section.SectCodeArea;
 import org.exbin.auxiliary.binary_data.EditableBinaryData;
 import org.exbin.bined.CodeAreaCaretPosition;
@@ -282,7 +281,7 @@ public class StatePanelSect extends javax.swing.JPanel {
                     codeArea.getContentData().saveToStream(stream);
                 }
             } catch (IOException ex) {
-                Logger.getLogger(BinEdDemoBasicPanel.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(StatePanelSect.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }//GEN-LAST:event_saveDataButtonActionPerformed
@@ -314,7 +313,7 @@ public class StatePanelSect extends javax.swing.JPanel {
                     //                    codeArea.resetPosition();
                 }
             } catch (IOException ex) {
-                Logger.getLogger(BinEdDemoBasicPanel.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(StatePanelSect.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }//GEN-LAST:event_loadDataButtonActionPerformed
