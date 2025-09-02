@@ -18,6 +18,7 @@ package org.exbin.bined.swing.section.diff;
 import java.awt.BorderLayout;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import javax.swing.JPanel;
 import org.exbin.auxiliary.binary_data.BinaryData;
 import org.exbin.bined.EditMode;
 import org.exbin.bined.basic.CodeAreaScrollPosition;
@@ -128,6 +129,16 @@ public class SectCodeAreaDiffPanel extends javax.swing.JPanel {
     private javax.swing.JPanel rightPanel;
     private javax.swing.JSplitPane splitPane;
     // End of variables declaration//GEN-END:variables
+
+    @Nonnull
+    public JPanel getLeftPanel() {
+        return leftPanel;
+    }
+
+    @Nonnull
+    public JPanel getRightPanel() {
+        return rightPanel;
+    }
 
     @Nonnull
     public SectCodeArea getLeftCodeArea() {

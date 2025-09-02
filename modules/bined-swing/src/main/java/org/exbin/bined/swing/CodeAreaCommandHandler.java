@@ -29,6 +29,7 @@ import org.exbin.bined.basic.SelectingMode;
 @ParametersAreNonnullByDefault
 public interface CodeAreaCommandHandler {
 
+// TODO    void executeOperation(Operation dataOperation);
     /**
      * Notifies command handler about end of sequence of append-able commands.
      */
