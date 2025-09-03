@@ -10,7 +10,7 @@ Published in Maven: https://mvnrepository.com/artifact/org.exbin.bined
 Downloads
 ---------
 
-ZIP pack: https://bined.exbin.org/download/?group=library&variant=0  
+[<img src="images/button-zip.png?raw=true" alt="Download ZIP" height="42">](https://bined.exbin.org/download/?group=library&variant=0)
 
 Screenshot
 ----------
