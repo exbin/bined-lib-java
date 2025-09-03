@@ -5,6 +5,13 @@ Library for hex viewer/editor components written in Java.
 
 Homepage: https://bined.exbin.org/library  
 
+Published in Maven: https://mvnrepository.com/artifact/org.exbin.bined  
+
+Downloads
+---------
+
+ZIP pack: https://bined.exbin.org/download/?group=library&variant=0  
+
 Screenshot
 ----------
 
