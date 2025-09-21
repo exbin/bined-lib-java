@@ -2,7 +2,7 @@ buildscript {
     repositories {
         mavenLocal()
         maven {
-            url "https://plugins.gradle.org/m2/"
+            url = "https://plugins.gradle.org/m2/"
         }    
     }
     dependencies {
@@ -30,7 +30,9 @@ ext {
     vendor = 'ExBin Project'
 }
 
-sourceCompatibility = '1.8'
+java {
+    sourceCompatibility = '1.8'
+}
 
 def javaFxHome = "${System.properties['java.home']}";
 

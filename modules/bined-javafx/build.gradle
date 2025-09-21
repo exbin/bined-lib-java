@@ -2,7 +2,7 @@ buildscript {
     repositories {
         mavenLocal()
         maven {
-            url "https://plugins.gradle.org/m2/"
+            url = "https://plugins.gradle.org/m2/"
         }    
     }
     dependencies {
@@ -30,9 +30,10 @@ apply from: '../bined-java-modules.gradle'
 
 //def javaFxHome = "${System.properties['java.home']}"
 
-sourceCompatibility = '1.8'
-
-targetCompatibility = '1.8'
+java {
+    sourceCompatibility = '1.8'
+    targetCompatibility = '1.8'
+}
 
 if (!hasProperty('mainClass')) {
     ext.mainClass = ''
