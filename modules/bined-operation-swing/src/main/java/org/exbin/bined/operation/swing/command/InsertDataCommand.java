@@ -37,7 +37,7 @@ public class InsertDataCommand extends OpCodeAreaCommand {
         super(codeArea);
         this.position = position;
         dataLength = data.getDataSize();
-        super.setOperation(new InsertDataOperation(codeArea, position, codeOffset, data));
+        super.setOperation(new InsertDataOperation(position, codeOffset, data));
     }
 
     @Nonnull

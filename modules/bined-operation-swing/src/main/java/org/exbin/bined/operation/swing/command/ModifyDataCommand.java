@@ -31,7 +31,7 @@ public class ModifyDataCommand extends OpCodeAreaCommand {
 
     public ModifyDataCommand(CodeAreaCore codeArea, long position, BinaryData data) {
         super(codeArea);
-        super.setOperation(new ModifyDataOperation(codeArea, position, data));
+        super.setOperation(new ModifyDataOperation(position, data));
     }
 
     @Nonnull

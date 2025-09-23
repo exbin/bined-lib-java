@@ -13,29 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.operation.swing.command;
+package org.exbin.bined.operation.swing;
 
-import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import org.exbin.bined.operation.swing.RemoveDataOperation;
-import org.exbin.bined.swing.CodeAreaCore;
+import javax.annotation.concurrent.Immutable;
+import org.exbin.bined.CodeAreaCaretPosition;
+import org.exbin.bined.CodeAreaSelection;
 
 /**
- * Command for deleting data.
+ * Code area state for operation purposes.
  *
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public class RemoveDataCommand extends OpCodeAreaCommand {
+@Immutable
+public class CodeAreaState {
 
-    public RemoveDataCommand(CodeAreaCore codeArea, long position, int codeOffset, long size) {
-        super(codeArea);
-        super.setOperation(new RemoveDataOperation(position, codeOffset, size));
+    private final CodeAreaCaretPosition caretPosition;
+    private final CodeAreaSelection selection;
+
+    public CodeAreaState(CodeAreaCaretPosition caretPosition, CodeAreaSelection selection) {
+        this.caretPosition = caretPosition;
+        this.selection = selection;
     }
 
-    @Nonnull
-    @Override
-    public CodeAreaCommandType getType() {
-        return CodeAreaCommandType.DATA_REMOVED;
+    public CodeAreaCaretPosition getCaretPosition() {
+        return caretPosition;
+    }
+
+    public CodeAreaSelection getSelection() {
+        return selection;
     }
 }

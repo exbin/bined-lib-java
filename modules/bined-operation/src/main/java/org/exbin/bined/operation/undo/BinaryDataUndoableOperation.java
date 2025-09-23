@@ -16,6 +16,7 @@
 package org.exbin.bined.operation.undo;
 
 import javax.annotation.Nonnull;
+import org.exbin.auxiliary.binary_data.EditableBinaryData;
 import org.exbin.bined.operation.BinaryDataOperation;
 
 /**
@@ -28,8 +29,9 @@ public interface BinaryDataUndoableOperation extends BinaryDataOperation {
     /**
      * Performs operation on given document and returns undo operation.
      *
+     * @param contentData content data
      * @return undo operation
      */
     @Nonnull
-    BinaryDataUndoableOperation executeWithUndo();
+    BinaryDataUndoableOperation executeWithUndo(EditableBinaryData contentData);
 }

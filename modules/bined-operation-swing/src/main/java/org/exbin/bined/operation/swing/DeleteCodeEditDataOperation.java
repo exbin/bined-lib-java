@@ -20,8 +20,6 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.auxiliary.binary_data.BinaryData;
 import org.exbin.bined.CodeType;
-import org.exbin.bined.capability.CaretCapable;
-import org.exbin.bined.swing.CodeAreaCore;
 import org.exbin.auxiliary.binary_data.EditableBinaryData;
 import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.operation.BinaryDataOperation;
@@ -44,8 +42,7 @@ public class DeleteCodeEditDataOperation extends CodeEditDataOperation {
     protected long position;
     protected byte value;
 
-    public DeleteCodeEditDataOperation(CodeAreaCore codeArea, long startPosition, CodeType codeType, byte value) {
-        super(codeArea);
+    public DeleteCodeEditDataOperation(long startPosition, CodeType codeType, byte value) {
         this.value = value;
         this.codeType = codeType;
         this.position = startPosition;
@@ -64,22 +61,21 @@ public class DeleteCodeEditDataOperation extends CodeEditDataOperation {
     }
 
     @Override
-    public void execute() {
-        execute(false);
+    public void execute(EditableBinaryData contentData) {
+        execute(contentData, false);
     }
 
     @Nonnull
     @Override
-    public BinaryDataUndoableOperation executeWithUndo() {
-        return CodeAreaUtils.requireNonNull(execute(true));
+    public BinaryDataUndoableOperation executeWithUndo(EditableBinaryData contentData) {
+        return CodeAreaUtils.requireNonNull(execute(contentData, true));
     }
 
     @Nullable
-    private CodeAreaOperation execute(boolean withUndo) {
-        CodeAreaOperation undoOperation = null;
+    private BinaryDataUndoableOperation execute(EditableBinaryData contentData, boolean withUndo) {
+        BinaryDataUndoableOperation undoOperation = null;
         EditableBinaryData undoData = null;
 
-        EditableBinaryData data = (EditableBinaryData) codeArea.getContentData();
         switch (value) {
             case BACKSPACE_CHAR: {
                 if (position <= 0) {
@@ -87,28 +83,26 @@ public class DeleteCodeEditDataOperation extends CodeEditDataOperation {
                 }
 
                 position--;
-                undoData = (EditableBinaryData) data.copy(position, 1);
-                data.remove(position, 1);
+                undoData = (EditableBinaryData) contentData.copy(position, 1);
+                contentData.remove(position, 1);
                 break;
             }
             case DELETE_CHAR: {
-                if (position >= data.getDataSize()) {
+                if (position >= contentData.getDataSize()) {
                     throw new IllegalStateException("Cannot apply delete on position " + position);
                 }
 
-                undoData = (EditableBinaryData) data.copy(position, 1);
-                data.remove(position, 1);
+                undoData = (EditableBinaryData) contentData.copy(position, 1);
+                contentData.remove(position, 1);
                 break;
             }
             default: {
                 throw new IllegalStateException("Unexpected character " + value);
             }
         }
-        ((CaretCapable) codeArea).setActiveCaretPosition(position);
-        codeArea.repaint();
 
         if (withUndo) {
-            undoOperation = new UndoOperation(codeArea, position, 0, undoData, value);
+            undoOperation = new UndoOperation(position, 0, undoData, value);
         }
         return undoOperation;
     }
@@ -118,8 +112,8 @@ public class DeleteCodeEditDataOperation extends CodeEditDataOperation {
 
         private byte value;
 
-        public UndoOperation(CodeAreaCore codeArea, long position, int codeOffset, BinaryData data, byte value) {
-            super(codeArea, position, codeOffset, data);
+        public UndoOperation(long position, int codeOffset, BinaryData data, byte value) {
+            super(position, codeOffset, data);
             this.value = value;
         }
 

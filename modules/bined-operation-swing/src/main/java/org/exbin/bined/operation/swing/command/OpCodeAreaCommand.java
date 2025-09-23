@@ -18,10 +18,10 @@ package org.exbin.bined.operation.swing.command;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import org.exbin.auxiliary.binary_data.EditableBinaryData;
 
 import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.operation.BinaryDataCommandPhase;
-import org.exbin.bined.operation.swing.CodeAreaOperation;
 import org.exbin.bined.operation.undo.BinaryDataUndoableOperation;
 import org.exbin.bined.swing.CodeAreaCore;
 
@@ -42,7 +42,7 @@ public abstract class OpCodeAreaCommand extends CodeAreaCommand {
         super(codeArea);
     }
 
-    public void setOperation(CodeAreaOperation operation) {
+    public void setOperation(BinaryDataUndoableOperation operation) {
         if (this.operation != null) {
             this.operation.dispose();
         }
@@ -64,7 +64,8 @@ public abstract class OpCodeAreaCommand extends CodeAreaCommand {
             throw new IllegalStateException();
         }
 
-        BinaryDataUndoableOperation redoOperation = CodeAreaUtils.requireNonNull(operation).executeWithUndo();
+        EditableBinaryData contentData = (EditableBinaryData) codeArea.getContentData();
+        BinaryDataUndoableOperation redoOperation = CodeAreaUtils.requireNonNull(operation).executeWithUndo(contentData);
         operation.dispose();
         operation = redoOperation;
         phase = BinaryDataCommandPhase.REVERTED;
@@ -80,7 +81,8 @@ public abstract class OpCodeAreaCommand extends CodeAreaCommand {
     }
 
     private void executeInt() {
-        BinaryDataUndoableOperation undoOperation = CodeAreaUtils.requireNonNull(operation).executeWithUndo();
+        EditableBinaryData contentData = (EditableBinaryData) codeArea.getContentData();
+        BinaryDataUndoableOperation undoOperation = CodeAreaUtils.requireNonNull(operation).executeWithUndo(contentData);
         operation.dispose();
         operation = undoOperation;
         phase = BinaryDataCommandPhase.EXECUTED;

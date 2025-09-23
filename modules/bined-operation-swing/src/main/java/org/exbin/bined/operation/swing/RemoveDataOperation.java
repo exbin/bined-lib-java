@@ -19,8 +19,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import org.exbin.bined.capability.CaretCapable;
-import org.exbin.bined.swing.CodeAreaCore;
 import org.exbin.auxiliary.binary_data.EditableBinaryData;
 import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.operation.undo.BinaryDataUndoableOperation;
@@ -31,14 +29,13 @@ import org.exbin.bined.operation.undo.BinaryDataUndoableOperation;
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public class RemoveDataOperation extends CodeAreaOperation {
+public class RemoveDataOperation implements BinaryDataUndoableOperation {
 
     protected final long position;
     protected final int codeOffset;
     protected final long length;
 
-    public RemoveDataOperation(CodeAreaCore codeArea, long position, int codeOffset, long length) {
-        super(codeArea);
+    public RemoveDataOperation(long position, int codeOffset, long length) {
         this.position = position;
         this.codeOffset = codeOffset;
         this.length = length;
@@ -51,26 +48,28 @@ public class RemoveDataOperation extends CodeAreaOperation {
     }
 
     @Override
-    public void execute() {
-        execute(false);
+    public void execute(EditableBinaryData contentData) {
+        execute(contentData, false);
     }
 
     @Nonnull
     @Override
-    public BinaryDataUndoableOperation executeWithUndo() {
-        return CodeAreaUtils.requireNonNull(execute(true));
+    public BinaryDataUndoableOperation executeWithUndo(EditableBinaryData contentData) {
+        return CodeAreaUtils.requireNonNull(execute(contentData, true));
     }
 
     @Nullable
-    private CodeAreaOperation execute(boolean withUndo) {
-        EditableBinaryData contentData = (EditableBinaryData) codeArea.getContentData();
-        CodeAreaOperation undoOperation = null;
+    private BinaryDataUndoableOperation execute(EditableBinaryData contentData, boolean withUndo) {
+        BinaryDataUndoableOperation undoOperation = null;
         if (withUndo) {
             EditableBinaryData undoData = (EditableBinaryData) contentData.copy(position, length);
-            undoOperation = new InsertDataOperation(codeArea, position, codeOffset, undoData);
+            undoOperation = new InsertDataOperation(position, codeOffset, undoData);
         }
         contentData.remove(position, length);
-        ((CaretCapable) codeArea).setActiveCaretPosition(position, codeOffset);
         return undoOperation;
+    }
+
+    @Override
+    public void dispose() {
     }
 }

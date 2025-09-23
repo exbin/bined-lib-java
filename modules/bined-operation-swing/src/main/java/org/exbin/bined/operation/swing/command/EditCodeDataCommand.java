@@ -17,6 +17,7 @@ package org.exbin.bined.operation.swing.command;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import org.exbin.auxiliary.binary_data.EditableBinaryData;
 import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.capability.CodeTypeCapable;
 import org.exbin.bined.operation.BinaryDataCommand;
@@ -48,15 +49,15 @@ public class EditCodeDataCommand extends EditDataCommand implements BinaryDataAp
         this.editOperationType = editOperationType;
         switch (editOperationType) {
             case INSERT: {
-                activeOperation = new InsertCodeEditDataOperation(codeArea, position, positionCodeOffset, value);
+                activeOperation = new InsertCodeEditDataOperation(position, positionCodeOffset, value, ((CodeTypeCapable) codeArea).getCodeType());
                 break;
             }
             case OVERWRITE: {
-                activeOperation = new OverwriteCodeEditDataOperation(codeArea, position, positionCodeOffset, ((CodeTypeCapable) codeArea).getCodeType(), value);
+                activeOperation = new OverwriteCodeEditDataOperation(position, positionCodeOffset, ((CodeTypeCapable) codeArea).getCodeType(), value);
                 break;
             }
             case DELETE: {
-                activeOperation = new DeleteCodeEditDataOperation(codeArea, position, ((CodeTypeCapable) codeArea).getCodeType(), value);
+                activeOperation = new DeleteCodeEditDataOperation(position, ((CodeTypeCapable) codeArea).getCodeType(), value);
                 break;
             }
             default:
@@ -70,7 +71,8 @@ public class EditCodeDataCommand extends EditDataCommand implements BinaryDataAp
             throw new IllegalStateException();
         }
 
-        BinaryDataUndoableOperation undoOperation = activeOperation.executeWithUndo();
+        EditableBinaryData contentData = (EditableBinaryData) codeArea.getContentData();
+        BinaryDataUndoableOperation undoOperation = activeOperation.executeWithUndo(contentData);
         activeOperation.dispose();
         activeOperation = undoOperation;
         phase = BinaryDataCommandPhase.EXECUTED;
@@ -82,7 +84,8 @@ public class EditCodeDataCommand extends EditDataCommand implements BinaryDataAp
             throw new IllegalStateException();
         }
 
-        BinaryDataUndoableOperation undoOperation = activeOperation.executeWithUndo();
+        EditableBinaryData contentData = (EditableBinaryData) codeArea.getContentData();
+        BinaryDataUndoableOperation undoOperation = activeOperation.executeWithUndo(contentData);
         activeOperation.dispose();
         activeOperation = undoOperation;
         phase = BinaryDataCommandPhase.REVERTED;
@@ -94,7 +97,8 @@ public class EditCodeDataCommand extends EditDataCommand implements BinaryDataAp
             throw new IllegalStateException();
         }
 
-        BinaryDataUndoableOperation undoOperation = activeOperation.executeWithUndo();
+        EditableBinaryData contentData = (EditableBinaryData) codeArea.getContentData();
+        BinaryDataUndoableOperation undoOperation = activeOperation.executeWithUndo(contentData);
         activeOperation.dispose();
         activeOperation = undoOperation;
         phase = BinaryDataCommandPhase.EXECUTED;

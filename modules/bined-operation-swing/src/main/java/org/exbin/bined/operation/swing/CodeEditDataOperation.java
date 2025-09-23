@@ -18,7 +18,7 @@ package org.exbin.bined.operation.swing;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.CodeType;
-import org.exbin.bined.swing.CodeAreaCore;
+import org.exbin.bined.operation.undo.BinaryDataUndoableOperation;
 
 /**
  * Abstract operation for editing data.
@@ -26,10 +26,9 @@ import org.exbin.bined.swing.CodeAreaCore;
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public abstract class CodeEditDataOperation extends CodeAreaOperation {
+public abstract class CodeEditDataOperation implements BinaryDataUndoableOperation {
 
-    public CodeEditDataOperation(CodeAreaCore codeArea) {
-        super(codeArea);
+    public CodeEditDataOperation() {
     }
 
     /**
@@ -39,4 +38,13 @@ public abstract class CodeEditDataOperation extends CodeAreaOperation {
      */
     @Nonnull
     public abstract CodeType getCodeType();
+
+    /**
+     * Performs dispose of the operation's resources.
+     * <p>
+     * Default dispose is empty.
+     */
+    @Override
+    public void dispose() {
+    }
 }

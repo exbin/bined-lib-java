@@ -25,6 +25,7 @@ repositories {
 
 dependencies {
     compileOnly group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.2'
+    implementation moduleDep('ExbinAuxiliaryJava', 'org.exbin.auxiliary', 'modules', 'binary_data')
 
     testImplementation project(path: moduleDepPath('BinedLibJava', 'modules', 'bined-core'), configuration: 'tests')
     testImplementation group : 'junit', name: 'junit', version: '4.13.2'
