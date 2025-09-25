@@ -384,7 +384,6 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
             }
 
             codeArea.notifyDataChanged();
-            move(SelectingMode.NONE, MovementDirection.RIGHT);
             revealCursor();
         }
     }

@@ -18,11 +18,11 @@ package org.exbin.bined.operation.swing;
 import org.exbin.bined.operation.BinaryDataOperationType;
 
 /**
- * Operation type enumeration.
+ * Basic binary data operation type enumeration.
  *
  * @author ExBin Project (https://exbin.org)
  */
-public enum CodeAreaOperationType implements BinaryDataOperationType {
+public enum BasicBinaryDataOperationType implements BinaryDataOperationType {
 
     /**
      * Insert data operation.

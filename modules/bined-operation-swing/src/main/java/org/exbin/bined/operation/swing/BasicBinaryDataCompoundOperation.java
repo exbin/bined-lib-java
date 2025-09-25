@@ -26,22 +26,22 @@ import org.exbin.bined.operation.BinaryDataOperation;
 import org.exbin.bined.operation.undo.BinaryDataUndoableOperation;
 
 /**
- * Abstract class for compound operation on code area component.
+ * Compound binary data operation.
  *
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public class CodeAreaCompoundOperation implements BinaryDataUndoableOperation, BinaryDataCompoundOperation {
+public class BasicBinaryDataCompoundOperation implements BinaryDataCompoundOperation, BinaryDataUndoableOperation {
 
     protected final List<BinaryDataOperation> operations = new ArrayList<>();
 
-    public CodeAreaCompoundOperation() {
+    public BasicBinaryDataCompoundOperation() {
     }
 
     @Nonnull
     @Override
     public BinaryDataUndoableOperation executeWithUndo(EditableBinaryData contentData) {
-        CodeAreaCompoundOperation undoOperations = new CodeAreaCompoundOperation();
+        BasicBinaryDataCompoundOperation undoOperations = new BasicBinaryDataCompoundOperation();
         for (BinaryDataOperation operation : operations) {
             BinaryDataUndoableOperation undoOperation = ((BinaryDataUndoableOperation) operation).executeWithUndo(contentData);
             undoOperations.insertOperation(0, undoOperation);
@@ -58,8 +58,8 @@ public class CodeAreaCompoundOperation implements BinaryDataUndoableOperation, B
 
     @Nonnull
     @Override
-    public CodeAreaOperationType getType() {
-        return CodeAreaOperationType.COMPOUND;
+    public BasicBinaryDataOperationType getType() {
+        return BasicBinaryDataOperationType.COMPOUND;
     }
 
     @Override

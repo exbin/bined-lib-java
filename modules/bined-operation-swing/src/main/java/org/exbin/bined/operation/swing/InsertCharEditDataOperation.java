@@ -45,8 +45,8 @@ public class InsertCharEditDataOperation extends CharEditDataOperation {
 
     @Nonnull
     @Override
-    public CodeAreaOperationType getType() {
-        return CodeAreaOperationType.EDIT_DATA;
+    public BasicBinaryDataOperationType getType() {
+        return BasicBinaryDataOperationType.EDIT_DATA;
     }
 
     @Override
@@ -94,8 +94,8 @@ public class InsertCharEditDataOperation extends CharEditDataOperation {
 
         @Nonnull
         @Override
-        public CodeAreaOperationType getType() {
-            return CodeAreaOperationType.REMOVE_DATA;
+        public BasicBinaryDataOperationType getType() {
+            return BasicBinaryDataOperationType.REMOVE_DATA;
         }
 
         @Override

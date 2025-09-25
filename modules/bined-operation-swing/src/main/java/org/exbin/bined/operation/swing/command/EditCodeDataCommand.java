@@ -18,7 +18,11 @@ package org.exbin.bined.operation.swing.command;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.auxiliary.binary_data.EditableBinaryData;
+import org.exbin.bined.CodeAreaCaretPosition;
+import org.exbin.bined.CodeAreaSection;
 import org.exbin.bined.CodeAreaUtils;
+import org.exbin.bined.DefaultCodeAreaCaretPosition;
+import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.capability.CodeTypeCapable;
 import org.exbin.bined.operation.BinaryDataCommand;
 import org.exbin.bined.operation.BinaryDataCommandPhase;
@@ -43,21 +47,41 @@ public class EditCodeDataCommand extends EditDataCommand implements BinaryDataAp
     protected BinaryDataCommandPhase phase = BinaryDataCommandPhase.CREATED;
     @Nonnull
     protected BinaryDataUndoableOperation activeOperation;
+    protected CodeAreaCaretPosition afterCaretPosition;
 
     public EditCodeDataCommand(CodeAreaCore codeArea, EditOperationType editOperationType, long position, int positionCodeOffset, byte value) {
         super(codeArea);
         this.editOperationType = editOperationType;
+        CodeAreaSection activeSection = ((CaretCapable) codeArea).getActiveSection();
         switch (editOperationType) {
             case INSERT: {
-                activeOperation = new InsertCodeEditDataOperation(position, positionCodeOffset, value, ((CodeTypeCapable) codeArea).getCodeType());
+                InsertCodeEditDataOperation operation = new InsertCodeEditDataOperation(position, positionCodeOffset, value, ((CodeTypeCapable) codeArea).getCodeType());
+                if (operation.isLastOffset()) {
+                    afterCaretPosition = new DefaultCodeAreaCaretPosition(position + 1, 0, activeSection);
+                } else {
+                    afterCaretPosition = new DefaultCodeAreaCaretPosition(position, operation.getCodeOffset() + 1, activeSection);
+                }
+                activeOperation = operation;
                 break;
             }
             case OVERWRITE: {
-                activeOperation = new OverwriteCodeEditDataOperation(position, positionCodeOffset, ((CodeTypeCapable) codeArea).getCodeType(), value);
+                OverwriteCodeEditDataOperation operation = new OverwriteCodeEditDataOperation(position, positionCodeOffset, ((CodeTypeCapable) codeArea).getCodeType(), value);
+                if (operation.isLastOffset()) {
+                    afterCaretPosition = new DefaultCodeAreaCaretPosition(position + 1, 0, activeSection);
+                } else {
+                    afterCaretPosition = new DefaultCodeAreaCaretPosition(position, operation.getCodeOffset() + 1, activeSection);
+                }
+                activeOperation = operation;
                 break;
             }
             case DELETE: {
-                activeOperation = new DeleteCodeEditDataOperation(position, ((CodeTypeCapable) codeArea).getCodeType(), value);
+                DeleteCodeEditDataOperation operation = new DeleteCodeEditDataOperation(position, ((CodeTypeCapable) codeArea).getCodeType(), value);
+                if (operation.isBackSpace()) {
+                    afterCaretPosition = new DefaultCodeAreaCaretPosition(position - 1, 0, activeSection);
+                } else {
+                    afterCaretPosition = new DefaultCodeAreaCaretPosition(position, 0, activeSection);
+                }
+                activeOperation = operation;
                 break;
             }
             default:
@@ -66,33 +90,22 @@ public class EditCodeDataCommand extends EditDataCommand implements BinaryDataAp
     }
 
     @Override
-    public void execute() {
+    public void performExecute() {
         if (phase != BinaryDataCommandPhase.CREATED) {
             throw new IllegalStateException();
         }
 
         EditableBinaryData contentData = (EditableBinaryData) codeArea.getContentData();
         BinaryDataUndoableOperation undoOperation = activeOperation.executeWithUndo(contentData);
+        ((CaretCapable) codeArea).setActiveCaretPosition(afterCaretPosition);
+
         activeOperation.dispose();
         activeOperation = undoOperation;
         phase = BinaryDataCommandPhase.EXECUTED;
     }
 
     @Override
-    public void undo() {
-        if (phase != BinaryDataCommandPhase.EXECUTED) {
-            throw new IllegalStateException();
-        }
-
-        EditableBinaryData contentData = (EditableBinaryData) codeArea.getContentData();
-        BinaryDataUndoableOperation undoOperation = activeOperation.executeWithUndo(contentData);
-        activeOperation.dispose();
-        activeOperation = undoOperation;
-        phase = BinaryDataCommandPhase.REVERTED;
-    }
-
-    @Override
-    public void redo() {
+    public void performRedo() {
         if (phase != BinaryDataCommandPhase.REVERTED) {
             throw new IllegalStateException();
         }
@@ -102,6 +115,19 @@ public class EditCodeDataCommand extends EditDataCommand implements BinaryDataAp
         activeOperation.dispose();
         activeOperation = undoOperation;
         phase = BinaryDataCommandPhase.EXECUTED;
+    }
+
+    @Override
+    public void performUndo() {
+        if (phase != BinaryDataCommandPhase.EXECUTED) {
+            throw new IllegalStateException();
+        }
+
+        EditableBinaryData contentData = (EditableBinaryData) codeArea.getContentData();
+        BinaryDataUndoableOperation undoOperation = activeOperation.executeWithUndo(contentData);
+        activeOperation.dispose();
+        activeOperation = undoOperation;
+        phase = BinaryDataCommandPhase.REVERTED;
     }
 
     @Nonnull

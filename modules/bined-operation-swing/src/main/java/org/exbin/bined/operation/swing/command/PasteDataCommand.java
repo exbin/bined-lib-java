@@ -46,7 +46,7 @@ public class PasteDataCommand extends CodeAreaCommand {
     }
 
     @Override
-    public void execute() {
+    public void performExecute() {
         long dataPosition = ((CaretCapable) codeArea).getDataPosition();
         EditMode editMode = ((EditModeCapable) codeArea).getEditMode();
         EditOperation editOperation = ((EditModeCapable) codeArea).getActiveOperation();
@@ -98,7 +98,7 @@ public class PasteDataCommand extends CodeAreaCommand {
     }
 
     @Override
-    public void redo() {
+    public void performRedo() {
         if (modifyCommand != null) {
             modifyCommand.redo();
         }
@@ -108,7 +108,7 @@ public class PasteDataCommand extends CodeAreaCommand {
     }
 
     @Override
-    public void undo() {
+    public void performUndo() {
         if (insertCommand != null) {
             insertCommand.undo();
         }

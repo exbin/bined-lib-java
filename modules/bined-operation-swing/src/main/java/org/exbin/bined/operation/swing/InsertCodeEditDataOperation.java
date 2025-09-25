@@ -27,39 +27,32 @@ import org.exbin.bined.operation.undo.BinaryDataUndoableOperation;
 
 /**
  * Operation for editing data using insert mode.
+ * <p>
+ * At zero offset byte is inserted, otherwise part of the value is overwritten.
  *
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class InsertCodeEditDataOperation extends CodeEditDataOperation {
 
-    protected final long startPosition;
-    protected final int startCodeOffset;
+    protected final long position;
+    protected final int codeOffset;
     protected boolean trailing = false;
-    @Nullable
-    protected EditableBinaryData trailingValue = null;
     @Nonnull
     protected final CodeType codeType;
     protected byte value;
 
-    private long length;
-    private int codeOffset = 0;
-
-    public InsertCodeEditDataOperation(long startPosition, int startCodeOffset, byte value, CodeType codeType) {
+    public InsertCodeEditDataOperation(long position, int codeOffset, byte value, CodeType codeType) {
         this.value = value;
         this.codeType = codeType;
-        this.startPosition = startPosition;
-        this.startCodeOffset = startCodeOffset;
-        this.codeOffset = startCodeOffset;
-        if (codeOffset > 0) {
-            length = 1;
-        }
+        this.position = position;
+        this.codeOffset = codeOffset;
     }
 
     @Nonnull
     @Override
-    public CodeAreaOperationType getType() {
-        return CodeAreaOperationType.EDIT_DATA;
+    public BasicBinaryDataOperationType getType() {
+        return BasicBinaryDataOperationType.EDIT_DATA;
     }
 
     @Nonnull
@@ -81,16 +74,14 @@ public class InsertCodeEditDataOperation extends CodeEditDataOperation {
 
     @Nullable
     private BinaryDataUndoableOperation execute(EditableBinaryData contentData, boolean withUndo) {
-        if (startPosition > contentData.getDataSize() || (startPosition == contentData.getDataSize() && codeOffset > 0)) {
+        if (position > contentData.getDataSize() || (position == contentData.getDataSize() && codeOffset > 0)) {
             throw new IllegalStateException("Cannot overwrite outside of the document");
         }
 
-        long editedDataPosition = startPosition + length;
         BinaryDataUndoableOperation undoOperation = null;
 
-        byte byteValue = 0;
         if (codeOffset > 0) {
-            byteValue = contentData.getByte(editedDataPosition - 1);
+            byte byteValue = contentData.getByte(position);
             byte byteRest = 0;
             switch (codeType) {
                 case BINARY: {
@@ -112,50 +103,49 @@ public class InsertCodeEditDataOperation extends CodeEditDataOperation {
                 default:
                     throw CodeAreaUtils.getInvalidTypeException(codeType);
             }
-            if (byteRest > 0) {
+            /* if (byteRest > 0) {
                 if (trailing) {
                     throw new IllegalStateException("Unexpected trailing flag");
                 }
-                trailingValue = (EditableBinaryData) contentData.copy(editedDataPosition - 1, 1);
+                trailingValue = (EditableBinaryData) contentData.copy(position, 1);
                 contentData.insert(editedDataPosition, 1);
                 contentData.setByte(editedDataPosition, byteRest);
                 byteValue -= byteRest;
                 trailing = true;
+            } */
+            byteValue = CodeAreaUtils.setCodeValue(byteValue, value, codeOffset, codeType);
+            contentData.setByte(position, byteValue);
+
+            if (withUndo) {
+                undoOperation = new UndoOperation(position, codeType, codeOffset, 1);
             }
-            editedDataPosition--;
         } else {
-            contentData.insert(editedDataPosition, 1);
-            length++;
-        }
-
-        byteValue = CodeAreaUtils.setCodeValue(byteValue, value, codeOffset, codeType);
-        contentData.setByte(editedDataPosition, byteValue);
-
-        if (withUndo) {
-            undoOperation = new UndoOperation(startPosition, codeType, codeOffset, length);
+            if (withUndo) {
+                undoOperation = new UndoOperation(position, codeType, codeOffset, 1);
+            }
+            byte byteValue = CodeAreaUtils.setCodeValue((byte) 0, value, codeOffset, codeType);
+            contentData.insertUninitialized(position, 1);
+            contentData.setByte(position, byteValue);
         }
 
         return undoOperation;
     }
 
-    public long getStartPosition() {
-        return startPosition;
+    public long getPosition() {
+        return position;
     }
 
-    public int getStartCodeOffset() {
-        return startCodeOffset;
+    public int getCodeOffset() {
+        return codeOffset;
     }
-
-    public long getLength() {
-        return length;
+    
+    public boolean isLastOffset() {
+        return codeOffset == codeType.getMaxDigitsForByte() - 1;
     }
 
     @Override
     public void dispose() {
         super.dispose();
-        if (trailingValue != null) {
-            trailingValue.dispose();
-        }
     }
 
     /**
@@ -178,8 +168,8 @@ public class InsertCodeEditDataOperation extends CodeEditDataOperation {
 
         @Nonnull
         @Override
-        public CodeAreaOperationType getType() {
-            return CodeAreaOperationType.REMOVE_DATA;
+        public BasicBinaryDataOperationType getType() {
+            return BasicBinaryDataOperationType.REMOVE_DATA;
         }
 
         @Override

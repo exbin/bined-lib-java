@@ -15,10 +15,11 @@
  */
 package org.exbin.bined.operation.swing;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.Immutable;
 import org.exbin.bined.CodeAreaCaretPosition;
-import org.exbin.bined.CodeAreaSelection;
+import org.exbin.bined.SelectionRange;
 
 /**
  * Code area state for operation purposes.
@@ -30,18 +31,20 @@ import org.exbin.bined.CodeAreaSelection;
 public class CodeAreaState {
 
     private final CodeAreaCaretPosition caretPosition;
-    private final CodeAreaSelection selection;
+    private final SelectionRange selection;
 
-    public CodeAreaState(CodeAreaCaretPosition caretPosition, CodeAreaSelection selection) {
+    public CodeAreaState(CodeAreaCaretPosition caretPosition, SelectionRange selection) {
         this.caretPosition = caretPosition;
         this.selection = selection;
     }
 
+    @Nonnull
     public CodeAreaCaretPosition getCaretPosition() {
         return caretPosition;
     }
 
-    public CodeAreaSelection getSelection() {
+    @Nonnull
+    public SelectionRange getSelection() {
         return selection;
     }
 }

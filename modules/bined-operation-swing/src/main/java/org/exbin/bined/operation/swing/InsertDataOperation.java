@@ -44,8 +44,8 @@ public class InsertDataOperation implements BinaryDataUndoableOperation {
 
     @Nonnull
     @Override
-    public CodeAreaOperationType getType() {
-        return CodeAreaOperationType.INSERT_DATA;
+    public BasicBinaryDataOperationType getType() {
+        return BasicBinaryDataOperationType.INSERT_DATA;
     }
 
     @Override

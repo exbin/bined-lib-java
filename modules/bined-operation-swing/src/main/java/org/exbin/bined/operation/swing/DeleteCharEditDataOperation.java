@@ -47,8 +47,8 @@ public class DeleteCharEditDataOperation extends CharEditDataOperation {
 
     @Nonnull
     @Override
-    public CodeAreaOperationType getType() {
-        return CodeAreaOperationType.EDIT_DATA;
+    public BasicBinaryDataOperationType getType() {
+        return BasicBinaryDataOperationType.EDIT_DATA;
     }
 
     @Override

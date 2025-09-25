@@ -43,8 +43,8 @@ public class RemoveDataOperation implements BinaryDataUndoableOperation {
 
     @Nonnull
     @Override
-    public CodeAreaOperationType getType() {
-        return CodeAreaOperationType.REMOVE_DATA;
+    public BasicBinaryDataOperationType getType() {
+        return BasicBinaryDataOperationType.REMOVE_DATA;
     }
 
     @Override

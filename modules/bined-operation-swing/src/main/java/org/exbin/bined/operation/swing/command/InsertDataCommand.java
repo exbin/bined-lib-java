@@ -47,14 +47,8 @@ public class InsertDataCommand extends OpCodeAreaCommand {
     }
 
     @Override
-    public void redo() {
-        super.redo();
+    public void performExecute() {
+        super.performExecute();
         ((CaretCapable) codeArea).setActiveCaretPosition(position + dataLength);
-    }
-
-    @Override
-    public void undo() {
-        super.undo();
-        ((CaretCapable) codeArea).setActiveCaretPosition(position);
     }
 }

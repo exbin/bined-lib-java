@@ -50,16 +50,16 @@ public abstract class OpCodeAreaCommand extends CodeAreaCommand {
     }
 
     @Override
-    public void execute() {
+    public void performExecute() {
         if (phase != BinaryDataCommandPhase.CREATED) {
             throw new IllegalStateException();
         }
 
-        executeInt();
+        doCommand();
     }
 
     @Override
-    public void undo() {
+    public void performUndo() {
         if (phase != BinaryDataCommandPhase.EXECUTED) {
             throw new IllegalStateException();
         }
@@ -72,15 +72,15 @@ public abstract class OpCodeAreaCommand extends CodeAreaCommand {
     }
 
     @Override
-    public void redo() {
+    public void performRedo() {
         if (phase != BinaryDataCommandPhase.REVERTED) {
             throw new IllegalStateException();
         }
 
-        executeInt();
+        doCommand();
     }
 
-    private void executeInt() {
+    private void doCommand() {
         EditableBinaryData contentData = (EditableBinaryData) codeArea.getContentData();
         BinaryDataUndoableOperation undoOperation = CodeAreaUtils.requireNonNull(operation).executeWithUndo(contentData);
         operation.dispose();

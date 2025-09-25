@@ -67,7 +67,7 @@ public class EditCharDataCommand extends EditDataCommand implements BinaryDataAp
     }
 
     @Override
-    public void execute() {
+    public void performExecute() {
         if (phase != BinaryDataCommandPhase.CREATED) {
             throw new IllegalStateException();
         }
@@ -80,7 +80,7 @@ public class EditCharDataCommand extends EditDataCommand implements BinaryDataAp
     }
 
     @Override
-    public void undo() {
+    public void performUndo() {
         if (phase != BinaryDataCommandPhase.EXECUTED) {
             throw new IllegalStateException();
         }
@@ -93,7 +93,7 @@ public class EditCharDataCommand extends EditDataCommand implements BinaryDataAp
     }
 
     @Override
-    public void redo() {
+    public void performRedo() {
         if (phase != BinaryDataCommandPhase.REVERTED) {
             throw new IllegalStateException();
         }

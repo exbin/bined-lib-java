@@ -34,29 +34,41 @@ import org.exbin.bined.operation.undo.BinaryDataUndoableOperation;
 @ParametersAreNonnullByDefault
 public class OverwriteCodeEditDataOperation extends CodeEditDataOperation {
 
-    protected final long startPosition;
+    protected final long position;
     protected final int codeOffset;
     @Nonnull
     protected final CodeType codeType;
     protected byte value;
 
-    public OverwriteCodeEditDataOperation(long startPosition, int codeOffset, CodeType codeType, byte value) {
+    public OverwriteCodeEditDataOperation(long position, int codeOffset, CodeType codeType, byte value) {
         this.value = value;
-        this.startPosition = startPosition;
+        this.position = position;
         this.codeOffset = codeOffset;
         this.codeType = codeType;
     }
 
     @Nonnull
     @Override
-    public CodeAreaOperationType getType() {
-        return CodeAreaOperationType.EDIT_DATA;
+    public BasicBinaryDataOperationType getType() {
+        return BasicBinaryDataOperationType.EDIT_DATA;
+    }
+
+    public long getPosition() {
+        return position;
+    }
+
+    public int getCodeOffset() {
+        return codeOffset;
     }
 
     @Nonnull
     @Override
     public CodeType getCodeType() {
         return codeType;
+    }
+
+    public boolean isLastOffset() {
+        return codeOffset == codeType.getMaxDigitsForByte() - 1;
     }
 
     @Override
@@ -72,35 +84,35 @@ public class OverwriteCodeEditDataOperation extends CodeEditDataOperation {
 
     @Nullable
     private BinaryDataUndoableOperation execute(EditableBinaryData contentData, boolean withUndo) {
-        if (startPosition > contentData.getDataSize() || (startPosition == contentData.getDataSize() && codeOffset > 0)) {
+        if (position > contentData.getDataSize() || (position == contentData.getDataSize() && codeOffset > 0)) {
             throw new IllegalStateException("Cannot overwrite outside of the document");
         }
 
         BinaryDataUndoableOperation undoOperation = null;
-        EditableBinaryData undoData = null;
+        EditableBinaryData undoData;
 
         byte byteValue = 0;
         int removeLength = 0;
         if (codeOffset > 0) {
-            undoData = (EditableBinaryData) contentData.copy(startPosition, 1);
+            undoData = (EditableBinaryData) contentData.copy(position, 1);
             byteValue = undoData.getByte(0);
         } else {
-            if (startPosition < contentData.getDataSize()) {
-                undoData = (EditableBinaryData) contentData.copy(startPosition, 1);
+            if (position < contentData.getDataSize()) {
+                undoData = (EditableBinaryData) contentData.copy(position, 1);
                 byteValue = undoData.getByte(0);
             } else {
-                undoData = (EditableBinaryData) contentData.copy(startPosition, 0);
-                contentData.insertUninitialized(startPosition, 1);
+                undoData = (EditableBinaryData) contentData.copy(position, 0);
+                contentData.insertUninitialized(position, 1);
                 removeLength = 1;
             }
         }
 
         byteValue = CodeAreaUtils.setCodeValue(byteValue, value, codeOffset, codeType);
 
-        contentData.setByte(startPosition, byteValue);
+        contentData.setByte(position, byteValue);
 
         if (withUndo) {
-            undoOperation = new UndoOperation(startPosition, undoData, codeType, codeOffset, removeLength);
+            undoOperation = new UndoOperation(position, undoData, codeType, codeOffset, removeLength);
         }
 
         return undoOperation;
@@ -125,8 +137,8 @@ public class OverwriteCodeEditDataOperation extends CodeEditDataOperation {
 
         @Nonnull
         @Override
-        public CodeAreaOperationType getType() {
-            return CodeAreaOperationType.MODIFY_DATA;
+        public BasicBinaryDataOperationType getType() {
+            return BasicBinaryDataOperationType.MODIFY_DATA;
         }
 
         @Override
@@ -170,7 +182,7 @@ public class OverwriteCodeEditDataOperation extends CodeEditDataOperation {
             contentData.replace(position, data);
             if (removeOperation != null) {
                 if (withUndo) {
-                    CodeAreaCompoundOperation compoundOperation = new CodeAreaCompoundOperation();
+                    BasicBinaryDataCompoundOperation compoundOperation = new BasicBinaryDataCompoundOperation();
                     compoundOperation.addOperation(removeOperation.executeWithUndo(contentData));
                     compoundOperation.addOperation(undoOperation);
                     undoOperation = compoundOperation;

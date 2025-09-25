@@ -17,7 +17,12 @@ package org.exbin.bined.operation.swing.command;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import org.exbin.bined.CodeAreaCaretPosition;
+import org.exbin.bined.SelectionRange;
+import org.exbin.bined.capability.CaretCapable;
+import org.exbin.bined.capability.SelectionCapable;
 import org.exbin.bined.operation.BinaryDataAbstractCommand;
+import org.exbin.bined.operation.swing.CodeAreaState;
 import org.exbin.bined.swing.CodeAreaCore;
 
 /**
@@ -30,8 +35,58 @@ public abstract class CodeAreaCommand extends BinaryDataAbstractCommand {
 
     @Nonnull
     protected final CodeAreaCore codeArea;
+    protected CodeAreaState beforeState;
+    protected CodeAreaState afterState;
 
     public CodeAreaCommand(CodeAreaCore codeArea) {
         this.codeArea = codeArea;
+    }
+
+    @Override
+    public void redo() {
+        performRedo();
+        restoreState(afterState);
+    }
+
+    @Override
+    public void execute() {
+        beforeState = fetchState();
+        performExecute();
+        afterState = fetchState();
+    }
+
+    @Override
+    public void undo() {
+        performUndo();
+        restoreState(beforeState);
+    }
+
+    /**
+     * Executes main command.
+     */
+    public void performRedo() {
+        performExecute();
+    }
+
+    /**
+     * Executes main command.
+     */
+    public abstract void performExecute();
+
+    /**
+     * Executes main undo command.
+     */
+    public abstract void performUndo();
+
+    @Nonnull
+    public CodeAreaState fetchState() {
+        CodeAreaCaretPosition caretPosition = ((CaretCapable) codeArea).getActiveCaretPosition();
+        SelectionRange selection = ((SelectionCapable) codeArea).getSelection();
+        return new CodeAreaState(caretPosition, selection);
+    }
+
+    public void restoreState(CodeAreaState codeAreaState) {
+        ((CaretCapable) codeArea).setActiveCaretPosition(codeAreaState.getCaretPosition());
+        ((SelectionCapable) codeArea).setSelection(codeAreaState.getSelection());
     }
 }

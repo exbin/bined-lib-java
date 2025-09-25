@@ -19,7 +19,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.SelectionRange;
 import org.exbin.bined.capability.CaretCapable;
-import org.exbin.bined.capability.ScrollingCapable;
 import org.exbin.bined.capability.SelectionCapable;
 import org.exbin.bined.swing.CodeAreaCore;
 
@@ -44,30 +43,20 @@ public class DeleteSelectionCommand extends CodeAreaCommand {
     }
 
     @Override
-    public void execute() {
-        removeCommand.execute();
+    public void performExecute() {
+        removeCommand.performExecute();
         ((CaretCapable) codeArea).setActiveCaretPosition(position);
         clearSelection();
-        ((ScrollingCapable) codeArea).revealCursor();
-        codeArea.notifyDataChanged();
     }
 
     @Override
-    public void redo() {
-        removeCommand.redo();
-        ((CaretCapable) codeArea).setActiveCaretPosition(position);
-        clearSelection();
-        ((ScrollingCapable) codeArea).revealCursor();
-        codeArea.notifyDataChanged();
+    public void performRedo() {
+        removeCommand.performRedo();
     }
 
     @Override
-    public void undo() {
-        removeCommand.undo();
-        clearSelection();
-        ((CaretCapable) codeArea).setActiveCaretPosition(position + size);
-        ((ScrollingCapable) codeArea).revealCursor();
-        codeArea.notifyDataChanged();
+    public void performUndo() {
+        removeCommand.performUndo();
     }
 
     @Nonnull

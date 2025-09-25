@@ -42,16 +42,24 @@ public class DeleteCodeEditDataOperation extends CodeEditDataOperation {
     protected long position;
     protected byte value;
 
-    public DeleteCodeEditDataOperation(long startPosition, CodeType codeType, byte value) {
+    public DeleteCodeEditDataOperation(long position, CodeType codeType, byte value) {
         this.value = value;
         this.codeType = codeType;
-        this.position = startPosition;
+        this.position = position;
+    }
+
+    public boolean isBackSpace() {
+        return value == BACKSPACE_CHAR;
     }
 
     @Nonnull
     @Override
-    public CodeAreaOperationType getType() {
-        return CodeAreaOperationType.EDIT_DATA;
+    public BasicBinaryDataOperationType getType() {
+        return BasicBinaryDataOperationType.EDIT_DATA;
+    }
+
+    public long getPosition() {
+        return position;
     }
 
     @Nonnull
@@ -119,8 +127,8 @@ public class DeleteCodeEditDataOperation extends CodeEditDataOperation {
 
         @Nonnull
         @Override
-        public CodeAreaOperationType getType() {
-            return CodeAreaOperationType.EDIT_DATA;
+        public BasicBinaryDataOperationType getType() {
+            return BasicBinaryDataOperationType.EDIT_DATA;
         }
 
         @Override

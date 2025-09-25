@@ -42,8 +42,8 @@ public class ModifyDataOperation implements BinaryDataUndoableOperation {
 
     @Nonnull
     @Override
-    public CodeAreaOperationType getType() {
-        return CodeAreaOperationType.MODIFY_DATA;
+    public BasicBinaryDataOperationType getType() {
+        return BasicBinaryDataOperationType.MODIFY_DATA;
     }
 
     @Override

@@ -47,8 +47,8 @@ public class OverwriteCharEditDataOperation extends CharEditDataOperation {
 
     @Nonnull
     @Override
-    public CodeAreaOperationType getType() {
-        return CodeAreaOperationType.EDIT_DATA;
+    public BasicBinaryDataOperationType getType() {
+        return BasicBinaryDataOperationType.EDIT_DATA;
     }
 
     @Override
@@ -120,8 +120,8 @@ public class OverwriteCharEditDataOperation extends CharEditDataOperation {
 
         @Nonnull
         @Override
-        public CodeAreaOperationType getType() {
-            return CodeAreaOperationType.MODIFY_DATA;
+        public BasicBinaryDataOperationType getType() {
+            return BasicBinaryDataOperationType.MODIFY_DATA;
         }
 
         @Override
@@ -161,7 +161,7 @@ public class OverwriteCharEditDataOperation extends CharEditDataOperation {
             contentData.replace(position, data);
             if (removeOperation != null) {
                 if (withUndo) {
-                    CodeAreaCompoundOperation compoundOperation = new CodeAreaCompoundOperation();
+                    BasicBinaryDataCompoundOperation compoundOperation = new BasicBinaryDataCompoundOperation();
                     compoundOperation.addOperation(removeOperation.executeWithUndo(contentData));
                     compoundOperation.addOperation(undoOperation);
                     undoOperation = compoundOperation;
