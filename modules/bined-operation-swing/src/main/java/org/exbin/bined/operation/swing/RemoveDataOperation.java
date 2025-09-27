@@ -21,7 +21,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 import org.exbin.auxiliary.binary_data.EditableBinaryData;
 import org.exbin.bined.CodeAreaUtils;
-import org.exbin.bined.operation.undo.BinaryDataUndoableOperation;
+import org.exbin.bined.operation.BinaryDataUndoableOperation;
 
 /**
  * Operation for deleting section of data.

@@ -16,6 +16,7 @@
 package org.exbin.bined.operation;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.auxiliary.binary_data.EditableBinaryData;
 
 /**
@@ -23,6 +24,7 @@ import org.exbin.auxiliary.binary_data.EditableBinaryData;
  *
  * @author ExBin Project (https://exbin.org)
  */
+@ParametersAreNonnullByDefault
 public interface BinaryDataOperation {
 
     /**

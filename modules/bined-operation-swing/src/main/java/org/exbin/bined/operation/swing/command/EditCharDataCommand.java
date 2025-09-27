@@ -20,14 +20,14 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.auxiliary.binary_data.EditableBinaryData;
 import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.capability.CharsetCapable;
-import org.exbin.bined.operation.BinaryDataCommand;
-import org.exbin.bined.operation.BinaryDataCommandPhase;
+import org.exbin.bined.operation.command.BinaryDataCommand;
+import org.exbin.bined.operation.command.BinaryDataCommandPhase;
 import org.exbin.bined.operation.swing.DeleteCharEditDataOperation;
 import org.exbin.bined.operation.swing.InsertCharEditDataOperation;
 import org.exbin.bined.operation.swing.OverwriteCharEditDataOperation;
-import org.exbin.bined.operation.undo.BinaryDataAppendableCommand;
-import org.exbin.bined.operation.undo.BinaryDataAppendableOperation;
-import org.exbin.bined.operation.undo.BinaryDataUndoableOperation;
+import org.exbin.bined.operation.command.BinaryDataAppendableCommand;
+import org.exbin.bined.operation.BinaryDataAppendableOperation;
+import org.exbin.bined.operation.BinaryDataUndoableOperation;
 import org.exbin.bined.swing.CodeAreaCore;
 
 /**

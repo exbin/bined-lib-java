@@ -23,7 +23,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.auxiliary.binary_data.EditableBinaryData;
 import org.exbin.bined.operation.BinaryDataCompoundOperation;
 import org.exbin.bined.operation.BinaryDataOperation;
-import org.exbin.bined.operation.undo.BinaryDataUndoableOperation;
+import org.exbin.bined.operation.BinaryDataUndoableOperation;
 
 /**
  * Compound binary data operation.

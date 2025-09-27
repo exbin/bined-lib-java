@@ -70,8 +70,8 @@ import org.exbin.bined.basic.TabKeyHandlingMode;
 import org.exbin.bined.capability.EditModeCapable;
 import org.exbin.bined.operation.swing.command.DeleteSelectionCommand;
 import org.exbin.bined.operation.swing.command.PasteDataCommand;
-import org.exbin.bined.operation.undo.BinaryDataAppendableUndoRedo;
-import org.exbin.bined.operation.undo.BinaryDataUndoRedo;
+import org.exbin.bined.operation.command.BinaryDataAppendableUndoRedo;
+import org.exbin.bined.operation.command.BinaryDataUndoRedo;
 
 /**
  * Command handler for undo/redo aware binary editor editing.

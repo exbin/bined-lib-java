@@ -22,8 +22,8 @@ import org.exbin.bined.CodeType;
 import org.exbin.auxiliary.binary_data.EditableBinaryData;
 import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.operation.BinaryDataOperation;
-import org.exbin.bined.operation.undo.BinaryDataAppendableOperation;
-import org.exbin.bined.operation.undo.BinaryDataUndoableOperation;
+import org.exbin.bined.operation.BinaryDataAppendableOperation;
+import org.exbin.bined.operation.BinaryDataUndoableOperation;
 
 /**
  * Operation for editing data using insert mode.

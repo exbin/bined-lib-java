@@ -21,7 +21,7 @@ import org.exbin.bined.CodeAreaCaretPosition;
 import org.exbin.bined.SelectionRange;
 import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.capability.SelectionCapable;
-import org.exbin.bined.operation.BinaryDataAbstractCommand;
+import org.exbin.bined.operation.command.BinaryDataAbstractCommand;
 import org.exbin.bined.operation.swing.CodeAreaState;
 import org.exbin.bined.swing.CodeAreaCore;
 

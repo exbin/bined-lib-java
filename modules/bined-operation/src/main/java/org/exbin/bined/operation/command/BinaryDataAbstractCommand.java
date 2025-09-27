@@ -13,17 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.operation.undo;
+package org.exbin.bined.operation.command;
 
 /**
- * Binary data undo change listener.
+ * Abstract binary data command class.
  *
  * @author ExBin Project (https://exbin.org)
  */
-public interface BinaryDataUndoRedoChangeListener {
+public abstract class BinaryDataAbstractCommand implements BinaryDataUndoableCommand {
+
+    public BinaryDataAbstractCommand() {
+    }
 
     /**
-     * Undo changed.
+     * Default redo operation reexecutes command.
      */
-    void undoChanged();
+    @Override
+    public void redo() {
+        execute();
+    }
+
+    /**
+     * Default dispose method do nothing.
+     */
+    @Override
+    public void dispose() {
+    }
 }

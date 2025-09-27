@@ -24,14 +24,14 @@ import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.DefaultCodeAreaCaretPosition;
 import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.capability.CodeTypeCapable;
-import org.exbin.bined.operation.BinaryDataCommand;
-import org.exbin.bined.operation.BinaryDataCommandPhase;
+import org.exbin.bined.operation.command.BinaryDataCommand;
+import org.exbin.bined.operation.command.BinaryDataCommandPhase;
 import org.exbin.bined.operation.swing.DeleteCodeEditDataOperation;
 import org.exbin.bined.operation.swing.InsertCodeEditDataOperation;
 import org.exbin.bined.operation.swing.OverwriteCodeEditDataOperation;
-import org.exbin.bined.operation.undo.BinaryDataAppendableCommand;
-import org.exbin.bined.operation.undo.BinaryDataAppendableOperation;
-import org.exbin.bined.operation.undo.BinaryDataUndoableOperation;
+import org.exbin.bined.operation.command.BinaryDataAppendableCommand;
+import org.exbin.bined.operation.BinaryDataAppendableOperation;
+import org.exbin.bined.operation.BinaryDataUndoableOperation;
 import org.exbin.bined.swing.CodeAreaCore;
 
 /**

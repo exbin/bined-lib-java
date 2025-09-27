@@ -29,7 +29,7 @@ import org.exbin.bined.operation.swing.command.EditDataCommand;
 import org.exbin.bined.operation.swing.command.InsertDataCommand;
 import org.exbin.bined.operation.swing.command.ModifyDataCommand;
 import org.exbin.bined.operation.swing.command.RemoveDataCommand;
-import org.exbin.bined.operation.undo.BinaryDataUndoRedo;
+import org.exbin.bined.operation.command.BinaryDataUndoRedo;
 import org.exbin.bined.swing.CodeAreaCore;
 import org.exbin.bined.swing.basic.CodeArea;
 import org.exbin.bined.swing.basic.CodeAreaComponentTest;

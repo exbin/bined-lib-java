@@ -15,7 +15,7 @@
  */
 package org.exbin.bined.operation.swing.command;
 
-import org.exbin.bined.operation.BinaryDataCommandType;
+import org.exbin.bined.operation.command.BinaryDataCommandType;
 
 /**
  * Operation type enumeration.

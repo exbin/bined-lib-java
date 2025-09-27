@@ -15,30 +15,24 @@
  */
 package org.exbin.bined.operation;
 
-import javax.annotation.Nonnull;
-
 /**
- * Interface for code area command.
+ * Code area undo support handler.
  *
  * @author ExBin Project (https://exbin.org)
  */
-public interface BinaryDataCommand {
+public interface BinaryDataUndoRedoState {
 
     /**
-     * Returns type of the command.
+     * Returns whether undo operation is available.
      *
-     * @return command type
+     * @return true if undo possible
      */
-    @Nonnull
-    BinaryDataCommandType getType();
+    boolean canUndo();
 
     /**
-     * Performs operation on given document.
+     * Returns whether redo operation is available.
+     *
+     * @return true if redo possible
      */
-    void execute();
-
-    /**
-     * Disposes command.
-     */
-    void dispose();
+    boolean canRedo();
 }

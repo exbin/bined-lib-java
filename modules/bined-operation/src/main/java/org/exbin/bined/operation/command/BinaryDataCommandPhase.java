@@ -13,26 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.operation.undo;
+package org.exbin.bined.operation.command;
 
 /**
- * Code area undo support handler.
+ * Enumeration of command execution phases.
  *
  * @author ExBin Project (https://exbin.org)
  */
-public interface BinaryDataUndoRedoState {
+public enum BinaryDataCommandPhase {
 
-    /**
-     * Returns whether undo operation is available.
-     *
-     * @return true if undo possible
-     */
-    boolean canUndo();
-
-    /**
-     * Returns whether redo operation is available.
-     *
-     * @return true if redo possible
-     */
-    boolean canRedo();
+    CREATED,
+    EXECUTED,
+    REVERTED
 }

@@ -13,32 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.exbin.bined.operation;
-
-import org.exbin.bined.operation.undo.BinaryDataUndoableCommand;
+package org.exbin.bined.operation.command;
 
 /**
- * Abstract binary data command class.
+ * Interface for code area command.
  *
  * @author ExBin Project (https://exbin.org)
  */
-public abstract class BinaryDataAbstractCommand implements BinaryDataUndoableCommand {
-
-    public BinaryDataAbstractCommand() {
-    }
+public interface BinaryDataUndoableCommand extends BinaryDataCommand {
 
     /**
-     * Default redo operation reexecutes command.
+     * Performs redo on given document.
      */
-    @Override
-    public void redo() {
-        execute();
-    }
+    void redo();
 
     /**
-     * Default dispose method do nothing.
+     * Performs undo operation on given document.
      */
-    @Override
-    public void dispose() {
-    }
+    void undo();
 }

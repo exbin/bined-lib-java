@@ -21,11 +21,11 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import org.exbin.bined.operation.BinaryDataCommand;
-import org.exbin.bined.operation.BinaryDataCommandPhase;
-import org.exbin.bined.operation.BinaryDataCompoundCommand;
-import org.exbin.bined.operation.undo.BinaryDataAppendableCommand;
-import org.exbin.bined.operation.undo.BinaryDataUndoableCommand;
+import org.exbin.bined.operation.command.BinaryDataCommand;
+import org.exbin.bined.operation.command.BinaryDataCommandPhase;
+import org.exbin.bined.operation.command.BinaryDataCompoundCommand;
+import org.exbin.bined.operation.command.BinaryDataAppendableCommand;
+import org.exbin.bined.operation.command.BinaryDataUndoableCommand;
 import org.exbin.bined.swing.CodeAreaCore;
 
 /**
