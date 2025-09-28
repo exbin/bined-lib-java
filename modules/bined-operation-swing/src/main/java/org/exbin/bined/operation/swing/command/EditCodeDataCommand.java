@@ -26,12 +26,12 @@ import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.capability.CodeTypeCapable;
 import org.exbin.bined.operation.command.BinaryDataCommand;
 import org.exbin.bined.operation.command.BinaryDataCommandPhase;
-import org.exbin.bined.operation.swing.DeleteCodeEditDataOperation;
 import org.exbin.bined.operation.swing.InsertCodeEditDataOperation;
 import org.exbin.bined.operation.swing.OverwriteCodeEditDataOperation;
 import org.exbin.bined.operation.command.BinaryDataAppendableCommand;
 import org.exbin.bined.operation.BinaryDataAppendableOperation;
 import org.exbin.bined.operation.BinaryDataUndoableOperation;
+import org.exbin.bined.operation.swing.DeleteEditDataOperation;
 import org.exbin.bined.swing.CodeAreaCore;
 
 /**
@@ -75,7 +75,7 @@ public class EditCodeDataCommand extends EditDataCommand implements BinaryDataAp
                 break;
             }
             case DELETE: {
-                DeleteCodeEditDataOperation operation = new DeleteCodeEditDataOperation(position, ((CodeTypeCapable) codeArea).getCodeType(), value);
+                DeleteEditDataOperation operation = new DeleteEditDataOperation(position, (char) value);
                 if (operation.isBackSpace()) {
                     afterCaretPosition = new DefaultCodeAreaCaretPosition(position - 1, 0, activeSection);
                 } else {
@@ -145,8 +145,13 @@ public class EditCodeDataCommand extends EditDataCommand implements BinaryDataAp
         command.execute();
 
         if (command instanceof EditCodeDataCommand && activeOperation instanceof BinaryDataAppendableOperation) {
-            return ((BinaryDataAppendableOperation) activeOperation).appendOperation(((EditCodeDataCommand) command).activeOperation);
+            boolean appended = ((BinaryDataAppendableOperation) activeOperation).appendOperation(((EditCodeDataCommand) command).activeOperation);
+            if (appended) {
+                afterState = ((EditCodeDataCommand) command).getAfterState().orElse(afterState);
+            }
+            return appended;
         }
+        
 
         return false;
     }

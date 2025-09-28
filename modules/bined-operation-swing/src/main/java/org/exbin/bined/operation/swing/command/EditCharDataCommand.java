@@ -18,11 +18,15 @@ package org.exbin.bined.operation.swing.command;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.auxiliary.binary_data.EditableBinaryData;
+import org.exbin.bined.CodeAreaCaretPosition;
+import org.exbin.bined.CodeAreaSection;
 import org.exbin.bined.CodeAreaUtils;
+import org.exbin.bined.DefaultCodeAreaCaretPosition;
+import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.capability.CharsetCapable;
 import org.exbin.bined.operation.command.BinaryDataCommand;
 import org.exbin.bined.operation.command.BinaryDataCommandPhase;
-import org.exbin.bined.operation.swing.DeleteCharEditDataOperation;
+import org.exbin.bined.operation.swing.DeleteEditDataOperation;
 import org.exbin.bined.operation.swing.InsertCharEditDataOperation;
 import org.exbin.bined.operation.swing.OverwriteCharEditDataOperation;
 import org.exbin.bined.operation.command.BinaryDataAppendableCommand;
@@ -44,21 +48,33 @@ public class EditCharDataCommand extends EditDataCommand implements BinaryDataAp
     protected BinaryDataCommandPhase phase = BinaryDataCommandPhase.CREATED;
     @Nonnull
     protected BinaryDataUndoableOperation activeOperation;
+    protected CodeAreaCaretPosition afterCaretPosition;
 
     public EditCharDataCommand(CodeAreaCore codeArea, EditOperationType editOperationType, long position, char charData) {
         super(codeArea);
         this.editOperationType = editOperationType;
+        CodeAreaSection activeSection = ((CaretCapable) codeArea).getActiveSection();
         switch (editOperationType) {
             case INSERT: {
-                activeOperation = new InsertCharEditDataOperation(position, charData, ((CharsetCapable) codeArea).getCharset());
+                InsertCharEditDataOperation operation = new InsertCharEditDataOperation(position, charData, ((CharsetCapable) codeArea).getCharset());
+                afterCaretPosition = new DefaultCodeAreaCaretPosition(position + 1, 0, activeSection);
+                activeOperation = operation;
                 break;
             }
             case OVERWRITE: {
-                activeOperation = new OverwriteCharEditDataOperation(position, charData, ((CharsetCapable) codeArea).getCharset());
+                OverwriteCharEditDataOperation operation = new OverwriteCharEditDataOperation(position, charData, ((CharsetCapable) codeArea).getCharset());
+                afterCaretPosition = new DefaultCodeAreaCaretPosition(position + 1, 0, activeSection);
+                activeOperation = operation;
                 break;
             }
             case DELETE: {
-                activeOperation = new DeleteCharEditDataOperation(position, charData);
+                DeleteEditDataOperation operation = new DeleteEditDataOperation(position, charData);
+                if (operation.isBackSpace()) {
+                    afterCaretPosition = new DefaultCodeAreaCaretPosition(position - 1, 0, activeSection);
+                } else {
+                    afterCaretPosition = new DefaultCodeAreaCaretPosition(position, 0, activeSection);
+                }
+                activeOperation = operation;
                 break;
             }
             default:
@@ -74,6 +90,8 @@ public class EditCharDataCommand extends EditDataCommand implements BinaryDataAp
         
         EditableBinaryData contentData = (EditableBinaryData) codeArea.getContentData();
         BinaryDataUndoableOperation undoOperation = activeOperation.executeWithUndo(contentData);
+        ((CaretCapable) codeArea).setActiveCaretPosition(afterCaretPosition);
+
         activeOperation.dispose();
         activeOperation = undoOperation;
         phase = BinaryDataCommandPhase.EXECUTED;
@@ -118,9 +136,13 @@ public class EditCharDataCommand extends EditDataCommand implements BinaryDataAp
         }
 
         command.execute();
-
+        
         if (command instanceof EditCharDataCommand && activeOperation instanceof BinaryDataAppendableOperation) {
-            return ((BinaryDataAppendableOperation) activeOperation).appendOperation(((EditCharDataCommand) command).activeOperation);
+            boolean appended = ((BinaryDataAppendableOperation) activeOperation).appendOperation(((EditCharDataCommand) command).activeOperation);
+            if (appended) {
+                afterState = ((EditCharDataCommand) command).getAfterState().orElse(afterState);
+            }
+            return appended;
         }
 
         return false;

@@ -19,7 +19,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.auxiliary.binary_data.BinaryData;
-import org.exbin.bined.CodeType;
+
 import org.exbin.auxiliary.binary_data.EditableBinaryData;
 import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.operation.BinaryDataOperation;
@@ -27,45 +27,28 @@ import org.exbin.bined.operation.BinaryDataAppendableOperation;
 import org.exbin.bined.operation.BinaryDataUndoableOperation;
 
 /**
- * Operation for editing data in delete mode.
+ * Operation for deleting data via delete or backspace.
  *
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public class DeleteCodeEditDataOperation extends CodeEditDataOperation {
+public class DeleteEditDataOperation extends CharEditDataOperation {
 
-    protected static final char BACKSPACE_CHAR = '\b';
-    protected static final char DELETE_CHAR = (char) 0x7f;
-    @Nonnull
-    protected final CodeType codeType;
+    public static final char BACKSPACE_CHAR = '\b';
+    public static final char DELETE_CHAR = (char) 0x7f;
 
     protected long position;
-    protected byte value;
+    protected char value;
 
-    public DeleteCodeEditDataOperation(long position, CodeType codeType, byte value) {
+    public DeleteEditDataOperation(long startPosition, char value) {
         this.value = value;
-        this.codeType = codeType;
-        this.position = position;
-    }
-
-    public boolean isBackSpace() {
-        return value == BACKSPACE_CHAR;
+        this.position = startPosition;
     }
 
     @Nonnull
     @Override
     public BasicBinaryDataOperationType getType() {
         return BasicBinaryDataOperationType.EDIT_DATA;
-    }
-
-    public long getPosition() {
-        return position;
-    }
-
-    @Nonnull
-    @Override
-    public CodeType getCodeType() {
-        return codeType;
     }
 
     @Override
@@ -110,39 +93,45 @@ public class DeleteCodeEditDataOperation extends CodeEditDataOperation {
         }
 
         if (withUndo) {
-            undoOperation = new UndoOperation(position, 0, undoData, value);
+            undoOperation = new DeleteEditUndoOperation(position, undoData, value);
         }
         return undoOperation;
     }
 
+    public boolean isBackSpace() {
+        return value == BACKSPACE_CHAR;
+    }
+
+    /**
+     * Appendable variant to merge sequence of deletion sequence into single
+     * undo step.
+     */
     @ParametersAreNonnullByDefault
-    private static class UndoOperation extends InsertDataOperation implements BinaryDataAppendableOperation {
+    private static class DeleteEditUndoOperation extends InsertDataOperation implements BinaryDataAppendableOperation {
 
-        private byte value;
+        private char value;
 
-        public UndoOperation(long position, int codeOffset, BinaryData data, byte value) {
-            super(position, codeOffset, data);
+        public DeleteEditUndoOperation(long position, BinaryData data, char value) {
+            super(position, 0, data);
             this.value = value;
-        }
-
-        @Nonnull
-        @Override
-        public BasicBinaryDataOperationType getType() {
-            return BasicBinaryDataOperationType.EDIT_DATA;
         }
 
         @Override
         public boolean appendOperation(BinaryDataOperation operation) {
-            if (operation instanceof UndoOperation && ((UndoOperation) operation).value == value) {
+            if (operation instanceof DeleteEditUndoOperation) {
+                if (((DeleteEditUndoOperation) operation).position != position) {
+                    return false;
+                }
+
                 EditableBinaryData editableData = (EditableBinaryData) data;
-                switch (value) {
+                switch (((DeleteEditUndoOperation) operation).value) {
                     case BACKSPACE_CHAR: {
-                        editableData.insert(0, ((UndoOperation) operation).getData());
+                        editableData.insert(0, ((DeleteEditUndoOperation) operation).getData());
                         position--;
                         break;
                     }
                     case DELETE_CHAR: {
-                        editableData.insert(editableData.getDataSize(), ((UndoOperation) operation).getData());
+                        editableData.insert(editableData.getDataSize(), ((DeleteEditUndoOperation) operation).getData());
                         break;
                     }
                     default: {

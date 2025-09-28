@@ -15,9 +15,10 @@
  */
 package org.exbin.bined.operation.swing.command;
 
+import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import org.exbin.bined.CodeAreaCaretPosition;
+import org.exbin.bined.DefaultCodeAreaCaretPosition;
 import org.exbin.bined.SelectionRange;
 import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.capability.SelectionCapable;
@@ -79,14 +80,30 @@ public abstract class CodeAreaCommand extends BinaryDataAbstractCommand {
     public abstract void performUndo();
 
     @Nonnull
+    public Optional<CodeAreaState> getBeforeState() {
+        return Optional.ofNullable(beforeState);
+    }
+
+    @Nonnull
+    public Optional<CodeAreaState> getAfterState() {
+        return Optional.ofNullable(afterState);
+    }
+
+    @Nonnull
     public CodeAreaState fetchState() {
-        CodeAreaCaretPosition caretPosition = ((CaretCapable) codeArea).getActiveCaretPosition();
+        DefaultCodeAreaCaretPosition caretPosition = new DefaultCodeAreaCaretPosition();
+        caretPosition.setPosition(((CaretCapable) codeArea).getActiveCaretPosition());
         SelectionRange selection = ((SelectionCapable) codeArea).getSelection();
         return new CodeAreaState(caretPosition, selection);
     }
 
     public void restoreState(CodeAreaState codeAreaState) {
-        ((CaretCapable) codeArea).setActiveCaretPosition(codeAreaState.getCaretPosition());
-        ((SelectionCapable) codeArea).setSelection(codeAreaState.getSelection());
+        ((CaretCapable) codeArea).getCodeAreaCaret().setCaretPosition(codeAreaState.getCaretPosition());
+        SelectionRange selection = codeAreaState.getSelection();
+        if (selection.isEmpty()) {
+            ((SelectionCapable) codeArea).clearSelection();
+        } else {
+            ((SelectionCapable) codeArea).setSelection(selection);
+        }
     }
 }

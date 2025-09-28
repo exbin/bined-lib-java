@@ -128,7 +128,11 @@ public class CodeAreaCompoundCommand extends CodeAreaCommand implements BinaryDa
         if (!isEmpty()) {
             BinaryDataCommand lastCommand = commands.get(commands.size() - 1);
             if (lastCommand instanceof BinaryDataAppendableCommand) {
-                return ((BinaryDataAppendableCommand) lastCommand).appendExecute(command);
+                boolean appended = ((BinaryDataAppendableCommand) lastCommand).appendExecute(command);
+                if (appended && command instanceof CodeAreaCommand) {
+                    afterState = ((CodeAreaCommand) command).getAfterState().orElse(afterState);
+                }
+                return appended;
             }
         }
 
