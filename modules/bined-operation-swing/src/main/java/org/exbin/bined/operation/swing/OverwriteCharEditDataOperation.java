@@ -35,9 +35,9 @@ import org.exbin.bined.operation.BinaryDataUndoableOperation;
 public class OverwriteCharEditDataOperation extends CharEditDataOperation {
 
     protected final long startPosition;
-    protected long length = 0;
     protected char value;
     protected Charset charset;
+    protected int charLength;
 
     public OverwriteCharEditDataOperation(long startPosition, char value, Charset charset) {
         this.value = value;
@@ -67,42 +67,43 @@ public class OverwriteCharEditDataOperation extends CharEditDataOperation {
         BinaryDataUndoableOperation undoOperation = null;
         EditableBinaryData undoData;
 
-        long editedDataPosition = startPosition + length;
-
         byte[] bytes = CodeAreaUtils.characterToBytes(value, charset);
-        if (editedDataPosition < contentData.getDataSize()) {
-            long overwritten = contentData.getDataSize() - editedDataPosition;
-            if (overwritten > bytes.length) {
-                overwritten = bytes.length;
+        charLength = bytes.length;
+        if (startPosition < contentData.getDataSize()) {
+            long overwritten = contentData.getDataSize() - startPosition;
+            if (overwritten > charLength) {
+                overwritten = charLength;
             }
-            undoData = (EditableBinaryData) contentData.copy(editedDataPosition, overwritten);
+            undoData = (EditableBinaryData) contentData.copy(startPosition, overwritten);
             for (int i = 0; i < overwritten; i++) {
-                contentData.setByte(editedDataPosition + i, bytes[i]);
+                contentData.setByte(startPosition + i, bytes[i]);
             }
         } else {
-            undoData = (EditableBinaryData) contentData.copy(editedDataPosition, 0);
+            undoData = (EditableBinaryData) contentData.copy(startPosition, 0);
         }
 
-        if (editedDataPosition + bytes.length > contentData.getDataSize()) {
-            if (editedDataPosition == contentData.getDataSize()) {
-                contentData.insert(editedDataPosition, bytes);
+        if (startPosition + charLength > contentData.getDataSize()) {
+            if (startPosition == contentData.getDataSize()) {
+                contentData.insert(startPosition, bytes);
             } else {
-                int inserted = (int) (editedDataPosition + bytes.length - contentData.getDataSize());
-                long insertPosition = editedDataPosition + bytes.length - inserted;
+                int inserted = (int) (startPosition + charLength - contentData.getDataSize());
+                long insertPosition = startPosition + charLength - inserted;
                 contentData.insert(insertPosition, inserted);
                 for (int i = 0; i < inserted; i++) {
-                    contentData.setByte(insertPosition + i, bytes[bytes.length - inserted + i]);
+                    contentData.setByte(insertPosition + i, bytes[charLength - inserted + i]);
                 }
             }
         }
 
-        length += bytes.length;
-
         if (withUndo) {
-            undoOperation = new UndoOperation(startPosition, undoData, length - undoData.getDataSize());
+            undoOperation = new UndoOperation(startPosition, undoData, charLength - undoData.getDataSize());
         }
 
         return undoOperation;
+    }
+
+    public int getCharLength() {
+        return charLength;
     }
 
     @ParametersAreNonnullByDefault

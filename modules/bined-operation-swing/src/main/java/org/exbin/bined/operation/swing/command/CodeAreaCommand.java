@@ -18,6 +18,7 @@ package org.exbin.bined.operation.swing.command;
 import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import org.exbin.bined.CodeAreaCaretPosition;
 import org.exbin.bined.DefaultCodeAreaCaretPosition;
 import org.exbin.bined.SelectionRange;
 import org.exbin.bined.capability.CaretCapable;
@@ -98,10 +99,11 @@ public abstract class CodeAreaCommand extends BinaryDataAbstractCommand {
     }
 
     public void restoreState(CodeAreaState codeAreaState) {
-        ((CaretCapable) codeArea).getCodeAreaCaret().setCaretPosition(codeAreaState.getCaretPosition());
+        CodeAreaCaretPosition caretPosition = codeAreaState.getCaretPosition();
+        ((CaretCapable) codeArea).getCodeAreaCaret().setCaretPosition(caretPosition);
         SelectionRange selection = codeAreaState.getSelection();
         if (selection.isEmpty()) {
-            ((SelectionCapable) codeArea).clearSelection();
+            ((SelectionCapable) codeArea).setSelection(caretPosition.getDataPosition(), caretPosition.getDataPosition());
         } else {
             ((SelectionCapable) codeArea).setSelection(selection);
         }

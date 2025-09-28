@@ -57,13 +57,13 @@ public class EditCharDataCommand extends EditDataCommand implements BinaryDataAp
         switch (editOperationType) {
             case INSERT: {
                 InsertCharEditDataOperation operation = new InsertCharEditDataOperation(position, charData, ((CharsetCapable) codeArea).getCharset());
-                afterCaretPosition = new DefaultCodeAreaCaretPosition(position + 1, 0, activeSection);
+                afterCaretPosition = new DefaultCodeAreaCaretPosition(position, 0, activeSection);
                 activeOperation = operation;
                 break;
             }
             case OVERWRITE: {
                 OverwriteCharEditDataOperation operation = new OverwriteCharEditDataOperation(position, charData, ((CharsetCapable) codeArea).getCharset());
-                afterCaretPosition = new DefaultCodeAreaCaretPosition(position + 1, 0, activeSection);
+                afterCaretPosition = new DefaultCodeAreaCaretPosition(position, 0, activeSection);
                 activeOperation = operation;
                 break;
             }
@@ -90,6 +90,16 @@ public class EditCharDataCommand extends EditDataCommand implements BinaryDataAp
         
         EditableBinaryData contentData = (EditableBinaryData) codeArea.getContentData();
         BinaryDataUndoableOperation undoOperation = activeOperation.executeWithUndo(contentData);
+        switch (editOperationType) {
+            case INSERT: {
+                afterCaretPosition = new DefaultCodeAreaCaretPosition(afterCaretPosition.getDataPosition() + ((InsertCharEditDataOperation) activeOperation).getCharLength(), afterCaretPosition.getCodeOffset(), afterCaretPosition.getSection().orElse(null));
+                break;
+            }
+            case OVERWRITE: {
+                afterCaretPosition = new DefaultCodeAreaCaretPosition(afterCaretPosition.getDataPosition() + ((OverwriteCharEditDataOperation) activeOperation).getCharLength(), afterCaretPosition.getCodeOffset(), afterCaretPosition.getSection().orElse(null));
+                break;
+            }
+        }
         ((CaretCapable) codeArea).setActiveCaretPosition(afterCaretPosition);
 
         activeOperation.dispose();

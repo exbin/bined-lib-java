@@ -20,6 +20,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.SelectionRange;
 import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.capability.SelectionCapable;
+import org.exbin.bined.operation.swing.RemoveDataOperation;
 import org.exbin.bined.swing.CodeAreaCore;
 
 /**
@@ -28,45 +29,28 @@ import org.exbin.bined.swing.CodeAreaCore;
  * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
-public class DeleteSelectionCommand extends CodeAreaCommand {
+public class DeleteSelectionCommand extends OpCodeAreaCommand {
 
-    private final RemoveDataCommand removeCommand;
-    private final long position;
-    private final long size;
+    private long position;
 
     public DeleteSelectionCommand(CodeAreaCore codeArea) {
         super(codeArea);
         SelectionRange selection = ((SelectionCapable) codeArea).getSelection();
         position = selection.getFirst();
-        size = selection.getLast() - position + 1;
-        removeCommand = new RemoveDataCommand(codeArea, position, 0, size);
+        long size = selection.getLast() - position + 1;
+        super.setOperation(new RemoveDataOperation(position, 0, size));
     }
 
     @Override
     public void performExecute() {
-        removeCommand.performExecute();
+        super.performExecute();
         ((CaretCapable) codeArea).setActiveCaretPosition(position);
-        clearSelection();
-    }
-
-    @Override
-    public void performRedo() {
-        removeCommand.performRedo();
-    }
-
-    @Override
-    public void performUndo() {
-        removeCommand.performUndo();
+        ((SelectionCapable) codeArea).setSelection(position, position);
     }
 
     @Nonnull
     @Override
     public CodeAreaCommandType getType() {
         return CodeAreaCommandType.DATA_REMOVED;
-    }
-
-    private void clearSelection() {
-        long dataPosition = ((CaretCapable) codeArea).getDataPosition();
-        ((SelectionCapable) codeArea).setSelection(dataPosition, dataPosition);
     }
 }

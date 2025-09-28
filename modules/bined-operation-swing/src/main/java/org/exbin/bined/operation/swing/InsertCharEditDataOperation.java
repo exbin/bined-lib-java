@@ -36,6 +36,7 @@ public class InsertCharEditDataOperation extends CharEditDataOperation {
     protected final long startPosition;
     protected final char value;
     protected final Charset charset;
+    protected int charLength;
 
     public InsertCharEditDataOperation(long startPosition, char value, Charset charset) {
         this.value = value;
@@ -65,10 +66,10 @@ public class InsertCharEditDataOperation extends CharEditDataOperation {
         BinaryDataUndoableOperation undoOperation = null;
         byte[] bytes = CodeAreaUtils.characterToBytes(value, charset);
         contentData.insert(startPosition, bytes);
-        long length = bytes.length;
+        charLength = bytes.length;
 
         if (withUndo) {
-            undoOperation = new UndoOperation(startPosition, length);
+            undoOperation = new UndoOperation(startPosition, charLength);
         }
 
         return undoOperation;
@@ -76,6 +77,10 @@ public class InsertCharEditDataOperation extends CharEditDataOperation {
 
     public long getStartPosition() {
         return startPosition;
+    }
+
+    public int getCharLength() {
+        return charLength;
     }
 
     /**
