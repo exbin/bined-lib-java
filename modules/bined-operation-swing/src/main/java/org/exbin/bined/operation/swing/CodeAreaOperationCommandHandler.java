@@ -697,7 +697,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
         if (codeArea.hasSelection()) {
             deleteSelectionCommand = new DeleteSelectionCommand(codeArea);
         }
-        
+
         PasteDataCommand pasteDataCommand = new PasteDataCommand(codeArea, pastedData);
         CodeAreaCommand pasteCommand = CodeAreaCompoundCommand.buildCompoundCommand(codeArea, deleteSelectionCommand, pasteDataCommand);
         undoRedo.execute(pasteCommand);

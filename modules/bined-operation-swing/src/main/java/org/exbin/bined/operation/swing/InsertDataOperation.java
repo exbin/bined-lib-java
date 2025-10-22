@@ -24,7 +24,7 @@ import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.operation.BinaryDataUndoableOperation;
 
 /**
- * Operation for inserting data.
+ * Operation for data insertion.
  *
  * @author ExBin Project (https://exbin.org)
  */

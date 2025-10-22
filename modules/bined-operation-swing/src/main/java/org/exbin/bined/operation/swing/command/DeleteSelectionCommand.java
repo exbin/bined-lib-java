@@ -31,7 +31,7 @@ import org.exbin.bined.swing.CodeAreaCore;
 @ParametersAreNonnullByDefault
 public class DeleteSelectionCommand extends OpCodeAreaCommand {
 
-    private long position;
+    protected long position;
 
     public DeleteSelectionCommand(CodeAreaCore codeArea) {
         super(codeArea);

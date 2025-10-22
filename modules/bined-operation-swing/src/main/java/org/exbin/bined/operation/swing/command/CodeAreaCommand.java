@@ -28,7 +28,7 @@ import org.exbin.bined.operation.swing.CodeAreaState;
 import org.exbin.bined.swing.CodeAreaCore;
 
 /**
- * Abstract class for operation on code area component.
+ * Abstract class for command on code area component.
  *
  * @author ExBin Project (https://exbin.org)
  */

@@ -32,9 +32,9 @@ import org.exbin.bined.swing.CodeAreaCore;
 @ParametersAreNonnullByDefault
 public class PasteDataCommand extends CodeAreaCommand {
 
-    private CodeAreaCommand modifyCommand = null;
-    private CodeAreaCommand insertCommand = null;
-    private BinaryData pastedData;
+    protected CodeAreaCommand modifyCommand = null;
+    protected CodeAreaCommand insertCommand = null;
+    protected BinaryData pastedData;
 
     public PasteDataCommand(CodeAreaCore codeArea, BinaryData pastedData) {
         super(codeArea);

@@ -18,7 +18,7 @@ package org.exbin.bined.operation.swing.command;
 import org.exbin.bined.operation.command.BinaryDataCommandType;
 
 /**
- * Operation type enumeration.
+ * Code area command type enumeration.
  *
  * @author ExBin Project (https://exbin.org)
  */
