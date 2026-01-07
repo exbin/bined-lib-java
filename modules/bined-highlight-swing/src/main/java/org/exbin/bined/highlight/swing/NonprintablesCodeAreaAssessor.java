@@ -91,17 +91,17 @@ public class NonprintablesCodeAreaAssessor implements CodeAreaColorAssessor, Cod
 
     @Nullable
     @Override
-    public Color getPositionTextColor(long rowDataPosition, int byteOnRow, int charOnRow, CodeAreaSection section, boolean inSelection) {
+    public Color getPositionTextColor(long rowDataPosition, int offsetDataPosition, int columnPosition, CodeAreaSection section, boolean inSelection) {
         if (showNonprintables && section == BasicCodeAreaSection.TEXT_PREVIEW) {
             // Cache results to speed up?
-            Character character = parentCharAssessor != null ? parentCharAssessor.getPreviewCharacter(rowDataPosition, byteOnRow, charOnRow, section) : null;
+            Character character = parentCharAssessor != null ? parentCharAssessor.getPreviewCharacter(rowDataPosition, offsetDataPosition, columnPosition, section) : null;
             if (character != null && nonprintableCharactersMapping.containsKey(character)) {
                 return nonprintablesColor;
             }
         }
 
         if (parentColorAssessor != null) {
-            return parentColorAssessor.getPositionTextColor(rowDataPosition, byteOnRow, charOnRow, section, inSelection);
+            return parentColorAssessor.getPositionTextColor(rowDataPosition, offsetDataPosition, columnPosition, section, inSelection);
         }
 
         return null;
@@ -109,25 +109,25 @@ public class NonprintablesCodeAreaAssessor implements CodeAreaColorAssessor, Cod
 
     @Nullable
     @Override
-    public Color getPositionBackgroundColor(long rowDataPosition, int byteOnRow, int charOnRow, CodeAreaSection section, boolean inSelection) {
+    public Color getPositionBackgroundColor(long rowDataPosition, int offsetDataPosition, int columnPosition, CodeAreaSection section, boolean inSelection) {
         if (nonprintablesBackground != null && showNonprintables && section == BasicCodeAreaSection.TEXT_PREVIEW) {
             // Cache results to speed up?
-            Character character = parentCharAssessor != null ? parentCharAssessor.getPreviewCharacter(rowDataPosition, byteOnRow, charOnRow, section) : null;
+            Character character = parentCharAssessor != null ? parentCharAssessor.getPreviewCharacter(rowDataPosition, offsetDataPosition, columnPosition, section) : null;
             if (character != null && nonprintableCharactersMapping.containsKey(character)) {
                 return nonprintablesBackground;
             }
         }
 
         if (parentColorAssessor != null) {
-            return parentColorAssessor.getPositionBackgroundColor(rowDataPosition, byteOnRow, charOnRow, section, inSelection);
+            return parentColorAssessor.getPositionBackgroundColor(rowDataPosition, offsetDataPosition, columnPosition, section, inSelection);
         }
 
         return null;
     }
 
     @Override
-    public char getPreviewCharacter(long rowDataPosition, int byteOnRow, int charOnRow, CodeAreaSection section) {
-        Character character = parentCharAssessor != null ? parentCharAssessor.getPreviewCharacter(rowDataPosition, byteOnRow, charOnRow, section) : null;
+    public char getPreviewCharacter(long rowDataPosition, int offsetDataPosition, int columnPosition, CodeAreaSection section) {
+        Character character = parentCharAssessor != null ? parentCharAssessor.getPreviewCharacter(rowDataPosition, offsetDataPosition, columnPosition, section) : null;
         if (showNonprintables && section == BasicCodeAreaSection.TEXT_PREVIEW && character != null) {
             Character altChar = nonprintableCharactersMapping.get(character);
             return altChar == null ? character : altChar;
@@ -137,8 +137,8 @@ public class NonprintablesCodeAreaAssessor implements CodeAreaColorAssessor, Cod
     }
 
     @Override
-    public char getPreviewCursorCharacter(long rowDataPosition, int byteOnRow, int charOnRow, byte[] cursorData, int cursorDataLength, CodeAreaSection section) {
-        Character character = parentCharAssessor != null ? parentCharAssessor.getPreviewCursorCharacter(rowDataPosition, byteOnRow, charOnRow, cursorData, cursorDataLength, section) : null;
+    public char getPreviewCursorCharacter(long rowDataPosition, int offsetDataPosition, int columnPosition, byte[] cursorData, int cursorDataLength, CodeAreaSection section) {
+        Character character = parentCharAssessor != null ? parentCharAssessor.getPreviewCursorCharacter(rowDataPosition, offsetDataPosition, columnPosition, cursorData, cursorDataLength, section) : null;
         if (showNonprintables && section == BasicCodeAreaSection.TEXT_PREVIEW && character != null) {
             Character altChar = nonprintableCharactersMapping.get(character);
             return altChar == null ? character : altChar;

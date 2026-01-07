@@ -24,7 +24,7 @@ import org.exbin.bined.section.theme.SectionBackgroundPaintMode;
 import org.exbin.bined.swing.section.layout.SectionCodeAreaDecorations;
 
 /**
- * Layout profile for section code area.
+ * Theme profile for section code area.
  *
  * @author ExBin Project (https://exbin.org)
  */

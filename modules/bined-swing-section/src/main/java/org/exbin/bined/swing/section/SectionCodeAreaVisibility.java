@@ -55,11 +55,7 @@ public class SectionCodeAreaVisibility {
         int invisibleFromRightX = invisibleFromLeftX + dimensions.getDataViewWidth();
 
         // Compute first and last visible character of the code area
-        if (viewMode != CodeAreaViewMode.TEXT_PREVIEW) {
-            codeLastCharPos = bytesPerRow * charsPerByte - 1;
-        } else {
-            codeLastCharPos = 0;
-        }
+        codeLastCharPos = -1;
 
         if (viewMode == CodeAreaViewMode.DUAL) {
             previewCharPos = bytesPerRow * charsPerByte;
@@ -91,6 +87,7 @@ public class SectionCodeAreaVisibility {
                 skipToChar = positionIterator.getHalfCharPosition() / 2;
                 if (positionIterator.getSection() == BasicCodeAreaSection.TEXT_PREVIEW || positionIterator.isEndReached()) {
                     codeSectionVisible = false;
+                    codeLastCharPos = halfCharPos;
                 }
             } else if (skipRestFrom == -1 && positionX > invisibleFromRightX) {
                 skipRestFrom = positionIterator.getPosition();

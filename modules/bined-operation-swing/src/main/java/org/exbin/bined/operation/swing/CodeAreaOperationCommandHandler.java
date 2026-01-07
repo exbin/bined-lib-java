@@ -21,7 +21,6 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.FlavorEvent;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.KeyEvent;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
@@ -33,7 +32,6 @@ import org.exbin.bined.basic.BasicCodeAreaSection;
 import org.exbin.bined.CharsetStreamTranslator;
 import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.basic.CodeAreaViewMode;
-import org.exbin.bined.CodeCharactersCase;
 import org.exbin.bined.CodeType;
 import org.exbin.bined.EditMode;
 import org.exbin.bined.EditOperation;
@@ -45,7 +43,6 @@ import org.exbin.bined.basic.ScrollingDirection;
 import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.capability.CharsetCapable;
 import org.exbin.bined.capability.ClipboardCapable;
-import org.exbin.bined.capability.CodeCharactersCaseCapable;
 import org.exbin.bined.capability.CodeTypeCapable;
 import org.exbin.bined.capability.ScrollingCapable;
 import org.exbin.bined.capability.SelectionCapable;
@@ -587,22 +584,17 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
         }
     }
 
-    public void copyAsCode() {
-        SelectionRange selection = ((SelectionCapable) codeArea).getSelection();
-        if (!selection.isEmpty()) {
-            long first = selection.getFirst();
-            long last = selection.getLast();
-
-            BinaryData copy = codeArea.getContentData().copy(first, last - first + 1);
-
-            CodeType codeType = ((CodeTypeCapable) codeArea).getCodeType();
-            CodeCharactersCase charactersCase = ((CodeCharactersCaseCapable) codeArea).getCodeCharactersCase();
-            CodeAreaSwingUtils.CodeDataClipboardData binaryData = new CodeAreaSwingUtils.CodeDataClipboardData(copy, binedDataFlavor, codeType, charactersCase);
-            setClipboardContent(binaryData);
-        }
+    @Nonnull
+    public Clipboard getClipboard() {
+        return clipboard;
     }
 
-    private void setClipboardContent(CodeAreaSwingUtils.ClipboardData content) {
+    @Nonnull
+    public DataFlavor getBinedDataFlavor() {
+        return binedDataFlavor;
+    }
+    
+    public void setClipboardContent(CodeAreaSwingUtils.ClipboardData content) {
         clearClipboardData();
         try {
             currentClipboardData = content;
@@ -692,7 +684,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
         }
     }
 
-    private void pasteBinaryData(BinaryData pastedData) {
+    public void pasteBinaryData(BinaryData pastedData) {
         DeleteSelectionCommand deleteSelectionCommand = null;
         if (codeArea.hasSelection()) {
             deleteSelectionCommand = new DeleteSelectionCommand(codeArea);
@@ -706,42 +698,6 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
         codeArea.notifyDataChanged();
         revealCursor();
         clearSelection();
-    }
-
-    public void pasteFromCode() {
-        if (!checkEditAllowed()) {
-            return;
-        }
-
-        try {
-            if (clipboard.isDataFlavorAvailable(binedDataFlavor)) {
-                paste();
-            } else if (clipboard.isDataFlavorAvailable(DataFlavor.getTextPlainUnicodeFlavor())) {
-                InputStream insertedData;
-                try {
-                    insertedData = (InputStream) clipboard.getData(DataFlavor.getTextPlainUnicodeFlavor());
-                    CodeType codeType = ((CodeTypeCapable) codeArea).getCodeType();
-
-                    DataFlavor textPlainUnicodeFlavor = DataFlavor.getTextPlainUnicodeFlavor();
-                    String charsetName = textPlainUnicodeFlavor.getParameter(MIME_CHARSET);
-                    CharsetStreamTranslator translator = new CharsetStreamTranslator(Charset.forName(charsetName), ((CharsetCapable) codeArea).getCharset(), insertedData);
-                    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                    byte[] dataBuffer = new byte[1024];
-                    int length;
-                    while ((length = translator.read(dataBuffer)) != -1) {
-                        outputStream.write(dataBuffer, 0, length);
-                    }
-                    String insertedString = outputStream.toString(((CharsetCapable) codeArea).getCharset().name());
-                    ByteArrayEditableData clipData = new ByteArrayEditableData();
-                    CodeAreaUtils.insertHexStringIntoData(insertedString, clipData, codeType);
-                    pasteBinaryData(clipData);
-                } catch (UnsupportedFlavorException | IllegalStateException | IOException ex) {
-                    Logger.getLogger(CodeAreaOperationCommandHandler.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        } catch (IllegalStateException ex) {
-            // Clipboard not available - ignore
-        }
     }
 
     @Override

@@ -69,13 +69,13 @@ public class DefaultCodeAreaColorAssessor implements CodeAreaColorAssessor {
 
     @Nullable
     @Override
-    public Color getPositionTextColor(long rowDataPosition, int byteOnRow, int charOnRow, CodeAreaSection section, boolean inSelection) {
+    public Color getPositionTextColor(long rowDataPosition, int bytePosOnRow, int charPosOnRow, CodeAreaSection section, boolean inSelection) {
         if (inSelection) {
             return section == activeSection ? selectionColor : selectionMirrorColor;
         }
 
         if (parentColorAssessor != null) {
-            return parentColorAssessor.getPositionTextColor(rowDataPosition, byteOnRow, charOnRow, section, inSelection);
+            return parentColorAssessor.getPositionTextColor(rowDataPosition, bytePosOnRow, charPosOnRow, section, inSelection);
         }
 
         return null;
@@ -83,9 +83,9 @@ public class DefaultCodeAreaColorAssessor implements CodeAreaColorAssessor {
 
     @Nullable
     @Override
-    public Color getPositionBackgroundColor(long rowDataPosition, int byteOnRow, int charOnRow, CodeAreaSection section, boolean inSelection) {
+    public Color getPositionBackgroundColor(long rowDataPosition, int bytePosOnRow, int charPosOnRow, CodeAreaSection section, boolean inSelection) {
         if (inSelection && (section == BasicCodeAreaSection.CODE_MATRIX)) {
-            if (charOnRow == codeLastCharPos) {
+            if (charPosOnRow == codeLastCharPos) {
                 inSelection = false;
             }
         }
@@ -95,7 +95,7 @@ public class DefaultCodeAreaColorAssessor implements CodeAreaColorAssessor {
         }
 
         if (parentColorAssessor != null) {
-            return parentColorAssessor.getPositionBackgroundColor(rowDataPosition, byteOnRow, charOnRow, section, inSelection);
+            return parentColorAssessor.getPositionBackgroundColor(rowDataPosition, bytePosOnRow, charPosOnRow, section, inSelection);
         }
 
         return null;

@@ -969,7 +969,6 @@ public class SectionCodeAreaPainter implements CodeAreaPainter, ColorsProfileCap
         positionIterator.reset();
         positionIterator.skip(visibility.getSkipTo());
         char targetChar;
-        Character replacement;
         int skipToChar = visibility.getSkipToChar();
         int halfCharPos = positionIterator.getHalfCharPosition();
         boolean first = true;
@@ -1052,11 +1051,11 @@ public class SectionCodeAreaPainter implements CodeAreaPainter, ColorsProfileCap
             boolean sequenceBreak = false;
             CodeAreaSelection selectionHandler = ((SelectionCapable) codeArea).getSelectionHandler();
             boolean inSelection = selectionHandler.isInSelection(rowDataPosition + byteOnRow);
-            Color color = colorAssessor.getPositionBackgroundColor(rowDataPosition, byteOnRow, charPos, section, inSelection);
+            Color color = colorAssessor.getPositionBackgroundColor(rowDataPosition, byteOnRow, halfCharPos, section, inSelection);
             if (!CodeAreaSwingUtils.areSameColors(color, renderColor)) {
                 sequenceBreak = true;
             }
-            boolean splitSpace = viewMode == CodeAreaViewMode.DUAL && positionIterator.getSection() == BasicCodeAreaSection.TEXT_PREVIEW && positionIterator.getBytePosition() == 0;
+            boolean splitSpace = viewMode == CodeAreaViewMode.DUAL && positionIterator.getSection() == BasicCodeAreaSection.TEXT_PREVIEW && byteOnRow == 0;
             if (splitSpace) {
                 sequenceBreak = true;
                 charPos = halfCharPos - spaceSize;

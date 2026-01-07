@@ -31,7 +31,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import org.exbin.bined.basic.BasicCodeAreaSection;
 import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.basic.CodeAreaViewMode;
-import org.exbin.bined.CodeCharactersCase;
 import org.exbin.bined.CodeType;
 import org.exbin.bined.EditMode;
 import org.exbin.bined.EditOperation;
@@ -43,7 +42,6 @@ import org.exbin.bined.basic.ScrollingDirection;
 import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.capability.CharsetCapable;
 import org.exbin.bined.capability.ClipboardCapable;
-import org.exbin.bined.capability.CodeCharactersCaseCapable;
 import org.exbin.bined.capability.CodeTypeCapable;
 import org.exbin.bined.capability.ScrollingCapable;
 import org.exbin.bined.capability.SelectionCapable;
@@ -544,22 +542,17 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         }
     }
 
-    public void copyAsCode() {
-        SelectionRange selection = ((SelectionCapable) codeArea).getSelection();
-        if (!selection.isEmpty()) {
-            long first = selection.getFirst();
-            long last = selection.getLast();
-
-            BinaryData copy = codeArea.getContentData().copy(first, last - first + 1);
-
-            CodeType codeType = ((CodeTypeCapable) codeArea).getCodeType();
-            CodeCharactersCase charactersCase = ((CodeCharactersCaseCapable) codeArea).getCodeCharactersCase();
-            CodeAreaSwingUtils.CodeDataClipboardData binaryData = new CodeAreaSwingUtils.CodeDataClipboardData(copy, binaryDataFlavor, codeType, charactersCase);
-            setClipboardContent(binaryData);
-        }
+    @Nonnull
+    public Clipboard getClipboard() {
+        return clipboard;
     }
 
-    private void setClipboardContent(CodeAreaSwingUtils.ClipboardData content) {
+    @Nonnull
+    public DataFlavor getBinedDataFlavor() {
+        return binedDataFlavor;
+    }
+    
+    public void setClipboardContent(CodeAreaSwingUtils.ClipboardData content) {
         clearClipboardData();
         try {
             currentClipboardData = content;
@@ -646,7 +639,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         }
     }
 
-    private void pasteBinaryData(BinaryData pastedData) {
+    public void pasteBinaryData(BinaryData pastedData) {
         BinaryData data = codeArea.getContentData();
         EditMode editMode = ((EditModeCapable) codeArea).getEditMode();
         EditOperation editOperation = ((EditModeCapable) codeArea).getActiveOperation();
@@ -685,50 +678,6 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         codeArea.notifyDataChanged();
         revealCursor();
         clearSelection();
-    }
-
-    public void pasteFromCode() {
-        if (!checkEditAllowed()) {
-            return;
-        }
-
-        BinaryData data = codeArea.getContentData();
-        EditMode editMode = ((EditModeCapable) codeArea).getEditMode();
-        EditOperation editOperation = ((EditModeCapable) codeArea).getActiveOperation();
-        try {
-            if (!clipboard.isDataFlavorAvailable(binaryDataFlavor) && !clipboard.isDataFlavorAvailable(DataFlavor.stringFlavor)) {
-                return;
-            }
-        } catch (IllegalStateException ex) {
-            return;
-        }
-
-        try {
-            if (clipboard.isDataFlavorAvailable(binaryDataFlavor)) {
-                paste();
-            } else if (clipboard.isDataFlavorAvailable(DataFlavor.stringFlavor)) {
-                if (codeArea.hasSelection()) {
-                    deleteSelection();
-                    codeArea.notifyDataChanged();
-                }
-
-                Object insertedData;
-                try {
-                    insertedData = clipboard.getData(DataFlavor.stringFlavor);
-                    if (insertedData instanceof String) {
-                        CodeType codeType = getCodeType();
-                        ByteArrayEditableData pastedData = new ByteArrayEditableData();
-                        CodeAreaUtils.insertHexStringIntoData((String) insertedData, pastedData, codeType);
-                        pasteBinaryData(pastedData);
-                    }
-                } catch (UnsupportedFlavorException | IOException ex) {
-                    Logger.getLogger(DefaultCodeAreaCommandHandler.class
-                            .getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        } catch (IllegalStateException ex) {
-            // Clipboard not available - ignore
-        }
     }
 
     @Override

@@ -32,25 +32,25 @@ public interface CodeAreaCharAssessor extends CodeAreaPaintAssessor {
      * Returns preview character for particular position.
      *
      * @param rowDataPosition row data position
-     * @param byteOnRow byte on current row
-     * @param charOnRow character on current row
+     * @param offsetDataPosition data offset position on the current row
+     * @param columnPosition column position on the current row
      * @param section current section
      * @return color or null for default color
      */
-    char getPreviewCharacter(long rowDataPosition, int byteOnRow, int charOnRow, CodeAreaSection section);
+    char getPreviewCharacter(long rowDataPosition, int offsetDataPosition, int columnPosition, CodeAreaSection section);
 
     /**
      * Returns preview character for cursor position.
      *
      * @param rowDataPosition row data position
-     * @param byteOnRow byte on current row
-     * @param charOnRow character on current row
+     * @param offsetDataPosition data offset position on the current row
+     * @param columnPosition column position on the current row
      * @param cursorData cursor data
      * @param cursorDataLength cursor data length
      * @param section current section
      * @return color or null for default color
      */
-    char getPreviewCursorCharacter(long rowDataPosition, int byteOnRow, int charOnRow, byte[] cursorData, int cursorDataLength, CodeAreaSection section);
+    char getPreviewCursorCharacter(long rowDataPosition, int offsetDataPosition, int columnPosition, byte[] cursorData, int cursorDataLength, CodeAreaSection section);
 
     /**
      * Returns parent character assessor if present.

@@ -26,14 +26,11 @@ import java.awt.event.KeyEvent;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.Arrays;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.swing.ScrollPaneConstants;
 import org.exbin.bined.CodeAreaUtils;
-import org.exbin.bined.CodeCharactersCase;
-import org.exbin.bined.CodeType;
 import org.exbin.bined.ScrollBarVisibility;
 import org.exbin.auxiliary.binary_data.BinaryData;
 import org.exbin.bined.CharsetStreamTranslator;
@@ -263,64 +260,6 @@ public class CodeAreaSwingUtils {
             }
 
             throw new UnsupportedFlavorException(flavor);
-        }
-
-        @Override
-        public void lostOwnership(Clipboard clipboard, Transferable contents) {
-            // do nothing
-        }
-
-        @Override
-        public void dispose() {
-            data.dispose();
-        }
-    }
-
-    @ParametersAreNonnullByDefault
-    public static class CodeDataClipboardData implements ClipboardData {
-
-        private final BinaryData data;
-        private final DataFlavor binaryDataFlavor;
-        private final CodeType codeType;
-        private final CodeCharactersCase charactersCase;
-
-        public CodeDataClipboardData(BinaryData data, DataFlavor binaryDataFlavor, CodeType codeType, CodeCharactersCase charactersCase) {
-            this.data = data;
-            this.binaryDataFlavor = binaryDataFlavor;
-            this.codeType = codeType;
-            this.charactersCase = charactersCase;
-        }
-
-        @Nonnull
-        @Override
-        public DataFlavor[] getTransferDataFlavors() {
-            return new DataFlavor[]{binaryDataFlavor, DataFlavor.stringFlavor};
-        }
-
-        @Override
-        public boolean isDataFlavorSupported(DataFlavor flavor) {
-            return flavor.equals(binaryDataFlavor) || flavor.equals(DataFlavor.stringFlavor);
-        }
-
-        @Nonnull
-        @Override
-        public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
-            if (flavor.equals(binaryDataFlavor)) {
-                return data;
-            } else {
-                int charsPerByte = codeType.getMaxDigitsForByte() + 1;
-                int textLength = (int) (data.getDataSize() * charsPerByte);
-                if (textLength > 0) {
-                    textLength--;
-                }
-
-                char[] targetData = new char[textLength];
-                Arrays.fill(targetData, ' ');
-                for (int i = 0; i < data.getDataSize(); i++) {
-                    CodeAreaUtils.byteToCharsCode(data.getByte(i), codeType, targetData, i * charsPerByte, charactersCase);
-                }
-                return new String(targetData);
-            }
         }
 
         @Override
