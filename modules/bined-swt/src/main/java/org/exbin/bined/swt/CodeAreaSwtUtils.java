@@ -38,8 +38,6 @@ import org.exbin.bined.CharsetStreamTranslator;
 
 /**
  * Hexadecimal editor component SWT utilities.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class CodeAreaSwtUtils {

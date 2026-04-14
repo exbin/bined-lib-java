@@ -28,8 +28,6 @@ import org.exbin.bined.swt.basic.CodeArea;
 
 /**
  * Code area caret.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class SectionCodeAreaCaret {

@@ -21,8 +21,6 @@ import org.exbin.bined.section.layout.SectionCodeAreaLayoutProfile;
 
 /**
  * Support for layout profiling.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public interface LayoutProfileCapable {

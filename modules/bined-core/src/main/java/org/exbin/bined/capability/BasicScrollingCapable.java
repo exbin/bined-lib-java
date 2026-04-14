@@ -23,8 +23,6 @@ import org.exbin.bined.basic.VerticalScrollUnit;
 
 /**
  * Support for scrolling control.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public interface BasicScrollingCapable {

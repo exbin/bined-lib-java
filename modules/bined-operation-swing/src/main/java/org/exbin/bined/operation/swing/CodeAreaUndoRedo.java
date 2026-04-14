@@ -30,8 +30,6 @@ import org.exbin.bined.operation.command.BinaryDataUndoableCommand;
 
 /**
  * Undo handler for binary editor.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class CodeAreaUndoRedo implements BinaryDataUndoRedo, BinaryDataAppendableUndoRedo {

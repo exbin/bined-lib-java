@@ -19,8 +19,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * Code area paint assessor.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public interface CodeAreaPaintAssessor {

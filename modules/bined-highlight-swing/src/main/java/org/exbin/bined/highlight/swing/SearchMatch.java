@@ -17,8 +17,6 @@ package org.exbin.bined.highlight.swing;
 
 /**
  * Simple POJO class for search match.
- *
- * @author ExBin Project (https://exbin.org)
  */
 public class SearchMatch {
 

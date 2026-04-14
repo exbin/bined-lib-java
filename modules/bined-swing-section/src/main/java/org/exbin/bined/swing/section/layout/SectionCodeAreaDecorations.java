@@ -21,8 +21,6 @@ import org.exbin.bined.section.theme.CodeAreaDecorationType;
 
 /**
  * Enumeration of supported decorations of section code area.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public enum SectionCodeAreaDecorations implements CodeAreaDecorationType {

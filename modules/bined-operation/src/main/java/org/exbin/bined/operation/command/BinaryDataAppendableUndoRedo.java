@@ -19,8 +19,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * Undoable command sequence with support for appendable commands.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public interface BinaryDataAppendableUndoRedo extends BinaryDataUndoRedo {

@@ -17,8 +17,6 @@ package org.exbin.bined.basic;
 
 /**
  * Enumeration of vertical scaling modes.
- *
- * @author ExBin Project (https://exbin.org)
  */
 public enum ScrollBarVerticalScale {
     /**

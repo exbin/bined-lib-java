@@ -23,8 +23,6 @@ import org.exbin.bined.SelectionRange;
 
 /**
  * Support for selection capability.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public interface SelectionCapable {

@@ -34,8 +34,6 @@ import org.exbin.bined.CodeAreaUtils;
 
 /**
  * Binary viewer/editor component.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public abstract class CodeAreaCore extends Pane implements CodeAreaControl {

@@ -22,8 +22,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * Enumeration of decoration color types.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public enum BasicCodeAreaDecorationColorType implements CodeAreaColorType {

@@ -40,8 +40,6 @@ import org.exbin.bined.swing.section.SectionCodeAreaPainter;
 
 /**
  * Binary editor state panel.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class StatePanelSect extends javax.swing.JPanel {

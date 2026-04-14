@@ -81,8 +81,6 @@ import org.exbin.bined.lanterna.CodeAreaLanternaControl;
 
 /**
  * Code area component default painter.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapableCodeAreaPainter {

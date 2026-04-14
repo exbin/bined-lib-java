@@ -32,8 +32,6 @@ import org.exbin.bined.javafx.CodeAreaPaintState;
 
 /**
  * Default code area character assessor.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class DefaultCodeAreaCharAssessor implements CodeAreaCharAssessor {

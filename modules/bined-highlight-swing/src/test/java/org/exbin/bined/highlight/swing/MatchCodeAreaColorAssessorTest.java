@@ -20,8 +20,6 @@ import org.junit.Test;
 
 /**
  * Tests for search matching code area assessor.
- *
- * @author ExBin Project (https://exbin.org)
  */
 public class MatchCodeAreaColorAssessorTest {
 

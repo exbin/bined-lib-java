@@ -29,8 +29,6 @@ import org.exbin.bined.operation.BinaryDataUndoableOperation;
  * Operation for editing data using insert mode.
  * <p>
  * At zero offset byte is inserted, otherwise part of the value is overwritten.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class InsertCodeEditDataOperation extends CodeEditDataOperation {

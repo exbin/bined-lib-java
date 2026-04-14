@@ -21,8 +21,6 @@ import org.exbin.bined.swing.section.theme.SectionCodeAreaThemeProfile;
 
 /**
  * Support for theme profiling.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public interface ThemeProfileCapable {

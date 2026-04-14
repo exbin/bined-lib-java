@@ -25,8 +25,6 @@ import org.exbin.bined.swing.CodeAreaCore;
 
 /**
  * Delete selection command.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class DeleteSelectionCommand extends OpCodeAreaCommand {

@@ -32,8 +32,6 @@ import org.exbin.bined.capability.ScrollingCapable;
 
 /**
  * Code area mouse listener.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class DefaultCodeAreaMouseListener extends MouseAdapter implements MouseMotionListener, MouseWheelListener {

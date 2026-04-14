@@ -21,8 +21,6 @@ import org.exbin.bined.swing.basic.AntialiasingMode;
 
 /**
  * Support for antialiasing capability.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public interface AntialiasingCapable {

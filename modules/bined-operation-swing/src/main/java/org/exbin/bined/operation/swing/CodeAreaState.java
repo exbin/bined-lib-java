@@ -23,8 +23,6 @@ import org.exbin.bined.SelectionRange;
 
 /**
  * Code area state for operation purposes.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 @Immutable

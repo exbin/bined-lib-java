@@ -27,8 +27,6 @@ import org.exbin.bined.operation.BinaryDataUndoableOperation;
 
 /**
  * Operation for editing data using insert mode.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class InsertCharEditDataOperation extends CharEditDataOperation {

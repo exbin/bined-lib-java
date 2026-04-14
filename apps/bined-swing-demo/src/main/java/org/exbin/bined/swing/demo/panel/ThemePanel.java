@@ -23,8 +23,6 @@ import org.exbin.bined.swing.basic.CodeArea;
 
 /**
  * Binary editor theme options panel.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class ThemePanel extends javax.swing.JPanel {

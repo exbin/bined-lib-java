@@ -86,8 +86,6 @@ import org.exbin.bined.javafx.capability.ColorAssessorPainterCapable;
 
 /**
  * Code area component default painter.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class DefaultCodeAreaPainter implements CodeAreaPainter, BasicColorsCapableCodeAreaPainter, CodeAreaPaintState, ColorAssessorPainterCapable, CharAssessorPainterCapable {

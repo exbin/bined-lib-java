@@ -22,8 +22,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * Enumeration of color types for main group.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public enum CodeAreaBasicColors implements CodeAreaColorType {

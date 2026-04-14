@@ -27,8 +27,6 @@ import org.exbin.bined.swing.CodeAreaCore;
 
 /**
  * Abstract class for operation on binary document.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public abstract class OpCodeAreaCommand extends CodeAreaCommand {

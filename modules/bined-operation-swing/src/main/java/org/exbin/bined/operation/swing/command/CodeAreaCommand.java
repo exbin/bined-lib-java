@@ -29,8 +29,6 @@ import org.exbin.bined.swing.CodeAreaCore;
 
 /**
  * Abstract class for command on code area component.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public abstract class CodeAreaCommand extends BinaryDataAbstractCommand {

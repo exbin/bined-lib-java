@@ -22,8 +22,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * Interface for compound command.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public interface BinaryDataCompoundCommand extends BinaryDataCommand {

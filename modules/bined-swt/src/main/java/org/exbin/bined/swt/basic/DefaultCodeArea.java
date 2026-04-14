@@ -33,8 +33,6 @@ import org.exbin.bined.capability.EditModeCapable;
 
 /**
  * Code area component default interface.
- *
- * @author ExBin Project (https://exbin.org)
  */
 public interface DefaultCodeArea extends SelectionCapable, CaretCapable, ScrollingCapable, BasicScrollingCapable, ViewModeCapable,
         CodeTypeCapable, EditModeCapable, CharsetCapable, CodeCharactersCaseCapable, FontCapable,

@@ -26,8 +26,6 @@ import org.exbin.bined.CodeAreaUtils;
 
 /**
  * Enumeration of supported antialiasing modes.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public enum AntialiasingMode {

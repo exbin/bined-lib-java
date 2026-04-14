@@ -25,8 +25,6 @@ import org.exbin.bined.operation.BinaryDataUndoableOperation;
 
 /**
  * Operation for deleting section of data.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class RemoveDataOperation implements BinaryDataUndoableOperation {

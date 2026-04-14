@@ -49,8 +49,6 @@ import org.exbin.auxiliary.binary_data.EditableBinaryData;
 
 /**
  * Binary editor state options panel.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class StatePanel extends Composite {

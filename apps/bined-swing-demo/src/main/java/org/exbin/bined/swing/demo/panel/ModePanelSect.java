@@ -42,8 +42,6 @@ import org.exbin.bined.swing.section.SectCodeArea;
 
 /**
  * Binary editor mode options panel.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class ModePanelSect extends javax.swing.JPanel {

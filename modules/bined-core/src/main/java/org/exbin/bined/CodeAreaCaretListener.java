@@ -19,8 +19,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * Interface for code area caret change listener.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public interface CodeAreaCaretListener {

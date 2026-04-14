@@ -67,8 +67,6 @@ import org.exbin.bined.CodeAreaCaretListener;
 
 /**
  * TODO: Binary viewer/editor component with configurable sections.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class SectCodeArea extends Composite implements CodeAreaControl {

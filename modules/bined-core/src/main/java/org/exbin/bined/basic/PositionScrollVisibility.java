@@ -18,8 +18,6 @@ package org.exbin.bined.basic;
 /**
  * Enumeration of possible visibility states of caret position relative to
  * scrolling area.
- *
- * @author ExBin Project (https://exbin.org)
  */
 public enum PositionScrollVisibility {
 

@@ -58,8 +58,6 @@ import org.exbin.auxiliary.binary_data.EmptyBinaryData;
  * Binary viewer/editor component.
  * <p>
  * Class extends JTextComponent to be able to invoke on-screen keyboard.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 // Java 9+ @SwingContainer(false)

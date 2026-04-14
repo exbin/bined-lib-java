@@ -21,8 +21,6 @@ import org.exbin.bined.ClipboardHandlingMode;
 
 /**
  * Support for clipboard capability.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public interface ClipboardCapable {

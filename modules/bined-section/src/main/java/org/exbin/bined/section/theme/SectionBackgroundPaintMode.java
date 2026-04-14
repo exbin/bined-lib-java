@@ -17,8 +17,6 @@ package org.exbin.bined.section.theme;
 
 /**
  * Border paint modes for section painter.
- *
- * @author ExBin Project (https://exbin.org)
  */
 public enum SectionBackgroundPaintMode {
     TRANSPARENT,

@@ -20,8 +20,6 @@ import org.exbin.bined.swing.CodeAreaCore;
 
 /**
  * Tests for CodeArea component.
- *
- * @author ExBin Project (https://exbin.org)
  */
 public class CodeAreaComponentTest {
 

@@ -19,8 +19,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * Interface for appendable binary data command.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public interface BinaryDataAppendableCommand extends BinaryDataUndoableCommand {

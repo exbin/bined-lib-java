@@ -17,8 +17,6 @@ package org.exbin.bined.section.caret;
 
 /**
  * Caret types.
- *
- * @author ExBin Project (https://exbin.org)
  */
 public enum CodeAreaCaretType {
 

@@ -27,8 +27,6 @@ import org.exbin.bined.javafx.CodeAreaCore;
 
 /**
  * Code Area component mouse listener.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class DefaultCodeAreaMouseListener {

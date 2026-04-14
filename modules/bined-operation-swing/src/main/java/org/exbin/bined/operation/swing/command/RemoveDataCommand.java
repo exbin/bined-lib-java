@@ -22,8 +22,6 @@ import org.exbin.bined.swing.CodeAreaCore;
 
 /**
  * Command for deleting data.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class RemoveDataCommand extends OpCodeAreaCommand {

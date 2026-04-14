@@ -26,8 +26,6 @@ import org.exbin.bined.CodeAreaCaretListener;
 
 /**
  * Support for caret / cursor capability.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public interface CaretCapable {

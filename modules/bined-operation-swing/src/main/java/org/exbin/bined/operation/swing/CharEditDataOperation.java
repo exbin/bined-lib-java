@@ -20,8 +20,6 @@ import org.exbin.bined.operation.BinaryDataUndoableOperation;
 
 /**
  * Abstract operation for editing data.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public abstract class CharEditDataOperation implements BinaryDataUndoableOperation {

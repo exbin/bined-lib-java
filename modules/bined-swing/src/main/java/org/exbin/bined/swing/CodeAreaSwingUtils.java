@@ -39,8 +39,6 @@ import org.exbin.bined.swing.capability.ColorAssessorPainterCapable;
 
 /**
  * Binary editor component swing utilities.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class CodeAreaSwingUtils {

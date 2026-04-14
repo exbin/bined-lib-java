@@ -17,8 +17,6 @@ package org.exbin.bined;
 
 /**
  * Enumeration of scrollbar orientation variants.
- *
- * @author ExBin Project (https://exbin.org)
  */
 public enum ScrollBarOrientation {
     HORIZONTAL, VERTICAL

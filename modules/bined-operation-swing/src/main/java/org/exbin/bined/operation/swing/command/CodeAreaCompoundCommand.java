@@ -30,8 +30,6 @@ import org.exbin.bined.swing.CodeAreaCore;
 
 /**
  * Class for compound command on binary document.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class CodeAreaCompoundCommand extends CodeAreaCommand implements BinaryDataCompoundCommand, BinaryDataAppendableCommand {

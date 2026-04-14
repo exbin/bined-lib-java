@@ -65,8 +65,6 @@ import org.exbin.bined.CodeAreaCaretListener;
 
 /**
  * Code area component.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaSwingControl {

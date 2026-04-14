@@ -23,8 +23,6 @@ import org.exbin.bined.basic.SelectingMode;
 
 /**
  * Interface for code area data manipulation.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public interface CodeAreaCommandHandler {

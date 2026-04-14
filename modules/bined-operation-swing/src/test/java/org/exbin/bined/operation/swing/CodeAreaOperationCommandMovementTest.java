@@ -23,8 +23,6 @@ import org.exbin.bined.swing.basic.CodeAreaCommandMovementTest;
 
 /**
  * Tests for SectCodeArea component.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class CodeAreaOperationCommandMovementTest extends CodeAreaCommandMovementTest {

@@ -36,8 +36,6 @@ import org.exbin.bined.swing.CodeAreaCore;
 
 /**
  * Command for editing data in text mode.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class EditCharDataCommand extends EditDataCommand implements BinaryDataAppendableCommand {

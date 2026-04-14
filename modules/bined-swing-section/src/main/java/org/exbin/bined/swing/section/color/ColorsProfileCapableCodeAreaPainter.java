@@ -21,8 +21,6 @@ import org.exbin.bined.swing.basic.color.CodeAreaColorsProfile;
 
 /**
  * Capability of painter to handle colors profiling.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public interface ColorsProfileCapableCodeAreaPainter {

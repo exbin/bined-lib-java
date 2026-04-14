@@ -32,8 +32,6 @@ import org.exbin.bined.swt.demo.panel.ThemePanel;
 
 /**
  * Basic binary component example panel.
- *
- * @author ExBin Project (https://exbin.org)
  */
 public class BinEdDemoBasicPanel extends Composite {
 

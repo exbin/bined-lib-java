@@ -20,8 +20,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * Capability of painter to handle basic colors setting.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public interface BasicColorsCapableCodeAreaPainter {

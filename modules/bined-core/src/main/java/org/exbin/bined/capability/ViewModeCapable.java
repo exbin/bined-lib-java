@@ -21,8 +21,6 @@ import org.exbin.bined.basic.CodeAreaViewMode;
 
 /**
  * Support for view mode capability.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public interface ViewModeCapable {

@@ -23,8 +23,6 @@ import org.exbin.bined.basic.BasicCodeAreaStructure;
 
 /**
  * Basic code area component characters visibility in scroll window.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class BasicCodeAreaVisibility {

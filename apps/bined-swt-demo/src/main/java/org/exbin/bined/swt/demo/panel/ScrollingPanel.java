@@ -38,8 +38,6 @@ import org.exbin.bined.swt.basic.CodeArea;
 
 /**
  * Binary editor scrolling options panel.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class ScrollingPanel extends Composite {

@@ -38,8 +38,6 @@ import org.junit.Test;
 
 /**
  * Tests for CodeAreaUndoRedo component.
- *
- * @author ExBin Project (https://exbin.org)
  */
 public class CodeAreaUndoRedoTest extends CodeAreaComponentTest {
 

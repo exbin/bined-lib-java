@@ -20,8 +20,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * Enumeration of decoration types for section code area.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public enum SectionDecorationType implements CodeAreaDecorationType {

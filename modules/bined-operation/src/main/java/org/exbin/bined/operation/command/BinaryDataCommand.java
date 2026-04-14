@@ -19,8 +19,6 @@ import javax.annotation.Nonnull;
 
 /**
  * Interface for code area command.
- *
- * @author ExBin Project (https://exbin.org)
  */
 public interface BinaryDataCommand {
 

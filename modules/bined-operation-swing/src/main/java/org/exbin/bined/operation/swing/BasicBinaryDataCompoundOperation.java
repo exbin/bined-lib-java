@@ -27,8 +27,6 @@ import org.exbin.bined.operation.BinaryDataUndoableOperation;
 
 /**
  * Compound binary data operation.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class BasicBinaryDataCompoundOperation implements BinaryDataCompoundOperation, BinaryDataUndoableOperation {

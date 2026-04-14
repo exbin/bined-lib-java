@@ -38,8 +38,6 @@ import org.exbin.bined.capability.EditModeCapable;
 
 /**
  * Binary editor mode options panel.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class ModePanel extends Composite {

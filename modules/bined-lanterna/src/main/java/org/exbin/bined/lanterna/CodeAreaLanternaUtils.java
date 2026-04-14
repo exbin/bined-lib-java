@@ -40,8 +40,6 @@ import org.exbin.bined.CharsetStreamTranslator;
 
 /**
  * Binary editor component Lanterna utilities.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class CodeAreaLanternaUtils {

@@ -17,8 +17,6 @@ package org.exbin.bined.section.capability;
 
 /**
  * Support for row offset capability.
- *
- * @author ExBin Project (https://exbin.org)
  */
 public interface RowOffsetCapable {
 

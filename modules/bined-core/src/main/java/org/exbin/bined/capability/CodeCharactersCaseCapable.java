@@ -21,8 +21,6 @@ import org.exbin.bined.CodeCharactersCase;
 
 /**
  * Support for characters case capability.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public interface CodeCharactersCaseCapable {

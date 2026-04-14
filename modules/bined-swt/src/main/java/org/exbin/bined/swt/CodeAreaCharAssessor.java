@@ -22,8 +22,6 @@ import org.exbin.bined.CodeAreaSection;
 
 /**
  * Code area character assessor.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public interface CodeAreaCharAssessor extends CodeAreaPaintAssessor {

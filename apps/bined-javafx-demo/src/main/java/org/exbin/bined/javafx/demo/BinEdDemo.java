@@ -29,8 +29,6 @@ import org.exbin.bined.javafx.basic.CodeArea;
 
 /**
  * Binary component demo application for JavaFX.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class BinEdDemo extends Application {

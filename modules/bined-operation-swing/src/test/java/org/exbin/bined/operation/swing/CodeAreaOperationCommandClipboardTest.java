@@ -23,8 +23,6 @@ import org.exbin.bined.swing.basic.CodeArea;
 
 /**
  * Tests clipboard actions for SectCodeArea command component.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class CodeAreaOperationCommandClipboardTest extends CodeAreaCommandClipboardTest {

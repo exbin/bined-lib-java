@@ -33,8 +33,6 @@ import org.exbin.bined.swing.basic.color.CodeAreaColorsProfile;
 
 /**
  * Code area non-printable characters highlighting.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class NonprintablesCodeAreaAssessor implements CodeAreaColorAssessor, CodeAreaCharAssessor {

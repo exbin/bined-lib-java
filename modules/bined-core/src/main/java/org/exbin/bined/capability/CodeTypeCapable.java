@@ -21,8 +21,6 @@ import org.exbin.bined.CodeType;
 
 /**
  * Support for code type capability.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public interface CodeTypeCapable {

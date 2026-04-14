@@ -21,8 +21,6 @@ import org.exbin.bined.section.layout.SectionCodeAreaLayoutProfile;
 
 /**
  * Capability of painter to handle layout profiling.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public interface LayoutProfileCapableCodeAreaPainter {

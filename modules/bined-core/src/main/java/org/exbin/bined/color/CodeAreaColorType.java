@@ -20,8 +20,6 @@ import javax.annotation.Nonnull;
 
 /**
  * Interface for code area color type.
- *
- * @author ExBin Project (https://exbin.org)
  */
 public interface CodeAreaColorType {
 

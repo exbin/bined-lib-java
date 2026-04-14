@@ -17,8 +17,6 @@ package org.exbin.bined.basic;
 
 /**
  * Enumeration of modes for tab key handling.
- *
- * @author ExBin Project (https://exbin.org)
  */
 public enum TabKeyHandlingMode {
     /**

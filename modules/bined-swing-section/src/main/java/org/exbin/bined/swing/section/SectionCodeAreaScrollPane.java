@@ -35,8 +35,6 @@ import org.exbin.bined.swing.basic.BasicCodeAreaMetrics;
 
 /**
  * Section scroll pane for binary component.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class SectionCodeAreaScrollPane extends JScrollPane {

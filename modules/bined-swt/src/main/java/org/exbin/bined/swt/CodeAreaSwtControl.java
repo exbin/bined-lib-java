@@ -21,8 +21,6 @@ import org.exbin.bined.basic.CodeAreaScrollPosition;
 
 /**
  * Code area SWT control.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public interface CodeAreaSwtControl {

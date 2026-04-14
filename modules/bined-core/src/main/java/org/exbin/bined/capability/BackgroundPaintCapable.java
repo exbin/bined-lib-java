@@ -21,8 +21,6 @@ import org.exbin.bined.basic.BasicBackgroundPaintMode;
 
 /**
  * Support for background paint mode capability.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public interface BackgroundPaintCapable {

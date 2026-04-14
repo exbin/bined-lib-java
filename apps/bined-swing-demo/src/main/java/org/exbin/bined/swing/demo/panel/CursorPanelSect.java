@@ -23,8 +23,6 @@ import org.exbin.bined.swing.section.SectCodeArea;
 
 /**
  * Binary editor cursor options panel.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class CursorPanelSect extends javax.swing.JPanel {

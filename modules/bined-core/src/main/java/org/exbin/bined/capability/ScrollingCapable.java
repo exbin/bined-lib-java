@@ -24,8 +24,6 @@ import org.exbin.bined.basic.ScrollingDirection;
 
 /**
  * Support for scrolling capability.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public interface ScrollingCapable {

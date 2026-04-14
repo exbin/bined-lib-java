@@ -20,8 +20,6 @@ package org.exbin.bined;
  * <p>
  * Used to specify what to do with basic clipboard actions like cut, copy, paste
  * and delete.
- *
- * @author ExBin Project (https://exbin.org)
  */
 public enum ClipboardHandlingMode {
 

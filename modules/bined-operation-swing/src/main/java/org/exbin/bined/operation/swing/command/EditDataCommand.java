@@ -21,8 +21,6 @@ import org.exbin.bined.swing.CodeAreaCore;
 
 /**
  * Command for editing data in text mode.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public abstract class EditDataCommand extends CodeAreaCommand {

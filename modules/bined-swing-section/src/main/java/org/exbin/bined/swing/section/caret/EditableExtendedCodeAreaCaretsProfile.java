@@ -25,8 +25,6 @@ import org.exbin.bined.section.caret.DefaultCodeAreaCaretShape;
 
 /**
  * Support for cursor carets shapes.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class EditableExtendedCodeAreaCaretsProfile implements SectionCodeAreaCaretsProfile {

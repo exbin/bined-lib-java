@@ -22,8 +22,6 @@ import org.junit.Test;
 
 /**
  * Tests for CodeArea component.
- *
- * @author ExBin Project (https://exbin.org)
  */
 public class CodeAreaDataTest extends CodeAreaComponentTest {
 

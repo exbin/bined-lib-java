@@ -30,8 +30,6 @@ import org.exbin.bined.javafx.basic.color.CodeAreaColorsProfile;
 
 /**
  * Default code area color assessor.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class DefaultCodeAreaColorAssessor implements CodeAreaColorAssessor {

@@ -21,8 +21,6 @@ import org.exbin.bined.javafx.CodeAreaColorAssessor;
 
 /**
  * Painter support for color assessor capability.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public interface ColorAssessorPainterCapable {

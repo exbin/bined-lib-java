@@ -21,8 +21,6 @@ import org.exbin.bined.swing.section.caret.SectionCodeAreaCaretsProfile;
 
 /**
  * Support for cursor carets profiling.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public interface CaretsProfileCapable {

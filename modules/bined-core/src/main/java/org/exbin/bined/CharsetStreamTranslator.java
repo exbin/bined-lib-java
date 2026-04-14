@@ -32,8 +32,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 /**
  * Input stream translation class which converts from input charset to target
  * charset.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class CharsetStreamTranslator extends InputStream {

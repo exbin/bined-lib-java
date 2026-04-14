@@ -17,8 +17,6 @@ package org.exbin.bined;
 
 /**
  * Code area zone identifier.
- *
- * @author ExBin Project (https://exbin.org)
  */
 public interface CodeAreaZone {
 }

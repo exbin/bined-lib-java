@@ -26,8 +26,6 @@ import org.exbin.bined.RowWrappingMode;
 
 /**
  * Code area data representation structure for basic variant.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class BasicCodeAreaLayout {

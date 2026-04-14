@@ -17,8 +17,6 @@ package org.exbin.bined;
 
 /**
  * Interface for selection change listener.
- *
- * @author ExBin Project (https://exbin.org)
  */
 public interface SelectionChangedListener {
 

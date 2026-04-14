@@ -23,8 +23,6 @@ import org.exbin.bined.section.SectionHorizontalScrollUnit;
 
 /**
  * Support for scrolling capability for section code area.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public interface SectionScrollingCapable {

@@ -17,8 +17,6 @@ package org.exbin.bined.basic;
 
 /**
  * Scrolling view dimensions.
- *
- * @author ExBin Project (https://exbin.org)
  */
 public class ScrollViewDimension {
 

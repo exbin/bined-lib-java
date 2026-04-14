@@ -27,8 +27,6 @@ import org.hamcrest.MatcherAssert;
 
 /**
  * Tests for DefaultSectionCodeAreaLayoutProfile.
- *
- * @author ExBin Project (https://exbin.org)
  */
 public class SectionCodeAreaLayoutProfileTest {
 

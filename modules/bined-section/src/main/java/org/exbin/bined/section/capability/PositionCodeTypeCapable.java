@@ -21,8 +21,6 @@ import org.exbin.bined.PositionCodeType;
 
 /**
  * Support for position code type.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public interface PositionCodeTypeCapable {

@@ -22,8 +22,6 @@ import org.exbin.bined.swing.basic.color.BasicCodeAreaColorsProfile;
 
 /**
  * Support for basic set of colors.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public interface BasicColorsCapable {

@@ -20,8 +20,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * Capability of painter to handle theme profiling.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public interface ThemeProfileCapableCodeAreaPainter {

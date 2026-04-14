@@ -21,8 +21,6 @@ import org.exbin.bined.swing.basic.CodeAreaDataTest;
 
 /**
  * Tests for SectCodeArea component.
- *
- * @author ExBin Project (https://exbin.org)
  */
 public class SectCodeAreaDataTest extends CodeAreaDataTest {
 

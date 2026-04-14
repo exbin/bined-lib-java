@@ -19,8 +19,6 @@ import javax.annotation.Nonnull;
 
 /**
  * Interface for code area color group.
- *
- * @author ExBin Project (https://exbin.org)
  */
 public interface CodeAreaColorGroup {
 

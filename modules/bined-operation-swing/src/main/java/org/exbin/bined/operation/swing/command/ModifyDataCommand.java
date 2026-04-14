@@ -23,8 +23,6 @@ import org.exbin.auxiliary.binary_data.BinaryData;
 
 /**
  * Command for modifying data.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class ModifyDataCommand extends OpCodeAreaCommand {

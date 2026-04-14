@@ -27,8 +27,6 @@ import org.exbin.bined.swing.section.SectionCodeAreaPainter;
 
 /**
  * Panel for difference comparison of two code areas.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class SectCodeAreaDiffPanel extends javax.swing.JPanel {

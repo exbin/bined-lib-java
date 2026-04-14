@@ -26,8 +26,6 @@ import org.exbin.bined.javafx.basic.color.CodeAreaColorsProfile;
 
 /**
  * Code area paint state.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public interface CodeAreaPaintState {

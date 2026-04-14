@@ -19,8 +19,6 @@ import javax.annotation.Nonnull;
 
 /**
  * Code are decoration type.
- *
- * @author ExBin Project (https://exbin.org)
  */
 public interface CodeAreaDecorationType {
 

@@ -19,8 +19,6 @@ import org.eclipse.swt.graphics.Color;
 
 /**
  * Set of colors for different sections of component rendering.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class ColorsGroup {

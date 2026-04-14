@@ -23,8 +23,6 @@ import org.exbin.bined.EditModeChangedListener;
 
 /**
  * Support for edit mode capability.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public interface EditModeCapable {

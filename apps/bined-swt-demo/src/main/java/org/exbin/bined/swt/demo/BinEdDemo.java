@@ -32,8 +32,6 @@ import org.exbin.auxiliary.binary_data.array.ByteArrayEditableData;
 
 /**
  * Binary component demo application for SWT.
- *
- * @author ExBin Project (https://exbin.org)
  */
 public class BinEdDemo {
 

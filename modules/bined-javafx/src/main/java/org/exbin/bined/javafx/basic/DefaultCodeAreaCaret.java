@@ -31,8 +31,6 @@ import org.exbin.bined.CodeAreaUtils;
 
 /**
  * Default implementation of code area caret.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class DefaultCodeAreaCaret implements CodeAreaCaret {

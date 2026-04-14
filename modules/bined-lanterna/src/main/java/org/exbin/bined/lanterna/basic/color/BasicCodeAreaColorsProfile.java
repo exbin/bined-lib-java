@@ -28,8 +28,6 @@ import org.exbin.bined.lanterna.CodeAreaLanternaUtils;
 
 /**
  * Basic code area set of colors.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class BasicCodeAreaColorsProfile implements CodeAreaColorsProfile {

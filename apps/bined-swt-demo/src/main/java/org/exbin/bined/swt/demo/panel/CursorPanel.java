@@ -33,8 +33,6 @@ import org.exbin.bined.swt.basic.DefaultCodeAreaCaret;
 
 /**
  * Binary editor cursor options panel.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class CursorPanel extends Composite {

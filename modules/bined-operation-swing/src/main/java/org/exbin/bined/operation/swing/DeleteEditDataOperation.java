@@ -28,8 +28,6 @@ import org.exbin.bined.operation.BinaryDataUndoableOperation;
 
 /**
  * Operation for deleting data via delete or backspace.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class DeleteEditDataOperation extends CharEditDataOperation {

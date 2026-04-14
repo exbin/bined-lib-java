@@ -22,8 +22,6 @@ import org.exbin.bined.CharsetStreamTranslator;
 
 /**
  * Basic code area component dimensions.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class BasicCodeAreaMetrics {

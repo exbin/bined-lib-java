@@ -17,8 +17,6 @@ package org.exbin.bined;
 
 /**
  * Interface for scrolling listener.
- *
- * @author ExBin Project (https://exbin.org)
  */
 public interface ScrollingListener {
 

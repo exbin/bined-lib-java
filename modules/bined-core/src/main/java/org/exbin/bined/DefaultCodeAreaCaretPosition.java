@@ -24,8 +24,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 /**
  * Specifies caret position as combination of data position, section and code
  * offset of code representation.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class DefaultCodeAreaCaretPosition implements CodeAreaCaretPosition {

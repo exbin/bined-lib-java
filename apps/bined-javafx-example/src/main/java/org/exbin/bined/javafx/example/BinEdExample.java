@@ -26,8 +26,6 @@ import org.exbin.bined.javafx.basic.CodeArea;
 
 /**
  * BinEd component usage example.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class BinEdExample extends Application {

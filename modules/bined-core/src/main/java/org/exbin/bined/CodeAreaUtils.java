@@ -26,8 +26,6 @@ import org.exbin.auxiliary.binary_data.EditableBinaryData;
 
 /**
  * Binary editor utilities.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class CodeAreaUtils {

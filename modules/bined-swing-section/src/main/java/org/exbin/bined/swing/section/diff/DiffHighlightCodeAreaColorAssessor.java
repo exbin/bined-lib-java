@@ -28,8 +28,6 @@ import org.exbin.bined.swing.CodeAreaPaintState;
 
 /**
  * Highlighting color assessor for basic binary diff.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class DiffHighlightCodeAreaColorAssessor implements CodeAreaColorAssessor {

@@ -27,8 +27,6 @@ import org.exbin.bined.javafx.CodeAreaJavaFxUtils;
 
 /**
  * Basic code area set of colors.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class BasicCodeAreaColorsProfile implements CodeAreaColorsProfile {

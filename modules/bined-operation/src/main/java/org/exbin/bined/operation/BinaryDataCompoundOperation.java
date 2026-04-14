@@ -22,8 +22,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * Interface for compound operation.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public interface BinaryDataCompoundOperation extends BinaryDataOperation {

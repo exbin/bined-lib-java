@@ -25,8 +25,6 @@ import org.exbin.bined.swing.basic.CodeArea;
 
 /**
  * Basic java applet simple version of BinEd binary/hex editor.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class BinEdEditorBasicApplet extends JApplet {

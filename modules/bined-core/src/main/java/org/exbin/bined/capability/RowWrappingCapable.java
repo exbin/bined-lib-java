@@ -21,8 +21,6 @@ import org.exbin.bined.RowWrappingMode;
 
 /**
  * Row wrapping capability interface.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public interface RowWrappingCapable {

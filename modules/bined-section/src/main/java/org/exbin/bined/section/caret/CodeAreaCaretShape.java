@@ -17,8 +17,6 @@ package org.exbin.bined.section.caret;
 
 /**
  * Cursor caret shape.
- *
- * @author ExBin Project (https://exbin.org)
  */
 public interface CodeAreaCaretShape {
 }

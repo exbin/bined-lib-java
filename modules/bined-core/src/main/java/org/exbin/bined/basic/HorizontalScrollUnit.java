@@ -17,8 +17,6 @@ package org.exbin.bined.basic;
 
 /**
  * Enumeration of horizontal scrolling unit sizes.
- *
- * @author ExBin Project (https://exbin.org)
  */
 public enum HorizontalScrollUnit {
     /**

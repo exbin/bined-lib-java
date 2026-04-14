@@ -33,8 +33,6 @@ import org.exbin.bined.lanterna.basic.CodeArea;
 
 /**
  * BinEd component usage example.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class BinEdExample {

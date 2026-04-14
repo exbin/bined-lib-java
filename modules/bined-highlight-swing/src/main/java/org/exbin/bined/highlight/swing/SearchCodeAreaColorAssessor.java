@@ -31,8 +31,6 @@ import org.exbin.bined.swing.basic.color.CodeAreaColorsProfile;
 
 /**
  * Code area search matches highlighting.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class SearchCodeAreaColorAssessor implements CodeAreaColorAssessor {

@@ -32,8 +32,6 @@ import org.exbin.bined.swing.section.diff.SectCodeAreaDiffPanel;
 
 /**
  * Binary difference component demo panel.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class BinEdDemoDiffPanel extends javax.swing.JPanel {

@@ -39,8 +39,6 @@ import org.exbin.bined.CharsetStreamTranslator;
 
 /**
  * Hexadecimal editor component JavaFX utilities.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class CodeAreaJavaFxUtils {

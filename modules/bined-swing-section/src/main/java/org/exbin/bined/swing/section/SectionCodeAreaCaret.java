@@ -30,8 +30,6 @@ import org.exbin.bined.CodeAreaCaretPosition;
 
 /**
  * Section implementation of code area caret.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class SectionCodeAreaCaret implements CodeAreaCaret {

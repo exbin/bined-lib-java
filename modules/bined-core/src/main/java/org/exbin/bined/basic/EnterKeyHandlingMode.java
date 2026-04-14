@@ -20,8 +20,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * Enumeration of modes for enter key handling.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public enum EnterKeyHandlingMode {

@@ -17,8 +17,6 @@ package org.exbin.bined;
 
 /**
  * Enumeration of edit modes.
- *
- * @author ExBin Project (https://exbin.org)
  */
 public enum EditMode {
 

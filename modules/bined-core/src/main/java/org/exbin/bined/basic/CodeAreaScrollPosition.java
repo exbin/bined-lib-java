@@ -21,8 +21,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * Code area scrolling position.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class CodeAreaScrollPosition {

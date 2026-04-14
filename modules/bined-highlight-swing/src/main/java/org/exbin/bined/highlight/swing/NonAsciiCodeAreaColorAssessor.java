@@ -31,8 +31,6 @@ import org.exbin.bined.swing.CodeAreaColorAssessor;
 
 /**
  * Support for highlighting of non-ascii characters.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class NonAsciiCodeAreaColorAssessor implements CodeAreaColorAssessor {

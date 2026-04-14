@@ -43,8 +43,6 @@ import javax.swing.text.ViewFactory;
 
 /**
  * Binary viewer/editor component UI.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class CodeAreaUI extends TextUI implements ViewFactory {

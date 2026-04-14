@@ -21,8 +21,6 @@ import org.eclipse.swt.graphics.Font;
 
 /**
  * Support for font capability.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public interface FontCapable {

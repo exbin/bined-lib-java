@@ -20,8 +20,6 @@ import org.exbin.auxiliary.binary_data.BinaryData;
 
 /**
  * Data provider.
- *
- * @author ExBin Project (https://exbin.org)
  */
 public interface DataProvider {
 

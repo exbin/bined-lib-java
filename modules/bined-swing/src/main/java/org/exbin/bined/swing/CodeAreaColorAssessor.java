@@ -24,8 +24,6 @@ import org.exbin.bined.CodeAreaSection;
 
 /**
  * Code area color assessor.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public interface CodeAreaColorAssessor extends CodeAreaPaintAssessor {

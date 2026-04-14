@@ -25,8 +25,6 @@ import org.exbin.bined.operation.BinaryDataUndoableOperation;
 
 /**
  * Operation for modifying data.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class ModifyDataOperation implements BinaryDataUndoableOperation {

@@ -29,8 +29,6 @@ import org.exbin.bined.swt.CodeAreaSwtUtils;
 
 /**
  * Basic code area set of colors.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class BasicCodeAreaColorsProfile implements CodeAreaColorsProfile {

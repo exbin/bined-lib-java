@@ -30,8 +30,6 @@ import org.exbin.bined.swt.CodeAreaCore;
 
 /**
  * Code Area component mouse listener.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class DefaultCodeAreaMouseListener implements MouseListener, MouseMoveListener, MouseWheelListener, MouseTrackListener {

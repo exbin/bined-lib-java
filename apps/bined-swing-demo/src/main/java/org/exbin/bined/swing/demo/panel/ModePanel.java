@@ -39,8 +39,6 @@ import org.exbin.bined.swing.capability.AntialiasingCapable;
 
 /**
  * Binary editor mode options panel.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class ModePanel extends javax.swing.JPanel {

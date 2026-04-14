@@ -27,8 +27,6 @@ import static org.junit.Assert.*;
 
 /**
  * Tests for codeArea component.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class CodeAreaTest {

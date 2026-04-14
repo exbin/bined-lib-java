@@ -20,8 +20,6 @@ import org.exbin.bined.basic.CodeAreaScrollPosition;
 
 /**
  * Hexadecimal editor code area interface.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public interface CodeAreaJavaFxControl {

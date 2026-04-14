@@ -17,8 +17,6 @@ package org.exbin.bined.operation.command;
 
 /**
  * Interface for code area command.
- *
- * @author ExBin Project (https://exbin.org)
  */
 public interface BinaryDataUndoableCommand extends BinaryDataCommand {
 

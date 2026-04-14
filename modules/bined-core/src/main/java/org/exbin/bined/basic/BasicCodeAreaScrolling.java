@@ -26,8 +26,6 @@ import org.exbin.bined.capability.BasicScrollingCapable;
 
 /**
  * Code area scrolling.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class BasicCodeAreaScrolling {

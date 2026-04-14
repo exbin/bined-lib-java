@@ -31,8 +31,6 @@ import org.exbin.bined.capability.BackgroundPaintCapable;
 
 /**
  * Binary editor theme options panel.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class ThemePanel extends Composite {

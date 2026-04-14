@@ -38,8 +38,6 @@ import org.exbin.auxiliary.binary_data.array.ByteArrayEditableData;
 
 /**
  * Binary component demo application for Lanterna.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class BinEdDemo {

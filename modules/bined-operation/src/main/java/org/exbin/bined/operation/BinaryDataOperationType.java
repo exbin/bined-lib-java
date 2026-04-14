@@ -17,8 +17,6 @@ package org.exbin.bined.operation;
 
 /**
  * Operation type interface.
- *
- * @author ExBin Project (https://exbin.org)
  */
 public interface BinaryDataOperationType {
 }

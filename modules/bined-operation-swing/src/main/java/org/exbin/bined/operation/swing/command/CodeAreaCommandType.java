@@ -19,8 +19,6 @@ import org.exbin.bined.operation.command.BinaryDataCommandType;
 
 /**
  * Code area command type enumeration.
- *
- * @author ExBin Project (https://exbin.org)
  */
 public enum CodeAreaCommandType implements BinaryDataCommandType {
 

@@ -26,8 +26,6 @@ import org.exbin.auxiliary.binary_data.array.ByteArrayEditableData;
 
 /**
  * BinEd component usage example.
- *
- * @author ExBin Project (https://exbin.org)
  */
 public class BinEdExample {
 

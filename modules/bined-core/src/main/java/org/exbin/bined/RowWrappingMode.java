@@ -17,8 +17,6 @@ package org.exbin.bined;
 
 /**
  * Row wrapping mode.
- *
- * @author ExBin Project (https://exbin.org)
  */
 public enum RowWrappingMode {
 

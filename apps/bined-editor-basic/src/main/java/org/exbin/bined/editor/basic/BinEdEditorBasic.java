@@ -57,8 +57,6 @@ import org.exbin.bined.capability.EditModeCapable;
 
 /**
  * Basic single jar swing version of BinEd binary/hex editor.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class BinEdEditorBasic extends javax.swing.JFrame {

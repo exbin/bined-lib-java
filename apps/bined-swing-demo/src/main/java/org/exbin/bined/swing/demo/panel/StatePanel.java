@@ -40,8 +40,6 @@ import org.exbin.bined.swing.demo.BinEdDemo;
 
 /**
  * Binary editor state panel.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class StatePanel extends javax.swing.JPanel {

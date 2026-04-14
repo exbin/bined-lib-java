@@ -31,8 +31,6 @@ import org.exbin.bined.swing.CodeAreaSwingUtils;
 
 /**
  * Basic encoding selection dialog.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class EncodingSelectionDialog extends javax.swing.JDialog {

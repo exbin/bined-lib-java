@@ -34,8 +34,6 @@ import org.exbin.bined.section.layout.SectionCodeAreaLayoutProfile;
 
 /**
  * Code area data representation structure for section variant.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class SectionCodeAreaStructure {

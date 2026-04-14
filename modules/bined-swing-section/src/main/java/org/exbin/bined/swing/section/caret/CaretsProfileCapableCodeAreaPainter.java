@@ -20,8 +20,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * Capability of painter to handle carets profiling.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public interface CaretsProfileCapableCodeAreaPainter {

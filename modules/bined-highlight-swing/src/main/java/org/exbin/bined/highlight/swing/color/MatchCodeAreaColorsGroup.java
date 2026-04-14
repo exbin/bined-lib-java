@@ -21,8 +21,6 @@ import org.exbin.bined.color.CodeAreaColorGroup;
 
 /**
  * Enumeration of color groups for code area matching.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public enum MatchCodeAreaColorsGroup implements CodeAreaColorGroup {

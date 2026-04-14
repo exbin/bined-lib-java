@@ -17,8 +17,6 @@ package org.exbin.bined.operation.command;
 
 /**
  * Enumeration of command execution phases.
- *
- * @author ExBin Project (https://exbin.org)
  */
 public enum BinaryDataCommandPhase {
 

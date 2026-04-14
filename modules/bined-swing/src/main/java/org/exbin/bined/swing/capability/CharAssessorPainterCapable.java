@@ -21,8 +21,6 @@ import org.exbin.bined.swing.CodeAreaCharAssessor;
 
 /**
  * Painter support for character assessor capability.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public interface CharAssessorPainterCapable {

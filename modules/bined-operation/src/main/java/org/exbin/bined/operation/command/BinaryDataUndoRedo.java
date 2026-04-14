@@ -25,8 +25,6 @@ import org.exbin.bined.operation.BinaryDataUndoRedoState;
 
 /**
  * Undoable command sequence.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public interface BinaryDataUndoRedo extends BinaryDataUndoRedoState, BinaryDataModifiedState {

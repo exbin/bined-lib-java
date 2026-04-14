@@ -17,8 +17,6 @@ package org.exbin.bined.operation;
 
 /**
  * Code area undo support handler.
- *
- * @author ExBin Project (https://exbin.org)
  */
 public interface BinaryDataUndoRedoState {
 

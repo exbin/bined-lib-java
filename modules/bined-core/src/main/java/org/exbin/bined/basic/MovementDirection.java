@@ -17,8 +17,6 @@ package org.exbin.bined.basic;
 
 /**
  * Enumeration of supported movement directions.
- *
- * @author ExBin Project (https://exbin.org)
  */
 public enum MovementDirection {
     UP, DOWN, LEFT, RIGHT,

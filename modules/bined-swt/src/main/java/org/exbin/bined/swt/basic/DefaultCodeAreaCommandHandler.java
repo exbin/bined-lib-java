@@ -63,8 +63,6 @@ import org.exbin.bined.capability.EditModeCapable;
 
 /**
  * Default binary editor command handler.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {

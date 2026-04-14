@@ -17,8 +17,6 @@ package org.exbin.bined;
 
 /**
  * Enumeration of edit operations.
- *
- * @author ExBin Project (https://exbin.org)
  */
 public enum EditOperation {
 

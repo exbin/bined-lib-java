@@ -19,8 +19,6 @@ import org.exbin.bined.CodeAreaZone;
 
 /**
  * Enumeration of basic code area zones.
- *
- * @author ExBin Project (https://exbin.org)
  */
 public enum BasicCodeAreaZone implements CodeAreaZone {
 

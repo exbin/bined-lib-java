@@ -17,8 +17,6 @@ package org.exbin.bined.section.layout;
 
 /**
  * Type of space between characters.
- *
- * @author ExBin Project (https://exbin.org)
  */
 public enum SpaceType {
     NONE(0), HALF(1), SINGLE(2), DOUBLE(4);

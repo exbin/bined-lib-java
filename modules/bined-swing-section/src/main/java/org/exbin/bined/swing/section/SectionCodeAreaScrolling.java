@@ -35,8 +35,6 @@ import org.exbin.bined.section.layout.SectionCodeAreaLayoutProfile;
 
 /**
  * Code area scrolling for section core area.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class SectionCodeAreaScrolling {

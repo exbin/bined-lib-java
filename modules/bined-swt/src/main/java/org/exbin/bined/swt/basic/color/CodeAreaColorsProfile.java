@@ -23,8 +23,6 @@ import org.exbin.bined.color.CodeAreaColorType;
 
 /**
  * Colors profile.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public interface CodeAreaColorsProfile {

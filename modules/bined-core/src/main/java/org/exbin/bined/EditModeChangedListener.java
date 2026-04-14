@@ -19,8 +19,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * Interface for edit mode change listener.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public interface EditModeChangedListener {

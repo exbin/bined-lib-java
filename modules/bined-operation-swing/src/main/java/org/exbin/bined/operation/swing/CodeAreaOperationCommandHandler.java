@@ -72,8 +72,6 @@ import org.exbin.bined.operation.command.BinaryDataUndoRedo;
 
 /**
  * Command handler for undo/redo aware binary editor editing.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {

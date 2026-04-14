@@ -27,8 +27,6 @@ import org.exbin.bined.section.capability.SectionScrollingCapable;
 
 /**
  * Binary editor scrolling options panel.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class ScrollingPanelSect extends javax.swing.JPanel {

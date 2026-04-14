@@ -23,8 +23,6 @@ import org.exbin.bined.swing.basic.DefaultCodeAreaCaret;
 
 /**
  * Binary editor cursor options panel.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class CursorPanel extends javax.swing.JPanel {

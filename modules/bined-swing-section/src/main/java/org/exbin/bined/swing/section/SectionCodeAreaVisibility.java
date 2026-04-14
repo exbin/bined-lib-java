@@ -25,8 +25,6 @@ import org.exbin.bined.section.layout.SectionCodeAreaLayoutProfile;
 
 /**
  * Section code area component characters visibility in scroll window.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class SectionCodeAreaVisibility {

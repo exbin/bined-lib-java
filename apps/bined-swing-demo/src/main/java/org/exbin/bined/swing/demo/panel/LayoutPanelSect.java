@@ -26,8 +26,6 @@ import org.exbin.bined.swing.section.layout.DefaultSectionCodeAreaLayoutProfile;
 
 /**
  * Binary editor layout options panel.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class LayoutPanelSect extends javax.swing.JPanel {

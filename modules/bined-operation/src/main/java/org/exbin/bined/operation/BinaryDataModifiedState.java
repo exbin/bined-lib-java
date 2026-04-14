@@ -17,8 +17,6 @@ package org.exbin.bined.operation;
 
 /**
  * Interface for binary data modified state.
- *
- * @author ExBin Project (https://exbin.org)
  */
 public interface BinaryDataModifiedState {
 

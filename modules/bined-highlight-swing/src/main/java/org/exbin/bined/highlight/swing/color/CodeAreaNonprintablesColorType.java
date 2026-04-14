@@ -25,8 +25,6 @@ import org.exbin.bined.color.CodeAreaColorType;
 
 /**
  * Enumeration of non-printable color types.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public enum CodeAreaNonprintablesColorType implements CodeAreaColorType {

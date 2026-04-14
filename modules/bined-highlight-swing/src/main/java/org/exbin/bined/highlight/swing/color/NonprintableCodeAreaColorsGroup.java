@@ -21,8 +21,6 @@ import org.exbin.bined.color.CodeAreaColorGroup;
 
 /**
  * Enumeration of color groups for nonprintable colors.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public enum NonprintableCodeAreaColorsGroup implements CodeAreaColorGroup {

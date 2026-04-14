@@ -17,8 +17,6 @@ package org.exbin.bined;
 
 /**
  * Enumeration of cursor caret overlapping modes.
- *
- * @author ExBin Project (https://exbin.org)
  */
 public enum CaretOverlapMode {
     /**

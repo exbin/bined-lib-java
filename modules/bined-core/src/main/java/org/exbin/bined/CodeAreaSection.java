@@ -17,8 +17,6 @@ package org.exbin.bined;
 
 /**
  * Code area section interface.
- *
- * @author ExBin Project (https://exbin.org)
  */
 public interface CodeAreaSection {
 }

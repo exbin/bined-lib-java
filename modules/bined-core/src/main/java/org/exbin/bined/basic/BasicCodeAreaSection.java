@@ -19,8 +19,6 @@ import org.exbin.bined.CodeAreaSection;
 
 /**
  * Enumeration of basic cursor position section.
- *
- * @author ExBin Project (https://exbin.org)
  */
 public enum BasicCodeAreaSection implements CodeAreaSection {
 

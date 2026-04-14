@@ -30,8 +30,6 @@ import org.exbin.bined.swing.CodeAreaSwingUtils;
 
 /**
  * Color profile for section code area.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class SectionCodeAreaColorProfile implements CodeAreaColorsProfile {

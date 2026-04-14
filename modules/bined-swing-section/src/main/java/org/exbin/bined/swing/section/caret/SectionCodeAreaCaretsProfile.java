@@ -23,8 +23,6 @@ import org.exbin.bined.section.caret.CodeAreaCaretType;
 
 /**
  * Support for cursor caret shapes.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public interface SectionCodeAreaCaretsProfile {

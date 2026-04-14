@@ -21,8 +21,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * Support for charset capability.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public interface CharsetCapable {

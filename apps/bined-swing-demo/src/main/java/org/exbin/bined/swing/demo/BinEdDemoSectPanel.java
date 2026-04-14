@@ -31,8 +31,6 @@ import org.exbin.bined.swing.section.SectCodeArea;
 
 /**
  * Section binary editor component demo panel.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class BinEdDemoSectPanel extends javax.swing.JPanel {

@@ -17,8 +17,6 @@ package org.exbin.bined;
 
 /**
  * Code Area control interface.
- *
- * @author ExBin Project (https://exbin.org)
  */
 public interface CodeAreaControl extends DataProvider {
 

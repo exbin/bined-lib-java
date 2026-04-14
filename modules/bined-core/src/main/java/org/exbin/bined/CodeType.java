@@ -17,8 +17,6 @@ package org.exbin.bined;
 
 /**
  * Enumeration of supported code types.
- *
- * @author ExBin Project (https://exbin.org)
  */
 public enum CodeType {
 

@@ -21,8 +21,6 @@ import javax.annotation.Nonnull;
 /**
  * Specifies caret position as combination of data position, section and code
  * offset of code representation.
- *
- * @author ExBin Project (https://exbin.org)
  */
 public interface CodeAreaCaretPosition {
 

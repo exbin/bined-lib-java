@@ -24,8 +24,6 @@ import org.junit.Test;
 
 /**
  * Test CodeAreaUtils class.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class CodeAreaUtilsTest {

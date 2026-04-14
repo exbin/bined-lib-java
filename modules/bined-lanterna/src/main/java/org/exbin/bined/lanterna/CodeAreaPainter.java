@@ -29,8 +29,6 @@ import org.exbin.bined.CodeAreaCaretPosition;
 
 /**
  * Binary editor painter interface.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public interface CodeAreaPainter {

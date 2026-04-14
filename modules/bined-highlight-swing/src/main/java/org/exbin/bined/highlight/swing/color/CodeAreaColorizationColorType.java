@@ -24,8 +24,6 @@ import org.exbin.bined.color.CodeAreaColorType;
 
 /**
  * Enumeration of colorization color types.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public enum CodeAreaColorizationColorType implements CodeAreaColorType {

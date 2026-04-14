@@ -17,8 +17,6 @@ package org.exbin.bined.section;
 
 /**
  * Enumeration of horizontal scrolling unit sizes for section code area.
- *
- * @author ExBin Project (https://exbin.org)
  */
 public enum SectionHorizontalScrollUnit {
     /**

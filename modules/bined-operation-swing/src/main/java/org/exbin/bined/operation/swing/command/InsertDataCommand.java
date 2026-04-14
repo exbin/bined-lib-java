@@ -24,8 +24,6 @@ import org.exbin.bined.swing.CodeAreaCore;
 
 /**
  * Command for inserting data.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class InsertDataCommand extends OpCodeAreaCommand {

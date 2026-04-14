@@ -20,8 +20,6 @@ import org.exbin.bined.basic.BasicCodeAreaSection;
 
 /**
  * Iterator for layout character position iteration.
- *
- * @author ExBin Project (https://exbin.org)
  */
 public interface PositionIterator {
 

@@ -17,8 +17,6 @@ package org.exbin.bined.section;
 
 /**
  * Section code area component decoration definition.
- *
- * @author ExBin Project (https://exbin.org)
  */
 public class SectionCodeAreaDecoration {
 

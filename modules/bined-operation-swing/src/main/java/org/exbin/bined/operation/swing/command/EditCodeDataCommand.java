@@ -36,8 +36,6 @@ import org.exbin.bined.swing.CodeAreaCore;
 
 /**
  * Command for editing data in code section.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class EditCodeDataCommand extends EditDataCommand implements BinaryDataAppendableCommand {

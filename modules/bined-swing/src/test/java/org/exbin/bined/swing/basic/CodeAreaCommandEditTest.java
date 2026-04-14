@@ -32,8 +32,6 @@ import org.junit.Test;
 
 /**
  * Tests for CodeArea component.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class CodeAreaCommandEditTest extends CodeAreaComponentTest {

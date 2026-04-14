@@ -21,8 +21,6 @@ import org.exbin.auxiliary.binary_data.EditableBinaryData;
 
 /**
  * Interface for binary data operation.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public interface BinaryDataOperation {

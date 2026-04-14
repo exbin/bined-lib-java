@@ -31,8 +31,6 @@ import org.exbin.bined.swing.demo.panel.ThemePanel;
 
 /**
  * Basic binary editor component demo panel.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class BinEdDemoBasicPanel extends javax.swing.JPanel {

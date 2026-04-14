@@ -26,8 +26,6 @@ import org.exbin.bined.CodeAreaCaretPosition;
 
 /**
  * Layout interface for section code area.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public interface SectionCodeAreaLayoutProfile {

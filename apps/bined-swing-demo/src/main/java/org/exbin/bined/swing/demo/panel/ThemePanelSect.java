@@ -24,8 +24,6 @@ import org.exbin.bined.swing.section.theme.SectionCodeAreaThemeProfile;
 
 /**
  * Binary editor theme options panel.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class ThemePanelSect extends javax.swing.JPanel {

@@ -34,8 +34,6 @@ import org.exbin.bined.swt.CodeAreaSwtControl;
 
 /**
  * Default scroll pane for binary component.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class DefaultCodeAreaScrollPane extends Canvas {

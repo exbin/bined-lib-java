@@ -27,8 +27,6 @@ import org.exbin.bined.swing.basic.CodeArea;
 
 /**
  * Binary editor scrolling options panel.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class ScrollingPanel extends javax.swing.JPanel {

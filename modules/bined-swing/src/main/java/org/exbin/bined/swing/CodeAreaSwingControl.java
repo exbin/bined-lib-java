@@ -21,8 +21,6 @@ import org.exbin.bined.basic.CodeAreaScrollPosition;
 
 /**
  * Code area swing control.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public interface CodeAreaSwingControl {

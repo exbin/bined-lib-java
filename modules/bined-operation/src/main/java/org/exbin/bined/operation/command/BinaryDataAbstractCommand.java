@@ -17,8 +17,6 @@ package org.exbin.bined.operation.command;
 
 /**
  * Abstract binary data command class.
- *
- * @author ExBin Project (https://exbin.org)
  */
 public abstract class BinaryDataAbstractCommand implements BinaryDataUndoableCommand {
 

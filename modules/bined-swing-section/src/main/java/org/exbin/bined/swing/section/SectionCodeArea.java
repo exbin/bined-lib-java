@@ -36,8 +36,6 @@ import org.exbin.bined.section.capability.SectionScrollingCapable;
 
 /**
  * Code area section component interface.
- *
- * @author ExBin Project (https://exbin.org)
  */
 public interface SectionCodeArea extends SelectionCapable, CaretCapable, ScrollingCapable, SectionScrollingCapable, ViewModeCapable,
         CodeTypeCapable, EditModeCapable, CharsetCapable, CodeCharactersCaseCapable, FontCapable,

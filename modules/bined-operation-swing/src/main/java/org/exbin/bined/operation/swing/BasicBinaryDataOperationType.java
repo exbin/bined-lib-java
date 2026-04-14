@@ -19,8 +19,6 @@ import org.exbin.bined.operation.BinaryDataOperationType;
 
 /**
  * Basic binary data operation type enumeration.
- *
- * @author ExBin Project (https://exbin.org)
  */
 public enum BasicBinaryDataOperationType implements BinaryDataOperationType {
 

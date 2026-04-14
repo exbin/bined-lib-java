@@ -24,8 +24,6 @@ import org.exbin.bined.operation.BinaryDataUndoRedoChangeListener;
 
 /**
  * Empty binary data undo.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class EmptyBinaryDataUndoRedo implements BinaryDataUndoRedo {

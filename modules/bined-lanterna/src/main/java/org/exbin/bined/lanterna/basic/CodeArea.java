@@ -62,8 +62,6 @@ import org.exbin.bined.lanterna.CodeAreaLanternaControl;
 
 /**
  * Code area component.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class CodeArea extends CodeAreaCore implements DefaultCodeArea, CodeAreaLanternaControl {

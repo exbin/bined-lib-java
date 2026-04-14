@@ -31,8 +31,6 @@ import org.exbin.bined.swt.basic.CodeArea;
 
 /**
  * Binary editor layout options panel.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class LayoutPanel extends Composite {

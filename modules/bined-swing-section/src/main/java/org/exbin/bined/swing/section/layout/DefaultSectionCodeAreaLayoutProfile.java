@@ -33,8 +33,6 @@ import org.exbin.bined.section.layout.SectionCodeAreaLayoutProfile;
 
 /**
  * Layout profile for extended code area.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class DefaultSectionCodeAreaLayoutProfile implements SectionCodeAreaLayoutProfile {

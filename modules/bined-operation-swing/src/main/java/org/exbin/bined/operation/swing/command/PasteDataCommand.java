@@ -26,8 +26,6 @@ import org.exbin.bined.swing.CodeAreaCore;
 
 /**
  * Paste data command.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class PasteDataCommand extends CodeAreaCommand {

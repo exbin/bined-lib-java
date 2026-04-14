@@ -22,8 +22,6 @@ import org.exbin.bined.swing.basic.CodeArea;
 
 /**
  * Binary editor layout options panel.
- *
- * @author ExBin Project (https://exbin.org)
  */
 @ParametersAreNonnullByDefault
 public class LayoutPanel extends javax.swing.JPanel {
