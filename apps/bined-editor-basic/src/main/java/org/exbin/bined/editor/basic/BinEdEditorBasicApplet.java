@@ -51,7 +51,9 @@ public class BinEdEditorBasicApplet extends JApplet {
             } else if (component instanceof JToolBar) {
                 add(component, BorderLayout.NORTH);
             } else {
-                add(component, java.awt.BorderLayout.PAGE_END);
+                // refactor: replace fully qualified java.awt.BorderLayout reference with simple
+                // imported class name BorderLayouts
+                add(component, BorderLayout.PAGE_END);
             }
         }
     }

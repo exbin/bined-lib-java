@@ -54,6 +54,10 @@ import org.exbin.bined.CodeCharactersCase;
 import org.exbin.bined.CodeType;
 import org.exbin.bined.swing.CodeAreaSwingUtils;
 import org.exbin.bined.capability.EditModeCapable;
+import java.awt.event.KeyEvent;
+import javax.swing.KeyStroke;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 
 /**
  * Basic single jar swing version of BinEd binary/hex editor.
@@ -128,7 +132,12 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
                 newFileActionPerformed();
             }
         };
-        newFileAction.putValue(Action.ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, metaMask));
+        newFileAction.putValue(Action.ACCELERATOR_KEY,
+                // refactor: replace fully qualified java.awt.event.KeyEvent reference with
+                // simple imported class name KeyEvent
+                // refactor replace fully qualified javax.swing.KeyStroke reference with a
+                // simple imported class name KeyStroke
+                KeyStroke.getKeyStroke(KeyEvent.VK_O, metaMask));
 
         openFileAction = new AbstractAction("Open...", getIconResource(ICON_FILE_OPEN)) {
             @Override
@@ -136,7 +145,12 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
                 openFileActionPerformed();
             }
         };
-        openFileAction.putValue(Action.ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, metaMask));
+        openFileAction.putValue(Action.ACCELERATOR_KEY,
+                // refactor: replace fully qualified java.awt.event.KeyEvent reference with
+                // simple imported class name KeyEvent
+                // refactor replace fully qualified javax.swing.KeyStroke reference with a
+                // simple imported class name KeyStroke
+                KeyStroke.getKeyStroke(KeyEvent.VK_O, metaMask));
 
         saveFileAction = new AbstractAction("Save", getIconResource(ICON_FILE_SAVE)) {
             @Override
@@ -155,7 +169,17 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
                 saveAsFileActionPerformed();
             }
         };
-        saveAsFileAction.putValue(Action.ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.SHIFT_DOWN_MASK | metaMask));
+
+        // refactor: replace fully qualified java.awt.event.KeyEvent reference with
+        // simple imported class name KeyEvent
+        // refactor replace fully qualified javax.swing.KeyStroke reference with a
+        // simple imported class name KeyStroke
+        // refactor replace fully qualified java.awt.event.InputEvent reference with a
+        // simple imported class name InputEvent
+        // refactor replace fully qualified java.awt.event.WindowEvent reference with a
+        // simple imported class name WindowEvent
+        saveAsFileAction.putValue(Action.ACCELERATOR_KEY, KeyStroke
+                .getKeyStroke(KeyEvent.VK_S, InputEvent.SHIFT_DOWN_MASK | metaMask));
 
         exitAction = new AbstractAction("Exit", null) {
             @Override
@@ -163,7 +187,16 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
                 dispatchEvent(new WindowEvent(BinEdEditorBasic.this, WindowEvent.WINDOW_CLOSING));
             }
         };
-        exitAction.putValue(Action.ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F4, java.awt.event.InputEvent.ALT_DOWN_MASK));
+
+        // refactor: replace fully qualified java.awt.event.KeyEvent reference with
+        // simple imported class name KeyEvent
+        // refactor replace fully qualified javax.swing.KeyStroke reference with a
+        // simple imported class name KeyStroke
+        // refactor replace fully qualified java.awt.event.InputEvent reference with a
+        // simple imported class name InputEvent
+        // refactor replace fully qualified java.awt.event.WindowEvent reference with a
+        // simple imported class name WindowEvent
+        exitAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_F4, InputEvent.ALT_DOWN_MASK));
 
         undoEditAction = new AbstractAction("Undo", getIconResource(ICON_EDIT_UNDO)) {
             @Override
@@ -171,7 +204,17 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
                 undoHandler.performUndo();
             }
         };
-        undoEditAction.putValue(Action.ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Z, metaMask));
+
+        // refactor: replace fully qualified java.awt.event.KeyEvent reference with
+        // simple imported class name KeyEvent
+        // refactor replace fully qualified javax.swing.KeyStroke reference with a
+        // simple imported class name KeyStroke
+        // refactor replace fully qualified java.awt.event.InputEvent reference with a
+        // simple imported class name InputEvent
+        // refactor replace fully qualified java.awt.event.WindowEvent reference with a
+        // simple imported class name WindowEvent
+        undoEditAction.putValue(Action.ACCELERATOR_KEY,
+                KeyStroke.getKeyStroke(KeyEvent.VK_Z, metaMask));
 
         redoEditAction = new AbstractAction("Redo", getIconResource(ICON_EDIT_REDO)) {
             @Override
@@ -179,7 +222,17 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
                 undoHandler.performRedo();
             }
         };
-        redoEditAction.putValue(Action.ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Y, metaMask));
+
+        // refactor: replace fully qualified java.awt.event.KeyEvent reference with
+        // simple imported class name KeyEvent
+        // refactor replace fully qualified javax.swing.KeyStroke reference with a
+        // simple imported class name KeyStroke
+        // refactor replace fully qualified java.awt.event.InputEvent reference with a
+        // simple imported class name InputEvent
+        // refactor replace fully qualified java.awt.event.WindowEvent reference with a
+        // simple imported class name WindowEvent
+        redoEditAction.putValue(Action.ACCELERATOR_KEY,
+                KeyStroke.getKeyStroke(KeyEvent.VK_Y, metaMask));
 
         cutEditAction = new AbstractAction("Cut", getIconResource(ICON_EDIT_CUT)) {
             @Override
@@ -187,7 +240,17 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
                 codeArea.cut();
             }
         };
-        cutEditAction.putValue(Action.ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_X, metaMask));
+
+        // refactor: replace fully qualified java.awt.event.KeyEvent reference with
+        // simple imported class name KeyEvent
+        // refactor replace fully qualified javax.swing.KeyStroke reference with a
+        // simple imported class name KeyStroke
+        // refactor replace fully qualified java.awt.event.InputEvent reference with a
+        // simple imported class name InputEvent
+        // refactor replace fully qualified java.awt.event.WindowEvent reference with a
+        // simple imported class name WindowEvent
+        cutEditAction.putValue(Action.ACCELERATOR_KEY,
+                KeyStroke.getKeyStroke(KeyEvent.VK_X, metaMask));
 
         copyEditAction = new AbstractAction("Copy", getIconResource(ICON_EDIT_COPY)) {
             @Override
@@ -195,7 +258,17 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
                 codeArea.copy();
             }
         };
-        copyEditAction.putValue(Action.ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, metaMask));
+
+        // refactor: replace fully qualified java.awt.event.KeyEvent reference with
+        // simple imported class name KeyEvent
+        // refactor replace fully qualified javax.swing.KeyStroke reference with a
+        // simple imported class name KeyStroke
+        // refactor replace fully qualified java.awt.event.InputEvent reference with a
+        // simple imported class name InputEvent
+        // refactor replace fully qualified java.awt.event.WindowEvent reference with a
+        // simple imported class name WindowEvent
+        copyEditAction.putValue(Action.ACCELERATOR_KEY,
+                KeyStroke.getKeyStroke(KeyEvent.VK_C, metaMask));
 
         pasteEditAction = new AbstractAction("Paste", getIconResource(ICON_EDIT_PASTE)) {
             @Override
@@ -203,7 +276,17 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
                 codeArea.paste();
             }
         };
-        pasteEditAction.putValue(Action.ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_V, metaMask));
+
+        // refactor: replace fully qualified java.awt.event.KeyEvent reference with
+        // simple imported class name KeyEvent
+        // refactor replace fully qualified javax.swing.KeyStroke reference with a
+        // simple imported class name KeyStroke
+        // refactor replace fully qualified java.awt.event.InputEvent reference with a
+        // simple imported class name InputEvent
+        // refactor replace fully qualified java.awt.event.WindowEvent reference with a
+        // simple imported class name WindowEvent
+        pasteEditAction.putValue(Action.ACCELERATOR_KEY,
+                KeyStroke.getKeyStroke(KeyEvent.VK_V, metaMask));
 
         deleteEditAction = new AbstractAction("Delete", getIconResource(ICON_EDIT_DELETE)) {
             @Override
@@ -211,7 +294,17 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
                 codeArea.delete();
             }
         };
-        deleteEditAction.putValue(Action.ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_DELETE, 0));
+
+        // refactor: replace fully qualified java.awt.event.KeyEvent reference with
+        // simple imported class name KeyEvent
+        // refactor replace fully qualified javax.swing.KeyStroke reference with a
+        // simple imported class name KeyStroke
+        // refactor replace fully qualified java.awt.event.InputEvent reference with a
+        // simple imported class name InputEvent
+        // refactor replace fully qualified java.awt.event.WindowEvent reference with a
+        // simple imported class name WindowEvent
+        deleteEditAction.putValue(Action.ACCELERATOR_KEY,
+                KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0));
 
         selectAllAction = new AbstractAction("Select All", getIconResource(ICON_EDIT_SELECT_ALL)) {
             @Override
@@ -219,7 +312,17 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
                 codeArea.selectAll();
             }
         };
-        selectAllAction.putValue(Action.ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, metaMask));
+
+        // refactor: replace fully qualified java.awt.event.KeyEvent reference with
+        // simple imported class name KeyEvent
+        // refactor replace fully qualified javax.swing.KeyStroke reference with a
+        // simple imported class name KeyStroke
+        // refactor replace fully qualified java.awt.event.InputEvent reference with a
+        // simple imported class name InputEvent
+        // refactor replace fully qualified java.awt.event.WindowEvent reference with a
+        // simple imported class name WindowEvent
+        selectAllAction.putValue(Action.ACCELERATOR_KEY,
+                KeyStroke.getKeyStroke(KeyEvent.VK_A, metaMask));
     }
 
     private void postInit() {
@@ -287,7 +390,8 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
         });
         aboutMenuItem.addActionListener((event) -> {
             JOptionPane.showMessageDialog(this,
-                    APPLICATION_NAME + " Binary Editor - Basic Editor\nVersion " + APPLICATION_VERSION + "\nhttps://bined.exbin.org",
+                    APPLICATION_NAME + " Binary Editor - Basic Editor\nVersion " + APPLICATION_VERSION
+                            + "\nhttps://bined.exbin.org",
                     "About application",
                     JOptionPane.PLAIN_MESSAGE);
         });
@@ -299,7 +403,8 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
      * regenerated by the Form Editor.
      */
     @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated
+    // Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         mainPopupMenu = new javax.swing.JPopupMenu();
@@ -474,21 +579,27 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
         javax.swing.GroupLayout textStatusPanelLayout = new javax.swing.GroupLayout(textStatusPanel);
         textStatusPanel.setLayout(textStatusPanelLayout);
         textStatusPanelLayout.setHorizontalGroup(
-            textStatusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, textStatusPanelLayout.createSequentialGroup()
-                .addGap(0, 354, Short.MAX_VALUE)
-                .addComponent(encodingLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(positionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(editModeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
+                textStatusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
+                                textStatusPanelLayout.createSequentialGroup()
+                                        .addGap(0, 354, Short.MAX_VALUE)
+                                        .addComponent(encodingLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 148,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(0, 0, 0)
+                                        .addComponent(positionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 168,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(0, 0, 0)
+                                        .addComponent(editModeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 35,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)));
         textStatusPanelLayout.setVerticalGroup(
-            textStatusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(editModeLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(positionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(encodingLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
+                textStatusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(editModeLabel, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(positionLabel, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(encodingLabel, javax.swing.GroupLayout.Alignment.TRAILING,
+                                javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                Short.MAX_VALUE));
 
         statusBarPanel.add(textStatusPanel, java.awt.BorderLayout.CENTER);
 
@@ -594,7 +705,7 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void editModeLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_editModeLabelMouseClicked
+    private void editModeLabelMouseClicked(java.awt.event.MouseEvent evt) {// GEN-FIRST:event_editModeLabelMouseClicked
         if (evt.getButton() == MouseEvent.BUTTON1) {
             EditOperation editOperation;
             if (((EditModeCapable) codeArea).getEditOperation() == EditOperation.INSERT) {
@@ -604,7 +715,7 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
             }
             ((EditModeCapable) codeArea).setEditOperation(editOperation);
         }
-    }//GEN-LAST:event_editModeLabelMouseClicked
+    }// GEN-LAST:event_editModeLabelMouseClicked
 
     private void newFileActionPerformed() {
         if (!releaseFile()) {
@@ -663,7 +774,7 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
      * @return true if allowed
      */
     private boolean overwriteFile() {
-        Object[] options = {"Overwrite", "Cancel"};
+        Object[] options = { "Overwrite", "Cancel" };
 
         int result = JOptionPane.showOptionDialog(
                 this,
@@ -698,7 +809,7 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
 
     public boolean releaseFile() {
         while (isModified()) {
-            Object[] options = {"Save", "Discard", "Cancel"};
+            Object[] options = { "Save", "Discard", "Cancel" };
             int result = JOptionPane.showOptionDialog(this,
                     "Document was modified! Do you wish to save it?",
                     "Save File?",
@@ -768,8 +879,11 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
         try {
             String osName = System.getProperty("os.name").toLowerCase();
             // Try "GTK+" on linux
-            UIManager.setLookAndFeel(!osName.startsWith("windows") && !osName.startsWith("mac") ? "com.sun.java.swing.plaf.gtk.GTKLookAndFeel" : UIManager.getSystemLookAndFeelClassName());
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
+            UIManager.setLookAndFeel(!osName.startsWith("windows") && !osName.startsWith("mac")
+                    ? "com.sun.java.swing.plaf.gtk.GTKLookAndFeel"
+                    : UIManager.getSystemLookAndFeelClassName());
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+                | UnsupportedLookAndFeelException ex) {
             Logger.getLogger(BinEdEditorBasic.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -850,7 +964,8 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
     private static final class CodeAreaWrapper extends CodeArea {
 
         public CodeAreaWrapper() {
-            super((codeArea) -> new CodeAreaOperationCommandHandler(codeArea, new CodeAreaUndoRedo(codeArea)), new ByteArrayEditableData());
+            super((codeArea) -> new CodeAreaOperationCommandHandler(codeArea, new CodeAreaUndoRedo(codeArea)),
+                    new ByteArrayEditableData());
         }
     }
 }
