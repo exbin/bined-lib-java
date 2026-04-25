@@ -22,6 +22,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.InputEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -37,6 +39,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
+import javax.swing.KeyStroke;
 import javax.swing.UnsupportedLookAndFeelException;
 import org.exbin.auxiliary.binary_data.array.ByteArrayEditableData;
 import org.exbin.bined.EditMode;
@@ -128,7 +131,9 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
                 newFileActionPerformed();
             }
         };
-        newFileAction.putValue(Action.ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, metaMask));
+
+        //refactor: replace fully qualified java.awt.event.KeyEvent references with simple imported class names.
+        newFileAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_O, metaMask));
 
         openFileAction = new AbstractAction("Open...", getIconResource(ICON_FILE_OPEN)) {
             @Override
@@ -136,7 +141,7 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
                 openFileActionPerformed();
             }
         };
-        openFileAction.putValue(Action.ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, metaMask));
+        openFileAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_O, metaMask));
 
         saveFileAction = new AbstractAction("Save", getIconResource(ICON_FILE_SAVE)) {
             @Override
@@ -155,7 +160,9 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
                 saveAsFileActionPerformed();
             }
         };
-        saveAsFileAction.putValue(Action.ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.SHIFT_DOWN_MASK | metaMask));
+
+        //refactor: replace fully qualified java.awt.event.KeyEvent and java.awt.event.InputEvent references with simple imported class names.
+        saveAsFileAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.SHIFT_DOWN_MASK | metaMask));
 
         exitAction = new AbstractAction("Exit", null) {
             @Override
@@ -163,7 +170,9 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
                 dispatchEvent(new WindowEvent(BinEdEditorBasic.this, WindowEvent.WINDOW_CLOSING));
             }
         };
-        exitAction.putValue(Action.ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F4, java.awt.event.InputEvent.ALT_DOWN_MASK));
+
+        //refactor: replace fully qualified java.awt.event.KeyEvent and java.awt.event.InputEvent references with simple imported class names.
+        exitAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_F4, InputEvent.ALT_DOWN_MASK));
 
         undoEditAction = new AbstractAction("Undo", getIconResource(ICON_EDIT_UNDO)) {
             @Override
@@ -171,7 +180,9 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
                 undoHandler.performUndo();
             }
         };
-        undoEditAction.putValue(Action.ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Z, metaMask));
+
+        //refactor: replace fully qualified java.awt.event.KeyEvent and java.awt.event.InputEvent references with simple imported class names.
+        undoEditAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_Z, metaMask));
 
         redoEditAction = new AbstractAction("Redo", getIconResource(ICON_EDIT_REDO)) {
             @Override
@@ -179,7 +190,9 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
                 undoHandler.performRedo();
             }
         };
-        redoEditAction.putValue(Action.ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Y, metaMask));
+
+        //refactor: replace fully qualified java.awt.event.KeyEvent and java.awt.event.InputEvent references with simple imported class names.
+        redoEditAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_Y, metaMask));
 
         cutEditAction = new AbstractAction("Cut", getIconResource(ICON_EDIT_CUT)) {
             @Override
@@ -187,7 +200,9 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
                 codeArea.cut();
             }
         };
-        cutEditAction.putValue(Action.ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_X, metaMask));
+
+        //refactor: replace fully qualified java.awt.event.KeyEvent and java.awt.event.InputEvent references with simple imported class names.
+        cutEditAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_X, metaMask));
 
         copyEditAction = new AbstractAction("Copy", getIconResource(ICON_EDIT_COPY)) {
             @Override
@@ -195,7 +210,9 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
                 codeArea.copy();
             }
         };
-        copyEditAction.putValue(Action.ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, metaMask));
+
+        //refactor: replace fully qualified java.awt.event.KeyEvent and java.awt.event.InputEvent references with simple imported class names.
+        copyEditAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_C, metaMask));
 
         pasteEditAction = new AbstractAction("Paste", getIconResource(ICON_EDIT_PASTE)) {
             @Override
@@ -203,7 +220,9 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
                 codeArea.paste();
             }
         };
-        pasteEditAction.putValue(Action.ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_V, metaMask));
+
+        //refactor: replace fully qualified java.awt.event.KeyEvent and java.awt.event.InputEvent references with simple imported class names.
+        pasteEditAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_V, metaMask));
 
         deleteEditAction = new AbstractAction("Delete", getIconResource(ICON_EDIT_DELETE)) {
             @Override
@@ -211,7 +230,9 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
                 codeArea.delete();
             }
         };
-        deleteEditAction.putValue(Action.ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_DELETE, 0));
+
+        //refactor: replace fully qualified java.awt.event.KeyEvent references with simple imported class names.
+        deleteEditAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0));
 
         selectAllAction = new AbstractAction("Select All", getIconResource(ICON_EDIT_SELECT_ALL)) {
             @Override
@@ -219,7 +240,9 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
                 codeArea.selectAll();
             }
         };
-        selectAllAction.putValue(Action.ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, metaMask));
+
+        //refactor: replace fully qualified java.awt.event.KeyEvent and java.awt.event.InputEvent references with simple imported class names.
+        selectAllAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_A, metaMask));
     }
 
     private void postInit() {
@@ -490,9 +513,11 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
             .addComponent(encodingLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
-        statusBarPanel.add(textStatusPanel, java.awt.BorderLayout.CENTER);
+        //refactor: replace fully qualified BorderLayout references with simple imported class names.
+        statusBarPanel.add(textStatusPanel, BorderLayout.CENTER);
 
-        getContentPane().add(statusBarPanel, java.awt.BorderLayout.PAGE_END);
+        //refactor: replace fully qualified BorderLayout references with simple imported class names.
+        getContentPane().add(statusBarPanel, BorderLayout.PAGE_END);
 
         fileMenu.setText("File");
 

@@ -15,6 +15,7 @@
  */
 package org.exbin.bined.editor.basic;
 
+import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.nio.charset.Charset;
@@ -26,6 +27,7 @@ import javax.swing.ActionMap;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.InputMap;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.KeyStroke;
 import org.exbin.bined.swing.CodeAreaSwingUtils;
 
@@ -33,11 +35,13 @@ import org.exbin.bined.swing.CodeAreaSwingUtils;
  * Basic encoding selection dialog.
  */
 @ParametersAreNonnullByDefault
-public class EncodingSelectionDialog extends javax.swing.JDialog {
+//refactor: replace fully qualified javax.swing references with simple imported class names.
+public class EncodingSelectionDialog extends JDialog {
 
     private ReturnStatus returnStatus = ReturnStatus.CANCEL;
 
-    public EncodingSelectionDialog(java.awt.Frame parent, boolean modal) {
+    //refactor: replace fully qualified java.awt.Frame parameter and javax.swing references in initComponents() with simple imported class names.
+    public EncodingSelectionDialog(Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
         init();
