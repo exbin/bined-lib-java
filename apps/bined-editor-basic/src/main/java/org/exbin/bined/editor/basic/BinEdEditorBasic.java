@@ -128,7 +128,7 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
                 newFileActionPerformed();
             }
         };
-        newFileAction.putValue(Action.ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, metaMask));
+        newFileAction.putValue(Action.ACCELERATOR_KEY, javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, metaMask));
 
         openFileAction = new AbstractAction("Open...", getIconResource(ICON_FILE_OPEN)) {
             @Override
