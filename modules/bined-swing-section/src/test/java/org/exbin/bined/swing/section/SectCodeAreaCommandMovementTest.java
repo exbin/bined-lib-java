@@ -15,21 +15,19 @@
  */
 package org.exbin.bined.swing.section;
 
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import org.exbin.bined.swing.CodeAreaCore;
 import org.exbin.bined.swing.basic.CodeAreaCommandMovementTest;
 
 /**
  * Tests for SectCodeArea component.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class SectCodeAreaCommandMovementTest extends CodeAreaCommandMovementTest {
 
     public SectCodeAreaCommandMovementTest() {
     }
 
-    @Nonnull
     @Override
     public CodeAreaCore createCodeArea() {
         return new SectCodeArea();

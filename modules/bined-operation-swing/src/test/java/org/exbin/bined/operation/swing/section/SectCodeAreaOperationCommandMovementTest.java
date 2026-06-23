@@ -15,9 +15,9 @@
  */
 package org.exbin.bined.operation.swing.section;
 
-import org.exbin.bined.operation.swing.*;
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.exbin.bined.operation.swing.CodeAreaOperationCommandHandler;
+import org.exbin.bined.operation.swing.CodeAreaUndoRedo;
+import org.jspecify.annotations.NullMarked;
 import org.exbin.bined.swing.CodeAreaCore;
 import org.exbin.bined.swing.basic.CodeAreaCommandMovementTest;
 import org.exbin.bined.swing.section.SectCodeArea;
@@ -25,13 +25,12 @@ import org.exbin.bined.swing.section.SectCodeArea;
 /**
  * Tests for SectCodeArea component.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class SectCodeAreaOperationCommandMovementTest extends CodeAreaCommandMovementTest {
 
     public SectCodeAreaOperationCommandMovementTest() {
     }
 
-    @Nonnull
     @Override
     public CodeAreaCore createCodeArea() {
         SectCodeArea codeArea = new SectCodeArea();

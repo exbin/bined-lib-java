@@ -29,7 +29,7 @@ import org.exbin.bined.swt.basic.CodeArea;
 /**
  * Code area caret.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class SectionCodeAreaCaret {
 
     protected static final int LINE_CURSOR_WIDTH = 1;

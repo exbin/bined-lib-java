@@ -15,14 +15,13 @@
  */
 package org.exbin.bined.swt.capability;
 
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import org.eclipse.swt.graphics.Font;
 
 /**
  * Support for font capability.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public interface FontCapable {
 
     /**
@@ -30,7 +29,6 @@ public interface FontCapable {
      *
      * @return font
      */
-    @Nonnull
     Font getCodeFont();
 
     /**

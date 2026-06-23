@@ -15,9 +15,8 @@
  */
 package org.exbin.bined.swt.basic;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
 import javax.swing.DefaultBoundedRangeModel;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -35,7 +34,7 @@ import org.exbin.bined.swt.CodeAreaSwtControl;
 /**
  * Default scroll pane for binary component.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class DefaultCodeAreaScrollPane extends Canvas {
 
     protected volatile boolean scrollingByUser = false;
@@ -43,15 +42,10 @@ public class DefaultCodeAreaScrollPane extends Canvas {
 
     protected final VerticalScrollBarModel verticalScrollBarModel = new VerticalScrollBarModel();
     protected final HorizontalScrollBarModel horizontalScrollBarModel = new HorizontalScrollBarModel();
-    @Nonnull
     protected final BasicCodeAreaMetrics metrics;
-    @Nonnull
     protected final BasicCodeAreaStructure structure;
-    @Nonnull
     protected final BasicCodeAreaScrolling scrolling;
-    @Nonnull
     protected final BasicCodeAreaDimensions dimensions;
-    @Nonnull
     protected final CodeAreaSwtControl control;
 
     public DefaultCodeAreaScrollPane(Composite parent, CodeAreaSwtControl control, BasicCodeAreaMetrics metrics, BasicCodeAreaStructure structure, BasicCodeAreaDimensions dimensions, BasicCodeAreaScrolling scrolling) {
@@ -112,7 +106,6 @@ public class DefaultCodeAreaScrollPane extends Canvas {
 //        });
     }
 
-//    @Nonnull
 //    @Override
 //    public JScrollBar createVerticalScrollBar() {
 //        return new JScrollPane.ScrollBar(JScrollBar.VERTICAL) {
@@ -129,7 +122,6 @@ public class DefaultCodeAreaScrollPane extends Canvas {
 //        };
 //    }
 //
-//    @Nonnull
 //    @Override
 //    public JScrollBar createHorizontalScrollBar() {
 //        return new JScrollPane.ScrollBar(JScrollBar.HORIZONTAL) {

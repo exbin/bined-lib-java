@@ -16,14 +16,13 @@
 package org.exbin.bined.swing.basic;
 
 import java.awt.Rectangle;
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import org.exbin.bined.basic.BasicCodeAreaZone;
 
 /**
  * Basic code area component dimensions.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class BasicCodeAreaDimensions {
 
     protected int scrollPanelX;
@@ -94,7 +93,6 @@ public class BasicCodeAreaDimensions {
         dataViewRectangle.setBounds(scrollPanelX, scrollPanelY, Math.max(dataViewWidth, 0), Math.max(dataViewHeight, 0));
     }
 
-    @Nonnull
     public BasicCodeAreaZone getPositionZone(int positionX, int positionY) {
         if (positionY <= scrollPanelY) {
             if (positionX < rowPositionAreaWidth) {
@@ -211,32 +209,26 @@ public class BasicCodeAreaDimensions {
         return lastRowOffset;
     }
 
-    @Nonnull
     public Rectangle getComponentRectangle() {
         return componentRectangle;
     }
 
-    @Nonnull
     public Rectangle getMainAreaRectangle() {
         return mainAreaRectangle;
     }
 
-    @Nonnull
     public Rectangle getScrollPanelRectangle() {
         return scrollPanelRectangle;
     }
 
-    @Nonnull
     public Rectangle getDataViewRectangle() {
         return dataViewRectangle;
     }
 
-    @Nonnull
     public Rectangle getHeaderAreaRectangle() {
         return headerAreaRectangle;
     }
 
-    @Nonnull
     public Rectangle getRowPositionAreaRectangle() {
         return rowPositionAreaRectangle;
     }

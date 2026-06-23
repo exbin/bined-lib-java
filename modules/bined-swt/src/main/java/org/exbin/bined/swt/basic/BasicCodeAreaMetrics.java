@@ -17,8 +17,8 @@ package org.exbin.bined.swt.basic;
 
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
 import org.eclipse.swt.graphics.FontMetrics;
 import org.eclipse.swt.graphics.GC;
 import org.exbin.bined.CharsetStreamTranslator;
@@ -26,7 +26,7 @@ import org.exbin.bined.CharsetStreamTranslator;
 /**
  * Basic code area component dimensions.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class BasicCodeAreaMetrics {
 
     @Nullable

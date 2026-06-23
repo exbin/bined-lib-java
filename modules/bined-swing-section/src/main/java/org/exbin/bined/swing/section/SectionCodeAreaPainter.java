@@ -34,9 +34,8 @@ import java.awt.event.ComponentListener;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Optional;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
 import javax.swing.JComponent;
 import javax.swing.JScrollBar;
 import javax.swing.JViewport;
@@ -109,10 +108,9 @@ import org.exbin.bined.swing.capability.ColorAssessorPainterCapable;
 /**
  * Section code area component default painter.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class SectionCodeAreaPainter implements CodeAreaPainter, ColorsProfileCapableCodeAreaPainter, LayoutProfileCapableCodeAreaPainter, ThemeProfileCapableCodeAreaPainter, CaretsProfileCapableCodeAreaPainter, CodeAreaPaintState, ColorAssessorPainterCapable, CharAssessorPainterCapable {
 
-    @Nonnull
     protected final CodeAreaCore codeArea;
     protected volatile boolean initialized = false;
 
@@ -121,35 +119,21 @@ public class SectionCodeAreaPainter implements CodeAreaPainter, ColorsProfileCap
     protected volatile boolean caretChanged = true;
     protected volatile boolean resetColors = true;
 
-    @Nonnull
     protected final JComponent dataView;
-    @Nonnull
     protected final SectionCodeAreaScrollPane scrollPanel;
-    @Nonnull
     protected final DefaultCodeAreaMouseListener codeAreaMouseListener;
-    @Nonnull
     protected final ComponentListener codeAreaComponentListener;
-    @Nonnull
     protected final DataChangedListener codeAreaDataChangeListener;
 
-    @Nonnull
     protected final BasicCodeAreaMetrics metrics = new BasicCodeAreaMetrics();
-    @Nonnull
     protected final SectionCodeAreaStructure structure = new SectionCodeAreaStructure();
-    @Nonnull
     protected final SectionCodeAreaScrolling scrolling = new SectionCodeAreaScrolling();
-    @Nonnull
     protected final SectionCodeAreaDimensions dimensions = new SectionCodeAreaDimensions();
-    @Nonnull
     protected final SectionCodeAreaVisibility visibility = new SectionCodeAreaVisibility();
 
-    @Nonnull
     protected SectionCodeAreaLayoutProfile layoutProfile = new DefaultSectionCodeAreaLayoutProfile();
-    @Nonnull
     protected CodeAreaColorsProfile colorsProfile = new SectionCodeAreaColorProfile();
-    @Nonnull
     protected SectionCodeAreaThemeProfile themeProfile = new SectionCodeAreaThemeProfile();
-    @Nonnull
     protected SectionCodeAreaCaretsProfile caretsProfile = new DefaultExtendedCodeAreaCaretsProfile();
 
     @Nullable
@@ -160,7 +144,6 @@ public class SectionCodeAreaPainter implements CodeAreaPainter, ColorsProfileCap
     protected PositionIterator positionIterator;
     protected final ScrollViewDimension viewDimension = new ScrollViewDimension();
     protected boolean showMirrorCursor;
-    @Nonnull
     protected AntialiasingMode antialiasingMode = AntialiasingMode.AUTO;
 
     protected int rowPositionLength;
@@ -1089,7 +1072,6 @@ public class SectionCodeAreaPainter implements CodeAreaPainter, ColorsProfileCap
         }
     }
 
-    @Nonnull
     @Override
     public PositionScrollVisibility computePositionScrollVisibility(CodeAreaCaretPosition caretPosition) {
         int bytesPerRow = structure.getBytesPerRow();
@@ -1107,7 +1089,6 @@ public class SectionCodeAreaPainter implements CodeAreaPainter, ColorsProfileCap
         return scrolling.computePositionScrollVisibility(rowPosition, halfCharPosition, bytesPerRow, rowsPerPage, charactersPerPage, dataViewWidth, rowOffset, characterWidth, rowHeight);
     }
 
-    @Nonnull
     @Override
     public Optional<CodeAreaScrollPosition> computeRevealScrollPosition(CodeAreaCaretPosition caretPosition) {
         int bytesPerRow = structure.getBytesPerRow();
@@ -1127,7 +1108,6 @@ public class SectionCodeAreaPainter implements CodeAreaPainter, ColorsProfileCap
         return scrolling.computeRevealScrollPosition(rowPosition, halfCharPosition, bytesPerRow, rowsPerPage, halfCharsPerPage, halfCharOffset, rowOffset, characterWidth, rowHeight);
     }
 
-    @Nonnull
     @Override
     public Optional<CodeAreaScrollPosition> computeCenterOnScrollPosition(CodeAreaCaretPosition caretPosition) {
         int bytesPerRow = structure.getBytesPerRow();
@@ -1297,7 +1277,6 @@ public class SectionCodeAreaPainter implements CodeAreaPainter, ColorsProfileCap
         }
     }
 
-    @Nonnull
     @Override
     public CodeAreaColorAssessor getColorAssessor() {
         return colorAssessor;
@@ -1308,7 +1287,6 @@ public class SectionCodeAreaPainter implements CodeAreaPainter, ColorsProfileCap
         this.colorAssessor = CodeAreaUtils.requireNonNull(colorAssessor);
     }
 
-    @Nonnull
     @Override
     public CodeAreaCharAssessor getCharAssessor() {
         return charAssessor;
@@ -1481,7 +1459,6 @@ public class SectionCodeAreaPainter implements CodeAreaPainter, ColorsProfileCap
         }
     }
 
-    @Nonnull
     @Override
     public CodeAreaCaretPosition mousePositionToClosestCaretPosition(int positionX, int positionY, CaretOverlapMode overflowMode) {
         DefaultCodeAreaCaretPosition caret = new DefaultCodeAreaCaretPosition();
@@ -1549,13 +1526,11 @@ public class SectionCodeAreaPainter implements CodeAreaPainter, ColorsProfileCap
         return caret;
     }
 
-    @Nonnull
     @Override
     public CodeAreaCaretPosition computeMovePosition(CodeAreaCaretPosition position, MovementDirection direction) {
         return structure.computeMovePosition(position, direction, dimensions.getRowsPerPage());
     }
 
-    @Nonnull
     @Override
     public CodeAreaScrollPosition computeScrolling(CodeAreaScrollPosition startPosition, ScrollingDirection direction) {
         int rowsPerPage = dimensions.getRowsPerPage();
@@ -1622,13 +1597,11 @@ public class SectionCodeAreaPainter implements CodeAreaPainter, ColorsProfileCap
         return Cursor.DEFAULT_CURSOR;
     }
 
-    @Nonnull
     @Override
     public BasicCodeAreaZone getPositionZone(int positionX, int positionY) {
         return dimensions.getPositionZone(positionX, positionY);
     }
 
-    @Nonnull
     @Override
     public CodeAreaColorsProfile getColorsProfile() {
         return colorsProfile;
@@ -1640,7 +1613,6 @@ public class SectionCodeAreaPainter implements CodeAreaPainter, ColorsProfileCap
         codeArea.repaint();
     }
 
-    @Nonnull
     @Override
     public SectionCodeAreaLayoutProfile getLayoutProfile() {
         return layoutProfile.createCopy();
@@ -1652,7 +1624,6 @@ public class SectionCodeAreaPainter implements CodeAreaPainter, ColorsProfileCap
         resetLayout();
     }
 
-    @Nonnull
     @Override
     public SectionCodeAreaThemeProfile getThemeProfile() {
         return themeProfile.createCopy();
@@ -1664,7 +1635,6 @@ public class SectionCodeAreaPainter implements CodeAreaPainter, ColorsProfileCap
         codeArea.repaint();
     }
 
-    @Nonnull
     @Override
     public SectionCodeAreaCaretsProfile getCaretsProfile() {
         return caretsProfile;
@@ -1765,7 +1735,6 @@ public class SectionCodeAreaPainter implements CodeAreaPainter, ColorsProfileCap
      * @param section section
      * @return cursor rectangle or empty rectangle
      */
-    @Nonnull
     public Rectangle getCursorPositionRect(long dataPosition, int codeOffset, CodeAreaSection section) {
         Rectangle rect = new Rectangle();
         updateRectToCursorPosition(rect, dataPosition, codeOffset, section);
@@ -1891,13 +1860,11 @@ public class SectionCodeAreaPainter implements CodeAreaPainter, ColorsProfileCap
         return structure.getBytesPerRow();
     }
 
-    @Nonnull
     @Override
     public CodeAreaSection getActiveSection() {
         return ((CaretCapable) codeArea).getActiveSection();
     }
 
-    @Nonnull
     @Override
     public Charset getCharset() {
         return charset;
@@ -1908,7 +1875,6 @@ public class SectionCodeAreaPainter implements CodeAreaPainter, ColorsProfileCap
         return metrics.getMaxBytesPerChar();
     }
 
-    @Nonnull
     @Override
     public byte[] getRowData() {
         return rowDataCache.rowData;
@@ -1924,7 +1890,6 @@ public class SectionCodeAreaPainter implements CodeAreaPainter, ColorsProfileCap
         return structure.getDataSize();
     }
 
-    @Nonnull
     @Override
     public BinaryData getContentData() {
         return codeArea.getContentData();
@@ -1950,7 +1915,6 @@ public class SectionCodeAreaPainter implements CodeAreaPainter, ColorsProfileCap
         return verticalScrollBar.isVisible() ? verticalScrollBar.getWidth() : 0;
     }
 
-    @Nonnull
     private CodeAreaSection getSection(CodeAreaCaretPosition caretPosition) {
         return caretPosition.getSection().orElse(BasicCodeAreaSection.CODE_MATRIX);
     }

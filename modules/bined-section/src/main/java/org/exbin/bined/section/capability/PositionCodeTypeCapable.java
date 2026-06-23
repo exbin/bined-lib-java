@@ -15,14 +15,13 @@
  */
 package org.exbin.bined.section.capability;
 
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import org.exbin.bined.PositionCodeType;
 
 /**
  * Support for position code type.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public interface PositionCodeTypeCapable {
 
     /**
@@ -30,7 +29,6 @@ public interface PositionCodeTypeCapable {
      *
      * @return position code type
      */
-    @Nonnull
     PositionCodeType getPositionCodeType();
 
     /**

@@ -25,9 +25,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.exbin.bined.CodeAreaUtils;
@@ -39,7 +38,7 @@ import org.exbin.bined.CharsetStreamTranslator;
 /**
  * Hexadecimal editor component SWT utilities.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class CodeAreaSwtUtils {
 
     public static final int MIN_MONOSPACE_CODE_POINT = 0x1F;
@@ -61,7 +60,6 @@ public class CodeAreaSwtUtils {
         return (color == null && comparedColor == null) || (color != null && color.equals(comparedColor));
     }
 
-    @Nonnull
     public static Color createOddColor(Color color) {
         return new Color(color.getDevice(),
                 computeOddColorComponent(color.getRed()),
@@ -73,7 +71,6 @@ public class CodeAreaSwtUtils {
         return colorComponent + (colorComponent > 64 ? - 16 : 16);
     }
 
-    @Nonnull
     public static Color createNegativeColor(Color color) {
         return new Color(color.getDevice(),
                 MAX_COLOR_COMPONENT_VALUE - color.getRed(),
@@ -81,7 +78,6 @@ public class CodeAreaSwtUtils {
                 MAX_COLOR_COMPONENT_VALUE - color.getBlue());
     }
 
-    @Nonnull
     public static Color computeGrayColor(Color color) {
         int grayLevel = (color.getRed() + color.getGreen() + color.getBlue()) / 3;
         return new Color(color.getDevice(), grayLevel, grayLevel, grayLevel);
@@ -104,7 +100,6 @@ public class CodeAreaSwtUtils {
      *
      * @return clipboard clipboard instance
      */
-    @Nonnull
     public static Clipboard getClipboard() {
         if (clipboard == null) {
             try {
@@ -117,7 +112,7 @@ public class CodeAreaSwtUtils {
         return clipboard;
     }
 
-    @ParametersAreNonnullByDefault
+    @NullMarked
     public static class BinaryDataClipboardData implements ClipboardData {
 
         private final BinaryData data;
@@ -135,7 +130,6 @@ public class CodeAreaSwtUtils {
             this(data, binaryDataFlavor, null);
         }
 
-        @Nonnull
         @Override
         public DataFlavor[] getTransferDataFlavors() {
             return new DataFlavor[]{binaryDataFlavor, DataFlavor.stringFlavor};
@@ -146,7 +140,6 @@ public class CodeAreaSwtUtils {
             return flavor.equals(binaryDataFlavor) || flavor.equals(DataFlavor.stringFlavor);
         }
 
-        @Nonnull
         @Override
         public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
             if (flavor.equals(binaryDataFlavor)) {
@@ -174,7 +167,7 @@ public class CodeAreaSwtUtils {
         }
     }
 
-    @ParametersAreNonnullByDefault
+    @NullMarked
     public static class CodeDataClipboardData implements ClipboardData {
 
         private final BinaryData data;
@@ -189,7 +182,6 @@ public class CodeAreaSwtUtils {
             this.charactersCase = charactersCase;
         }
 
-        @Nonnull
         @Override
         public DataFlavor[] getTransferDataFlavors() {
             return new DataFlavor[]{binaryDataFlavor, DataFlavor.stringFlavor};
@@ -200,7 +192,6 @@ public class CodeAreaSwtUtils {
             return flavor.equals(binaryDataFlavor) || flavor.equals(DataFlavor.stringFlavor);
         }
 
-        @Nonnull
         @Override
         public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
             if (flavor.equals(binaryDataFlavor)) {

@@ -15,8 +15,7 @@
  */
 package org.exbin.bined.section;
 
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import org.exbin.bined.basic.BasicCodeAreaSection;
 import org.exbin.bined.CodeAreaSection;
 import org.exbin.bined.basic.CodeAreaViewMode;
@@ -35,19 +34,15 @@ import org.exbin.bined.section.layout.SectionCodeAreaLayoutProfile;
 /**
  * Code area data representation structure for section variant.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class SectionCodeAreaStructure {
 
-    @Nonnull
     protected CodeAreaViewMode viewMode = CodeAreaViewMode.DUAL;
 
-    @Nonnull
     protected CodeType codeType = CodeType.HEXADECIMAL;
-    @Nonnull
     protected PositionCodeType positionCodeType = PositionCodeType.HEXADECIMAL;
 
     protected long dataSize;
-    @Nonnull
     protected RowWrappingMode rowWrapping = RowWrappingMode.NO_WRAPPING;
     protected int maxBytesPerLine;
     protected int wrappingBytesGroupSize;
@@ -83,22 +78,18 @@ public class SectionCodeAreaStructure {
         return layout.computeFirstByteHalfCharPos(byteOffset, section, this);
     }
 
-    @Nonnull
     public CodeAreaCaretPosition computeMovePosition(CodeAreaCaretPosition position, MovementDirection direction, int rowsPerPage) {
         return layout.computeMovePosition(position, direction, this, rowsPerPage);
     }
 
-    @Nonnull
     public CodeAreaViewMode getViewMode() {
         return viewMode;
     }
 
-    @Nonnull
     public CodeType getCodeType() {
         return codeType;
     }
 
-    @Nonnull
     public PositionCodeType getPositionCodeType() {
         return positionCodeType;
     }
@@ -107,7 +98,6 @@ public class SectionCodeAreaStructure {
         return dataSize;
     }
 
-    @Nonnull
     public RowWrappingMode getRowWrapping() {
         return rowWrapping;
     }

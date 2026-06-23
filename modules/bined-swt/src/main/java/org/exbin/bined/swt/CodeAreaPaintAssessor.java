@@ -15,12 +15,12 @@
  */
 package org.exbin.bined.swt;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * Code area paint assessor.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public interface CodeAreaPaintAssessor {
 
     /**

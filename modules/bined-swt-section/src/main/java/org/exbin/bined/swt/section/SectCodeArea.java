@@ -26,8 +26,7 @@ import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.FocusEvent;
@@ -68,15 +67,13 @@ import org.exbin.bined.CodeAreaCaretListener;
 /**
  * TODO: Binary viewer/editor component with configurable sections.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class SectCodeArea extends Composite implements CodeAreaControl {
 
     @Nullable
     protected BinaryData data;
 
-    @Nonnull
     protected CodeAreaWorker worker;
-    @Nonnull
     protected CodeAreaCommandHandler commandHandler;
 
     private final List<DataChangedListener> dataChangedListeners = new ArrayList<>();

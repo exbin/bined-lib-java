@@ -16,15 +16,15 @@
 package org.exbin.bined.javafx.basic.color;
 
 import javafx.scene.paint.Color;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
 import org.exbin.bined.color.CodeAreaBasicColors;
 import org.exbin.bined.color.CodeAreaColorType;
 
 /**
  * Colors profile.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public interface CodeAreaColorsProfile {
 
     /**

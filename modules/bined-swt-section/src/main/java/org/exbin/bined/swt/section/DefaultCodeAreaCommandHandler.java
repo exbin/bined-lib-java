@@ -46,7 +46,7 @@ import org.exbin.bined.capability.EditModeCapable;
 /**
  * Default binary editor command handler.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
     protected static final int CODE_BUFFER_LENGTH = 16;

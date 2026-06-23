@@ -15,12 +15,13 @@
  */
 package org.exbin.bined.section.layout;
 
-import javax.annotation.Nonnull;
+import org.jspecify.annotations.NullMarked;
 import org.exbin.bined.basic.BasicCodeAreaSection;
 
 /**
  * Iterator for layout character position iteration.
  */
+@NullMarked
 public interface PositionIterator {
 
     /**
@@ -33,7 +34,6 @@ public interface PositionIterator {
      *
      * @return space type
      */
-    @Nonnull
     SpaceType nextSpaceType();
 
     /**
@@ -69,7 +69,6 @@ public interface PositionIterator {
      *
      * @return code area section
      */
-    @Nonnull
     BasicCodeAreaSection getSection();
 
     /**

@@ -26,8 +26,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.KeyCode;
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.CodeCharactersCase;
 import org.exbin.bined.CodeType;
@@ -65,27 +64,24 @@ import org.exbin.bined.capability.EditModeCapable;
 /**
  * Default binary editor command handler.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
     public static final int NO_MODIFIER = 0;
     public static final int LAST_CONTROL_CODE = 31;
-    private static final char DELETE_CHAR = (char) 0x7f;
+    public static final char DELETE_CHAR = (char) 0x7f;
 
 //    private final int metaMask;
-    @Nonnull
-    private final CodeAreaCore codeArea;
-    @Nonnull
-    private EnterKeyHandlingMode enterKeyHandlingMode = EnterKeyHandlingMode.PLATFORM_SPECIFIC;
-    @Nonnull
-    private TabKeyHandlingMode tabKeyHandlingMode = TabKeyHandlingMode.PLATFORM_SPECIFIC;
-    private final boolean codeTypeSupported;
-    private final boolean viewModeSupported;
+    protected final CodeAreaCore codeArea;
+    protected EnterKeyHandlingMode enterKeyHandlingMode = EnterKeyHandlingMode.PLATFORM_SPECIFIC;
+    protected TabKeyHandlingMode tabKeyHandlingMode = TabKeyHandlingMode.PLATFORM_SPECIFIC;
+    protected final boolean codeTypeSupported;
+    protected final boolean viewModeSupported;
 
-    private Clipboard clipboard;
-    private boolean canPaste = false;
-    private DataFlavor binaryDataFlavor;
-    private CodeAreaJavaFxUtils.ClipboardData currentClipboardData = null;
+    protected Clipboard clipboard;
+    protected boolean canPaste = false;
+    protected DataFlavor binaryDataFlavor;
+    protected CodeAreaJavaFxUtils.ClipboardData currentClipboardData = null;
 
     public DefaultCodeAreaCommandHandler(CodeAreaCore codeArea) {
         this.codeArea = codeArea;
@@ -110,7 +106,6 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         }
     }
 
-    @Nonnull
     public static CodeAreaCommandHandler.CodeAreaCommandHandlerFactory createDefaultCodeAreaCommandHandlerFactory() {
         return DefaultCodeAreaCommandHandler::new;
     }
@@ -750,7 +745,6 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         return canPaste;
     }
 
-    @Nonnull
     public EnterKeyHandlingMode getEnterKeyHandlingMode() {
         return enterKeyHandlingMode;
     }
@@ -849,7 +843,6 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         return bytes;
     }
 
-    @Nonnull
     private CodeType getCodeType() {
         if (codeTypeSupported) {
             return ((CodeTypeCapable) codeArea).getCodeType();
@@ -868,7 +861,6 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         return codeArea.isEditable();
     }
 
-    @Nonnull
     private static SelectingMode isSelectingMode(KeyEvent keyEvent) {
         return keyEvent.isShiftDown() ? SelectingMode.SELECTING : SelectingMode.NONE;
     }

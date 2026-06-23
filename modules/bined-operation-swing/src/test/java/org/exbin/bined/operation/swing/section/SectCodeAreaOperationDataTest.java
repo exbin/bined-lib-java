@@ -16,20 +16,20 @@
 package org.exbin.bined.operation.swing.section;
 
 import org.exbin.bined.operation.swing.*;
-import javax.annotation.Nonnull;
 import org.exbin.bined.swing.CodeAreaCore;
 import org.exbin.bined.swing.basic.CodeAreaDataTest;
 import org.exbin.bined.swing.section.SectCodeArea;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * Tests for SectCodeArea component.
  */
+@NullMarked
 public class SectCodeAreaOperationDataTest extends CodeAreaDataTest {
 
     public SectCodeAreaOperationDataTest() {
     }
 
-    @Nonnull
     @Override
     public CodeAreaCore createCodeArea() {
         SectCodeArea codeArea = new SectCodeArea();

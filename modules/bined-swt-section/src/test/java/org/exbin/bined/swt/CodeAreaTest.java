@@ -28,7 +28,7 @@ import static org.junit.Assert.*;
 /**
  * Tests for codeArea component.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class CodeAreaTest {
 
     public static final String SAMPLE_FILES_PATH = "/org/exbin/bined/resources/test/";

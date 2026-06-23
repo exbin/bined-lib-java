@@ -15,14 +15,13 @@
  */
 package org.exbin.bined.swing.capability;
 
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import org.exbin.bined.swing.basic.AntialiasingMode;
 
 /**
  * Support for antialiasing capability.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public interface AntialiasingCapable {
 
     /**
@@ -30,7 +29,6 @@ public interface AntialiasingCapable {
      *
      * @return antialiasing mode
      */
-    @Nonnull
     AntialiasingMode getAntialiasingMode();
 
     /**

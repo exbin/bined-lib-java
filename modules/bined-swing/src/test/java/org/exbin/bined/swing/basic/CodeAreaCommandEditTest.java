@@ -17,7 +17,7 @@ package org.exbin.bined.swing.basic;
 
 import java.awt.Component;
 import java.awt.event.KeyEvent;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import javax.swing.JFrame;
 import org.exbin.auxiliary.binary_data.BinaryData;
 import org.exbin.auxiliary.binary_data.EditableBinaryData;
@@ -33,7 +33,7 @@ import org.junit.Test;
 /**
  * Tests for CodeArea component.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class CodeAreaCommandEditTest extends CodeAreaComponentTest {
 
     public CodeAreaCommandEditTest() {

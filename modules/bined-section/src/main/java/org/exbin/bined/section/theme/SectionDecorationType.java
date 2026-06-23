@@ -15,13 +15,12 @@
  */
 package org.exbin.bined.section.theme;
 
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * Enumeration of decoration types for section code area.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public enum SectionDecorationType implements CodeAreaDecorationType {
 
     ROW_POSITION_LINE("rowPositionLine"),
@@ -33,10 +32,8 @@ public enum SectionDecorationType implements CodeAreaDecorationType {
         this.id = id;
     }
 
-    @Nonnull
     private final String id;
 
-    @Nonnull
     @Override
     public String getId() {
         return id;

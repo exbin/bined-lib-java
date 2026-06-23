@@ -27,9 +27,8 @@ import java.nio.charset.Charset;
 import java.util.Arrays;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.paint.Color;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
 import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.CodeCharactersCase;
 import org.exbin.bined.CodeType;
@@ -40,7 +39,7 @@ import org.exbin.bined.CharsetStreamTranslator;
 /**
  * Hexadecimal editor component JavaFX utilities.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class CodeAreaJavaFxUtils {
 
     public static final int MIN_MONOSPACE_CODE_POINT = 0x1F;
@@ -62,7 +61,6 @@ public class CodeAreaJavaFxUtils {
         return (color == null && comparedColor == null) || (color != null && color.equals(comparedColor));
     }
 
-    @Nonnull
     public static Color createOddColor(Color color) {
         return Color.color(
                 computeOddColorComponent(color.getRed()),
@@ -74,20 +72,17 @@ public class CodeAreaJavaFxUtils {
         return colorComponent + (colorComponent > 0.25 ? -0.0625 : 0.0625);
     }
 
-    @Nonnull
     public static Color createNegativeColor(Color color) {
         return Color.color(MAX_COLOR_COMPONENT_VALUE - color.getRed(),
                 MAX_COLOR_COMPONENT_VALUE - color.getGreen(),
                 MAX_COLOR_COMPONENT_VALUE - color.getBlue());
     }
 
-    @Nonnull
     public static Color computeGrayColor(Color color) {
         double grayLevel = (color.getRed() + color.getGreen() + color.getBlue()) / 3;
         return Color.color(grayLevel, grayLevel, grayLevel);
     }
 
-    @Nonnull
     public static ScrollPane.ScrollBarPolicy getVerticalScrollBarPolicy(ScrollBarVisibility scrollBarVisibility) {
         switch (scrollBarVisibility) {
             case NEVER:
@@ -101,7 +96,6 @@ public class CodeAreaJavaFxUtils {
         }
     }
 
-    @Nonnull
     public static ScrollPane.ScrollBarPolicy getHorizontalScrollBarPolicy(ScrollBarVisibility scrollBarVisibility) {
         switch (scrollBarVisibility) {
             case NEVER:
@@ -128,7 +122,6 @@ public class CodeAreaJavaFxUtils {
      *
      * @return clipboard clipboard instance
      */
-    @Nonnull
     public static Clipboard getClipboard() {
         if (clipboard == null) {
             try {
@@ -141,7 +134,6 @@ public class CodeAreaJavaFxUtils {
         return clipboard;
     }
 
-    @ParametersAreNonnullByDefault
     public static class BinaryDataClipboardData implements ClipboardData {
 
         private final BinaryData data;
@@ -159,7 +151,6 @@ public class CodeAreaJavaFxUtils {
             this(data, binaryDataFlavor, null);
         }
 
-        @Nonnull
         @Override
         public DataFlavor[] getTransferDataFlavors() {
             return new DataFlavor[]{binaryDataFlavor, DataFlavor.stringFlavor};
@@ -170,7 +161,6 @@ public class CodeAreaJavaFxUtils {
             return flavor.equals(binaryDataFlavor) || flavor.equals(DataFlavor.stringFlavor);
         }
 
-        @Nonnull
         @Override
         public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
             if (flavor.equals(binaryDataFlavor)) {
@@ -195,7 +185,7 @@ public class CodeAreaJavaFxUtils {
         }
     }
 
-    @ParametersAreNonnullByDefault
+    @NullMarked
     public static class CodeDataClipboardData implements ClipboardData {
 
         private final BinaryData data;
@@ -210,7 +200,6 @@ public class CodeAreaJavaFxUtils {
             this.charactersCase = charactersCase;
         }
 
-        @Nonnull
         @Override
         public DataFlavor[] getTransferDataFlavors() {
             return new DataFlavor[]{binaryDataFlavor, DataFlavor.stringFlavor};
@@ -221,7 +210,6 @@ public class CodeAreaJavaFxUtils {
             return flavor.equals(binaryDataFlavor) || flavor.equals(DataFlavor.stringFlavor);
         }
 
-        @Nonnull
         @Override
         public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
             if (flavor.equals(binaryDataFlavor)) {

@@ -15,14 +15,14 @@
  */
 package org.exbin.bined.swing.section.capability;
 
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
 import org.exbin.bined.section.layout.SectionCodeAreaLayoutProfile;
 
 /**
  * Support for layout profiling.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public interface LayoutProfileCapable {
 
     /**

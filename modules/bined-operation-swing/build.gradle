@@ -29,11 +29,12 @@ dependencies {
     implementation moduleDep('BinedLibJava', 'org.exbin.bined', 'modules', 'bined-swing')
     implementation moduleDep('ExbinAuxiliaryJava', 'org.exbin.auxiliary', 'modules', 'binary_data')
     implementation moduleDep('ExbinAuxiliaryJava', 'org.exbin.auxiliary', 'modules', 'binary_data-array')
+    compileOnly group: 'org.jspecify', name: 'jspecify', version: '1.0.0'
     compileOnly group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.2'
     testImplementation group : 'junit', name: 'junit', version: '4.13.2'
     testImplementation moduleDep('BinedLibJava', 'org.exbin.bined', 'modules', 'bined-swing-section')
     testImplementation project(path: moduleDepPath('BinedLibJava', 'modules', 'bined-core'), configuration: 'tests')
     testImplementation project(path: moduleDepPath('BinedLibJava', 'modules', 'bined-swing'), configuration: 'tests')
     testImplementation project(path: moduleDepPath('BinedLibJava', 'modules', 'bined-swing-section'), configuration: 'tests')
-    testCompileOnly group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.2'
+    testCompileOnly group: 'org.jspecify', name: 'jspecify', version: '1.0.0'
 }

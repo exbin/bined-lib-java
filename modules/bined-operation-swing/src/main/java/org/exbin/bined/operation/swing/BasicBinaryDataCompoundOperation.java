@@ -18,8 +18,7 @@ package org.exbin.bined.operation.swing;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import org.exbin.auxiliary.binary_data.EditableBinaryData;
 import org.exbin.bined.operation.BinaryDataCompoundOperation;
 import org.exbin.bined.operation.BinaryDataOperation;
@@ -28,7 +27,7 @@ import org.exbin.bined.operation.BinaryDataUndoableOperation;
 /**
  * Compound binary data operation.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class BasicBinaryDataCompoundOperation implements BinaryDataCompoundOperation, BinaryDataUndoableOperation {
 
     protected final List<BinaryDataOperation> operations = new ArrayList<>();
@@ -36,7 +35,6 @@ public class BasicBinaryDataCompoundOperation implements BinaryDataCompoundOpera
     public BasicBinaryDataCompoundOperation() {
     }
 
-    @Nonnull
     @Override
     public BinaryDataUndoableOperation executeWithUndo(EditableBinaryData contentData) {
         BasicBinaryDataCompoundOperation undoOperations = new BasicBinaryDataCompoundOperation();
@@ -54,7 +52,6 @@ public class BasicBinaryDataCompoundOperation implements BinaryDataCompoundOpera
         }
     }
 
-    @Nonnull
     @Override
     public BasicBinaryDataOperationType getType() {
         return BasicBinaryDataOperationType.COMPOUND;
@@ -74,7 +71,6 @@ public class BasicBinaryDataCompoundOperation implements BinaryDataCompoundOpera
         operations.add(index, operation);
     }
 
-    @Nonnull
     @Override
     public List<BinaryDataOperation> getOperations() {
         return operations;

@@ -20,7 +20,7 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import org.exbin.auxiliary.binary_data.BinaryData;
 import org.exbin.bined.EditOperation;
 import org.exbin.bined.capability.CaretCapable;
@@ -37,7 +37,7 @@ import org.exbin.bined.swing.CodeAreaCore;
 /**
  * Tests clipboard actions for CodeArea command component.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class CodeAreaCommandClipboardTest extends CodeAreaComponentTest {
 
     public CodeAreaCommandClipboardTest() {

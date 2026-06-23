@@ -22,7 +22,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import javax.swing.JScrollPane;
 import org.exbin.bined.ScrollBarOrientation;
 import org.exbin.bined.basic.SelectingMode;
@@ -33,7 +33,7 @@ import org.exbin.bined.capability.ScrollingCapable;
 /**
  * Code area mouse listener.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class DefaultCodeAreaMouseListener extends MouseAdapter implements MouseMotionListener, MouseWheelListener {
 
     public static final int MOUSE_SCROLL_LINES = 3;

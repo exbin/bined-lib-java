@@ -17,13 +17,13 @@ package org.exbin.bined.lanterna.basic;
 
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import org.exbin.bined.CharsetStreamTranslator;
 
 /**
  * Basic code area component dimensions.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class BasicCodeAreaMetrics {
 
     protected int maxBytesPerChar;

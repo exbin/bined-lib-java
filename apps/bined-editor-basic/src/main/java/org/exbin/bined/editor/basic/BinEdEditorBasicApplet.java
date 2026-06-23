@@ -18,7 +18,7 @@ package org.exbin.bined.editor.basic;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import javax.swing.JApplet;
 import javax.swing.JToolBar;
 import org.exbin.bined.swing.basic.CodeArea;
@@ -26,7 +26,7 @@ import org.exbin.bined.swing.basic.CodeArea;
 /**
  * Basic java applet simple version of BinEd binary/hex editor.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class BinEdEditorBasicApplet extends JApplet {
 
     /**

@@ -21,8 +21,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.SWT;
@@ -50,7 +49,7 @@ import org.exbin.auxiliary.binary_data.EditableBinaryData;
 /**
  * Binary editor state options panel.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class StatePanel extends Composite {
 
     private CodeArea codeArea;
@@ -311,7 +310,6 @@ public class StatePanel extends Composite {
         // Disable the check that prevents subclassing of SWT components
     }
 
-    @Nonnull
     private BasicCodeAreaSection getSection(CodeAreaCaretPosition caretPosition) {
         return (BasicCodeAreaSection) caretPosition.getSection().orElse(BasicCodeAreaSection.CODE_MATRIX);
     }

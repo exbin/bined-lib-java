@@ -15,16 +15,14 @@
  */
 package org.exbin.bined.swt.basic.color;
 
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * Capability of painter to handle basic colors setting.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public interface BasicColorsCapableCodeAreaPainter {
 
-    @Nonnull
     BasicCodeAreaColorsProfile getBasicColors();
 
     void setBasicColors(BasicCodeAreaColorsProfile colors);

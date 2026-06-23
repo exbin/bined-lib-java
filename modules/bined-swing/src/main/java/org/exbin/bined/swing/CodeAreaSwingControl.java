@@ -16,13 +16,13 @@
 package org.exbin.bined.swing;
 
 import java.awt.Graphics;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import org.exbin.bined.basic.CodeAreaScrollPosition;
 
 /**
  * Code area swing control.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public interface CodeAreaSwingControl {
 
     /**

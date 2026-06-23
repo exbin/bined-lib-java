@@ -41,7 +41,7 @@ import org.exbin.bined.swt.ColorsGroup;
 /**
  * Code area component default painter.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class SectionCodeAreaPainter implements CodeAreaPainter {
 
     protected final CodeArea codeArea;

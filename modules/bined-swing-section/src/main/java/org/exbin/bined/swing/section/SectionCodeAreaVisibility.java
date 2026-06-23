@@ -16,7 +16,7 @@
 package org.exbin.bined.swing.section;
 
 import org.exbin.bined.section.SectionCodeAreaStructure;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import org.exbin.bined.basic.BasicCodeAreaSection;
 import org.exbin.bined.basic.CodeAreaViewMode;
 import org.exbin.bined.swing.basic.BasicCodeAreaMetrics;
@@ -26,7 +26,7 @@ import org.exbin.bined.section.layout.SectionCodeAreaLayoutProfile;
 /**
  * Section code area component characters visibility in scroll window.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class SectionCodeAreaVisibility {
 
     protected int splitLinePos;

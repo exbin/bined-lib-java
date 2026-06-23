@@ -15,19 +15,17 @@
  */
 package org.exbin.bined.swing.demo.panel;
 
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import javax.swing.JFrame;
 import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.RowWrappingMode;
-import org.exbin.bined.capability.RowWrappingCapable;
 import org.exbin.bined.swing.section.SectCodeArea;
 import org.exbin.bined.swing.section.layout.DefaultSectionCodeAreaLayoutProfile;
 
 /**
  * Binary editor layout options panel.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class LayoutPanelSect extends javax.swing.JPanel {
 
     private SectCodeArea codeArea;
@@ -393,7 +391,6 @@ public class LayoutPanelSect extends javax.swing.JPanel {
         codeArea.setLayoutProfile(layoutProfile);
     }//GEN-LAST:event_doubleSpaceGroupSizeSpinnerStateChanged
 
-    @Nonnull
     private DefaultSectionCodeAreaLayoutProfile getLayoutProfile() {
         return CodeAreaUtils.requireNonNull((DefaultSectionCodeAreaLayoutProfile) codeArea.getLayoutProfile());
     }

@@ -17,8 +17,7 @@ package org.exbin.bined.swing.section.theme;
 
 import java.util.HashSet;
 import java.util.Set;
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import org.exbin.bined.section.theme.CodeAreaDecorationType;
 import org.exbin.bined.section.theme.SectionBackgroundPaintMode;
 import org.exbin.bined.swing.section.layout.SectionCodeAreaDecorations;
@@ -26,10 +25,9 @@ import org.exbin.bined.swing.section.layout.SectionCodeAreaDecorations;
 /**
  * Theme profile for section code area.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class SectionCodeAreaThemeProfile {
 
-    @Nonnull
     protected SectionBackgroundPaintMode borderPaintMode = SectionBackgroundPaintMode.STRIPED;
     protected boolean paintRowPosBackground = true;
     protected int verticalLineByteGroupSize = 0;
@@ -47,7 +45,6 @@ public class SectionCodeAreaThemeProfile {
      *
      * @return copy of the profile
      */
-    @Nonnull
     public SectionCodeAreaThemeProfile createCopy() {
         SectionCodeAreaThemeProfile copy = new SectionCodeAreaThemeProfile();
         copy.borderPaintMode = borderPaintMode;
@@ -59,7 +56,6 @@ public class SectionCodeAreaThemeProfile {
         return copy;
     }
 
-    @Nonnull
     public SectionBackgroundPaintMode getBackgroundPaintMode() {
         return borderPaintMode;
     }

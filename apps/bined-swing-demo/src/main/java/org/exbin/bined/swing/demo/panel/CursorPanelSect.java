@@ -15,7 +15,7 @@
  */
 package org.exbin.bined.swing.demo.panel;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import javax.swing.JFrame;
 import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.swing.basic.DefaultCodeAreaCaret;
@@ -24,7 +24,7 @@ import org.exbin.bined.swing.section.SectCodeArea;
 /**
  * Binary editor cursor options panel.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class CursorPanelSect extends javax.swing.JPanel {
 
     private SectCodeArea codeArea;

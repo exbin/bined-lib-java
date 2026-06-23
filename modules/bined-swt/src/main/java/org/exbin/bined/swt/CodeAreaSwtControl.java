@@ -15,14 +15,14 @@
  */
 package org.exbin.bined.swt;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import org.eclipse.swt.graphics.GC;
 import org.exbin.bined.basic.CodeAreaScrollPosition;
 
 /**
  * Code area SWT control.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public interface CodeAreaSwtControl {
 
     /**

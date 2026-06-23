@@ -15,14 +15,14 @@
  */
 package org.exbin.bined.javafx.capability;
 
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.exbin.bined.javafx.CodeAreaCharAssessor;
 
 /**
  * Painter support for character assessor capability.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public interface CharAssessorPainterCapable {
 
     /**
@@ -30,7 +30,7 @@ public interface CharAssessorPainterCapable {
      *
      * @return character assessor
      */
-    @Nonnull
+    @NonNull
     CodeAreaCharAssessor getCharAssessor();
 
     /**

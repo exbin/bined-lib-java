@@ -18,9 +18,8 @@ package org.exbin.bined.swing.section.color;
 import java.awt.Color;
 import java.util.HashMap;
 import java.util.Map;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
 import javax.swing.UIManager;
 import org.exbin.bined.color.BasicCodeAreaDecorationColorType;
 import org.exbin.bined.color.CodeAreaBasicColors;
@@ -31,7 +30,7 @@ import org.exbin.bined.swing.CodeAreaSwingUtils;
 /**
  * Color profile for section code area.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class SectionCodeAreaColorProfile implements CodeAreaColorsProfile {
 
     protected final Map<CodeAreaColorType, Color> colors = new HashMap<>();
@@ -45,7 +44,6 @@ public class SectionCodeAreaColorProfile implements CodeAreaColorsProfile {
      *
      * @return full copy of profile
      */
-    @Nonnull
     public SectionCodeAreaColorProfile createCopy() {
         SectionCodeAreaColorProfile copy = new SectionCodeAreaColorProfile();
         copy.colors.putAll(colors);

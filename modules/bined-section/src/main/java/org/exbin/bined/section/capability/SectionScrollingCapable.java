@@ -15,8 +15,7 @@
  */
 package org.exbin.bined.section.capability;
 
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import org.exbin.bined.ScrollBarVisibility;
 import org.exbin.bined.basic.VerticalScrollUnit;
 import org.exbin.bined.section.SectionHorizontalScrollUnit;
@@ -24,7 +23,7 @@ import org.exbin.bined.section.SectionHorizontalScrollUnit;
 /**
  * Support for scrolling capability for section code area.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public interface SectionScrollingCapable {
 
     /**
@@ -32,7 +31,6 @@ public interface SectionScrollingCapable {
      *
      * @return scrollbar visibility mode
      */
-    @Nonnull
     ScrollBarVisibility getVerticalScrollBarVisibility();
 
     /**
@@ -47,7 +45,6 @@ public interface SectionScrollingCapable {
      *
      * @return vertical scrolling unit
      */
-    @Nonnull
     VerticalScrollUnit getVerticalScrollUnit();
 
     /**
@@ -62,7 +59,6 @@ public interface SectionScrollingCapable {
      *
      * @return scrollbar visibility mode
      */
-    @Nonnull
     ScrollBarVisibility getHorizontalScrollBarVisibility();
 
     /**
@@ -77,7 +73,6 @@ public interface SectionScrollingCapable {
      *
      * @return horizontal scrolling unit
      */
-    @Nonnull
     SectionHorizontalScrollUnit getHorizontalScrollUnit();
 
     /**

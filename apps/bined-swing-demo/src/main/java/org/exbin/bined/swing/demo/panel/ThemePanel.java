@@ -15,7 +15,7 @@
  */
 package org.exbin.bined.swing.demo.panel;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import javax.swing.JFrame;
 import org.exbin.bined.basic.BasicBackgroundPaintMode;
 import org.exbin.bined.capability.BackgroundPaintCapable;
@@ -24,7 +24,7 @@ import org.exbin.bined.swing.basic.CodeArea;
 /**
  * Binary editor theme options panel.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class ThemePanel extends javax.swing.JPanel {
 
     private CodeArea codeArea;

@@ -16,8 +16,7 @@
 package org.exbin.bined.swing.section.caret;
 
 import java.awt.Graphics;
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.section.caret.CodeAreaCaretShape;
 import org.exbin.bined.section.caret.CodeAreaCaretType;
@@ -26,10 +25,9 @@ import org.exbin.bined.section.caret.DefaultCodeAreaCaretShape;
 /**
  * Support for cursor carets shapes.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class DefaultExtendedCodeAreaCaretsProfile implements SectionCodeAreaCaretsProfile {
 
-    @Nonnull
     @Override
     public CodeAreaCaretShape identifyCaretShape(CodeAreaCaretType caretType) {
         switch (caretType) {

@@ -17,9 +17,8 @@ package org.exbin.bined.swt;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
@@ -41,13 +40,11 @@ import org.exbin.bined.CodeAreaUtils;
 /**
  * Binary viewer/editor component.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public abstract class CodeAreaCore extends Canvas implements CodeAreaControl {
 
-    @Nonnull
     protected BinaryData contentData;
 
-    @Nonnull
     protected CodeAreaCommandHandler commandHandler;
 
     private final List<DataChangedListener> dataChangedListeners = new ArrayList<>();
@@ -75,7 +72,6 @@ public abstract class CodeAreaCore extends Canvas implements CodeAreaControl {
         registerControlListeners();
     }
 
-    @Nonnull
     private CodeAreaCommandHandler createCommandHandler(CodeAreaCommandHandler.CodeAreaCommandHandlerFactory commandHandlerFactory) {
         return commandHandlerFactory.createCommandHandler(this);
     }
@@ -115,12 +111,11 @@ public abstract class CodeAreaCore extends Canvas implements CodeAreaControl {
                 repaint();
             }
         });
-//          UIManager.addPropertyChangeListener((@Nonnull PropertyChangeEvent evt) -> {
+//          UIManager.addPropertyChangeListener((PropertyChangeEvent evt) -> {
 //            codeArea.rebuildColors();
 //        });
     }
 
-    @Nonnull
     public CodeAreaCommandHandler getCommandHandler() {
         return commandHandler;
     }
@@ -195,7 +190,6 @@ public abstract class CodeAreaCore extends Canvas implements CodeAreaControl {
         return false;
     }
 
-    @Nonnull
     @Override
     public BinaryData getContentData() {
         return contentData;

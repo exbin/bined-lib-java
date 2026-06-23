@@ -15,7 +15,7 @@
  */
 package org.exbin.bined.swing.example;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 import org.exbin.bined.swing.basic.CodeArea;
@@ -24,7 +24,7 @@ import org.exbin.auxiliary.binary_data.array.ByteArrayEditableData;
 /**
  * BinEd component usage example.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class BinEdExample {
 
     public static void main(String[] args) {

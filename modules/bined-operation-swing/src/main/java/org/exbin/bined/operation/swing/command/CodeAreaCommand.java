@@ -16,8 +16,7 @@
 package org.exbin.bined.operation.swing.command;
 
 import java.util.Optional;
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import org.exbin.bined.CodeAreaCaretPosition;
 import org.exbin.bined.DefaultCodeAreaCaretPosition;
 import org.exbin.bined.SelectionRange;
@@ -30,10 +29,9 @@ import org.exbin.bined.swing.CodeAreaCore;
 /**
  * Abstract class for command on code area component.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public abstract class CodeAreaCommand extends BinaryDataAbstractCommand {
 
-    @Nonnull
     protected final CodeAreaCore codeArea;
     protected CodeAreaState beforeState;
     protected CodeAreaState afterState;
@@ -78,17 +76,14 @@ public abstract class CodeAreaCommand extends BinaryDataAbstractCommand {
      */
     public abstract void performUndo();
 
-    @Nonnull
     public Optional<CodeAreaState> getBeforeState() {
         return Optional.ofNullable(beforeState);
     }
 
-    @Nonnull
     public Optional<CodeAreaState> getAfterState() {
         return Optional.ofNullable(afterState);
     }
 
-    @Nonnull
     public CodeAreaState fetchState() {
         DefaultCodeAreaCaretPosition caretPosition = new DefaultCodeAreaCaretPosition();
         caretPosition.setPosition(((CaretCapable) codeArea).getActiveCaretPosition());

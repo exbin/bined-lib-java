@@ -16,9 +16,8 @@
 package org.exbin.bined.swing.section;
 
 import java.awt.Rectangle;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
 import org.exbin.bined.basic.BasicCodeAreaZone;
 import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.swing.basic.BasicCodeAreaMetrics;
@@ -27,7 +26,7 @@ import org.exbin.bined.section.layout.SectionCodeAreaLayoutProfile;
 /**
  * Section code area component dimensions.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class SectionCodeAreaDimensions {
 
     protected int scrollPanelX;
@@ -50,17 +49,11 @@ public class SectionCodeAreaDimensions {
 
     @Nullable
     protected SectionCodeAreaLayoutProfile layoutProfile;
-    @Nonnull
     protected final Rectangle componentRectangle = new Rectangle();
-    @Nonnull
     protected final Rectangle mainAreaRectangle = new Rectangle();
-    @Nonnull
     protected final Rectangle headerAreaRectangle = new Rectangle();
-    @Nonnull
     protected final Rectangle rowPositionAreaRectangle = new Rectangle();
-    @Nonnull
     protected final Rectangle scrollPanelRectangle = new Rectangle();
-    @Nonnull
     protected final Rectangle dataViewRectangle = new Rectangle();
 
     public void recomputeSizes(BasicCodeAreaMetrics metrics, int componentX, int componentY, int componentWidth, int componentHeight, int rowPositionLength, int verticalScrollBarSize, int horizontalScrollBarSize, SectionCodeAreaLayoutProfile layoutProfile) {
@@ -109,7 +102,6 @@ public class SectionCodeAreaDimensions {
         dataViewRectangle.setBounds(scrollPanelX, scrollPanelY, Math.max(dataViewWidth, 0), Math.max(dataViewHeight, 0));
     }
 
-    @Nonnull
     public BasicCodeAreaZone getPositionZone(int positionX, int positionY) {
         if (positionY <= scrollPanelY) {
             if (positionX < rowPositionAreaWidth) {
@@ -245,38 +237,31 @@ public class SectionCodeAreaDimensions {
         return rowOffset;
     }
 
-    @Nonnull
     public SectionCodeAreaLayoutProfile getLayoutProfile() {
         CodeAreaUtils.requireNonNull(layoutProfile);
         return layoutProfile;
     }
 
-    @Nonnull
     public Rectangle getComponentRectangle() {
         return componentRectangle;
     }
 
-    @Nonnull
     public Rectangle getMainAreaRectangle() {
         return mainAreaRectangle;
     }
 
-    @Nonnull
     public Rectangle getScrollPanelRectangle() {
         return scrollPanelRectangle;
     }
 
-    @Nonnull
     public Rectangle getDataViewRectangle() {
         return dataViewRectangle;
     }
 
-    @Nonnull
     public Rectangle getHeaderAreaRectangle() {
         return headerAreaRectangle;
     }
 
-    @Nonnull
     public Rectangle getRowPositionAreaRectangle() {
         return rowPositionAreaRectangle;
     }

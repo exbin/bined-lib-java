@@ -15,12 +15,12 @@
  */
 package org.exbin.bined.swt.basic;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * Enumeration of supported antialiasing modes.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public enum AntialiasingMode {
 
     OFF,

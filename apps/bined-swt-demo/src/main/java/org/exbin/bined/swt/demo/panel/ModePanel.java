@@ -16,7 +16,7 @@
 package org.exbin.bined.swt.demo.panel;
 
 import java.nio.charset.Charset;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.SWT;
@@ -39,7 +39,7 @@ import org.exbin.bined.capability.EditModeCapable;
 /**
  * Binary editor mode options panel.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class ModePanel extends Composite {
 
     private CodeArea codeArea;

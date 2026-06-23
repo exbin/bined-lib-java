@@ -19,14 +19,14 @@ import com.sun.javafx.tk.FontMetrics;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 import javafx.scene.text.Text;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
 import org.exbin.bined.CharsetStreamTranslator;
 
 /**
  * Basic code area component dimensions.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class BasicCodeAreaMetrics {
 
     @Nullable

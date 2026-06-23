@@ -15,17 +15,15 @@
  */
 package org.exbin.bined.swing.section.color;
 
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import org.exbin.bined.swing.basic.color.CodeAreaColorsProfile;
 
 /**
  * Capability of painter to handle colors profiling.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public interface ColorsProfileCapableCodeAreaPainter {
 
-    @Nonnull
     CodeAreaColorsProfile getColorsProfile();
 
     void setColorsProfile(CodeAreaColorsProfile profile);

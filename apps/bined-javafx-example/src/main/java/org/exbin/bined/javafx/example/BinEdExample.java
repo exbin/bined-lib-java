@@ -20,14 +20,14 @@ import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import org.exbin.auxiliary.binary_data.array.ByteArrayEditableData;
 import org.exbin.bined.javafx.basic.CodeArea;
 
 /**
  * BinEd component usage example.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class BinEdExample extends Application {
 
     public static void main(String[] args) {

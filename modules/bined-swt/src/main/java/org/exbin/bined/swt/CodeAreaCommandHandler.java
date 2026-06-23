@@ -15,8 +15,7 @@
  */
 package org.exbin.bined.swt;
 
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import org.eclipse.swt.events.KeyEvent;
 import org.exbin.bined.ScrollBarOrientation;
 import org.exbin.bined.basic.SelectingMode;
@@ -24,7 +23,7 @@ import org.exbin.bined.basic.SelectingMode;
 /**
  * Interface for code area data manipulation.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public interface CodeAreaCommandHandler {
 
     /**
@@ -134,10 +133,9 @@ public interface CodeAreaCommandHandler {
      */
     boolean checkEditAllowed();
 
-    @ParametersAreNonnullByDefault
+    @NullMarked
     interface CodeAreaCommandHandlerFactory {
 
-        @Nonnull
         CodeAreaCommandHandler createCommandHandler(CodeAreaCore codeArea);
     }
 }

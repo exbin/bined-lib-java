@@ -17,15 +17,14 @@ package org.exbin.bined.swing;
 
 import java.awt.Color;
 import java.util.Optional;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
 import org.exbin.bined.CodeAreaSection;
 
 /**
  * Code area color assessor.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public interface CodeAreaColorAssessor extends CodeAreaPaintAssessor {
 
     /**
@@ -59,6 +58,5 @@ public interface CodeAreaColorAssessor extends CodeAreaPaintAssessor {
      *
      * @return color assessor
      */
-    @Nonnull
     Optional<CodeAreaColorAssessor> getParentColorAssessor();
 }

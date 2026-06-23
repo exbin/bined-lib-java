@@ -19,15 +19,14 @@ import java.awt.FontMetrics;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 import java.util.Optional;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
 import org.exbin.bined.CharsetStreamTranslator;
 
 /**
  * Basic code area component dimensions.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class BasicCodeAreaMetrics {
 
     @Nullable
@@ -68,7 +67,6 @@ public class BasicCodeAreaMetrics {
         return rowHeight != 0 && characterWidth != 0;
     }
 
-    @Nonnull
     public Optional<FontMetrics> getFontMetrics() {
         return Optional.ofNullable(fontMetrics);
     }

@@ -18,7 +18,7 @@ package org.exbin.bined.swing.demo;
 import java.awt.Component;
 import java.util.HashMap;
 import java.util.Map;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import org.exbin.bined.swing.demo.panel.CursorPanelSect;
@@ -33,7 +33,7 @@ import org.exbin.bined.swing.section.diff.SectCodeAreaDiffPanel;
 /**
  * Binary difference component demo panel.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class BinEdDemoDiffPanel extends javax.swing.JPanel {
 
     private SectCodeAreaDiffPanel diffPanel;

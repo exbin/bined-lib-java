@@ -15,15 +15,14 @@
  */
 package org.exbin.bined.swt.basic;
 
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import org.eclipse.swt.graphics.Rectangle;
 import org.exbin.bined.basic.BasicCodeAreaZone;
 
 /**
  * Basic code area component dimensions.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class BasicCodeAreaDimensions {
 
     protected int scrollPanelX;
@@ -44,19 +43,12 @@ public class BasicCodeAreaDimensions {
     protected int charactersPerPage;
     protected int charactersPerRect;
 
-    @Nonnull
     protected final Rectangle componentRectangle = new Rectangle(0, 0, 0, 0);
-    @Nonnull
     protected final Rectangle mainAreaRectangle = new Rectangle(0, 0, 0, 0);
-    @Nonnull
     protected final Rectangle headerAreaRectangle = new Rectangle(0, 0, 0, 0);
-    @Nonnull
     protected final Rectangle rowPositionAreaRectangle = new Rectangle(0, 0, 0, 0);
-    @Nonnull
     protected final Rectangle scrollPanelRectangle = new Rectangle(0, 0, 0, 0);
-    @Nonnull
     protected final Rectangle dataViewRectangle = new Rectangle(0, 0, 0, 0);
-    @Nonnull
     protected final Rectangle dataViewInnerRectangle = new Rectangle(0, 0, 0, 0);
 
     public void recomputeSizes(BasicCodeAreaMetrics metrics, int componentWidth, int componentHeight, int rowPositionLength, int verticalScrollBarSize, int horizontalScrollBarSize) {
@@ -104,7 +96,6 @@ public class BasicCodeAreaDimensions {
         modifyRect(dataViewInnerRectangle, 0, 0, Math.max(dataViewWidth, 0), Math.max(dataViewHeight, 0));
     }
 
-    @Nonnull
     public BasicCodeAreaZone getPositionZone(int positionX, int positionY) {
         if (positionY <= scrollPanelY) {
             if (positionX < rowPositionAreaWidth) {
@@ -221,37 +212,30 @@ public class BasicCodeAreaDimensions {
         return lastRowOffset;
     }
 
-    @Nonnull
     public Rectangle getComponentRectangle() {
         return componentRectangle;
     }
 
-    @Nonnull
     public Rectangle getMainAreaRectangle() {
         return mainAreaRectangle;
     }
 
-    @Nonnull
     public Rectangle getScrollPanelRectangle() {
         return scrollPanelRectangle;
     }
 
-    @Nonnull
     public Rectangle getDataViewRectangle() {
         return dataViewRectangle;
     }
 
-    @Nonnull
     public Rectangle getDataViewInnerRectangle() {
         return dataViewInnerRectangle;
     }
 
-    @Nonnull
     public Rectangle getHeaderAreaRectangle() {
         return headerAreaRectangle;
     }
 
-    @Nonnull
     public Rectangle getRowPositionAreaRectangle() {
         return rowPositionAreaRectangle;
     }

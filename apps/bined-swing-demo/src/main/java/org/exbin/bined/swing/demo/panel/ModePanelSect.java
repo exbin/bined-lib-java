@@ -18,8 +18,8 @@ package org.exbin.bined.swing.demo.panel;
 import java.awt.Color;
 import java.awt.Font;
 import java.nio.charset.Charset;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
 import javax.swing.JFrame;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
@@ -43,7 +43,7 @@ import org.exbin.bined.swing.section.SectCodeArea;
 /**
  * Binary editor mode options panel.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class ModePanelSect extends javax.swing.JPanel {
 
     private SectCodeArea codeArea;

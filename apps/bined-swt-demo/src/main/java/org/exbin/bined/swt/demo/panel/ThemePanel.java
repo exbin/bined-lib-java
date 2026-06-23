@@ -15,7 +15,7 @@
  */
 package org.exbin.bined.swt.demo.panel;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.SWT;
@@ -32,7 +32,7 @@ import org.exbin.bined.capability.BackgroundPaintCapable;
 /**
  * Binary editor theme options panel.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class ThemePanel extends Composite {
 
     private CodeArea codeArea;

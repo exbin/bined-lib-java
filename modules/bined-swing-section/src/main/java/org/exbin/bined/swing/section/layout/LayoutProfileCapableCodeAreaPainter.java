@@ -15,17 +15,15 @@
  */
 package org.exbin.bined.swing.section.layout;
 
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import org.exbin.bined.section.layout.SectionCodeAreaLayoutProfile;
 
 /**
  * Capability of painter to handle layout profiling.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public interface LayoutProfileCapableCodeAreaPainter {
 
-    @Nonnull
     SectionCodeAreaLayoutProfile getLayoutProfile();
 
     void setLayoutProfile(SectionCodeAreaLayoutProfile layoutProfile);

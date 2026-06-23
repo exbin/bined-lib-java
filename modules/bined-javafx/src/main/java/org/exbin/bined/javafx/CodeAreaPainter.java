@@ -16,8 +16,7 @@
 package org.exbin.bined.javafx;
 
 import java.util.Optional;
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import org.exbin.bined.basic.BasicCodeAreaZone;
 import org.exbin.bined.CaretOverlapMode;
 import org.exbin.bined.basic.CodeAreaScrollPosition;
@@ -29,7 +28,7 @@ import org.exbin.bined.basic.PositionScrollVisibility;
 /**
  * Binary editor painter interface.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public interface CodeAreaPainter {
 
     /**
@@ -105,7 +104,6 @@ public interface CodeAreaPainter {
      * @param y y-coordinate
      * @return specific zone in component
      */
-    @Nonnull
     BasicCodeAreaZone getPositionZone(int x, int y);
 
     /**
@@ -117,7 +115,6 @@ public interface CodeAreaPainter {
      * @param overflowMode overflow mode
      * @return closest caret position
      */
-    @Nonnull
     CodeAreaCaretPosition mousePositionToClosestCaretPosition(int positionX, int positionY, CaretOverlapMode overflowMode);
 
     void updateScrollBars();
@@ -129,7 +126,6 @@ public interface CodeAreaPainter {
      * @param caretPosition caret position
      * @return visibility state
      */
-    @Nonnull
     PositionScrollVisibility computePositionScrollVisibility(CodeAreaCaretPosition caretPosition);
 
     /**
@@ -144,7 +140,6 @@ public interface CodeAreaPainter {
      * @return scroll position or null if caret position is already visible /
      * scrolled to the best fit
      */
-    @Nonnull
     Optional<CodeAreaScrollPosition> computeRevealScrollPosition(CodeAreaCaretPosition caretPosition);
 
     /**
@@ -157,7 +152,6 @@ public interface CodeAreaPainter {
      * @return scroll position or null if desired scroll position is the same as
      * current scroll position.
      */
-    @Nonnull
     Optional<CodeAreaScrollPosition> computeCenterOnScrollPosition(CodeAreaCaretPosition caretPosition);
 
     /**
@@ -167,7 +161,6 @@ public interface CodeAreaPainter {
      * @param direction movement direction
      * @return target position
      */
-    @Nonnull
     CodeAreaCaretPosition computeMovePosition(CodeAreaCaretPosition position, MovementDirection direction);
 
     /**
@@ -177,7 +170,6 @@ public interface CodeAreaPainter {
      * @param direction scrolling direction
      * @return target position
      */
-    @Nonnull
     CodeAreaScrollPosition computeScrolling(CodeAreaScrollPosition startPosition, ScrollingDirection direction);
 
     /**

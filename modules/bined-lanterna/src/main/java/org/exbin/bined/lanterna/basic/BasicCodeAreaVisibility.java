@@ -15,7 +15,7 @@
  */
 package org.exbin.bined.lanterna.basic;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import org.exbin.bined.basic.CodeAreaViewMode;
 import org.exbin.bined.basic.BasicCodeAreaLayout;
 import org.exbin.bined.basic.BasicCodeAreaScrolling;
@@ -24,7 +24,7 @@ import org.exbin.bined.basic.BasicCodeAreaStructure;
 /**
  * Basic code area component characters visibility in scroll window.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class BasicCodeAreaVisibility {
 
     protected int splitLinePos;

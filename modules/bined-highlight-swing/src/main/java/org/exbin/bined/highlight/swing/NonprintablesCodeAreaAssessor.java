@@ -19,9 +19,8 @@ import java.awt.Color;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
 import org.exbin.bined.CodeAreaSection;
 import org.exbin.bined.basic.BasicCodeAreaSection;
 import org.exbin.bined.color.CodeAreaBasicColors;
@@ -34,7 +33,7 @@ import org.exbin.bined.swing.basic.color.CodeAreaColorsProfile;
 /**
  * Code area non-printable characters highlighting.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class NonprintablesCodeAreaAssessor implements CodeAreaColorAssessor, CodeAreaCharAssessor {
 
     protected final CodeAreaColorAssessor parentColorAssessor;
@@ -145,13 +144,11 @@ public class NonprintablesCodeAreaAssessor implements CodeAreaColorAssessor, Cod
         return character == null ? ' ' : character;
     }
 
-    @Nonnull
     @Override
     public Optional<CodeAreaCharAssessor> getParentCharAssessor() {
         return Optional.ofNullable(parentCharAssessor);
     }
 
-    @Nonnull
     @Override
     public Optional<CodeAreaColorAssessor> getParentColorAssessor() {
         return Optional.ofNullable(parentColorAssessor);

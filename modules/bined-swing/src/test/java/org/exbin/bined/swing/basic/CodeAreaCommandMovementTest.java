@@ -17,7 +17,7 @@ package org.exbin.bined.swing.basic;
 
 import java.awt.Component;
 import java.awt.event.KeyEvent;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import javax.swing.JFrame;
 import org.exbin.bined.CodeAreaCaretPosition;
 import org.exbin.bined.CodeAreaTest;
@@ -29,7 +29,7 @@ import org.junit.Test;
 /**
  * Tests for CodeArea component.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class CodeAreaCommandMovementTest extends CodeAreaComponentTest {
 
     public CodeAreaCommandMovementTest() {

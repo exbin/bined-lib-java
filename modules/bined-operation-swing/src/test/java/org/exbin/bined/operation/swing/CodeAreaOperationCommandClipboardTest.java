@@ -15,8 +15,7 @@
  */
 package org.exbin.bined.operation.swing;
 
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import org.exbin.bined.swing.basic.CodeAreaCommandClipboardTest;
 import org.exbin.bined.swing.CodeAreaCore;
 import org.exbin.bined.swing.basic.CodeArea;
@@ -24,13 +23,12 @@ import org.exbin.bined.swing.basic.CodeArea;
 /**
  * Tests clipboard actions for SectCodeArea command component.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class CodeAreaOperationCommandClipboardTest extends CodeAreaCommandClipboardTest {
 
     public CodeAreaOperationCommandClipboardTest() {
     }
 
-    @Nonnull
     @Override
     public CodeAreaCore createCodeArea() {
         CodeArea codeArea = new CodeArea();

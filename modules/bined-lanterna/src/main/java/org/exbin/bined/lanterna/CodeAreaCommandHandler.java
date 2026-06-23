@@ -16,15 +16,14 @@
 package org.exbin.bined.lanterna;
 
 import java.awt.event.KeyEvent;
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import org.exbin.bined.ScrollBarOrientation;
 import org.exbin.bined.basic.SelectingMode;
 
 /**
  * Interface for code area data manipulation.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public interface CodeAreaCommandHandler {
 
     /**
@@ -122,10 +121,8 @@ public interface CodeAreaCommandHandler {
      */
     boolean checkEditAllowed();
 
-    @ParametersAreNonnullByDefault
     interface CodeAreaCommandHandlerFactory {
 
-        @Nonnull
         CodeAreaCommandHandler createCommandHandler(CodeAreaCore codeArea);
     }
 }

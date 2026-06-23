@@ -19,9 +19,8 @@ import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
 import javax.swing.DefaultBoundedRangeModel;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
@@ -36,7 +35,7 @@ import org.exbin.bined.swing.basic.BasicCodeAreaMetrics;
 /**
  * Section scroll pane for binary component.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class SectionCodeAreaScrollPane extends JScrollPane {
 
     protected volatile boolean scrollingByUser = false;
@@ -45,15 +44,10 @@ public class SectionCodeAreaScrollPane extends JScrollPane {
     protected final VerticalScrollBarModel verticalScrollBarModel = new VerticalScrollBarModel();
     protected final HorizontalScrollBarModel horizontalScrollBarModel = new HorizontalScrollBarModel();
 
-    @Nonnull
     protected final CodeAreaSwingControl control;
-    @Nonnull
     protected final BasicCodeAreaMetrics metrics;
-    @Nonnull
     protected final SectionCodeAreaStructure structure;
-    @Nonnull
     protected final SectionCodeAreaScrolling scrolling;
-    @Nonnull
     protected final SectionCodeAreaDimensions dimensions;
 
     public SectionCodeAreaScrollPane(CodeAreaSwingControl control, BasicCodeAreaMetrics metrics, SectionCodeAreaStructure structure, SectionCodeAreaScrolling scrolling, SectionCodeAreaDimensions dimensions) {
@@ -111,7 +105,6 @@ public class SectionCodeAreaScrollPane extends JScrollPane {
         });
     }
 
-    @Nonnull
     @Override
     public JScrollBar createVerticalScrollBar() {
         return new JScrollPane.ScrollBar(JScrollBar.VERTICAL) {
@@ -128,7 +121,6 @@ public class SectionCodeAreaScrollPane extends JScrollPane {
         };
     }
 
-    @Nonnull
     @Override
     public JScrollBar createHorizontalScrollBar() {
         return new JScrollPane.ScrollBar(JScrollBar.HORIZONTAL) {

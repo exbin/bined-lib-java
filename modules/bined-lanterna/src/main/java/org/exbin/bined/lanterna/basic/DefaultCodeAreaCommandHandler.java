@@ -26,8 +26,7 @@ import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import org.exbin.bined.basic.BasicCodeAreaSection;
 import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.basic.CodeAreaViewMode;
@@ -66,7 +65,7 @@ import org.exbin.bined.capability.EditModeCapable;
 /**
  * Default binary editor command handler.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
     public static final String BINED_CLIPBOARD_MIME = "application/x-bined";
@@ -75,9 +74,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
     private final int metaMask = CodeAreaLanternaUtils.getMetaMaskDown();
 
-    @Nonnull
     private final CodeAreaCore codeArea;
-    @Nonnull
     private EnterKeyHandlingMode enterKeyHandlingMode = EnterKeyHandlingMode.PLATFORM_SPECIFIC;
     private final boolean codeTypeSupported;
     private final boolean viewModeSupported;
@@ -116,7 +113,6 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         }
     }
 
-    @Nonnull
     public static CodeAreaCommandHandler.CodeAreaCommandHandlerFactory createDefaultCodeAreaCommandHandlerFactory() {
         return DefaultCodeAreaCommandHandler::new;
     }
@@ -757,7 +753,6 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         return canPaste;
     }
 
-    @Nonnull
     public EnterKeyHandlingMode getEnterKeyHandlingMode() {
         return enterKeyHandlingMode;
     }
@@ -849,7 +844,6 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         return ((CharsetCapable) codeArea).getCharset().canEncode();
     }
 
-    @Nonnull
     public byte[] charToBytes(char value) {
         ByteBuffer buffer = ((CharsetCapable) codeArea).getCharset().encode(Character.toString(value));
         byte[] bytes = new byte[buffer.remaining()];
@@ -857,7 +851,6 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         return bytes;
     }
 
-    @Nonnull
     protected CodeType getCodeType() {
         if (codeTypeSupported) {
             return ((CodeTypeCapable) codeArea).getCodeType();
@@ -876,7 +869,6 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         return codeArea.isEditable();
     }
 
-    @Nonnull
     protected static SelectingMode isSelectingMode(KeyEvent keyEvent) {
         return (keyEvent.getModifiersEx() & KeyEvent.SHIFT_DOWN_MASK) > 0 ? SelectingMode.SELECTING : SelectingMode.NONE;
     }

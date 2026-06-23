@@ -15,8 +15,7 @@
  */
 package org.exbin.bined.swing.section.layout;
 
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import org.exbin.bined.basic.BasicCodeAreaSection;
 import org.exbin.bined.DefaultCodeAreaCaretPosition;
 import org.exbin.bined.CodeAreaSection;
@@ -34,7 +33,7 @@ import org.exbin.bined.section.layout.SectionCodeAreaLayoutProfile;
 /**
  * Layout profile for extended code area.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class DefaultSectionCodeAreaLayoutProfile implements SectionCodeAreaLayoutProfile {
 
     protected boolean showHeader = true;
@@ -57,7 +56,6 @@ public class DefaultSectionCodeAreaLayoutProfile implements SectionCodeAreaLayou
      *
      * @return copy of profile
      */
-    @Nonnull
     @Override
     public DefaultSectionCodeAreaLayoutProfile createCopy() {
         DefaultSectionCodeAreaLayoutProfile copy = new DefaultSectionCodeAreaLayoutProfile();
@@ -186,7 +184,6 @@ public class DefaultSectionCodeAreaLayoutProfile implements SectionCodeAreaLayou
         return halfCharPos;
     }
 
-    @Nonnull
     @Override
     public CodeAreaCaretPosition computeMovePosition(CodeAreaCaretPosition position, MovementDirection direction, SectionCodeAreaStructure structure, int rowsPerPage) {
         CodeType codeType = structure.getCodeType();
@@ -354,7 +351,6 @@ public class DefaultSectionCodeAreaLayoutProfile implements SectionCodeAreaLayou
         return -1;
     }
 
-    @Nonnull
     @Override
     public PositionIterator createPositionIterator(CodeType codeType, CodeAreaViewMode viewMode, int bytesPerRow) {
         return new PosIterator(codeType, viewMode, bytesPerRow);
@@ -392,7 +388,6 @@ public class DefaultSectionCodeAreaLayoutProfile implements SectionCodeAreaLayou
         return -1;
     }
 
-    @Nonnull
     public SpaceType getSpaceSizeTypeBefore(int byteOffset, int characterWidth) {
         if (byteOffset == 0) {
             return SpaceType.NONE;
@@ -516,7 +511,7 @@ public class DefaultSectionCodeAreaLayoutProfile implements SectionCodeAreaLayou
         return leftRowPositionSpace;
     }
 
-    @ParametersAreNonnullByDefault
+    @NullMarked
     private final class PosIterator implements PositionIterator {
 
         private int position;
@@ -525,11 +520,9 @@ public class DefaultSectionCodeAreaLayoutProfile implements SectionCodeAreaLayou
         private int codeOffset;
         private boolean oddHalf;
         private boolean endReached;
-        @Nonnull
         private BasicCodeAreaSection section;
 
         private final int codeLength;
-        @Nonnull
         private final CodeAreaViewMode viewMode;
         private final int bytesPerRow;
 
@@ -583,13 +576,11 @@ public class DefaultSectionCodeAreaLayoutProfile implements SectionCodeAreaLayou
             return endReached;
         }
 
-        @Nonnull
         @Override
         public BasicCodeAreaSection getSection() {
             return section;
         }
 
-        @Nonnull
         @Override
         public SpaceType nextSpaceType() {
             if (endReached) {

@@ -16,9 +16,8 @@
 package org.exbin.bined.swing.section;
 
 import java.util.Optional;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
 import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.DataProvider;
 import org.exbin.bined.ScrollBarVisibility;
@@ -36,12 +35,10 @@ import org.exbin.bined.section.layout.SectionCodeAreaLayoutProfile;
 /**
  * Code area scrolling for section core area.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class SectionCodeAreaScrolling {
 
-    @Nonnull
     protected final CodeAreaScrollPosition scrollPosition = new CodeAreaScrollPosition();
-    @Nonnull
     protected ScrollBarVerticalScale scrollBarVerticalScale = ScrollBarVerticalScale.NORMAL;
     protected int horizontalExtentDifference;
     protected int verticalExtentDifference;
@@ -50,15 +47,10 @@ public class SectionCodeAreaScrolling {
 
     protected int lastVerticalScrollingValue = -1;
 
-    @Nonnull
     protected VerticalScrollUnit verticalScrollUnit = VerticalScrollUnit.ROW;
-    @Nonnull
     protected ScrollBarVisibility verticalScrollBarVisibility = ScrollBarVisibility.IF_NEEDED;
-    @Nonnull
     protected SectionHorizontalScrollUnit horizontalScrollUnit = SectionHorizontalScrollUnit.PIXEL;
-    @Nonnull
     protected ScrollBarVisibility horizontalScrollBarVisibility = ScrollBarVisibility.IF_NEEDED;
-    @Nonnull
     protected final CodeAreaScrollPosition maximumScrollPosition = new CodeAreaScrollPosition();
 
     protected static final long ROW_POSITION_LIMIT = Long.MAX_VALUE / Integer.MAX_VALUE;
@@ -331,7 +323,6 @@ public class SectionCodeAreaScrolling {
         this.horizontalExtentChangeListener = horizontalExtentChangeListener;
     }
 
-    @Nonnull
     public CodeAreaScrollPosition computeScrolling(CodeAreaScrollPosition startPosition, ScrollingDirection direction, int rowsPerPage, long rowsPerDocument) {
         CodeAreaScrollPosition targetPosition = new CodeAreaScrollPosition();
         targetPosition.setScrollPosition(startPosition);
@@ -395,7 +386,6 @@ public class SectionCodeAreaScrolling {
         setScrollPosition(computeScrolling(scrollPosition, direction, rowsPerPage, rowsPerDocument));
     }
 
-    @Nonnull
     public PositionScrollVisibility computePositionScrollVisibility(long rowPosition, int charPosition, int bytesPerRow, int rowsPerPage, int halfCharsPerPage, int halfCharOffset, int rowOffset, int characterWidth, int rowHeight) {
         boolean partial = false;
 
@@ -426,7 +416,6 @@ public class SectionCodeAreaScrolling {
         return partial ? PositionScrollVisibility.PARTIAL : PositionScrollVisibility.VISIBLE;
     }
 
-    @Nonnull
     public Optional<CodeAreaScrollPosition> computeRevealScrollPosition(long rowPosition, int halfCharsPosition, int bytesPerRow, int rowsPerPage, int halfCharsPerPage, int halfCharOffset, int rowOffset, int characterWidth, int rowHeight) {
         CodeAreaScrollPosition targetScrollPosition = new CodeAreaScrollPosition();
         targetScrollPosition.setScrollPosition(scrollPosition);
@@ -484,7 +473,6 @@ public class SectionCodeAreaScrolling {
         return scrolled ? Optional.of(targetScrollPosition) : Optional.empty();
     }
 
-    @Nonnull
     protected PositionScrollVisibility checkTopScrollVisibility(long rowPosition) {
         if (verticalScrollUnit == VerticalScrollUnit.ROW) {
             return rowPosition < scrollPosition.getRowPosition() ? PositionScrollVisibility.NOT_VISIBLE : PositionScrollVisibility.VISIBLE;
@@ -500,7 +488,6 @@ public class SectionCodeAreaScrolling {
         return PositionScrollVisibility.NOT_VISIBLE;
     }
 
-    @Nonnull
     protected PositionScrollVisibility checkBottomScrollVisibility(long rowPosition, int rowsPerPage, int rowOffset, int rowHeight) {
         int sumOffset = scrollPosition.getRowOffset() + rowOffset;
 
@@ -522,7 +509,6 @@ public class SectionCodeAreaScrolling {
         return PositionScrollVisibility.NOT_VISIBLE;
     }
 
-    @Nonnull
     protected PositionScrollVisibility checkLeftScrollVisibility(int halfCharsPosition, int characterWidth) {
         int halfCharPos = getHorizontalScrollHalfChar(scrollPosition, characterWidth);
         if (horizontalScrollUnit != SectionHorizontalScrollUnit.PIXEL) {
@@ -539,7 +525,6 @@ public class SectionCodeAreaScrolling {
         return PositionScrollVisibility.NOT_VISIBLE;
     }
 
-    @Nonnull
     protected PositionScrollVisibility checkRightScrollVisibility(int halfCharsPosition, int halfCharsPerPage, int halfCharOffset, int characterWidth) {
         int sumOffset = scrollPosition.getCharOffset() + halfCharOffset;
 
@@ -561,7 +546,6 @@ public class SectionCodeAreaScrolling {
         return PositionScrollVisibility.NOT_VISIBLE;
     }
 
-    @Nonnull
     public Optional<CodeAreaScrollPosition> computeCenterOnScrollPosition(long rowPosition, int halfCharsPosition, int bytesPerRow, int rowsPerRect, int halfCharsPerRect, int dataViewWidth, int dataViewHeight, int rowOffset, int characterWidth, int rowHeight) {
         CodeAreaScrollPosition targetScrollPosition = new CodeAreaScrollPosition();
         targetScrollPosition.setScrollPosition(scrollPosition);
@@ -734,14 +718,12 @@ public class SectionCodeAreaScrolling {
         }
     }
 
-    @Nonnull
     protected CodeAreaScrollPosition createScrollPosition(int halfCharPos, int pixelOffset, int characterWidth) {
         CodeAreaScrollPosition targetScrollPosition = new CodeAreaScrollPosition();
         setHorizontalScrollPosition(targetScrollPosition, halfCharPos, pixelOffset, characterWidth);
         return targetScrollPosition;
     }
 
-    @Nonnull
     public CodeAreaScrollPosition getScrollPosition() {
         return scrollPosition;
     }
@@ -766,7 +748,6 @@ public class SectionCodeAreaScrolling {
         return verticalExtentDifference;
     }
 
-    @Nonnull
     public ScrollBarVerticalScale getScrollBarVerticalScale() {
         return scrollBarVerticalScale;
     }
@@ -775,27 +756,22 @@ public class SectionCodeAreaScrolling {
         this.scrollBarVerticalScale = scrollBarVerticalScale;
     }
 
-    @Nonnull
     public VerticalScrollUnit getVerticalScrollUnit() {
         return verticalScrollUnit;
     }
 
-    @Nonnull
     public ScrollBarVisibility getVerticalScrollBarVisibility() {
         return verticalScrollBarVisibility;
     }
 
-    @Nonnull
     public SectionHorizontalScrollUnit getHorizontalScrollUnit() {
         return horizontalScrollUnit;
     }
 
-    @Nonnull
     public ScrollBarVisibility getHorizontalScrollBarVisibility() {
         return horizontalScrollBarVisibility;
     }
 
-    @Nonnull
     public CodeAreaScrollPosition getMaximumScrollPosition() {
         return maximumScrollPosition;
     }

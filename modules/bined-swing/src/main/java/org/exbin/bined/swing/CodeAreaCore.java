@@ -30,9 +30,8 @@ import javax.accessibility.AccessibleContext;
 import javax.accessibility.AccessibleRole;
 import javax.accessibility.AccessibleState;
 import javax.accessibility.AccessibleStateSet;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -59,16 +58,14 @@ import org.exbin.auxiliary.binary_data.EmptyBinaryData;
  * <p>
  * Class extends JTextComponent to be able to invoke on-screen keyboard.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 // Java 9+ @SwingContainer(false)
 public abstract class CodeAreaCore extends JTextComponent implements CodeAreaControl, Accessible {
 
     private static final String UI_CLASS_ID = "CodeAreaUI";
 
-    @Nonnull
     protected BinaryData contentData;
 
-    @Nonnull
     protected CodeAreaCommandHandler commandHandler;
 
     protected final List<DataChangedListener> dataChangedListeners = new ArrayList<>();
@@ -104,7 +101,6 @@ public abstract class CodeAreaCore extends JTextComponent implements CodeAreaCon
         registerControlListeners();
     }
 
-    @Nonnull
     private CodeAreaCommandHandler createCommandHandler(CodeAreaCommandHandler.CodeAreaCommandHandlerFactory commandHandlerFactory) {
         return commandHandlerFactory.createCommandHandler(this);
     }
@@ -112,37 +108,36 @@ public abstract class CodeAreaCore extends JTextComponent implements CodeAreaCon
     protected void registerControlListeners() {
         addComponentListener(new ComponentAdapter() {
             @Override
-            public void componentResized(@Nonnull ComponentEvent event) {
+            public void componentResized(ComponentEvent event) {
                 updateLayout();
             }
         });
 
         addKeyListener(new KeyAdapter() {
             @Override
-            public void keyTyped(@Nonnull KeyEvent keyEvent) {
+            public void keyTyped(KeyEvent keyEvent) {
                 commandHandler.keyTyped(keyEvent);
             }
 
             @Override
-            public void keyPressed(@Nonnull KeyEvent keyEvent) {
+            public void keyPressed(KeyEvent keyEvent) {
                 commandHandler.keyPressed(keyEvent);
             }
         });
 
         addFocusListener(new FocusListener() {
             @Override
-            public void focusGained(@Nonnull FocusEvent e) {
+            public void focusGained(FocusEvent e) {
                 repaint();
             }
 
             @Override
-            public void focusLost(@Nonnull FocusEvent e) {
+            public void focusLost(FocusEvent e) {
                 repaint();
             }
         });
     }
 
-    @Nonnull
     public CodeAreaCommandHandler getCommandHandler() {
         return commandHandler;
     }
@@ -201,7 +196,6 @@ public abstract class CodeAreaCore extends JTextComponent implements CodeAreaCon
         return false;
     }
 
-    @Nonnull
     @Override
     public String getUIClassID() {
         return UI_CLASS_ID;
@@ -213,7 +207,6 @@ public abstract class CodeAreaCore extends JTextComponent implements CodeAreaCon
         invalidate();
     }
 
-    @Nonnull
     @Override
     public BinaryData getContentData() {
         return contentData;
@@ -230,7 +223,6 @@ public abstract class CodeAreaCore extends JTextComponent implements CodeAreaCon
         return contentData.getDataSize();
     }
 
-    @Nonnull
     @Override
     public AccessibleContext getAccessibleContext() {
         if (accessibleContext == null) {
@@ -262,7 +254,7 @@ public abstract class CodeAreaCore extends JTextComponent implements CodeAreaCon
 
     public abstract void updateLayout();
 
-    @ParametersAreNonnullByDefault
+    @NullMarked
     protected static class SimulatedDocument implements Document {
 
         private final List<UndoableEditListener> undoableEditListeners = new ArrayList<>();
@@ -309,7 +301,6 @@ public abstract class CodeAreaCore extends JTextComponent implements CodeAreaCon
                     return SimulatedDocument.this;
                 }
 
-                @Nonnull
                 @Override
                 public DocumentEvent.EventType getType() {
                     return DocumentEvent.EventType.CHANGE;
@@ -413,19 +404,16 @@ public abstract class CodeAreaCore extends JTextComponent implements CodeAreaCon
             sgmnt.count = 0;
         }
 
-        @Nonnull
         @Override
         public Position getStartPosition() {
             return () -> 0;
         }
 
-        @Nonnull
         @Override
         public Position getEndPosition() {
             return () -> 0;
         }
 
-        @Nonnull
         @Override
         public Position createPosition(int i) throws BadLocationException {
             return () -> i;
@@ -508,7 +496,7 @@ public abstract class CodeAreaCore extends JTextComponent implements CodeAreaCon
         }
     }
 
-    @ParametersAreNonnullByDefault
+    @NullMarked
     public class AccessibleComponent extends AccessibleJComponent {
 
         /**
@@ -518,13 +506,11 @@ public abstract class CodeAreaCore extends JTextComponent implements CodeAreaCon
          * object (AccessibleRole.TEXT)
          * @see AccessibleRole
          */
-        @Nonnull
         @Override
         public AccessibleRole getAccessibleRole() {
             return AccessibleRole.TEXT;
         }
 
-        @Nonnull
         @Override
         public AccessibleStateSet getAccessibleStateSet() {
             AccessibleStateSet states = super.getAccessibleStateSet();
@@ -536,7 +522,7 @@ public abstract class CodeAreaCore extends JTextComponent implements CodeAreaCon
         }
     }
 
-    @ParametersAreNonnullByDefault
+    @NullMarked
     protected static class SimulatedCaret implements Caret {
 
         @Nullable
@@ -597,7 +583,6 @@ public abstract class CodeAreaCore extends JTextComponent implements CodeAreaCon
             this.magicCaretPosition = magicCaretPosition;
         }
 
-        @Nonnull
         @Override
         public Point getMagicCaretPosition() {
             return magicCaretPosition;

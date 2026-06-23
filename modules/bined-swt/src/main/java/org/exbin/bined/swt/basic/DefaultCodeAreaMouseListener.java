@@ -15,7 +15,7 @@
  */
 package org.exbin.bined.swt.basic;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
@@ -31,7 +31,7 @@ import org.exbin.bined.swt.CodeAreaCore;
 /**
  * Code Area component mouse listener.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class DefaultCodeAreaMouseListener implements MouseListener, MouseMoveListener, MouseWheelListener, MouseTrackListener {
 
     public static final int MOUSE_SCROLL_LINES = 3;

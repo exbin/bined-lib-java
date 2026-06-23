@@ -16,9 +16,8 @@
 package org.exbin.bined.javafx.basic.color;
 
 import javafx.scene.paint.Color;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
 import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.color.BasicCodeAreaDecorationColorType;
 import org.exbin.bined.color.CodeAreaBasicColors;
@@ -28,7 +27,7 @@ import org.exbin.bined.javafx.CodeAreaJavaFxUtils;
 /**
  * Basic code area set of colors.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class BasicCodeAreaColorsProfile implements CodeAreaColorsProfile {
 
     @Nullable
@@ -57,57 +56,46 @@ public class BasicCodeAreaColorsProfile implements CodeAreaColorsProfile {
     public BasicCodeAreaColorsProfile() {
     }
 
-    @Nonnull
     public Color getTextColor() {
         return CodeAreaUtils.requireNonNull(textColor);
     }
 
-    @Nonnull
     public Color getTextBackground() {
         return CodeAreaUtils.requireNonNull(textBackground);
     }
 
-    @Nonnull
     public Color getSelectionColor() {
         return CodeAreaUtils.requireNonNull(selectionColor);
     }
 
-    @Nonnull
     public Color getSelectionBackground() {
         return CodeAreaUtils.requireNonNull(selectionBackground);
     }
 
-    @Nonnull
     public Color getSelectionMirrorColor() {
         return CodeAreaUtils.requireNonNull(selectionMirrorColor);
     }
 
-    @Nonnull
     public Color getSelectionMirrorBackground() {
         return CodeAreaUtils.requireNonNull(selectionMirrorBackground);
     }
 
-    @Nonnull
     public Color getAlternateColor() {
         return CodeAreaUtils.requireNonNull(alternateColor);
     }
 
-    @Nonnull
     public Color getAlternateBackground() {
         return CodeAreaUtils.requireNonNull(alternateBackground);
     }
 
-    @Nonnull
     public Color getCursorColor() {
         return CodeAreaUtils.requireNonNull(cursorColor);
     }
 
-    @Nonnull
     public Color getCursorNegativeColor() {
         return CodeAreaUtils.requireNonNull(cursorNegativeColor);
     }
 
-    @Nonnull
     public Color getDecorationLine() {
         return CodeAreaUtils.requireNonNull(decorationLine);
     }

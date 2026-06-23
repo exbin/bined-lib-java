@@ -15,8 +15,7 @@
  */
 package org.exbin.bined.operation.swing;
 
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import org.exbin.bined.swing.CodeAreaCore;
 import org.exbin.bined.swing.basic.CodeArea;
 import org.exbin.bined.swing.basic.CodeAreaCommandEditTest;
@@ -24,13 +23,12 @@ import org.exbin.bined.swing.basic.CodeAreaCommandEditTest;
 /**
  * Tests for SectCodeArea component.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class CodeAreaOperationCommandEditTest extends CodeAreaCommandEditTest {
 
     public CodeAreaOperationCommandEditTest() {
     }
 
-    @Nonnull
     @Override
     public CodeAreaCore createCodeArea() {
         CodeArea codeArea = new CodeArea();

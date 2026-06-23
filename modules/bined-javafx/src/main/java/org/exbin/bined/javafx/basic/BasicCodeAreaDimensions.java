@@ -16,14 +16,13 @@
 package org.exbin.bined.javafx.basic;
 
 import javafx.geometry.Rectangle2D;
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import org.exbin.bined.basic.BasicCodeAreaZone;
 
 /**
  * Basic code area component dimensions.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class BasicCodeAreaDimensions {
 
     protected double scrollPanelX;
@@ -44,19 +43,12 @@ public class BasicCodeAreaDimensions {
     protected int charactersPerPage;
     protected int charactersPerRect;
 
-    @Nonnull
     protected Rectangle2D componentRectangle = new Rectangle2D(0, 0, 0, 0);
-    @Nonnull
     protected Rectangle2D mainAreaRectangle = new Rectangle2D(0, 0, 0, 0);
-    @Nonnull
     protected Rectangle2D headerAreaRectangle = new Rectangle2D(0, 0, 0, 0);
-    @Nonnull
     protected Rectangle2D rowPositionAreaRectangle = new Rectangle2D(0, 0, 0, 0);
-    @Nonnull
     protected Rectangle2D scrollPanelRectangle = new Rectangle2D(0, 0, 0, 0);
-    @Nonnull
     protected Rectangle2D dataViewRectangle = new Rectangle2D(0, 0, 0, 0);
-    @Nonnull
     protected Rectangle2D dataViewInnerRectangle = new Rectangle2D(0, 0, 0, 0);
 
     public void recomputeSizes(BasicCodeAreaMetrics metrics, double componentX, double componentY, double componentWidth, double componentHeight, int rowPositionLength, int verticalScrollBarSize, int horizontalScrollBarSize) {
@@ -193,37 +185,30 @@ public class BasicCodeAreaDimensions {
         return lastRowOffset;
     }
 
-    @Nonnull
     public Rectangle2D getComponentRectangle() {
         return componentRectangle;
     }
 
-    @Nonnull
     public Rectangle2D getMainAreaRectangle() {
         return mainAreaRectangle;
     }
 
-    @Nonnull
     public Rectangle2D getScrollPanelRectangle() {
         return scrollPanelRectangle;
     }
 
-    @Nonnull
     public Rectangle2D getDataViewRectangle() {
         return dataViewRectangle;
     }
 
-    @Nonnull
     public Rectangle2D getDataViewInnerRectangle() {
         return dataViewInnerRectangle;
     }
 
-    @Nonnull
     public Rectangle2D getHeaderAreaRectangle() {
         return headerAreaRectangle;
     }
 
-    @Nonnull
     public Rectangle2D getRowPositionAreaRectangle() {
         return rowPositionAreaRectangle;
     }

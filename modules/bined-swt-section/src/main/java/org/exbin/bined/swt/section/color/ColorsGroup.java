@@ -20,7 +20,7 @@ import org.eclipse.swt.graphics.Color;
 /**
  * Set of colors for different sections of component rendering.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class ColorsGroup {
 
     protected Color textColor;

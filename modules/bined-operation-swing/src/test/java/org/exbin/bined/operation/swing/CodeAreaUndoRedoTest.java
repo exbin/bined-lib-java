@@ -15,7 +15,7 @@
  */
 package org.exbin.bined.operation.swing;
 
-import javax.annotation.Nonnull;
+import org.jspecify.annotations.NullMarked;
 import org.exbin.auxiliary.binary_data.BinaryData;
 import org.exbin.auxiliary.binary_data.array.ByteArrayEditableData;
 import org.exbin.auxiliary.binary_data.EditableBinaryData;
@@ -39,6 +39,7 @@ import org.junit.Test;
 /**
  * Tests for CodeAreaUndoRedo component.
  */
+@NullMarked
 public class CodeAreaUndoRedoTest extends CodeAreaComponentTest {
 
     protected static final char BACKSPACE_CHAR = '\b';
@@ -47,7 +48,6 @@ public class CodeAreaUndoRedoTest extends CodeAreaComponentTest {
     public CodeAreaUndoRedoTest() {
     }
 
-    @Nonnull
     @Override
     public CodeAreaCore createCodeArea() {
         CodeArea codeArea = new CodeArea();

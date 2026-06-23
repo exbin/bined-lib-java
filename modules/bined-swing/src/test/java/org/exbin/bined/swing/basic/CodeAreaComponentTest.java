@@ -15,18 +15,18 @@
  */
 package org.exbin.bined.swing.basic;
 
-import javax.annotation.Nonnull;
+import org.jspecify.annotations.NullMarked;
 import org.exbin.bined.swing.CodeAreaCore;
 
 /**
  * Tests for CodeArea component.
  */
+@NullMarked
 public class CodeAreaComponentTest {
 
     public CodeAreaComponentTest() {
     }
 
-    @Nonnull
     public CodeAreaCore createCodeArea() {
         return new CodeArea();
     }

@@ -15,16 +15,14 @@
  */
 package org.exbin.bined.swing.section.caret;
 
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * Capability of painter to handle carets profiling.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public interface CaretsProfileCapableCodeAreaPainter {
 
-    @Nonnull
     SectionCodeAreaCaretsProfile getCaretsProfile();
 
     void setCaretsProfile(SectionCodeAreaCaretsProfile profile);

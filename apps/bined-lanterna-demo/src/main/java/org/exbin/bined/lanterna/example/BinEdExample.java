@@ -27,14 +27,14 @@ import com.googlecode.lanterna.terminal.Terminal;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import org.exbin.auxiliary.binary_data.array.ByteArrayEditableData;
 import org.exbin.bined.lanterna.basic.CodeArea;
 
 /**
  * BinEd component usage example.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class BinEdExample {
 
     public static void main(String[] args) {

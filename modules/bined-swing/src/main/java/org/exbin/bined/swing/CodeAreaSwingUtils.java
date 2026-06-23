@@ -26,9 +26,8 @@ import java.awt.event.KeyEvent;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
 import javax.swing.ScrollPaneConstants;
 import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.ScrollBarVisibility;
@@ -40,7 +39,7 @@ import org.exbin.bined.swing.capability.ColorAssessorPainterCapable;
 /**
  * Binary editor component swing utilities.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class CodeAreaSwingUtils {
 
     public static final int MIN_MONOSPACE_CODE_POINT = 0x1F;
@@ -62,7 +61,6 @@ public class CodeAreaSwingUtils {
         return (color == null && comparedColor == null) || (color != null && color.equals(comparedColor));
     }
 
-    @Nonnull
     public static Color createOddColor(Color color) {
         return new Color(
                 computeOddColorComponent(color.getRed()),
@@ -74,7 +72,6 @@ public class CodeAreaSwingUtils {
         return colorComponent + (colorComponent > 64 ? - 16 : 16);
     }
 
-    @Nonnull
     public static Color createNegativeColor(Color color) {
         return new Color(
                 MAX_COLOR_COMPONENT_VALUE - color.getRed(),
@@ -82,7 +79,6 @@ public class CodeAreaSwingUtils {
                 MAX_COLOR_COMPONENT_VALUE - color.getBlue());
     }
 
-    @Nonnull
     public static Color computeGrayColor(Color color) {
         int grayLevel = (color.getRed() + color.getGreen() + color.getBlue()) / 3;
         return new Color(grayLevel, grayLevel, grayLevel);
@@ -190,7 +186,6 @@ public class CodeAreaSwingUtils {
      *
      * @return clipboard clipboard instance
      */
-    @Nonnull
     public static Clipboard getClipboard() {
         if (clipboard == null) {
             try {
@@ -203,7 +198,7 @@ public class CodeAreaSwingUtils {
         return clipboard;
     }
 
-    @ParametersAreNonnullByDefault
+    @NullMarked
     public static class BinaryDataClipboardData implements ClipboardData {
 
         private final BinaryData data;
@@ -230,7 +225,6 @@ public class CodeAreaSwingUtils {
             this(data, binedDataFlavor, null);
         }
 
-        @Nonnull
         @Override
         public DataFlavor[] getTransferDataFlavors() {
             return binaryDataFlavor != null ? new DataFlavor[]{binedDataFlavor, binaryDataFlavor, DataFlavor.stringFlavor} : new DataFlavor[]{binedDataFlavor, DataFlavor.stringFlavor};
@@ -241,7 +235,6 @@ public class CodeAreaSwingUtils {
             return flavor.equals(binedDataFlavor) || flavor.equals(binaryDataFlavor) || flavor.equals(DataFlavor.stringFlavor);
         }
 
-        @Nonnull
         @Override
         public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
             if (flavor.equals(binedDataFlavor)) {

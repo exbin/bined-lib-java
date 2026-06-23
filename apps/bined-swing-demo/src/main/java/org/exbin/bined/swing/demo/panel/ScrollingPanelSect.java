@@ -15,7 +15,7 @@
  */
 package org.exbin.bined.swing.demo.panel;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import javax.swing.JFrame;
 import org.exbin.bined.ScrollBarVisibility;
 import org.exbin.bined.basic.CodeAreaScrollPosition;
@@ -28,7 +28,7 @@ import org.exbin.bined.section.capability.SectionScrollingCapable;
 /**
  * Binary editor scrolling options panel.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class ScrollingPanelSect extends javax.swing.JPanel {
 
     private SectCodeArea codeArea;

@@ -15,8 +15,7 @@
  */
 package org.exbin.bined.operation.swing.command;
 
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import org.exbin.auxiliary.binary_data.BinaryData;
 import org.exbin.bined.EditMode;
 import org.exbin.bined.EditOperation;
@@ -27,7 +26,7 @@ import org.exbin.bined.swing.CodeAreaCore;
 /**
  * Paste data command.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class PasteDataCommand extends CodeAreaCommand {
 
     protected CodeAreaCommand modifyCommand = null;
@@ -115,7 +114,6 @@ public class PasteDataCommand extends CodeAreaCommand {
         }
     }
 
-    @Nonnull
     @Override
     public CodeAreaCommandType getType() {
         return CodeAreaCommandType.COMPOUND;

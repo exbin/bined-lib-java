@@ -18,9 +18,8 @@ package org.exbin.bined.operation.swing.command;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
 import org.exbin.bined.operation.command.BinaryDataCommand;
 import org.exbin.bined.operation.command.BinaryDataCommandPhase;
 import org.exbin.bined.operation.command.BinaryDataCompoundCommand;
@@ -31,11 +30,10 @@ import org.exbin.bined.swing.CodeAreaCore;
 /**
  * Class for compound command on binary document.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class CodeAreaCompoundCommand extends CodeAreaCommand implements BinaryDataCompoundCommand, BinaryDataAppendableCommand {
 
     protected final List<BinaryDataCommand> commands = new ArrayList<>();
-    @Nonnull
     protected BinaryDataCommandPhase phase = BinaryDataCommandPhase.CREATED;
 
     public CodeAreaCompoundCommand(CodeAreaCore codeArea) {
@@ -63,7 +61,6 @@ public class CodeAreaCompoundCommand extends CodeAreaCommand implements BinaryDa
         return resultCommand;
     }
 
-    @Nonnull
     @Override
     public CodeAreaCommandType getType() {
         return CodeAreaCommandType.COMPOUND;
@@ -149,7 +146,6 @@ public class CodeAreaCompoundCommand extends CodeAreaCommand implements BinaryDa
         this.commands.addAll(commands);
     }
 
-    @Nonnull
     @Override
     public List<BinaryDataCommand> getCommands() {
         return commands;

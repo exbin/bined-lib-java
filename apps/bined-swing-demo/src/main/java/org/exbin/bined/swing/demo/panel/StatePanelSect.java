@@ -21,8 +21,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.filechooser.FileFilter;
@@ -41,7 +40,7 @@ import org.exbin.bined.swing.section.SectionCodeAreaPainter;
 /**
  * Binary editor state panel.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class StatePanelSect extends javax.swing.JPanel {
 
     private SectCodeArea codeArea;
@@ -436,7 +435,6 @@ public class StatePanelSect extends javax.swing.JPanel {
     private javax.swing.JComboBox<String> testDataComboBox;
     // End of variables declaration//GEN-END:variables
 
-    @Nonnull
     private BasicCodeAreaSection getSection(CodeAreaCaretPosition caretPosition) {
         return (BasicCodeAreaSection) caretPosition.getSection().orElse(BasicCodeAreaSection.CODE_MATRIX);
     }

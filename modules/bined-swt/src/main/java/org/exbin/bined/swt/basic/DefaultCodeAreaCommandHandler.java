@@ -24,8 +24,7 @@ import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
 import org.exbin.bined.basic.BasicCodeAreaSection;
@@ -64,7 +63,7 @@ import org.exbin.bined.capability.EditModeCapable;
 /**
  * Default binary editor command handler.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
     public static final int LAST_CONTROL_CODE = 31;
@@ -72,9 +71,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
     private final int metaMask = CodeAreaSwtUtils.getMetaMask();
 
-    @Nonnull
     protected final CodeAreaCore codeArea;
-    @Nonnull
     protected EnterKeyHandlingMode enterKeyHandlingMode = EnterKeyHandlingMode.PLATFORM_SPECIFIC;
     protected final boolean codeTypeSupported;
     protected final boolean viewModeSupported;
@@ -107,7 +104,6 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         }
     }
 
-    @Nonnull
     public static CodeAreaCommandHandler.CodeAreaCommandHandlerFactory createDefaultCodeAreaCommandHandlerFactory() {
         return DefaultCodeAreaCommandHandler::new;
     }
@@ -751,7 +747,6 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         return canPaste;
     }
 
-    @Nonnull
     public EnterKeyHandlingMode getEnterKeyHandlingMode() {
         return enterKeyHandlingMode;
     }
@@ -833,7 +828,6 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         return bytes;
     }
 
-    @Nonnull
     private CodeType getCodeType() {
         if (codeTypeSupported) {
             return ((CodeTypeCapable) codeArea).getCodeType();
@@ -856,7 +850,6 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         return codeArea.isEditable();
     }
 
-    @Nonnull
     private static SelectingMode isSelectingMode(KeyEvent keyEvent) {
         return (keyEvent.stateMask & SWT.SHIFT) > 0 ? SelectingMode.SELECTING : SelectingMode.NONE;
     }

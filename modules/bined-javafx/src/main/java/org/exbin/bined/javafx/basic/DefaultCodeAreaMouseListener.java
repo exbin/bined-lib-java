@@ -19,7 +19,7 @@ import javafx.scene.Cursor;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import org.exbin.bined.basic.SelectingMode;
 import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.capability.ScrollingCapable;
@@ -28,7 +28,7 @@ import org.exbin.bined.javafx.CodeAreaCore;
 /**
  * Code Area component mouse listener.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class DefaultCodeAreaMouseListener {
 
     public static final int MOUSE_SCROLL_LINES = 3;

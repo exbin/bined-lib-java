@@ -22,9 +22,8 @@ import javafx.event.Event;
 import javafx.event.EventType;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.Pane;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
 import org.exbin.bined.CodeAreaControl;
 import org.exbin.bined.DataChangedListener;
 import org.exbin.bined.capability.SelectionCapable;
@@ -35,13 +34,11 @@ import org.exbin.bined.CodeAreaUtils;
 /**
  * Binary viewer/editor component.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public abstract class CodeAreaCore extends Pane implements CodeAreaControl {
 
-    @Nonnull
     protected BinaryData contentData;
 
-    @Nonnull
     protected CodeAreaCommandHandler commandHandler;
 
     private final List<DataChangedListener> dataChangedListeners = new ArrayList<>();
@@ -65,7 +62,6 @@ public abstract class CodeAreaCore extends Pane implements CodeAreaControl {
         registerControlListeners();
     }
 
-    @Nonnull
     private CodeAreaCommandHandler createCommandHandler(CodeAreaCommandHandler.CodeAreaCommandHandlerFactory commandHandlerFactory) {
         return commandHandlerFactory.createCommandHandler(this);
     }
@@ -87,7 +83,6 @@ public abstract class CodeAreaCore extends Pane implements CodeAreaControl {
         });
     }
 
-    @Nonnull
     public CodeAreaCommandHandler getCommandHandler() {
         return commandHandler;
     }
@@ -152,7 +147,6 @@ public abstract class CodeAreaCore extends Pane implements CodeAreaControl {
         return false;
     }
 
-    @Nonnull
     @Override
     public BinaryData getContentData() {
         return contentData;

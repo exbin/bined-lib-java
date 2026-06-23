@@ -15,8 +15,7 @@
  */
 package org.exbin.bined.operation.swing.command;
 
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import org.exbin.bined.operation.swing.ModifyDataOperation;
 import org.exbin.bined.swing.CodeAreaCore;
 import org.exbin.auxiliary.binary_data.BinaryData;
@@ -24,7 +23,7 @@ import org.exbin.auxiliary.binary_data.BinaryData;
 /**
  * Command for modifying data.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class ModifyDataCommand extends OpCodeAreaCommand {
 
     public ModifyDataCommand(CodeAreaCore codeArea, long position, BinaryData data) {
@@ -32,7 +31,6 @@ public class ModifyDataCommand extends OpCodeAreaCommand {
         super.setOperation(new ModifyDataOperation(position, data));
     }
 
-    @Nonnull
     @Override
     public CodeAreaCommandType getType() {
         return CodeAreaCommandType.DATA_MODIFIED;

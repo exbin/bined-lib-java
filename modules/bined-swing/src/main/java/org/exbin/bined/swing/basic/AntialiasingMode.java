@@ -20,14 +20,13 @@ import java.awt.GraphicsDevice;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.util.Map;
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import org.exbin.bined.CodeAreaUtils;
 
 /**
  * Enumeration of supported antialiasing modes.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public enum AntialiasingMode {
 
     OFF,
@@ -40,7 +39,6 @@ public enum AntialiasingMode {
     LCD_VRGB,
     LCD_VBGR;
 
-    @Nonnull
     public Object getAntialiasingHint(Graphics2D g) {
         Object antialiasingHint;
         switch (this) {

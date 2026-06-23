@@ -22,9 +22,8 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
 import org.exbin.bined.basic.BasicCodeAreaSection;
@@ -72,55 +71,36 @@ import org.exbin.bined.CodeAreaCaretListener;
 /**
  * TODO: Binary viewer/editor component with configurable sections.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class SectCodeArea extends CodeAreaCore implements SectionCodeArea, CodeAreaSwingControl {
 
-    @Nonnull
     protected CodeAreaPainter painter;
 
-    @Nonnull
     protected final DefaultCodeAreaCaret caret;
-    @Nonnull
     protected final CodeAreaSelection selection = new CodeAreaSelection();
-    @Nonnull
     protected final CodeAreaScrollPosition scrollPosition = new CodeAreaScrollPosition();
 
-    @Nonnull
     protected Charset charset = Charset.defaultCharset();
-    @Nonnull
     protected ClipboardHandlingMode clipboardHandlingMode = ClipboardHandlingMode.PROCESS;
 
-    @Nonnull
     protected EditMode editMode = EditMode.EXPANDING;
-    @Nonnull
     protected EditOperation editOperation = EditOperation.OVERWRITE;
-    @Nonnull
     protected CodeAreaViewMode viewMode = CodeAreaViewMode.DUAL;
-    @Nullable
     protected Font codeFont;
-    @Nonnull
     protected AntialiasingMode antialiasingMode = AntialiasingMode.AUTO;
-    @Nonnull
     protected CodeType codeType = CodeType.HEXADECIMAL;
     protected int minRowPositionLength = 0;
     protected int maxRowPositionLength = 0;
-    @Nonnull
     protected CodeCharactersCase codeCharactersCase = CodeCharactersCase.UPPER;
     protected boolean showMirrorCursor = true;
-    @Nonnull
     protected PositionCodeType positionCodeType = PositionCodeType.HEXADECIMAL;
-    @Nonnull
     protected RowWrappingMode rowWrapping = RowWrappingMode.NO_WRAPPING;
     protected int wrappingBytesGroupSize = 0;
     protected int maxBytesPerRow = 16;
 
-    @Nonnull
     protected ScrollBarVisibility verticalScrollBarVisibility = ScrollBarVisibility.IF_NEEDED;
-    @Nonnull
     protected VerticalScrollUnit verticalScrollUnit = VerticalScrollUnit.ROW;
-    @Nonnull
     protected ScrollBarVisibility horizontalScrollBarVisibility = ScrollBarVisibility.IF_NEEDED;
-    @Nonnull
     protected SectionHorizontalScrollUnit horizontalScrollUnit = SectionHorizontalScrollUnit.PIXEL;
 
     private final List<CodeAreaCaretListener> caretMovedListeners = new ArrayList<>();
@@ -150,13 +130,12 @@ public class SectCodeArea extends CodeAreaCore implements SectionCodeArea, CodeA
     }
 
     private void init() {
-        UIManager.addPropertyChangeListener((@Nonnull PropertyChangeEvent evt) -> {
+        UIManager.addPropertyChangeListener((PropertyChangeEvent evt) -> {
             resetColors();
         });
         caret.setSection(BasicCodeAreaSection.CODE_MATRIX);
     }
 
-    @Nonnull
     public CodeAreaPainter getPainter() {
         return painter;
     }
@@ -199,7 +178,6 @@ public class SectCodeArea extends CodeAreaCore implements SectionCodeArea, CodeA
         updateLayout();
     }
 
-    @Nonnull
     @Override
     public DefaultCodeAreaCaret getCodeAreaCaret() {
         return caret;
@@ -248,13 +226,11 @@ public class SectCodeArea extends CodeAreaCore implements SectionCodeArea, CodeA
         return caret.getCodeOffset();
     }
 
-    @Nonnull
     @Override
     public CodeAreaSection getActiveSection() {
         return caret.getSection();
     }
 
-    @Nonnull
     @Override
     public CodeAreaCaretPosition getActiveCaretPosition() {
         return caret.getCaretPosition();
@@ -283,7 +259,6 @@ public class SectCodeArea extends CodeAreaCore implements SectionCodeArea, CodeA
         return painter.getMouseCursorShape(positionX, positionY);
     }
 
-    @Nonnull
     @Override
     public CodeCharactersCase getCodeCharactersCase() {
         return codeCharactersCase;
@@ -301,7 +276,6 @@ public class SectCodeArea extends CodeAreaCore implements SectionCodeArea, CodeA
         repaint();
     }
 
-    @Nonnull
     @Override
     public CodeAreaViewMode getViewMode() {
         return viewMode;
@@ -320,7 +294,6 @@ public class SectCodeArea extends CodeAreaCore implements SectionCodeArea, CodeA
         updateLayout();
     }
 
-    @Nonnull
     @Override
     public CodeType getCodeType() {
         return codeType;
@@ -389,19 +362,16 @@ public class SectCodeArea extends CodeAreaCore implements SectionCodeArea, CodeA
         centerOnPosition(new DefaultCodeAreaCaretPosition(dataPosition, dataOffset, section));
     }
 
-    @Nonnull
     @Override
     public CodeAreaCaretPosition mousePositionToClosestCaretPosition(int positionX, int positionY, CaretOverlapMode overlapMode) {
         return painter.mousePositionToClosestCaretPosition(positionX, positionY, overlapMode);
     }
 
-    @Nonnull
     @Override
     public CodeAreaCaretPosition computeMovePosition(CodeAreaCaretPosition position, MovementDirection direction) {
         return painter.computeMovePosition(position, direction);
     }
 
-    @Nonnull
     @Override
     public CodeAreaScrollPosition computeScrolling(CodeAreaScrollPosition startPosition, ScrollingDirection scrollingShift) {
         return painter.computeScrolling(startPosition, scrollingShift);
@@ -412,7 +382,6 @@ public class SectCodeArea extends CodeAreaCore implements SectionCodeArea, CodeA
         repaint();
     }
 
-    @Nonnull
     @Override
     public CodeAreaScrollPosition getScrollPosition() {
         return scrollPosition;
@@ -437,7 +406,6 @@ public class SectCodeArea extends CodeAreaCore implements SectionCodeArea, CodeA
         }
     }
 
-    @Nonnull
     @Override
     public ScrollBarVisibility getVerticalScrollBarVisibility() {
         return verticalScrollBarVisibility;
@@ -450,7 +418,6 @@ public class SectCodeArea extends CodeAreaCore implements SectionCodeArea, CodeA
         updateScrollBars();
     }
 
-    @Nonnull
     @Override
     public VerticalScrollUnit getVerticalScrollUnit() {
         return verticalScrollUnit;
@@ -469,7 +436,6 @@ public class SectCodeArea extends CodeAreaCore implements SectionCodeArea, CodeA
         notifyScrolled();
     }
 
-    @Nonnull
     @Override
     public ScrollBarVisibility getHorizontalScrollBarVisibility() {
         return horizontalScrollBarVisibility;
@@ -482,7 +448,6 @@ public class SectCodeArea extends CodeAreaCore implements SectionCodeArea, CodeA
         updateScrollBars();
     }
 
-    @Nonnull
     @Override
     public SectionHorizontalScrollUnit getHorizontalScrollUnit() {
         return horizontalScrollUnit;
@@ -533,7 +498,6 @@ public class SectCodeArea extends CodeAreaCore implements SectionCodeArea, CodeA
         updateLayout();
     }
 
-    @Nonnull
     @Override
     public AntialiasingMode getAntialiasingMode() {
         return antialiasingMode;
@@ -546,7 +510,6 @@ public class SectCodeArea extends CodeAreaCore implements SectionCodeArea, CodeA
         repaint();
     }
 
-    @Nonnull
     @Override
     public SelectionRange getSelection() {
         return selection.getRange();
@@ -578,13 +541,11 @@ public class SectCodeArea extends CodeAreaCore implements SectionCodeArea, CodeA
         return !selection.isEmpty();
     }
 
-    @Nonnull
     @Override
     public CodeAreaSelection getSelectionHandler() {
         return selection;
     }
 
-    @Nonnull
     @Override
     public Charset getCharset() {
         return charset;
@@ -604,7 +565,6 @@ public class SectCodeArea extends CodeAreaCore implements SectionCodeArea, CodeA
         return editMode != EditMode.READ_ONLY;
     }
 
-    @Nonnull
     @Override
     public EditMode getEditMode() {
         return editMode;
@@ -624,7 +584,6 @@ public class SectCodeArea extends CodeAreaCore implements SectionCodeArea, CodeA
         }
     }
 
-    @Nonnull
     @Override
     public EditOperation getActiveOperation() {
         switch (editMode) {
@@ -640,7 +599,6 @@ public class SectCodeArea extends CodeAreaCore implements SectionCodeArea, CodeA
         }
     }
 
-    @Nonnull
     @Override
     public EditOperation getEditOperation() {
         return editOperation;
@@ -662,7 +620,6 @@ public class SectCodeArea extends CodeAreaCore implements SectionCodeArea, CodeA
         }
     }
 
-    @Nonnull
     @Override
     public ClipboardHandlingMode getClipboardHandlingMode() {
         return clipboardHandlingMode;
@@ -673,7 +630,6 @@ public class SectCodeArea extends CodeAreaCore implements SectionCodeArea, CodeA
         this.clipboardHandlingMode = clipboardHandlingMode;
     }
 
-    @Nonnull
     @Override
     public Font getCodeFont() {
         return codeFont == null ? super.getFont() : codeFont;
@@ -686,7 +642,6 @@ public class SectCodeArea extends CodeAreaCore implements SectionCodeArea, CodeA
         repaint();
     }
 
-    @Nonnull
     @Override
     public PositionCodeType getPositionCodeType() {
         return positionCodeType;
@@ -698,7 +653,6 @@ public class SectCodeArea extends CodeAreaCore implements SectionCodeArea, CodeA
         updateLayout();
     }
 
-    @Nonnull
     @Override
     public RowWrappingMode getRowWrapping() {
         return rowWrapping;

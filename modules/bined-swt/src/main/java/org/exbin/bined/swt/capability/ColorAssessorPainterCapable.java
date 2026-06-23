@@ -15,14 +15,13 @@
  */
 package org.exbin.bined.swt.capability;
 
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import org.exbin.bined.swt.CodeAreaColorAssessor;
 
 /**
  * Painter support for color assessor capability.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public interface ColorAssessorPainterCapable {
 
     /**
@@ -30,7 +29,6 @@ public interface ColorAssessorPainterCapable {
      *
      * @return color assessor
      */
-    @Nonnull
     CodeAreaColorAssessor getColorAssessor();
 
     /**

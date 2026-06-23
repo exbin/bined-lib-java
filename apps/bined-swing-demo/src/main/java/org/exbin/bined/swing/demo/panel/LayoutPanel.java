@@ -15,7 +15,7 @@
  */
 package org.exbin.bined.swing.demo.panel;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import javax.swing.JFrame;
 import org.exbin.bined.RowWrappingMode;
 import org.exbin.bined.swing.basic.CodeArea;
@@ -23,7 +23,7 @@ import org.exbin.bined.swing.basic.CodeArea;
 /**
  * Binary editor layout options panel.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class LayoutPanel extends javax.swing.JPanel {
 
     private CodeArea codeArea;

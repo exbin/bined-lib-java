@@ -17,9 +17,8 @@ package org.exbin.bined.highlight.swing;
 
 import java.awt.Color;
 import java.util.Optional;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
 import org.exbin.auxiliary.binary_data.BinaryData;
 import org.exbin.bined.basic.BasicCodeAreaSection;
 import org.exbin.bined.CodeAreaSection;
@@ -32,7 +31,7 @@ import org.exbin.bined.swing.CodeAreaColorAssessor;
 /**
  * Support for highlighting of non-ascii characters.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class NonAsciiCodeAreaColorAssessor implements CodeAreaColorAssessor {
 
     protected final CodeAreaColorAssessor parentAssessor;
@@ -138,7 +137,7 @@ public class NonAsciiCodeAreaColorAssessor implements CodeAreaColorAssessor {
 
     @Nullable
     @Override
-    public Color getPositionTextColor(long rowDataPosition, int byteOnRow, int charOnRow, @Nonnull CodeAreaSection section, boolean inSelection) {
+    public Color getPositionTextColor(long rowDataPosition, int byteOnRow, int charOnRow, CodeAreaSection section, boolean inSelection) {
         Color color = parentAssessor != null ? parentAssessor.getPositionTextColor(rowDataPosition, byteOnRow, charOnRow, section, inSelection) : null;
         if (nonAsciiHighlightingEnabled && section == BasicCodeAreaSection.CODE_MATRIX) {
             if (color == null || color.equals(textColor)) {
@@ -178,7 +177,6 @@ public class NonAsciiCodeAreaColorAssessor implements CodeAreaColorAssessor {
         return color;
     }
 
-    @Nonnull
     @Override
     public Optional<CodeAreaColorAssessor> getParentColorAssessor() {
         return Optional.ofNullable(parentAssessor);

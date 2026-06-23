@@ -23,9 +23,8 @@ import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CoderMalfunctionError;
 import java.nio.charset.CodingErrorAction;
 import java.util.Optional;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
 import org.exbin.bined.CodeAreaSection;
 import org.exbin.bined.javafx.CodeAreaCharAssessor;
 import org.exbin.bined.javafx.CodeAreaPaintState;
@@ -33,11 +32,12 @@ import org.exbin.bined.javafx.CodeAreaPaintState;
 /**
  * Default code area character assessor.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class DefaultCodeAreaCharAssessor implements CodeAreaCharAssessor {
 
     protected final CodeAreaCharAssessor parentAssessor;
 
+    @Nullable
     protected char[] charMapping = null;
 
     protected long dataSize;
@@ -46,6 +46,7 @@ public class DefaultCodeAreaCharAssessor implements CodeAreaCharAssessor {
     protected Charset charset;
     private CharsetDecoder decoder;
     private ByteBuffer byteBuffer;
+    @Nullable
     private CharBuffer charBuffer = null;
 
     public DefaultCodeAreaCharAssessor() {
@@ -145,7 +146,6 @@ public class DefaultCodeAreaCharAssessor implements CodeAreaCharAssessor {
         return ' ';
     }
 
-    @Nonnull
     @Override
     public Optional<CodeAreaCharAssessor> getParentCharAssessor() {
         return Optional.ofNullable(parentAssessor);

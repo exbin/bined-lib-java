@@ -23,9 +23,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import javax.swing.JComponent;
 
 import org.exbin.auxiliary.binary_data.EmptyBinaryData;
@@ -38,13 +36,11 @@ import org.exbin.auxiliary.binary_data.BinaryData;
 /**
  * Binary viewer/editor component.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public abstract class CodeAreaCore extends JComponent implements CodeAreaControl {
 
-    @Nonnull
     protected BinaryData contentData;
 
-    @Nonnull
     protected CodeAreaCommandHandler commandHandler;
 
     protected final List<DataChangedListener> dataChangedListeners = new ArrayList<>();
@@ -77,7 +73,6 @@ public abstract class CodeAreaCore extends JComponent implements CodeAreaControl
         registerControlListeners();
     }
 
-    @Nonnull
     private CodeAreaCommandHandler createCommandHandler(CodeAreaCommandHandler.CodeAreaCommandHandlerFactory commandHandlerFactory) {
         return commandHandlerFactory.createCommandHandler(this);
     }
@@ -85,37 +80,36 @@ public abstract class CodeAreaCore extends JComponent implements CodeAreaControl
     private void registerControlListeners() {
         addComponentListener(new ComponentAdapter() {
             @Override
-            public void componentResized(@Nonnull ComponentEvent event) {
+            public void componentResized(ComponentEvent event) {
                 updateLayout();
             }
         });
 
         addKeyListener(new KeyAdapter() {
             @Override
-            public void keyTyped(@Nonnull KeyEvent keyEvent) {
+            public void keyTyped(KeyEvent keyEvent) {
                 commandHandler.keyTyped(keyEvent);
             }
 
             @Override
-            public void keyPressed(@Nonnull KeyEvent keyEvent) {
+            public void keyPressed(KeyEvent keyEvent) {
                 commandHandler.keyPressed(keyEvent);
             }
         });
 
         addFocusListener(new FocusListener() {
             @Override
-            public void focusGained(@Nonnull FocusEvent e) {
+            public void focusGained(FocusEvent e) {
                 repaint();
             }
 
             @Override
-            public void focusLost(@Nonnull FocusEvent e) {
+            public void focusLost(FocusEvent e) {
                 repaint();
             }
         });
     }
 
-    @Nonnull
     public CodeAreaCommandHandler getCommandHandler() {
         return commandHandler;
     }
@@ -172,7 +166,6 @@ public abstract class CodeAreaCore extends JComponent implements CodeAreaControl
         return false;
     }
 
-    @Nonnull
     @Override
     public BinaryData getContentData() {
         return contentData;

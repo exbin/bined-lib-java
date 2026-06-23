@@ -23,14 +23,14 @@ import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import org.exbin.auxiliary.binary_data.array.ByteArrayEditableData;
 import org.exbin.bined.javafx.basic.CodeArea;
 
 /**
  * Binary component demo application for JavaFX.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class BinEdDemo extends Application {
 
     public static void main(String[] args) {

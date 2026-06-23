@@ -15,8 +15,7 @@
  */
 package org.exbin.bined.section.layout;
 
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import org.exbin.bined.CodeAreaSection;
 import org.exbin.bined.basic.CodeAreaViewMode;
 import org.exbin.bined.CodeType;
@@ -27,7 +26,7 @@ import org.exbin.bined.CodeAreaCaretPosition;
 /**
  * Layout interface for section code area.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public interface SectionCodeAreaLayoutProfile {
 
     int computeBytesPerRow(int halfCharsPerPage, SectionCodeAreaStructure structure);
@@ -56,15 +55,12 @@ public interface SectionCodeAreaLayoutProfile {
 
     int computeRowPositionOffsetPositionX();
 
-    @Nonnull
     CodeAreaCaretPosition computeMovePosition(CodeAreaCaretPosition position, MovementDirection direction, SectionCodeAreaStructure structure, int rowsPerPage);
 
     int computePositionX(int halfCharPosition, int characterWidth, int halfSpaceWidth);
 
-    @Nonnull
     SectionCodeAreaLayoutProfile createCopy();
 
-    @Nonnull
     PositionIterator createPositionIterator(CodeType codeType, CodeAreaViewMode viewMode, int bytesPerRow);
 
     int computeRowPositionAreaWidth(int characterWidth, int rowPositionLength);

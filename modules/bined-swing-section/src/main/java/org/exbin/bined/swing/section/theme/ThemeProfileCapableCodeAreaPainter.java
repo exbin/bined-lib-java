@@ -15,16 +15,14 @@
  */
 package org.exbin.bined.swing.section.theme;
 
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * Capability of painter to handle theme profiling.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public interface ThemeProfileCapableCodeAreaPainter {
 
-    @Nonnull
     SectionCodeAreaThemeProfile getThemeProfile();
 
     void setThemeProfile(SectionCodeAreaThemeProfile themeProfile);

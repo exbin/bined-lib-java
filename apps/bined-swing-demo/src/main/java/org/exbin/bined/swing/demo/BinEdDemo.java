@@ -20,8 +20,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 import javax.swing.event.ChangeEvent;
@@ -34,7 +33,7 @@ import org.exbin.auxiliary.binary_data.array.ByteArrayEditableData;
 /**
  * Binary component demo application for Swing.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class BinEdDemo {
 
     private static final String EXAMPLE_FILE_PATH = "/org/exbin/bined/swing/demo/resources/lorem_1.txt";
@@ -106,7 +105,6 @@ public class BinEdDemo {
         });
     }
 
-    @Nonnull
     private static ByteArrayEditableData getSampleData() {
         ByteArrayEditableData data = new ByteArrayEditableData();
         try {
@@ -118,7 +116,6 @@ public class BinEdDemo {
         return data;
     }
 
-    @Nonnull
     private static ByteArrayEditableData getSampleDiffData() {
         ByteArrayEditableData data = new ByteArrayEditableData();
         try {
@@ -130,7 +127,6 @@ public class BinEdDemo {
         return data;
     }
 
-    @Nonnull
     public static BinaryData getBigSampleData(int offset, long size) {
         BinaryData data = new BinaryData() {
             @Override

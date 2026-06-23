@@ -15,13 +15,13 @@
  */
 package org.exbin.bined.javafx;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import org.exbin.bined.basic.CodeAreaScrollPosition;
 
 /**
  * Hexadecimal editor code area interface.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public interface CodeAreaJavaFxControl {
 
     /**

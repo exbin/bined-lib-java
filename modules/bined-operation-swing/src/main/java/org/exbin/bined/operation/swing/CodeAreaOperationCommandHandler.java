@@ -26,8 +26,7 @@ import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import org.exbin.bined.basic.BasicCodeAreaSection;
 import org.exbin.bined.CharsetStreamTranslator;
 import org.exbin.bined.CodeAreaUtils;
@@ -73,7 +72,7 @@ import org.exbin.bined.operation.command.BinaryDataUndoRedo;
 /**
  * Command handler for undo/redo aware binary editor editing.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
 
     public static final String MIME_CHARSET = "charset";
@@ -84,11 +83,8 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
 
     private final int metaMask = CodeAreaSwingUtils.getMetaMaskDown();
 
-    @Nonnull
     protected final CodeAreaCore codeArea;
-    @Nonnull
     protected EnterKeyHandlingMode enterKeyHandlingMode = EnterKeyHandlingMode.PLATFORM_SPECIFIC;
-    @Nonnull
     protected TabKeyHandlingMode tabKeyHandlingMode = TabKeyHandlingMode.PLATFORM_SPECIFIC;
     protected final boolean codeTypeSupported;
     protected final boolean viewModeSupported;
@@ -99,7 +95,6 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
     private DataFlavor binedDataFlavor;
     private DataFlavor binaryDataFlavor;
 
-    @Nonnull
     protected final BinaryDataUndoRedo undoRedo;
     protected EditDataCommand editCommand = null;
 
@@ -129,12 +124,10 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
         }
     }
 
-    @Nonnull
     public static CodeAreaCommandHandler.CodeAreaCommandHandlerFactory createDefaultCodeAreaCommandHandlerFactory() {
         return (CodeAreaCore codeAreaCore) -> new CodeAreaOperationCommandHandler(codeAreaCore, new CodeAreaUndoRedo(codeAreaCore));
     }
 
-    @Nonnull
     public BinaryDataUndoRedo getUndoRedo() {
         return undoRedo;
     }
@@ -582,12 +575,10 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
         }
     }
 
-    @Nonnull
     public Clipboard getClipboard() {
         return clipboard;
     }
 
-    @Nonnull
     public DataFlavor getBinedDataFlavor() {
         return binedDataFlavor;
     }
@@ -804,7 +795,6 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
         return false;
     }
 
-    @Nonnull
     public EnterKeyHandlingMode getEnterKeyHandlingMode() {
         return enterKeyHandlingMode;
     }
@@ -813,7 +803,6 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
         this.enterKeyHandlingMode = enterKeyHandlingMode;
     }
 
-    @Nonnull
     public TabKeyHandlingMode getTabKeyHandlingMode() {
         return tabKeyHandlingMode;
     }
@@ -826,7 +815,6 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
         return ((CharsetCapable) codeArea).getCharset().canEncode();
     }
 
-    @Nonnull
     private CodeType getCodeType() {
         if (codeTypeSupported) {
             return ((CodeTypeCapable) codeArea).getCodeType();
@@ -845,7 +833,6 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
         return codeArea.isEditable();
     }
 
-    @Nonnull
     private static SelectingMode isSelectingMode(KeyEvent keyEvent) {
         return (keyEvent.getModifiersEx() & KeyEvent.SHIFT_DOWN_MASK) > 0 ? SelectingMode.SELECTING : SelectingMode.NONE;
     }

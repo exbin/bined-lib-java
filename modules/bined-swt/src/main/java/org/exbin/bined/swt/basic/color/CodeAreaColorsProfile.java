@@ -15,8 +15,8 @@
  */
 package org.exbin.bined.swt.basic.color;
 
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
 import org.eclipse.swt.graphics.Color;
 import org.exbin.bined.color.CodeAreaBasicColors;
 import org.exbin.bined.color.CodeAreaColorType;
@@ -24,7 +24,7 @@ import org.exbin.bined.color.CodeAreaColorType;
 /**
  * Colors profile.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public interface CodeAreaColorsProfile {
 
     /**

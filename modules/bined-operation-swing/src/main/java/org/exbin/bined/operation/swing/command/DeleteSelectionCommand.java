@@ -15,8 +15,7 @@
  */
 package org.exbin.bined.operation.swing.command;
 
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import org.exbin.bined.SelectionRange;
 import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.capability.SelectionCapable;
@@ -26,7 +25,7 @@ import org.exbin.bined.swing.CodeAreaCore;
 /**
  * Delete selection command.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class DeleteSelectionCommand extends OpCodeAreaCommand {
 
     protected long position;
@@ -46,7 +45,6 @@ public class DeleteSelectionCommand extends OpCodeAreaCommand {
         ((SelectionCapable) codeArea).setSelection(position, position);
     }
 
-    @Nonnull
     @Override
     public CodeAreaCommandType getType() {
         return CodeAreaCommandType.DATA_REMOVED;

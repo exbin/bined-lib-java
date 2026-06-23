@@ -17,9 +17,8 @@ package org.exbin.bined.javafx.basic;
 
 import javafx.scene.paint.Color;
 import java.util.Optional;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
 import org.exbin.bined.CodeAreaSection;
 import org.exbin.bined.CodeAreaSelection;
 import org.exbin.bined.basic.BasicCodeAreaSection;
@@ -31,12 +30,14 @@ import org.exbin.bined.javafx.basic.color.CodeAreaColorsProfile;
 /**
  * Default code area color assessor.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class DefaultCodeAreaColorAssessor implements CodeAreaColorAssessor {
 
     protected final CodeAreaColorAssessor parentAssessor;
 
+    @Nullable
     protected CodeAreaSelection selectionHandler = null;
+    @Nullable
     protected CodeAreaSection activeSection = null;
     protected int codeLastCharPos;
     protected Color selectionColor;
@@ -90,7 +91,6 @@ public class DefaultCodeAreaColorAssessor implements CodeAreaColorAssessor {
         return null;
     }
 
-    @Nonnull
     @Override
     public Optional<CodeAreaColorAssessor> getParentColorAssessor() {
         return Optional.ofNullable(parentAssessor);

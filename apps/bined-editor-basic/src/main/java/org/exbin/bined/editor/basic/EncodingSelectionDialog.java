@@ -19,8 +19,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.nio.charset.Charset;
 import java.util.Map;
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.DefaultComboBoxModel;
@@ -32,7 +31,7 @@ import org.exbin.bined.swing.CodeAreaSwingUtils;
 /**
  * Basic encoding selection dialog.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class EncodingSelectionDialog extends javax.swing.JDialog {
 
     private ReturnStatus returnStatus = ReturnStatus.CANCEL;
@@ -67,7 +66,6 @@ public class EncodingSelectionDialog extends javax.swing.JDialog {
     /**
      * @return the return status of this dialog - one of RET_OK or RET_CANCEL
      */
-    @Nonnull
     public ReturnStatus getReturnStatus() {
         return returnStatus;
     }
@@ -170,7 +168,6 @@ public class EncodingSelectionDialog extends javax.swing.JDialog {
         dispose();
     }
 
-    @Nonnull
     public String getEncoding() {
         return (String) encodingComboBox.getSelectedItem();
     }

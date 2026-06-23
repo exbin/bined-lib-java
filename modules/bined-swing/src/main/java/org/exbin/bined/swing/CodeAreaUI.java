@@ -22,9 +22,8 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.Rectangle2D;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
 import javax.swing.JComponent;
 import javax.swing.event.DocumentEvent;
 import javax.swing.plaf.ComponentUI;
@@ -44,7 +43,7 @@ import javax.swing.text.ViewFactory;
 /**
  * Binary viewer/editor component UI.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class CodeAreaUI extends TextUI implements ViewFactory {
 
     private static final Position.Bias[] discardBias = new Position.Bias[1];
@@ -52,7 +51,6 @@ public class CodeAreaUI extends TextUI implements ViewFactory {
     transient RootView rootView = new RootView();
     private static final EditorKit defaultKit = new DefaultEditorKit();
 
-    @Nonnull
     public static ComponentUI createUI(JComponent c) {
         return new CodeAreaUI();
     }

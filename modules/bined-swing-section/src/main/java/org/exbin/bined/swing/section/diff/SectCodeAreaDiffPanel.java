@@ -16,8 +16,7 @@
 package org.exbin.bined.swing.section.diff;
 
 import java.awt.BorderLayout;
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import javax.swing.JPanel;
 import org.exbin.auxiliary.binary_data.BinaryData;
 import org.exbin.bined.EditMode;
@@ -28,7 +27,7 @@ import org.exbin.bined.swing.section.SectionCodeAreaPainter;
 /**
  * Panel for difference comparison of two code areas.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class SectCodeAreaDiffPanel extends javax.swing.JPanel {
 
     protected final SectCodeArea leftCodeArea;
@@ -128,22 +127,18 @@ public class SectCodeAreaDiffPanel extends javax.swing.JPanel {
     private javax.swing.JSplitPane splitPane;
     // End of variables declaration//GEN-END:variables
 
-    @Nonnull
     public JPanel getLeftPanel() {
         return leftPanel;
     }
 
-    @Nonnull
     public JPanel getRightPanel() {
         return rightPanel;
     }
 
-    @Nonnull
     public SectCodeArea getLeftCodeArea() {
         return leftCodeArea;
     }
 
-    @Nonnull
     public SectCodeArea getRightCodeArea() {
         return rightCodeArea;
     }

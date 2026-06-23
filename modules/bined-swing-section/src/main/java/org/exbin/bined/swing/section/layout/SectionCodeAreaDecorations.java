@@ -15,14 +15,13 @@
  */
 package org.exbin.bined.swing.section.layout;
 
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import org.exbin.bined.section.theme.CodeAreaDecorationType;
 
 /**
  * Enumeration of supported decorations of section code area.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public enum SectionCodeAreaDecorations implements CodeAreaDecorationType {
 
     ROW_POSITION_LINE("rowNumberLine"),
@@ -31,14 +30,12 @@ public enum SectionCodeAreaDecorations implements CodeAreaDecorationType {
     BOX_LINES("boxLines"),
     GROUP_LINES("groupLines");
 
-    @Nonnull
     private final String id;
 
     SectionCodeAreaDecorations(String id) {
         this.id = id;
     }
 
-    @Nonnull
     @Override
     public String getId() {
         return id;

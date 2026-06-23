@@ -29,8 +29,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
@@ -58,7 +57,7 @@ import org.exbin.bined.capability.EditModeCapable;
 /**
  * Basic single jar swing version of BinEd binary/hex editor.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class BinEdEditorBasic extends javax.swing.JFrame {
 
     private static final String APPLICATION_VERSION = "0.3.0 DEV";
@@ -839,7 +838,6 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
     private javax.swing.JMenu viewMenu;
     // End of variables declaration//GEN-END:variables
 
-    @Nonnull
     private ImageIcon getIconResource(String iconFileName) {
         return new ImageIcon(getClass().getResource(ICONS_DIRECTORY + iconFileName));
     }

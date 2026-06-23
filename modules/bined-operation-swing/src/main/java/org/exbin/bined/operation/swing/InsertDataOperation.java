@@ -15,9 +15,8 @@
  */
 package org.exbin.bined.operation.swing;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
 import org.exbin.auxiliary.binary_data.BinaryData;
 import org.exbin.auxiliary.binary_data.EditableBinaryData;
 import org.exbin.bined.CodeAreaUtils;
@@ -26,12 +25,11 @@ import org.exbin.bined.operation.BinaryDataUndoableOperation;
 /**
  * Operation for data insertion.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class InsertDataOperation implements BinaryDataUndoableOperation {
 
     protected long position;
     protected int codeOffset;
-    @Nonnull
     protected final BinaryData data;
 
     public InsertDataOperation(long position, int codeOffset, BinaryData data) {
@@ -40,7 +38,6 @@ public class InsertDataOperation implements BinaryDataUndoableOperation {
         this.data = data;
     }
 
-    @Nonnull
     @Override
     public BasicBinaryDataOperationType getType() {
         return BasicBinaryDataOperationType.INSERT_DATA;
@@ -51,7 +48,6 @@ public class InsertDataOperation implements BinaryDataUndoableOperation {
         execute(contentData, false);
     }
 
-    @Nonnull
     @Override
     public BinaryDataUndoableOperation executeWithUndo(EditableBinaryData contentData) {
         return CodeAreaUtils.requireNonNull(execute(contentData, true));
@@ -71,7 +67,6 @@ public class InsertDataOperation implements BinaryDataUndoableOperation {
         ((EditableBinaryData) data).insert(data.getDataSize(), appendData);
     }
 
-    @Nonnull
     public BinaryData getData() {
         return data;
     }

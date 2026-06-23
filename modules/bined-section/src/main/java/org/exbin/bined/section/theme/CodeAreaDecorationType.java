@@ -15,11 +15,12 @@
  */
 package org.exbin.bined.section.theme;
 
-import javax.annotation.Nonnull;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * Code are decoration type.
  */
+@NullMarked
 public interface CodeAreaDecorationType {
 
     /**
@@ -30,6 +31,5 @@ public interface CodeAreaDecorationType {
      *
      * @return unique identification ID key
      */
-    @Nonnull
     String getId();
 }

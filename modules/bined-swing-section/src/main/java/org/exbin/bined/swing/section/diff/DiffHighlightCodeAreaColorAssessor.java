@@ -17,9 +17,8 @@ package org.exbin.bined.swing.section.diff;
 
 import java.awt.Color;
 import java.util.Optional;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
 import org.exbin.bined.CodeAreaSection;
 import org.exbin.auxiliary.binary_data.BinaryData;
 import org.exbin.bined.swing.CodeAreaColorAssessor;
@@ -29,7 +28,7 @@ import org.exbin.bined.swing.CodeAreaPaintState;
 /**
  * Highlighting color assessor for basic binary diff.
  */
-@ParametersAreNonnullByDefault
+@NullMarked
 public class DiffHighlightCodeAreaColorAssessor implements CodeAreaColorAssessor {
 
     protected CodeAreaColorAssessor parentAssessor;
@@ -91,7 +90,6 @@ public class DiffHighlightCodeAreaColorAssessor implements CodeAreaColorAssessor
         return null;
     }
 
-    @Nonnull
     @Override
     public Optional<CodeAreaColorAssessor> getParentColorAssessor() {
         return Optional.ofNullable(parentAssessor);
@@ -103,7 +101,6 @@ public class DiffHighlightCodeAreaColorAssessor implements CodeAreaColorAssessor
         codeArea.notifyDataChanged();
     }
 
-    @Nonnull
     public Color getDiffColor() {
         return diffColor;
     }
