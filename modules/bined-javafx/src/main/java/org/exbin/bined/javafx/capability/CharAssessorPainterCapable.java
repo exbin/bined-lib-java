@@ -15,7 +15,6 @@
  */
 package org.exbin.bined.javafx.capability;
 
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.exbin.bined.javafx.CodeAreaCharAssessor;
 
@@ -30,7 +29,6 @@ public interface CharAssessorPainterCapable {
      *
      * @return character assessor
      */
-    @NonNull
     CodeAreaCharAssessor getCharAssessor();
 
     /**
