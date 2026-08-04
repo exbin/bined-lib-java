@@ -280,7 +280,7 @@ public class CodeAreaUndoRedoTest extends CodeAreaComponentTest {
     }
 
     @Test
-    public void deteleCodeCharMiddle() {
+    public void deleteCodeCharMiddle() {
         CodeAreaCore codeArea = createCodeArea();
         BinaryDataUndoRedo undoRedo = ((CodeAreaOperationCommandHandler) codeArea.getCommandHandler()).getUndoRedo();
 
@@ -386,7 +386,7 @@ public class CodeAreaUndoRedoTest extends CodeAreaComponentTest {
     }
 
     @Test
-    public void detelePreviewCharMiddle() {
+    public void deletePreviewCharMiddle() {
         CodeAreaCore codeArea = createCodeArea();
         BinaryDataUndoRedo undoRedo = ((CodeAreaOperationCommandHandler) codeArea.getCommandHandler()).getUndoRedo();
 

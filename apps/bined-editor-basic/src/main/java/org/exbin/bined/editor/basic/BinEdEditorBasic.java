@@ -40,9 +40,6 @@ import javax.swing.UnsupportedLookAndFeelException;
 import org.exbin.auxiliary.binary_data.array.ByteArrayEditableData;
 import org.exbin.bined.EditMode;
 import org.exbin.bined.EditOperation;
-import org.exbin.bined.capability.CaretCapable;
-import org.exbin.bined.capability.CharsetCapable;
-import org.exbin.bined.capability.SelectionCapable;
 import org.exbin.bined.operation.swing.CodeAreaOperationCommandHandler;
 import org.exbin.bined.operation.swing.CodeAreaUndoRedo;
 import org.exbin.bined.swing.basic.CodeArea;
@@ -52,7 +49,7 @@ import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.CodeCharactersCase;
 import org.exbin.bined.CodeType;
 import org.exbin.bined.swing.CodeAreaSwingUtils;
-import org.exbin.bined.capability.EditModeCapable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Basic single jar swing version of BinEd binary/hex editor.
@@ -78,6 +75,7 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
     private static final String ICON_EDIT_DELETE = "edit-delete.png";
     private static final String ICON_EDIT_SELECT_ALL = "edit-select-all.png";
 
+    @Nullable
     private File file = null;
     private CodeArea codeArea;
     private CodeAreaUndoRedo undoHandler;
@@ -228,7 +226,7 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
             updateUndoState();
             codeArea.repaint();
         });
-        ((EditModeCapable) codeArea).addEditModeChangedListener((EditMode editMode, EditOperation editOperation) -> {
+        codeArea.addEditModeChangedListener((EditMode editMode, EditOperation editOperation) -> {
             switch (editOperation) {
                 case INSERT: {
                     editModeLabel.setText("INS");
@@ -242,10 +240,10 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
                     throw CodeAreaUtils.getInvalidTypeException(editOperation);
             }
         });
-        ((CaretCapable) codeArea).addCaretMovedListener((CodeAreaCaretPosition caretPosition) -> {
+        codeArea.addCaretMovedListener((CodeAreaCaretPosition caretPosition) -> {
             positionLabel.setText(caretPosition.getDataPosition() + ":" + caretPosition.getCodeOffset());
         });
-        ((SelectionCapable) codeArea).addSelectionChangedListener(() -> {
+        codeArea.addSelectionChangedListener(() -> {
             updateClipboardState();
         });
         Clipboard clipboard = CodeAreaSwingUtils.getClipboard();
@@ -596,12 +594,12 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
     private void editModeLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_editModeLabelMouseClicked
         if (evt.getButton() == MouseEvent.BUTTON1) {
             EditOperation editOperation;
-            if (((EditModeCapable) codeArea).getEditOperation() == EditOperation.INSERT) {
+            if (codeArea.getEditOperation() == EditOperation.INSERT) {
                 editOperation = EditOperation.OVERWRITE;
             } else {
                 editOperation = EditOperation.INSERT;
             }
-            ((EditModeCapable) codeArea).setEditOperation(editOperation);
+            codeArea.setEditOperation(editOperation);
         }
     }//GEN-LAST:event_editModeLabelMouseClicked
 
@@ -719,11 +717,11 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
 
     private void chooseEncoding() {
         EncodingSelectionDialog dialog = new EncodingSelectionDialog(this, true);
-        dialog.setEncoding(((CharsetCapable) codeArea).getCharset().name());
+        dialog.setEncoding(codeArea.getCharset().name());
         dialog.setVisible(true);
         if (dialog.getReturnStatus() == EncodingSelectionDialog.ReturnStatus.OK) {
             String encoding = dialog.getEncoding();
-            ((CharsetCapable) codeArea).setCharset(Charset.forName(encoding));
+            codeArea.setCharset(Charset.forName(encoding));
             codeArea.repaint();
             encodingLabel.setText(encoding);
         }
@@ -766,7 +764,7 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
         // Try system look and feel
         try {
             String osName = System.getProperty("os.name").toLowerCase();
-            // Try "GTK+" on linux
+            // Try "GTK+" on Linux
             UIManager.setLookAndFeel(!osName.startsWith("windows") && !osName.startsWith("mac") ? "com.sun.java.swing.plaf.gtk.GTKLookAndFeel" : UIManager.getSystemLookAndFeelClassName());
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
             Logger.getLogger(BinEdEditorBasic.class.getName()).log(Level.SEVERE, null, ex);
@@ -843,7 +841,7 @@ public class BinEdEditorBasic extends javax.swing.JFrame {
     }
 
     /**
-     * Helps proguard to cut out default constructor for smaller basic editor.
+     * Helps ProGuard to cut out default constructor for smaller basic editor.
      */
     private static final class CodeAreaWrapper extends CodeArea {
 

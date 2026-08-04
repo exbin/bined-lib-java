@@ -25,7 +25,7 @@ import org.exbin.bined.basic.BasicCodeAreaSection;
 public interface PositionIterator {
 
     /**
-     * Resets iterator to the begining of the document.
+     * Resets iterator to the beginning of the document.
      */
     void reset();
 

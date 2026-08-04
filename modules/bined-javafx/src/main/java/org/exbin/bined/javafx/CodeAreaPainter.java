@@ -93,7 +93,7 @@ public interface CodeAreaPainter {
      *
      * @param positionX component relative position X
      * @param positionY component relative position Y
-     * @return java.awt.Cursor cursor type value
+     * @return java.awt.Cursorjava.awt.Cursor cursor type value
      */
     int getMouseCursorShape(int positionX, int positionY);
 

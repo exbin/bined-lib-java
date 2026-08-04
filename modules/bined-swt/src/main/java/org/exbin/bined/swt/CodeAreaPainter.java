@@ -195,7 +195,6 @@ public interface CodeAreaPainter {
      */
     void scrollPositionModified();
 
-
     /**
      * Notify scroll position was changed outside of scrolling.
      */

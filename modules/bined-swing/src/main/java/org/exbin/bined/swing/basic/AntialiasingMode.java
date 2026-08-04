@@ -44,7 +44,7 @@ public enum AntialiasingMode {
         switch (this) {
             case AUTO: {
                 Toolkit tk = Toolkit.getDefaultToolkit();
-                Map map = (Map) (tk.getDesktopProperty("awt.font.desktophints"));
+                Map<?,?> map = (Map<?,?>) (tk.getDesktopProperty("awt.font.desktophints"));
                 if (map != null) {
                     // Use system one only if it's not default
                     antialiasingHint = map.get(RenderingHints.KEY_TEXT_ANTIALIASING);
