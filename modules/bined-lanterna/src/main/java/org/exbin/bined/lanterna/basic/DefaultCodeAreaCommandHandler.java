@@ -271,7 +271,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     @Override
     public void keyTyped(KeyEvent keyEvent) {
         char keyValue = keyEvent.getKeyChar();
-        // TODO Add support for high unicode codes
+        // TODO Add support for high Unicode codes
         if (keyValue == KeyEvent.CHAR_UNDEFINED) {
             return;
         }

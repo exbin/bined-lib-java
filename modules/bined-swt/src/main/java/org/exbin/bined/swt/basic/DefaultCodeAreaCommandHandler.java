@@ -259,7 +259,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         }
 
         char keyValue = keyEvent.character;
-        // TODO Add support for high unicode codes
+        // TODO Add support for high Unicode codes
         if (keyValue == java.awt.event.KeyEvent.CHAR_UNDEFINED) {
             return;
         }

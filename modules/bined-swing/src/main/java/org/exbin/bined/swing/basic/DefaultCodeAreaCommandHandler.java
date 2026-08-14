@@ -70,8 +70,6 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     public static final int LAST_CONTROL_CODE = 31;
     private static final char DELETE_CHAR = (char) 0x7f;
 
-    private final int metaMask = CodeAreaSwingUtils.getMetaMaskDown();
-
     protected final CodeAreaCore codeArea;
     protected EnterKeyHandlingMode enterKeyHandlingMode = EnterKeyHandlingMode.PLATFORM_SPECIFIC;
     protected TabKeyHandlingMode tabKeyHandlingMode = TabKeyHandlingMode.PLATFORM_SPECIFIC;
@@ -153,6 +151,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                 break;
             }
             case KeyEvent.VK_HOME: {
+                int metaMask = CodeAreaSwingUtils.getMetaMaskDown();
                 if ((keyEvent.getModifiersEx() & metaMask) > 0) {
                     move(isSelectingMode(keyEvent), MovementDirection.DOC_START);
                 } else {
@@ -164,6 +163,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
                 break;
             }
             case KeyEvent.VK_END: {
+                int metaMask = CodeAreaSwingUtils.getMetaMaskDown();
                 if ((keyEvent.getModifiersEx() & metaMask) > 0) {
                     move(isSelectingMode(keyEvent), MovementDirection.DOC_END);
                 } else {
@@ -227,6 +227,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             }
             default: {
                 if (((ClipboardCapable) codeArea).getClipboardHandlingMode() == ClipboardHandlingMode.PROCESS) {
+                    int metaMask = CodeAreaSwingUtils.getMetaMaskDown();
                     if ((keyEvent.getModifiersEx() & metaMask) > 0 && keyEvent.getKeyCode() == KeyEvent.VK_C) {
                         copy();
                         keyEvent.consume();
@@ -252,7 +253,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     @Override
     public void keyTyped(KeyEvent keyEvent) {
         char keyValue = keyEvent.getKeyChar();
-        // TODO Add support for high unicode codes
+        // TODO Add support for high Unicode codes
         if (keyValue == KeyEvent.CHAR_UNDEFINED) {
             return;
         }
@@ -542,7 +543,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     public DataFlavor getBinedDataFlavor() {
         return binedDataFlavor;
     }
-    
+
     public void setClipboardContent(CodeAreaSwingUtils.ClipboardData content) {
         clearClipboardData();
         try {

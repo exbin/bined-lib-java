@@ -156,7 +156,7 @@ public class SectionCodeAreaPainter implements CodeAreaPainter {
                         continue;
                     }
                     if (charRenderingMode == CodeArea.CharRenderingMode.AUTO && monospaceFont) {
-                        // Detect if character is in unicode range covered by monospace fonts
+                        // Detect if character is in Unicode range covered by monospace fonts
                         if (currentChar > CodeAreaSwingUtils.MIN_MONOSPACE_CODE_POINT && (int) currentChar < CodeAreaSwingUtils.MAX_MONOSPACE_CODE_POINT
                                 && currentChar != CodeAreaSwingUtils.INV_SPACE_CODE_POINT
                                 && currentChar != CodeAreaSwingUtils.EXCEPTION1_CODE_POINT && currentChar != CodeAreaSwingUtils.EXCEPTION2_CODE_POINT) {
@@ -544,7 +544,7 @@ public class SectionCodeAreaPainter implements CodeAreaPainter {
                     continue;
                 }
                 if (paintData.charRenderingMode == CodeArea.CharRenderingMode.AUTO && paintData.monospaceFont) {
-                    // Detect if character is in unicode range covered by monospace fonts
+                    // Detect if character is in Unicode range covered by monospace fonts
                     if (currentChar > MIN_MONOSPACE_CODE_POINT && (int) currentChar < MAX_MONOSPACE_CODE_POINT
                             && currentChar != INV_SPACE_CODE_POINT
                             && currentChar != EXCEPTION1_CODE_POINT && currentChar != EXCEPTION2_CODE_POINT) {
