@@ -124,6 +124,7 @@ task proguardJar(type: proguard.gradle.ProGuardTask) {
     }'
     
     dontwarn 'javax.annotation.**'
+    dontwarn 'org.jspecify.annotations.**'
     dontobfuscate
 }
 proguardJar.dependsOn fatJar
@@ -147,6 +148,7 @@ task proguardObfJar(type: proguard.gradle.ProGuardTask) {
     }'
     
     dontwarn 'javax.annotation.**'
+    dontwarn 'org.jspecify.annotations.**'
 }
 proguardObfJar.dependsOn fatJar
 

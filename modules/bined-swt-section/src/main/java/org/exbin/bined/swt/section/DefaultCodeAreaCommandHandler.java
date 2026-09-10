@@ -16,7 +16,6 @@
 package org.exbin.bined.swt.section;
 
 import org.exbin.bined.swt.basic.*;
-import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.ClipboardOwner;
 import java.awt.datatransfer.DataFlavor;
@@ -42,6 +41,7 @@ import org.exbin.bined.CodeAreaCaretPosition;
 import org.exbin.bined.EditOperation;
 import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.capability.EditModeCapable;
+import org.exbin.bined.swt.CodeAreaSwtUtils;
 
 /**
  * Default binary editor command handler.
@@ -70,7 +70,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
         this.metaMask = metaMaskInit;
 
         try {
-            clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+            clipboard = CodeAreaSwtUtils.getClipboard();
         } catch (java.awt.HeadlessException ex) {
             // Create clipboard if system one not available
             clipboard = new Clipboard("clipboard");

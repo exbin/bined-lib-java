@@ -190,7 +190,7 @@ public class CodeAreaSwingUtils {
         if (clipboard == null) {
             try {
                 clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-            } catch (SecurityException e) {
+            } catch (SecurityException | java.awt.HeadlessException e) {
                 clipboard = new Clipboard(FALLBACK_CLIPBOARD);
             }
         }

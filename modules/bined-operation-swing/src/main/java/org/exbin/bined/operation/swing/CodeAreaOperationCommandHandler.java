@@ -104,7 +104,7 @@ public class CodeAreaOperationCommandHandler implements CodeAreaCommandHandler {
         viewModeSupported = codeArea instanceof ViewModeCapable;
 
         try {
-            clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+            clipboard = CodeAreaSwingUtils.getClipboard();
             clipboard.addFlavorListener((FlavorEvent e) -> {
                 updateCanPaste();
             });
