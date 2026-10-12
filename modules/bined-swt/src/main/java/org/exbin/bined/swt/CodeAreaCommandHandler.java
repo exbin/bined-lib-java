@@ -51,6 +51,11 @@ public interface CodeAreaCommandHandler {
     void enterPressed();
 
     /**
+     * Tab key was pressed.
+     */
+    void tabPressed();
+
+    /**
      * Backspace key was pressed.
      */
     void backSpacePressed();
@@ -71,11 +76,6 @@ public interface CodeAreaCommandHandler {
     void copy();
 
     /**
-     * Copies selection to clipboard as code string.
-     */
-    void copyAsCode();
-
-    /**
      * Cuts selection to clipboard.
      */
     void cut();
@@ -84,6 +84,13 @@ public interface CodeAreaCommandHandler {
      * Pastes content of clipboard to cursor area.
      */
     void paste();
+
+    /**
+     * Returns true if paste action is possible.
+     *
+     * @return true if paste is possible
+     */
+    boolean canPaste();
 
     /**
      * Expands selection to all data.
@@ -96,19 +103,7 @@ public interface CodeAreaCommandHandler {
     void clearSelection();
 
     /**
-     * Pastes content of clipboard to cursor area analyzing string code.
-     */
-    void pasteFromCode();
-
-    /**
-     * Returns true if paste action is possible.
-     *
-     * @return true if paste is possible
-     */
-    boolean canPaste();
-
-    /**
-     * Move caret with mouse event.
+     * Moves caret with mouse event.
      *
      * @param positionX relative position X
      * @param positionY relative position Y

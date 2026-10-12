@@ -57,7 +57,7 @@ public interface CodeAreaPainter {
     void paintComponent(GC g);
 
     /**
-     * Paints main hexadecimal data section of the component.
+     * Paints main data section of the component.
      *
      * @param g graphics
      */
@@ -188,7 +188,7 @@ public interface CodeAreaPainter {
     CodeAreaScrollPosition computeScrolling(CodeAreaScrollPosition startPosition, ScrollingDirection direction);
 
     /**
-     * Notify scroll position was modified.
+     * Notifies that scroll position was modified.
      * <p>
      * This is to assist detection of scrolling from outside compare to
      * scrolling by scrollbar controls.
@@ -196,7 +196,7 @@ public interface CodeAreaPainter {
     void scrollPositionModified();
 
     /**
-     * Notify scroll position was changed outside of scrolling.
+     * Notifies that scroll position was changed outside the scrolling activity.
      */
     void scrollPositionChanged();
 

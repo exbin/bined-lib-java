@@ -24,16 +24,14 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.Arrays;
 import org.jspecify.annotations.Nullable;
 import org.jspecify.annotations.NullMarked;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
-import org.exbin.bined.CodeAreaUtils;
-import org.exbin.bined.CodeCharactersCase;
-import org.exbin.bined.CodeType;
 import org.exbin.auxiliary.binary_data.BinaryData;
 import org.exbin.bined.CharsetStreamTranslator;
+import org.exbin.bined.swt.capability.CharAssessorPainterCapable;
+import org.exbin.bined.swt.capability.ColorAssessorPainterCapable;
 
 /**
  * Hexadecimal editor component SWT utilities.
@@ -91,6 +89,48 @@ public class CodeAreaSwtUtils {
         }
     }
 
+    /**
+     * Finds specific color assessor if present.
+     *
+     * @param <T> color assessor
+     * @param painter painter
+     * @param assessorClass color assessor class
+     * @return color assessor if present
+     */
+    @Nullable
+    public static <T extends CodeAreaColorAssessor> T findColorAssessor(ColorAssessorPainterCapable painter, Class<T> assessorClass) {
+        CodeAreaColorAssessor colorAssessor = painter.getColorAssessor();
+        do {
+            if (assessorClass.isInstance(colorAssessor)) {
+                return assessorClass.cast(colorAssessor);
+            }
+            colorAssessor = colorAssessor.getParentColorAssessor().orElse(null);
+        } while (colorAssessor != null);
+
+        return null;
+    }
+
+    /**
+     * Finds specific character assessor if present.
+     *
+     * @param <T> character assessor
+     * @param painter painter
+     * @param assessorClass character assessor class
+     * @return character assessor if present
+     */
+    @Nullable
+    public static <T extends CodeAreaCharAssessor> T findCharAssessor(CharAssessorPainterCapable painter, Class<T> assessorClass) {
+        CodeAreaCharAssessor charAssessor = painter.getCharAssessor();
+        do {
+            if (assessorClass.isInstance(charAssessor)) {
+                return assessorClass.cast(charAssessor);
+            }
+            charAssessor = charAssessor.getParentCharAssessor().orElse(null);
+        } while (charAssessor != null);
+
+        return null;
+    }
+
     public static int getMetaMask() {
         return SWT.CTRL | SWT.COMMAND;
     }
@@ -101,6 +141,7 @@ public class CodeAreaSwtUtils {
      * @return clipboard clipboard instance
      */
     public static Clipboard getClipboard() {
+        // TODO convert to import org.eclipse.swt.dnd.Clipboard
         if (clipboard == null) {
             try {
                 clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
@@ -154,62 +195,6 @@ public class CodeAreaSwtUtils {
             }
 
             throw new UnsupportedFlavorException(flavor);
-        }
-
-        @Override
-        public void lostOwnership(Clipboard clipboard, Transferable contents) {
-            // do nothing
-        }
-
-        @Override
-        public void dispose() {
-            data.dispose();
-        }
-    }
-
-    @NullMarked
-    public static class CodeDataClipboardData implements ClipboardData {
-
-        private final BinaryData data;
-        private final DataFlavor binaryDataFlavor;
-        private final CodeType codeType;
-        private final CodeCharactersCase charactersCase;
-
-        public CodeDataClipboardData(BinaryData data, DataFlavor binaryDataFlavor, CodeType codeType, CodeCharactersCase charactersCase) {
-            this.data = data;
-            this.binaryDataFlavor = binaryDataFlavor;
-            this.codeType = codeType;
-            this.charactersCase = charactersCase;
-        }
-
-        @Override
-        public DataFlavor[] getTransferDataFlavors() {
-            return new DataFlavor[]{binaryDataFlavor, DataFlavor.stringFlavor};
-        }
-
-        @Override
-        public boolean isDataFlavorSupported(DataFlavor flavor) {
-            return flavor.equals(binaryDataFlavor) || flavor.equals(DataFlavor.stringFlavor);
-        }
-
-        @Override
-        public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
-            if (flavor.equals(binaryDataFlavor)) {
-                return data;
-            } else {
-                int charsPerByte = codeType.getMaxDigitsForByte() + 1;
-                int textLength = (int) (data.getDataSize() * charsPerByte);
-                if (textLength > 0) {
-                    textLength--;
-                }
-
-                char[] targetData = new char[textLength];
-                Arrays.fill(targetData, ' ');
-                for (int i = 0; i < data.getDataSize(); i++) {
-                    CodeAreaUtils.byteToCharsCode(data.getByte(i), codeType, targetData, i * charsPerByte, charactersCase);
-                }
-                return new String(targetData);
-            }
         }
 
         @Override

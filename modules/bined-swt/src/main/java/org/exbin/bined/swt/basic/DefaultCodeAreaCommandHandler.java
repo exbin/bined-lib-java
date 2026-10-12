@@ -30,7 +30,6 @@ import org.eclipse.swt.events.KeyEvent;
 import org.exbin.bined.basic.BasicCodeAreaSection;
 import org.exbin.bined.CodeAreaUtils;
 import org.exbin.bined.basic.CodeAreaViewMode;
-import org.exbin.bined.CodeCharactersCase;
 import org.exbin.bined.CodeType;
 import org.exbin.bined.EditMode;
 import org.exbin.bined.EditOperation;
@@ -42,7 +41,6 @@ import org.exbin.bined.basic.ScrollingDirection;
 import org.exbin.bined.capability.CaretCapable;
 import org.exbin.bined.capability.CharsetCapable;
 import org.exbin.bined.capability.ClipboardCapable;
-import org.exbin.bined.capability.CodeCharactersCaseCapable;
 import org.exbin.bined.capability.CodeTypeCapable;
 import org.exbin.bined.capability.ScrollingCapable;
 import org.exbin.bined.capability.SelectionCapable;
@@ -51,13 +49,13 @@ import org.exbin.bined.swt.CodeAreaCommandHandler;
 import org.exbin.bined.swt.CodeAreaCore;
 import org.exbin.bined.swt.CodeAreaSwtUtils;
 import org.exbin.auxiliary.binary_data.BinaryData;
-import org.exbin.auxiliary.binary_data.array.ByteArrayEditableData;
 import org.exbin.auxiliary.binary_data.EditableBinaryData;
 import org.exbin.bined.ClipboardHandlingMode;
 import org.exbin.bined.CodeAreaCaretPosition;
 import org.exbin.bined.ScrollBarOrientation;
 import org.exbin.bined.basic.EnterKeyHandlingMode;
 import org.exbin.bined.basic.SelectingMode;
+import org.exbin.bined.basic.TabKeyHandlingMode;
 import org.exbin.bined.capability.EditModeCapable;
 
 /**
@@ -73,6 +71,7 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
     protected final CodeAreaCore codeArea;
     protected EnterKeyHandlingMode enterKeyHandlingMode = EnterKeyHandlingMode.PLATFORM_SPECIFIC;
+    protected TabKeyHandlingMode tabKeyHandlingMode = TabKeyHandlingMode.PLATFORM_SPECIFIC;
     protected final boolean codeTypeSupported;
     protected final boolean viewModeSupported;
 
@@ -411,6 +410,27 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     }
 
     @Override
+    public void tabPressed() {
+        tabPressed(SelectingMode.NONE);
+    }
+
+    public void tabPressed(SelectingMode selectingMode) {
+        if (tabKeyHandlingMode == TabKeyHandlingMode.PLATFORM_SPECIFIC || tabKeyHandlingMode == TabKeyHandlingMode.CYCLE_TO_NEXT_SECTION || tabKeyHandlingMode == TabKeyHandlingMode.CYCLE_TO_PREVIOUS_SECTION) {
+            if (viewModeSupported && ((ViewModeCapable) codeArea).getViewMode() == CodeAreaViewMode.DUAL) {
+                move(selectingMode, MovementDirection.SWITCH_SECTION);
+                sequenceBreak();
+                revealCursor();
+            }
+        } else if (((CaretCapable) codeArea).getActiveSection() == BasicCodeAreaSection.TEXT_PREVIEW) {
+            String sequence = tabKeyHandlingMode == TabKeyHandlingMode.INSERT_TAB ? "\t" : "  ";
+            pressedCharInPreview(sequence.charAt(0));
+            if (sequence.length() == 2) {
+                pressedCharInPreview(sequence.charAt(1));
+            }
+        }
+    }
+
+    @Override
     public void backSpacePressed() {
         if (!checkEditAllowed()) {
             return;
@@ -510,24 +530,6 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
             BinaryData copy = data.copy(first, last - first + 1);
 
             CodeAreaSwtUtils.BinaryDataClipboardData binaryData = new CodeAreaSwtUtils.BinaryDataClipboardData(copy, binaryDataFlavor);
-            setClipboardContent(binaryData);
-        }
-    }
-
-    @Override
-    public void copyAsCode() {
-        SelectionRange selection = ((SelectionCapable) codeArea).getSelection();
-        if (!selection.isEmpty()) {
-            BinaryData data = codeArea.getContentData();
-
-            long first = selection.getFirst();
-            long last = selection.getLast();
-
-            BinaryData copy = data.copy(first, last - first + 1);
-
-            CodeType codeType = ((CodeTypeCapable) codeArea).getCodeType();
-            CodeCharactersCase charactersCase = ((CodeCharactersCaseCapable) codeArea).getCodeCharactersCase();
-            CodeAreaSwtUtils.CodeDataClipboardData binaryData = new CodeAreaSwtUtils.CodeDataClipboardData(copy, binaryDataFlavor, codeType, charactersCase);
             setClipboardContent(binaryData);
         }
     }
@@ -671,78 +673,6 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
     }
 
     @Override
-    public void pasteFromCode() {
-        if (!checkEditAllowed()) {
-            return;
-        }
-
-        BinaryData data = CodeAreaUtils.requireNonNullContentData(codeArea.getContentData());
-        EditMode editMode = ((EditModeCapable) codeArea).getEditMode();
-        EditOperation editOperation = ((EditModeCapable) codeArea).getActiveOperation();
-        try {
-            if (!clipboard.isDataFlavorAvailable(binaryDataFlavor) && !clipboard.isDataFlavorAvailable(DataFlavor.stringFlavor)) {
-                return;
-            }
-        } catch (IllegalStateException ex) {
-            return;
-        }
-
-        try {
-            if (clipboard.isDataFlavorAvailable(binaryDataFlavor)) {
-                paste();
-            } else if (clipboard.isDataFlavorAvailable(DataFlavor.stringFlavor)) {
-                if (codeArea.hasSelection()) {
-                    deleteSelection();
-                    codeArea.notifyDataChanged();
-                }
-
-                Object insertedData;
-                try {
-                    insertedData = clipboard.getData(DataFlavor.stringFlavor);
-                    if (insertedData instanceof String) {
-                        DefaultCodeAreaCaret caret = (DefaultCodeAreaCaret) ((CaretCapable) codeArea).getCodeAreaCaret();
-                        long dataPosition = caret.getDataPosition();
-
-                        CodeType codeType = getCodeType();
-                        ByteArrayEditableData pastedData = new ByteArrayEditableData();
-                        CodeAreaUtils.insertHexStringIntoData((String) insertedData, pastedData, codeType);
-
-                        long length = pastedData.getDataSize();
-                        long toRemove = length;
-                        if ((editMode == EditMode.EXPANDING && editOperation == EditOperation.OVERWRITE) || editMode == EditMode.INPLACE) {
-                            if (dataPosition + toRemove > codeArea.getDataSize()) {
-                                toRemove = codeArea.getDataSize() - dataPosition;
-                            }
-                            ((EditableBinaryData) data).remove(dataPosition, toRemove);
-                        }
-                        if (editMode == EditMode.INPLACE && length > toRemove) {
-                            ((EditableBinaryData) data).insert(caret.getDataPosition(), pastedData, 0, toRemove);
-                            caret.setCaretPosition(caret.getDataPosition() + toRemove);
-                            updateSelection(SelectingMode.NONE, caret.getCaretPosition());
-                        } else {
-                            ((EditableBinaryData) data).insert(caret.getDataPosition(), pastedData);
-                            caret.setCaretPosition(caret.getDataPosition() + length);
-                            updateSelection(SelectingMode.NONE, caret.getCaretPosition());
-                        }
-
-                        caret.setCodeOffset(0);
-                        ((CaretCapable) codeArea).setActiveCaretPosition(caret.getCaretPosition());
-                        sequenceBreak();
-                        codeArea.notifyDataChanged();
-                        revealCursor();
-                        clearSelection();
-                    }
-                } catch (UnsupportedFlavorException | IOException ex) {
-                    Logger.getLogger(DefaultCodeAreaCommandHandler.class
-                            .getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        } catch (IllegalStateException ex) {
-            // Clipboard not available - ignore
-        }
-    }
-
-    @Override
     public boolean canPaste() {
         return canPaste;
     }
@@ -753,6 +683,14 @@ public class DefaultCodeAreaCommandHandler implements CodeAreaCommandHandler {
 
     public void setEnterKeyHandlingMode(EnterKeyHandlingMode enterKeyHandlingMode) {
         this.enterKeyHandlingMode = enterKeyHandlingMode;
+    }
+
+    public TabKeyHandlingMode getTabKeyHandlingMode() {
+        return tabKeyHandlingMode;
+    }
+
+    public void setTabKeyHandlingMode(TabKeyHandlingMode tabKeyHandlingMode) {
+        this.tabKeyHandlingMode = tabKeyHandlingMode;
     }
 
     @Override

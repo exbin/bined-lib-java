@@ -26,7 +26,7 @@ public interface CodeAreaPaintAssessor {
     /**
      * Reports start of the paint operation.
      *
-     * @param codeAreaPainterState paint state
+     * @param codeAreaPaintState paint state
      */
-    void startPaint(CodeAreaPaintState codeAreaPainterState);
+    void startPaint(CodeAreaPaintState codeAreaPaintState);
 }

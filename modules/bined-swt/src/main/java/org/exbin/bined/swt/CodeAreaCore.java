@@ -139,10 +139,6 @@ public abstract class CodeAreaCore extends Canvas implements CodeAreaControl {
         commandHandler.copy();
     }
 
-    public void copyAsCode() {
-        commandHandler.copyAsCode();
-    }
-
     @Override
     public void cut() {
         commandHandler.cut();
@@ -151,10 +147,6 @@ public abstract class CodeAreaCore extends Canvas implements CodeAreaControl {
     @Override
     public void paste() {
         commandHandler.paste();
-    }
-
-    public void pasteFromCode() {
-        commandHandler.pasteFromCode();
     }
 
     @Override

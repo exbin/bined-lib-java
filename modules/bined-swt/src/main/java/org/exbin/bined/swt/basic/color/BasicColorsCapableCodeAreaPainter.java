@@ -23,7 +23,17 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 public interface BasicColorsCapableCodeAreaPainter {
 
+    /**
+     * Returns basic profile for colors.
+     *
+     * @return colors profile
+     */
     BasicCodeAreaColorsProfile getBasicColors();
 
-    void setBasicColors(BasicCodeAreaColorsProfile colors);
+    /**
+     * Sets basic profile for colors.
+     *
+     * @param colorsProfile colors profile
+     */
+    void setBasicColors(BasicCodeAreaColorsProfile colorsProfile);
 }
