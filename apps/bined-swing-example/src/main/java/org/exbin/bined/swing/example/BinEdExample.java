@@ -36,10 +36,10 @@ public class BinEdExample {
         // - Import library using Maven
         //
         // Libraries (groupId:artifactId:version):
-        //   org.exbin.bined:bined-core:0.2.2
-        //   org.exbin.bined:bined-swing:0.2.2
-        //   org.exbin.auxiliary:binary_data:0.2.2
-        //   org.exbin.auxiliary:binary_data-array:0.2.2
+        //   org.exbin.bined:bined-core:0.3.0-SNAPSHOT
+        //   org.exbin.bined:bined-swing:0.3.0-SNAPSHOT
+        //   org.exbin.auxiliary:binary_data:0.3.0-SNAPSHOT
+        //   org.exbin.auxiliary:binary_data-array:0.3.0-SNAPSHOT
 
         // Create component instance
         CodeArea codeArea = new CodeArea();
